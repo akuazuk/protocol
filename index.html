@@ -357,7 +357,7 @@
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Поиск по названию, симптомам и направлению. Материалы для специалистов; источник — официальный раздел Минздрава.
+          Полнотекстовый поиск по PDF + семантика (если собран <code>embeddings.json</code>). Материалы для специалистов; источник — Минздрав РБ.
         </p>
         <div class="badge-row">
           <span class="badge badge--green">451 протокол</span>
@@ -397,12 +397,17 @@
         <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
       </p>
       <p>
-        Поиск сопоставляет ваш запрос с названиями PDF и рубриками; при совпадении с типичными формулировками запрос дополнительно расширяется медицинскими терминами.
-        Сайт удобно открывать через <strong>GitHub Pages</strong> (ветка <code>main</code>, корень репозитория) или локально: <code>python3 -m http.server 8080</code>.
+        <strong>Как работает поиск:</strong> по тексту внутри протоколов (файл <code>corpus.json</code>), по названию и рубрике, по словарю подсказок симптомов; при наличии
+        <code>embeddings.json</code> — дополнительно семантическое сходство (модель <code>multilingual-e5-small</code> в браузере для запроса). Облачный RAG (например Vectara) возможен через свой backend с API-ключом — ключ нельзя вставлять в статический сайт.
+      </p>
+      <p>
+        Сборка данных: <code>python3 extract_corpus.py</code>, затем опционально <code>python3 build_semantic_embeddings.py</code> (см. <code>requirements-search.txt</code>).
+        Сайт: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
       </p>
     </footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
   <script>
 (function () {
   var CATEGORY_LABELS = {
@@ -569,15 +574,100 @@
     return d.innerHTML;
   }
 
-  function runSearch(protocols, q) {
+  function dot(a, b) {
+    var s = 0;
+    var i;
+    for (i = 0; i < a.length; i++) s += a[i] * b[i];
+    return s;
+  }
+
+  function buildCorpusMap(corpusRows) {
+    var m = {};
+    for (var i = 0; i < corpusRows.length; i++) {
+      var r = corpusRows[i];
+      m[r.path] = r;
+    }
+    return m;
+  }
+
+  function buildEmbMap(embPayload) {
+    var m = {};
+    if (!embPayload || !embPayload.items) return m;
+    for (var i = 0; i < embPayload.items.length; i++) {
+      var it = embPayload.items[i];
+      m[it.path] = new Float32Array(it.v);
+    }
+    return m;
+  }
+
+  function buildMiniSearch(protocols, corpusByPath) {
+    if (typeof MiniSearch === "undefined") return null;
+    var docs = [];
+    for (var i = 0; i < protocols.length; i++) {
+      var p = protocols[i];
+      var t = (corpusByPath[p.path] && corpusByPath[p.path].text) || "";
+      var catLabel = CATEGORY_LABELS[p.category] || "";
+      docs.push({
+        id: p.path,
+        title: p.title,
+        text: t,
+        catLabel: catLabel,
+        category: p.category,
+      });
+    }
+    var ms = new MiniSearch({
+      fields: ["title", "text", "catLabel", "category"],
+      idField: "id",
+    });
+    ms.addAll(docs);
+    return ms;
+  }
+
+  var searchState = {
+    protocols: null,
+    corpusByPath: null,
+    miniSearch: null,
+    embMap: null,
+    embedder: null,
+    embedderPromise: null,
+  };
+
+  function ensureEmbedder() {
+    if (searchState.embedderPromise) return searchState.embedderPromise;
+    searchState.embedderPromise = import(
+      "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2"
+    ).then(function (mod) {
+      return mod.pipeline("feature-extraction", "Xenova/multilingual-e5-small");
+    });
+    return searchState.embedderPromise;
+  }
+
+  async function embedQuery(q) {
+    var pipe = await ensureEmbedder();
+    var out = await pipe("query: " + q, { pooling: "mean", normalize: true });
+    var d = out.data;
+    if (d instanceof Float32Array) return d;
+    return new Float32Array(d);
+  }
+
+  async function runSearchFull(q) {
     var hint = document.getElementById("hint");
     q = (q || "").trim();
     if (!q) {
-      hint.textContent = "Введите симптомы, диагноз или направление — поиск обновится по мере ввода.";
+      hint.textContent =
+        "Введите симптомы, диагноз или направление — поиск обновится по мере ввода.";
       document.getElementById("meta").hidden = true;
       document.getElementById("results").innerHTML = "";
       return;
     }
+
+    var protocols = searchState.protocols;
+    var corpusByPath = searchState.corpusByPath || {};
+    var miniSearch = searchState.miniSearch;
+    var embMap = searchState.embMap;
+    var hasCorpus = miniSearch !== null;
+    var hasEmb = embMap && Object.keys(embMap).length > 0;
+
     var baseTokens = tokenize(q);
     var extra = extraFromHints(q);
     var tokenSet = {};
@@ -586,62 +676,136 @@
     for (i = 0; i < extra.length; i++) tokenSet[extra[i]] = true;
     var tokens = Object.keys(tokenSet);
 
-    if (extra.length) {
-      hint.innerHTML =
-        "Учтены подсказки по запросу: <strong>" +
-        escapeHtml(extra.slice(0, 8).join(", ")) +
-        (extra.length > 8 ? "…" : "") +
-        "</strong>";
-    } else {
-      hint.textContent = "Совпадения по словам запроса и названиям протоколов.";
+    var modeParts = [];
+    modeParts.push("название и рубрика");
+    if (hasCorpus) modeParts.push("текст PDF");
+    if (hasEmb) modeParts.push("семантика e5");
+    hint.innerHTML =
+      "Режим: <strong>" +
+      escapeHtml(modeParts.join(" + ")) +
+      "</strong>." +
+      (extra.length
+        ? " Подсказки: <strong>" +
+          escapeHtml(extra.slice(0, 6).join(", ")) +
+          (extra.length > 6 ? "…" : "") +
+          "</strong>."
+        : "");
+
+    var msByPath = {};
+    var maxMs = 1e-9;
+    if (miniSearch) {
+      var msRes = miniSearch.search(q, {
+        fuzzy: 0.12,
+        prefix: true,
+        boost: { title: 2.2, catLabel: 1.4, category: 1.0, text: 0.9 },
+      });
+      for (i = 0; i < msRes.length; i++) {
+        msByPath[msRes[i].id] = msRes[i].score;
+        if (msRes[i].score > maxMs) maxMs = msRes[i].score;
+      }
+    }
+
+    var qv = null;
+    if (hasEmb && q.length > 1) {
+      try {
+        qv = await embedQuery(q);
+      } catch (e) {
+        console.warn(e);
+        hasEmb = false;
+      }
     }
 
     var scored = [];
     for (i = 0; i < protocols.length; i++) {
       var p = protocols[i];
       var catLabel = CATEGORY_LABELS[p.category] || "";
-      var sc = scoreItem(p, tokens, catLabel);
-      if (sc > 0) scored.push({ p: p, sc: sc });
+      var leg = scoreItem(p, tokens, catLabel);
+      var lexRaw = msByPath[p.path] || 0;
+      var lexN = maxMs > 0 ? lexRaw / maxMs : 0;
+      var legN = Math.min(1, leg / 48);
+      var semN = 0;
+      if (hasEmb && qv && embMap[p.path]) {
+        semN = (dot(qv, embMap[p.path]) + 1) / 2;
+      }
+      var combined;
+      if (hasCorpus && hasEmb) {
+        combined = 0.12 * legN + 0.33 * lexN + 0.55 * semN;
+      } else if (hasCorpus) {
+        combined = 0.35 * legN + 0.65 * lexN;
+      } else if (hasEmb) {
+        combined = 0.2 * legN + 0.8 * semN;
+      } else {
+        combined = legN;
+      }
+      scored.push({ p: p, sc: combined, legN: legN, lexN: lexN, semN: semN });
     }
+
     scored.sort(function (a, b) {
       return b.sc - a.sc;
     });
-    var top = scored.slice(0, 40).map(function (x) {
-      return { p: x.p, sc: x.sc };
-    });
+    var top = scored.slice(0, 40);
     render(top);
   }
 
   var form = document.getElementById("search-form");
   var input = document.getElementById("q");
 
-  fetch("protocols.json")
-    .then(function (r) {
+  Promise.all([
+    fetch("protocols.json").then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
       return r.json();
-    })
-    .then(function (protocols) {
+    }),
+    fetch("corpus.json")
+      .then(function (r) {
+        return r.ok ? r.json() : [];
+      })
+      .catch(function () {
+        return [];
+      }),
+    fetch("embeddings.json")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .catch(function () {
+        return null;
+      }),
+  ])
+    .then(function (all) {
+      var protocols = all[0];
+      var corpusRows = all[1] || [];
+      var embPayload = all[2];
+
+      searchState.protocols = protocols;
+      searchState.corpusByPath = buildCorpusMap(corpusRows);
+      searchState.embMap = buildEmbMap(embPayload || {});
+      searchState.miniSearch = buildMiniSearch(protocols, searchState.corpusByPath);
+
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        runSearch(protocols, input.value);
+        runSearchFull(input.value).catch(function (err) {
+          console.error(err);
+        });
       });
       input.addEventListener(
         "input",
         debounce(function () {
-          runSearch(protocols, input.value);
-        }, 220)
+          runSearchFull(input.value).catch(function (err) {
+            console.error(err);
+          });
+        }, 320)
       );
       var params = new URLSearchParams(window.location.search).get("q");
       if (params) {
         input.value = params;
-        runSearch(protocols, params);
+        runSearchFull(params).catch(function (err) {
+          console.error(err);
+        });
       }
     })
     .catch(function (err) {
       document.getElementById("results").innerHTML =
-        '<div class="error" role="alert">Не удалось загрузить <code>protocols.json</code>. ' +
-        "Откройте страницу через GitHub Pages или локальный сервер " +
-        "(<code>python3 -m http.server</code> в папке репозитория). " +
+        '<div class="error" role="alert">Не удалось загрузить данные. ' +
+        "Нужен локальный сервер или GitHub Pages. " +
         escapeHtml(String(err)) +
         "</div>";
       document.getElementById("hint").textContent = "";
