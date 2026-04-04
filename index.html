@@ -618,8 +618,10 @@
       <details class="llm-panel">
         <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
         <p class="llm-note">
-          Ключ <code>GOOGLE_API_KEY</code> в файле <code>.env</code> в папке проекта (не в браузере). Один раз:
-          <code>cp .env.example .env</code>, вписать ключ. Запуск:
+          Ключ <code>GOOGLE_API_KEY</code> в <code>.env</code> (не в браузере). Один раз:
+          <code>cp .env.example .env</code>, вписать ключ. Проверка:
+          <code>python3 check_gemini_key.py</code> или
+          <code>curl -s http://127.0.0.1:8787/api/verify-key</code> (сервер запущен). Запуск:
           <code>uvicorn rag_server:app --host 127.0.0.1 --port 8787</code>
         </p>
         <div class="llm-toolbar">

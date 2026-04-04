@@ -207,6 +207,30 @@ def health() -> dict:
     }
 
 
+try:
+    from gemini_verify import verify_gemini_key as _verify_gemini_key
+except ImportError:
+    _verify_gemini_key = None
+
+
+@app.get("/api/verify-key")
+def verify_key() -> dict:
+    """Один тестовый запрос к Gemini — ключ из .env действительно отвечает."""
+    if _verify_gemini_key is None:
+        raise HTTPException(
+            status_code=501,
+            detail="Модуль gemini_verify не найден",
+        )
+    ok, msg = _verify_gemini_key()
+    if not ok:
+        raise HTTPException(status_code=502, detail=msg)
+    return {
+        "ok": True,
+        "reply_preview": msg,
+        "model": os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+    }
+
+
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
     q = body.query.strip()
