@@ -392,6 +392,13 @@
       word-break: break-all;
     }
 
+    .llm-wait-hint {
+      margin: 0.4rem 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
     .llm-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -615,13 +622,12 @@
       </form>
       <p class="hint" id="hint"></p>
 
-      <details class="llm-panel">
+      <details class="llm-panel" id="llm-panel" open>
         <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
         <p class="llm-note">
-          Ключ <code>GOOGLE_API_KEY</code> в <code>.env</code> (не в браузере). Один раз:
-          <code>cp .env.example .env</code>, вписать ключ. Проверка:
-          <code>python3 check_gemini_key.py</code> или
-          <code>curl -s http://127.0.0.1:8787/api/verify-key</code> (сервер запущен). Запуск:
+          Работает только вместе с <code>rag_server</code> и страницей по <strong>http://localhost</strong> (или 127.0.0.1).
+          Сайт на GitHub Pages <strong>не может</strong> подключиться к вашему компьютеру — откройте <code>index.html</code> через локальный сервер, например <code>python3 -m http.server 8080</code>.
+          Ключ <code>GOOGLE_API_KEY</code> — в <code>.env</code>. Проверка: <code>python3.11 check_gemini_key.py</code>. Запуск API:
           <code>uvicorn rag_server:app --host 127.0.0.1 --port 8787</code>
         </p>
         <div class="llm-toolbar">
@@ -1007,7 +1013,22 @@
               "На сервере не задан GOOGLE_API_KEY. Создайте файл .env (скопируйте из .env.example) или export GOOGLE_API_KEY=… и перезапустите uvicorn."
             );
           }
-          if (out) out.innerHTML = "<p>Запрос к Gemini (до ~90 с)…</p>";
+          var panel = document.getElementById("llm-panel");
+          if (panel) panel.open = true;
+          if (out) {
+            out.hidden = false;
+            out.innerHTML =
+              "<p>Запрос к Gemini… <strong>0</strong> с</p><p class=\"llm-wait-hint\">Первый ответ может идти до ~90 с — это не зависание.</p>";
+          }
+          var assistStart = Date.now();
+          var assistTick = setInterval(function () {
+            if (!out) return;
+            var sec = Math.floor((Date.now() - assistStart) / 1000);
+            out.innerHTML =
+              "<p>Запрос к Gemini… <strong>" +
+              sec +
+              "</strong> с</p><p class=\"llm-wait-hint\">Обычно до 90 с; при таймауте покажем ошибку (~110 с).</p>";
+          }, 1000);
           var ctrl = new AbortController();
           var tid = setTimeout(function () {
             ctrl.abort();
@@ -1019,6 +1040,7 @@
             signal: ctrl.signal,
           }).finally(function () {
             clearTimeout(tid);
+            clearInterval(assistTick);
           });
         })
         .then(function (r) {
@@ -1048,6 +1070,10 @@
         .then(function (data) {
           renderLlmOut(data);
           if (st) st.textContent = "Готово.";
+          var elOut = document.getElementById("llm-out");
+          if (elOut) {
+            elOut.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
           resolve();
         })
         .catch(function (err) {
