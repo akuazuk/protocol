@@ -2,6 +2,8 @@
 
 Каталог создаётся скриптом `python3 -m corpus_pipeline.run_pipeline` из PDF в `minzdrav_protocols/` (или `CORPUS_PDF_ROOT`).
 
+**Git:** каталоги `chunks/`, `documents/`, `tables/` в `.gitignore` (сотни МБ). В репозитории обычно хранят `registry/index.csv`, `entities/entities.json` и этот README; полный корпус — локально или в объектном хранилище.
+
 ## Зависимости
 
 ```bash
