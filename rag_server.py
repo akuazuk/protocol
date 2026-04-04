@@ -30,6 +30,7 @@ load_project_env(ROOT)
 try:
     from fastapi import FastAPI, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
     raise SystemExit(f"Установите: pip install -r requirements-rag.txt ({e})") from e
@@ -596,6 +597,27 @@ def api_assist(body: AssistIn) -> dict:
         "gemini_finish_reason": finish,
         "gemini_retry_used": retry_used,
     }
+
+
+# Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
+# Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
+if (ROOT / "index.html").is_file():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(ROOT), html=True),
+        name="site",
+    )
+else:
+
+    @app.get("/")
+    def root_placeholder() -> dict:
+        return {
+            "ok": True,
+            "service": "Protocol RAG",
+            "health": "/health",
+            "assist": "POST /api/assist",
+            "hint": "В репозитории нет index.html рядом с rag_server.py",
+        }
 
 
 if __name__ == "__main__":
