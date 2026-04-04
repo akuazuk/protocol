@@ -345,16 +345,17 @@
 
     .snippet-label {
       display: block;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--green-800);
-      margin-bottom: 0.35rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      line-height: 1.38;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      color: #2a4a3c;
+      margin-bottom: 0.4rem;
     }
 
     .snippet-box.treat .snippet-label {
-      color: var(--red-700);
+      color: #6b2d2d;
     }
 
     .snippet-text {
@@ -702,27 +703,27 @@
       var st = structured[p.path] || {};
       var diag = (st.diagnosis || "").trim();
       var treat = (st.treatment || "").trim();
-      var summ = (st.summary || "").trim();
       var catLabel = CATEGORY_LABELS[p.category] || p.category;
       var href = encodeURI(p.path);
+      var LABEL_DIAG =
+        "Диагностический блок — жалобы, анамнез, клиника, лабораторные и инструментальные методы, критерии диагноза, дифференциальная диагностика.";
+      var LABEL_TREAT =
+        "Лечебный блок — тактика (неотложная помощь, консервативное/хирургическое лечение), режим, медикаментозная и немедикаментозная терапия, длительность и критерии эффективности.";
       var snip = "";
       if (diag) {
         snip +=
-          '<div class="snippet-box diag"><span class="snippet-label">Диагностика и обследование</span><p class="snippet-text">' +
+          '<div class="snippet-box diag"><span class="snippet-label">' +
+          escapeHtml(LABEL_DIAG) +
+          '</span><p class="snippet-text">' +
           escapeHtml(diag) +
           "</p></div>";
       }
       if (treat) {
         snip +=
-          '<div class="snippet-box treat"><span class="snippet-label">Лечение и тактика</span><p class="snippet-text">' +
+          '<div class="snippet-box treat"><span class="snippet-label">' +
+          escapeHtml(LABEL_TREAT) +
+          '</span><p class="snippet-text">' +
           escapeHtml(treat) +
-          "</p></div>";
-      }
-      if (!snip && summ) {
-        var s = summ.slice(0, 480) + (summ.length > 480 ? "…" : "");
-        snip =
-          '<div class="snippet-box diag"><span class="snippet-label">Фрагмент протокола</span><p class="snippet-text">' +
-          escapeHtml(s) +
           "</p></div>";
       }
       var snipWrap = snip ? '<div class="snippet-grid">' + snip + "</div>" : "";
