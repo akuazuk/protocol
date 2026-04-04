@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Поиск клинических протоколов Минздрава РБ по симптомам и темам" />
-  <title>Клинические протоколы — поиск</title>
+  <meta name="description" content="Подбор клинических протоколов Минздрава Республики Беларусь по симптомам и клиническим ситуациям" />
+  <title>Клинические протоколы Минздрава РБ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&display=swap" rel="stylesheet" />
@@ -242,31 +242,58 @@
       color: var(--green-800);
     }
 
-    .llm-panel {
+    .llm-panel.assist-panel {
       margin-top: 1.35rem;
-      padding: 1rem 1.25rem;
-      background: rgba(255, 255, 255, 0.88);
-      border-radius: var(--radius);
-      border: 1px solid rgba(26, 138, 114, 0.22);
+      padding: 0;
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      box-shadow: 0 6px 28px rgba(6, 61, 53, 0.07);
       text-align: left;
+      overflow: hidden;
     }
 
-    .llm-panel summary {
+    .llm-panel.assist-panel summary.assist-panel__summary {
       cursor: pointer;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: var(--green-800);
+      color: var(--green-950);
+      padding: 1rem 1.25rem;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.65) 0%, rgba(255, 255, 255, 0.95) 100%);
+      border-bottom: 1px solid rgba(26, 138, 114, 0.12);
     }
 
-    .llm-note {
-      margin: 0.65rem 0 0;
-      font-size: 0.82rem;
+    .llm-panel.assist-panel summary.assist-panel__summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .llm-panel.assist-panel summary.assist-panel__summary::marker {
+      content: "";
+    }
+
+    .llm-panel.assist-panel summary.assist-panel__summary::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-600);
+      flex-shrink: 0;
+    }
+
+    .assist-panel__body {
+      padding: 1rem 1.25rem 1.15rem;
+    }
+
+    .assist-panel__muted {
+      margin: 0 0 0.85rem;
+      font-size: 0.84rem;
       color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .llm-note code {
-      font-size: 0.78rem;
-      word-break: break-all;
+      line-height: 1.5;
     }
 
     .llm-wait-hint {
@@ -281,7 +308,7 @@
       flex-wrap: wrap;
       gap: 0.65rem;
       align-items: center;
-      margin-top: 0.85rem;
+      margin-top: 0;
     }
 
     .llm-toolbar label {
@@ -300,18 +327,22 @@
     }
 
     .btn-assist {
-      background: var(--green-800);
+      background: linear-gradient(180deg, var(--green-600) 0%, var(--green-800) 100%);
       color: #fff;
       border: none;
-      padding: 0.55rem 1.05rem;
-      border-radius: 10px;
-      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
       cursor: pointer;
       font-family: inherit;
+      box-shadow: 0 2px 10px rgba(13, 92, 74, 0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
     .btn-assist:hover {
-      background: var(--green-600);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(13, 92, 74, 0.3);
     }
 
     .llm-out {
@@ -639,7 +670,7 @@
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Локальный ИИ по фрагментам клинических протоколов Минздрава РБ. Данные из PDF на сайте МЗ.
+          Официальные клинические протоколы: поиск и подбор по текстам PDF Министерства здравоохранения Республики Беларусь.
         </p>
         <div class="badge-row">
           <span class="badge badge--green" id="proto-count-badge">… уникальных протоколов</span>
@@ -651,14 +682,14 @@
     <section class="hero" aria-labelledby="search-title">
       <h2 id="search-title">Опишите симптомы или клиническую ситуацию</h2>
       <p class="lead">
-        Запрос уходит в локальный <strong>ИИ</strong> (Gemini + фрагменты протоколов). Примеры:
-        «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
-        Для точнее подбора укажите возраст и пол ниже; ответы на уточняющие вопросы добавляются к жалобам, контекст сохраняется.
+        Система сопоставит запрос с фрагментами протоколов и предложит релевантные документы с кратким разбором.
+        Примеры: «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
+        Для точнее подбора заполните контекст пациента ниже; при уточняющих вопросах ответы добавляются к запросу.
       </p>
       <details class="ctx-panel" id="ctx-panel" open>
-        <summary>Контекст пациента (возраст, пол — для подбора протокола)</summary>
+        <summary>Контекст пациента</summary>
         <p class="ctx-hint">
-          Эти поля усиливают соответствие (детские vs взрослые КП, релевантность рубрик). Сохраняются в браузере.
+          Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
         </p>
         <div class="ctx-grid">
           <label class="ctx-label" for="ctx-age"
@@ -699,21 +730,20 @@
           name="q"
           autocomplete="off"
           placeholder="Жалобы, ситуация, вопрос…"
-          aria-label="Текст запроса для ИИ"
+          aria-label="Текст запроса"
         />
-        <button type="submit" class="btn">Запросить ИИ</button>
+        <button type="submit" class="btn">Найти протоколы</button>
       </form>
       <p class="hint" id="hint"></p>
 
-      <details class="llm-panel" id="llm-panel" open>
-        <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
-        <p class="llm-note">
-          Локально: страница + <code>rag_server</code> на <strong>http://localhost</strong> (или 127.0.0.1), ключ в <code>.env</code>.
-          На хостинге (например Render) API и страница с одного адреса — поле «URL API» подставится само (тот же домен).
-          GitHub Pages без бэкенда к вашему ПК <strong>не подключится</strong>.
+      <details class="llm-panel assist-panel" id="llm-panel" open>
+        <summary class="assist-panel__summary">Подбор по протоколам</summary>
+        <div class="assist-panel__body">
+        <p class="assist-panel__muted">
+          Адрес сервера с базой фрагментов. На этом сайте обычно подставляется автоматически; меняйте только при отдельном бэкенде.
         </p>
         <div class="llm-toolbar">
-          <label for="rag-base">URL API</label>
+          <label for="rag-base">Сервер</label>
           <input
             type="url"
             id="rag-base"
@@ -722,7 +752,7 @@
             autocomplete="off"
             autocorrect="off"
             spellcheck="false"
-            aria-label="Базовый URL сервера RAG"
+            aria-label="Базовый URL сервера"
           />
           <script>
             (function () {
@@ -743,10 +773,11 @@
               }
             })();
           </script>
-          <button type="button" class="btn-assist" id="btn-assist">Уточнить по ИИ</button>
+          <button type="button" class="btn-assist" id="btn-assist">Запустить подбор</button>
         </div>
         <p class="hint" id="llm-status"></p>
         <div id="llm-out" class="llm-out" hidden></div>
+        </div>
       </details>
     </section>
 
@@ -963,12 +994,12 @@
     html +=
       '<span class="llm-pct-badge ' +
       (isWeak ? "llm-pct-badge--low" : "llm-pct-badge--high") +
-      '" title="Соответствие запросу по мнению модели">' +
+      '" title="Оценка соответствия запросу">' +
       pct01(mScore) +
-      "% модель</span>";
+      "%</span>";
     if (ragN > 0) {
       html +=
-        '<span class="llm-ai-pct llm-ai-pct-rag" title="Схожесть отобранного фрагмента с запросом"> · RAG ' +
+        '<span class="llm-ai-pct llm-ai-pct-rag" title="Сходство фрагмента протокола с запросом"> · фрагмент ' +
         pct01(ragN) +
         "%</span>";
     }
@@ -1069,7 +1100,7 @@
         lastAssistQuestions = j.questions_for_patient.slice();
         html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
         html +=
-          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — к жалобам добавятся ответы; блок «Контекст пациента» выше снова подставится автоматически (возраст, пол).</p>';
+          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
         html +=
           '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
@@ -1087,7 +1118,7 @@
           html += "</li>";
         }
         html +=
-          "</ol><button type=\"submit\" class=\"btn-assist btn-followup\">Отправить ответы и обновить выдачу ИИ</button></form>";
+          "</ol><button type=\"submit\" class=\"btn-assist btn-followup\">Отправить ответы и обновить подбор</button></form>";
         html += "</div>";
       }
 
@@ -1104,11 +1135,11 @@
         String(fin).toUpperCase().indexOf("MAX") !== -1
       ) {
         html +=
-          '<p class="llm-ai-note" style="margin-top:0.75rem">Ответ был обрезан по лимиту длины у модели. В <code>.env</code> увеличьте <code>GEMINI_MAX_OUTPUT_TOKENS</code> и перезапустите uvicorn.</p>';
+          '<p class="llm-ai-note" style="margin-top:0.75rem">Ответ обрезан по лимиту длины на сервере. При необходимости увеличьте лимит выходных токенов в настройках сервера.</p>';
       }
       if (data.gemini_retry_used) {
         html +=
-          '<p class="llm-ai-note" style="margin-top:0.5rem">Выполнен повторный запрос к модели (первый ответ был неполным или не удалось разобрать JSON).</p>';
+          '<p class="llm-ai-note" style="margin-top:0.5rem">Выполнен повторный запрос: первый ответ был неполным или не удалось обработать ответ сервера.</p>';
       }
 
       html += "</div></div>";
@@ -1206,16 +1237,16 @@
       if (out) {
         out.hidden = false;
         out.innerHTML =
-          "<p>Проверка сервера…</p>";
+          "<p>Проверка связи с сервером…</p>";
       }
       if (st) st.textContent = "";
       fetch(base + "/health")
         .then(function (h) {
           if (!h.ok) {
             throw new Error(
-              "Сервер rag_server недоступен (HTTP " +
+              "Сервер недоступен (HTTP " +
                 h.status +
-                "). Запустите: uvicorn rag_server:app --host 127.0.0.1 --port 8787"
+                "). Проверьте адрес в поле «Сервер» и доступность сервиса."
             );
           }
           return h.json();
@@ -1223,7 +1254,7 @@
         .then(function (health) {
           if (!health.gemini_configured) {
             throw new Error(
-              "На сервере не задан GOOGLE_API_KEY. Создайте файл .env (скопируйте из .env.example) или export GOOGLE_API_KEY=… и перезапустите uvicorn."
+              "На сервере не настроен ключ доступа к сервису обработки. Обратитесь к администратору."
             );
           }
           var panel = document.getElementById("llm-panel");
@@ -1231,16 +1262,16 @@
           if (out) {
             out.hidden = false;
             out.innerHTML =
-              "<p>Запрос к Gemini… <strong>0</strong> с</p><p class=\"llm-wait-hint\">Первый ответ может идти до ~90 с — это не зависание.</p>";
+              "<p>Формирование ответа… <strong>0</strong> с</p><p class=\"llm-wait-hint\">Первый ответ может занять до 1–2 минут.</p>";
           }
           var assistStart = Date.now();
           var assistTick = setInterval(function () {
             if (!out) return;
             var sec = Math.floor((Date.now() - assistStart) / 1000);
             out.innerHTML =
-              "<p>Запрос к Gemini… <strong>" +
+              "<p>Формирование ответа… <strong>" +
               sec +
-              "</strong> с</p><p class=\"llm-wait-hint\">На большом контексте ответ может занимать 2–4 минуты — это нормально.</p>";
+              "</strong> с</p><p class=\"llm-wait-hint\">На объёмном запросе это может занять несколько минут.</p>";
           }, 1000);
           var assistTimeoutMs = 240000;
           var ctrl = new AbortController();
@@ -1296,15 +1327,15 @@
           var msg = String(err.message || err);
           if (err && err.name === "AbortError") {
             msg =
-              "Превышено время ожидания (~4 мин). Увеличьте GEMINI_CALL_TIMEOUT в .env и перезапустите uvicorn, либо сократите текст запроса.";
+              "Превышено время ожидания. Сократите текст запроса или увеличьте таймаут на сервере.";
           }
           if (msg.indexOf("Failed to fetch") !== -1) {
             msg =
               "Не удалось соединиться с " +
               base +
-              ". Запущен ли uvicorn? Откройте сайт через http://localhost, а не file://.";
+              ". Проверьте адрес сервера, сеть и что страница открыта по HTTPS/HTTP, а не из файла на диске.";
           }
-          console.error("Gemini assist:", err);
+          console.error("Assist:", err);
           if (out) {
             out.hidden = false;
             out.innerHTML =
