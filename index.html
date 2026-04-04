@@ -720,9 +720,29 @@
             value=""
             placeholder="подставится автоматически"
             autocomplete="off"
+            autocorrect="off"
             spellcheck="false"
             aria-label="Базовый URL сервера RAG"
           />
+          <script>
+            (function () {
+              var el = document.getElementById("rag-base");
+              if (!el) return;
+              var h = location.hostname;
+              if (h !== "localhost" && h !== "127.0.0.1") {
+                el.value = location.origin.replace(/\/$/, "");
+                try {
+                  var s = localStorage.getItem("rag_base");
+                  if (
+                    s &&
+                    (s.indexOf("127.0.0.1") !== -1 || s.indexOf("localhost") !== -1)
+                  ) {
+                    localStorage.removeItem("rag_base");
+                  }
+                } catch (e) {}
+              }
+            })();
+          </script>
           <button type="button" class="btn-assist" id="btn-assist">Уточнить по ИИ</button>
         </div>
         <p class="hint" id="llm-status"></p>
@@ -1124,27 +1144,50 @@
     var def = defaultRagBase();
     if (isLocalHostPage()) {
       el.value = saved || def;
-    } else {
-      if (
-        saved &&
-        saved.indexOf("127.0.0.1") === -1 &&
-        saved.indexOf("localhost") === -1
-      ) {
-        el.value = saved;
-      } else {
-        el.value = def;
-      }
+      return;
     }
+    if (
+      saved &&
+      saved.indexOf("127.0.0.1") === -1 &&
+      saved.indexOf("localhost") === -1
+    ) {
+      el.value = saved.replace(/\/$/, "");
+    } else {
+      el.value = def;
+      try {
+        if (
+          saved &&
+          (saved.indexOf("127.0.0.1") !== -1 ||
+            saved.indexOf("localhost") !== -1)
+        ) {
+          localStorage.removeItem("rag_base");
+        }
+      } catch (e) {}
+    }
+  }
+
+  function normalizeRagBaseForRequest(raw) {
+    var t = raw && String(raw).trim() ? String(raw).trim().replace(/\/$/, "") : "";
+    if (!isLocalHostPage() && t && (t.indexOf("127.0.0.1") !== -1 || t.indexOf("localhost") !== -1)) {
+      return defaultRagBase().replace(/\/$/, "");
+    }
+    return t || defaultRagBase().replace(/\/$/, "");
   }
 
   function runGeminiAssist(queryOverride) {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
-      var base = (
-        (baseEl && baseEl.value && String(baseEl.value).trim()) ||
-        defaultRagBase()
-      ).replace(/\/$/, "");
-      if (baseEl) localStorage.setItem("rag_base", base);
+      var base = normalizeRagBaseForRequest(
+        baseEl && baseEl.value ? baseEl.value : ""
+      );
+      if (baseEl && base !== (baseEl.value || "").trim().replace(/\/$/, "")) {
+        baseEl.value = base;
+      }
+      if (baseEl) {
+        try {
+          localStorage.setItem("rag_base", base);
+        } catch (e) {}
+      }
       var qRaw =
         queryOverride != null && String(queryOverride).trim() !== ""
           ? String(queryOverride).trim()
