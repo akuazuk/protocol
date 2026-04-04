@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import os
+import warnings
 
 
 def _extract_text(resp) -> str:
@@ -25,6 +26,27 @@ def _extract_text(resp) -> str:
     return "".join(parts).strip()
 
 
+def _diagnose_empty_response(resp) -> str:
+    """Почему нет текста: блокировка, finish_reason и т.д."""
+    bits: list[str] = []
+    pf = getattr(resp, "prompt_feedback", None)
+    if pf is not None:
+        br = getattr(pf, "block_reason", None)
+        if br is not None:
+            bits.append(f"prompt_block_reason={br}")
+    cands = getattr(resp, "candidates", None) or []
+    if not cands:
+        bits.append("candidates=0")
+    for i, c in enumerate(cands[:2]):
+        fr = getattr(c, "finish_reason", None)
+        if fr is not None:
+            bits.append(f"candidate[{i}].finish_reason={fr}")
+        idx = getattr(c, "index", None)
+        if idx is not None:
+            bits.append(f"candidate_index={idx}")
+    return "; ".join(bits) if bits else "нет деталей от API"
+
+
 def verify_gemini_key() -> tuple[bool, str]:
     """
     Возвращает (успех, сообщение).
@@ -35,7 +57,10 @@ def verify_gemini_key() -> tuple[bool, str]:
         return False, "Нет GOOGLE_API_KEY (добавьте в .env или export)."
 
     try:
-        import google.generativeai as genai
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", FutureWarning)
+            import google.generativeai as genai
+            from google.generativeai.types import HarmBlockThreshold, HarmCategory
     except ImportError:
         return (
             False,
@@ -47,10 +72,29 @@ def verify_gemini_key() -> tuple[bool, str]:
     try:
         genai.configure(api_key=key)
         name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        model = genai.GenerativeModel(name)
+        # Нейтральный промпт — фразы про «медицину» иногда дают пустой ответ из‑за фильтров
+        safety = [
+            {
+                "category": HarmCategory.HARM_CATEGORY_HARASSMENT,
+                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            },
+            {
+                "category": HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            },
+            {
+                "category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            },
+            {
+                "category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
+            },
+        ]
+        model = genai.GenerativeModel(name, safety_settings=safety)
         r = model.generate_content(
-            "Ответь одним словом «да», если получил запрос и готов отвечать на вопросы по медицинским текстам.",
-            generation_config={"max_output_tokens": 40, "temperature": 0},
+            "Ответь одним словом: да.",
+            generation_config={"max_output_tokens": 32, "temperature": 0},
         )
     except Exception as e:
         err = str(e)
@@ -63,6 +107,12 @@ def verify_gemini_key() -> tuple[bool, str]:
 
     text = _extract_text(r)
     if not text:
-        return False, "Пустой ответ модели (возможна блокировка или сбой)."
+        detail = _diagnose_empty_response(r)
+        return (
+            False,
+            "Пустой ответ модели. "
+            + detail
+            + ". Проверьте GEMINI_MODEL (нужен gemini-2.5-flash или новее для новых ключей).",
+        )
 
     return True, text
