@@ -1,0 +1,13 @@
+# Настройки для Render Blueprint / справочно для ручного сервиса.
+# PYTHON_VERSION: в Dashboard → Environment добавьте вручную, если сборка тянет Python 3.14.
+# https://render.com/docs/python-version
+
+services:
+  - type: web
+    name: protocol-rag
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn rag_server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.8"

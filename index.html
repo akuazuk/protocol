@@ -708,17 +708,17 @@
       <details class="llm-panel" id="llm-panel" open>
         <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
         <p class="llm-note">
-          Работает только вместе с <code>rag_server</code> и страницей по <strong>http://localhost</strong> (или 127.0.0.1).
-          Сайт на GitHub Pages <strong>не может</strong> подключиться к вашему компьютеру — откройте <code>index.html</code> через локальный сервер, например <code>python3 -m http.server 8080</code>.
-          Ключ <code>GOOGLE_API_KEY</code> — в <code>.env</code>. Проверка: <code>python3.11 check_gemini_key.py</code>. Запуск API:
-          <code>uvicorn rag_server:app --host 127.0.0.1 --port 8787</code>
+          Локально: страница + <code>rag_server</code> на <strong>http://localhost</strong> (или 127.0.0.1), ключ в <code>.env</code>.
+          На хостинге (например Render) API и страница с одного адреса — поле «URL API» подставится само (тот же домен).
+          GitHub Pages без бэкенда к вашему ПК <strong>не подключится</strong>.
         </p>
         <div class="llm-toolbar">
           <label for="rag-base">URL API</label>
           <input
             type="url"
             id="rag-base"
-            value="http://127.0.0.1:8787"
+            value=""
+            placeholder="подставится автоматически"
             autocomplete="off"
             spellcheck="false"
             aria-label="Базовый URL сервера RAG"
@@ -1108,12 +1108,41 @@
     }
   }
 
+  function isLocalHostPage() {
+    var h = window.location.hostname;
+    return h === "localhost" || h === "127.0.0.1";
+  }
+
+  function defaultRagBase() {
+    return isLocalHostPage() ? "http://127.0.0.1:8787" : window.location.origin;
+  }
+
+  function initRagBaseInput() {
+    var el = document.getElementById("rag-base");
+    if (!el) return;
+    var saved = localStorage.getItem("rag_base");
+    var def = defaultRagBase();
+    if (isLocalHostPage()) {
+      el.value = saved || def;
+    } else {
+      if (
+        saved &&
+        saved.indexOf("127.0.0.1") === -1 &&
+        saved.indexOf("localhost") === -1
+      ) {
+        el.value = saved;
+      } else {
+        el.value = def;
+      }
+    }
+  }
+
   function runGeminiAssist(queryOverride) {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
       var base = (
-        (baseEl && baseEl.value) ||
-        "http://127.0.0.1:8787"
+        (baseEl && baseEl.value && String(baseEl.value).trim()) ||
+        defaultRagBase()
       ).replace(/\/$/, "");
       if (baseEl) localStorage.setItem("rag_base", base);
       var qRaw =
@@ -1249,6 +1278,8 @@
   var form = document.getElementById("search-form");
   var input = document.getElementById("q");
 
+  initRagBaseInput();
+
   fetch("protocols.json")
     .then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
@@ -1271,11 +1302,8 @@
 
       loadCtxFromStorage();
       bindCtxPersist();
+      initRagBaseInput();
 
-      var ragBaseEl = document.getElementById("rag-base");
-      if (ragBaseEl && localStorage.getItem("rag_base")) {
-        ragBaseEl.value = localStorage.getItem("rag_base");
-      }
       var btnAssist = document.getElementById("btn-assist");
       if (btnAssist) {
         btnAssist.addEventListener("click", function () {
@@ -1303,9 +1331,11 @@
     .catch(function (err) {
       var hint = document.getElementById("hint");
       if (hint) {
-        hint.textContent =
-          "Не удалось загрузить список протоколов. Нужен локальный сервер. " +
-          String(err);
+        hint.textContent = isLocalHostPage()
+          ? "Не удалось загрузить protocols.json. Запустите локальный сервер (не file://). " +
+              String(err)
+          : "Не удалось загрузить protocols.json с этого сайта. Проверьте деплой и логи Render. " +
+              String(err);
       }
     });
 })();
