@@ -39,10 +39,15 @@ PROTOCOLS_PATH = ROOT / "protocols.json"
 
 _chunks: list[dict] = []
 _protocols_by_path: dict[str, dict] = {}
+_routing: dict = {}
 _model = None
 
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
+Клиническая калибровка (обязательно):
+- В summary и differential сначала отражай типичные и частые причины (ОРВИ, фарингит, тонзиллит, ларингит), если они согласуются с запросом и фрагментами.
+- Редкие неотложные состояния (острый эпиглоттит, ретрофарингеальный абсцесс и т.п.) — только при явных красных флагах в тексте запроса (выраженная одышка, слюнотечение, невозможность глотать слюну, быстрое ухудшение) или если это прямо следует из фрагментов. Если пользователь указал нормальное дыхание без одышки — не ставь эпиглоттит первым в дифференциальный ряд и не формулируй ответ так, будто он наиболее вероятен.
+- Не противоречь явным фактам из запроса (например «дыхание нормальное»).
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
 Схема полей:
 {
@@ -61,6 +66,7 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 Если не хватает места — сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
 
 SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН компактный JSON (без markdown).
+Соблюдай клиническую калибровку: частые диагнозы первыми; эпиглоттит и др. редкие неотложные — только при красных флагах или прямо в фрагментах; при нормальном дыхании не веди с эпиглоттита.
 Предыдущая попытка оборвалась по длине. Сделай ещё короче:
 - summary: РОВНО 2 коротких предложения, ВМЕСТЕ максимум 220 символов, последний символ — точка.
 - match_reason: до 55 символов на протокол.
@@ -69,13 +75,18 @@ SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН комп
 
 
 def load_data() -> None:
-    global _chunks, _protocols_by_path
+    global _chunks, _protocols_by_path, _routing
     if not CHUNKS_PATH.is_file():
         raise SystemExit(f"Нет {CHUNKS_PATH}. Запустите: python3 build_chunks.py")
     _chunks = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
     if PROTOCOLS_PATH.is_file():
         for row in json.loads(PROTOCOLS_PATH.read_text(encoding="utf-8")):
             _protocols_by_path[row["path"]] = row
+    rp = ROOT / "symptom_routing.json"
+    if rp.is_file():
+        _routing = json.loads(rp.read_text(encoding="utf-8"))
+    else:
+        _routing = {}
 
 
 def tokenize_ru(s: str) -> list[str]:
@@ -83,28 +94,111 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
+def _norm_query(s: str) -> str:
+    return (s or "").lower().replace("ё", "е")
+
+
+def routing_multiplier(raw_query: str, ch: dict, routing: dict | None) -> float:
+    """Усиление/ослабление релевантности по symptom_routing.json (рубрики, аудитория, path)."""
+    if not routing:
+        return 1.0
+    q = _norm_query(raw_query)
+    cat = (ch.get("category") or "").strip()
+    title_low = ((ch.get("title") or "") + " " + (ch.get("path") or "")).lower()
+
+    m = 1.0
+
+    for br in routing.get("boost_rules", []):
+        kws = br.get("match") or []
+        if not any(k in q for k in kws):
+            continue
+        cats = br.get("categories") or []
+        if cat and cat in cats:
+            m *= float(br.get("factor", 1.0))
+
+    for pr in routing.get("penalty_rules", []):
+        when = pr.get("when") or []
+        if not any(w in q for w in when):
+            continue
+        unless = pr.get("unless") or []
+        if unless and any(u in q for u in unless):
+            continue
+        if cat in (pr.get("categories") or []):
+            m *= float(pr.get("factor", 1.0))
+
+    aud = routing.get("audience") or {}
+    child_m = aud.get("child_markers") or []
+    adult_m = aud.get("adult_markers") or []
+    ped_title = routing.get("pediatric_title_markers") or []
+    adult_title = routing.get("adult_title_markers") or []
+
+    has_child = any(c in q for c in child_m)
+    has_adult = any(a in q for a in adult_m)
+    if has_adult and not has_child:
+        if any(p in title_low for p in ped_title):
+            m *= float(aud.get("penalty_adult_query_pediatric_doc", 0.35))
+    if has_child and not has_adult:
+        if any(a in title_low for a in adult_title):
+            m *= float(aud.get("penalty_child_query_adult_doc", 0.4))
+
+    for pp in routing.get("path_penalties", []):
+        when_q = pp.get("when_query") or []
+        if not when_q or not any(w in q for w in when_q):
+            continue
+        unless = pp.get("unless_query") or []
+        if unless and any(u in q for u in unless):
+            continue
+        pats = pp.get("path_contains") or []
+        if any(p.lower() in title_low for p in pats):
+            m *= float(pp.get("factor", 0.5))
+
+    for pb in routing.get("path_boosts", []):
+        needed = pb.get("when_query") or []
+        min_hits = int(pb.get("when_min_hits", 2))
+        hits = sum(1 for w in needed if w in q)
+        if hits < min_hits:
+            continue
+        pats = pb.get("path_contains") or []
+        if any(p.lower() in title_low for p in pats):
+            m *= float(pb.get("factor", 1.5))
+
+    return max(m, 1e-9)
+
+
 def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -> list[dict]:
-    """Простой лексический отбор без тяжёлых зависимостей."""
+    """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1)."""
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
+    use_routing = os.environ.get("RAG_ROUTING", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
     qtok = set(tokenize_ru(query))
     if not qtok:
         return []
-    scored: list[tuple[float, dict]] = []
+    scored: list[tuple[float, float, float, dict]] = []
     for ch in _chunks:
         text = (ch.get("text") or "") + " " + (ch.get("title") or "")
         low = text.lower()
-        score = 0.0
+        lex = 0.0
         for t in qtok:
             if t in low:
-                score += 1.0 + min(len(t), 10) * 0.02
-        if score > 0:
-            scored.append((score, ch))
+                lex += 1.0 + min(len(t), 10) * 0.02
+        if lex <= 0:
+            continue
+        mult = (
+            routing_multiplier(query, ch, _routing)
+            if use_routing
+            else 1.0
+        )
+        final = lex * mult
+        scored.append((final, lex, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
     per_path: dict[str, int] = {}
     out: list[dict] = []
-    for sc, ch in scored:
+    for final, lex, mult, ch in scored:
         p = ch.get("path") or ""
         if per_path.get(p, 0) >= max_per_path:
             continue
@@ -114,7 +208,9 @@ def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -
                 "path": p,
                 "title": ch.get("title") or "",
                 "kind": ch.get("kind") or "general",
-                "score": round(sc, 3),
+                "score": round(final, 3),
+                "lexical_score": round(lex, 3),
+                "routing_multiplier": round(mult, 4),
                 "excerpt": (ch.get("text") or "")[
                     : int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
                 ],
