@@ -914,6 +914,15 @@
           "</p>";
       }
 
+      var fin = data.gemini_finish_reason;
+      if (
+        fin != null &&
+        String(fin).toUpperCase().indexOf("MAX") !== -1
+      ) {
+        html +=
+          '<p class="llm-ai-note" style="margin-top:0.75rem">Ответ был обрезан по лимиту длины у модели. В <code>.env</code> увеличьте <code>GEMINI_MAX_OUTPUT_TOKENS</code> и перезапустите uvicorn.</p>';
+      }
+
       html += "</div></div>";
       out.innerHTML = html;
       bindLlmFollowupForm();

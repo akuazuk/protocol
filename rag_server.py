@@ -43,20 +43,23 @@ _model = None
 
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Ниже пользователь даёт жалобы/ситуацию и автоматически отобранные фрагменты PDF (могут быть неполными). Не выдумывай факты вне фрагментов.
-Ответь СТРОГО валидным JSON (без markdown-ограждений) со схемой:
+Ответь одним JSON-объектом (без markdown и без текста до/после JSON) по схеме:
 {
   "summary": "текст сводки",
   "protocols": [
-    {"path": "относительный путь к pdf как в данных", "title": "читаемое название", "match_reason": "почему релевантен или почему нет", "confidence": "низкая|средняя|высокая", "confidence_score": 0.0}
+    {"path": "относительный путь к pdf как в данных", "title": "читаемое название", "match_reason": "кратко", "confidence": "низкая|средняя|высокая", "confidence_score": 0.0}
   ],
-  "differential": ["1–3 дифференциальных направления для обсуждения с врачом"],
-  "questions_for_patient": ["1–3 уточняющих вопроса"],
+  "differential": ["1–3 направления для обсуждения с врачом"],
+  "questions_for_patient": ["1–3 коротких вопроса"],
   "disclaimer": "Информация из протоколов; не замена очной консультации и не медицинское заключение."
 }
-КРИТИЧЕСКИ ВАЖНО:
-- summary: 4–7 полных предложений на русском. Завершай каждое предложение точкой. Не обрывай слова и не обрывай текст на середине предложения. Если упоминаешь диагноз или термин — заверши мысль.
-- protocols: перечисли ВСЕ path из входных фрагментов (по одному объекту на каждый уникальный path из блока «Фрагменты»). Для каждого укажи confidence_score 0.0–1.0 и короткий match_reason.
-- Поле protocols — только из path, присутствующих во входных фрагментах. confidence_score: 0.0–0.35 — слабо к запросу, 0.4–0.65 — частично, 0.7+ — уместно. Если данных мало — снизь оценки и опиши это в summary."""
+ОБЯЗАТЕЛЬНО (чтобы ответ не обрывался по лимиту токенов):
+- summary: ровно 3–4 коротких предложения на русском; каждое заканчивается точкой; суммарно не длиннее ~450 символов. Пиши сжато, без повторов.
+- match_reason: одно короткое предложение, не длиннее 140 символов.
+- differential: по 2–5 слов на пункт, не длинные формулировки.
+- questions_for_patient: по одному короткому вопросу в строке.
+- protocols: перечисли ВСЕ уникальные path из входных фрагментов; confidence_score 0.0–1.0 (0.0–0.35 слабо, 0.4–0.65 частично, 0.7+ уместно).
+- Не обрывай слова и предложения: лучше укороти текст, чем оставить незавершённое слово."""
 
 
 def load_data() -> None:
@@ -161,13 +164,35 @@ def _extract_gemini_text(resp) -> str:
     return "".join(parts).strip()
 
 
+def _gemini_finish_reason(resp) -> str | None:
+    cands = getattr(resp, "candidates", None) or []
+    if not cands:
+        return None
+    fr = getattr(cands[0], "finish_reason", None)
+    if fr is None:
+        return None
+    return str(fr)
+
+
 def _generate_blocking(model, full_prompt: str):
+    import google.generativeai as genai
+
+    max_out = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "8192"))
+    use_json = os.environ.get("GEMINI_JSON_MODE", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    cfg_kw: dict = {
+        "temperature": 0.25,
+        "max_output_tokens": max_out,
+    }
+    if use_json:
+        # Снижает обрывы посреди JSON и обрывы «лишнего» текста до/после объекта
+        cfg_kw["response_mime_type"] = "application/json"
     return model.generate_content(
         full_prompt,
-        generation_config={
-            "temperature": 0.25,
-            "max_output_tokens": int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "4096")),
-        },
+        generation_config=genai.GenerationConfig(**cfg_kw),
     )
 
 
@@ -293,11 +318,14 @@ def api_assist(body: AssistIn) -> dict:
     except json.JSONDecodeError:
         parsed = None
 
+    finish = _gemini_finish_reason(resp)
+
     return {
         "query": q,
         "retrieval": retrieved,
         "llm_text": raw,
         "llm_json": parsed,
+        "gemini_finish_reason": finish,
     }
 
 
