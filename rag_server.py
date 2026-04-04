@@ -45,7 +45,7 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 Ниже пользователь даёт жалобы/ситуацию и автоматически отобранные фрагменты PDF (могут быть неполными). Не выдумывай факты вне фрагментов.
 Ответь СТРОГО валидным JSON (без markdown-ограждений) со схемой:
 {
-  "summary": "кратко: что может соответствовать жалобе (2–4 предложения, осторожно формулируй)",
+  "summary": "текст сводки",
   "protocols": [
     {"path": "относительный путь к pdf как в данных", "title": "читаемое название", "match_reason": "почему релевантен или почему нет", "confidence": "низкая|средняя|высокая", "confidence_score": 0.0}
   ],
@@ -53,7 +53,10 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
   "questions_for_patient": ["1–3 уточняющих вопроса"],
   "disclaimer": "Информация из протоколов; не замена очной консультации и не медицинское заключение."
 }
-Поле protocols — только из path, присутствующих во входных фрагментах. Для каждого элемента задай confidence_score от 0.0 до 1.0: насколько фрагменты по этому path реально относятся к жалобе (0.0–0.35 — явно не про запрос, 0.4–0.65 — слабая связь, 0.7+ — уместно). Если данных мало — снизь confidence и confidence_score и скажи об этом в summary."""
+КРИТИЧЕСКИ ВАЖНО:
+- summary: 4–7 полных предложений на русском. Завершай каждое предложение точкой. Не обрывай слова и не обрывай текст на середине предложения. Если упоминаешь диагноз или термин — заверши мысль.
+- protocols: перечисли ВСЕ path из входных фрагментов (по одному объекту на каждый уникальный path из блока «Фрагменты»). Для каждого укажи confidence_score 0.0–1.0 и короткий match_reason.
+- Поле protocols — только из path, присутствующих во входных фрагментах. confidence_score: 0.0–0.35 — слабо к запросу, 0.4–0.65 — частично, 0.7+ — уместно. Если данных мало — снизь оценки и опиши это в summary."""
 
 
 def load_data() -> None:
@@ -71,7 +74,7 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
-def retrieve(query: str, max_chunks: int = 8, max_per_path: int = 2) -> list[dict]:
+def retrieve(query: str, max_chunks: int = 10, max_per_path: int = 2) -> list[dict]:
     """Простой лексический отбор без тяжёлых зависимостей."""
     qtok = set(tokenize_ru(query))
     if not qtok:
@@ -101,7 +104,9 @@ def retrieve(query: str, max_chunks: int = 8, max_per_path: int = 2) -> list[dic
                 "title": ch.get("title") or "",
                 "kind": ch.get("kind") or "general",
                 "score": round(sc, 3),
-                "excerpt": (ch.get("text") or "")[:550],
+                "excerpt": (ch.get("text") or "")[
+                    : int(os.environ.get("RAG_EXCERPT_CHARS", "1200"))
+                ],
             }
         )
         if len(out) >= max_chunks:
@@ -161,7 +166,7 @@ def _generate_blocking(model, full_prompt: str):
         full_prompt,
         generation_config={
             "temperature": 0.25,
-            "max_output_tokens": 2048,
+            "max_output_tokens": int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "4096")),
         },
     )
 
@@ -190,7 +195,7 @@ app.add_middleware(
 
 
 class AssistIn(BaseModel):
-    query: str = Field(..., min_length=2, max_length=4000)
+    query: str = Field(..., min_length=2, max_length=12000)
 
 
 @app.get("/health")
@@ -251,8 +256,9 @@ def api_assist(body: AssistIn) -> dict:
 
     user_block = f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
-    if len(full_prompt) > 22000:
-        full_prompt = full_prompt[:21900] + "\n…[обрезано для лимита]"
+    prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
+    if len(full_prompt) > prompt_limit:
+        full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
 
     model = get_gemini()
     try:

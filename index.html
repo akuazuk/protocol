@@ -354,6 +354,96 @@
       color: var(--text);
     }
 
+    .llm-summary-para {
+      margin: 0 0 0.65rem;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .llm-summary-para:last-child {
+      margin-bottom: 0;
+    }
+
+    .llm-proto-sub {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      margin: 0.5rem 0 0.4rem;
+    }
+
+    .llm-proto-sub.weak {
+      color: #8a5a00;
+    }
+
+    .llm-pct-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 6px;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+
+    .llm-pct-badge--high {
+      background: #e8f5f1;
+      color: var(--green-800);
+      border: 1px solid var(--green-400);
+    }
+
+    .llm-pct-badge--low {
+      background: #fff8e8;
+      color: #8a5a00;
+      border: 1px solid rgba(200, 150, 40, 0.45);
+    }
+
+    .llm-followup-form {
+      margin-top: 0.5rem;
+    }
+
+    .llm-followup-form ol {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.2rem;
+    }
+
+    .llm-followup-form li {
+      margin-bottom: 0.85rem;
+      list-style-position: outside;
+    }
+
+    .llm-followup-q {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      line-height: 1.45;
+    }
+
+    .llm-followup-form textarea {
+      width: 100%;
+      min-height: 3rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(13, 92, 74, 0.28);
+      font-family: inherit;
+      font-size: 0.88rem;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .llm-followup-form textarea:focus {
+      outline: none;
+      border-color: var(--green-600);
+      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.2);
+    }
+
+    .btn-followup {
+      margin-top: 0.35rem;
+    }
+
     .llm-ai-hr {
       border: none;
       border-top: 1px solid rgba(13, 92, 74, 0.12);
@@ -622,70 +712,162 @@
     return 0.55;
   }
 
-  /** Показываем только протоколы с достаточной уверенностью модели (не «мусор» от RAG). */
-  function filterProtocolsForDisplay(protocols) {
+  var lastAssistQuery = "";
+  var lastAssistQuestions = [];
+
+  function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
-    var THRESH = 0.52;
-    var out = [];
+    var byPath = {};
     var i;
     for (i = 0; i < protocols.length; i++) {
-      if (confidenceFromProtocol(protocols[i]) >= THRESH) out.push(protocols[i]);
+      var pr = protocols[i];
+      var p = pr.path || "";
+      if (!p) continue;
+      if (
+        !byPath[p] ||
+        confidenceFromProtocol(pr) > confidenceFromProtocol(byPath[p])
+      ) {
+        byPath[p] = pr;
+      }
     }
+    var out = [];
+    for (var k in byPath) {
+      if (Object.prototype.hasOwnProperty.call(byPath, k)) {
+        out.push(byPath[k]);
+      }
+    }
+    out.sort(function (a, b) {
+      return confidenceFromProtocol(b) - confidenceFromProtocol(a);
+    });
     return out;
+  }
+
+  function formatSummaryHtml(summary) {
+    if (!summary) return "";
+    var t = String(summary).trim();
+    var parts = t.split(/\n\n+/);
+    if (parts.length === 1) {
+      parts = t.split(/\n/).filter(function (line) {
+        return line.trim().length > 0;
+      });
+    }
+    var html = "";
+    var pi;
+    for (pi = 0; pi < parts.length; pi++) {
+      var para = parts[pi].trim();
+      if (para) {
+        html +=
+          '<p class="llm-summary-para">' + escapeHtml(para) + "</p>";
+      }
+    }
+    return html || '<p class="llm-summary-para">' + escapeHtml(t) + "</p>";
+  }
+
+  function renderProtoLi(pr, ragMap) {
+    var href = encodeURI(pr.path || "");
+    var title = formatDisplayTitle(pr.title || pr.path || "");
+    var mScore = confidenceFromProtocol(pr);
+    var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
+    var isWeak = mScore < 0.52;
+    var html = "<li>";
+    html +=
+      '<a href="' +
+      href +
+      '" target="_blank" rel="noopener">' +
+      escapeHtml(title) +
+      "</a>";
+    html +=
+      '<span class="llm-pct-badge ' +
+      (isWeak ? "llm-pct-badge--low" : "llm-pct-badge--high") +
+      '" title="Соответствие запросу по мнению модели">' +
+      pct01(mScore) +
+      "% модель</span>";
+    if (ragN > 0) {
+      html +=
+        '<span class="llm-ai-pct llm-ai-pct-rag" title="Схожесть отобранного фрагмента с запросом"> · RAG ' +
+        pct01(ragN) +
+        "%</span>";
+    }
+    if (pr.match_reason) {
+      html +=
+        '<p class="llm-ai-reason">' + escapeHtml(pr.match_reason) + "</p>";
+    }
+    html += "</li>";
+    return html;
+  }
+
+  function bindLlmFollowupForm() {
+    var form = document.getElementById("llm-followup-form");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var baseQ = lastAssistQuery || "";
+      var texts = form.querySelectorAll("textarea[data-qi]");
+      var lines = [];
+      var ti;
+      for (ti = 0; ti < texts.length; ti++) {
+        var qtext = lastAssistQuestions[ti] || "";
+        var t = texts[ti].value.trim();
+        lines.push(ti + 1 + ". " + qtext + "\n" + (t || "— не указано"));
+      }
+      var combined =
+        baseQ +
+        "\n\n— Ответы на уточняющие вопросы:\n" +
+        lines.join("\n\n");
+      var qInput = document.getElementById("q");
+      if (qInput) qInput.value = combined;
+      runGeminiAssist(combined).catch(function (err) {
+        console.error(err);
+      });
+    });
   }
 
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
     out.hidden = false;
+    lastAssistQuery = data.query || "";
+    lastAssistQuestions = [];
     var j = data.llm_json;
     if (j && typeof j === "object") {
       var ragMap = normalizeRagByPath(data.retrieval || []);
-      var rawProtos = j.protocols || [];
-      var protos = filterProtocolsForDisplay(rawProtos);
+      var rawProtos = dedupeProtocolsByPath(j.protocols || []);
+      var high = [];
+      var low = [];
+      var hi;
+      for (hi = 0; hi < rawProtos.length; hi++) {
+        if (confidenceFromProtocol(rawProtos[hi]) >= 0.52) {
+          high.push(rawProtos[hi]);
+        } else {
+          low.push(rawProtos[hi]);
+        }
+      }
       var html = '<div class="llm-ai-card"><div class="llm-ai-card-inner">';
 
       if (j.summary) {
-        html += '<p class="llm-ai-lead">' + escapeHtml(j.summary) + "</p>";
+        html +=
+          '<div class="llm-ai-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
 
-      if (protos.length) {
+      if (rawProtos.length) {
         html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
-        html += '<span class="llm-ai-sec-label">Протоколы</span><ul class="llm-ai-proto-list">';
-        var pi;
-        for (pi = 0; pi < protos.length; pi++) {
-          var pr = protos[pi];
-          var href = encodeURI(pr.path || "");
-          var title = formatDisplayTitle(pr.title || pr.path || "");
-          var mScore = confidenceFromProtocol(pr);
-          var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-          html += "<li>";
-          html +=
-            '<a href="' +
-            href +
-            '" target="_blank" rel="noopener">' +
-            escapeHtml(title) +
-            "</a>";
-          html +=
-            ' <span class="llm-ai-pct" title="Применимость по мнению модели">' +
-            pct01(mScore) +
-            "%</span>";
-          if (ragN > 0) {
-            html +=
-              ' <span class="llm-ai-pct llm-ai-pct-rag" title="Схожесть отобранного фрагмента">RAG ' +
-              pct01(ragN) +
-              "%</span>";
+        html += '<span class="llm-ai-sec-label">Протоколы и оценка соответствия</span>';
+        if (high.length) {
+          html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="llm-ai-proto-list">';
+          for (hi = 0; hi < high.length; hi++) {
+            html += renderProtoLi(high[hi], ragMap);
           }
-          if (pr.match_reason) {
-            html +=
-              '<p class="llm-ai-reason">' + escapeHtml(pr.match_reason) + "</p>";
-          }
-          html += "</li>";
+          html += "</ul>";
         }
-        html += "</ul></div>";
-      } else if (rawProtos.length) {
-        html +=
-          '<p class="llm-ai-note">Протоколы по отбору не прошли порог уверенности для показа.</p>';
+        if (low.length) {
+          html +=
+            '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="llm-ai-proto-list">';
+          for (hi = 0; hi < low.length; hi++) {
+            html += renderProtoLi(low[hi], ragMap);
+          }
+          html += "</ul>";
+        }
+        html += "</div>";
       }
 
       if (j.differential && j.differential.length) {
@@ -700,14 +882,29 @@
       }
 
       if (j.questions_for_patient && j.questions_for_patient.length) {
+        lastAssistQuestions = j.questions_for_patient.slice();
         html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
         html +=
-          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><ol class="llm-ai-compact">';
+          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — запрос уйдёт в ИИ снова с вашими уточнениями.</p>';
+        html +=
+          '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
         for (qi = 0; qi < j.questions_for_patient.length; qi++) {
-          html += "<li>" + escapeHtml(j.questions_for_patient[qi]) + "</li>";
+          var qq = j.questions_for_patient[qi];
+          html += "<li>";
+          html +=
+            '<span class="llm-followup-q">' + escapeHtml(qq) + "</span>";
+          html +=
+            '<textarea data-qi="' +
+            qi +
+            '" rows="3" placeholder="Краткий ответ…" aria-label="Ответ ' +
+            (qi + 1) +
+            '"></textarea>';
+          html += "</li>";
         }
-        html += "</ol></div>";
+        html +=
+          "</ol><button type=\"submit\" class=\"btn-assist btn-followup\">Отправить ответы и обновить выдачу ИИ</button></form>";
+        html += "</div>";
       }
 
       if (j.disclaimer) {
@@ -719,6 +916,7 @@
 
       html += "</div></div>";
       out.innerHTML = html;
+      bindLlmFollowupForm();
       return;
     }
     out.innerHTML =
@@ -733,7 +931,7 @@
     }
   }
 
-  function runGeminiAssist() {
+  function runGeminiAssist(queryOverride) {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
       var base = (
@@ -741,8 +939,10 @@
         "http://127.0.0.1:8787"
       ).replace(/\/$/, "");
       if (baseEl) localStorage.setItem("rag_base", base);
-      var q = (document.getElementById("q") || {}).value || "";
-      q = q.trim();
+      var q =
+        queryOverride != null && String(queryOverride).trim() !== ""
+          ? String(queryOverride).trim()
+          : ((document.getElementById("q") || {}).value || "").trim();
       if (!q) {
         alert("Введите запрос в поле поиска.");
         reject(new Error("empty"));
