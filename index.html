@@ -272,10 +272,6 @@
       display: none;
     }
 
-    .llm-panel.assist-panel summary.assist-panel__summary::marker {
-      content: "";
-    }
-
     .llm-panel.assist-panel summary.assist-panel__summary::before {
       content: "";
       width: 6px;
@@ -754,25 +750,6 @@
             spellcheck="false"
             aria-label="Базовый URL сервера"
           />
-          <script>
-            (function () {
-              var el = document.getElementById("rag-base");
-              if (!el) return;
-              var h = location.hostname;
-              if (h !== "localhost" && h !== "127.0.0.1") {
-                el.value = location.origin.replace(/\/$/, "");
-                try {
-                  var s = localStorage.getItem("rag_base");
-                  if (
-                    s &&
-                    (s.indexOf("127.0.0.1") !== -1 || s.indexOf("localhost") !== -1)
-                  ) {
-                    localStorage.removeItem("rag_base");
-                  }
-                } catch (e) {}
-              }
-            })();
-          </script>
           <button type="button" class="btn-assist" id="btn-assist">Запустить подбор</button>
         </div>
         <p class="hint" id="llm-status"></p>
