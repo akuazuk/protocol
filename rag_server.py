@@ -45,6 +45,7 @@ _model = None
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
 Если в запросе есть блок «=== Контекст пациента ===» (возраст, пол и т.д.) и «=== Жалобы и вопрос ===», учитывай контекст при выборе детских vs взрослых протоколов и в формулировке summary.
+Если возраст явно взрослый (например «49 лет», ≥18 лет) — не включай в protocols детские КП: в списке должны остаться только path из входных фрагментов; если фрагменты только детские (маловероятно), опирайся на них осторожно и не выдавай детский протокол как основной без пометки.
 Клиническая калибровка (обязательно):
 - В summary и differential сначала отражай типичные и частые причины (ОРВИ, фарингит, тонзиллит, ларингит), если они согласуются с запросом и фрагментами.
 - Редкие неотложные состояния (острый эпиглоттит, ретрофарингеальный абсцесс и т.п.) — только при явных красных флагах в тексте запроса (выраженная одышка, слюнотечение, невозможность глотать слюну, быстрое ухудшение) или если это прямо следует из фрагментов. Если пользователь указал нормальное дыхание без одышки — не ставь эпиглоттит первым в дифференциальный ряд и не формулируй ответ так, будто он наиболее вероятен.
@@ -99,6 +100,98 @@ def _norm_query(s: str) -> str:
     return (s or "").lower().replace("ё", "е")
 
 
+def infer_audience_from_query(q: str, routing: dict) -> str | None:
+    """'adult' | 'child' | None — по словам и числам (49 лет, ребёнок …)."""
+    nq = _norm_query(q)
+    aud = routing.get("audience") or {}
+    child_m = aud.get("child_markers") or []
+    adult_m = aud.get("adult_markers") or []
+    has_ch = any(c in nq for c in child_m)
+    has_ad = any(a in nq for a in adult_m)
+    if has_ad and not has_ch:
+        return "adult"
+    if has_ch and not has_ad:
+        return "child"
+
+    def age_bucket(age: int) -> str | None:
+        if age >= 18:
+            return "adult"
+        if 0 < age < 18:
+            return "child"
+        return None
+
+    for m in re.finditer(r"(\d{1,3})\s*лет", nq):
+        b = age_bucket(int(m.group(1)))
+        if b:
+            return b
+    for m in re.finditer(r"(\d{1,3})\s*года?\b", nq):
+        b = age_bucket(int(m.group(1)))
+        if b:
+            return b
+    for m in re.finditer(r"возраст\s*[:\s]*(\d{1,3})\b", nq):
+        b = age_bucket(int(m.group(1)))
+        if b:
+            return b
+    for m in re.finditer(r"пациент(?:у|а)?\s+(\d{1,3})\s*лет", nq):
+        b = age_bucket(int(m.group(1)))
+        if b:
+            return b
+    return None
+
+
+def doc_audience_hint(path: str, title: str, routing: dict) -> str | None:
+    """pediatric | adult | mixed | None — по названию файла/заголовка."""
+    s = f"{path} {title}".lower()
+    ped = routing.get("pediatric_title_markers") or []
+    adult_t = routing.get("adult_title_markers") or []
+    has_p = any(p in s for p in ped)
+    has_a = any(a in s for a in adult_t)
+    if has_p and has_a:
+        return "mixed"
+    if has_p:
+        return "pediatric"
+    if has_a:
+        return "adult"
+    return None
+
+
+def filter_retrieval_by_audience(
+    rows: list[dict], rq: str, routing: dict
+) -> tuple[list[dict], str | None, bool]:
+    """Отбрасывает чанки с явно несовпадающей аудиторией (дет/взросл)."""
+    aud = infer_audience_from_query(rq, routing)
+    if aud is None or not rows:
+        return rows, aud, False
+
+    strict = os.environ.get("RAG_AUDIENCE_FILTER", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if not strict:
+        return rows, aud, False
+
+    out: list[dict] = []
+    for r in rows:
+        hint = doc_audience_hint(
+            r.get("path") or "",
+            r.get("title") or "",
+            routing,
+        )
+        if hint is None or hint == "mixed":
+            out.append(r)
+            continue
+        if aud == "adult" and hint == "pediatric":
+            continue
+        if aud == "child" and hint == "adult":
+            continue
+        out.append(r)
+
+    if not out:
+        return rows, aud, True
+    return out, aud, False
+
+
 def routing_multiplier(raw_query: str, ch: dict, routing: dict | None) -> float:
     """Усиление/ослабление релевантности по symptom_routing.json (рубрики, аудитория, path)."""
     if not routing:
@@ -133,8 +226,16 @@ def routing_multiplier(raw_query: str, ch: dict, routing: dict | None) -> float:
     ped_title = routing.get("pediatric_title_markers") or []
     adult_title = routing.get("adult_title_markers") or []
 
-    has_child = any(c in q for c in child_m)
-    has_adult = any(a in q for a in adult_m)
+    infer = infer_audience_from_query(raw_query, routing)
+    if infer == "adult":
+        has_child = False
+        has_adult = True
+    elif infer == "child":
+        has_child = True
+        has_adult = False
+    else:
+        has_child = any(c in q for c in child_m)
+        has_adult = any(a in q for a in adult_m)
     if has_adult and not has_child:
         if any(p in title_low for p in ped_title):
             m *= float(aud.get("penalty_adult_query_pediatric_doc", 0.35))
@@ -411,6 +512,10 @@ def api_assist(body: AssistIn) -> dict:
     if not retrieved:
         raise HTTPException(status_code=400, detail="Пустой отбор — уточните запрос")
 
+    retrieved, audience_inferred, audience_fallback = filter_retrieval_by_audience(
+        retrieved, q, _routing
+    )
+
     lines = []
     for i, r in enumerate(retrieved, 1):
         cat = ""
@@ -484,6 +589,8 @@ def api_assist(body: AssistIn) -> dict:
     return {
         "query": q,
         "retrieval": retrieved,
+        "audience_inferred": audience_inferred,
+        "retrieval_audience_fallback": audience_fallback,
         "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,
