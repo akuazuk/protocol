@@ -3,13 +3,12 @@
 Локальный RAG: отбор фрагментов из chunks.json + ответ Gemini (диагноз/протоколы — как ориентир по текстам КП).
 
 Запуск:
-  export GOOGLE_API_KEY="ваш_ключ"
-  # опционально: export GEMINI_MODEL=gemini-2.5-flash
-  # опционально: export GEMINI_CALL_TIMEOUT=120
   pip install -r requirements-rag.txt
+  cp .env.example .env   # один раз: вписать GOOGLE_API_KEY в .env
   uvicorn rag_server:app --host 127.0.0.1 --port 8787 --reload
 
-По умолчанию модель gemini-2.0-flash; вызов к API ограничен по времени (см. GEMINI_CALL_TIMEOUT).
+Переменные подхватываются из .env и .env.local (см. python-dotenv).
+По умолчанию модель gemini-2.0-flash; таймаут — GEMINI_CALL_TIMEOUT.
 
 Фронт (index.html) дергает POST /api/assist — ключ в браузер не передаётся.
 """
@@ -23,6 +22,14 @@ from concurrent.futures import TimeoutError as FuturesTimeout
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(ROOT / ".env")
+    load_dotenv(ROOT / ".env.local", override=True)
+except ImportError:
+    pass
 
 try:
     from fastapi import FastAPI, HTTPException

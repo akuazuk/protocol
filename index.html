@@ -618,8 +618,8 @@
       <details class="llm-panel">
         <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
         <p class="llm-note">
-          Ключ <code>GOOGLE_API_KEY</code> задаётся только на сервере (не в браузере). Запуск:
-          <code>pip install -r requirements-rag.txt</code> →
+          Ключ <code>GOOGLE_API_KEY</code> в файле <code>.env</code> в папке проекта (не в браузере). Один раз:
+          <code>cp .env.example .env</code>, вписать ключ. Запуск:
           <code>uvicorn rag_server:app --host 127.0.0.1 --port 8787</code>
         </p>
         <div class="llm-toolbar">
@@ -1002,7 +1002,7 @@
         .then(function (health) {
           if (!health.gemini_configured) {
             throw new Error(
-              "На сервере не задан GOOGLE_API_KEY. В терминале: export GOOGLE_API_KEY=… и перезапустите uvicorn."
+              "На сервере не задан GOOGLE_API_KEY. Создайте файл .env (скопируйте из .env.example) или export GOOGLE_API_KEY=… и перезапустите uvicorn."
             );
           }
           if (out) out.innerHTML = "<p>Запрос к Gemini (до ~90 с)…</p>";
