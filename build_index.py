@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import re
 from collections import Counter
 from datetime import datetime, timezone
@@ -11,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "minzdrav_protocols"
 OUT = ROOT / "index.csv"
+OUT_JSON = ROOT / "protocols.json"
 
 YEAR_RE = re.compile(r"(20\d{2}|19\d{2})")
 
@@ -32,6 +34,24 @@ def main() -> None:
     pdfs = sorted(DATA.rglob("*.pdf"))
     basenames = [p.name for p in pdfs]
     dup_count = Counter(basenames)
+
+    json_rows: list[dict] = []
+    for p in pdfs:
+        rel = p.relative_to(ROOT)
+        name = p.name
+        title = re.sub(r"\.pdf$", "", name, flags=re.I)
+        json_rows.append(
+            {
+                "path": str(rel).replace("\\", "/"),
+                "category": p.parent.name,
+                "filename": name,
+                "title": title,
+            }
+        )
+    OUT_JSON.write_text(
+        json.dumps(json_rows, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
 
     with OUT.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -64,6 +84,7 @@ def main() -> None:
             )
 
     print(f"Записано строк: {len(pdfs)} → {OUT}")
+    print(f"JSON для поиска: {OUT_JSON}")
 
 
 if __name__ == "__main__":
