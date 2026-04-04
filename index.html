@@ -242,123 +242,6 @@
       color: var(--green-800);
     }
 
-    .results {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      padding: 1.15rem 1.25rem;
-      border: 1px solid rgba(13, 92, 74, 0.1);
-      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.07);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    }
-
-    .card:hover {
-      border-color: rgba(26, 138, 114, 0.35);
-      box-shadow: 0 12px 36px rgba(6, 61, 53, 0.11);
-      transform: translateY(-2px);
-    }
-
-    .card-top {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .cat {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      color: var(--green-800);
-      background: var(--green-100);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-    }
-
-    .card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0;
-      line-height: 1.4;
-      color: var(--text);
-    }
-
-    .card-actions {
-      margin-top: 0.75rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .card-actions a {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.88rem;
-      font-weight: 600;
-      text-decoration: none;
-      padding: 0.45rem 0.85rem;
-      border-radius: 8px;
-    }
-
-    .card-actions a.pdf {
-      background: var(--green-800);
-      color: #fff;
-    }
-
-    .card-actions a.pdf:hover {
-      background: var(--green-600);
-    }
-
-    .snippet-grid {
-      display: grid;
-      gap: 0.65rem;
-      margin-top: 0.85rem;
-    }
-
-    .snippet-box {
-      background: linear-gradient(135deg, #f4faf7 0%, #eef6f2 100%);
-      border-radius: 12px;
-      padding: 0.7rem 0.95rem;
-      border-left: 4px solid var(--green-600);
-      text-align: left;
-    }
-
-    .snippet-box.treat {
-      background: linear-gradient(135deg, #fff8f8 0%, #fdeef0 100%);
-      border-left-color: var(--red-500);
-    }
-
-    .snippet-label {
-      display: block;
-      font-size: 0.74rem;
-      font-weight: 600;
-      line-height: 1.38;
-      letter-spacing: 0.01em;
-      text-transform: none;
-      color: #2a4a3c;
-      margin-bottom: 0.4rem;
-    }
-
-    .snippet-box.treat .snippet-label {
-      color: #6b2d2d;
-    }
-
-    .snippet-text {
-      margin: 0;
-      font-size: 0.86rem;
-      line-height: 1.5;
-      color: #2c3e38;
-    }
-
     .llm-panel {
       margin-top: 1.35rem;
       padding: 1rem 1.25rem;
@@ -433,97 +316,17 @@
 
     .llm-out {
       margin-top: 1rem;
-      padding: 1rem 1.1rem;
-      background: #f4faf7;
-      border-radius: 12px;
+      padding: 0;
+      background: transparent;
+      border: none;
       text-align: left;
       font-size: 0.88rem;
       line-height: 1.55;
-      border: 1px solid rgba(13, 92, 74, 0.12);
-    }
-
-    .llm-out h4 {
-      margin: 0.85rem 0 0.4rem;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--green-950);
-    }
-
-    .llm-out .proto-link {
-      display: inline-block;
-      margin: 0.25rem 0;
-      font-weight: 600;
-      color: var(--green-800);
     }
 
     .llm-out .error {
       color: var(--red-700);
       margin: 0;
-    }
-
-    .llm-assist-result {
-      display: flex;
-      flex-direction: column;
-      gap: 1.1rem;
-    }
-
-    .llm-block {
-      text-align: left;
-    }
-
-    .llm-block-title {
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--green-950);
-      margin: 0 0 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    .llm-block-title::before {
-      content: "";
-      width: 4px;
-      height: 1.1em;
-      border-radius: 3px;
-      background: linear-gradient(180deg, var(--green-600), var(--red-500));
-      flex-shrink: 0;
-    }
-
-    .llm-summary-box {
-      margin: 0;
-      padding: 1rem 1.15rem;
-      background: linear-gradient(135deg, #ffffff 0%, #f3faf7 100%);
-      border-radius: 14px;
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      font-size: 0.92rem;
-      line-height: 1.65;
-      color: var(--text);
-    }
-
-    .llm-empty-protos {
-      margin: 0;
-      padding: 0.9rem 1rem;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      color: var(--muted);
-      background: rgba(13, 92, 74, 0.06);
-      border-radius: 12px;
-      border: 1px dashed rgba(13, 92, 74, 0.22);
-    }
-
-    .llm-list-clean {
-      margin: 0.35rem 0 0;
-      padding-left: 1.2rem;
-      font-size: 0.88rem;
-      line-height: 1.55;
-      color: var(--text);
-    }
-
-    .llm-list-clean li {
-      margin-bottom: 0.4rem;
     }
 
     .llm-disclaimer {
@@ -534,150 +337,96 @@
       line-height: 1.5;
     }
 
-    .llm-search-hint {
-      margin: 0.75rem 0 0;
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .llm-summary-rich {
+    .llm-ai-card {
       margin: 0;
+      padding: 1.25rem 1.35rem;
+      background: linear-gradient(145deg, #ffffff 0%, #f5fbf8 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 8px 28px rgba(6, 61, 53, 0.08);
+      text-align: left;
     }
 
-    .inline-proto-wrap {
-      display: inline;
-      white-space: normal;
-      vertical-align: baseline;
+    .llm-ai-lead {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.7;
+      color: var(--text);
     }
 
-    .inline-proto-mark {
-      background: linear-gradient(120deg, rgba(232, 245, 241, 0.95) 0%, rgba(220, 242, 235, 0.98) 100%);
-      color: var(--green-950);
-      padding: 0.08em 0.2em;
-      border-radius: 4px;
-      font-weight: 600;
-      box-decoration-break: clone;
-      -webkit-box-decoration-break: clone;
+    .llm-ai-hr {
+      border: none;
+      border-top: 1px solid rgba(13, 92, 74, 0.12);
+      margin: 1rem 0;
     }
 
-    .inline-proto-meta {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.25rem;
-      margin-left: 0.2rem;
-      vertical-align: middle;
-    }
-
-    .inline-proto-pct {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.12rem 0.4rem;
-      border-radius: 6px;
-      line-height: 1.2;
-    }
-
-    .inline-proto-pct.pct-model {
-      background: #e8f5f1;
-      color: var(--green-800);
-      border: 1px solid var(--green-400);
-    }
-
-    .inline-proto-pct.pct-rag {
-      background: #eef3fb;
-      color: #2d4a7a;
-      border: 1px solid rgba(45, 74, 122, 0.28);
-    }
-
-    .inline-proto-btn {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-decoration: none;
-      padding: 0.15rem 0.45rem;
-      border-radius: 6px;
-      background: var(--green-800);
-      color: #fff !important;
-      margin-left: 0.15rem;
-      vertical-align: middle;
-      line-height: 1.25;
-    }
-
-    .inline-proto-btn:hover {
-      background: var(--green-600);
-    }
-
-    .inline-proto-chips {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px dashed rgba(13, 92, 74, 0.2);
+    .llm-ai-sec-label {
+      display: block;
+      font-family: "Fraunces", Georgia, serif;
       font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green-800);
+      margin-bottom: 0.45rem;
+    }
+
+    .llm-ai-proto-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .llm-ai-proto-list li {
+      margin-bottom: 0.65rem;
+    }
+
+    .llm-ai-proto-list a {
+      font-weight: 600;
+      color: var(--green-800);
+    }
+
+    .llm-ai-pct {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green-600);
+      margin-left: 0.25rem;
+    }
+
+    .llm-ai-pct-rag {
+      color: #3d6ea8;
+    }
+
+    .llm-ai-reason {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .llm-ai-compact {
+      margin: 0.25rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .llm-ai-note {
+      margin: 0.5rem 0 0;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
-    .inline-proto-chips strong {
-      display: block;
-      margin-bottom: 0.45rem;
-      color: var(--green-800);
-      font-size: 0.85rem;
-    }
-
-    .inline-proto-chip {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.35rem;
-      margin: 0.25rem 0.35rem 0.25rem 0;
-      padding: 0.4rem 0.55rem;
-      background: #fff;
-      border: 1px solid rgba(13, 92, 74, 0.18);
-      border-radius: 10px;
-      font-size: 0.82rem;
-    }
-
-    .llm-followup-form {
-      margin-top: 0.35rem;
-    }
-
-    .llm-followup-form ol {
-      margin: 0.35rem 0 0.75rem;
-      padding-left: 1.2rem;
-    }
-
-    .llm-followup-form li {
-      margin-bottom: 0.85rem;
-      list-style-position: outside;
-    }
-
-    .llm-followup-q {
-      display: block;
+    .llm-ai-raw {
+      margin: 0;
+      white-space: pre-wrap;
       font-size: 0.88rem;
-      color: var(--text);
-      margin-bottom: 0.35rem;
-      line-height: 1.45;
+      line-height: 1.55;
     }
 
-    .llm-followup-form textarea {
-      width: 100%;
-      min-height: 3.2rem;
-      padding: 0.55rem 0.65rem;
-      border-radius: 10px;
-      border: 1px solid rgba(13, 92, 74, 0.28);
-      font-family: inherit;
-      font-size: 0.88rem;
-      resize: vertical;
-      box-sizing: border-box;
-    }
-
-    .llm-followup-form textarea:focus {
-      outline: none;
-      border-color: var(--green-600);
-      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.2);
-    }
-
-    .btn-followup {
-      margin-top: 0.25rem;
+    footer.site-footer--compact {
+      margin-top: 1.75rem;
+      padding-top: 1rem;
+      font-size: 0.78rem;
     }
 
     .empty,
@@ -706,67 +455,6 @@
 
     footer.site-footer a {
       color: var(--green-800);
-    }
-
-    .structure-panel {
-      margin-bottom: 1.5rem;
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 16px;
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      box-shadow: 0 4px 20px rgba(6, 61, 53, 0.06);
-      overflow: hidden;
-    }
-
-    .structure-panel summary {
-      cursor: pointer;
-      padding: 1rem 1.25rem;
-      font-family: "Fraunces", Georgia, serif;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--green-950);
-      list-style: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .structure-panel summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .structure-panel summary::before {
-      content: "▸";
-      display: inline-block;
-      transition: transform 0.2s;
-      color: var(--green-600);
-    }
-
-    .structure-panel[open] summary::before {
-      transform: rotate(90deg);
-    }
-
-    .structure-panel .structure-body {
-      padding: 0 1.35rem 1.25rem;
-      font-size: 0.9rem;
-      line-height: 1.65;
-      color: var(--text);
-      border-top: 1px solid rgba(13, 92, 74, 0.1);
-    }
-
-    .structure-panel .structure-body ol {
-      margin: 0.5rem 0 0;
-      padding-left: 1.35rem;
-    }
-
-    .structure-panel .structure-body li {
-      margin-bottom: 0.45rem;
-    }
-
-    .structure-panel .note {
-      margin-top: 0.85rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-      font-style: italic;
     }
 
     @media (max-width: 640px) {
@@ -806,7 +494,7 @@
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Один PDF в выдаче один раз; названия показываются без подчёркиваний. Индекс текстов, фрагменты диагностика/лечение, семантика e5. Источник — PDF Минздрава РБ.
+          Локальный ИИ по фрагментам клинических протоколов Минздрава РБ. Данные из PDF на сайте МЗ.
         </p>
         <div class="badge-row">
           <span class="badge badge--green" id="proto-count-badge">… уникальных протоколов</span>
@@ -818,8 +506,8 @@
     <section class="hero" aria-labelledby="search-title">
       <h2 id="search-title">Опишите симптомы или клиническую ситуацию</h2>
       <p class="lead">
-        В карточках показываются выдержки из протокола по <strong>диагностике</strong> и <strong>лечению</strong> (авторазбор текста). Примеры:
-        «сухой кашель 2 недели у взрослого», «изжога после еды», <em>сахарный диабет 2 типа</em>.
+        Запрос уходит в локальный <strong>ИИ</strong> (Gemini + фрагменты протоколов). Примеры:
+        «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
       </p>
       <form class="search-row" id="search-form" action="#" method="get">
         <input
@@ -827,10 +515,10 @@
           id="q"
           name="q"
           autocomplete="off"
-          placeholder="Симптомы, болезнь, часть тела, направление…"
-          aria-label="Поиск по протоколам"
+          placeholder="Жалобы, ситуация, вопрос…"
+          aria-label="Текст запроса для ИИ"
         />
-        <button type="submit" class="btn">Найти</button>
+        <button type="submit" class="btn">Запросить ИИ</button>
       </form>
       <p class="hint" id="hint"></p>
 
@@ -856,234 +544,25 @@
         </div>
         <p class="hint" id="llm-status"></p>
         <div id="llm-out" class="llm-out" hidden></div>
-        <p class="llm-search-hint" id="llm-search-hint" hidden>
-          Карточки полнотекстового поиска ниже скрыты. Нажмите «Найти» или измените запрос, чтобы снова показать список протоколов.
-        </p>
       </details>
     </section>
 
-    <details class="structure-panel">
-      <summary>Типовая структура клинического протокола (Минздрав РБ)</summary>
-      <div class="structure-body">
-        <p>
-          Большинство утверждённых КП строится по сходной логике — её полезно учитывать при консультативном заключении и привязке к PDF:
-        </p>
-        <ol>
-          <li><strong>Нормативная часть</strong> — основание утверждения (постановление МЗ), область применения, целевая группа (взрослые/дети, стационар/амбулаторно).</li>
-          <li><strong>Определения и коды</strong> — формулировка задачи протокола, при необходимости коды МКБ-10, ключевые термины.</li>
-          <li><strong>Диагностический блок</strong> — жалобы, анамнез, клиника, лабораторные и инструментальные методы, критерии диагноза, дифференциальная диагностика.</li>
-          <li><strong>Лечебный блок</strong> — тактика (неотложная помощь, консервативное/хирургическое лечение), режим, медикаментозная и немедикаментозная терапия, длительность и критерии эффективности.</li>
-          <li><strong>Наблюдение и исходы</strong> — диспансеризация, реабилитация, показания к переводу/выписке, информирование пациента.</li>
-          <li><strong>Приложения</strong> — таблицы, схемы, перечни препаратов (если есть в конкретном PDF).</li>
-        </ol>
-        <p class="note">
-          Фактические заголовки и порядок разделов в PDF могут отличаться; для заключения опирайтесь на полный текст выбранного файла.
-        </p>
-      </div>
-    </details>
-
-    <div class="results" id="results" role="list"></div>
-
-    <footer class="site-footer">
+    <footer class="site-footer site-footer--compact">
       <p>
-        Данные собраны из раздела
-        <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">«Клинические протоколы»</a>
-        на сайте Министерства здравоохранения Республики Беларусь. Логотип:
-        <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
-      </p>
-      <p>
-        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> → <code>build_chunks.py</code> + <code>build_structured_index.py</code> → <code>build_semantic_embeddings.py</code> + <code>symptom_routing.json</code>. Опционально <code>rag_server.py</code> (Gemini RAG по чанкам). Выдержки — из протокола, не заключение врача.
-      </p>
-      <p>
-        Просмотр: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
+        Источник PDF:
+        <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
+        Не замена очной консультации.
       </p>
     </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
   <script>
 (function () {
-  var CATEGORY_LABELS = {
-    "akusherstvo-ginekologiya": "Акушерство и гинекология",
-    "allergologiya-immunologiya": "Аллергология и иммунология",
-    "anesteziologiya-reanimatologiya": "Анестезиология и реаниматология",
-    "bolezni-sistemy-krovoobrashcheniya": "Болезни системы кровообращения",
-    "dermatovenerologiya": "Дерматовенерология",
-    "endokrinologiya-narusheniya-obmena-veshchestv": "Эндокринология и обмен веществ",
-    "gastroenterologiya": "Гастроэнтерология",
-    "gematologiya": "Гематология",
-    "infektsionnye-zabolevaniya": "Инфекционные заболевания",
-    "khirurgiya": "Хирургия",
-    "nefrologiya": "Нефрология",
-    "nevrologiya-neyrokhirurgiya": "Неврология и нейрохирургия",
-    "novoobrazovaniya": "Новообразования",
-    "oftalmologiya": "Офтальмология",
-    "otorinolaringologiya": "Оториноларингология",
-    "palliativnaya-pomoshch": "Паллиативная помощь",
-    "psikhiatriya-narkologiya": "Психиатрия и наркология",
-    "pulmonologiya-ftiziatriya": "Пульмонология и фтизиатрия",
-    "revmatologiya": "Ревматология",
-    "stomatologiya": "Стоматология",
-    "transplantatsiya-organov-i-tkaney": "Трансплантация органов и тканей",
-    "travmatologiya-ortopediya": "Травматология и ортопедия",
-    "urologiya": "Урология",
-    "zabolevaniya-perinatalnogo-perioda": "Перинатальный период"
-  };
-
-  var SYMPTOM_HINTS = [
-    ["астма", ["астм", "бронх", "аллерг", "пульмон", "фти"]],
-    ["кашель", ["кашл", "орви", "ларинг", "пульмон", "фти"]],
-    ["одышка", ["одыш", "респиратор", "дистресс", "лёгк", "пульмон"]],
-    ["боль в груди", ["карди", "сердечн", "коронар", "инфаркт", "стенокард", "грудн"]],
-    ["сердце", ["карди", "сердечн", "аритм", "инфаркт", "аорт"]],
-    ["давление", ["гипертен", "артериальн", "гипертон", "кровяным"]],
-    ["гипертония", ["гипертен", "артериальн", "давлен"]],
-    ["желудок", ["гастро", "желуд", "язв", "жкт", "пищевод", "кишечник"]],
-    ["изжога", ["гастро", "рефлюкс", "пищевод"]],
-    ["понос", ["кишечник", "колит", "крона", "инфекц"]],
-    ["сахарный диабет", ["диабет", "сахарн", "эндокрин", "глюкоз", "инсулин"]],
-    ["диабет", ["диабет", "сахарн", "эндокрин"]],
-    ["щитовид", ["щитовид", "эндокрин", "тирео"]],
-    ["головная боль", ["мигрен", "головн", "невролог", "черепн", "мозг"]],
-    ["эпилепсия", ["эпилепс", "нейрохирург", "невролог"]],
-    ["спина", ["позвоночник", "ортопед", "остеохонд", "грыж", "межпозвон"]],
-    ["сустав", ["ревмат", "артрит", "ортопед", "колен", "тазобедрен"]],
-    ["кожа", ["дермат", "кожн", "экзем", "псориаз", "атопическ"]],
-    ["аллергия", ["аллерг", "ринит", "крапивниц", "иммунодефицит"]],
-    ["глаз", ["офтальм", "глаз", "роговиц", "сетчатк"]],
-    ["ухо", ["оториноларинг", "лор", "слух", "носоглот"]],
-    ["горло", ["оториноларинг", "ларинг", "фаринг", "ангин", "орви", "лор", "носов", "носоглот"]],
-    ["болит горло", ["оториноларинг", "ларинг", "фаринг", "ангин", "орви", "лор", "ларингит", "фарингит"]],
-    ["моча", ["уролог", "нефролог", "почк", "мочев", "диализ"]],
-    ["почки", ["нефролог", "почк", "диализ"]],
-    ["низ живота", ["гинеколог", "акушер", "матк", "яичник", "мочев"]],
-    ["беременность", ["акушер", "гинеколог", "пренатал", "плод", "неонат"]],
-    ["кровь", ["гематолог", "анем", "тромб", "лейкоз", "тромбоцит"]],
-    ["рак", ["онколог", "новообраз", "опухол", "злокач"]],
-    ["онкология", ["онколог", "новообраз", "опухол"]],
-    ["инфекция", ["инфекц", "вирус", "бактер", "сепсис"]],
-    ["вич", ["вич", "иммунодефицит", "инфекц"]],
-    ["гепатит", ["гепатит", "печен", "инфекц"]],
-    ["депрессия", ["психиатр", "аффект", "нарколог"]],
-    ["зуб", ["стоматолог", "челюст", "зуб", "десен"]],
-    ["рвота", ["рвот", "гастро", "кишечник", "аппендицит"]],
-    ["аппендицит", ["аппендицит", "кишечник", "остр"]],
-    ["варикоз", ["вен", "тромб", "карди", "хирург"]],
-    ["ожог", ["ожог", "термическ", "реаним"]],
-    ["ребенок", ["дет", "детс", "детск", "педиатр", "неонат"]],
-    ["новорожденн", ["неонат", "перинатал", "новорожд"]]
-  ];
-
   function norm(s) {
     return String(s)
       .toLowerCase()
       .replace(/ё/g, "е")
       .replace(/_/g, " ");
-  }
-
-  function tokenize(q) {
-    return norm(q)
-      .split(/[\s,.;:!?«»—–\-]+/)
-      .map(function (t) {
-        return t.replace(/^[^\w\u0400-\u04FF]+|[^\w\u0400-\u04FF]+$/g, "");
-      })
-      .filter(function (t) {
-        return t.length >= 2;
-      });
-  }
-
-  function extraFromHints(fullQuery) {
-    var fq = norm(fullQuery);
-    var out = {};
-    for (var i = 0; i < SYMPTOM_HINTS.length; i++) {
-      var phrase = SYMPTOM_HINTS[i][0];
-      var words = SYMPTOM_HINTS[i][1];
-      if (fq.indexOf(phrase) !== -1) {
-        for (var j = 0; j < words.length; j++) {
-          out[words[j]] = true;
-        }
-      }
-    }
-    return Object.keys(out);
-  }
-
-  function scoreItem(p, tokens, catLabel) {
-    var hay = norm(p.title + " " + p.category + " " + catLabel);
-    var s = 0;
-    var k;
-    for (k = 0; k < tokens.length; k++) {
-      var t = tokens[k];
-      if (t.length < 2) continue;
-      if (hay.indexOf(t) !== -1) s += 12;
-      else if (t.length >= 4 && hay.indexOf(t.slice(0, 5)) !== -1) s += 5;
-    }
-    if (tokens.length) {
-      var titleN = norm(p.title);
-      for (k = 0; k < tokens.length; k++) {
-        if (titleN.indexOf(tokens[k]) !== -1) s += 4;
-      }
-    }
-    return s;
-  }
-
-  function render(list) {
-    var el = document.getElementById("results");
-    el.innerHTML = "";
-    if (!list.length) {
-      el.innerHTML =
-        '<div class="empty" role="status">Ничего не найдено. Попробуйте другие слова или сократите запрос.</div>';
-      return;
-    }
-    var structured = searchState.structuredByPath || {};
-    for (var i = 0; i < list.length; i++) {
-      var item = list[i];
-      var p = item.p;
-      var st = structured[p.path] || {};
-      var diag = (st.diagnosis || "").trim();
-      var treat = (st.treatment || "").trim();
-      var catLabel = CATEGORY_LABELS[p.category] || p.category;
-      var href = encodeURI(p.path);
-      var LABEL_DIAG =
-        "Диагностический блок — жалобы, анамнез, клиника, лабораторные и инструментальные методы, критерии диагноза, дифференциальная диагностика.";
-      var LABEL_TREAT =
-        "Лечебный блок — тактика (неотложная помощь, консервативное/хирургическое лечение), режим, медикаментозная и немедикаментозная терапия, длительность и критерии эффективности.";
-      var snip = "";
-      if (diag) {
-        snip +=
-          '<div class="snippet-box diag"><span class="snippet-label">' +
-          escapeHtml(LABEL_DIAG) +
-          '</span><p class="snippet-text">' +
-          escapeHtml(diag) +
-          "</p></div>";
-      }
-      if (treat) {
-        snip +=
-          '<div class="snippet-box treat"><span class="snippet-label">' +
-          escapeHtml(LABEL_TREAT) +
-          '</span><p class="snippet-text">' +
-          escapeHtml(treat) +
-          "</p></div>";
-      }
-      var snipWrap = snip ? '<div class="snippet-grid">' + snip + "</div>" : "";
-      var card = document.createElement("article");
-      card.className = "card";
-      card.setAttribute("role", "listitem");
-      card.innerHTML =
-        '<div class="card-top">' +
-        '<span class="cat">' +
-        escapeHtml(catLabel) +
-        "</span></div>" +
-        "<h3>" +
-        escapeHtml(formatDisplayTitle(p.title)) +
-        "</h3>" +
-        snipWrap +
-        '<div class="card-actions">' +
-        '<a class="pdf" href="' +
-        href +
-        '" target="_blank" rel="noopener">Полный протокол (PDF)</a>' +
-        "</div>";
-      el.appendChild(card);
-    }
   }
 
   function escapeHtml(s) {
@@ -1098,19 +577,6 @@
       .replace(/_/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-  }
-
-  /** Один PDF в нескольких рубриках — в выдаче оставляем лучший по скору экземпляр */
-  function dedupeByFilename(scored) {
-    var seen = {};
-    var out = [];
-    for (var i = 0; i < scored.length; i++) {
-      var fn = scored[i].p.filename || scored[i].p.path.split("/").pop();
-      if (seen[fn]) continue;
-      seen[fn] = true;
-      out.push(scored[i]);
-    }
-    return out;
   }
 
   function pct01(x) {
@@ -1168,272 +634,95 @@
     return out;
   }
 
-  /** Встраивает названия протоколов в текст сводки: выделение, % модели, RAG, кнопка PDF. */
-  function wrapSummaryWithProtocols(summary, protocols, ragMap) {
-    ragMap = ragMap || {};
-    if (!summary) return { html: "", unmatched: protocols || [] };
-    if (!protocols || !protocols.length) {
-      return { html: escapeHtml(summary), unmatched: [] };
-    }
-    var sorted = protocols.slice().sort(function (a, b) {
-      return (b.title || "").length - (a.title || "").length;
-    });
-    var used = [];
-    var matches = [];
-
-    function overlaps(s, e) {
-      var u;
-      for (u = 0; u < used.length; u++) {
-        if (!(e <= used[u][0] || s >= used[u][1])) return true;
-      }
-      return false;
-    }
-
-    var pi;
-    for (pi = 0; pi < sorted.length; pi++) {
-      var pr = sorted[pi];
-      var title = (pr.title || "").trim();
-      if (title.length < 3) continue;
-      var idx = summary.indexOf(title);
-      var spanEnd = title.length;
-      if (idx === -1) {
-        var shortLen = Math.min(32, title.length);
-        var shortT = title.slice(0, shortLen);
-        idx = summary.indexOf(shortT);
-        if (idx !== -1) spanEnd = shortT.length;
-      }
-      if (idx === -1) {
-        var lowS = summary.toLowerCase();
-        var lowT = title.toLowerCase();
-        idx = lowS.indexOf(lowT);
-        if (idx !== -1) spanEnd = title.length;
-      }
-      if (idx === -1) continue;
-      var end = idx + spanEnd;
-      if (overlaps(idx, end)) continue;
-      used.push([idx, end]);
-      matches.push({ start: idx, end: end, pr: pr });
-    }
-    matches.sort(function (a, b) {
-      return a.start - b.start;
-    });
-
-    var matchedPaths = {};
-    var html = "";
-    var pos = 0;
-    var mi;
-    for (mi = 0; mi < matches.length; mi++) {
-      var m = matches[mi];
-      html += escapeHtml(summary.slice(pos, m.start));
-      var seg = summary.slice(m.start, m.end);
-      var pr = m.pr;
-      matchedPaths[pr.path || ""] = true;
-      var href = encodeURI(pr.path || "");
-      var mScore = confidenceFromProtocol(pr);
-      var ragN =
-        ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-      html += '<span class="inline-proto-wrap">';
-      html += '<mark class="inline-proto-mark">' + escapeHtml(seg) + "</mark>";
-      html += '<span class="inline-proto-meta">';
-      html +=
-        '<span class="inline-proto-pct pct-model" title="Применимость по мнению модели">' +
-        pct01(mScore) +
-        "%</span>";
-      if (ragN > 0) {
-        html +=
-          '<span class="inline-proto-pct pct-rag" title="Схожесть отобранного фрагмента с запросом">RAG ' +
-          pct01(ragN) +
-          "%</span>";
-      }
-      html += "</span>";
-      html +=
-        '<a class="inline-proto-btn" href="' +
-        href +
-        '" target="_blank" rel="noopener">PDF</a>';
-      html += "</span>";
-      pos = m.end;
-    }
-    html += escapeHtml(summary.slice(pos));
-
-    var unmatched = [];
-    for (pi = 0; pi < protocols.length; pi++) {
-      var pth = protocols[pi].path || "";
-      if (!matchedPaths[pth]) unmatched.push(protocols[pi]);
-    }
-    return { html: html, unmatched: unmatched };
-  }
-
-  function renderProtocolChipsHtml(protocols, ragMap) {
-    if (!protocols || !protocols.length) return "";
-    ragMap = ragMap || {};
-    var html =
-      '<div class="inline-proto-chips"><strong>Протоколы (не встретились в тексте сводки дословно)</strong>';
-    var ci;
-    for (ci = 0; ci < protocols.length; ci++) {
-      var pr = protocols[ci];
-      var href = encodeURI(pr.path || "");
-      var title = formatDisplayTitle(pr.title || pr.path || "");
-      var mScore = confidenceFromProtocol(pr);
-      var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-      html += '<span class="inline-proto-chip">';
-      html +=
-        '<span class="inline-proto-mark" style="background:#f4faf7">' +
-        escapeHtml(title) +
-        "</span>";
-      html +=
-        '<span class="inline-proto-pct pct-model">' +
-        pct01(mScore) +
-        "%</span>";
-      if (ragN > 0) {
-        html +=
-          '<span class="inline-proto-pct pct-rag">RAG ' +
-          pct01(ragN) +
-          "%</span>";
-      }
-      html +=
-        '<a class="inline-proto-btn" href="' +
-        href +
-        '" target="_blank" rel="noopener">PDF</a>';
-      html += "</span>";
-    }
-    html += "</div>";
-    return html;
-  }
-
-  function hideSearchResultsForAi() {
-    var results = document.getElementById("results");
-    var hint = document.getElementById("llm-search-hint");
-    if (results) results.innerHTML = "";
-    if (hint) hint.hidden = false;
-  }
-
-  function bindLlmFollowupForm() {
-    var form = document.getElementById("llm-followup-form");
-    if (!form) return;
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var baseQ = lastAssistQuery || "";
-      var texts = form.querySelectorAll("textarea[data-qi]");
-      var lines = [];
-      var ti;
-      for (ti = 0; ti < texts.length; ti++) {
-        var ta = texts[ti];
-        var qtext = lastAssistQuestions[ti] || "";
-        var t = ta.value.trim();
-        lines.push(
-          ti + 1 + ". " + qtext + "\n" + (t || "— не указано")
-        );
-      }
-      var combined =
-        baseQ +
-        "\n\n— Ответы на уточняющие вопросы:\n" +
-        lines.join("\n\n");
-      var qInput = document.getElementById("q");
-      if (qInput) qInput.value = combined;
-      runGeminiAssist(combined).catch(function (err) {
-        console.error(err);
-      });
-    });
-  }
-
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
     out.hidden = false;
-    lastAssistQuery = data.query || "";
-    lastAssistQuestions = [];
     var j = data.llm_json;
     if (j && typeof j === "object") {
-      hideSearchResultsForAi();
       var ragMap = normalizeRagByPath(data.retrieval || []);
       var rawProtos = j.protocols || [];
       var protos = filterProtocolsForDisplay(rawProtos);
-      var html = '<div class="llm-assist-result">';
+      var html = '<div class="llm-ai-card"><div class="llm-ai-card-inner">';
 
       if (j.summary) {
-        var sumWrap = wrapSummaryWithProtocols(j.summary, protos, ragMap);
-        html +=
-          '<section class="llm-block">' +
-          '<h3 class="llm-block-title">Сводка</h3>' +
-          '<div class="llm-summary-box llm-summary-rich"><p style="margin:0;line-height:1.65">' +
-          sumWrap.html +
-          "</p>";
-        if (sumWrap.unmatched && sumWrap.unmatched.length) {
-          html += renderProtocolChipsHtml(sumWrap.unmatched, ragMap);
-        }
-        html += "</div>";
-        if (rawProtos.length && !protos.length) {
+        html += '<p class="llm-ai-lead">' + escapeHtml(j.summary) + "</p>";
+      }
+
+      if (protos.length) {
+        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
+        html += '<span class="llm-ai-sec-label">Протоколы</span><ul class="llm-ai-proto-list">';
+        var pi;
+        for (pi = 0; pi < protos.length; pi++) {
+          var pr = protos[pi];
+          var href = encodeURI(pr.path || "");
+          var title = formatDisplayTitle(pr.title || pr.path || "");
+          var mScore = confidenceFromProtocol(pr);
+          var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
+          html += "<li>";
           html +=
-            '<p class="llm-empty-protos" style="margin-top:0.75rem">Ни один протокол не прошёл порог уверенности для выделения в тексте — ориентируйтесь на формулировки в сводке и дифференциальный ряд.</p>';
+            '<a href="' +
+            href +
+            '" target="_blank" rel="noopener">' +
+            escapeHtml(title) +
+            "</a>";
+          html +=
+            ' <span class="llm-ai-pct" title="Применимость по мнению модели">' +
+            pct01(mScore) +
+            "%</span>";
+          if (ragN > 0) {
+            html +=
+              ' <span class="llm-ai-pct llm-ai-pct-rag" title="Схожесть отобранного фрагмента">RAG ' +
+              pct01(ragN) +
+              "%</span>";
+          }
+          if (pr.match_reason) {
+            html +=
+              '<p class="llm-ai-reason">' + escapeHtml(pr.match_reason) + "</p>";
+          }
+          html += "</li>";
         }
-        html += "</section>";
-      } else if (protos.length) {
-        html +=
-          '<section class="llm-block">' +
-          '<h3 class="llm-block-title">Сводка</h3>' +
-          '<div class="llm-summary-box llm-summary-rich">' +
-          renderProtocolChipsHtml(protos, ragMap) +
-          "</div></section>";
+        html += "</ul></div>";
       } else if (rawProtos.length) {
         html +=
-          '<section class="llm-block"><h3 class="llm-block-title">Сводка</h3>' +
-          '<p class="llm-empty-protos">Ни один протокол не прошёл порог уверенности — ориентируйтесь на дифференциальный ряд ниже.</p></section>';
+          '<p class="llm-ai-note">Протоколы по отбору не прошли порог уверенности для показа.</p>';
       }
 
       if (j.differential && j.differential.length) {
+        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
         html +=
-          '<section class="llm-block"><h3 class="llm-block-title">Дифференциальный ряд</h3><p style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--muted)">Для обсуждения с врачом, не диагноз.</p><ul class="llm-list-clean">';
+          '<span class="llm-ai-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом.</p><ul class="llm-ai-compact">';
         var di;
         for (di = 0; di < j.differential.length; di++) {
           html += "<li>" + escapeHtml(j.differential[di]) + "</li>";
         }
-        html += "</ul></section>";
+        html += "</ul></div>";
       }
 
       if (j.questions_for_patient && j.questions_for_patient.length) {
-        lastAssistQuestions = j.questions_for_patient.slice();
+        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
         html +=
-          '<section class="llm-block"><h3 class="llm-block-title">Уточняющие вопросы</h3>';
-        html +=
-          '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post">';
-        html += "<ol>";
+          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><ol class="llm-ai-compact">';
         var qi;
         for (qi = 0; qi < j.questions_for_patient.length; qi++) {
-          var qq = j.questions_for_patient[qi];
-          html += "<li>";
-          html +=
-            '<span class="llm-followup-q">' +
-            escapeHtml(qq) +
-            "</span>";
-          html +=
-            '<textarea data-qi="' +
-            qi +
-            '" rows="3" placeholder="Ваш ответ…" aria-label="Ответ на вопрос ' +
-            (qi + 1) +
-            '"></textarea>';
-          html += "</li>";
+          html += "<li>" + escapeHtml(j.questions_for_patient[qi]) + "</li>";
         }
-        html += "</ol>";
-        html +=
-          '<button type="submit" class="btn-assist btn-followup">Отправить ответы ИИ</button>';
-        html += "</form></section>";
+        html += "</ol></div>";
       }
 
       if (j.disclaimer) {
         html +=
-          '<p class="llm-disclaimer">' + escapeHtml(j.disclaimer) + "</p>";
+          '<p class="llm-disclaimer" style="margin-top:1rem">' +
+          escapeHtml(j.disclaimer) +
+          "</p>";
       }
 
-      html += "</div>";
+      html += "</div></div>";
       out.innerHTML = html;
-      bindLlmFollowupForm();
       return;
     }
-    hideSearchResultsForAi();
     out.innerHTML =
-      "<pre style=\"white-space:pre-wrap;margin:0\">" +
-      escapeHtml(data.llm_text || "") +
-      "</pre>";
+      '<pre class="llm-ai-raw">' + escapeHtml(data.llm_text || "") + "</pre>";
   }
 
   function parseJsonSafe(text) {
@@ -1444,7 +733,7 @@
     }
   }
 
-  function runGeminiAssist(queryOverride) {
+  function runGeminiAssist() {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
       var base = (
@@ -1452,10 +741,8 @@
         "http://127.0.0.1:8787"
       ).replace(/\/$/, "");
       if (baseEl) localStorage.setItem("rag_base", base);
-      var q =
-        queryOverride != null && String(queryOverride).trim() !== ""
-          ? String(queryOverride).trim()
-          : ((document.getElementById("q") || {}).value || "").trim();
+      var q = (document.getElementById("q") || {}).value || "";
+      q = q.trim();
       if (!q) {
         alert("Введите запрос в поле поиска.");
         reject(new Error("empty"));
@@ -1576,434 +863,21 @@
     });
   }
 
-  function dot(a, b) {
-    var s = 0;
-    var i;
-    for (i = 0; i < a.length; i++) s += a[i] * b[i];
-    return s;
-  }
-
-  function buildEmbMap(embPayload) {
-    var m = {};
-    if (!embPayload || !embPayload.items) return m;
-    for (var i = 0; i < embPayload.items.length; i++) {
-      var it = embPayload.items[i];
-      m[it.path] = new Float32Array(it.v);
-    }
-    return m;
-  }
-
-  function buildStructuredMap(rows) {
-    var m = {};
-    if (!rows || !rows.length) return m;
-    for (var i = 0; i < rows.length; i++) {
-      m[rows[i].path] = rows[i];
-    }
-    return m;
-  }
-
-  function buildProtocolPathMap(protocols) {
-    var m = {};
-    for (var i = 0; i < protocols.length; i++) {
-      m[protocols[i].path] = protocols[i];
-    }
-    return m;
-  }
-
-  function buildChunkById(chunks) {
-    var m = {};
-    for (var i = 0; i < chunks.length; i++) {
-      m[chunks[i].id] = chunks[i];
-    }
-    return m;
-  }
-
-  /** Полнотекст по скользящим фрагментам клинической части (chunks.json) */
-  function buildChunkMiniSearch(chunks, protocolByPath) {
-    if (!chunks || !chunks.length || typeof MiniSearch === "undefined") return null;
-    var docs = [];
-    for (var i = 0; i < chunks.length; i++) {
-      var c = chunks[i];
-      var p = protocolByPath[c.path] || {};
-      var cat = c.category || p.category || "";
-      var catLabel = CATEGORY_LABELS[cat] || "";
-      var t = c.title || p.title || "";
-      docs.push({
-        id: c.id,
-        path: c.path,
-        title: t,
-        text: c.text || "",
-        kind: c.kind || "general",
-        search_text:
-          (c.text || "") + " " + t + " " + catLabel + " " + cat,
-        catLabel: catLabel,
-      });
-    }
-    var ms = new MiniSearch({
-      fields: ["text", "search_text", "title", "kind", "catLabel"],
-      idField: "id",
-    });
-    ms.addAll(docs);
-    return ms;
-  }
-
-  /** Запасной вариант без chunks.json: только structured + заголовки */
-  function buildMiniSearch(protocols, corpusByPath, structuredByPath) {
-    if (typeof MiniSearch === "undefined") return null;
-    var docs = [];
-    for (var i = 0; i < protocols.length; i++) {
-      var p = protocols[i];
-      var st = structuredByPath[p.path] || {};
-      var corpusText = (corpusByPath[p.path] && corpusByPath[p.path].text) || "";
-      var searchBlob =
-        st.search_text ||
-        [p.title, st.diagnosis, st.treatment, st.summary, corpusText].filter(Boolean).join(" ");
-      var catLabel = CATEGORY_LABELS[p.category] || "";
-      docs.push({
-        id: p.path,
-        title: p.title,
-        search_text: searchBlob,
-        diagnosis: st.diagnosis || "",
-        treatment: st.treatment || "",
-        summary: st.summary || "",
-        catLabel: catLabel,
-        category: p.category,
-      });
-    }
-    var ms = new MiniSearch({
-      fields: [
-        "title",
-        "search_text",
-        "diagnosis",
-        "treatment",
-        "summary",
-        "catLabel",
-        "category",
-      ],
-      idField: "id",
-    });
-    ms.addAll(docs);
-    return ms;
-  }
-
-  var searchState = {
-    protocols: null,
-    corpusByPath: null,
-    structuredByPath: null,
-    miniSearch: null,
-    chunkMiniSearch: null,
-    chunkById: null,
-    embMap: null,
-    embedder: null,
-    embedderPromise: null,
-    routing: null,
-  };
-
-  /** Базовый текст последнего запроса к /api/assist (для ответов на уточняющие вопросы). */
-  var lastAssistQuery = "";
-  var lastAssistQuestions = [];
-
-  function routingMultiplier(fqNorm, category, titleNorm) {
-    var r = searchState.routing;
-    if (!r) return 1;
-    var mult = 1;
-    var i, j, rule, hit, uh;
-    var penalties = r.penalty_rules || [];
-    var boosts = r.boost_rules || [];
-    for (i = 0; i < penalties.length; i++) {
-      rule = r.penalty_rules[i];
-      hit = false;
-      for (j = 0; j < rule.when.length; j++) {
-        if (fqNorm.indexOf(rule.when[j]) !== -1) {
-          hit = true;
-          break;
-        }
-      }
-      if (!hit) continue;
-      uh = false;
-      if (rule.unless) {
-        for (j = 0; j < rule.unless.length; j++) {
-          if (fqNorm.indexOf(rule.unless[j]) !== -1) {
-            uh = true;
-            break;
-          }
-        }
-      }
-      if (uh) continue;
-      for (j = 0; j < rule.categories.length; j++) {
-        if (rule.categories[j] === category) {
-          mult *= rule.factor;
-          break;
-        }
-      }
-    }
-    for (i = 0; i < boosts.length; i++) {
-      rule = boosts[i];
-      hit = false;
-      for (j = 0; j < rule.match.length; j++) {
-        if (fqNorm.indexOf(rule.match[j]) !== -1) {
-          hit = true;
-          break;
-        }
-      }
-      if (!hit) continue;
-      for (j = 0; j < rule.categories.length; j++) {
-        if (rule.categories[j] === category) {
-          mult *= rule.factor;
-          break;
-        }
-      }
-    }
-    var aud = r.audience || {};
-    var am = aud.adult_markers || [];
-    var cm = aud.child_markers || [];
-    var wantsAdult = false;
-    var wantsChild = false;
-    for (j = 0; j < am.length; j++) {
-      if (fqNorm.indexOf(am[j]) !== -1) wantsAdult = true;
-    }
-    for (j = 0; j < cm.length; j++) {
-      if (fqNorm.indexOf(cm[j]) !== -1) wantsChild = true;
-    }
-    var pm = r.pediatric_title_markers || [];
-    var amark = r.adult_title_markers || [];
-    var looksPed = false;
-    var looksAd = false;
-    for (j = 0; j < pm.length; j++) {
-      if (titleNorm.indexOf(pm[j]) !== -1) looksPed = true;
-    }
-    for (j = 0; j < amark.length; j++) {
-      if (titleNorm.indexOf(amark[j]) !== -1) looksAd = true;
-    }
-    if (wantsAdult && looksPed && !wantsChild) mult *= aud.penalty_adult_query_pediatric_doc || 0.35;
-    if (wantsChild && looksAd && !wantsAdult) mult *= aud.penalty_child_query_adult_doc || 0.4;
-    return Math.min(Math.max(mult, 0.0001), 10);
-  }
-
-  function ensureEmbedder() {
-    if (searchState.embedderPromise) return searchState.embedderPromise;
-    searchState.embedderPromise = import(
-      "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2"
-    ).then(function (mod) {
-      return mod.pipeline("feature-extraction", "Xenova/multilingual-e5-small");
-    });
-    return searchState.embedderPromise;
-  }
-
-  async function embedQuery(q, extraTerms) {
-    var pipe = await ensureEmbedder();
-    var add = "";
-    if (extraTerms && extraTerms.length) {
-      add = " " + extraTerms.slice(0, 14).join(" ");
-    }
-    var enriched =
-      "Подбор клинического протокола по описанию симптомов, жалоб и состояния пациента. " +
-      q +
-      add;
-    var out = await pipe("query: " + enriched, { pooling: "mean", normalize: true });
-    var d = out.data;
-    if (d instanceof Float32Array) return d;
-    return new Float32Array(d);
-  }
-
-  async function runSearchFull(q) {
-    var hint = document.getElementById("hint");
-    q = (q || "").trim();
-    if (!q) {
-      hint.textContent =
-        "Опишите симптомы свободно — поиск учитывает текст протоколов, семантику и направление.";
-      document.getElementById("results").innerHTML = "";
-      var hintAi = document.getElementById("llm-search-hint");
-      if (hintAi) hintAi.hidden = true;
-      return;
-    }
-    var hintAiClear = document.getElementById("llm-search-hint");
-    if (hintAiClear) hintAiClear.hidden = true;
-
-    var protocols = searchState.protocols;
-    var lexEngine = searchState.chunkMiniSearch || searchState.miniSearch;
-    var embMap = searchState.embMap;
-    var hasLex = lexEngine !== null;
-    var hasEmb = !!(embMap && Object.keys(embMap).length > 0);
-
-    var fqNorm = norm(q);
-    var baseTokens = tokenize(q);
-    var extra = extraFromHints(q);
-    var tokenSet = {};
-    var i;
-    for (i = 0; i < baseTokens.length; i++) tokenSet[baseTokens[i]] = true;
-    for (i = 0; i < extra.length; i++) tokenSet[extra[i]] = true;
-    var tokens = Object.keys(tokenSet);
-
-    var modeParts = [];
-    modeParts.push("название");
-    if (hasLex) {
-      modeParts.push(searchState.chunkMiniSearch ? "полнотекст по чанкам" : "текст карточки");
-    }
-    if (hasEmb) modeParts.push("семантика e5");
-    if (searchState.routing) modeParts.push("маршрут симптомов");
-    hint.innerHTML =
-      "Активно: <strong>" +
-      escapeHtml(modeParts.join(" · ")) +
-      "</strong>." +
-      (extra.length
-        ? " Расширение: <strong>" +
-          escapeHtml(extra.slice(0, 5).join(", ")) +
-          (extra.length > 5 ? "…" : "") +
-          "</strong>."
-        : "");
-
-    var msByPath = {};
-    var maxMs = 1e-9;
-    var qLex =
-      q +
-      (extra.length ? " " + extra.join(" ") : "");
-    if (lexEngine) {
-      var boost = searchState.chunkMiniSearch
-        ? {
-            text: 2.0,
-            search_text: 1.45,
-            title: 2.4,
-            kind: 1.15,
-            catLabel: 1.55,
-          }
-        : {
-            title: 2.5,
-            diagnosis: 2.2,
-            treatment: 2.2,
-            search_text: 1.35,
-            summary: 1.1,
-            catLabel: 1.5,
-            category: 1.05,
-          };
-      var msRes = lexEngine.search(qLex, {
-        fuzzy: 0.08,
-        prefix: true,
-        boost: boost,
-      });
-      for (i = 0; i < msRes.length; i++) {
-        var pth = msRes[i].id;
-        if (searchState.chunkMiniSearch) {
-          var ch = searchState.chunkById[msRes[i].id];
-          if (ch) pth = ch.path;
-        }
-        var sc = msRes[i].score;
-        if (!msByPath[pth] || sc > msByPath[pth]) msByPath[pth] = sc;
-        if (sc > maxMs) maxMs = sc;
-      }
-    }
-
-    var qv = null;
-    var embOk = hasEmb;
-    if (embOk && q.length > 1) {
-      try {
-        qv = await embedQuery(q, extra);
-      } catch (e) {
-        console.warn(e);
-        embOk = false;
-      }
-    }
-
-    var scored = [];
-    for (i = 0; i < protocols.length; i++) {
-      var p = protocols[i];
-      var catLabel = CATEGORY_LABELS[p.category] || "";
-      var titleNorm = norm(p.title);
-      var routeM = routingMultiplier(fqNorm, p.category, titleNorm);
-      var leg = scoreItem(p, tokens, catLabel);
-      var lexRaw = msByPath[p.path] || 0;
-      var lexN = maxMs > 0 ? lexRaw / maxMs : 0;
-      var legN = Math.min(1, leg / 48);
-      var semRaw = 0;
-      if (embOk && qv && embMap[p.path]) {
-        semRaw = (dot(qv, embMap[p.path]) + 1) / 2;
-      }
-      var semAdj = semRaw * routeM;
-      var lexAdj = lexN * routeM;
-      var legAdj = legN * routeM;
-      var combined;
-      if (hasLex && embOk && qv) {
-        combined = 0.56 * semAdj + 0.3 * lexAdj + 0.14 * legAdj;
-      } else if (hasLex && !embOk) {
-        combined = 0.62 * lexAdj + 0.38 * legAdj;
-      } else if (embOk && qv) {
-        combined = 0.72 * semAdj + 0.18 * legAdj + 0.1 * lexAdj;
-      } else {
-        combined = legAdj;
-      }
-      scored.push({ p: p, sc: combined, legN: legN, lexN: lexN, semN: semRaw });
-    }
-
-    scored.sort(function (a, b) {
-      return b.sc - a.sc;
-    });
-    var deduped = dedupeByFilename(scored);
-    var top = deduped.slice(0, 35);
-    render(top);
-  }
-
   var form = document.getElementById("search-form");
   var input = document.getElementById("q");
 
-  Promise.all([
-    fetch("protocols.json").then(function (r) {
+  fetch("protocols.json")
+    .then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
       return r.json();
-    }),
-    fetch("chunks.json")
-      .then(function (r) {
-        return r.ok ? r.json() : [];
-      })
-      .catch(function () {
-        return [];
-      }),
-    fetch("structured_index.json")
-      .then(function (r) {
-        return r.ok ? r.json() : [];
-      })
-      .catch(function () {
-        return [];
-      }),
-    fetch("embeddings.json")
-      .then(function (r) {
-        return r.ok ? r.json() : null;
-      })
-      .catch(function () {
-        return null;
-      }),
-    fetch("symptom_routing.json")
-      .then(function (r) {
-        return r.ok ? r.json() : null;
-      })
-      .catch(function () {
-        return null;
-      }),
-  ])
-    .then(function (all) {
-      var protocols = all[0];
-      var chunkRows = all[1] || [];
-      var structuredRows = all[2] || [];
-      var embPayload = all[3];
-      var routing = all[4];
-
-      searchState.protocols = protocols;
-      searchState.corpusByPath = {};
-      searchState.structuredByPath = buildStructuredMap(structuredRows);
-      searchState.embMap = buildEmbMap(embPayload || {});
-      searchState.routing = routing;
-      var protocolByPath = buildProtocolPathMap(protocols);
-      searchState.chunkById = buildChunkById(chunkRows);
-      searchState.chunkMiniSearch = buildChunkMiniSearch(chunkRows, protocolByPath);
-      searchState.miniSearch = buildMiniSearch(
-        protocols,
-        {},
-        searchState.structuredByPath
-      );
-
+    })
+    .then(function (protocols) {
       var seenFn = {};
       var uniq = 0;
-      for (var uc = 0; uc < protocols.length; uc++) {
-        var fn = protocols[uc].filename || protocols[uc].path.split("/").pop();
+      var uc;
+      for (uc = 0; uc < protocols.length; uc++) {
+        var fn =
+          protocols[uc].filename || protocols[uc].path.split("/").pop();
         if (!seenFn[fn]) {
           seenFn[fn] = true;
           uniq++;
@@ -2025,47 +899,29 @@
         });
       }
 
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        runSearchFull(input.value).catch(function (err) {
-          console.error(err);
-        });
-      });
-      input.addEventListener(
-        "input",
-        debounce(function () {
-          runSearchFull(input.value).catch(function (err) {
-            console.error(err);
-          });
-        }, 320)
-      );
-      var params = new URLSearchParams(window.location.search).get("q");
-      if (params) {
-        input.value = params;
-        runSearchFull(params).catch(function (err) {
+      function doAssist() {
+        runGeminiAssist().catch(function (err) {
           console.error(err);
         });
       }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        doAssist();
+      });
+      var params = new URLSearchParams(window.location.search).get("q");
+      if (params) {
+        input.value = params;
+      }
     })
     .catch(function (err) {
-      document.getElementById("results").innerHTML =
-        '<div class="error" role="alert">Не удалось загрузить данные. ' +
-        "Нужен локальный сервер или GitHub Pages. " +
-        escapeHtml(String(err)) +
-        "</div>";
-      document.getElementById("hint").textContent = "";
+      var hint = document.getElementById("hint");
+      if (hint) {
+        hint.textContent =
+          "Не удалось загрузить список протоколов. Нужен локальный сервер. " +
+          String(err);
+      }
     });
-
-  function debounce(fn, ms) {
-    var t;
-    return function () {
-      var a = arguments;
-      clearTimeout(t);
-      t = setTimeout(function () {
-        fn.apply(null, a);
-      }, ms);
-    };
-  }
 })();
   </script>
 </body>
