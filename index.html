@@ -373,6 +373,71 @@
       color: var(--muted);
     }
 
+    .assist-clinical-detail {
+      margin-top: 1rem;
+      padding: 1.05rem 1.15rem;
+      border-radius: 14px;
+      background: linear-gradient(160deg, rgba(26, 138, 114, 0.09) 0%, rgba(255, 255, 255, 0.95) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      text-align: left;
+      box-shadow: 0 6px 20px rgba(6, 61, 53, 0.06);
+    }
+
+    .assist-clinical-detail--error {
+      background: var(--red-100);
+      border-color: rgba(196, 30, 58, 0.35);
+    }
+
+    .assist-detail-head {
+      margin: 0 0 0.4rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .assist-detail-meta {
+      margin: 0 0 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .assist-detail-label {
+      margin: 0.75rem 0 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--green-800);
+    }
+
+    .assist-detail-body {
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    .assist-detail-list {
+      margin: 0.25rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .assist-detail-list li {
+      margin-bottom: 0.4rem;
+    }
+
+    .assist-detail-note {
+      margin: 0.75rem 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
     .assist-card {
       margin: 0;
       padding: 1.25rem 1.35rem;
@@ -1033,6 +1098,58 @@
     });
   }
 
+  function renderClinicalDetailBlock(cd) {
+    if (!cd) return "";
+    if (cd.error) {
+      return (
+        '<div class="assist-clinical-detail assist-clinical-detail--error"><p class="error">' +
+        escapeHtml(String(cd.error)) +
+        "</p></div>"
+      );
+    }
+    var ex = cd.extraction || {};
+    var html = '<div class="assist-clinical-detail">';
+    html +=
+      '<h3 class="assist-detail-head">По протоколу при полном соответствии (100%)</h3>';
+    if (cd.specialty_ru) {
+      html +=
+        '<p class="assist-detail-meta">' + escapeHtml(cd.specialty_ru) + "</p>";
+    }
+    if (ex.diagnosis) {
+      html += '<p class="assist-detail-label">Диагноз и показания</p>';
+      html +=
+        '<div class="assist-detail-body">' +
+        formatSummaryHtml(String(ex.diagnosis)) +
+        "</div>";
+    }
+    var tm = ex.treatment_methods;
+    if (tm && tm.length) {
+      html +=
+        '<p class="assist-detail-label">Методы лечения</p><ul class="assist-detail-list">';
+      var ti;
+      for (ti = 0; ti < tm.length; ti++) {
+        html += "<li>" + escapeHtml(String(tm[ti])) + "</li>";
+      }
+      html += "</ul>";
+    }
+    var med = ex.medications;
+    if (med && med.length) {
+      html +=
+        '<p class="assist-detail-label">Препараты и группы (по тексту протокола)</p><ul class="assist-detail-list">';
+      var mj;
+      for (mj = 0; mj < med.length; mj++) {
+        html += "<li>" + escapeHtml(String(med[mj])) + "</li>";
+      }
+      html += "</ul>";
+    }
+    if (ex.note) {
+      html +=
+        '<p class="assist-detail-note">' + escapeHtml(String(ex.note)) + "</p>";
+    }
+    html += "</div>";
+    return html;
+  }
+
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
@@ -1126,6 +1243,10 @@
         html +=
           '<p class="assist-metrics-legend"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по оценке модели (шкала 0–100%). ' +
           "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p>";
+      }
+
+      if (data.clinical_detail) {
+        html += renderClinicalDetailBlock(data.clinical_detail);
       }
 
       if (j.disclaimer) {

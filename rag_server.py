@@ -34,9 +34,44 @@ CHUNKS_PATH = ROOT / "chunks.json"
 PROTOCOLS_PATH = ROOT / "protocols.json"
 
 _chunks: list[dict] = []
+_chunks_by_path: dict[str, list[dict]] = {}
 _protocols_by_path: dict[str, dict] = {}
+_protocol_meta: dict[str, dict] = {}
+_structured_by_path: dict[str, dict] = {}
 _routing: dict = {}
 _model = None
+
+PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
+STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
+
+ALLOWED_SPECIALTY_SLUGS = frozenset(
+    [
+        "akusherstvo-ginekologiya",
+        "allergologiya-immunologiya",
+        "anesteziologiya-reanimatologiya",
+        "bolezni-sistemy-krovoobrashcheniya",
+        "dermatovenerologiya",
+        "endokrinologiya-narusheniya-obmena-veshchestv",
+        "gastroenterologiya",
+        "gematologiya",
+        "infektsionnye-zabolevaniya",
+        "khirurgiya",
+        "nefrologiya",
+        "nevrologiya-neyrokhirurgiya",
+        "novoobrazovaniya",
+        "oftalmologiya",
+        "otorinolaringologiya",
+        "palliativnaya-pomoshch",
+        "psikhiatriya-narkologiya",
+        "pulmonologiya-ftiziatriya",
+        "revmatologiya",
+        "stomatologiya",
+        "transplantatsiya-organov-i-tkaney",
+        "travmatologiya-ortopediya",
+        "urologiya",
+        "zabolevaniya-perinatalnogo-perioda",
+    ]
+)
 
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
@@ -72,15 +107,52 @@ SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН комп
 - differential: 2 коротких пункта; questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
 Сохрани все path из фрагментов. Не обрывай слова."""
 
+SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам клинического протокола Минздрава Республики Беларусь извлеки факты, относящиеся к запросу пользователя.
+Верни ОДИН JSON-объект (без markdown, без текста до/после).
+Схема:
+{
+  "diagnosis": "диагнозы, состояния, показания протокола по тексту (1–5 предложений)",
+  "treatment_methods": ["метод или этап лечения — по тексту протокола"],
+  "medications": ["группы препаратов или МНН, если названы во входном тексте — без выдуманных доз"],
+  "note": "кратко: чего нет в фрагментах или что требует очной консультации"
+}
+Не придумывай препараты, дозы и процедуры, которых нет во входном тексте."""
+
+SYSTEM_CLASSIFY = """По краткому медицинскому запросу пациента выбери до трёх рубрик клинических протоколов (slug), которым соответствует ситуация.
+Верни ОДИН JSON: {"categories": ["slug1"], "note": "одно короткое предложение"}
+slug ТОЛЬКО из этого списка (копируй точно):
+""" + ", ".join(sorted(ALLOWED_SPECIALTY_SLUGS)) + """
+Если нельзя уверенно сопоставить — верни "categories": []."""
+
 
 def load_data() -> None:
-    global _chunks, _protocols_by_path, _routing
+    global _chunks, _chunks_by_path, _protocols_by_path, _protocol_meta, _structured_by_path, _routing
     if not CHUNKS_PATH.is_file():
         raise SystemExit(f"Нет {CHUNKS_PATH}. Запустите: python3 build_chunks.py")
     _chunks = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
+    _chunks_by_path = {}
+    for ch in _chunks:
+        p = ch.get("path") or ""
+        if not p:
+            continue
+        _chunks_by_path.setdefault(p, []).append(ch)
+    for plist in _chunks_by_path.values():
+        plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
     if PROTOCOLS_PATH.is_file():
         for row in json.loads(PROTOCOLS_PATH.read_text(encoding="utf-8")):
             _protocols_by_path[row["path"]] = row
+    if PROTOCOL_META_PATH.is_file():
+        _protocol_meta = json.loads(PROTOCOL_META_PATH.read_text(encoding="utf-8"))
+    else:
+        _protocol_meta = {}
+    if STRUCTURED_INDEX_PATH.is_file():
+        _structured_by_path = {
+            row["path"]: row
+            for row in json.loads(STRUCTURED_INDEX_PATH.read_text(encoding="utf-8"))
+            if row.get("path")
+        }
+    else:
+        _structured_by_path = {}
     rp = ROOT / "symptom_routing.json"
     if rp.is_file():
         _routing = json.loads(rp.read_text(encoding="utf-8"))
@@ -278,16 +350,123 @@ def clinical_query_for_rag(full_query: str) -> str:
     return part if part else full_query.strip()
 
 
+def gather_protocol_text(path: str, max_chars: int) -> str:
+    """Склеивает чанки одного PDF по порядку (до max_chars символов)."""
+    parts = _chunks_by_path.get(path) or []
+    out: list[str] = []
+    n = 0
+    for ch in parts:
+        t = (ch.get("text") or "").strip()
+        if not t:
+            continue
+        if n + len(t) > max_chars:
+            rest = max_chars - n
+            if rest > 80:
+                out.append(t[:rest])
+            break
+        out.append(t)
+        n += len(t)
+    return "\n\n".join(out)
+
+
+def confidence_display_full(score: object) -> bool:
+    """Совпадает с отображением 100% в интерфейсе (округление как в index.html)."""
+    try:
+        x = float(score)
+    except (TypeError, ValueError):
+        return False
+    x = max(0.0, min(1.0, x))
+    return round(100 * x) >= 100
+
+
+def infer_specialties_gemini(q: str, model) -> list[str]:
+    """Опционально: первый короткий вызов LLM — к каким рубрикам относится запрос."""
+    if os.environ.get("GEMINI_SPECIALTY_CLASSIFY", "0").strip().lower() not in (
+        "1",
+        "true",
+        "yes",
+    ):
+        return []
+    prompt = SYSTEM_CLASSIFY + "\n\nЗапрос пользователя:\n" + (q or "")[:6000]
+    try:
+        resp = generate_gemini(model, prompt)
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+    except HTTPException:
+        return []
+    except Exception:
+        return []
+    if not parsed or not isinstance(parsed, dict):
+        return []
+    cats = parsed.get("categories") or []
+    out = [c for c in cats if isinstance(c, str) and c in ALLOWED_SPECIALTY_SLUGS]
+    return out[:3]
+
+
+def extract_clinical_detail(path: str, query: str, title_hint: str, model) -> dict | None:
+    """Второй вызов LLM: диагноз, методы лечения, препараты по полному тексту чанков + индекс."""
+    max_body = int(os.environ.get("RAG_EXTRACT_MAX_CHARS", "16000"))
+    body = gather_protocol_text(path, max_body)
+    struct = _structured_by_path.get(path) or {}
+    extra = ""
+    if struct.get("diagnosis"):
+        extra += "\n\n[Выдержка индекса: диагностика]\n" + str(struct["diagnosis"])[:8000]
+    if struct.get("treatment"):
+        extra += "\n\n[Выдержка индекса: лечение]\n" + str(struct["treatment"])[:8000]
+    if len(body.strip()) < 120 and not extra.strip():
+        return None
+    meta = _protocol_meta.get(path) or {}
+    spec = meta.get("specialty_ru") or ""
+    title_line = title_hint or meta.get("title") or path
+    prompt = (
+        SYSTEM_EXTRACT
+        + "\n\n---\n\n"
+        + f"Запрос пользователя:\n{query}\n\n"
+        + f"Специальность (рубрика каталога): {spec}\n"
+        + f"Название протокола: {title_line}\n\n"
+        + "Текст протокола (фрагменты PDF):\n"
+        + body
+        + extra
+    )
+    plim = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
+    if len(prompt) > plim:
+        prompt = prompt[: plim - 80] + "\n…[обрезано]"
+    try:
+        resp = generate_gemini(model, prompt)
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+    except HTTPException as e:
+        return {"error": str(e.detail), "path": path, "title": title_line}
+    except Exception as e:
+        return {"error": str(e)[:400], "path": path, "title": title_line}
+    if not parsed or not isinstance(parsed, dict):
+        return None
+    return {
+        "path": path,
+        "title": title_line,
+        "specialty_ru": spec or None,
+        "category": meta.get("category"),
+        "extraction": {
+            "diagnosis": parsed.get("diagnosis") or "",
+            "treatment_methods": parsed.get("treatment_methods") or [],
+            "medications": parsed.get("medications") or [],
+            "note": parsed.get("note") or "",
+        },
+    }
+
+
 def retrieve(
     query: str,
     max_chunks: int | None = None,
     max_per_path: int = 2,
     routing_query: str | None = None,
+    category_boost: list[str] | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
     query — короткий текст для подсчёта совпадений с чанками (обычно только жалобы).
     routing_query — полный запрос для правил возраста/рубрик; если None, берётся query.
+    category_boost — slug рубрик из опционального LLM-классификатора запроса.
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -296,6 +475,8 @@ def retrieve(
         "true",
         "yes",
     )
+    boost_set = frozenset(category_boost or [])
+    boost_factor = float(os.environ.get("RAG_CATEGORY_BOOST_FACTOR", "1.45"))
     rq = routing_query if routing_query is not None else query
     qtok = set(tokenize_ru(query))
     if not qtok:
@@ -316,6 +497,9 @@ def retrieve(
             else 1.0
         )
         final = lex * mult
+        cat = (ch.get("category") or "").strip()
+        if boost_set and cat in boost_set:
+            final *= boost_factor
         scored.append((final, lex, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
@@ -476,6 +660,8 @@ def health() -> dict:
         "ok": True,
         "chunks": len(_chunks),
         "protocols": len(_protocols_by_path),
+        "protocol_meta": len(_protocol_meta),
+        "structured_index": len(_structured_by_path),
         "gemini_configured": has_key,
     }
 
@@ -510,7 +696,13 @@ def api_assist(body: AssistIn) -> dict:
     q_rag = clinical_query_for_rag(q)
     if not q_rag:
         raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
-    retrieved = retrieve(q_rag, routing_query=q)
+    model = get_gemini()
+    query_specialties = infer_specialties_gemini(q, model)
+    retrieved = retrieve(
+        q_rag,
+        routing_query=q,
+        category_boost=query_specialties or None,
+    )
     if not retrieved:
         raise HTTPException(status_code=400, detail="Пустой отбор — уточните запрос")
 
@@ -519,11 +711,15 @@ def api_assist(body: AssistIn) -> dict:
     )
 
     lines = []
+    meta_specs: list[str] = []
     for i, r in enumerate(retrieved, 1):
         cat = ""
         p = r["path"]
         if p in _protocols_by_path:
             cat = _protocols_by_path[p].get("category") or ""
+        pm = _protocol_meta.get(p)
+        if pm and pm.get("specialty_ru"):
+            meta_specs.append(pm["specialty_ru"])
         lines.append(
             f"[{i}] path={p}\n"
             f"рубрика={cat}\n"
@@ -532,13 +728,18 @@ def api_assist(body: AssistIn) -> dict:
         )
     context = "\n---\n".join(lines)
 
-    user_block = f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
+    hint_block = ""
+    if meta_specs:
+        hint_block = (
+            "Справочно рубрики отобранных фрагментов: "
+            + ", ".join(sorted(set(meta_specs)))
+            + "\n\n"
+        )
+    user_block = hint_block + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
     prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
     if len(full_prompt) > prompt_limit:
         full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
-
-    model = get_gemini()
     retry_used = False
 
     def _one_call(prompt: str) -> tuple[object, str, dict | None]:
@@ -588,15 +789,37 @@ def api_assist(body: AssistIn) -> dict:
             resp, text, parsed = resp2, text2, parsed2
             finish = _gemini_finish_reason(resp)
 
+    clinical_detail = None
+    if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        for pr in parsed.get("protocols") or []:
+            if not confidence_display_full(pr.get("confidence_score")):
+                continue
+            pth = pr.get("path") or ""
+            if not pth or pth not in _chunks_by_path:
+                continue
+            clinical_detail = extract_clinical_detail(
+                pth,
+                q,
+                str(pr.get("title") or ""),
+                model,
+            )
+            break
+
     return {
         "query": q,
         "retrieval": retrieved,
         "audience_inferred": audience_inferred,
         "retrieval_audience_fallback": audience_fallback,
+        "query_specialties": query_specialties,
         "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,
         "gemini_retry_used": retry_used,
+        "clinical_detail": clinical_detail,
     }
 
 
