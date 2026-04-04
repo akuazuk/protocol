@@ -4,6 +4,8 @@
 
 **Git:** каталоги `chunks/`, `documents/`, `tables/` в `.gitignore` (сотни МБ). В репозитории обычно хранят `registry/index.csv`, `entities/entities.json` и этот README; полный корпус — локально или в объектном хранилище.
 
+**Части `chunks.jsonl` в git:** см. каталог **`../corpus_chunks_parts/`** (файлы `chunks.part.*.jsonl`, ~45 МБ каждый) и `split_chunks_jsonl.py`.
+
 ## Зависимости
 
 ```bash
