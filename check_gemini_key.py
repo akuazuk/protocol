@@ -13,13 +13,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-try:
-    from dotenv import load_dotenv
+from env_load import load_project_env
 
-    load_dotenv(ROOT / ".env")
-    load_dotenv(ROOT / ".env.local", override=True)
-except ImportError:
-    pass
+load_project_env(ROOT)
 
 from gemini_verify import verify_gemini_key
 

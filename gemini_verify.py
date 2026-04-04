@@ -37,7 +37,12 @@ def verify_gemini_key() -> tuple[bool, str]:
     try:
         import google.generativeai as genai
     except ImportError:
-        return False, "Установите: pip install google-generativeai"
+        return (
+            False,
+            "Нет пакета google-generativeai в ЭТОМ интерпретаторе Python. "
+            "Установите: python3 -m pip install google-generativeai "
+            "или используйте тот же python, куда ставили зависимости (часто python3.11 на Mac).",
+        )
 
     try:
         genai.configure(api_key=key)
@@ -48,6 +53,12 @@ def verify_gemini_key() -> tuple[bool, str]:
             generation_config={"max_output_tokens": 40, "temperature": 0},
         )
     except Exception as e:
+        err = str(e)
+        if "429" in err or "quota" in err.lower() or "RESOURCE_EXHAUSTED" in err:
+            return (
+                False,
+                "Лимит запросов Gemini (429 / quota). Подождите минуту или проверьте квоту и биллинг в Google AI Studio.",
+            )
         return False, f"Ошибка API: {e!s}"
 
     text = _extract_text(r)
