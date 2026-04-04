@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Локальный RAG: отбор фрагментов из chunks.json и ответ по ним (ориентир — тексты клинических протоколов).
+Локальный RAG: отбор фрагментов из корпусных JSONL (corpus_chunks_parts/*.jsonl) или из chunks.json и ответ по ним.
 
 Запуск: pip install -r requirements-rag.txt, скопировать .env.example в .env и задать ключ API.
 Переменные — из .env / .env.local (python-dotenv). См. комментарии в .env.example.
@@ -31,6 +31,7 @@ except ImportError as e:
     raise SystemExit(f"Установите: pip install -r requirements-rag.txt ({e})") from e
 
 CHUNKS_PATH = ROOT / "chunks.json"
+CORPUS_CHUNKS_PARTS_GLOB = "corpus_chunks_parts/chunks.part.*.jsonl"
 PROTOCOLS_PATH = ROOT / "protocols.json"
 
 _chunks: list[dict] = []
@@ -125,19 +126,104 @@ slug ТОЛЬКО из этого списка (копируй точно):
 Если нельзя уверенно сопоставить — верни "categories": []."""
 
 
-def load_data() -> None:
-    global _chunks, _chunks_by_path, _protocols_by_path, _protocol_meta, _structured_by_path, _routing
-    if not CHUNKS_PATH.is_file():
-        raise SystemExit(f"Нет {CHUNKS_PATH}. Запустите: python3 build_chunks.py")
-    _chunks = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
-    _chunks_by_path = {}
+def _jsonl_chunk_files() -> list[Path]:
+    """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
+    one = (os.environ.get("RAG_CHUNKS_JSONL") or "").strip()
+    if one:
+        p = Path(one)
+        if not p.is_file():
+            raise SystemExit(f"RAG_CHUNKS_JSONL: файл не найден: {p}")
+        return [p.resolve()]
+    gl = (os.environ.get("RAG_CHUNKS_JSONL_GLOB") or "").strip()
+    if gl:
+        paths = sorted(ROOT.glob(gl))
+        if not paths:
+            raise SystemExit(f"RAG_CHUNKS_JSONL_GLOB: нет файлов: {ROOT / gl}")
+        return paths
+    return sorted(ROOT.glob(CORPUS_CHUNKS_PARTS_GLOB))
+
+
+def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
+    """Корпусный pipeline: строки JSONL → формат retrieve() / gather_protocol_text."""
+    raw: list[dict] = []
+    for pp in part_paths:
+        with pp.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(row, dict):
+                    continue
+                raw.append(row)
+    by_path: dict[str, list[dict]] = {}
+    for row in raw:
+        p = (row.get("source_path") or "").strip()
+        if not p:
+            continue
+        by_path.setdefault(p, []).append(row)
+    out: list[dict] = []
+    for p in sorted(by_path.keys()):
+        rows = sorted(
+            by_path[p],
+            key=lambda r: (
+                int(r.get("page_from") or 0),
+                int(r.get("page_to") or 0),
+                str(r.get("chunk_id") or ""),
+            ),
+        )
+        for i, row in enumerate(rows):
+            text = (row.get("text") or "").strip()
+            ert = (row.get("embedding_ready_text") or "").strip()
+            lex_text = ert if ert else text
+            out.append(
+                {
+                    "path": p,
+                    "text": text,
+                    "lex_text": lex_text,
+                    "title": "",
+                    "category": "",
+                    "kind": (row.get("chunk_type") or "body").strip() or "body",
+                    "chunk_index": i,
+                    "chunk_id": row.get("chunk_id"),
+                }
+            )
+    return out
+
+
+def _use_jsonl_chunks() -> bool:
+    """По умолчанию — JSONL-чанки (корпус), если явно не задан RAG_CHUNKS_SOURCE=json."""
+    src = (os.environ.get("RAG_CHUNKS_SOURCE") or "").strip().lower()
+    if src in ("json", "legacy", "chunks.json"):
+        return False
+    if src in ("jsonl", "corpus", "parts", "1", "true", "yes"):
+        return True
+    # авто: есть части corpus → jsonl; иначе chunks.json
+    return bool(_jsonl_chunk_files())
+
+
+def _enrich_chunks_from_index() -> None:
+    """Заголовок и рубрика из protocols.json / protocol_meta для routing и retrieve."""
     for ch in _chunks:
         p = ch.get("path") or ""
         if not p:
             continue
-        _chunks_by_path.setdefault(p, []).append(ch)
-    for plist in _chunks_by_path.values():
-        plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
+        pr = _protocols_by_path.get(p) or {}
+        pm = _protocol_meta.get(p) or {}
+        if not (ch.get("title") or "").strip():
+            ch["title"] = (pr.get("title") or pm.get("title") or "").strip() or Path(
+                p
+            ).stem
+        if not (ch.get("category") or "").strip():
+            ch["category"] = (pr.get("category") or pm.get("category") or "").strip()
+
+
+def load_data() -> None:
+    global _chunks, _chunks_by_path, _protocols_by_path, _protocol_meta, _structured_by_path, _routing
+    _protocols_by_path = {}
     if PROTOCOLS_PATH.is_file():
         for row in json.loads(PROTOCOLS_PATH.read_text(encoding="utf-8")):
             _protocols_by_path[row["path"]] = row
@@ -158,6 +244,32 @@ def load_data() -> None:
         _routing = json.loads(rp.read_text(encoding="utf-8"))
     else:
         _routing = {}
+
+    if _use_jsonl_chunks():
+        parts = _jsonl_chunk_files()
+        if not parts:
+            raise SystemExit(
+                f"Нет JSONL-чанков ({CORPUS_CHUNKS_PARTS_GLOB} или RAG_CHUNKS_JSONL). "
+                "Соберите корпус или задайте RAG_CHUNKS_SOURCE=json и наличие chunks.json"
+            )
+        _chunks = _load_chunks_from_jsonl(parts)
+    else:
+        if not CHUNKS_PATH.is_file():
+            raise SystemExit(
+                f"Нет {CHUNKS_PATH}. Запустите: python3 build_chunks.py "
+                "или положите corpus_chunks_parts/*.jsonl и уберите RAG_CHUNKS_SOURCE=json"
+            )
+        _chunks = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
+
+    _enrich_chunks_from_index()
+    _chunks_by_path = {}
+    for ch in _chunks:
+        p = ch.get("path") or ""
+        if not p:
+            continue
+        _chunks_by_path.setdefault(p, []).append(ch)
+    for plist in _chunks_by_path.values():
+        plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
 
 
 def tokenize_ru(s: str) -> list[str]:
@@ -483,8 +595,10 @@ def retrieve(
         return []
     scored: list[tuple[float, float, float, dict]] = []
     for ch in _chunks:
-        text = (ch.get("text") or "") + " " + (ch.get("title") or "")
-        low = text.lower()
+        lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
+            ch.get("title") or ""
+        )
+        low = lex_src.lower()
         lex = 0.0
         for t in qtok:
             if t in low:

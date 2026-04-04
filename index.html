@@ -1044,7 +1044,7 @@
     var title = formatDisplayTitle(pr.title || pr.path || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-    var isWeak = mScore < 0.52;
+    var isWeak = mScore < 0.8;
     var html = "<li>";
     html +=
       '<a href="' +
@@ -1164,7 +1164,7 @@
       var low = [];
       var hi;
       for (hi = 0; hi < rawProtos.length; hi++) {
-        if (confidenceFromProtocol(rawProtos[hi]) >= 0.52) {
+        if (confidenceFromProtocol(rawProtos[hi]) >= 0.8) {
           high.push(rawProtos[hi]);
         } else {
           low.push(rawProtos[hi]);
