@@ -324,6 +324,46 @@
       background: var(--green-600);
     }
 
+    .snippet-grid {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 0.85rem;
+    }
+
+    .snippet-box {
+      background: linear-gradient(135deg, #f4faf7 0%, #eef6f2 100%);
+      border-radius: 12px;
+      padding: 0.7rem 0.95rem;
+      border-left: 4px solid var(--green-600);
+      text-align: left;
+    }
+
+    .snippet-box.treat {
+      background: linear-gradient(135deg, #fff8f8 0%, #fdeef0 100%);
+      border-left-color: var(--red-500);
+    }
+
+    .snippet-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--green-800);
+      margin-bottom: 0.35rem;
+    }
+
+    .snippet-box.treat .snippet-label {
+      color: var(--red-700);
+    }
+
+    .snippet-text {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #2c3e38;
+    }
+
     .empty,
     .error {
       text-align: center;
@@ -389,7 +429,7 @@
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Умный поиск: текст протоколов, семантика (e5) и подсказки по специальностям по симптомам. Источник — официальные PDF Минздрава.
+          Индекс по полным текстам, выделенные фрагменты по диагностике и лечению, семантика e5 и маршрутизация симптомов → рубрика. Источник — PDF Минздрава РБ.
         </p>
         <div class="badge-row">
           <span class="badge badge--green">451 протокол</span>
@@ -399,10 +439,10 @@
     </header>
 
     <section class="hero" aria-labelledby="search-title">
-      <h2 id="search-title">Опишите симптомы или запрос</h2>
+      <h2 id="search-title">Опишите симптомы или клиническую ситуацию</h2>
       <p class="lead">
-        Лучше формулировать как клиническую задачу: «кашель у взрослого 3 недели», «острая боль внизу живота у женщины».
-        Можно и коротко: <em>язва желудка</em>, <em>артериальная гипертензия</em>.
+        В карточках показываются выдержки из протокола по <strong>диагностике</strong> и <strong>лечению</strong> (авторазбор текста). Примеры:
+        «сухой кашель 2 недели у взрослого», «изжога после еды», <em>сахарный диабет 2 типа</em>.
       </p>
       <form class="search-row" id="search-form" action="#" method="get">
         <input
@@ -429,11 +469,10 @@
         <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
       </p>
       <p>
-        <strong>Как устроен поиск:</strong> полнотекстовый индекс (<code>corpus.json</code>), семантические векторы документов (<code>embeddings.json</code>, модель e5 с указанием направления в тексте), правила маршрутизации симптомов → рубрики (<code>symptom_routing.json</code>) — без серверного LLM.
-        Полноценный чат-LLM или Vectara требуют backend с ключом API.
+        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> (весь текст PDF) → <code>build_structured_index.py</code> (фрагменты диагностика/лечение + поле поиска) → <code>build_semantic_embeddings.py</code> (векторы по структурированному описанию) + <code>symptom_routing.json</code> (маршрут симптомов).
+        Диагнозы на карточках — выдержки из протокола, не заключение врача. Полноценный диалоговый LLM — только с backend.
       </p>
       <p>
-        Сборка: <code>extract_corpus.py</code> → <code>build_semantic_embeddings.py</code> (<code>requirements-search.txt</code>).
         Просмотр: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
       </p>
     </footer>
@@ -575,11 +614,37 @@
     }
     meta.hidden = false;
     meta.textContent = "Найдено: " + list.length;
+    var structured = searchState.structuredByPath || {};
     for (var i = 0; i < list.length; i++) {
       var item = list[i];
       var p = item.p;
+      var st = structured[p.path] || {};
+      var diag = (st.diagnosis || "").trim();
+      var treat = (st.treatment || "").trim();
+      var summ = (st.summary || "").trim();
       var catLabel = CATEGORY_LABELS[p.category] || p.category;
       var href = encodeURI(p.path);
+      var snip = "";
+      if (diag) {
+        snip +=
+          '<div class="snippet-box diag"><span class="snippet-label">Диагностика и обследование</span><p class="snippet-text">' +
+          escapeHtml(diag) +
+          "</p></div>";
+      }
+      if (treat) {
+        snip +=
+          '<div class="snippet-box treat"><span class="snippet-label">Лечение и тактика</span><p class="snippet-text">' +
+          escapeHtml(treat) +
+          "</p></div>";
+      }
+      if (!snip && summ) {
+        var s = summ.slice(0, 480) + (summ.length > 480 ? "…" : "");
+        snip =
+          '<div class="snippet-box diag"><span class="snippet-label">Фрагмент протокола</span><p class="snippet-text">' +
+          escapeHtml(s) +
+          "</p></div>";
+      }
+      var snipWrap = snip ? '<div class="snippet-grid">' + snip + "</div>" : "";
       var card = document.createElement("article");
       card.className = "card";
       card.setAttribute("role", "listitem");
@@ -591,10 +656,11 @@
         "<h3>" +
         escapeHtml(p.title) +
         "</h3>" +
+        snipWrap +
         '<div class="card-actions">' +
         '<a class="pdf" href="' +
         href +
-        '" target="_blank" rel="noopener">Открыть PDF</a>' +
+        '" target="_blank" rel="noopener">Полный протокол (PDF)</a>' +
         "</div>";
       el.appendChild(card);
     }
@@ -632,23 +698,47 @@
     return m;
   }
 
-  function buildMiniSearch(protocols, corpusByPath) {
+  function buildStructuredMap(rows) {
+    var m = {};
+    if (!rows || !rows.length) return m;
+    for (var i = 0; i < rows.length; i++) {
+      m[rows[i].path] = rows[i];
+    }
+    return m;
+  }
+
+  function buildMiniSearch(protocols, corpusByPath, structuredByPath) {
     if (typeof MiniSearch === "undefined") return null;
     var docs = [];
     for (var i = 0; i < protocols.length; i++) {
       var p = protocols[i];
-      var t = (corpusByPath[p.path] && corpusByPath[p.path].text) || "";
+      var st = structuredByPath[p.path] || {};
+      var corpusText = (corpusByPath[p.path] && corpusByPath[p.path].text) || "";
+      var searchBlob =
+        st.search_text ||
+        [p.title, st.diagnosis, st.treatment, st.summary, corpusText].filter(Boolean).join(" ");
       var catLabel = CATEGORY_LABELS[p.category] || "";
       docs.push({
         id: p.path,
         title: p.title,
-        text: t,
+        search_text: searchBlob,
+        diagnosis: st.diagnosis || "",
+        treatment: st.treatment || "",
+        summary: st.summary || "",
         catLabel: catLabel,
         category: p.category,
       });
     }
     var ms = new MiniSearch({
-      fields: ["title", "text", "catLabel", "category"],
+      fields: [
+        "title",
+        "search_text",
+        "diagnosis",
+        "treatment",
+        "summary",
+        "catLabel",
+        "category",
+      ],
       idField: "id",
     });
     ms.addAll(docs);
@@ -658,6 +748,7 @@
   var searchState = {
     protocols: null,
     corpusByPath: null,
+    structuredByPath: null,
     miniSearch: null,
     embMap: null,
     embedder: null,
@@ -812,7 +903,15 @@
       var msRes = miniSearch.search(q, {
         fuzzy: 0.08,
         prefix: true,
-        boost: { title: 2.4, catLabel: 1.6, category: 1.1, text: 0.75 },
+        boost: {
+          title: 2.5,
+          diagnosis: 2.2,
+          treatment: 2.2,
+          search_text: 1.35,
+          summary: 1.1,
+          catLabel: 1.5,
+          category: 1.05,
+        },
       });
       for (i = 0; i < msRes.length; i++) {
         msByPath[msRes[i].id] = msRes[i].score;
@@ -883,6 +982,13 @@
       .catch(function () {
         return [];
       }),
+    fetch("structured_index.json")
+      .then(function (r) {
+        return r.ok ? r.json() : [];
+      })
+      .catch(function () {
+        return [];
+      }),
     fetch("embeddings.json")
       .then(function (r) {
         return r.ok ? r.json() : null;
@@ -901,14 +1007,20 @@
     .then(function (all) {
       var protocols = all[0];
       var corpusRows = all[1] || [];
-      var embPayload = all[2];
-      var routing = all[3];
+      var structuredRows = all[2] || [];
+      var embPayload = all[3];
+      var routing = all[4];
 
       searchState.protocols = protocols;
       searchState.corpusByPath = buildCorpusMap(corpusRows);
+      searchState.structuredByPath = buildStructuredMap(structuredRows);
       searchState.embMap = buildEmbMap(embPayload || {});
       searchState.routing = routing;
-      searchState.miniSearch = buildMiniSearch(protocols, searchState.corpusByPath);
+      searchState.miniSearch = buildMiniSearch(
+        protocols,
+        searchState.corpusByPath,
+        searchState.structuredByPath
+      );
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();

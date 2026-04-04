@@ -15,6 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 CORPUS = ROOT / "corpus.json"
+STRUCTURED = ROOT / "structured_index.json"
 OUT = ROOT / "embeddings.json"
 MODEL_NAME = "intfloat/multilingual-e5-small"
 
@@ -57,32 +58,51 @@ def main() -> None:
         print("Установите: pip install sentence-transformers torch", file=sys.stderr)
         raise SystemExit(1)
 
-    rows = json.loads(CORPUS.read_text(encoding="utf-8"))
+    use_structured = STRUCTURED.is_file()
+    if use_structured:
+        rows = json.loads(STRUCTURED.read_text(encoding="utf-8"))
+    else:
+        rows = json.loads(CORPUS.read_text(encoding="utf-8"))
+
     texts: list[str] = []
     for r in rows:
         path = r["path"]
-        parts = path.split("/")
-        cat = parts[1] if len(parts) > 1 else ""
+        cat = r.get("category") if use_structured else (path.split("/")[1] if "/" in path else "")
         label = LABELS.get(cat, cat)
-        fname = Path(path).name
-        title = fname.rsplit(".", 1)[0].replace("_", " ")
-        body = (r.get("text") or "").strip()
-        if len(body) > 6000:
-            body = body[:6000] + "…"
-        # e5 passage: явное направление + заголовок + фрагмент текста протокола
-        if body:
+
+        if use_structured:
+            title = (r.get("title") or "").strip()
+            diag = (r.get("diagnosis") or "").strip()
+            treat = (r.get("treatment") or "").strip()
+            summ = (r.get("summary") or "").strip()
+            if len(summ) > 3500:
+                summ = summ[:3500] + "…"
             payload = (
                 f"passage: Медицинское направление: {label}. "
-                f"Клинический протокол Республики Беларусь. "
-                f"Название: {title}. "
-                f"Фрагмент документа: {body}"
+                f"Клинический протокол РБ. Название: {title}. "
+                f"Диагностика и критерии: {diag}. "
+                f"Лечение и тактика ведения: {treat}. "
+                f"Дополнительный контекст: {summ}"
             )
         else:
-            payload = (
-                f"passage: Медицинское направление: {label}. "
-                f"Клинический протокол Республики Беларусь. Название: {title}."
-            )
-        texts.append(payload)
+            fname = Path(path).name
+            title = fname.rsplit(".", 1)[0].replace("_", " ")
+            body = (r.get("text") or "").strip()
+            if len(body) > 6000:
+                body = body[:6000] + "…"
+            if body:
+                payload = (
+                    f"passage: Медицинское направление: {label}. "
+                    f"Клинический протокол Республики Беларусь. "
+                    f"Название: {title}. "
+                    f"Фрагмент документа: {body}"
+                )
+            else:
+                payload = (
+                    f"passage: Медицинское направление: {label}. "
+                    f"Клинический протокол Республики Беларусь. Название: {title}."
+                )
+        texts.append(payload[:16000])
 
     print(f"Загрузка модели {MODEL_NAME}…")
     model = SentenceTransformer(MODEL_NAME)
@@ -96,7 +116,7 @@ def main() -> None:
     payload_out = {
         "dim": dim,
         "model": MODEL_NAME,
-        "passage_template": "direction+title+body",
+        "passage_template": "structured" if use_structured else "direction+title+body",
         "items": items,
     }
     OUT.write_text(
