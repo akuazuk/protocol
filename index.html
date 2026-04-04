@@ -400,6 +400,61 @@
       border: 1px solid rgba(200, 150, 40, 0.45);
     }
 
+    .ctx-panel {
+      margin: 0.75rem 0 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(13, 92, 74, 0.22);
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .ctx-panel summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .ctx-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0.4rem 0 0.6rem;
+      line-height: 1.45;
+    }
+
+    .ctx-grid {
+      display: grid;
+      gap: 0.65rem;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 560px) {
+      .ctx-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ctx-span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .ctx-label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.28rem;
+      font-size: 0.85rem;
+    }
+
+    .ctx-label input,
+    .ctx-label select,
+    .ctx-label textarea {
+      font: inherit;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid rgba(13, 92, 74, 0.28);
+      box-sizing: border-box;
+      width: 100%;
+    }
+
     .llm-followup-form {
       margin-top: 0.5rem;
     }
@@ -598,7 +653,45 @@
       <p class="lead">
         Запрос уходит в локальный <strong>ИИ</strong> (Gemini + фрагменты протоколов). Примеры:
         «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
+        Для точнее подбора укажите возраст и пол ниже; ответы на уточняющие вопросы добавляются к жалобам, контекст сохраняется.
       </p>
+      <details class="ctx-panel" id="ctx-panel" open>
+        <summary>Контекст пациента (возраст, пол — для подбора протокола)</summary>
+        <p class="ctx-hint">
+          Эти поля усиливают соответствие (детские vs взрослые КП, релевантность рубрик). Сохраняются в браузере.
+        </p>
+        <div class="ctx-grid">
+          <label class="ctx-label" for="ctx-age"
+            >Возраст
+            <input
+              type="text"
+              id="ctx-age"
+              placeholder="например 38 лет или ребёнок 5 лет"
+              autocomplete="off"
+              maxlength="80"
+              aria-label="Возраст пациента"
+            />
+          </label>
+          <label class="ctx-label" for="ctx-sex"
+            >Пол
+            <select id="ctx-sex" aria-label="Пол пациента">
+              <option value="">— не указано —</option>
+              <option value="женский">женский</option>
+              <option value="мужской">мужской</option>
+            </select>
+          </label>
+          <label class="ctx-label ctx-span-2" for="ctx-extra"
+            >Сопутствующие заболевания, аллергии, беременность (если уместно)
+            <textarea
+              id="ctx-extra"
+              rows="2"
+              maxlength="500"
+              placeholder="Необязательно, кратко"
+              aria-label="Дополнительный контекст"
+            ></textarea>
+          </label>
+        </div>
+      </details>
       <form class="search-row" id="search-form" action="#" method="get">
         <input
           type="search"
@@ -712,7 +805,78 @@
     return 0.55;
   }
 
-  var lastAssistQuery = "";
+  var CLINICAL_SEP = "=== Жалобы и вопрос ===";
+  var CTX_KEYS = { age: "rag_ctx_age", sex: "rag_ctx_sex", extra: "rag_ctx_extra" };
+
+  function patientContextLines() {
+    var ageEl = document.getElementById("ctx-age");
+    var sexEl = document.getElementById("ctx-sex");
+    var exEl = document.getElementById("ctx-extra");
+    var age = ageEl ? ageEl.value.trim() : "";
+    var sex = sexEl && sexEl.value ? String(sexEl.value).trim() : "";
+    var extra = exEl ? exEl.value.trim() : "";
+    var lines = [];
+    if (age) lines.push("Возраст: " + age);
+    if (sex) lines.push("Пол: " + sex);
+    if (extra) lines.push("Дополнительно: " + extra);
+    return lines.join("\n");
+  }
+
+  function buildFullQuery(clinicalText) {
+    var t = String(clinicalText || "").trim();
+    var ctx = patientContextLines();
+    if (!ctx) return t;
+    return (
+      "=== Контекст пациента ===\n" +
+      ctx +
+      "\n" +
+      CLINICAL_SEP +
+      "\n" +
+      t
+    );
+  }
+
+  function stripToClinicalOnly(fullQuery) {
+    var fq = String(fullQuery || "").trim();
+    var ix = fq.indexOf(CLINICAL_SEP);
+    if (ix !== -1) {
+      var rest = fq.slice(ix + CLINICAL_SEP.length).replace(/^\s+/, "");
+      return rest || fq;
+    }
+    return fq;
+  }
+
+  function loadCtxFromStorage() {
+    try {
+      var a = localStorage.getItem(CTX_KEYS.age);
+      var s = localStorage.getItem(CTX_KEYS.sex);
+      var x = localStorage.getItem(CTX_KEYS.extra);
+      if (a && document.getElementById("ctx-age")) document.getElementById("ctx-age").value = a;
+      if (s != null && document.getElementById("ctx-sex")) document.getElementById("ctx-sex").value = s;
+      if (x && document.getElementById("ctx-extra")) document.getElementById("ctx-extra").value = x;
+    } catch (e) {}
+  }
+
+  function bindCtxPersist() {
+    function save() {
+      try {
+        var ae = document.getElementById("ctx-age");
+        var se = document.getElementById("ctx-sex");
+        var xe = document.getElementById("ctx-extra");
+        if (ae) localStorage.setItem(CTX_KEYS.age, ae.value || "");
+        if (se) localStorage.setItem(CTX_KEYS.sex, se.value || "");
+        if (xe) localStorage.setItem(CTX_KEYS.extra, xe.value || "");
+      } catch (e) {}
+    }
+    ["ctx-age", "ctx-sex", "ctx-extra"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener("change", save);
+      el.addEventListener("blur", save);
+    });
+  }
+
+  var lastAssistClinical = "";
   var lastAssistQuestions = [];
 
   function dedupeProtocolsByPath(protocols) {
@@ -801,7 +965,7 @@
     if (!form) return;
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var baseQ = lastAssistQuery || "";
+      var baseQ = lastAssistClinical || "";
       var texts = form.querySelectorAll("textarea[data-qi]");
       var lines = [];
       var ti;
@@ -826,7 +990,7 @@
     var out = document.getElementById("llm-out");
     if (!out) return;
     out.hidden = false;
-    lastAssistQuery = data.query || "";
+    lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
     var j = data.llm_json;
     if (j && typeof j === "object") {
@@ -885,7 +1049,7 @@
         lastAssistQuestions = j.questions_for_patient.slice();
         html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
         html +=
-          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — запрос уйдёт в ИИ снова с вашими уточнениями.</p>';
+          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — к жалобам добавятся ответы; блок «Контекст пациента» выше снова подставится автоматически (возраст, пол).</p>';
         html +=
           '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
@@ -952,15 +1116,19 @@
         "http://127.0.0.1:8787"
       ).replace(/\/$/, "");
       if (baseEl) localStorage.setItem("rag_base", base);
-      var q =
+      var qRaw =
         queryOverride != null && String(queryOverride).trim() !== ""
           ? String(queryOverride).trim()
           : ((document.getElementById("q") || {}).value || "").trim();
-      if (!q) {
+      if (!qRaw) {
         alert("Введите запрос в поле поиска.");
         reject(new Error("empty"));
         return;
       }
+      var qSend =
+        qRaw.indexOf("=== Контекст пациента ===") === 0
+          ? qRaw
+          : buildFullQuery(qRaw);
       var out = document.getElementById("llm-out");
       var st = document.getElementById("llm-status");
       if (out) {
@@ -1010,7 +1178,7 @@
           return fetch(base + "/api/assist", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: q }),
+            body: JSON.stringify({ query: qSend }),
             signal: ctrl.signal,
           }).finally(function () {
             clearTimeout(tid);
@@ -1044,6 +1212,8 @@
         .then(function (data) {
           renderLlmOut(data);
           if (st) st.textContent = "Готово.";
+          var qInput = document.getElementById("q");
+          if (qInput) qInput.value = stripToClinicalOnly(qSend);
           var elOut = document.getElementById("llm-out");
           if (elOut) {
             elOut.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -1098,6 +1268,9 @@
       }
       var badge = document.getElementById("proto-count-badge");
       if (badge) badge.textContent = uniq + " уникальных протоколов";
+
+      loadCtxFromStorage();
+      bindCtxPersist();
 
       var ragBaseEl = document.getElementById("rag-base");
       if (ragBaseEl && localStorage.getItem("rag_base")) {

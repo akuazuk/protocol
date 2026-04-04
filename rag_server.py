@@ -44,6 +44,7 @@ _model = None
 
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
+Если в запросе есть блок «=== Контекст пациента ===» (возраст, пол и т.д.) и «=== Жалобы и вопрос ===», учитывай контекст при выборе детских vs взрослых протоколов и в формулировке summary.
 Клиническая калибровка (обязательно):
 - В summary и differential сначала отражай типичные и частые причины (ОРВИ, фарингит, тонзиллит, ларингит), если они согласуются с запросом и фрагментами.
 - Редкие неотложные состояния (острый эпиглоттит, ретрофарингеальный абсцесс и т.п.) — только при явных красных флагах в тексте запроса (выраженная одышка, слюнотечение, невозможность глотать слюну, быстрое ухудшение) или если это прямо следует из фрагментов. Если пользователь указал нормальное дыхание без одышки — не ставь эпиглоттит первым в дифференциальный ряд и не формулируй ответ так, будто он наиболее вероятен.
@@ -165,8 +166,26 @@ def routing_multiplier(raw_query: str, ch: dict, routing: dict | None) -> float:
     return max(m, 1e-9)
 
 
-def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -> list[dict]:
-    """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1)."""
+def clinical_query_for_rag(full_query: str) -> str:
+    """Текст для лексического RAG: только блок «Жалобы и вопрос», без длинного контекста."""
+    sep = "=== Жалобы и вопрос ==="
+    if sep in full_query:
+        part = full_query.split(sep, 1)[1].strip()
+        return part if part else full_query.strip()
+    return full_query.strip()
+
+
+def retrieve(
+    query: str,
+    max_chunks: int | None = None,
+    max_per_path: int = 2,
+    routing_query: str | None = None,
+) -> list[dict]:
+    """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
+
+    query — короткий текст для подсчёта совпадений с чанками (обычно только жалобы).
+    routing_query — полный запрос для правил возраста/рубрик; если None, берётся query.
+    """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
     use_routing = os.environ.get("RAG_ROUTING", "1").strip().lower() in (
@@ -174,6 +193,7 @@ def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -
         "true",
         "yes",
     )
+    rq = routing_query if routing_query is not None else query
     qtok = set(tokenize_ru(query))
     if not qtok:
         return []
@@ -188,7 +208,7 @@ def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -
         if lex <= 0:
             continue
         mult = (
-            routing_multiplier(query, ch, _routing)
+            routing_multiplier(rq, ch, _routing)
             if use_routing
             else 1.0
         )
@@ -384,7 +404,10 @@ def verify_key() -> dict:
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
     q = body.query.strip()
-    retrieved = retrieve(q)
+    q_rag = clinical_query_for_rag(q)
+    if not q_rag:
+        raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
+    retrieved = retrieve(q_rag, routing_query=q)
     if not retrieved:
         raise HTTPException(status_code=400, detail="Пустой отбор — уточните запрос")
 
