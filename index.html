@@ -468,6 +468,203 @@
       margin: 0;
     }
 
+    .llm-assist-result {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .llm-block {
+      text-align: left;
+    }
+
+    .llm-block-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--green-950);
+      margin: 0 0 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .llm-block-title::before {
+      content: "";
+      width: 4px;
+      height: 1.1em;
+      border-radius: 3px;
+      background: linear-gradient(180deg, var(--green-600), var(--red-500));
+      flex-shrink: 0;
+    }
+
+    .llm-summary-box {
+      margin: 0;
+      padding: 1rem 1.15rem;
+      background: linear-gradient(135deg, #ffffff 0%, #f3faf7 100%);
+      border-radius: 14px;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    .llm-proto-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .llm-proto-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid rgba(13, 92, 74, 0.14);
+      padding: 1rem 1.1rem;
+      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.06);
+    }
+
+    .llm-proto-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .llm-proto-title {
+      flex: 1 1 200px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--green-800);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+
+    .llm-proto-title:hover {
+      text-decoration: underline;
+      color: var(--green-600);
+    }
+
+    .llm-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .llm-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .llm-pill--high {
+      background: #e8f5f1;
+      color: var(--green-800);
+      border: 1px solid var(--green-400);
+    }
+
+    .llm-pill--mid {
+      background: #fff8e8;
+      color: #8a5a00;
+      border: 1px solid rgba(200, 150, 40, 0.45);
+    }
+
+    .llm-pill--low {
+      background: var(--red-100);
+      color: var(--red-700);
+      border: 1px solid rgba(196, 30, 58, 0.35);
+    }
+
+    .llm-pill--rag {
+      background: #eef3fb;
+      color: #2d4a7a;
+      border: 1px solid rgba(45, 74, 122, 0.25);
+    }
+
+    .llm-proto-reason {
+      margin: 0;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .llm-meter {
+      margin-top: 0.65rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .llm-meter label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .llm-meter-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(13, 92, 74, 0.12);
+      overflow: hidden;
+    }
+
+    .llm-meter-bar > span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--green-600), var(--green-400));
+      transition: width 0.35s ease;
+    }
+
+    .llm-meter-bar.rag > span {
+      background: linear-gradient(90deg, #3d6ea8, #6b9bd4);
+    }
+
+    .llm-empty-protos {
+      margin: 0;
+      padding: 0.9rem 1rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+      background: rgba(13, 92, 74, 0.06);
+      border-radius: 12px;
+      border: 1px dashed rgba(13, 92, 74, 0.22);
+    }
+
+    .llm-list-clean {
+      margin: 0.35rem 0 0;
+      padding-left: 1.2rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .llm-list-clean li {
+      margin-bottom: 0.4rem;
+    }
+
+    .llm-disclaimer {
+      margin: 0;
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .llm-search-hint {
+      margin: 0.75rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     .empty,
     .error {
       text-align: center;
@@ -644,6 +841,9 @@
         </div>
         <p class="hint" id="llm-status"></p>
         <div id="llm-out" class="llm-out" hidden></div>
+        <p class="llm-search-hint" id="llm-search-hint" hidden>
+          Карточки полнотекстового поиска ниже скрыты. Нажмите «Найти» или измените запрос, чтобы снова показать список протоколов.
+        </p>
       </details>
     </section>
 
@@ -903,62 +1103,208 @@
     return out;
   }
 
+  function pct01(x) {
+    return Math.round(100 * Math.max(0, Math.min(1, Number(x) || 0)));
+  }
+
+  /** Нормализует score отбора RAG по path (0–1 внутри батча). */
+  function normalizeRagByPath(retrieval) {
+    var m = {};
+    if (!retrieval || !retrieval.length) return m;
+    var maxS = 0;
+    var i;
+    for (i = 0; i < retrieval.length; i++) {
+      var s = retrieval[i].score || 0;
+      if (s > maxS) maxS = s;
+    }
+    if (maxS <= 0) maxS = 1;
+    for (i = 0; i < retrieval.length; i++) {
+      var r = retrieval[i];
+      var p = r.path;
+      var n = (r.score || 0) / maxS;
+      if (!m[p] || n > m[p]) m[p] = n;
+    }
+    return m;
+  }
+
+  /** Оценка 0–1: приоритет confidence_score от модели, иначе текстовая шкала. */
+  function confidenceFromProtocol(pr) {
+    if (pr.confidence_score != null) {
+      var num = Number(pr.confidence_score);
+      if (!isNaN(num)) return Math.max(0, Math.min(1, num));
+    }
+    var c = pr.confidence;
+    if (typeof c === "number" && !isNaN(c)) {
+      return c > 1 ? Math.min(1, c / 100) : Math.max(0, Math.min(1, c));
+    }
+    if (typeof c === "string") {
+      var t = norm(c);
+      if (t.indexOf("низк") !== -1 || t.indexOf("low") !== -1) return 0.28;
+      if (t.indexOf("средн") !== -1 || t.indexOf("medium") !== -1) return 0.58;
+      if (t.indexOf("высок") !== -1 || t.indexOf("high") !== -1) return 0.88;
+    }
+    return 0.55;
+  }
+
+  function pillClassForScore(s) {
+    if (s >= 0.68) return "llm-pill--high";
+    if (s >= 0.45) return "llm-pill--mid";
+    return "llm-pill--low";
+  }
+
+  /** Показываем только протоколы с достаточной уверенностью модели (не «мусор» от RAG). */
+  function filterProtocolsForDisplay(protocols) {
+    if (!protocols || !protocols.length) return [];
+    var THRESH = 0.52;
+    var out = [];
+    var i;
+    for (i = 0; i < protocols.length; i++) {
+      if (confidenceFromProtocol(protocols[i]) >= THRESH) out.push(protocols[i]);
+    }
+    return out;
+  }
+
+  function hideSearchResultsForAi() {
+    var meta = document.getElementById("meta");
+    var results = document.getElementById("results");
+    var hint = document.getElementById("llm-search-hint");
+    if (meta) meta.hidden = true;
+    if (results) results.innerHTML = "";
+    if (hint) hint.hidden = false;
+  }
+
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
     out.hidden = false;
     var j = data.llm_json;
     if (j && typeof j === "object") {
-      var html = "";
+      hideSearchResultsForAi();
+      var ragMap = normalizeRagByPath(data.retrieval || []);
+      var rawProtos = j.protocols || [];
+      var protos = filterProtocolsForDisplay(rawProtos);
+      var html = '<div class="llm-assist-result">';
+
       if (j.summary) {
         html +=
-          "<p><strong>Сводка</strong> " + escapeHtml(j.summary) + "</p>";
+          '<section class="llm-block">' +
+          '<h3 class="llm-block-title">Сводка</h3>' +
+          '<p class="llm-summary-box">' +
+          escapeHtml(j.summary) +
+          "</p></section>";
       }
-      if (j.protocols && j.protocols.length) {
-        html += "<h4>Возможные протоколы</h4>";
+
+      html += '<section class="llm-block">';
+      html += '<h3 class="llm-block-title">Протоколы по оценке модели</h3>';
+      if (protos.length) {
+        html += '<div class="llm-proto-list">';
         var pi;
-        for (pi = 0; pi < j.protocols.length; pi++) {
-          var pr = j.protocols[pi];
+        for (pi = 0; pi < protos.length; pi++) {
+          var pr = protos[pi];
           var href = encodeURI(pr.path || "");
+          var title = formatDisplayTitle(pr.title || pr.path || "");
+          var mScore = confidenceFromProtocol(pr);
+          var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
+          var pillM = pillClassForScore(mScore);
+          var confLabel =
+            typeof pr.confidence === "string"
+              ? pr.confidence
+              : mScore >= 0.68
+                ? "высокая"
+                : mScore >= 0.45
+                  ? "средняя"
+                  : "низкая";
+          html += '<article class="llm-proto-card">';
+          html += '<div class="llm-proto-head">';
           html +=
-            '<a class="proto-link" href="' +
+            '<a class="llm-proto-title" href="' +
             href +
             '" target="_blank" rel="noopener">' +
-            escapeHtml(formatDisplayTitle(pr.title || pr.path || "")) +
+            escapeHtml(title) +
             "</a>";
-          if (pr.match_reason) {
-            html += "<p>" + escapeHtml(pr.match_reason) + "</p>";
-          }
-          if (pr.confidence) {
+          html += '<div class="llm-pill-row">';
+          html +=
+            '<span class="llm-pill ' +
+            pillM +
+            '">модель · ' +
+            pct01(mScore) +
+            "% · " +
+            escapeHtml(confLabel) +
+            "</span>";
+          if (ragN > 0) {
             html +=
-              "<p><em>Уверенность: " + escapeHtml(pr.confidence) + "</em></p>";
+              '<span class="llm-pill llm-pill--rag">схожесть отбора RAG · ' +
+              pct01(ragN) +
+              "%</span>";
           }
+          html += "</div></div>";
+          if (pr.match_reason) {
+            html +=
+              '<p class="llm-proto-reason">' +
+              escapeHtml(pr.match_reason) +
+              "</p>";
+          }
+          html += '<div class="llm-meter">';
+          html +=
+            '<label><span>Применимость по мнению модели</span><span>' +
+            pct01(mScore) +
+            "%</span></label>";
+          html +=
+            '<div class="llm-meter-bar"><span style="width:' +
+            pct01(mScore) +
+            '%"></span></div>';
+          if (ragN > 0) {
+            html +=
+              '<label><span>Схожесть фрагмента с запросом (автоотбор)</span><span>' +
+              pct01(ragN) +
+              "%</span></label>";
+            html +=
+              '<div class="llm-meter-bar rag"><span style="width:' +
+              pct01(ragN) +
+              '%"></span></div>';
+          }
+          html += "</div></article>";
         }
+        html += "</div>";
+      } else if (rawProtos.length) {
+        html +=
+          '<p class="llm-empty-protos">Ни один из предложенных фрагментов не прошёл порог уверенности для показа (все отмечены как слабо релевантные к жалобе). Ориентируйтесь на сводку и дифференциальный ряд ниже; при необходимости уточните запрос или воспользуйтесь полнотекстовым поиском.</p>';
+      } else {
+        html +=
+          '<p class="llm-empty-protos">В ответе модели нет списка протоколов.</p>';
       }
+      html += "</section>";
+
       if (j.differential && j.differential.length) {
         html +=
-          "<h4>Дифференциальный ряд (для обсуждения с врачом)</h4><ul>";
+          '<section class="llm-block"><h3 class="llm-block-title">Дифференциальный ряд</h3><p style="margin:0 0 0.4rem;font-size:0.82rem;color:var(--muted)">Для обсуждения с врачом, не диагноз.</p><ul class="llm-list-clean">';
         var di;
         for (di = 0; di < j.differential.length; di++) {
           html += "<li>" + escapeHtml(j.differential[di]) + "</li>";
         }
-        html += "</ul>";
+        html += "</ul></section>";
       }
+
       if (j.questions_for_patient && j.questions_for_patient.length) {
-        html += "<h4>Уточняющие вопросы</h4><ul>";
+        html +=
+          '<section class="llm-block"><h3 class="llm-block-title">Уточняющие вопросы</h3><ol class="llm-list-clean">';
         var qi;
         for (qi = 0; qi < j.questions_for_patient.length; qi++) {
           html += "<li>" + escapeHtml(j.questions_for_patient[qi]) + "</li>";
         }
-        html += "</ul>";
+        html += "</ol></section>";
       }
+
       if (j.disclaimer) {
         html +=
-          '<p class="note">' + escapeHtml(j.disclaimer) + "</p>";
+          '<p class="llm-disclaimer">' + escapeHtml(j.disclaimer) + "</p>";
       }
+
+      html += "</div>";
       out.innerHTML = html;
       return;
     }
+    hideSearchResultsForAi();
     out.innerHTML =
       "<pre style=\"white-space:pre-wrap;margin:0\">" +
       escapeHtml(data.llm_text || "") +
@@ -1337,8 +1683,12 @@
         "Опишите симптомы свободно — поиск учитывает текст протоколов, семантику и направление.";
       document.getElementById("meta").hidden = true;
       document.getElementById("results").innerHTML = "";
+      var hintAi = document.getElementById("llm-search-hint");
+      if (hintAi) hintAi.hidden = true;
       return;
     }
+    var hintAiClear = document.getElementById("llm-search-hint");
+    if (hintAiClear) hintAiClear.hidden = true;
 
     var protocols = searchState.protocols;
     var lexEngine = searchState.chunkMiniSearch || searchState.miniSearch;
