@@ -1027,12 +1027,13 @@
             out.innerHTML =
               "<p>Запрос к Gemini… <strong>" +
               sec +
-              "</strong> с</p><p class=\"llm-wait-hint\">Обычно до 90 с; при таймауте покажем ошибку (~110 с).</p>";
+              "</strong> с</p><p class=\"llm-wait-hint\">На большом контексте ответ может занимать 2–4 минуты — это нормально.</p>";
           }, 1000);
+          var assistTimeoutMs = 240000;
           var ctrl = new AbortController();
           var tid = setTimeout(function () {
             ctrl.abort();
-          }, 110000);
+          }, assistTimeoutMs);
           return fetch(base + "/api/assist", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -1080,7 +1081,7 @@
           var msg = String(err.message || err);
           if (err && err.name === "AbortError") {
             msg =
-              "Превышено время ожидания (~110 с). Проверьте сеть или уменьшите запрос.";
+              "Превышено время ожидания (~4 мин). Увеличьте GEMINI_CALL_TIMEOUT в .env и перезапустите uvicorn, либо сократите текст запроса.";
           }
           if (msg.indexOf("Failed to fetch") !== -1) {
             msg =

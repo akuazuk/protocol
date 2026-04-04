@@ -8,7 +8,7 @@
   uvicorn rag_server:app --host 127.0.0.1 --port 8787 --reload
 
 Переменные подхватываются из .env и .env.local (см. python-dotenv).
-По умолчанию модель gemini-2.5-flash; таймаут — GEMINI_CALL_TIMEOUT.
+По умолчанию модель gemini-2.5-flash; таймаут вызова Gemini — GEMINI_CALL_TIMEOUT (сек), по умолчанию 180.
 
 Фронт (index.html) дергает POST /api/assist — ключ в браузер не передаётся.
 """
@@ -71,7 +71,7 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
-def retrieve(query: str, max_chunks: int = 12, max_per_path: int = 3) -> list[dict]:
+def retrieve(query: str, max_chunks: int = 8, max_per_path: int = 2) -> list[dict]:
     """Простой лексический отбор без тяжёлых зависимостей."""
     qtok = set(tokenize_ru(query))
     if not qtok:
@@ -101,7 +101,7 @@ def retrieve(query: str, max_chunks: int = 12, max_per_path: int = 3) -> list[di
                 "title": ch.get("title") or "",
                 "kind": ch.get("kind") or "general",
                 "score": round(sc, 3),
-                "excerpt": (ch.get("text") or "")[:900],
+                "excerpt": (ch.get("text") or "")[:550],
             }
         )
         if len(out) >= max_chunks:
@@ -109,7 +109,8 @@ def retrieve(query: str, max_chunks: int = 12, max_per_path: int = 3) -> list[di
     return out
 
 
-GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "90"))
+# Большой промпт + Gemini могут занимать 2–3+ мин; клиент в index.html ждёт дольше сервера
+GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "180"))
 
 
 def get_gemini():
@@ -250,8 +251,8 @@ def api_assist(body: AssistIn) -> dict:
 
     user_block = f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
-    if len(full_prompt) > 28000:
-        full_prompt = full_prompt[:27900] + "\n…[обрезано для лимита]"
+    if len(full_prompt) > 22000:
+        full_prompt = full_prompt[:21900] + "\n…[обрезано для лимита]"
 
     model = get_gemini()
     try:
