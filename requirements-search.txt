@@ -1,5 +1,11 @@
-# Извлечение текста из PDF
+# Извлечение текста из PDF (полный текст; без pymupdf индекс неполный)
 pymupdf>=1.23.0
+
+# Пайплайн после обновления PDF:
+#   python3 extract_corpus.py
+#   python3 build_chunks.py
+#   python3 build_structured_index.py
+#   python3 build_semantic_embeddings.py   # опционально, нужен torch
 
 # Семантические эмбеддинги (опционально, для embeddings.json)
 sentence-transformers>=2.2.0

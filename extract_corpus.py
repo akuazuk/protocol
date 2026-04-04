@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -13,7 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "minzdrav_protocols"
 OUT = ROOT / "corpus.json"
-MAX_CHARS = 8000
+# 0 = без обрезки (раньше было 8000 — отрезало почти весь протокол и ломало поиск)
+MAX_CHARS = int(os.environ.get("CORPUS_MAX_CHARS", "0"))
 
 _WS = re.compile(r"\s+")
 
@@ -31,7 +33,7 @@ def extract_text(pdf_path: Path) -> str:
         parts.append(page.get_text("text") or "")
     doc.close()
     text = _WS.sub(" ", "\n".join(parts)).strip()
-    if len(text) > MAX_CHARS:
+    if MAX_CHARS > 0 and len(text) > MAX_CHARS:
         text = text[:MAX_CHARS] + "…"
     return text
 

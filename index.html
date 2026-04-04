@@ -551,8 +551,7 @@
         <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
       </p>
       <p>
-        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> (весь текст PDF) → <code>build_structured_index.py</code> (фрагменты диагностика/лечение + поле поиска) → <code>build_semantic_embeddings.py</code> (векторы по структурированному описанию) + <code>symptom_routing.json</code> (маршрут симптомов).
-        Диагнозы на карточках — выдержки из протокола, не заключение врача. Полноценный диалоговый LLM — только с backend.
+        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> (полный текст PDF) → <code>build_chunks.py</code> (фрагменты для поиска) + <code>build_structured_index.py</code> (блоки диагностика/лечение для карточек) → <code>build_semantic_embeddings.py</code> (усреднение e5 по чанкам) + <code>symptom_routing.json</code>. Выдержки — из протокола, не заключение врача. Диалог с уточнениями и «возможный диагноз» в свободной форме — с backend и LLM.
       </p>
       <p>
         Просмотр: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
@@ -784,15 +783,6 @@
     return s;
   }
 
-  function buildCorpusMap(corpusRows) {
-    var m = {};
-    for (var i = 0; i < corpusRows.length; i++) {
-      var r = corpusRows[i];
-      m[r.path] = r;
-    }
-    return m;
-  }
-
   function buildEmbMap(embPayload) {
     var m = {};
     if (!embPayload || !embPayload.items) return m;
@@ -812,6 +802,52 @@
     return m;
   }
 
+  function buildProtocolPathMap(protocols) {
+    var m = {};
+    for (var i = 0; i < protocols.length; i++) {
+      m[protocols[i].path] = protocols[i];
+    }
+    return m;
+  }
+
+  function buildChunkById(chunks) {
+    var m = {};
+    for (var i = 0; i < chunks.length; i++) {
+      m[chunks[i].id] = chunks[i];
+    }
+    return m;
+  }
+
+  /** Полнотекст по скользящим фрагментам клинической части (chunks.json) */
+  function buildChunkMiniSearch(chunks, protocolByPath) {
+    if (!chunks || !chunks.length || typeof MiniSearch === "undefined") return null;
+    var docs = [];
+    for (var i = 0; i < chunks.length; i++) {
+      var c = chunks[i];
+      var p = protocolByPath[c.path] || {};
+      var cat = c.category || p.category || "";
+      var catLabel = CATEGORY_LABELS[cat] || "";
+      var t = c.title || p.title || "";
+      docs.push({
+        id: c.id,
+        path: c.path,
+        title: t,
+        text: c.text || "",
+        kind: c.kind || "general",
+        search_text:
+          (c.text || "") + " " + t + " " + catLabel + " " + cat,
+        catLabel: catLabel,
+      });
+    }
+    var ms = new MiniSearch({
+      fields: ["text", "search_text", "title", "kind", "catLabel"],
+      idField: "id",
+    });
+    ms.addAll(docs);
+    return ms;
+  }
+
+  /** Запасной вариант без chunks.json: только structured + заголовки */
   function buildMiniSearch(protocols, corpusByPath, structuredByPath) {
     if (typeof MiniSearch === "undefined") return null;
     var docs = [];
@@ -855,6 +891,8 @@
     corpusByPath: null,
     structuredByPath: null,
     miniSearch: null,
+    chunkMiniSearch: null,
+    chunkById: null,
     embMap: null,
     embedder: null,
     embedderPromise: null,
@@ -976,10 +1014,9 @@
     }
 
     var protocols = searchState.protocols;
-    var corpusByPath = searchState.corpusByPath || {};
-    var miniSearch = searchState.miniSearch;
+    var lexEngine = searchState.chunkMiniSearch || searchState.miniSearch;
     var embMap = searchState.embMap;
-    var hasCorpus = miniSearch !== null;
+    var hasLex = lexEngine !== null;
     var hasEmb = !!(embMap && Object.keys(embMap).length > 0);
 
     var fqNorm = norm(q);
@@ -993,7 +1030,9 @@
 
     var modeParts = [];
     modeParts.push("название");
-    if (hasCorpus) modeParts.push("PDF");
+    if (hasLex) {
+      modeParts.push(searchState.chunkMiniSearch ? "полнотекст по чанкам" : "текст карточки");
+    }
     if (hasEmb) modeParts.push("семантика e5");
     if (searchState.routing) modeParts.push("маршрут симптомов");
     hint.innerHTML =
@@ -1012,23 +1051,38 @@
     var qLex =
       q +
       (extra.length ? " " + extra.join(" ") : "");
-    if (miniSearch) {
-      var msRes = miniSearch.search(qLex, {
+    if (lexEngine) {
+      var boost = searchState.chunkMiniSearch
+        ? {
+            text: 2.0,
+            search_text: 1.45,
+            title: 2.4,
+            kind: 1.15,
+            catLabel: 1.55,
+          }
+        : {
+            title: 2.5,
+            diagnosis: 2.2,
+            treatment: 2.2,
+            search_text: 1.35,
+            summary: 1.1,
+            catLabel: 1.5,
+            category: 1.05,
+          };
+      var msRes = lexEngine.search(qLex, {
         fuzzy: 0.08,
         prefix: true,
-        boost: {
-          title: 2.5,
-          diagnosis: 2.2,
-          treatment: 2.2,
-          search_text: 1.35,
-          summary: 1.1,
-          catLabel: 1.5,
-          category: 1.05,
-        },
+        boost: boost,
       });
       for (i = 0; i < msRes.length; i++) {
-        msByPath[msRes[i].id] = msRes[i].score;
-        if (msRes[i].score > maxMs) maxMs = msRes[i].score;
+        var pth = msRes[i].id;
+        if (searchState.chunkMiniSearch) {
+          var ch = searchState.chunkById[msRes[i].id];
+          if (ch) pth = ch.path;
+        }
+        var sc = msRes[i].score;
+        if (!msByPath[pth] || sc > msByPath[pth]) msByPath[pth] = sc;
+        if (sc > maxMs) maxMs = sc;
       }
     }
 
@@ -1061,9 +1115,9 @@
       var lexAdj = lexN * routeM;
       var legAdj = legN * routeM;
       var combined;
-      if (hasCorpus && embOk && qv) {
+      if (hasLex && embOk && qv) {
         combined = 0.56 * semAdj + 0.3 * lexAdj + 0.14 * legAdj;
-      } else if (hasCorpus && !embOk) {
+      } else if (hasLex && !embOk) {
         combined = 0.62 * lexAdj + 0.38 * legAdj;
       } else if (embOk && qv) {
         combined = 0.72 * semAdj + 0.18 * legAdj + 0.1 * lexAdj;
@@ -1089,7 +1143,7 @@
       if (!r.ok) throw new Error("protocols.json: " + r.status);
       return r.json();
     }),
-    fetch("corpus.json")
+    fetch("chunks.json")
       .then(function (r) {
         return r.ok ? r.json() : [];
       })
@@ -1120,19 +1174,22 @@
   ])
     .then(function (all) {
       var protocols = all[0];
-      var corpusRows = all[1] || [];
+      var chunkRows = all[1] || [];
       var structuredRows = all[2] || [];
       var embPayload = all[3];
       var routing = all[4];
 
       searchState.protocols = protocols;
-      searchState.corpusByPath = buildCorpusMap(corpusRows);
+      searchState.corpusByPath = {};
       searchState.structuredByPath = buildStructuredMap(structuredRows);
       searchState.embMap = buildEmbMap(embPayload || {});
       searchState.routing = routing;
+      var protocolByPath = buildProtocolPathMap(protocols);
+      searchState.chunkById = buildChunkById(chunkRows);
+      searchState.chunkMiniSearch = buildChunkMiniSearch(chunkRows, protocolByPath);
       searchState.miniSearch = buildMiniSearch(
         protocols,
-        searchState.corpusByPath,
+        {},
         searchState.structuredByPath
       );
 
