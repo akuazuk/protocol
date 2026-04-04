@@ -46,7 +46,7 @@ def verify_gemini_key() -> tuple[bool, str]:
 
     try:
         genai.configure(api_key=key)
-        name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+        name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
         model = genai.GenerativeModel(name)
         r = model.generate_content(
             "Ответь одним словом «да», если получил запрос и готов отвечать на вопросы по медицинским текстам.",

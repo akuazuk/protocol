@@ -8,7 +8,7 @@
   uvicorn rag_server:app --host 127.0.0.1 --port 8787 --reload
 
 Переменные подхватываются из .env и .env.local (см. python-dotenv).
-По умолчанию модель gemini-2.0-flash; таймаут — GEMINI_CALL_TIMEOUT.
+По умолчанию модель gemini-2.5-flash; таймаут — GEMINI_CALL_TIMEOUT.
 
 Фронт (index.html) дергает POST /api/assist — ключ в браузер не передаётся.
 """
@@ -130,7 +130,7 @@ def get_gemini():
             detail="Установите: pip install google-generativeai",
         ) from e
     genai.configure(api_key=key)
-    name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
     _model = genai.GenerativeModel(name)
     return _model
 
@@ -223,7 +223,7 @@ def verify_key() -> dict:
     return {
         "ok": True,
         "reply_preview": msg,
-        "model": os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+        "model": os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
     }
 
 
