@@ -365,6 +365,102 @@
       color: #2c3e38;
     }
 
+    .llm-panel {
+      margin-top: 1.35rem;
+      padding: 1rem 1.25rem;
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: var(--radius);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      text-align: left;
+    }
+
+    .llm-panel summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+
+    .llm-note {
+      margin: 0.65rem 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .llm-note code {
+      font-size: 0.78rem;
+      word-break: break-all;
+    }
+
+    .llm-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+      margin-top: 0.85rem;
+    }
+
+    .llm-toolbar label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .llm-toolbar input[type="url"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(13, 92, 74, 0.28);
+      font-family: inherit;
+    }
+
+    .btn-assist {
+      background: var(--green-800);
+      color: #fff;
+      border: none;
+      padding: 0.55rem 1.05rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-assist:hover {
+      background: var(--green-600);
+    }
+
+    .llm-out {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem;
+      background: #f4faf7;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      border: 1px solid rgba(13, 92, 74, 0.12);
+    }
+
+    .llm-out h4 {
+      margin: 0.85rem 0 0.4rem;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--green-950);
+    }
+
+    .llm-out .proto-link {
+      display: inline-block;
+      margin: 0.25rem 0;
+      font-weight: 600;
+      color: var(--green-800);
+    }
+
+    .llm-out .error {
+      color: var(--red-700);
+      margin: 0;
+    }
+
     .empty,
     .error {
       text-align: center;
@@ -518,6 +614,29 @@
         <button type="submit" class="btn">Найти</button>
       </form>
       <p class="hint" id="hint"></p>
+
+      <details class="llm-panel">
+        <summary>ИИ-подбор по протоколам (Gemini, локальный сервер)</summary>
+        <p class="llm-note">
+          Ключ <code>GOOGLE_API_KEY</code> задаётся только на сервере (не в браузере). Запуск:
+          <code>pip install -r requirements-rag.txt</code> →
+          <code>uvicorn rag_server:app --host 127.0.0.1 --port 8787</code>
+        </p>
+        <div class="llm-toolbar">
+          <label for="rag-base">URL API</label>
+          <input
+            type="url"
+            id="rag-base"
+            value="http://127.0.0.1:8787"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Базовый URL сервера RAG"
+          />
+          <button type="button" class="btn-assist" id="btn-assist">Уточнить по ИИ</button>
+        </div>
+        <p class="hint" id="llm-status"></p>
+        <div id="llm-out" class="llm-out" hidden></div>
+      </details>
     </section>
 
     <details class="structure-panel">
@@ -551,7 +670,7 @@
         <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
       </p>
       <p>
-        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> (полный текст PDF) → <code>build_chunks.py</code> (фрагменты для поиска) + <code>build_structured_index.py</code> (блоки диагностика/лечение для карточек) → <code>build_semantic_embeddings.py</code> (усреднение e5 по чанкам) + <code>symptom_routing.json</code>. Выдержки — из протокола, не заключение врача. Диалог с уточнениями и «возможный диагноз» в свободной форме — с backend и LLM.
+        <strong>Цепочка данных:</strong> <code>extract_corpus.py</code> → <code>build_chunks.py</code> + <code>build_structured_index.py</code> → <code>build_semantic_embeddings.py</code> + <code>symptom_routing.json</code>. Опционально <code>rag_server.py</code> (Gemini RAG по чанкам). Выдержки — из протокола, не заключение врача.
       </p>
       <p>
         Просмотр: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
@@ -774,6 +893,130 @@
       out.push(scored[i]);
     }
     return out;
+  }
+
+  function renderLlmOut(data) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    out.hidden = false;
+    var j = data.llm_json;
+    if (j && typeof j === "object") {
+      var html = "";
+      if (j.summary) {
+        html +=
+          "<p><strong>Сводка</strong> " + escapeHtml(j.summary) + "</p>";
+      }
+      if (j.protocols && j.protocols.length) {
+        html += "<h4>Возможные протоколы</h4>";
+        var pi;
+        for (pi = 0; pi < j.protocols.length; pi++) {
+          var pr = j.protocols[pi];
+          var href = encodeURI(pr.path || "");
+          html +=
+            '<a class="proto-link" href="' +
+            href +
+            '" target="_blank" rel="noopener">' +
+            escapeHtml(formatDisplayTitle(pr.title || pr.path || "")) +
+            "</a>";
+          if (pr.match_reason) {
+            html += "<p>" + escapeHtml(pr.match_reason) + "</p>";
+          }
+          if (pr.confidence) {
+            html +=
+              "<p><em>Уверенность: " + escapeHtml(pr.confidence) + "</em></p>";
+          }
+        }
+      }
+      if (j.differential && j.differential.length) {
+        html +=
+          "<h4>Дифференциальный ряд (для обсуждения с врачом)</h4><ul>";
+        var di;
+        for (di = 0; di < j.differential.length; di++) {
+          html += "<li>" + escapeHtml(j.differential[di]) + "</li>";
+        }
+        html += "</ul>";
+      }
+      if (j.questions_for_patient && j.questions_for_patient.length) {
+        html += "<h4>Уточняющие вопросы</h4><ul>";
+        var qi;
+        for (qi = 0; qi < j.questions_for_patient.length; qi++) {
+          html += "<li>" + escapeHtml(j.questions_for_patient[qi]) + "</li>";
+        }
+        html += "</ul>";
+      }
+      if (j.disclaimer) {
+        html +=
+          '<p class="note">' + escapeHtml(j.disclaimer) + "</p>";
+      }
+      out.innerHTML = html;
+      return;
+    }
+    out.innerHTML =
+      "<pre style=\"white-space:pre-wrap;margin:0\">" +
+      escapeHtml(data.llm_text || "") +
+      "</pre>";
+  }
+
+  function runGeminiAssist() {
+    return new Promise(function (resolve, reject) {
+      var baseEl = document.getElementById("rag-base");
+      var base = (
+        (baseEl && baseEl.value) ||
+        "http://127.0.0.1:8787"
+      ).replace(/\/$/, "");
+      if (baseEl) localStorage.setItem("rag_base", base);
+      var q = (document.getElementById("q") || {}).value || "";
+      q = q.trim();
+      if (!q) {
+        alert("Введите запрос в поле поиска.");
+        reject(new Error("empty"));
+        return;
+      }
+      var out = document.getElementById("llm-out");
+      var st = document.getElementById("llm-status");
+      if (out) {
+        out.hidden = false;
+        out.innerHTML = "<p>Запрос к Gemini…</p>";
+      }
+      if (st) st.textContent = "";
+      fetch(base + "/api/assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: q }),
+      })
+        .then(function (r) {
+          return r.json().then(function (j) {
+            if (!r.ok) {
+              var d = j.detail;
+              if (Array.isArray(d)) {
+                d = d
+                  .map(function (x) {
+                    return x.msg || JSON.stringify(x);
+                  })
+                  .join("; ");
+              }
+              throw new Error(d || r.statusText);
+            }
+            return j;
+          });
+        })
+        .then(function (data) {
+          renderLlmOut(data);
+          if (st) st.textContent = "Готово.";
+          resolve();
+        })
+        .catch(function (err) {
+          if (out) {
+            out.hidden = false;
+            out.innerHTML =
+              '<p class="error">Не удалось: ' +
+              escapeHtml(String(err.message || err)) +
+              "</p>";
+          }
+          if (st) st.textContent = "";
+          reject(err);
+        });
+    });
   }
 
   function dot(a, b) {
@@ -1204,6 +1447,17 @@
       }
       var badge = document.getElementById("proto-count-badge");
       if (badge) badge.textContent = uniq + " уникальных протоколов";
+
+      var ragBaseEl = document.getElementById("rag-base");
+      if (ragBaseEl && localStorage.getItem("rag_base")) {
+        ragBaseEl.value = localStorage.getItem("rag_base");
+      }
+      var btnAssist = document.getElementById("btn-assist");
+      if (btnAssist) {
+        btnAssist.addEventListener("click", function () {
+          runGeminiAssist().catch(function () {});
+        });
+      }
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
