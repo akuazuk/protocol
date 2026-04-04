@@ -42,24 +42,30 @@ _protocols_by_path: dict[str, dict] = {}
 _model = None
 
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
-Ниже пользователь даёт жалобы/ситуацию и автоматически отобранные фрагменты PDF (могут быть неполными). Не выдумывай факты вне фрагментов.
-Ответь одним JSON-объектом (без markdown и без текста до/после JSON) по схеме:
+Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
+Верни ОДИН JSON-объект (без markdown, без текста до/после).
+Схема полей:
 {
-  "summary": "текст сводки",
-  "protocols": [
-    {"path": "относительный путь к pdf как в данных", "title": "читаемое название", "match_reason": "кратко", "confidence": "низкая|средняя|высокая", "confidence_score": 0.0}
-  ],
-  "differential": ["1–3 направления для обсуждения с врачом"],
-  "questions_for_patient": ["1–3 коротких вопроса"],
-  "disclaimer": "Информация из протоколов; не замена очной консультации и не медицинское заключение."
+  "summary": "…",
+  "protocols": [{"path":"…","title":"…","match_reason":"…","confidence":"низкая|средняя|высокая","confidence_score":0.0}],
+  "differential": ["…","…"],
+  "questions_for_patient": ["…","…"],
+  "disclaimer": "Информация из протоколов; не замена очной консультации."
 }
-ОБЯЗАТЕЛЬНО (чтобы ответ не обрывался по лимиту токенов):
-- summary: ровно 3–4 коротких предложения на русском; каждое заканчивается точкой; суммарно не длиннее ~450 символов. Пиши сжато, без повторов.
-- match_reason: одно короткое предложение, не длиннее 140 символов.
-- differential: по 2–5 слов на пункт, не длинные формулировки.
-- questions_for_patient: по одному короткому вопросу в строке.
-- protocols: перечисли ВСЕ уникальные path из входных фрагментов; confidence_score 0.0–1.0 (0.0–0.35 слабо, 0.4–0.65 частично, 0.7+ уместно).
-- Не обрывай слова и предложения: лучше укороти текст, чем оставить незавершённое слово."""
+ЖЁСТКИЕ ЛИМИТЫ (иначе ответ обрежется посередине):
+- summary: РОВНО 2 предложения на русском, каждое заканчивается точкой. Вместе НЕ ДЛИННЕЕ 280 символов (с пробелами). Без тире в конце; последний символ — точка.
+- match_reason: не длиннее 70 символов, одно короткое предложение или фраза, законченная по смыслу.
+- differential: ровно 2 строки, каждая 3–8 слов.
+- questions_for_patient: ровно 2 коротких вопроса.
+- protocols: все уникальные path из входных фрагментов; confidence_score 0.0–1.0.
+Если не хватает места — сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
+
+SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН компактный JSON (без markdown).
+Предыдущая попытка оборвалась по длине. Сделай ещё короче:
+- summary: РОВНО 2 коротких предложения, ВМЕСТЕ максимум 220 символов, последний символ — точка.
+- match_reason: до 55 символов на протокол.
+- differential: 2 коротких пункта; questions_for_patient: 2 коротких вопроса.
+Сохрани все path из фрагментов. Не обрывай слова."""
 
 
 def load_data() -> None:
@@ -77,8 +83,10 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
-def retrieve(query: str, max_chunks: int = 10, max_per_path: int = 2) -> list[dict]:
+def retrieve(query: str, max_chunks: int | None = None, max_per_path: int = 2) -> list[dict]:
     """Простой лексический отбор без тяжёлых зависимостей."""
+    if max_chunks is None:
+        max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
     qtok = set(tokenize_ru(query))
     if not qtok:
         return []
@@ -108,7 +116,7 @@ def retrieve(query: str, max_chunks: int = 10, max_per_path: int = 2) -> list[di
                 "kind": ch.get("kind") or "general",
                 "score": round(sc, 3),
                 "excerpt": (ch.get("text") or "")[
-                    : int(os.environ.get("RAG_EXCERPT_CHARS", "1200"))
+                    : int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
                 ],
             }
         )
@@ -177,7 +185,7 @@ def _gemini_finish_reason(resp) -> str | None:
 def _generate_blocking(model, full_prompt: str):
     import google.generativeai as genai
 
-    max_out = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "8192"))
+    max_out = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "16384"))
     use_json = os.environ.get("GEMINI_JSON_MODE", "1").strip().lower() in (
         "1",
         "true",
@@ -207,6 +215,25 @@ def generate_gemini(model, full_prompt: str):
                 status_code=504,
                 detail=f"Таймаут Gemini ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
             ) from e
+
+
+def _try_parse_json(t: str) -> dict | None:
+    if not t:
+        return None
+    s = t.strip()
+    if "```" in s:
+        s = re.sub(r"^```(?:json)?\s*", "", s, flags=re.M)
+        s = re.sub(r"\s*```\s*$", "", s, flags=re.M)
+    try:
+        out = json.loads(s)
+        return out if isinstance(out, dict) else None
+    except json.JSONDecodeError:
+        return None
+
+
+def _finish_hits_max(resp) -> bool:
+    fr = (_gemini_finish_reason(resp) or "").upper()
+    return "MAX" in fr or "LENGTH" in fr
 
 
 load_data()
@@ -286,46 +313,62 @@ def api_assist(body: AssistIn) -> dict:
         full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
 
     model = get_gemini()
+    retry_used = False
+
+    def _one_call(prompt: str) -> tuple[object, str, dict | None]:
+        try:
+            r = generate_gemini(model, prompt)
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=f"Gemini: {e!s}") from e
+
+        pf = getattr(r, "prompt_feedback", None)
+        if pf is not None and getattr(pf, "block_reason", None):
+            raise HTTPException(
+                status_code=502,
+                detail=f"Запрос отклонён моделью: {pf.block_reason}",
+            )
+
+        txt = _extract_gemini_text(r)
+        if not txt:
+            raise HTTPException(
+                status_code=502,
+                detail="Пустой ответ Gemini (блокировка контента или сбой). Попробуйте другую формулировку.",
+            )
+        return r, txt, _try_parse_json(txt)
+
     try:
-        resp = generate_gemini(model, full_prompt)
+        resp, text, parsed = _one_call(full_prompt)
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Gemini: {e!s}") from e
-
-    pf = getattr(resp, "prompt_feedback", None)
-    if pf is not None and getattr(pf, "block_reason", None):
-        raise HTTPException(
-            status_code=502,
-            detail=f"Запрос отклонён моделью: {pf.block_reason}",
-        )
-
-    text = _extract_gemini_text(resp)
-    if not text:
-        raise HTTPException(
-            status_code=502,
-            detail="Пустой ответ Gemini (блокировка контента или сбой). Попробуйте другую формулировку.",
-        )
-
-    parsed = None
-    raw = text
-    t = text
-    if "```" in t:
-        t = re.sub(r"^```(?:json)?\s*", "", t, flags=re.M)
-        t = re.sub(r"\s*```\s*$", "", t, flags=re.M)
-    try:
-        parsed = json.loads(t)
-    except json.JSONDecodeError:
-        parsed = None
 
     finish = _gemini_finish_reason(resp)
+    do_retry = os.environ.get("GEMINI_ASSIST_RETRY", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if do_retry and (parsed is None or _finish_hits_max(resp)):
+        retry_prompt = SYSTEM_JSON_RETRY + "\n\n---\n\n" + user_block
+        if len(retry_prompt) > prompt_limit:
+            retry_prompt = retry_prompt[: prompt_limit - 80] + "\n…[обрезано]"
+        try:
+            resp2, text2, parsed2 = _one_call(retry_prompt)
+        except HTTPException:
+            pass
+        else:
+            retry_used = True
+            resp, text, parsed = resp2, text2, parsed2
+            finish = _gemini_finish_reason(resp)
 
     return {
         "query": q,
         "retrieval": retrieved,
-        "llm_text": raw,
+        "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,
+        "gemini_retry_used": retry_used,
     }
 
 

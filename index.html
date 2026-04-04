@@ -922,6 +922,10 @@
         html +=
           '<p class="llm-ai-note" style="margin-top:0.75rem">Ответ был обрезан по лимиту длины у модели. В <code>.env</code> увеличьте <code>GEMINI_MAX_OUTPUT_TOKENS</code> и перезапустите uvicorn.</p>';
       }
+      if (data.gemini_retry_used) {
+        html +=
+          '<p class="llm-ai-note" style="margin-top:0.5rem">Выполнен повторный запрос к модели (первый ответ был неполным или не удалось разобрать JSON).</p>';
+      }
 
       html += "</div></div>";
       out.innerHTML = html;
