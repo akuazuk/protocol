@@ -364,7 +364,7 @@
       line-height: 1.5;
     }
 
-    .llm-ai-card {
+    .assist-card {
       margin: 0;
       padding: 1.25rem 1.35rem;
       background: linear-gradient(145deg, #ffffff 0%, #f5fbf8 100%);
@@ -374,7 +374,7 @@
       text-align: left;
     }
 
-    .llm-ai-lead {
+    .assist-lead {
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.7;
@@ -526,13 +526,13 @@
       margin-top: 0.35rem;
     }
 
-    .llm-ai-hr {
+    .assist-hr {
       border: none;
       border-top: 1px solid rgba(13, 92, 74, 0.12);
       margin: 1rem 0;
     }
 
-    .llm-ai-sec-label {
+    .assist-sec-label {
       display: block;
       font-family: "Fraunces", Georgia, serif;
       font-size: 0.82rem;
@@ -541,54 +541,54 @@
       margin-bottom: 0.45rem;
     }
 
-    .llm-ai-proto-list {
+    .assist-proto-list {
       margin: 0;
       padding-left: 1.1rem;
       font-size: 0.9rem;
       line-height: 1.55;
     }
 
-    .llm-ai-proto-list li {
+    .assist-proto-list li {
       margin-bottom: 0.65rem;
     }
 
-    .llm-ai-proto-list a {
+    .assist-proto-list a {
       font-weight: 600;
       color: var(--green-800);
     }
 
-    .llm-ai-pct {
+    .assist-pct {
       font-size: 0.78rem;
       font-weight: 700;
       color: var(--green-600);
       margin-left: 0.25rem;
     }
 
-    .llm-ai-pct-rag {
+    .assist-pct-rag {
       color: #3d6ea8;
     }
 
-    .llm-ai-reason {
+    .assist-reason {
       margin: 0.35rem 0 0;
       font-size: 0.82rem;
       color: var(--muted);
       font-weight: 400;
     }
 
-    .llm-ai-compact {
+    .assist-compact {
       margin: 0.25rem 0 0;
       padding-left: 1.15rem;
       font-size: 0.88rem;
       line-height: 1.55;
     }
 
-    .llm-ai-note {
+    .assist-note {
       margin: 0.5rem 0 0;
       font-size: 0.85rem;
       color: var(--muted);
     }
 
-    .llm-ai-raw {
+    .assist-raw {
       margin: 0;
       white-space: pre-wrap;
       font-size: 0.88rem;
@@ -976,13 +976,13 @@
       "%</span>";
     if (ragN > 0) {
       html +=
-        '<span class="llm-ai-pct llm-ai-pct-rag" title="Сходство фрагмента протокола с запросом"> · фрагмент ' +
+        '<span class="assist-pct assist-pct-rag" title="Сходство фрагмента протокола с запросом"> · фрагмент ' +
         pct01(ragN) +
         "%</span>";
     }
     if (pr.match_reason) {
       html +=
-        '<p class="llm-ai-reason">' + escapeHtml(pr.match_reason) + "</p>";
+        '<p class="assist-reason">' + escapeHtml(pr.match_reason) + "</p>";
     }
     html += "</li>";
     return html;
@@ -1008,7 +1008,7 @@
         lines.join("\n\n");
       var qInput = document.getElementById("q");
       if (qInput) qInput.value = combined;
-      runGeminiAssist(combined).catch(function (err) {
+      runAssist(combined).catch(function (err) {
         console.error(err);
       });
     });
@@ -1034,18 +1034,18 @@
           low.push(rawProtos[hi]);
         }
       }
-      var html = '<div class="llm-ai-card"><div class="llm-ai-card-inner">';
+      var html = '<div class="assist-card"><div class="assist-card-inner">';
 
       if (j.summary) {
         html +=
-          '<div class="llm-ai-lead">' + formatSummaryHtml(j.summary) + "</div>";
+          '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
 
       if (rawProtos.length) {
-        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
-        html += '<span class="llm-ai-sec-label">Протоколы и оценка соответствия</span>';
+        html += '<hr class="assist-hr" /><div class="assist-sec">';
+        html += '<span class="assist-sec-label">Протоколы и оценка соответствия</span>';
         if (high.length) {
-          html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="llm-ai-proto-list">';
+          html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="assist-proto-list">';
           for (hi = 0; hi < high.length; hi++) {
             html += renderProtoLi(high[hi], ragMap);
           }
@@ -1053,7 +1053,7 @@
         }
         if (low.length) {
           html +=
-            '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="llm-ai-proto-list">';
+            '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="assist-proto-list">';
           for (hi = 0; hi < low.length; hi++) {
             html += renderProtoLi(low[hi], ragMap);
           }
@@ -1063,9 +1063,9 @@
       }
 
       if (j.differential && j.differential.length) {
-        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
+        html += '<hr class="assist-hr" /><div class="assist-sec">';
         html +=
-          '<span class="llm-ai-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом.</p><ul class="llm-ai-compact">';
+          '<span class="assist-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом.</p><ul class="assist-compact">';
         var di;
         for (di = 0; di < j.differential.length; di++) {
           html += "<li>" + escapeHtml(j.differential[di]) + "</li>";
@@ -1075,9 +1075,9 @@
 
       if (j.questions_for_patient && j.questions_for_patient.length) {
         lastAssistQuestions = j.questions_for_patient.slice();
-        html += '<hr class="llm-ai-hr" /><div class="llm-ai-sec">';
+        html += '<hr class="assist-hr" /><div class="assist-sec">';
         html +=
-          '<span class="llm-ai-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
+          '<span class="assist-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
         html +=
           '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
@@ -1112,11 +1112,11 @@
         String(fin).toUpperCase().indexOf("MAX") !== -1
       ) {
         html +=
-          '<p class="llm-ai-note" style="margin-top:0.75rem">Ответ обрезан по лимиту длины на сервере. При необходимости увеличьте лимит выходных токенов в настройках сервера.</p>';
+          '<p class="assist-note" style="margin-top:0.75rem">Ответ обрезан по лимиту длины на сервере. При необходимости увеличьте лимит выходных токенов в настройках сервера.</p>';
       }
       if (data.gemini_retry_used) {
         html +=
-          '<p class="llm-ai-note" style="margin-top:0.5rem">Выполнен повторный запрос: первый ответ был неполным или не удалось обработать ответ сервера.</p>';
+          '<p class="assist-note" style="margin-top:0.5rem">Выполнен повторный запрос: первый ответ был неполным или не удалось обработать ответ сервера.</p>';
       }
 
       html += "</div></div>";
@@ -1125,7 +1125,7 @@
       return;
     }
     out.innerHTML =
-      '<pre class="llm-ai-raw">' + escapeHtml(data.llm_text || "") + "</pre>";
+      '<pre class="assist-raw">' + escapeHtml(data.llm_text || "") + "</pre>";
   }
 
   function parseJsonSafe(text) {
@@ -1182,7 +1182,7 @@
     return t || defaultRagBase().replace(/\/$/, "");
   }
 
-  function runGeminiAssist(queryOverride) {
+  function runAssist(queryOverride) {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
       var base = normalizeRagBaseForRequest(
@@ -1358,14 +1358,14 @@
       var btnAssist = document.getElementById("btn-assist");
       if (btnAssist) {
         btnAssist.addEventListener("click", function () {
-          runGeminiAssist().catch(function (e) {
+          runAssist().catch(function (e) {
             console.error(e);
           });
         });
       }
 
       function doAssist() {
-        runGeminiAssist().catch(function (err) {
+        runAssist().catch(function (err) {
           console.error(err);
         });
       }

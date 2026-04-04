@@ -1,6 +1,6 @@
 """
 Проверка, что GOOGLE_API_KEY из окружения работает и модель отвечает на запрос.
-Используется: check_gemini_key.py и GET /api/verify-key в rag_server.
+Связано с GET /api/verify-key в rag_server.
 """
 from __future__ import annotations
 
@@ -101,7 +101,7 @@ def verify_gemini_key() -> tuple[bool, str]:
         if "429" in err or "quota" in err.lower() or "RESOURCE_EXHAUSTED" in err:
             return (
                 False,
-                "Лимит запросов Gemini (429 / quota). Подождите минуту или проверьте квоту и биллинг в Google AI Studio.",
+                "Лимит запросов к API (429 / quota). Подождите минуту или проверьте квоту и биллинг в Google AI Studio.",
             )
         return False, f"Ошибка API: {e!s}"
 

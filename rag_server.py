@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 """
-Локальный RAG: отбор фрагментов из chunks.json + ответ Gemini (диагноз/протоколы — как ориентир по текстам КП).
+Локальный RAG: отбор фрагментов из chunks.json и ответ по ним (ориентир — тексты клинических протоколов).
 
-Запуск:
-  pip install -r requirements-rag.txt
-  cp .env.example .env   # один раз: вписать GOOGLE_API_KEY в .env
-  uvicorn rag_server:app --host 127.0.0.1 --port 8787 --reload
+Запуск: pip install -r requirements-rag.txt, скопировать .env.example в .env и задать ключ API.
+Переменные — из .env / .env.local (python-dotenv). См. комментарии в .env.example.
 
-Переменные подхватываются из .env и .env.local (см. python-dotenv).
-По умолчанию модель gemini-2.5-flash; таймаут вызова Gemini — GEMINI_CALL_TIMEOUT (сек), по умолчанию 180.
-
-Фронт (index.html) дергает POST /api/assist — ключ в браузер не передаётся.
+Фронт (index.html) вызывает POST /api/assist; ключ к API не передаётся в браузер.
 """
 from __future__ import annotations
 
@@ -343,7 +338,7 @@ def retrieve(
     return out
 
 
-# Большой промпт + Gemini могут занимать 2–3+ мин; клиент в index.html ждёт дольше сервера
+# Большой промпт и вызов модели могут занимать 2–3+ мин; клиент в index.html ждёт дольше сервера
 GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "180"))
 
 
@@ -431,7 +426,7 @@ def generate_gemini(model, full_prompt: str):
         except FuturesTimeout as e:
             raise HTTPException(
                 status_code=504,
-                detail=f"Таймаут Gemini ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
+                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
             ) from e
 
 
@@ -487,7 +482,7 @@ except ImportError:
 
 @app.get("/api/verify-key")
 def verify_key() -> dict:
-    """Один тестовый запрос к Gemini — ключ из .env действительно отвечает."""
+    """Один тестовый запрос к модели — проверка ключа из .env."""
     if _verify_gemini_key is None:
         raise HTTPException(
             status_code=501,
@@ -546,7 +541,7 @@ def api_assist(body: AssistIn) -> dict:
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(status_code=502, detail=f"Gemini: {e!s}") from e
+            raise HTTPException(status_code=502, detail=f"Модель: {e!s}") from e
 
         pf = getattr(r, "prompt_feedback", None)
         if pf is not None and getattr(pf, "block_reason", None):
@@ -559,7 +554,7 @@ def api_assist(body: AssistIn) -> dict:
         if not txt:
             raise HTTPException(
                 status_code=502,
-                detail="Пустой ответ Gemini (блокировка контента или сбой). Попробуйте другую формулировку.",
+                detail="Пустой ответ модели (блокировка контента или сбой). Попробуйте другую формулировку.",
             )
         return r, txt, _try_parse_json(txt)
 
