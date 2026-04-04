@@ -4,8 +4,12 @@
 
 Запуск:
   export GOOGLE_API_KEY="ваш_ключ"
+  # опционально: export GEMINI_MODEL=gemini-2.5-flash
+  # опционально: export GEMINI_CALL_TIMEOUT=120
   pip install -r requirements-rag.txt
-  uvicorn rag_server:app --host 127.0.0.1 --port 8787
+  uvicorn rag_server:app --host 127.0.0.1 --port 8787 --reload
+
+По умолчанию модель gemini-2.0-flash; вызов к API ограничен по времени (см. GEMINI_CALL_TIMEOUT).
 
 Фронт (index.html) дергает POST /api/assist — ключ в браузер не передаётся.
 """
@@ -14,6 +18,8 @@ from __future__ import annotations
 import json
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FuturesTimeout
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -62,7 +68,7 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
-def retrieve(query: str, max_chunks: int = 18, max_per_path: int = 3) -> list[dict]:
+def retrieve(query: str, max_chunks: int = 12, max_per_path: int = 3) -> list[dict]:
     """Простой лексический отбор без тяжёлых зависимостей."""
     qtok = set(tokenize_ru(query))
     if not qtok:
@@ -92,12 +98,15 @@ def retrieve(query: str, max_chunks: int = 18, max_per_path: int = 3) -> list[di
                 "title": ch.get("title") or "",
                 "kind": ch.get("kind") or "general",
                 "score": round(sc, 3),
-                "excerpt": (ch.get("text") or "")[:1200],
+                "excerpt": (ch.get("text") or "")[:900],
             }
         )
         if len(out) >= max_chunks:
             break
     return out
+
+
+GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "90"))
 
 
 def get_gemini():
@@ -118,9 +127,52 @@ def get_gemini():
             detail="Установите: pip install google-generativeai",
         ) from e
     genai.configure(api_key=key)
-    name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
     _model = genai.GenerativeModel(name)
     return _model
+
+
+def _extract_gemini_text(resp) -> str:
+    """Безопасно: при блокировке/пустом ответе свойство .text бросает ValueError."""
+    try:
+        t = resp.text
+        if t:
+            return str(t).strip()
+    except (ValueError, AttributeError, TypeError):
+        pass
+    parts: list[str] = []
+    cands = getattr(resp, "candidates", None) or []
+    for cand in cands:
+        content = getattr(cand, "content", None)
+        if not content:
+            continue
+        for part in getattr(content, "parts", None) or []:
+            if getattr(part, "text", None):
+                parts.append(part.text)
+    return "".join(parts).strip()
+
+
+def _generate_blocking(model, full_prompt: str):
+    return model.generate_content(
+        full_prompt,
+        generation_config={
+            "temperature": 0.25,
+            "max_output_tokens": 2048,
+        },
+    )
+
+
+def generate_gemini(model, full_prompt: str):
+    """Один поток + таймаут — иначе вызов к API может «висеть» без ответа."""
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_CALL_TIMEOUT)
+        except FuturesTimeout as e:
+            raise HTTPException(
+                status_code=504,
+                detail=f"Таймаут Gemini ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
+            ) from e
 
 
 load_data()
@@ -171,21 +223,30 @@ def api_assist(body: AssistIn) -> dict:
 
     user_block = f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
+    if len(full_prompt) > 28000:
+        full_prompt = full_prompt[:27900] + "\n…[обрезано для лимита]"
+
     model = get_gemini()
     try:
-        try:
-            resp = model.generate_content(
-                full_prompt,
-                generation_config={
-                    "temperature": 0.25,
-                    "max_output_tokens": 2048,
-                },
-            )
-        except Exception:
-            resp = model.generate_content(full_prompt)
-        text = (resp.text or "").strip()
+        resp = generate_gemini(model, full_prompt)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Gemini: {e}") from e
+        raise HTTPException(status_code=502, detail=f"Gemini: {e!s}") from e
+
+    pf = getattr(resp, "prompt_feedback", None)
+    if pf is not None and getattr(pf, "block_reason", None):
+        raise HTTPException(
+            status_code=502,
+            detail=f"Запрос отклонён моделью: {pf.block_reason}",
+        )
+
+    text = _extract_gemini_text(resp)
+    if not text:
+        raise HTTPException(
+            status_code=502,
+            detail="Пустой ответ Gemini (блокировка контента или сбой). Попробуйте другую формулировку.",
+        )
 
     parsed = None
     raw = text

@@ -957,6 +957,14 @@
       "</pre>";
   }
 
+  function parseJsonSafe(text) {
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch (e) {
+      return null;
+    }
+  }
+
   function runGeminiAssist() {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
@@ -976,16 +984,51 @@
       var st = document.getElementById("llm-status");
       if (out) {
         out.hidden = false;
-        out.innerHTML = "<p>Запрос к Gemini…</p>";
+        out.innerHTML =
+          "<p>Проверка сервера…</p>";
       }
       if (st) st.textContent = "";
-      fetch(base + "/api/assist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q }),
-      })
+      fetch(base + "/health")
+        .then(function (h) {
+          if (!h.ok) {
+            throw new Error(
+              "Сервер rag_server недоступен (HTTP " +
+                h.status +
+                "). Запустите: uvicorn rag_server:app --host 127.0.0.1 --port 8787"
+            );
+          }
+          return h.json();
+        })
+        .then(function (health) {
+          if (!health.gemini_configured) {
+            throw new Error(
+              "На сервере не задан GOOGLE_API_KEY. В терминале: export GOOGLE_API_KEY=… и перезапустите uvicorn."
+            );
+          }
+          if (out) out.innerHTML = "<p>Запрос к Gemini (до ~90 с)…</p>";
+          var ctrl = new AbortController();
+          var tid = setTimeout(function () {
+            ctrl.abort();
+          }, 110000);
+          return fetch(base + "/api/assist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: q }),
+            signal: ctrl.signal,
+          }).finally(function () {
+            clearTimeout(tid);
+          });
+        })
         .then(function (r) {
-          return r.json().then(function (j) {
+          return r.text().then(function (text) {
+            var j = parseJsonSafe(text);
+            if (!j || typeof j !== "object") {
+              throw new Error(
+                text
+                  ? text.slice(0, 200)
+                  : "Пустой ответ сервера"
+              );
+            }
             if (!r.ok) {
               var d = j.detail;
               if (Array.isArray(d)) {
@@ -1006,11 +1049,23 @@
           resolve();
         })
         .catch(function (err) {
+          var msg = String(err.message || err);
+          if (err && err.name === "AbortError") {
+            msg =
+              "Превышено время ожидания (~110 с). Проверьте сеть или уменьшите запрос.";
+          }
+          if (msg.indexOf("Failed to fetch") !== -1) {
+            msg =
+              "Не удалось соединиться с " +
+              base +
+              ". Запущен ли uvicorn? Откройте сайт через http://localhost, а не file://.";
+          }
+          console.error("Gemini assist:", err);
           if (out) {
             out.hidden = false;
             out.innerHTML =
               '<p class="error">Не удалось: ' +
-              escapeHtml(String(err.message || err)) +
+              escapeHtml(msg) +
               "</p>";
           }
           if (st) st.textContent = "";
@@ -1455,7 +1510,9 @@
       var btnAssist = document.getElementById("btn-assist");
       if (btnAssist) {
         btnAssist.addEventListener("click", function () {
-          runGeminiAssist().catch(function () {});
+          runGeminiAssist().catch(function (e) {
+            console.error(e);
+          });
         });
       }
 
