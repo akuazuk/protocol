@@ -612,6 +612,8 @@
     ["аллергия", ["аллерг", "ринит", "крапивниц", "иммунодефицит"]],
     ["глаз", ["офтальм", "глаз", "роговиц", "сетчатк"]],
     ["ухо", ["оториноларинг", "лор", "слух", "носоглот"]],
+    ["горло", ["оториноларинг", "ларинг", "фаринг", "ангин", "орви", "лор", "носов", "носоглот"]],
+    ["болит горло", ["оториноларинг", "ларинг", "фаринг", "ангин", "орви", "лор", "ларингит", "фарингит"]],
     ["моча", ["уролог", "нефролог", "почк", "мочев", "диализ"]],
     ["почки", ["нефролог", "почк", "диализ"]],
     ["низ живота", ["гинеколог", "акушер", "матк", "яичник", "мочев"]],
@@ -946,11 +948,16 @@
     return searchState.embedderPromise;
   }
 
-  async function embedQuery(q) {
+  async function embedQuery(q, extraTerms) {
     var pipe = await ensureEmbedder();
+    var add = "";
+    if (extraTerms && extraTerms.length) {
+      add = " " + extraTerms.slice(0, 14).join(" ");
+    }
     var enriched =
       "Подбор клинического протокола по описанию симптомов, жалоб и состояния пациента. " +
-      q;
+      q +
+      add;
     var out = await pipe("query: " + enriched, { pooling: "mean", normalize: true });
     var d = out.data;
     if (d instanceof Float32Array) return d;
@@ -1002,8 +1009,11 @@
 
     var msByPath = {};
     var maxMs = 1e-9;
+    var qLex =
+      q +
+      (extra.length ? " " + extra.join(" ") : "");
     if (miniSearch) {
-      var msRes = miniSearch.search(q, {
+      var msRes = miniSearch.search(qLex, {
         fuzzy: 0.08,
         prefix: true,
         boost: {
@@ -1026,7 +1036,7 @@
     var embOk = hasEmb;
     if (embOk && q.length > 1) {
       try {
-        qv = await embedQuery(q);
+        qv = await embedQuery(q, extra);
       } catch (e) {
         console.warn(e);
         embOk = false;
