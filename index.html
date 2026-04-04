@@ -364,6 +364,15 @@
       line-height: 1.5;
     }
 
+    .assist-metrics-legend {
+      margin: 0.85rem 0 0;
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(13, 92, 74, 0.1);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
     .assist-card {
       margin: 0;
       padding: 1.25rem 1.35rem;
@@ -833,6 +842,16 @@
     return 0.55;
   }
 
+  /** Есть ли хотя бы один протокол с отображаемым соответствием 100%. */
+  function hasAnyProtocolAt100Pct(protocols) {
+    if (!protocols || !protocols.length) return false;
+    var i;
+    for (i = 0; i < protocols.length; i++) {
+      if (pct01(confidenceFromProtocol(protocols[i])) >= 100) return true;
+    }
+    return false;
+  }
+
   var CLINICAL_SEP = "=== Жалобы и вопрос ===";
   var CTX_KEYS = { age: "rag_ctx_age", sex: "rag_ctx_sex", extra: "rag_ctx_extra" };
 
@@ -1073,7 +1092,11 @@
         html += "</ul></div>";
       }
 
-      if (j.questions_for_patient && j.questions_for_patient.length) {
+      if (
+        j.questions_for_patient &&
+        j.questions_for_patient.length &&
+        !hasAnyProtocolAt100Pct(rawProtos)
+      ) {
         lastAssistQuestions = j.questions_for_patient.slice();
         html += '<hr class="assist-hr" /><div class="assist-sec">';
         html +=
@@ -1097,6 +1120,12 @@
         html +=
           "</ol><button type=\"submit\" class=\"btn-assist btn-followup\">Отправить ответы и обновить подбор</button></form>";
         html += "</div>";
+      }
+
+      if (rawProtos.length) {
+        html +=
+          '<p class="assist-metrics-legend"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по оценке модели (шкала 0–100%). ' +
+          "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p>";
       }
 
       if (j.disclaimer) {
