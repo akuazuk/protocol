@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "description": "Правила усиления/ослабления рубрик по ключевым словам запроса (имитация намерения без LLM на сервере)",
+  "boost_rules": [
+    {
+      "id": "resp_acute",
+      "match": ["кашель", "кашля", "кашлю", "кашлем", "кашл", "лёгк", "легк", "пневм", "орви", "одыш", "одышк", "бронх", "астм", "пульмон", "фти", "туберк", "ларинг", "трахе", "грипп", "насморк", "ангин", "фаринг", "плевр", "хрип"],
+      "categories": ["pulmonologiya-ftiziatriya", "otorinolaringologiya", "allergologiya-immunologiya", "infektsionnye-zabolevaniya"],
+      "factor": 1.75
+    },
+    {
+      "id": "gi",
+      "match": ["желуд", "язв", "гастр", "кишеч", "пищевод", "изжог", "рвот", "понос", "стул", "аппендицит", "панкреат", "жкт", "диар", "запор"],
+      "categories": ["gastroenterologiya", "khirurgiya"],
+      "factor": 1.55
+    },
+    {
+      "id": "cardio",
+      "match": ["сердц", "карди", "гипертон", "гипертен", "давлен", "аритм", "инфаркт", "стенокард", "аорт", "вен", "тромб"],
+      "categories": ["bolezni-sistemy-krovoobrashcheniya", "khirurgiya"],
+      "factor": 1.55
+    },
+    {
+      "id": "uro_neph",
+      "match": ["моч", "почк", "уролог", "нефр", "простат", "уретр", "мочев", "диализ", "цистит", "эректил"],
+      "categories": ["urologiya", "nefrologiya"],
+      "factor": 1.7
+    },
+    {
+      "id": "neuro",
+      "match": ["голов", "мигрен", "невролог", "эпилепс", "мозг", "черепн", "инсульт", "онемен"],
+      "categories": ["nevrologiya-neyrokhirurgiya"],
+      "factor": 1.6
+    },
+    {
+      "id": "endo",
+      "match": ["диабет", "сахар", "щитовид", "эндокрин", "инсулин", "ожирен", "тирео"],
+      "categories": ["endokrinologiya-narusheniya-obmena-veshchestv"],
+      "factor": 1.65
+    },
+    {
+      "id": "gyn",
+      "match": ["беремен", "гинеколог", "матк", "яичник", "менстру", "акушер"],
+      "categories": ["akusherstvo-ginekologiya", "zabolevaniya-perinatalnogo-perioda"],
+      "factor": 1.55
+    },
+    {
+      "id": "skin",
+      "match": ["кож", "дермат", "сыпь", "экзем", "псориаз", "крапивниц"],
+      "categories": ["dermatovenerologiya"],
+      "factor": 1.6
+    },
+    {
+      "id": "eyes",
+      "match": ["глаз", "зрен", "офтальм", "роговиц", "сетчатк"],
+      "categories": ["oftalmologiya"],
+      "factor": 1.65
+    },
+    {
+      "id": "mental",
+      "match": ["депресс", "тревог", "псих", "нарколог", "алкогол"],
+      "categories": ["psikhiatriya-narkologiya"],
+      "factor": 1.5
+    },
+    {
+      "id": "heme_onc",
+      "match": ["кров", "анем", "лейкоз", "тромбоцит", "гематолог", "рак", "онколог", "опухол", "химиотерап"],
+      "categories": ["gematologiya", "novoobrazovaniya"],
+      "factor": 1.55
+    },
+    {
+      "id": "bones",
+      "match": ["сустав", "перелом", "ортопед", "позвоночник", "остеопор", "колен", "тазобедрен"],
+      "categories": ["travmatologiya-ortopediya", "revmatologiya"],
+      "factor": 1.45
+    }
+  ],
+  "penalty_rules": [
+    {
+      "id": "resp_vs_gu",
+      "when": ["кашель", "кашля", "кашлю", "кашлем", "кашл", "лёгк", "легк", "пневм", "орви", "одыш", "бронх", "астм", "пульмон", "ларинг", "трахе", "грипп", "фаринг", "насморк"],
+      "unless": ["моч", "почк", "простат", "уролог", "нефр", "уретр", "мочев", "диализ", "цистит", "эректил", "мочеполов"],
+      "categories": ["urologiya", "nefrologiya"],
+      "factor": 0.04
+    },
+    {
+      "id": "resp_vs_dental_eye",
+      "when": ["кашель", "кашля", "кашлю", "кашлем", "кашл", "пневм", "орви", "одыш", "бронх", "пульмон"],
+      "unless": ["зуб", "стоматолог", "глаз", "офтальм", "зрен"],
+      "categories": ["stomatologiya", "oftalmologiya"],
+      "factor": 0.08
+    },
+    {
+      "id": "resp_vs_gi_if_clear_resp",
+      "when": ["кашель", "кашля", "кашлю", "одыш", "пневм", "бронх", "пульмон", "ларинг"],
+      "unless": ["желуд", "язв", "гастр", "кишеч", "пищевод", "рвот", "понос", "жкт"],
+      "categories": ["gastroenterologiya"],
+      "factor": 0.35
+    },
+    {
+      "id": "gu_vs_resp",
+      "when": ["моч", "почк", "уролог", "нефр", "простат", "цистит"],
+      "unless": ["кашель", "кашл", "лёгк", "пневм", "орви", "одыш", "бронх"],
+      "categories": ["pulmonologiya-ftiziatriya", "otorinolaringologiya"],
+      "factor": 0.25
+    }
+  ],
+  "audience": {
+    "adult_markers": ["взросл", "взрослый", "взрослого", "взрослые", "взр ", "взр.", "взр_"],
+    "child_markers": ["дет", "ребён", "ребен", "детск", "детс", "педиатр", "новорожд", "неонат", "младен", "грудн"],
+    "penalty_adult_query_pediatric_doc": 0.35,
+    "penalty_child_query_adult_doc": 0.4
+  },
+  "pediatric_title_markers": ["дет", "детс", "детск", "ребён", "ребен", "педиатр", "новорожд", "неонат", "детское население", "дет "],
+  "adult_title_markers": ["взросл", "взр ", "взр.", "взр_нас", "взрослое население"]
+}

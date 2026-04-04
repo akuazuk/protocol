@@ -7,7 +7,7 @@
   <title>Клинические протоколы — поиск</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Merriweather:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --green-950: #063d35;
@@ -32,9 +32,9 @@
 
     body {
       margin: 0;
-      font-family: "Open Sans", system-ui, sans-serif;
+      font-family: "DM Sans", system-ui, sans-serif;
       color: var(--text);
-      background: linear-gradient(165deg, var(--cream) 0%, #eef6f3 45%, var(--green-100) 100%);
+      background: linear-gradient(180deg, #f0f7f4 0%, #e5f0eb 35%, #dceae4 100%);
       min-height: 100vh;
     }
 
@@ -43,59 +43,83 @@
       inset: 0;
       pointer-events: none;
       background-image:
-        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(196, 30, 58, 0.06), transparent 50%),
-        radial-gradient(ellipse 60% 40% at 0% 100%, rgba(26, 138, 114, 0.12), transparent 55%);
+        radial-gradient(ellipse 70% 45% at 90% 5%, rgba(196, 30, 58, 0.07), transparent 55%),
+        radial-gradient(ellipse 55% 50% at 5% 95%, rgba(26, 138, 114, 0.14), transparent 50%),
+        repeating-linear-gradient(
+          -12deg,
+          transparent,
+          transparent 32px,
+          rgba(13, 92, 74, 0.02) 32px,
+          rgba(13, 92, 74, 0.02) 33px
+        );
       z-index: 0;
     }
 
     .wrap {
       position: relative;
       z-index: 1;
-      max-width: 920px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 1.5rem 1.25rem 3rem;
+      padding: 2rem 1.35rem 3.5rem;
     }
 
     header.site-header {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr;
       align-items: center;
-      gap: 1.25rem;
-      flex-wrap: wrap;
+      gap: 1.75rem 2rem;
       margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 3px solid var(--red-500);
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(232, 245, 241, 0.95) 100%);
-      border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
-      box-shadow: var(--shadow);
+      padding: 2rem 2rem 2rem 1.75rem;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 22px;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      box-shadow: 0 4px 32px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header.site-header::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--red-500), var(--green-600));
+      border-radius: 22px 0 0 22px;
     }
 
     .logo {
       flex-shrink: 0;
-      width: 88px;
-      height: 88px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: #fff;
-      border-radius: 50%;
-      border: 3px solid var(--green-600);
-      box-shadow: 0 4px 16px rgba(13, 92, 74, 0.15);
+      justify-content: flex-start;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
     }
 
     .logo img {
-      width: 72px;
+      width: 132px;
       height: auto;
+      max-height: 140px;
       display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 20px rgba(13, 92, 74, 0.12));
     }
 
     .brand h1 {
-      font-family: "Merriweather", Georgia, serif;
-      font-size: 1.55rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.75rem;
       font-weight: 700;
-      margin: 0 0 0.35rem;
+      margin: 0 0 0.45rem;
       color: var(--green-950);
-      line-height: 1.25;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
 
     .brand .tagline {
@@ -134,18 +158,19 @@
     }
 
     .hero {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1.75rem 1.5rem 1.5rem;
+      background: linear-gradient(145deg, #ffffff 0%, #f6fbf9 100%);
+      border-radius: 20px;
+      padding: 2rem 1.85rem 1.75rem;
       box-shadow: var(--shadow);
       border: 1px solid rgba(26, 138, 114, 0.2);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      position: relative;
     }
 
     .hero h2 {
-      font-family: "Merriweather", Georgia, serif;
-      font-size: 1.2rem;
-      margin: 0 0 0.5rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.35rem;
+      margin: 0 0 0.55rem;
       color: var(--green-800);
     }
 
@@ -165,10 +190,10 @@
 
     .search-row input[type="search"] {
       flex: 1 1 220px;
-      font-size: 1rem;
-      padding: 0.85rem 1.1rem;
-      border: 2px solid var(--green-400);
-      border-radius: 10px;
+      font-size: 1.05rem;
+      padding: 0.95rem 1.2rem;
+      border: 2px solid rgba(26, 138, 114, 0.35);
+      border-radius: 14px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
@@ -186,10 +211,10 @@
     .btn {
       font-family: inherit;
       font-weight: 700;
-      font-size: 0.95rem;
-      padding: 0.85rem 1.4rem;
+      font-size: 0.98rem;
+      padding: 0.95rem 1.55rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 14px;
       cursor: pointer;
       background: linear-gradient(180deg, var(--red-500) 0%, var(--red-700) 100%);
       color: #fff;
@@ -230,17 +255,18 @@
     }
 
     .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 1rem 1.15rem;
-      border: 1px solid rgba(13, 92, 74, 0.12);
-      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.06);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 1.15rem 1.25rem;
+      border: 1px solid rgba(13, 92, 74, 0.1);
+      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.07);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
 
     .card:hover {
-      border-color: var(--green-400);
-      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.1);
+      border-color: rgba(26, 138, 114, 0.35);
+      box-shadow: 0 12px 36px rgba(6, 61, 53, 0.11);
+      transform: translateY(-2px);
     }
 
     .card-top {
@@ -326,18 +352,24 @@
       color: var(--green-800);
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 640px) {
+      header.site-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 1.75rem 1.25rem;
+      }
+
       .logo {
-        width: 72px;
-        height: 72px;
+        justify-content: center;
       }
 
       .logo img {
-        width: 58px;
+        width: 108px;
+        max-height: 120px;
       }
 
       .brand h1 {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
       }
     }
   </style>
@@ -349,15 +381,15 @@
       <div class="logo">
         <img
           src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg"
-          width="72"
-          height="72"
-          alt="Логотип"
+          width="132"
+          height="132"
+          alt="Логотип медицинского центра"
         />
       </div>
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Полнотекстовый поиск по PDF + семантика (если собран <code>embeddings.json</code>). Материалы для специалистов; источник — Минздрав РБ.
+          Умный поиск: текст протоколов, семантика (e5) и подсказки по специальностям по симптомам. Источник — официальные PDF Минздрава.
         </p>
         <div class="badge-row">
           <span class="badge badge--green">451 протокол</span>
@@ -367,10 +399,10 @@
     </header>
 
     <section class="hero" aria-labelledby="search-title">
-      <h2 id="search-title">Поиск протокола</h2>
+      <h2 id="search-title">Опишите симптомы или запрос</h2>
       <p class="lead">
-        Введите симптомы, диагноз или ключевые слова на русском — например:
-        <em>астма</em>, <em>боль в груди</em>, <em>сахарный диабет</em>, <em>язва желудка</em>.
+        Лучше формулировать как клиническую задачу: «кашель у взрослого 3 недели», «острая боль внизу живота у женщины».
+        Можно и коротко: <em>язва желудка</em>, <em>артериальная гипертензия</em>.
       </p>
       <form class="search-row" id="search-form" action="#" method="get">
         <input
@@ -397,12 +429,12 @@
         <a href="https://kravira.by/" target="_blank" rel="noopener noreferrer">Кравира</a>.
       </p>
       <p>
-        <strong>Как работает поиск:</strong> по тексту внутри протоколов (файл <code>corpus.json</code>), по названию и рубрике, по словарю подсказок симптомов; при наличии
-        <code>embeddings.json</code> — дополнительно семантическое сходство (модель <code>multilingual-e5-small</code> в браузере для запроса). Облачный RAG (например Vectara) возможен через свой backend с API-ключом — ключ нельзя вставлять в статический сайт.
+        <strong>Как устроен поиск:</strong> полнотекстовый индекс (<code>corpus.json</code>), семантические векторы документов (<code>embeddings.json</code>, модель e5 с указанием направления в тексте), правила маршрутизации симптомов → рубрики (<code>symptom_routing.json</code>) — без серверного LLM.
+        Полноценный чат-LLM или Vectara требуют backend с ключом API.
       </p>
       <p>
-        Сборка данных: <code>python3 extract_corpus.py</code>, затем опционально <code>python3 build_semantic_embeddings.py</code> (см. <code>requirements-search.txt</code>).
-        Сайт: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
+        Сборка: <code>extract_corpus.py</code> → <code>build_semantic_embeddings.py</code> (<code>requirements-search.txt</code>).
+        Просмотр: <strong>GitHub Pages</strong> или <code>python3 -m http.server 8080</code>.
       </p>
     </footer>
   </div>
@@ -630,7 +662,85 @@
     embMap: null,
     embedder: null,
     embedderPromise: null,
+    routing: null,
   };
+
+  function routingMultiplier(fqNorm, category, titleNorm) {
+    var r = searchState.routing;
+    if (!r) return 1;
+    var mult = 1;
+    var i, j, rule, hit, uh;
+    var penalties = r.penalty_rules || [];
+    var boosts = r.boost_rules || [];
+    for (i = 0; i < penalties.length; i++) {
+      rule = r.penalty_rules[i];
+      hit = false;
+      for (j = 0; j < rule.when.length; j++) {
+        if (fqNorm.indexOf(rule.when[j]) !== -1) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
+      uh = false;
+      if (rule.unless) {
+        for (j = 0; j < rule.unless.length; j++) {
+          if (fqNorm.indexOf(rule.unless[j]) !== -1) {
+            uh = true;
+            break;
+          }
+        }
+      }
+      if (uh) continue;
+      for (j = 0; j < rule.categories.length; j++) {
+        if (rule.categories[j] === category) {
+          mult *= rule.factor;
+          break;
+        }
+      }
+    }
+    for (i = 0; i < boosts.length; i++) {
+      rule = boosts[i];
+      hit = false;
+      for (j = 0; j < rule.match.length; j++) {
+        if (fqNorm.indexOf(rule.match[j]) !== -1) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) continue;
+      for (j = 0; j < rule.categories.length; j++) {
+        if (rule.categories[j] === category) {
+          mult *= rule.factor;
+          break;
+        }
+      }
+    }
+    var aud = r.audience || {};
+    var am = aud.adult_markers || [];
+    var cm = aud.child_markers || [];
+    var wantsAdult = false;
+    var wantsChild = false;
+    for (j = 0; j < am.length; j++) {
+      if (fqNorm.indexOf(am[j]) !== -1) wantsAdult = true;
+    }
+    for (j = 0; j < cm.length; j++) {
+      if (fqNorm.indexOf(cm[j]) !== -1) wantsChild = true;
+    }
+    var pm = r.pediatric_title_markers || [];
+    var amark = r.adult_title_markers || [];
+    var looksPed = false;
+    var looksAd = false;
+    for (j = 0; j < pm.length; j++) {
+      if (titleNorm.indexOf(pm[j]) !== -1) looksPed = true;
+    }
+    for (j = 0; j < amark.length; j++) {
+      if (titleNorm.indexOf(amark[j]) !== -1) looksAd = true;
+    }
+    if (wantsAdult && looksPed && !wantsChild) mult *= aud.penalty_adult_query_pediatric_doc || 0.35;
+    if (wantsChild && looksAd && !wantsAdult) mult *= aud.penalty_child_query_adult_doc || 0.4;
+    return Math.min(Math.max(mult, 0.0001), 10);
+  }
 
   function ensureEmbedder() {
     if (searchState.embedderPromise) return searchState.embedderPromise;
@@ -644,7 +754,10 @@
 
   async function embedQuery(q) {
     var pipe = await ensureEmbedder();
-    var out = await pipe("query: " + q, { pooling: "mean", normalize: true });
+    var enriched =
+      "Подбор клинического протокола по описанию симптомов, жалоб и состояния пациента. " +
+      q;
+    var out = await pipe("query: " + enriched, { pooling: "mean", normalize: true });
     var d = out.data;
     if (d instanceof Float32Array) return d;
     return new Float32Array(d);
@@ -655,7 +768,7 @@
     q = (q || "").trim();
     if (!q) {
       hint.textContent =
-        "Введите симптомы, диагноз или направление — поиск обновится по мере ввода.";
+        "Опишите симптомы свободно — поиск учитывает текст протоколов, семантику и направление.";
       document.getElementById("meta").hidden = true;
       document.getElementById("results").innerHTML = "";
       return;
@@ -666,8 +779,9 @@
     var miniSearch = searchState.miniSearch;
     var embMap = searchState.embMap;
     var hasCorpus = miniSearch !== null;
-    var hasEmb = embMap && Object.keys(embMap).length > 0;
+    var hasEmb = !!(embMap && Object.keys(embMap).length > 0);
 
+    var fqNorm = norm(q);
     var baseTokens = tokenize(q);
     var extra = extraFromHints(q);
     var tokenSet = {};
@@ -677,17 +791,18 @@
     var tokens = Object.keys(tokenSet);
 
     var modeParts = [];
-    modeParts.push("название и рубрика");
-    if (hasCorpus) modeParts.push("текст PDF");
+    modeParts.push("название");
+    if (hasCorpus) modeParts.push("PDF");
     if (hasEmb) modeParts.push("семантика e5");
+    if (searchState.routing) modeParts.push("маршрут симптомов");
     hint.innerHTML =
-      "Режим: <strong>" +
-      escapeHtml(modeParts.join(" + ")) +
+      "Активно: <strong>" +
+      escapeHtml(modeParts.join(" · ")) +
       "</strong>." +
       (extra.length
-        ? " Подсказки: <strong>" +
-          escapeHtml(extra.slice(0, 6).join(", ")) +
-          (extra.length > 6 ? "…" : "") +
+        ? " Расширение: <strong>" +
+          escapeHtml(extra.slice(0, 5).join(", ")) +
+          (extra.length > 5 ? "…" : "") +
           "</strong>."
         : "");
 
@@ -695,9 +810,9 @@
     var maxMs = 1e-9;
     if (miniSearch) {
       var msRes = miniSearch.search(q, {
-        fuzzy: 0.12,
+        fuzzy: 0.08,
         prefix: true,
-        boost: { title: 2.2, catLabel: 1.4, category: 1.0, text: 0.9 },
+        boost: { title: 2.4, catLabel: 1.6, category: 1.1, text: 0.75 },
       });
       for (i = 0; i < msRes.length; i++) {
         msByPath[msRes[i].id] = msRes[i].score;
@@ -706,12 +821,13 @@
     }
 
     var qv = null;
-    if (hasEmb && q.length > 1) {
+    var embOk = hasEmb;
+    if (embOk && q.length > 1) {
       try {
         qv = await embedQuery(q);
       } catch (e) {
         console.warn(e);
-        hasEmb = false;
+        embOk = false;
       }
     }
 
@@ -719,31 +835,36 @@
     for (i = 0; i < protocols.length; i++) {
       var p = protocols[i];
       var catLabel = CATEGORY_LABELS[p.category] || "";
+      var titleNorm = norm(p.title);
+      var routeM = routingMultiplier(fqNorm, p.category, titleNorm);
       var leg = scoreItem(p, tokens, catLabel);
       var lexRaw = msByPath[p.path] || 0;
       var lexN = maxMs > 0 ? lexRaw / maxMs : 0;
       var legN = Math.min(1, leg / 48);
-      var semN = 0;
-      if (hasEmb && qv && embMap[p.path]) {
-        semN = (dot(qv, embMap[p.path]) + 1) / 2;
+      var semRaw = 0;
+      if (embOk && qv && embMap[p.path]) {
+        semRaw = (dot(qv, embMap[p.path]) + 1) / 2;
       }
+      var semAdj = semRaw * routeM;
+      var lexAdj = lexN * routeM;
+      var legAdj = legN * routeM;
       var combined;
-      if (hasCorpus && hasEmb) {
-        combined = 0.12 * legN + 0.33 * lexN + 0.55 * semN;
-      } else if (hasCorpus) {
-        combined = 0.35 * legN + 0.65 * lexN;
-      } else if (hasEmb) {
-        combined = 0.2 * legN + 0.8 * semN;
+      if (hasCorpus && embOk && qv) {
+        combined = 0.56 * semAdj + 0.3 * lexAdj + 0.14 * legAdj;
+      } else if (hasCorpus && !embOk) {
+        combined = 0.62 * lexAdj + 0.38 * legAdj;
+      } else if (embOk && qv) {
+        combined = 0.72 * semAdj + 0.18 * legAdj + 0.1 * lexAdj;
       } else {
-        combined = legN;
+        combined = legAdj;
       }
-      scored.push({ p: p, sc: combined, legN: legN, lexN: lexN, semN: semN });
+      scored.push({ p: p, sc: combined, legN: legN, lexN: lexN, semN: semRaw });
     }
 
     scored.sort(function (a, b) {
       return b.sc - a.sc;
     });
-    var top = scored.slice(0, 40);
+    var top = scored.slice(0, 35);
     render(top);
   }
 
@@ -769,15 +890,24 @@
       .catch(function () {
         return null;
       }),
+    fetch("symptom_routing.json")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .catch(function () {
+        return null;
+      }),
   ])
     .then(function (all) {
       var protocols = all[0];
       var corpusRows = all[1] || [];
       var embPayload = all[2];
+      var routing = all[3];
 
       searchState.protocols = protocols;
       searchState.corpusByPath = buildCorpusMap(corpusRows);
       searchState.embMap = buildEmbMap(embPayload || {});
+      searchState.routing = routing;
       searchState.miniSearch = buildMiniSearch(protocols, searchState.corpusByPath);
 
       form.addEventListener("submit", function (e) {

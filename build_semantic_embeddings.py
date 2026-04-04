@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 Строит семантические векторы для протоколов (мультиязычная e5).
+Текст для эмбеддинга включает направление (рубрику) — лучше сопоставление с запросами по симптомам.
+
 Требует: pip install sentence-transformers torch
 
-Выход: embeddings.json — используется в index.html вместе с corpus.json
-(запрос в браузере кодируется той же моделью через @xenova/transformers).
+Выход: embeddings.json — в браузере запрос кодируется той же моделью (@xenova/transformers).
 """
 from __future__ import annotations
 
@@ -16,6 +17,34 @@ ROOT = Path(__file__).resolve().parent
 CORPUS = ROOT / "corpus.json"
 OUT = ROOT / "embeddings.json"
 MODEL_NAME = "intfloat/multilingual-e5-small"
+
+# Согласовано с index.html CATEGORY_LABELS
+LABELS: dict[str, str] = {
+    "akusherstvo-ginekologiya": "Акушерство и гинекология",
+    "allergologiya-immunologiya": "Аллергология и иммунология",
+    "anesteziologiya-reanimatologiya": "Анестезиология и реаниматология",
+    "bolezni-sistemy-krovoobrashcheniya": "Болезни системы кровообращения",
+    "dermatovenerologiya": "Дерматовенерология",
+    "endokrinologiya-narusheniya-obmena-veshchestv": "Эндокринология и обмен веществ",
+    "gastroenterologiya": "Гастроэнтерология",
+    "gematologiya": "Гематология",
+    "infektsionnye-zabolevaniya": "Инфекционные заболевания",
+    "khirurgiya": "Хирургия",
+    "nefrologiya": "Нефрология",
+    "nevrologiya-neyrokhirurgiya": "Неврология и нейрохирургия",
+    "novoobrazovaniya": "Новообразования",
+    "oftalmologiya": "Офтальмология",
+    "otorinolaringologiya": "Оториноларингология",
+    "palliativnaya-pomoshch": "Паллиативная помощь",
+    "psikhiatriya-narkologiya": "Психиатрия и наркология",
+    "pulmonologiya-ftiziatriya": "Пульмонология и фтизиатрия",
+    "revmatologiya": "Ревматология",
+    "stomatologiya": "Стоматология",
+    "transplantatsiya-organov-i-tkaney": "Трансплантация органов и тканей",
+    "travmatologiya-ortopediya": "Травматология и ортопедия",
+    "urologiya": "Урология",
+    "zabolevaniya-perinatalnogo-perioda": "Перинатальный период",
+}
 
 
 def main() -> None:
@@ -29,12 +58,30 @@ def main() -> None:
         raise SystemExit(1)
 
     rows = json.loads(CORPUS.read_text(encoding="utf-8"))
-    texts = []
+    texts: list[str] = []
     for r in rows:
-        t = (r.get("text") or "").strip()
-        title = Path(r["path"]).stem.replace("_", " ")
-        # e5: префикс passage для документов
-        payload = f"passage: {title}. {t}" if t else f"passage: {title}"
+        path = r["path"]
+        parts = path.split("/")
+        cat = parts[1] if len(parts) > 1 else ""
+        label = LABELS.get(cat, cat)
+        fname = Path(path).name
+        title = fname.rsplit(".", 1)[0].replace("_", " ")
+        body = (r.get("text") or "").strip()
+        if len(body) > 6000:
+            body = body[:6000] + "…"
+        # e5 passage: явное направление + заголовок + фрагмент текста протокола
+        if body:
+            payload = (
+                f"passage: Медицинское направление: {label}. "
+                f"Клинический протокол Республики Беларусь. "
+                f"Название: {title}. "
+                f"Фрагмент документа: {body}"
+            )
+        else:
+            payload = (
+                f"passage: Медицинское направление: {label}. "
+                f"Клинический протокол Республики Беларусь. Название: {title}."
+            )
         texts.append(payload)
 
     print(f"Загрузка модели {MODEL_NAME}…")
@@ -46,8 +93,16 @@ def main() -> None:
     for i, r in enumerate(rows):
         items.append({"path": r["path"], "v": emb[i].tolist()})
 
-    payload = {"dim": dim, "model": MODEL_NAME, "items": items}
-    OUT.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    payload_out = {
+        "dim": dim,
+        "model": MODEL_NAME,
+        "passage_template": "direction+title+body",
+        "items": items,
+    }
+    OUT.write_text(
+        json.dumps(payload_out, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
     print(f"Готово: {OUT} ({len(items)} векторов, dim={dim})")
 
 
