@@ -392,6 +392,67 @@
       color: var(--green-800);
     }
 
+    .structure-panel {
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      box-shadow: 0 4px 20px rgba(6, 61, 53, 0.06);
+      overflow: hidden;
+    }
+
+    .structure-panel summary {
+      cursor: pointer;
+      padding: 1rem 1.25rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--green-950);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .structure-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .structure-panel summary::before {
+      content: "▸";
+      display: inline-block;
+      transition: transform 0.2s;
+      color: var(--green-600);
+    }
+
+    .structure-panel[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .structure-panel .structure-body {
+      padding: 0 1.35rem 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: var(--text);
+      border-top: 1px solid rgba(13, 92, 74, 0.1);
+    }
+
+    .structure-panel .structure-body ol {
+      margin: 0.5rem 0 0;
+      padding-left: 1.35rem;
+    }
+
+    .structure-panel .structure-body li {
+      margin-bottom: 0.45rem;
+    }
+
+    .structure-panel .note {
+      margin-top: 0.85rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
     @media (max-width: 640px) {
       header.site-header {
         grid-template-columns: 1fr;
@@ -429,10 +490,10 @@
       <div class="brand">
         <h1>Клинические протоколы Минздрава РБ</h1>
         <p class="tagline">
-          Индекс по полным текстам, выделенные фрагменты по диагностике и лечению, семантика e5 и маршрутизация симптомов → рубрика. Источник — PDF Минздрава РБ.
+          Один PDF в выдаче один раз; названия показываются без подчёркиваний. Индекс текстов, фрагменты диагностика/лечение, семантика e5. Источник — PDF Минздрава РБ.
         </p>
         <div class="badge-row">
-          <span class="badge badge--green">451 протокол</span>
+          <span class="badge badge--green" id="proto-count-badge">… уникальных протоколов</span>
           <span class="badge badge--red">Не замена очной консультации</span>
         </div>
       </div>
@@ -457,6 +518,26 @@
       </form>
       <p class="hint" id="hint"></p>
     </section>
+
+    <details class="structure-panel">
+      <summary>Типовая структура клинического протокола (Минздрав РБ)</summary>
+      <div class="structure-body">
+        <p>
+          Большинство утверждённых КП строится по сходной логике — её полезно учитывать при консультативном заключении и привязке к PDF:
+        </p>
+        <ol>
+          <li><strong>Нормативная часть</strong> — основание утверждения (постановление МЗ), область применения, целевая группа (взрослые/дети, стационар/амбулаторно).</li>
+          <li><strong>Определения и коды</strong> — формулировка задачи протокола, при необходимости коды МКБ-10, ключевые термины.</li>
+          <li><strong>Диагностический блок</strong> — жалобы, анамнез, клиника, лабораторные и инструментальные методы, критерии диагноза, дифференциальная диагностика.</li>
+          <li><strong>Лечебный блок</strong> — тактика (неотложная помощь, консервативное/хирургическое лечение), режим, медикаментозная и немедикаментозная терапия, длительность и критерии эффективности.</li>
+          <li><strong>Наблюдение и исходы</strong> — диспансеризация, реабилитация, показания к переводу/выписке, информирование пациента.</li>
+          <li><strong>Приложения</strong> — таблицы, схемы, перечни препаратов (если есть в конкретном PDF).</li>
+        </ol>
+        <p class="note">
+          Фактические заголовки и порядок разделов в PDF могут отличаться; для заключения опирайтесь на полный текст выбранного файла.
+        </p>
+      </div>
+    </details>
 
     <p class="results-meta" id="meta" hidden></p>
     <div class="results" id="results" role="list"></div>
@@ -613,7 +694,7 @@
       return;
     }
     meta.hidden = false;
-    meta.textContent = "Найдено: " + list.length;
+    meta.textContent = "Найдено уникальных протоколов: " + list.length;
     var structured = searchState.structuredByPath || {};
     for (var i = 0; i < list.length; i++) {
       var item = list[i];
@@ -654,7 +735,7 @@
         escapeHtml(catLabel) +
         "</span></div>" +
         "<h3>" +
-        escapeHtml(p.title) +
+        escapeHtml(formatDisplayTitle(p.title)) +
         "</h3>" +
         snipWrap +
         '<div class="card-actions">' +
@@ -670,6 +751,27 @@
     var d = document.createElement("div");
     d.textContent = s;
     return d.innerHTML;
+  }
+
+  /** Читаемое название: подчёркивания из имён файлов → пробелы */
+  function formatDisplayTitle(title) {
+    return String(title || "")
+      .replace(/_/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  /** Один PDF в нескольких рубриках — в выдаче оставляем лучший по скору экземпляр */
+  function dedupeByFilename(scored) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < scored.length; i++) {
+      var fn = scored[i].p.filename || scored[i].p.path.split("/").pop();
+      if (seen[fn]) continue;
+      seen[fn] = true;
+      out.push(scored[i]);
+    }
+    return out;
   }
 
   function dot(a, b) {
@@ -963,7 +1065,8 @@
     scored.sort(function (a, b) {
       return b.sc - a.sc;
     });
-    var top = scored.slice(0, 35);
+    var deduped = dedupeByFilename(scored);
+    var top = deduped.slice(0, 35);
     render(top);
   }
 
@@ -1021,6 +1124,18 @@
         searchState.corpusByPath,
         searchState.structuredByPath
       );
+
+      var seenFn = {};
+      var uniq = 0;
+      for (var uc = 0; uc < protocols.length; uc++) {
+        var fn = protocols[uc].filename || protocols[uc].path.split("/").pop();
+        if (!seenFn[fn]) {
+          seenFn[fn] = true;
+          uniq++;
+        }
+      }
+      var badge = document.getElementById("proto-count-badge");
+      if (badge) badge.textContent = uniq + " уникальных протоколов";
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
