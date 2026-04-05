@@ -752,6 +752,46 @@
       margin-top: 0.65rem;
     }
 
+    .assist-copy-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.75rem 0 0;
+    }
+
+    .btn-copy-assist {
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid rgba(13, 92, 74, 0.35);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--green-800);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-copy-assist:hover {
+      background: var(--green-100);
+      border-color: var(--green-600);
+    }
+
+    .assist-proto-meta {
+      display: block;
+      margin: 0.2rem 0 0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .assist-embed-note {
+      margin: 0.35rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
     .assist-diff-rank {
       flex: 0 0 1.85rem;
       width: 1.85rem;
@@ -1916,6 +1956,80 @@
     return out;
   }
 
+  function formatProtocolMetaSubtitle(title) {
+    var t = String(title || "");
+    var dateM = t.match(/\d{2}\.\d{2}\.\d{4}/);
+    var numM = t.match(/№\s*(\d+)/i);
+    var bits = [];
+    if (dateM) bits.push(dateM[0]);
+    if (numM) bits.push("№ " + numM[1]);
+    return bits.join(" · ");
+  }
+
+  function buildProtocolsCopyText(root) {
+    if (!root) return "";
+    var links = root.querySelectorAll(".assist-proto-list a");
+    var lines = [];
+    var i;
+    for (i = 0; i < links.length; i++) {
+      var a = links[i];
+      var t = (a.textContent || "").trim();
+      var href = a.getAttribute("href") || "";
+      var abs = href;
+      try {
+        if (href && href.indexOf("http") !== 0) {
+          abs = new URL(href, window.location.href).href;
+        }
+      } catch (e) {
+        abs = href;
+      }
+      lines.push(
+        String(i + 1) + ". " + t + (abs ? "\n   " + abs : "")
+      );
+    }
+    return lines.join("\n\n");
+  }
+
+  function bindAssistCopyButtons() {
+    var root = document.getElementById("llm-out");
+    if (!root) return;
+    var buttons = root.querySelectorAll(".btn-copy-assist");
+    var bi;
+    for (bi = 0; bi < buttons.length; bi++) {
+      buttons[bi].addEventListener("click", function () {
+        var btn = this;
+        var kind = btn.getAttribute("data-copy-kind");
+        var orig =
+          kind === "summary"
+            ? "Копировать краткое резюме"
+            : "Копировать список протоколов";
+        var text = "";
+        if (kind === "summary") {
+          var lead = root.querySelector(".assist-lead");
+          text = lead ? lead.innerText.trim() : "";
+        } else if (kind === "protocols") {
+          text = buildProtocolsCopyText(root);
+        }
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(
+            function () {
+              btn.textContent = "Скопировано";
+              setTimeout(function () {
+                btn.textContent = orig;
+              }, 2000);
+            },
+            function () {
+              alert("Не удалось скопировать в буфер.");
+            }
+          );
+        } else {
+          alert("Буфер обмена недоступен в этом браузере.");
+        }
+      });
+    }
+  }
+
   function formatSummaryHtml(summary) {
     if (!summary) return "";
     var t = String(summary).trim();
@@ -1956,6 +2070,11 @@
       '<span class="llm-pct-dot" aria-hidden="true"></span>' +
       pct01(mScore) +
       "%</span>";
+    var sub = formatProtocolMetaSubtitle(title);
+    if (sub) {
+      html +=
+        '<span class="assist-proto-meta">' + escapeHtml(sub) + "</span>";
+    }
     if (ragN > 0) {
       html +=
         '<span class="assist-pct assist-pct-rag" title="Сходство фрагмента протокола с запросом"> · фрагмент ' +
@@ -2337,6 +2456,23 @@
           html += "</ul>";
         }
         html += "</div>";
+        if (data.retrieval_embedding && data.retrieval_embedding.used) {
+          html +=
+            '<p class="assist-embed-note">Отбор фрагментов уточнён семантикой (Gemini Embedding 2) поверх лексического поиска.</p>';
+        }
+      }
+
+      if (j.summary || rawProtos.length) {
+        html += '<div class="assist-copy-toolbar">';
+        if (j.summary) {
+          html +=
+            '<button type="button" class="btn-copy-assist" data-copy-kind="summary">Копировать краткое резюме</button>';
+        }
+        if (rawProtos.length) {
+          html +=
+            '<button type="button" class="btn-copy-assist" data-copy-kind="protocols">Копировать список протоколов</button>';
+        }
+        html += "</div>";
       }
 
       if (j.differential && j.differential.length) {
@@ -2433,6 +2569,7 @@
       bindLlmFollowupForm();
       bindDiffSearchButtons();
       bindProtocolDetailLoader(data.query || "");
+      bindAssistCopyButtons();
       return;
     }
     out.innerHTML =

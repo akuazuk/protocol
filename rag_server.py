@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import gc
 import json
+import math
 import os
 import re
 from concurrent.futures import ThreadPoolExecutor
@@ -42,6 +43,7 @@ _protocol_meta: dict[str, dict] = {}
 _structured_by_path: dict[str, dict] = {}
 _routing: dict = {}
 _model = None
+_retrieval_embed_meta: dict | None = None
 
 PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
 STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
@@ -352,6 +354,117 @@ def load_data() -> None:
 def tokenize_ru(s: str) -> list[str]:
     s = s.lower().replace("ё", "е")
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
+
+
+def _cosine_vec(a: list[float], b: list[float]) -> float:
+    if not a or not b or len(a) != len(b):
+        return 0.0
+    s = sum(x * y for x, y in zip(a, b))
+    na = math.sqrt(sum(x * x for x in a))
+    nb = math.sqrt(sum(y * y for y in b))
+    if na == 0.0 or nb == 0.0:
+        return 0.0
+    return float(s / (na * nb))
+
+
+def _chunk_text_for_embedding(ch: dict) -> str:
+    t = (
+        (ch.get("embedding_ready_text") or "").strip()
+        or (ch.get("lex_text") or "").strip()
+        or (ch.get("text") or "").strip()
+    )
+    if len(t) > 7500:
+        t = t[:7500] + "…"
+    if not t:
+        t = ((ch.get("title") or "") + " " + (ch.get("path") or "")).strip() or "."
+    return t
+
+
+def _norm_minmax(values: list[float]) -> list[float]:
+    if not values:
+        return []
+    lo, hi = min(values), max(values)
+    if hi <= lo:
+        return [0.5] * len(values)
+    return [(float(x) - lo) / (hi - lo) for x in values]
+
+
+def _gemini_embed_one(
+    model: str,
+    text: str,
+    task_type: str | None,
+) -> list[float]:
+    import google.generativeai as genai
+
+    embed_fn = getattr(genai, "embed_content", None)
+    if embed_fn is None:
+        from google.generativeai.embedding import embed_content as embed_fn
+
+    kw: dict = {"model": model, "content": text[:8000]}
+    if task_type:
+        kw["task_type"] = task_type
+    try:
+        r = embed_fn(**kw)
+    except (TypeError, ValueError, KeyError):
+        kw.pop("task_type", None)
+        r = embed_fn(**kw)
+    emb = r.get("embedding")
+    if isinstance(emb, dict) and "values" in emb:
+        emb = emb["values"]
+    if isinstance(emb, list) and emb and isinstance(emb[0], (int, float)):
+        return [float(x) for x in emb]
+    raise RuntimeError("unexpected embedding response")
+
+
+def _gemini_embed_rerank_pool(
+    query: str,
+    pool_rows: list[tuple[float, float, float, dict]],
+    alpha: float,
+    model: str,
+) -> list[tuple[float, float, float, dict]]:
+    """Переранжирование пула чанков: α·lex_norm + (1−α)·cosine(query, chunk)."""
+    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not key or not pool_rows:
+        return pool_rows
+    import google.generativeai as genai
+
+    genai.configure(api_key=key)
+
+    q_text = (query or "").strip()[:8000]
+    q_vec = _gemini_embed_one(
+        model,
+        q_text,
+        "retrieval_query",
+    )
+
+    finals = [float(r[0]) for r in pool_rows]
+    lex_norm = _norm_minmax(finals)
+
+    doc_texts = [_chunk_text_for_embedding(r[3]) for r in pool_rows]
+    max_workers = min(8, max(1, len(doc_texts)))
+
+    def embed_doc(i: int) -> list[float]:
+        return _gemini_embed_one(
+            model,
+            doc_texts[i],
+            "retrieval_document",
+        )
+
+    timeout = float(os.environ.get("GEMINI_EMBED_CALL_TIMEOUT", "45"))
+    doc_vecs: list[list[float]] = []
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        futures = [ex.submit(embed_doc, i) for i in range(len(pool_rows))]
+        for fut in futures:
+            doc_vecs.append(fut.result(timeout=timeout))
+
+    out_rows: list[tuple[float, float, float, dict]] = []
+    for i, row in enumerate(pool_rows):
+        final, lex, mult, ch = row
+        cos = _cosine_vec(q_vec, doc_vecs[i])
+        h = alpha * lex_norm[i] + (1.0 - alpha) * cos
+        out_rows.append((h, lex, mult, ch))
+    out_rows.sort(key=lambda x: -x[0])
+    return out_rows
 
 
 def _norm_query(s: str) -> str:
@@ -750,26 +863,59 @@ def retrieve(
         scored.append((final, lex, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
+    global _retrieval_embed_meta
+    _retrieval_embed_meta = {"used": False}
+
+    embed_on = os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    pool_n = int(os.environ.get("RAG_EMBED_POOL", "40"))
+    alpha = float(os.environ.get("RAG_HYBRID_ALPHA", "0.35"))
+    emb_model = os.environ.get(
+        "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
+    ).strip()
+
+    work_rows: list[tuple[float, float, float, dict]] = scored
+    if embed_on and api_key and scored:
+        pool_n = min(pool_n, len(scored))
+        pool_rows = scored[:pool_n]
+        try:
+            work_rows = _gemini_embed_rerank_pool(query, pool_rows, alpha, emb_model)
+            _retrieval_embed_meta = {
+                "used": True,
+                "model": emb_model,
+                "alpha": alpha,
+                "pool": pool_n,
+            }
+        except Exception as e:
+            work_rows = scored
+            _retrieval_embed_meta = {"used": False, "error": str(e)[:240]}
+
     per_path: dict[str, int] = {}
     out: list[dict] = []
-    for final, lex, mult, ch in scored:
+    rerank_used = bool(_retrieval_embed_meta and _retrieval_embed_meta.get("used"))
+    for final, lex, mult, ch in work_rows:
         p = ch.get("path") or ""
         if per_path.get(p, 0) >= max_per_path:
             continue
         per_path[p] = per_path.get(p, 0) + 1
-        out.append(
-            {
-                "path": p,
-                "title": ch.get("title") or "",
-                "kind": ch.get("kind") or "general",
-                "score": round(final, 3),
-                "lexical_score": round(lex, 3),
-                "routing_multiplier": round(mult, 4),
-                "excerpt": (ch.get("text") or "")[
-                    : int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
-                ],
-            }
-        )
+        row: dict = {
+            "path": p,
+            "title": ch.get("title") or "",
+            "kind": ch.get("kind") or "general",
+            "score": round(final, 3),
+            "lexical_score": round(lex, 3),
+            "routing_multiplier": round(mult, 4),
+            "excerpt": (ch.get("text") or "")[
+                : int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
+            ],
+        }
+        if rerank_used:
+            row["embedding_rerank"] = True
+        out.append(row)
         if len(out) >= max_chunks:
             break
     return out
@@ -1010,6 +1156,10 @@ def health() -> dict:
         "gemini_configured": has_key,
         "specialties_count": len(SPECIALTY_LABELS_RU),
         "memory_saver": _memory_saver_enabled(),
+        "embedding_rerank": os.environ.get("RAG_GEMINI_EMBED_RERANK", "1"),
+        "embedding_model": os.environ.get(
+            "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
+        ),
     }
 
 
@@ -1230,6 +1380,9 @@ def api_assist(body: AssistIn) -> dict:
         "clinical_detail": clinical_detail,
         "clinical_detail_offer": clinical_detail_offer,
         "query_spelling_correction": query_spelling_correction,
+        "retrieval_embedding": dict(_retrieval_embed_meta)
+        if _retrieval_embed_meta
+        else {"used": False},
     }
 
 
