@@ -773,6 +773,19 @@
       margin-bottom: 0.65rem;
     }
 
+    .consultation-template-timer {
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--green-800);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .consultation-template-timer[hidden] {
+      display: none !important;
+    }
+
     .btn-copy-template {
       font-family: inherit;
       font-size: 0.8rem;
@@ -2081,6 +2094,7 @@
   var lastAssistClinical = "";
   var lastAssistQuestions = [];
   var lastProtocolDetailOffer = null;
+  var consultTplTimerId = null;
 
   function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
@@ -2182,6 +2196,31 @@
     return html || '<p class="consultation-tpl-p">' + escapeHtml(t) + "</p>";
   }
 
+  function clearConsultTplTimer() {
+    if (consultTplTimerId !== null) {
+      clearInterval(consultTplTimerId);
+      consultTplTimerId = null;
+    }
+    var tel = document.getElementById("consultation-template-timer");
+    if (tel) {
+      tel.hidden = true;
+      tel.textContent = "";
+    }
+  }
+
+  function startConsultTplTimer() {
+    clearConsultTplTimer();
+    var tel = document.getElementById("consultation-template-timer");
+    if (!tel) return;
+    var start = Date.now();
+    tel.hidden = false;
+    tel.textContent = "Формирование… 0 с";
+    consultTplTimerId = setInterval(function () {
+      var sec = Math.floor((Date.now() - start) / 1000);
+      tel.textContent = "Формирование… " + sec + " с";
+    }, 1000);
+  }
+
   function loadConsultationTemplate() {
     var cd = window.__clinicalDetailForTemplate;
     var q = window.__assistQueryForTemplate || "";
@@ -2197,6 +2236,7 @@
     var bodyEl = document.getElementById("consultation-template-body");
     var genBtn = document.querySelector(".btn-consultation-template");
     if (genBtn) genBtn.disabled = true;
+    startConsultTplTimer();
     fetch(base + "/api/consultation-template", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -2239,6 +2279,7 @@
         alert("Не удалось: " + String(err.message || err));
       })
       .finally(function () {
+        clearConsultTplTimer();
         if (genBtn) genBtn.disabled = false;
       });
   }
@@ -2639,6 +2680,7 @@
       '<div class="consultation-template-actions">' +
       '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
       '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
+      '<span class="consultation-template-timer" id="consultation-template-timer" hidden aria-live="polite"></span>' +
       "</div>" +
       '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
       '<article class="consultation-template-card">' +
