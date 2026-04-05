@@ -986,6 +986,18 @@ class AssistIn(BaseModel):
     )
 
 
+class ProtocolDetailIn(BaseModel):
+    """Развёрнутая выдержка по протоколу — отдельный запрос (после краткого ответа assist)."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    path: str = Field(..., min_length=1, max_length=2048)
+    title: str = Field(default="", max_length=2000)
+    protocol_confidence: float | None = Field(
+        default=None,
+        description="Оценка соответствия из assist (0–1), для подписи в блоке",
+    )
+
+
 @app.get("/health")
 def health() -> dict:
     has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
@@ -1166,6 +1178,7 @@ def api_assist(body: AssistIn) -> dict:
             finish = _gemini_finish_reason(resp)
 
     clinical_detail = None
+    clinical_detail_offer: dict | None = None
     if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
         "1",
         "true",
@@ -1184,14 +1197,22 @@ def api_assist(body: AssistIn) -> dict:
         if candidates:
             best_sc, pr = candidates[0]
             pth = pr.get("path") or ""
-            clinical_detail = extract_clinical_detail(
-                pth,
-                q,
-                str(pr.get("title") or ""),
-                model,
-                detailed=True,
-                protocol_confidence=best_sc,
-            )
+            score_obj = pr.get("confidence_score")
+            if confidence_display_full(score_obj):
+                clinical_detail = extract_clinical_detail(
+                    pth,
+                    q,
+                    str(pr.get("title") or ""),
+                    model,
+                    detailed=True,
+                    protocol_confidence=best_sc,
+                )
+            else:
+                clinical_detail_offer = {
+                    "path": pth,
+                    "title": str(pr.get("title") or ""),
+                    "confidence_score": best_sc,
+                }
 
     normalize_differential_field(parsed)
 
@@ -1207,8 +1228,37 @@ def api_assist(body: AssistIn) -> dict:
         "gemini_finish_reason": finish,
         "gemini_retry_used": retry_used,
         "clinical_detail": clinical_detail,
+        "clinical_detail_offer": clinical_detail_offer,
         "query_spelling_correction": query_spelling_correction,
     }
+
+
+@app.post("/api/protocol-detail")
+def api_protocol_detail(body: ProtocolDetailIn) -> dict:
+    """Развёрнутая выдержка по одному протоколу (второй вызов модели) — по кнопке после краткого ответа."""
+    q = body.query.strip()
+    pth = body.path.strip()
+    if not pth or pth not in _chunks_by_path:
+        raise HTTPException(
+            status_code=404,
+            detail="Протокол не найден в индексе",
+        )
+    model = get_gemini()
+    pc = body.protocol_confidence
+    if pc is not None:
+        try:
+            pc = float(max(0.0, min(1.0, pc)))
+        except (TypeError, ValueError):
+            pc = None
+    clinical_detail = extract_clinical_detail(
+        pth,
+        q,
+        body.title.strip(),
+        model,
+        detailed=True,
+        protocol_confidence=pc,
+    )
+    return {"clinical_detail": clinical_detail}
 
 
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.

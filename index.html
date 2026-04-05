@@ -724,6 +724,34 @@
       text-align: center;
     }
 
+    .assist-loading--compact {
+      padding: 1rem 0.75rem 1.15rem;
+      margin: 0.5rem 0 0;
+      border-radius: 14px;
+    }
+
+    .assist-loading--compact .assist-loading__title {
+      font-size: 1rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .assist-loading--compact .assist-timer-num {
+      font-size: clamp(2.25rem, 8vw, 3.25rem);
+    }
+
+    .clinical-detail-slot {
+      margin-top: 0.75rem;
+      min-height: 3rem;
+    }
+
+    .assist-clinical-detail--pending .assist-detail-head {
+      margin-top: 0;
+    }
+
+    .assist-clinical-detail--pending .btn-load-protocol-detail {
+      margin-top: 0.65rem;
+    }
+
     .assist-diff-rank {
       flex: 0 0 1.85rem;
       width: 1.85rem;
@@ -1504,7 +1532,7 @@
         <span class="assist-timer-num">0</span>
         <span class="assist-timer-unit">сек</span>
       </div>
-      <p class="assist-timer-overlay__hint">
+      <p id="assist-timer-overlay-hint" class="assist-timer-overlay__hint">
         Запрос обрабатывается на сервере. Окно закроется автоматически.
       </p>
     </div>
@@ -1859,6 +1887,7 @@
 
   var lastAssistClinical = "";
   var lastAssistQuestions = [];
+  var lastProtocolDetailOffer = null;
 
   function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
@@ -1939,6 +1968,144 @@
     }
     html += "</li>";
     return html;
+  }
+
+  function getDetailLoadingHtml() {
+    return (
+      '<div class="assist-loading assist-loading--compact" role="status" aria-live="polite">' +
+      '<div class="assist-loading__title">Загрузка выдержки</div>' +
+      '<div class="assist-loading__timer">' +
+      '<span class="assist-timer-num">0</span>' +
+      '<span class="assist-timer-unit">сек</span>' +
+      "</div>" +
+      '<p class="assist-loading__hint">Запрос к модели по полному тексту протокола.</p>' +
+      "</div>"
+    );
+  }
+
+  function loadProtocolDetailExpand(offer, queryText) {
+    if (!offer || !offer.path) return;
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    if (baseEl && base !== (baseEl.value || "").trim().replace(/\/$/, "")) {
+      baseEl.value = base;
+    }
+    var t0 = Date.now();
+    var tick = null;
+    var abortTid = null;
+    var btn = document.querySelector(".btn-load-protocol-detail");
+    if (btn) btn.disabled = true;
+    var useMobile =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 640px)").matches;
+    var slot = document.getElementById("clinical-detail-slot");
+    if (slot) {
+      slot.hidden = false;
+      if (!useMobile) {
+        slot.innerHTML = getDetailLoadingHtml();
+      } else {
+        slot.innerHTML = "";
+      }
+    }
+    if (useMobile) {
+      showAssistTimerOverlay(
+        "Загрузка выдержки",
+        "Идёт запрос к модели по полному тексту протокола."
+      );
+    }
+    tick = setInterval(function () {
+      var sec = Math.floor((Date.now() - t0) / 1000);
+      var slotEl = document.getElementById("clinical-detail-slot");
+      if (slotEl) {
+        var n = slotEl.querySelector(".assist-timer-num");
+        if (n) n.textContent = String(sec);
+      }
+      var ov = document.getElementById("assist-timer-overlay");
+      if (ov && !ov.hidden) {
+        var nv = ov.querySelector(".assist-timer-num");
+        if (nv) nv.textContent = String(sec);
+      }
+    }, 250);
+    var ctrl = new AbortController();
+    abortTid = setTimeout(function () {
+      ctrl.abort();
+    }, 240000);
+    fetch(base + "/api/protocol-detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: queryText,
+        path: offer.path,
+        title: offer.title || "",
+        protocol_confidence:
+          offer.confidence_score != null && !isNaN(Number(offer.confidence_score))
+            ? Number(offer.confidence_score)
+            : null,
+      }),
+      signal: ctrl.signal,
+    })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!j || typeof j !== "object") {
+            throw new Error(
+              text ? text.slice(0, 220) : "Пустой ответ сервера"
+            );
+          }
+          if (!r.ok) {
+            var d = j.detail;
+            if (Array.isArray(d)) {
+              d = d
+                .map(function (x) {
+                  return x.msg || JSON.stringify(x);
+                })
+                .join("; ");
+            }
+            throw new Error(d || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (payload) {
+        var block = document.getElementById("protocol-detail-block");
+        if (block && payload.clinical_detail) {
+          block.outerHTML = renderClinicalDetailBlock(payload.clinical_detail);
+        }
+      })
+      .catch(function (err) {
+        var msg = String(err.message || err);
+        if (err && err.name === "AbortError") {
+          msg =
+            "Превышено время ожидания. Попробуйте позже или сократите запрос.";
+        }
+        var slotEl = document.getElementById("clinical-detail-slot");
+        if (slotEl) {
+          slotEl.hidden = false;
+          slotEl.innerHTML =
+            '<p class="error">Не удалось: ' + escapeHtml(msg) + "</p>";
+        }
+        if (btn) btn.disabled = false;
+        try {
+          if (slotEl) {
+            slotEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        } catch (e) {}
+      })
+      .finally(function () {
+        if (tick) clearInterval(tick);
+        if (abortTid) clearTimeout(abortTid);
+        if (useMobile) hideAssistTimerOverlay();
+      });
+  }
+
+  function bindProtocolDetailLoader(queryText) {
+    var btn = document.querySelector(".btn-load-protocol-detail");
+    if (!btn || !lastProtocolDetailOffer) return;
+    btn.addEventListener("click", function () {
+      loadProtocolDetailExpand(lastProtocolDetailOffer, queryText);
+    });
   }
 
   function bindDiffSearchButtons() {
@@ -2092,12 +2259,32 @@
     return html;
   }
 
+  function renderClinicalDetailPlaceholder(offer) {
+    if (!offer || !offer.path) return "";
+    var pct = pct01(Number(offer.confidence_score));
+    var titleLine = offer.title || offer.path;
+    return (
+      '<div class="assist-clinical-detail assist-clinical-detail--pending" id="protocol-detail-block">' +
+      '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>' +
+      '<p class="assist-detail-confidence">Оценка соответствия запросу: ' +
+      pct +
+      "%. Ниже 100% — полный разбор по тексту протокола не подгружается автоматически, чтобы быстрее показать краткий ответ.</p>" +
+      '<p class="assist-detail-meta">' +
+      escapeHtml(String(titleLine)) +
+      "</p>" +
+      '<button type="button" class="btn-assist btn-load-protocol-detail">Загрузить развёрнутую выдержку</button>' +
+      '<div id="clinical-detail-slot" class="clinical-detail-slot" hidden></div>' +
+      "</div>"
+    );
+  }
+
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
     out.hidden = false;
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
+    lastProtocolDetailOffer = data.clinical_detail_offer || null;
     var j = data.llm_json;
     if (j && typeof j === "object") {
       var ragMap = normalizeRagByPath(data.retrieval || []);
@@ -2217,6 +2404,8 @@
 
       if (data.clinical_detail) {
         html += renderClinicalDetailBlock(data.clinical_detail);
+      } else if (data.clinical_detail_offer) {
+        html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
       }
 
       if (j.disclaimer) {
@@ -2243,6 +2432,7 @@
       out.innerHTML = html;
       bindLlmFollowupForm();
       bindDiffSearchButtons();
+      bindProtocolDetailLoader(data.query || "");
       return;
     }
     out.innerHTML =
@@ -2326,9 +2516,23 @@
     );
   }
 
-  function showAssistTimerOverlay() {
+  function showAssistTimerOverlay(titleStr, hintStr) {
     var ov = document.getElementById("assist-timer-overlay");
     if (!ov) return;
+    var titleEl = document.getElementById("assist-timer-overlay-title");
+    var hintEl = document.getElementById("assist-timer-overlay-hint");
+    if (titleEl) {
+      titleEl.textContent =
+        titleStr != null && String(titleStr).length
+          ? String(titleStr)
+          : "Подбор протоколов";
+    }
+    if (hintEl) {
+      hintEl.textContent =
+        hintStr != null && String(hintStr).length
+          ? String(hintStr)
+          : "Запрос обрабатывается на сервере. Окно закроется автоматически.";
+    }
     ov.hidden = false;
     ov.setAttribute("aria-hidden", "false");
     var n = ov.querySelector(".assist-timer-num");
@@ -2341,6 +2545,13 @@
   function hideAssistTimerOverlay() {
     var ov = document.getElementById("assist-timer-overlay");
     if (!ov) return;
+    var titleEl = document.getElementById("assist-timer-overlay-title");
+    var hintEl = document.getElementById("assist-timer-overlay-hint");
+    if (titleEl) titleEl.textContent = "Подбор протоколов";
+    if (hintEl) {
+      hintEl.textContent =
+        "Запрос обрабатывается на сервере. Окно закроется автоматически.";
+    }
     ov.hidden = true;
     ov.setAttribute("aria-hidden", "true");
     try {
