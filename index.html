@@ -821,6 +821,13 @@
       color: var(--text);
     }
 
+    .consultation-ph-hint {
+      margin: 0 0 0.4rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
     .consultation-ph-input,
     .consultation-additional-notes {
       width: 100%;
@@ -932,8 +939,8 @@
 
     .consultation-template-logo {
       flex-shrink: 0;
-      width: 52px;
-      height: 52px;
+      width: 88px;
+      height: 88px;
       object-fit: contain;
       display: block;
     }
@@ -941,7 +948,7 @@
     .consultation-template-title {
       margin: 0 0 0.2rem;
       font-family: "Fraunces", Georgia, serif;
-      font-size: 1.15rem;
+      font-size: 1.22rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--green-900);
@@ -975,6 +982,29 @@
       border-left: 3px solid rgba(16, 185, 129, 0.55);
     }
 
+    .consultation-tpl-section--key {
+      border-left-width: 4px;
+      border-left-color: rgba(13, 120, 95, 0.85);
+      color: var(--green-900);
+      font-size: 1rem;
+    }
+
+    .consultation-tpl-section--accent {
+      border-left-color: rgba(16, 185, 129, 0.75);
+    }
+
+    .consultation-tpl-section--warn {
+      border-left-color: rgba(217, 119, 6, 0.75);
+      color: rgba(120, 53, 15, 0.95);
+    }
+
+    .consultation-tpl-section--soft {
+      font-size: 0.9rem;
+      font-weight: 650;
+      color: var(--muted);
+      border-left-color: rgba(16, 185, 129, 0.35);
+    }
+
     .consultation-tpl-section:first-child {
       margin-top: 0;
     }
@@ -987,9 +1017,27 @@
       margin-bottom: 0;
     }
 
+    .consultation-tpl-p--attention {
+      margin: 0.5rem 0 0.65rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      background: rgba(254, 243, 199, 0.65);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-left: 4px solid rgba(217, 119, 6, 0.85);
+    }
+
     .consultation-tpl-li {
       margin: 0.25rem 0 0.35rem;
       padding-left: 0.35rem;
+    }
+
+    .consultation-tpl-li--attention {
+      padding: 0.35rem 0.45rem;
+      margin: 0.35rem 0 0.4rem;
+      border-radius: 8px;
+      background: rgba(254, 243, 199, 0.55);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-left: 4px solid rgba(217, 119, 6, 0.75);
     }
 
     .consultation-tpl-placeholder {
@@ -1000,6 +1048,14 @@
       border: 1px solid rgba(218, 185, 70, 0.5);
       box-decoration-break: clone;
       -webkit-box-decoration-break: clone;
+      cursor: help;
+    }
+
+    .consultation-tpl-placeholder--generic {
+      background: rgba(255, 237, 160, 0.95);
+      border-color: rgba(202, 138, 4, 0.55);
+      border-width: 1px;
+      font-weight: 600;
     }
 
     .assist-proto-meta {
@@ -1655,6 +1711,12 @@
       .consultation-template-header {
         padding-left: 0.55rem;
         padding-right: 0.55rem;
+        flex-wrap: wrap;
+      }
+
+      .consultation-template-logo {
+        width: 72px;
+        height: 72px;
       }
 
       .consultation-template-title {
@@ -2249,14 +2311,130 @@
       .replace(/^\s*#\s+/gm, "");
   }
 
+  function escapeHtmlAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function consultationPlaceholderHint(sectionLabel, token) {
+    var sec = (sectionLabel || "").toLowerCase();
+    var tok = (token || "").toLowerCase();
+    if (tok.indexOf("уточнить при осмотре") !== -1 && tok.length < 40) {
+      if (sec.indexOf("анамнез") !== -1) {
+        return "Что внести: сопутствующие заболевания, аллергоанамнез, перенесённые операции, наследственность, образ жизни, вредные привычки.";
+      }
+      if (sec.indexOf("объективно") !== -1) {
+        return "Что внести: общее состояние, кожные покровы, ЧДД, АД, живот, стул; местный статус (промежность, ректальное исследование) — по осмотру.";
+      }
+      if (sec.indexOf("наблюдение") !== -1 || sec.indexOf("контроль") !== -1) {
+        return "Что внести: сроки повторного визита, контрольные исследования, рекомендации при выписке.";
+      }
+      if (sec.indexOf("жалобы") !== -1) {
+        return "Что внести: симптомы, длительность, динамика, что уже сделано.";
+      }
+      if (sec.indexOf("дополнительно") !== -1) {
+        return "Уточнения к заключению, не вошедшие в другие разделы.";
+      }
+      return "Внесите недостающие данные по смыслу этого раздела (смотрите заголовок блока выше).";
+    }
+    if (tok.indexOf("сопутств") !== -1 || tok.indexOf("аллерг") !== -1) {
+      return "Перечислите сопутствующие заболевания, аллергии, перенесённые операции.";
+    }
+    if (tok.indexOf("объектив") !== -1 || tok.indexOf("местн") !== -1) {
+      return "Опишите объективный статус при осмотре по пунктам из плейсхолдера.";
+    }
+    if (
+      tok.indexOf("наблюд") !== -1 ||
+      tok.indexOf("контрол") !== -1 ||
+      tok.indexOf("график") !== -1 ||
+      tok.indexOf("срок") !== -1
+    ) {
+      return "Укажите сроки наблюдения, контрольные визиты и исследования.";
+    }
+    if (tok.indexOf("диагноз") !== -1 || tok.indexOf("мкб") !== -1) {
+      return "Уточните формулировку диагноза и коды МКБ-10 после обследования.";
+    }
+    return "Подставьте вместо плейсхолдера фактические данные из осмотра, выписки или документации.";
+  }
+
+  function consultationTextareaPlaceholderShort(sectionLabel, token) {
+    var h = consultationPlaceholderHint(sectionLabel, token);
+    if (h.length > 115) return h.slice(0, 112) + "…";
+    return h;
+  }
+
+  function consultationSectionClassForHead(head) {
+    var h = (head || "").toLowerCase();
+    if (h.indexOf("диагноз") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--key";
+    }
+    if (h.indexOf("рекомендац") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--key";
+    }
+    if (h.indexOf("жалобы") !== -1 || h.indexOf("объективно") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--accent";
+    }
+    if (h.indexOf("анамнез") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--accent";
+    }
+    if (h.indexOf("противопоказ") !== -1 || h.indexOf("осложн") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--warn";
+    }
+    if (h.indexOf("наблюдение") !== -1 || h.indexOf("контроль") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--soft";
+    }
+    if (h.indexOf("дополнительно") !== -1) {
+      return "consultation-tpl-section consultation-tpl-section--soft";
+    }
+    return "consultation-tpl-section";
+  }
+
+  function attentionClassSuffixForLine(line) {
+    var x = String(line || "").trim();
+    if (
+      /^ВАЖНО[\s:—\-]/i.test(x) ||
+      /^Внимание[!:：]/i.test(x) ||
+      /^ОБРАТИТЕ ВНИМАНИЕ/i.test(x) ||
+      /^НЕОБХОДИМО[\s:]/i.test(x)
+    ) {
+      return " consultation-tpl-p--attention";
+    }
+    return "";
+  }
+
+  function attentionClassSuffixForListLine(line) {
+    var x = String(line || "").trim();
+    if (
+      /^ВАЖНО[\s:—\-]/i.test(x) ||
+      /^Внимание[!:：]/i.test(x) ||
+      /^ОБРАТИТЕ ВНИМАНИЕ/i.test(x) ||
+      /^НЕОБХОДИМО[\s:]/i.test(x)
+    ) {
+      return " consultation-tpl-li--attention";
+    }
+    return "";
+  }
+
   function escapeHtmlWithPlaceholders(s) {
     var parts = String(s).split(/(\[[^\]]+\])/g);
     var i;
     var out = "";
     for (i = 0; i < parts.length; i++) {
       if (/^\[[^\]]+\]$/.test(parts[i])) {
+        var tok = parts[i];
+        var generic = /^\[\s*уточнить при осмотре\s*\]$/i.test(String(tok).trim());
+        var cls = generic
+          ? "consultation-tpl-placeholder consultation-tpl-placeholder--generic"
+          : "consultation-tpl-placeholder";
+        var tit = escapeHtmlAttr(consultationPlaceholderHint("", tok));
         out +=
-          '<span class="consultation-tpl-placeholder">' +
+          '<span class="' +
+          cls +
+          '" title="' +
+          tit +
+          '">' +
           escapeHtml(parts[i]) +
           "</span>";
       } else {
@@ -2276,8 +2454,11 @@
       if (acc.length) {
         var text = acc.join("\n").trim();
         if (text) {
+          var pAtt = attentionClassSuffixForLine(text);
           html +=
-            '<p class="consultation-tpl-p">' +
+            '<p class="consultation-tpl-p' +
+            pAtt +
+            '">' +
             escapeHtmlWithPlaceholders(text).replace(/\n/g, "<br>") +
             "</p>";
         }
@@ -2302,8 +2483,11 @@
       }
       if (/^[-•]\s+/.test(trimmed) || /^\d+\.\s+/.test(trimmed)) {
         flushAcc();
+        var liAtt = attentionClassSuffixForListLine(trimmed);
         html +=
-          '<p class="consultation-tpl-li">' +
+          '<p class="consultation-tpl-li' +
+          liAtt +
+          '">' +
           escapeHtmlWithPlaceholders(trimmed) +
           "</p>";
         continue;
@@ -2311,10 +2495,18 @@
       var sec = splitSectionHeader(trimmed);
       if (sec) {
         flushAcc();
-        html += '<h4 class="consultation-tpl-section">' + escapeHtml(sec.head) + "</h4>";
+        html +=
+          '<h4 class="' +
+          consultationSectionClassForHead(sec.head) +
+          '">' +
+          escapeHtml(sec.head) +
+          "</h4>";
         if (sec.rest) {
+          var restAtt = attentionClassSuffixForLine(sec.rest);
           html +=
-            '<p class="consultation-tpl-p">' +
+            '<p class="consultation-tpl-p' +
+            restAtt +
+            '">' +
             escapeHtmlWithPlaceholders(sec.rest) +
             "</p>";
         }
@@ -2441,6 +2633,10 @@
         var o = occ[i];
         var ctx = o.sectionLabel || "";
         var tok = o.token || "";
+        var hint = consultationPlaceholderHint(ctx, tok);
+        var taPh = escapeHtmlAttr(
+          consultationTextareaPlaceholderShort(ctx, tok)
+        );
         fields.innerHTML +=
           '<div class="consultation-ph-row">' +
           '<label class="consultation-ph-label" for="consultation-ph-' +
@@ -2454,9 +2650,14 @@
           escapeHtml(tok) +
           "</span>" +
           "</label>" +
+          '<p class="consultation-ph-hint">' +
+          escapeHtml(hint) +
+          "</p>" +
           '<textarea class="consultation-ph-input" id="consultation-ph-' +
           i +
-          '" rows="2" placeholder="Текст вместо плейсхолдера в этом месте"></textarea>' +
+          '" rows="2" placeholder="' +
+          taPh +
+          '"></textarea>' +
           "</div>";
       }
     }
@@ -2898,7 +3099,7 @@
       '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
       '<article class="consultation-template-card">' +
       '<header class="consultation-template-header">' +
-      '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="52" height="52" alt="" />' +
+      '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="88" height="88" alt="" />' +
       "<div>" +
       '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
       '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
