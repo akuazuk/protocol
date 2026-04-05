@@ -384,6 +384,109 @@
       margin: 0;
     }
 
+    .voice-status-wrap {
+      flex: 1 1 100%;
+      min-width: 0;
+      margin-top: 0.35rem;
+    }
+
+    .voice-status-wrap[hidden] {
+      display: none !important;
+    }
+
+    .voice-status {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 14px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: linear-gradient(145deg, rgba(232, 245, 241, 0.95) 0%, #ffffff 100%);
+      box-shadow: 0 4px 16px rgba(13, 92, 74, 0.08);
+    }
+
+    .voice-status--recording {
+      border-color: rgba(196, 30, 58, 0.45);
+      background: linear-gradient(145deg, #fff5f5 0%, #ffffff 100%);
+      animation: voice-panel-pulse 1.4s ease-in-out infinite;
+    }
+
+    .voice-status--processing {
+      border-color: rgba(26, 138, 114, 0.5);
+      background: linear-gradient(145deg, rgba(232, 245, 241, 0.98) 0%, #ffffff 100%);
+    }
+
+    @keyframes voice-panel-pulse {
+      0%,
+      100% {
+        box-shadow: 0 4px 16px rgba(196, 30, 58, 0.12);
+      }
+      50% {
+        box-shadow: 0 4px 22px rgba(196, 30, 58, 0.22);
+      }
+    }
+
+    .voice-status__dot {
+      flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+      margin-top: 0.2rem;
+      border-radius: 50%;
+      background: var(--green-600);
+      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.25);
+    }
+
+    .voice-status--recording .voice-status__dot {
+      background: var(--red-500);
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.35);
+      animation: voice-dot-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes voice-dot-pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.85;
+      }
+    }
+
+    .voice-status__text {
+      font-size: 0.84rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--green-900);
+    }
+
+    .voice-status--recording .voice-status__text {
+      color: var(--red-700);
+    }
+
+    .voice-interim {
+      margin-top: 0.45rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 10px;
+      border: 1px dashed rgba(26, 138, 114, 0.4);
+      min-height: 2.5rem;
+    }
+
+    .voice-interim-label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--green-700);
+      margin-bottom: 0.25rem;
+    }
+
     .specialty-panel {
       margin-bottom: 1.25rem;
       padding: 1rem 1.15rem 1.15rem;
@@ -2115,6 +2218,16 @@
             <p class="voice-hint" id="voice-hint">
               На смартфоне разрешите доступ к микрофону. Распознавание — в браузере, аудио на сервер не отправляется.
             </p>
+            <div class="voice-status-wrap" id="voice-status-wrap" hidden>
+              <div class="voice-status voice-status--recording" id="voice-status" role="status" aria-live="polite">
+                <span class="voice-status__dot" aria-hidden="true"></span>
+                <span class="voice-status__text" id="voice-status-text"></span>
+              </div>
+              <div class="voice-interim" id="voice-interim" hidden>
+                <span class="voice-interim-label">Распознавание в текст (предпросмотр)</span>
+                <span id="voice-interim-body"></span>
+              </div>
+            </div>
           </div>
         </div>
         <button type="submit" class="btn btn-submit-row" id="btn-search-submit">
@@ -2371,6 +2484,11 @@
     var btn = document.getElementById("btn-voice");
     var ta = document.getElementById("q");
     var hint = document.getElementById("voice-hint");
+    var wrap = document.getElementById("voice-status-wrap");
+    var statusEl = document.getElementById("voice-status");
+    var statusText = document.getElementById("voice-status-text");
+    var interimBox = document.getElementById("voice-interim");
+    var interimBody = document.getElementById("voice-interim-body");
     if (!btn || !ta) return;
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
@@ -2383,9 +2501,56 @@
     }
     var rec = new SR();
     rec.lang = "ru-RU";
-    rec.interimResults = false;
-    rec.continuous = false;
+    rec.interimResults = true;
+    rec.continuous = true;
     var busy = false;
+    var hideTimer = null;
+
+    function clearHideTimer() {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+        hideTimer = null;
+      }
+    }
+
+    function showVoicePanel(mode, msg) {
+      if (!wrap || !statusEl || !statusText) return;
+      wrap.hidden = false;
+      statusEl.classList.remove("voice-status--recording", "voice-status--processing");
+      if (mode === "recording") {
+        statusEl.classList.add("voice-status--recording");
+      } else if (mode === "processing") {
+        statusEl.classList.add("voice-status--processing");
+      }
+      statusText.textContent = msg;
+    }
+
+    function setInterim(text) {
+      if (!interimBox || !interimBody) return;
+      if (text && String(text).trim()) {
+        interimBody.textContent = text;
+        interimBox.hidden = false;
+      } else {
+        interimBody.textContent = "";
+        interimBox.hidden = true;
+      }
+    }
+
+    function scheduleHidePanel(ms) {
+      clearHideTimer();
+      hideTimer = setTimeout(function () {
+        hideTimer = null;
+        if (wrap) wrap.hidden = true;
+        setInterim("");
+        if (statusEl) {
+          statusEl.classList.remove(
+            "voice-status--recording",
+            "voice-status--processing"
+          );
+        }
+      }, ms);
+    }
+
     btn.addEventListener("click", function () {
       if (busy) {
         try {
@@ -2394,29 +2559,92 @@
         return;
       }
       busy = true;
+      clearHideTimer();
       btn.classList.add("recording");
+      btn.textContent = "Стоп";
+      showVoicePanel(
+        "recording",
+        "Идёт запись голоса. Говорите в микрофон — речь распознаётся в браузере и переводится в текст (аудио на сервер не отправляется)."
+      );
+      setInterim("");
       try {
         rec.start();
       } catch (e) {
         busy = false;
         btn.classList.remove("recording");
+        btn.textContent = "Голос";
+        showVoicePanel(
+          "processing",
+          "Не удалось запустить запись. Разрешите доступ к микрофону и нажмите «Голос» снова."
+        );
+        scheduleHidePanel(5000);
       }
     });
+
+    rec.onstart = function () {
+      showVoicePanel(
+        "recording",
+        "Слушаю… Запись включена. Ниже по мере распознавания появится предпросмотр текста."
+      );
+    };
+
     rec.onresult = function (ev) {
-      var last = ev.results.length - 1;
-      if (ev.results[last].isFinal) {
-        var t = ev.results[last][0].transcript;
+      var interim = "";
+      var finalChunk = "";
+      var i;
+      for (i = 0; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) {
+          finalChunk += ev.results[i][0].transcript;
+        } else {
+          interim += ev.results[i][0].transcript;
+        }
+      }
+      if (interim) {
+        if (statusText) {
+          statusText.textContent =
+            "Распознавание речи в текст… Предпросмотр обновляется по мере произнесения.";
+        }
+        setInterim(interim);
+      }
+      if (finalChunk) {
         var cur = ta.value.trim();
-        ta.value = (cur ? cur + " " : "") + String(t).trim();
+        ta.value = (cur ? cur + " " : "") + String(finalChunk).trim();
+        setInterim("");
+        if (statusText) {
+          statusText.textContent =
+            "Фраза перенесена в поле запроса. Продолжайте диктовку или нажмите «Стоп», чтобы закончить.";
+        }
       }
     };
+
     rec.onend = function () {
       busy = false;
       btn.classList.remove("recording");
+      btn.textContent = "Голос";
+      setInterim("");
+      if (statusText) {
+        statusText.textContent =
+          "Запись остановлена. Проверьте и при необходимости отредактируйте текст в поле выше.";
+      }
+      if (statusEl) {
+        statusEl.classList.remove("voice-status--recording");
+        statusEl.classList.add("voice-status--processing");
+      }
+      if (wrap) wrap.hidden = false;
+      scheduleHidePanel(4000);
     };
-    rec.onerror = function () {
+
+    rec.onerror = function (ev) {
       busy = false;
       btn.classList.remove("recording");
+      btn.textContent = "Голос";
+      var err = ev && ev.error ? String(ev.error) : "";
+      showVoicePanel(
+        "processing",
+        "Ошибка распознавания" + (err ? ": " + err : "") + ". Попробуйте ещё раз."
+      );
+      setInterim("");
+      scheduleHidePanel(6000);
     };
   }
 
