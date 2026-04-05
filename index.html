@@ -353,36 +353,106 @@
       font-weight: 600;
     }
 
-    .assist-compact li.assist-diff-row {
+    .assist-diff-wrap {
+      margin-top: 0.5rem;
+    }
+
+    .assist-diff-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .assist-diff-card {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.45rem 0.65rem;
-      list-style-position: outside;
+      align-items: stretch;
+      gap: 0.65rem 0.85rem;
+      margin: 0 0 0.65rem;
+      padding: 0.85rem 1rem;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 250, 0.98) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.06);
+    }
+
+    .assist-diff-card:last-child {
+      margin-bottom: 0;
     }
 
     .assist-diff-text {
-      flex: 1 1 12rem;
+      flex: 1 1 14rem;
       min-width: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text);
+      padding: 0.15rem 0;
     }
 
     .btn-diff-search {
       flex: 0 0 auto;
+      align-self: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      padding: 0.35rem 0.65rem;
-      border-radius: 999px;
-      border: 2px solid var(--green-600);
-      background: linear-gradient(180deg, #fff 0%, var(--green-100) 100%);
-      color: var(--green-800);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(180deg, var(--green-600) 0%, var(--green-800) 100%);
+      color: #fff;
       cursor: pointer;
       white-space: nowrap;
+      box-shadow: 0 3px 12px rgba(13, 92, 74, 0.28);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-diff-search::before {
+      content: "";
+      display: inline-block;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
     }
 
     .btn-diff-search:hover {
-      background: var(--green-100);
-      box-shadow: 0 2px 8px rgba(13, 92, 74, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 18px rgba(13, 92, 74, 0.35);
+    }
+
+    .btn-diff-search:active {
+      transform: translateY(0);
+    }
+
+    .assist-sec-label--diff {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .assist-sec-label--diff::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber-400), var(--orange-500));
+      flex-shrink: 0;
+    }
+
+    .assist-diff-lead {
+      margin: 0.35rem 0 0.75rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-sec--differential .assist-sec-label {
+      margin-bottom: 0;
     }
 
     .specialty-toolbar {
@@ -538,6 +608,87 @@
       font-size: 0.82rem;
       color: var(--muted);
       line-height: 1.4;
+    }
+
+    .assist-loading {
+      text-align: center;
+      padding: 1.75rem 1.25rem 2rem;
+      margin: 0;
+      background: linear-gradient(165deg, #ffffff 0%, #e8f5f1 45%, #dceae4 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      box-shadow: 0 12px 40px rgba(6, 61, 53, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .assist-loading__title {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--green-950);
+      margin: 0 0 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .assist-loading__timer {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.35rem;
+      margin: 0 0 0.85rem;
+    }
+
+    .assist-timer-num {
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: clamp(3rem, 12vw, 4.25rem);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 50%, var(--red-700) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(13, 92, 74, 0.2));
+    }
+
+    .assist-timer-unit {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .assist-loading__hint {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+      max-width: 22rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-submit-row:disabled,
+    .btn-assist:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-submit-row.is-busy {
+      pointer-events: none;
+    }
+
+    .query-form-hint {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .query-form-hint strong {
+      color: var(--green-800);
+      font-weight: 600;
     }
 
     .llm-toolbar {
@@ -1184,9 +1335,13 @@
             rows="6"
             autocomplete="off"
             maxlength="12000"
-            placeholder="Опишите жалобы, длительность, что уже пробовали, вопрос к протоколу…"
+            placeholder="Жалобы, длительность, предполагаемый или установленный диагноз, что уже пробовали, вопрос к протоколу…"
             aria-label="Текст запроса: жалобы и вопрос"
           ></textarea>
+          <p class="query-form-hint" id="query-form-hint">
+            Можно указать <strong>диагноз</strong> (если известен), динамику и лечение. Подбор запускается
+            <strong>после нажатия «Найти протоколы»</strong> — до этого запрос только вводится в поле.
+          </p>
           <div class="query-actions">
             <button type="button" class="btn-voice" id="btn-voice" title="Надиктовать текст (Chrome, Edge, Safari)">
               Голос
@@ -1196,7 +1351,9 @@
             </p>
           </div>
         </div>
-        <button type="submit" class="btn btn-submit-row">Найти протоколы</button>
+        <button type="submit" class="btn btn-submit-row" id="btn-search-submit">
+          Найти протоколы
+        </button>
       </form>
       <p class="hint" id="hint"></p>
 
@@ -1685,9 +1842,10 @@
         if (qInput) qInput.value = line;
         var panel = document.getElementById("llm-panel");
         if (panel) panel.open = true;
-        var form = document.getElementById("search-form");
-        if (form) {
-          form.scrollIntoView({ behavior: "smooth", block: "start" });
+        var outEl = document.getElementById("llm-out");
+        if (outEl) {
+          outEl.hidden = false;
+          outEl.scrollIntoView({ behavior: "smooth", block: "center" });
         }
         runAssist().catch(function (err) {
           console.error(err);
@@ -1851,21 +2009,21 @@
       }
 
       if (j.differential && j.differential.length) {
-        html += '<hr class="assist-hr" /><div class="assist-sec">';
+        html += '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential">';
         html +=
-          '<span class="assist-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом. По строке можно сразу искать протокол.</p><ul class="assist-compact">';
+          '<span class="assist-sec-label assist-sec-label--diff">Дифференциальный ряд</span><p class="assist-diff-lead">Для обсуждения с врачом. Нажмите кнопку — поиск по строке начнётся сразу.</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
         var di;
         for (di = 0; di < j.differential.length; di++) {
           var diffLine = j.differential[di];
           var enc = encodeURIComponent(String(diffLine));
           html +=
-            '<li class="assist-diff-row"><span class="assist-diff-text">' +
+            '<li class="assist-diff-card"><span class="assist-diff-text">' +
             escapeHtml(diffLine) +
             '</span><button type="button" class="btn-diff-search" data-q="' +
             enc +
             '">Искать протокол</button></li>';
         }
-        html += "</ul></div>";
+        html += "</ul></div></div>";
       }
 
       if (
@@ -1992,6 +2150,29 @@
     return t || defaultRagBase().replace(/\/$/, "");
   }
 
+  function setSearchBusy(busy) {
+    var btn = document.getElementById("btn-search-submit");
+    var btnAssist = document.getElementById("btn-assist");
+    if (btn) {
+      btn.disabled = !!busy;
+      btn.classList.toggle("is-busy", !!busy);
+    }
+    if (btnAssist) btnAssist.disabled = !!busy;
+  }
+
+  function getAssistLoadingHtml() {
+    return (
+      '<div class="assist-loading" role="status" aria-live="polite">' +
+      '<div class="assist-loading__title">Подбор протоколов</div>' +
+      '<div class="assist-loading__timer">' +
+      '<span class="assist-timer-num">0</span>' +
+      '<span class="assist-timer-unit">сек</span>' +
+      "</div>" +
+      '<p class="assist-loading__hint">Поиск начат. Подождите — запрос обрабатывается на сервере.</p>' +
+      "</div>"
+    );
+  }
+
   function runAssist(queryOverride) {
     return new Promise(function (resolve, reject) {
       var baseEl = document.getElementById("rag-base");
@@ -2021,12 +2202,41 @@
           : buildFullQuery(qRaw);
       var out = document.getElementById("llm-out");
       var st = document.getElementById("llm-status");
+      var assistStart = Date.now();
+      var assistTick = null;
+      var abortTid = null;
+
+      function clearAssistTick() {
+        if (assistTick) {
+          clearInterval(assistTick);
+          assistTick = null;
+        }
+        if (abortTid) {
+          clearTimeout(abortTid);
+          abortTid = null;
+        }
+      }
+
+      setSearchBusy(true);
       if (out) {
         out.hidden = false;
-        out.innerHTML =
-          "<p>Проверка связи с сервером…</p>";
+        out.innerHTML = getAssistLoadingHtml();
       }
       if (st) st.textContent = "";
+      assistTick = setInterval(function () {
+        var el = document.getElementById("llm-out");
+        if (!el) return;
+        var n = el.querySelector(".assist-timer-num");
+        if (n) {
+          n.textContent = String(
+            Math.floor((Date.now() - assistStart) / 1000)
+          );
+        }
+      }, 250);
+
+      var panel = document.getElementById("llm-panel");
+      if (panel) panel.open = true;
+
       fetch(base + "/health")
         .then(function (h) {
           if (!h.ok) {
@@ -2044,25 +2254,9 @@
               "На сервере не настроен ключ доступа к сервису обработки. Обратитесь к администратору."
             );
           }
-          var panel = document.getElementById("llm-panel");
-          if (panel) panel.open = true;
-          if (out) {
-            out.hidden = false;
-            out.innerHTML =
-              "<p>Формирование ответа… <strong>0</strong> с</p><p class=\"llm-wait-hint\">Первый ответ может занять до 1–2 минут.</p>";
-          }
-          var assistStart = Date.now();
-          var assistTick = setInterval(function () {
-            if (!out) return;
-            var sec = Math.floor((Date.now() - assistStart) / 1000);
-            out.innerHTML =
-              "<p>Формирование ответа… <strong>" +
-              sec +
-              "</strong> с</p><p class=\"llm-wait-hint\">На объёмном запросе это может занять несколько минут.</p>";
-          }, 1000);
           var assistTimeoutMs = 240000;
           var ctrl = new AbortController();
-          var tid = setTimeout(function () {
+          abortTid = setTimeout(function () {
             ctrl.abort();
           }, assistTimeoutMs);
           return fetch(base + "/api/assist", {
@@ -2073,9 +2267,6 @@
               category_slugs: getSelectedCategorySlugs(),
             }),
             signal: ctrl.signal,
-          }).finally(function () {
-            clearTimeout(tid);
-            clearInterval(assistTick);
           });
         })
         .then(function (r) {
@@ -2103,6 +2294,7 @@
           });
         })
         .then(function (data) {
+          clearAssistTick();
           renderLlmOut(data);
           if (st) st.textContent = "Готово.";
           var qInput = document.getElementById("q");
@@ -2135,6 +2327,10 @@
           }
           if (st) st.textContent = "";
           reject(err);
+        })
+        .finally(function () {
+          clearAssistTick();
+          setSearchBusy(false);
         });
     });
   }
