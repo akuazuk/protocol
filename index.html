@@ -752,14 +752,28 @@
       margin-top: 0.65rem;
     }
 
-    .assist-copy-toolbar {
+    .consultation-template-wrap {
+      margin-top: 1.15rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .consultation-template-lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .consultation-template-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin: 0.75rem 0 0;
+      align-items: center;
+      margin-bottom: 0.65rem;
     }
 
-    .btn-copy-assist {
+    .btn-copy-template {
       font-family: inherit;
       font-size: 0.8rem;
       font-weight: 600;
@@ -769,12 +783,31 @@
       background: rgba(255, 255, 255, 0.95);
       color: var(--green-800);
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
     }
 
-    .btn-copy-assist:hover {
-      background: var(--green-100);
-      border-color: var(--green-600);
+    .btn-copy-template:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .consultation-template-out {
+      display: block;
+      margin: 0;
+      padding: 0.85rem 1rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+      font-family: inherit;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      border-radius: 12px;
+      text-align: left;
     }
 
     .assist-proto-meta {
@@ -1396,6 +1429,44 @@
       .llm-toolbar .btn-assist {
         width: 100%;
       }
+
+      .wrap {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .assist-panel__body {
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+      }
+
+      .assist-card {
+        padding: 0.85rem 0.45rem;
+      }
+
+      .assist-clinical-detail,
+      .assist-clinical-detail--rich {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+
+      .assist-detail-body {
+        font-size: 0.93rem;
+        line-height: 1.62;
+      }
+
+      .consultation-template-out {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .consultation-template-actions .btn-assist {
+        width: 100%;
+      }
+
+      .btn-copy-template {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -1966,68 +2037,100 @@
     return bits.join(" · ");
   }
 
-  function buildProtocolsCopyText(root) {
-    if (!root) return "";
-    var links = root.querySelectorAll(".assist-proto-list a");
-    var lines = [];
-    var i;
-    for (i = 0; i < links.length; i++) {
-      var a = links[i];
-      var t = (a.textContent || "").trim();
-      var href = a.getAttribute("href") || "";
-      var abs = href;
-      try {
-        if (href && href.indexOf("http") !== 0) {
-          abs = new URL(href, window.location.href).href;
-        }
-      } catch (e) {
-        abs = href;
-      }
-      lines.push(
-        String(i + 1) + ". " + t + (abs ? "\n   " + abs : "")
-      );
+  function loadConsultationTemplate() {
+    var cd = window.__clinicalDetailForTemplate;
+    var q = window.__assistQueryForTemplate || "";
+    if (!cd || cd.error) {
+      alert("Сначала загрузите развёрнутую выдержку из протокола.");
+      return;
     }
-    return lines.join("\n\n");
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    var out = document.getElementById("consultation-template-out");
+    var genBtn = document.querySelector(".btn-consultation-template");
+    if (genBtn) genBtn.disabled = true;
+    fetch(base + "/api/consultation-template", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: q, clinical_detail: cd }),
+    })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!j || typeof j !== "object") {
+            throw new Error(
+              text ? text.slice(0, 220) : "Пустой ответ сервера"
+            );
+          }
+          if (!r.ok) {
+            var d = j.detail;
+            if (Array.isArray(d)) {
+              d = d
+                .map(function (x) {
+                  return x.msg || JSON.stringify(x);
+                })
+                .join("; ");
+            }
+            throw new Error(d || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (payload) {
+        var t = (payload.template || "").trim();
+        if (out) {
+          out.textContent = t;
+          out.hidden = !t;
+        }
+        var copyBtn = document.querySelector(".btn-copy-template");
+        if (copyBtn) copyBtn.disabled = !t;
+      })
+      .catch(function (err) {
+        alert("Не удалось: " + String(err.message || err));
+      })
+      .finally(function () {
+        if (genBtn) genBtn.disabled = false;
+      });
   }
 
-  function bindAssistCopyButtons() {
+  function initConsultationTemplateDelegation() {
     var root = document.getElementById("llm-out");
-    if (!root) return;
-    var buttons = root.querySelectorAll(".btn-copy-assist");
-    var bi;
-    for (bi = 0; bi < buttons.length; bi++) {
-      buttons[bi].addEventListener("click", function () {
-        var btn = this;
-        var kind = btn.getAttribute("data-copy-kind");
-        var orig =
-          kind === "summary"
-            ? "Копировать краткое резюме"
-            : "Копировать список протоколов";
-        var text = "";
-        if (kind === "summary") {
-          var lead = root.querySelector(".assist-lead");
-          text = lead ? lead.innerText.trim() : "";
-        } else if (kind === "protocols") {
-          text = buildProtocolsCopyText(root);
-        }
+    if (!root || root._consultTplOk) return;
+    root._consultTplOk = true;
+    root.addEventListener("click", function (ev) {
+      var el = ev.target;
+      if (!el || !el.closest) return;
+      if (el.closest(".btn-consultation-template")) {
+        ev.preventDefault();
+        loadConsultationTemplate();
+        return;
+      }
+      if (el.closest(".btn-copy-template")) {
+        var cbtn = el.closest(".btn-copy-template");
+        if (!cbtn || cbtn.disabled) return;
+        var out = document.getElementById("consultation-template-out");
+        var text = out && !out.hidden ? (out.textContent || "").trim() : "";
         if (!text) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(
             function () {
-              btn.textContent = "Скопировано";
+              var o = cbtn.textContent;
+              cbtn.textContent = "Скопировано";
               setTimeout(function () {
-                btn.textContent = orig;
+                cbtn.textContent = o;
               }, 2000);
             },
             function () {
-              alert("Не удалось скопировать в буфер.");
+              alert("Не удалось скопировать.");
             }
           );
         } else {
-          alert("Буфер обмена недоступен в этом браузере.");
+          alert("Буфер обмена недоступен.");
         }
-      });
-    }
+      }
+    });
   }
 
   function formatSummaryHtml(summary) {
@@ -2191,6 +2294,10 @@
         var block = document.getElementById("protocol-detail-block");
         if (block && payload.clinical_detail) {
           block.outerHTML = renderClinicalDetailBlock(payload.clinical_detail);
+          if (payload.clinical_detail && !payload.clinical_detail.error) {
+            window.__clinicalDetailForTemplate = payload.clinical_detail;
+            window.__assistQueryForTemplate = queryText;
+          }
         }
       })
       .catch(function (err) {
@@ -2374,6 +2481,15 @@
       html +=
         '<p class="assist-detail-note">' + escapeHtml(String(ex.note)) + "</p>";
     }
+    html +=
+      '<div class="consultation-template-wrap">' +
+      '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке; требует проверки и при необходимости правки лечащим врачом.</p>' +
+      '<div class="consultation-template-actions">' +
+      '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
+      '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
+      "</div>" +
+      '<pre class="consultation-template-out" id="consultation-template-out" hidden></pre>' +
+      "</div>";
     html += "</div>";
     return html;
   }
@@ -2460,19 +2576,6 @@
           html +=
             '<p class="assist-embed-note">Отбор фрагментов уточнён семантикой (Gemini Embedding 2) поверх лексического поиска.</p>';
         }
-      }
-
-      if (j.summary || rawProtos.length) {
-        html += '<div class="assist-copy-toolbar">';
-        if (j.summary) {
-          html +=
-            '<button type="button" class="btn-copy-assist" data-copy-kind="summary">Копировать краткое резюме</button>';
-        }
-        if (rawProtos.length) {
-          html +=
-            '<button type="button" class="btn-copy-assist" data-copy-kind="protocols">Копировать список протоколов</button>';
-        }
-        html += "</div>";
       }
 
       if (j.differential && j.differential.length) {
@@ -2565,11 +2668,15 @@
       }
 
       html += "</div></div>";
+      window.__clinicalDetailForTemplate = null;
+      window.__assistQueryForTemplate = data.query || "";
+      if (data.clinical_detail && !data.clinical_detail.error) {
+        window.__clinicalDetailForTemplate = data.clinical_detail;
+      }
       out.innerHTML = html;
       bindLlmFollowupForm();
       bindDiffSearchButtons();
       bindProtocolDetailLoader(data.query || "");
-      bindAssistCopyButtons();
       return;
     }
     out.innerHTML =
@@ -2937,6 +3044,7 @@
               String(err);
       }
     });
+  initConsultationTemplateDelegation();
 })();
   </script>
 </body>

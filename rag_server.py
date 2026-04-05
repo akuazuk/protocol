@@ -176,6 +176,15 @@ SYSTEM_QUERY_SPELLFIX = """По фрагменту текста жалобы (р
 Верни ОДИН JSON-объект (без markdown):
 {"corrected": "<тот же текст целиком, с исправлениями или без изменений>"}"""
 
+SYSTEM_CONSULTATION_TEMPLATE = """Ты помощник врача. По развёрнутой выдержке из клинического протокола Минздрава Республики Беларусь (структура JSON ниже) и по сути запроса пользователя составь текстовый ШАБЛОН консультативного заключения.
+Правила:
+- Опирайся только на поля выдержки и на запрос; не выдумывай диагнозы, препараты, дозы и процедуры, которых нет во входных данных.
+- Если для пункта не хватает фактов — плейсхолдер в квадратных скобках: [уточнить при осмотре].
+- Стиль: официально-деловой, медицинский, пригодный для МИС или печати.
+- Структура: разделы с заголовками (Жалобы, Анамнез, Объективно, Диагноз по протоколу Минздрава РБ, Рекомендации по протоколу, Наблюдение и контроль, Дополнительно).
+- В конце кратко: шаблон не заменяет очный осмотр и оформление документации лечащим врачом.
+Верни ТОЛЬКО текст шаблона, без символов # в начале строк, без вступления «вот шаблон»."""
+
 
 def _jsonl_chunk_files() -> list[Path]:
     """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
@@ -1014,6 +1023,32 @@ def generate_gemini(model, full_prompt: str):
             ) from e
 
 
+def _generate_blocking_plain(model, full_prompt: str):
+    """Текст без JSON mode — шаблоны заключений и т.п."""
+    import google.generativeai as genai
+
+    max_out = int(os.environ.get("GEMINI_TEMPLATE_MAX_TOKENS", "4096"))
+    return model.generate_content(
+        full_prompt,
+        generation_config=genai.GenerationConfig(
+            temperature=0.2,
+            max_output_tokens=max_out,
+        ),
+    )
+
+
+def generate_gemini_plain(model, full_prompt: str):
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking_plain, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_CALL_TIMEOUT)
+        except FuturesTimeout as e:
+            raise HTTPException(
+                status_code=504,
+                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с).",
+            ) from e
+
+
 def _generate_blocking_spellfix(model, full_prompt: str):
     """Короткий JSON-ответ: исправление опечаток в запросе."""
     import google.generativeai as genai
@@ -1141,6 +1176,16 @@ class ProtocolDetailIn(BaseModel):
     protocol_confidence: float | None = Field(
         default=None,
         description="Оценка соответствия из assist (0–1), для подписи в блоке",
+    )
+
+
+class ConsultationTemplateIn(BaseModel):
+    """Шаблон консультативного заключения по развёрнутой выдержке."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    clinical_detail: dict = Field(
+        ...,
+        description="Объект clinical_detail из /api/assist или /api/protocol-detail",
     )
 
 
@@ -1412,6 +1457,48 @@ def api_protocol_detail(body: ProtocolDetailIn) -> dict:
         protocol_confidence=pc,
     )
     return {"clinical_detail": clinical_detail}
+
+
+@app.post("/api/consultation-template")
+def api_consultation_template(body: ConsultationTemplateIn) -> dict:
+    """Текстовый шаблон консультативного заключения по выдержке из протокола."""
+    cd = body.clinical_detail
+    if not isinstance(cd, dict) or cd.get("error"):
+        raise HTTPException(
+            status_code=400,
+            detail="Нет корректной развёрнутой выдержки (clinical_detail)",
+        )
+    model = get_gemini()
+    payload = json.dumps(cd, ensure_ascii=False)
+    plim = int(os.environ.get("GEMINI_TEMPLATE_PROMPT_MAX_CHARS", "28000"))
+    if len(payload) > plim:
+        payload = payload[: plim - 80] + "\n…[обрезано]"
+    full_prompt = (
+        SYSTEM_CONSULTATION_TEMPLATE
+        + "\n\n---\n\nЗапрос пользователя:\n"
+        + body.query.strip()[:8000]
+        + "\n\nВыдержка (JSON):\n"
+        + payload
+    )
+    try:
+        resp = generate_gemini_plain(model, full_prompt)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Модель: {e!s}") from e
+    pf = getattr(resp, "prompt_feedback", None)
+    if pf is not None and getattr(pf, "block_reason", None):
+        raise HTTPException(
+            status_code=502,
+            detail=f"Запрос отклонён моделью: {pf.block_reason}",
+        )
+    txt = _extract_gemini_text(resp)
+    if not txt:
+        raise HTTPException(
+            status_code=502,
+            detail="Пустой ответ модели при формировании шаблона.",
+        )
+    return {"template": txt}
 
 
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
