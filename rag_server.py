@@ -74,6 +74,34 @@ ALLOWED_SPECIALTY_SLUGS = frozenset(
     ]
 )
 
+# Рубрики каталога Минздрава РБ (slug → подпись для UI и /api/specialties).
+SPECIALTY_LABELS_RU: dict[str, str] = {
+    "akusherstvo-ginekologiya": "Акушерство и гинекология",
+    "allergologiya-immunologiya": "Аллергология и иммунология",
+    "anesteziologiya-reanimatologiya": "Анестезиология и реаниматология",
+    "bolezni-sistemy-krovoobrashcheniya": "Болезни системы кровообращения",
+    "dermatovenerologiya": "Дерматовенерология",
+    "endokrinologiya-narusheniya-obmena-veshchestv": "Эндокринология и обмен веществ",
+    "gastroenterologiya": "Гастроэнтерология",
+    "gematologiya": "Гематология",
+    "infektsionnye-zabolevaniya": "Инфекционные заболевания",
+    "khirurgiya": "Хирургия",
+    "nefrologiya": "Нефрология",
+    "nevrologiya-neyrokhirurgiya": "Неврология и нейрохирургия",
+    "novoobrazovaniya": "Новообразования",
+    "oftalmologiya": "Офтальмология",
+    "otorinolaringologiya": "Оториноларингология",
+    "palliativnaya-pomoshch": "Паллиативная помощь",
+    "psikhiatriya-narkologiya": "Психиатрия и наркология",
+    "pulmonologiya-ftiziatriya": "Пульмонология и фтизиатрия",
+    "revmatologiya": "Ревматология",
+    "stomatologiya": "Стоматология",
+    "transplantatsiya-organov-i-tkaney": "Трансплантация органов и тканей",
+    "travmatologiya-ortopediya": "Травматология и ортопедия",
+    "urologiya": "Урология",
+    "zabolevaniya-perinatalnogo-perioda": "Перинатальный период",
+}
+
 SYSTEM_JSON = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
 Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
 Если в запросе есть блок «=== Контекст пациента ===» (возраст, пол и т.д.) и «=== Жалобы и вопрос ===», учитывай контекст при выборе детских vs взрослых протоколов и в формулировке summary.
@@ -118,6 +146,21 @@ SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам 
   "note": "кратко: чего нет в фрагментах или что требует очной консультации"
 }
 Не придумывай препараты, дозы и процедуры, которых нет во входном тексте."""
+
+SYSTEM_EXTRACT_FULL = """Ты помощник врача. По ПОЛНОМУ тексту фрагментов клинического протокола Минздрава Республики Беларусь извлеки структурированные сведения, релевантные запросу пользователя.
+Запрос считается полностью покрытым протоколом — дай развёрнутый, практичный разбор строго по тексту протокола.
+Верни ОДИН JSON-объект (без markdown, без текста до/после).
+Схема:
+{
+  "diagnosis": "диагнозы, состояния, показания (2–8 предложений)",
+  "treatment_methods": ["этапы и методы лечения — по тексту протокола"],
+  "medications": ["группы препаратов, МНН, режимы — только если есть во входном тексте"],
+  "recommendations": ["рекомендации и алгоритм действий для врача/пациента — по тексту"],
+  "monitoring_followup": "наблюдение, контроль, когда обращаться — если есть в тексте, иначе кратко что не указано",
+  "contraindications": "противопоказания и ограничения — если названы во фрагментах, иначе пустая строка",
+  "note": "чего нет в фрагментах; необходимость очной консультации"
+}
+Не придумывай дозировки, препараты и процедуры, которых нет во входном тексте."""
 
 SYSTEM_CLASSIFY = """По краткому медицинскому запросу пациента выбери до трёх рубрик клинических протоколов (slug), которым соответствует ситуация.
 Верни ОДИН JSON: {"categories": ["slug1"], "note": "одно короткое предложение"}
@@ -515,23 +558,37 @@ def infer_specialties_gemini(q: str, model) -> list[str]:
     return out[:3]
 
 
-def extract_clinical_detail(path: str, query: str, title_hint: str, model) -> dict | None:
-    """Второй вызов LLM: диагноз, методы лечения, препараты по полному тексту чанков + индекс."""
-    max_body = int(os.environ.get("RAG_EXTRACT_MAX_CHARS", "16000"))
+def extract_clinical_detail(
+    path: str,
+    query: str,
+    title_hint: str,
+    model,
+    *,
+    detailed: bool = False,
+) -> dict | None:
+    """Второй вызов LLM: факты по протоколу; при detailed — расширенная схема и больший объём текста."""
+    if detailed:
+        max_body = int(os.environ.get("RAG_EXTRACT_FULL_MATCH_MAX_CHARS", "32000"))
+        idx_lim = 16000
+        system = SYSTEM_EXTRACT_FULL
+    else:
+        max_body = int(os.environ.get("RAG_EXTRACT_MAX_CHARS", "16000"))
+        idx_lim = 8000
+        system = SYSTEM_EXTRACT
     body = gather_protocol_text(path, max_body)
     struct = _structured_by_path.get(path) or {}
     extra = ""
     if struct.get("diagnosis"):
-        extra += "\n\n[Выдержка индекса: диагностика]\n" + str(struct["diagnosis"])[:8000]
+        extra += "\n\n[Выдержка индекса: диагностика]\n" + str(struct["diagnosis"])[:idx_lim]
     if struct.get("treatment"):
-        extra += "\n\n[Выдержка индекса: лечение]\n" + str(struct["treatment"])[:8000]
+        extra += "\n\n[Выдержка индекса: лечение]\n" + str(struct["treatment"])[:idx_lim]
     if len(body.strip()) < 120 and not extra.strip():
         return None
     meta = _protocol_meta.get(path) or {}
     spec = meta.get("specialty_ru") or ""
     title_line = title_hint or meta.get("title") or path
     prompt = (
-        SYSTEM_EXTRACT
+        system
         + "\n\n---\n\n"
         + f"Запрос пользователя:\n{query}\n\n"
         + f"Специальность (рубрика каталога): {spec}\n"
@@ -553,17 +610,23 @@ def extract_clinical_detail(path: str, query: str, title_hint: str, model) -> di
         return {"error": str(e)[:400], "path": path, "title": title_line}
     if not parsed or not isinstance(parsed, dict):
         return None
+    ext: dict = {
+        "diagnosis": parsed.get("diagnosis") or "",
+        "treatment_methods": parsed.get("treatment_methods") or [],
+        "medications": parsed.get("medications") or [],
+        "note": parsed.get("note") or "",
+    }
+    if detailed:
+        ext["recommendations"] = parsed.get("recommendations") or []
+        ext["monitoring_followup"] = parsed.get("monitoring_followup") or ""
+        ext["contraindications"] = parsed.get("contraindications") or ""
+        ext["detailed"] = True
     return {
         "path": path,
         "title": title_line,
         "specialty_ru": spec or None,
         "category": meta.get("category"),
-        "extraction": {
-            "diagnosis": parsed.get("diagnosis") or "",
-            "treatment_methods": parsed.get("treatment_methods") or [],
-            "medications": parsed.get("medications") or [],
-            "note": parsed.get("note") or "",
-        },
+        "extraction": ext,
     }
 
 
@@ -573,12 +636,14 @@ def retrieve(
     max_per_path: int = 2,
     routing_query: str | None = None,
     category_boost: list[str] | None = None,
+    user_category_slugs: list[str] | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
     query — короткий текст для подсчёта совпадений с чанками (обычно только жалобы).
     routing_query — полный запрос для правил возраста/рубрик; если None, берётся query.
     category_boost — slug рубрик из опционального LLM-классификатора запроса.
+    user_category_slugs — рубрики, выбранные пользователем в форме: усиление совпадений и штраф нерелевантных чанков.
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -589,6 +654,12 @@ def retrieve(
     )
     boost_set = frozenset(category_boost or [])
     boost_factor = float(os.environ.get("RAG_CATEGORY_BOOST_FACTOR", "1.45"))
+    user_slugs = frozenset(
+        s for s in (user_category_slugs or []) if s in ALLOWED_SPECIALTY_SLUGS
+    )
+    user_boost = float(os.environ.get("RAG_USER_CATEGORY_BOOST", "2.05"))
+    user_penalty = float(os.environ.get("RAG_USER_CATEGORY_PENALTY", "0.32"))
+    user_uncertain = float(os.environ.get("RAG_USER_CATEGORY_UNCERTAIN", "0.78"))
     rq = routing_query if routing_query is not None else query
     qtok = set(tokenize_ru(query))
     if not qtok:
@@ -614,6 +685,13 @@ def retrieve(
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
             final *= boost_factor
+        if user_slugs:
+            if cat and cat in user_slugs:
+                final *= user_boost
+            elif cat and cat not in user_slugs:
+                final *= user_penalty
+            else:
+                final *= user_uncertain
         scored.append((final, lex, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
@@ -765,6 +843,10 @@ app.add_middleware(
 
 class AssistIn(BaseModel):
     query: str = Field(..., min_length=2, max_length=12000)
+    category_slugs: list[str] = Field(
+        default_factory=list,
+        description="Рубрики Минздрава (slug), выбранные пользователем — усиливают отбор",
+    )
 
 
 @app.get("/health")
@@ -777,6 +859,18 @@ def health() -> dict:
         "protocol_meta": len(_protocol_meta),
         "structured_index": len(_structured_by_path),
         "gemini_configured": has_key,
+        "specialties_count": len(SPECIALTY_LABELS_RU),
+    }
+
+
+@app.get("/api/specialties")
+def api_specialties() -> dict:
+    """Рубрики каталога клинических протоколов (slug + подпись для формы)."""
+    return {
+        "specialties": [
+            {"slug": s, "label": SPECIALTY_LABELS_RU.get(s, s)}
+            for s in sorted(SPECIALTY_LABELS_RU.keys())
+        ]
     }
 
 
@@ -812,10 +906,17 @@ def api_assist(body: AssistIn) -> dict:
         raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
     model = get_gemini()
     query_specialties = infer_specialties_gemini(q, model)
+    user_slugs = [
+        s
+        for s in (body.category_slugs or [])
+        if isinstance(s, str) and s in ALLOWED_SPECIALTY_SLUGS
+    ]
+    boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
     retrieved = retrieve(
         q_rag,
         routing_query=q,
-        category_boost=query_specialties or None,
+        category_boost=boost_merged or None,
+        user_category_slugs=user_slugs or None,
     )
     if not retrieved:
         raise HTTPException(status_code=400, detail="Пустой отбор — уточните запрос")
@@ -920,6 +1021,7 @@ def api_assist(body: AssistIn) -> dict:
                 q,
                 str(pr.get("title") or ""),
                 model,
+                detailed=True,
             )
             break
 
@@ -929,6 +1031,7 @@ def api_assist(body: AssistIn) -> dict:
         "audience_inferred": audience_inferred,
         "retrieval_audience_fallback": audience_fallback,
         "query_specialties": query_specialties,
+        "user_category_slugs": user_slugs,
         "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,

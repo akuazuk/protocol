@@ -24,10 +24,29 @@
       --card: #ffffff;
       --shadow: 0 12px 40px rgba(6, 61, 53, 0.12);
       --radius: 14px;
+      --amber-400: #fbbf24;
+      --amber-600: #d97706;
+      --orange-500: #f97316;
+      --emerald-400: #34d399;
+      --emerald-500: #10b981;
+      --emerald-600: #059669;
+      --rose-500: #f43f5e;
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     body {
@@ -60,7 +79,13 @@
       z-index: 1;
       max-width: 960px;
       margin: 0 auto;
-      padding: 2rem 1.35rem 3.5rem;
+      padding: 1rem 1rem 3rem;
+    }
+
+    @media (min-width: 640px) {
+      .wrap {
+        padding: 2rem 1.35rem 3.5rem;
+      }
     }
 
     header.site-header {
@@ -188,24 +213,192 @@
       align-items: stretch;
     }
 
-    .search-row input[type="search"] {
-      flex: 1 1 220px;
-      font-size: 1.05rem;
-      padding: 0.95rem 1.2rem;
+    .query-stack {
+      flex: 1 1 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+
+    .query-stack textarea#q {
+      width: 100%;
+      min-height: 140px;
+      font-size: 1.02rem;
+      line-height: 1.5;
+      padding: 1rem 1.15rem;
       border: 2px solid rgba(26, 138, 114, 0.35);
       border-radius: 14px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
+      resize: vertical;
+      field-sizing: content;
     }
 
-    .search-row input[type="search"]:focus {
+    .query-stack textarea#q:focus {
       border-color: var(--green-600);
       box-shadow: 0 0 0 4px rgba(26, 138, 114, 0.2);
     }
 
-    .search-row input::placeholder {
+    .query-stack textarea::placeholder {
       color: #8aa39c;
+    }
+
+    .query-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn-voice {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.65rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(26, 138, 114, 0.45);
+      background: linear-gradient(180deg, #fff 0%, var(--green-100) 100%);
+      color: var(--green-800);
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+
+    .btn-voice:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 92, 74, 0.15);
+    }
+
+    .btn-voice:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-voice.recording {
+      animation: pulse-voice 1.2s ease-in-out infinite;
+      border-color: var(--red-500);
+      color: var(--red-700);
+    }
+
+    @keyframes pulse-voice {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.35);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(196, 30, 58, 0);
+      }
+    }
+
+    .voice-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .specialty-panel {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.1rem 1.1rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(232, 245, 241, 0.9) 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      box-shadow: 0 4px 20px rgba(6, 61, 53, 0.06);
+    }
+
+    .specialty-panel summary {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--green-800);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .specialty-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .specialty-panel summary::before {
+      content: "▸ ";
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .specialty-panel[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .specialty-panel .specialty-hint {
+      margin: 0.5rem 0 0.75rem;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .specialty-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .specialty-toolbar button {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      color: var(--green-800);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .specialty-toolbar button:hover {
+      background: var(--green-100);
+    }
+
+    .specialty-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+      gap: 0.4rem 0.85rem;
+      max-height: min(42vh, 320px);
+      overflow-y: auto;
+      padding: 0.35rem 0.15rem 0.35rem 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .specialty-chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      cursor: pointer;
+      padding: 0.25rem 0;
+      color: var(--text);
+    }
+
+    .specialty-chip input {
+      margin-top: 0.2rem;
+      accent-color: var(--green-600);
+      flex-shrink: 0;
+    }
+
+    .search-row .btn-submit-row {
+      flex: 1 1 100%;
+    }
+
+    @media (min-width: 640px) {
+      .search-row .btn-submit-row {
+        flex: 0 0 auto;
+        align-self: flex-start;
+      }
+
+      .query-stack textarea#q {
+        min-height: 160px;
+      }
     }
 
     .btn {
@@ -373,6 +566,12 @@
       color: var(--muted);
     }
 
+    .assist-clinical-detail--rich {
+      background: linear-gradient(145deg, #f0fdf4 0%, #ecfdf5 40%, #ffffff 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      box-shadow: 0 8px 28px rgba(16, 185, 129, 0.12);
+    }
+
     .assist-clinical-detail {
       margin-top: 1rem;
       padding: 1.05rem 1.15rem;
@@ -480,13 +679,96 @@
     }
 
     .llm-pct-badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.12rem 0.45rem;
-      border-radius: 6px;
+      padding: 0.18rem 0.5rem 0.18rem 0.4rem;
+      border-radius: 999px;
       margin-left: 0.35rem;
       vertical-align: middle;
+      border: 1px solid transparent;
+      gap: 0.28rem;
+    }
+
+    .llm-pct-dot {
+      display: inline-block;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .llm-pct-badge--p100 {
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      color: #14532d;
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .llm-pct-badge--p100 .llm-pct-dot {
+      background: #16a34a;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .llm-pct-badge--p90 {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: var(--emerald-400);
+    }
+
+    .llm-pct-badge--p90 .llm-pct-dot {
+      background: var(--emerald-500);
+    }
+
+    .llm-pct-badge--p80 {
+      background: #f0fdf4;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .llm-pct-badge--p80 .llm-pct-dot {
+      background: #4ade80;
+    }
+
+    .llm-pct-badge--p65 {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: var(--amber-400);
+    }
+
+    .llm-pct-badge--p65 .llm-pct-dot {
+      background: var(--amber-400);
+    }
+
+    .llm-pct-badge--p50 {
+      background: #fff7ed;
+      color: #9a3412;
+      border-color: #fdba74;
+    }
+
+    .llm-pct-badge--p50 .llm-pct-dot {
+      background: var(--orange-500);
+    }
+
+    .llm-pct-badge--p35 {
+      background: #fff1f2;
+      color: #9f1239;
+      border-color: #fda4af;
+    }
+
+    .llm-pct-badge--p35 .llm-pct-dot {
+      background: #fb7185;
+    }
+
+    .llm-pct-badge--p20 {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .llm-pct-badge--p20 .llm-pct-dot {
+      background: var(--rose-500);
     }
 
     .llm-pct-badge--high {
@@ -722,6 +1004,33 @@
       .brand h1 {
         font-size: 1.4rem;
       }
+
+      .hero {
+        padding: 1.35rem 1rem 1.35rem;
+      }
+
+      .search-row {
+        flex-direction: column;
+      }
+
+      .search-row .btn-submit-row {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        font-size: 1.05rem;
+      }
+
+      .specialty-grid {
+        max-height: 50vh;
+      }
+
+      .llm-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .llm-toolbar .btn-assist {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -754,8 +1063,21 @@
       <p class="lead">
         Система сопоставит запрос с фрагментами протоколов и предложит релевантные документы с кратким разбором.
         Примеры: «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
-        Для точнее подбора заполните контекст пациента ниже; при уточняющих вопросах ответы добавляются к запросу.
+        Укажите рубрики Минздрава и контекст пациента — так отбор точнее; на телефоне можно надиктовать жалобы кнопкой «Голос».
       </p>
+      <details class="specialty-panel" id="specialty-panel" open>
+        <summary>Медицинское направление (рубрики протоколов)</summary>
+        <p class="specialty-hint">
+          Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
+        </p>
+        <div class="specialty-toolbar">
+          <button type="button" id="specialty-clear">Снять выбор</button>
+          <button type="button" id="specialty-all">Выбрать все</button>
+        </div>
+        <div class="specialty-grid" id="specialty-rubrics" aria-label="Рубрики клинических протоколов">
+          <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
+        </div>
+      </details>
       <details class="ctx-panel" id="ctx-panel" open>
         <summary>Контекст пациента</summary>
         <p class="ctx-hint">
@@ -794,15 +1116,27 @@
         </div>
       </details>
       <form class="search-row" id="search-form" action="#" method="get">
-        <input
-          type="search"
-          id="q"
-          name="q"
-          autocomplete="off"
-          placeholder="Жалобы, ситуация, вопрос…"
-          aria-label="Текст запроса"
-        />
-        <button type="submit" class="btn">Найти протоколы</button>
+        <div class="query-stack">
+          <label for="q" class="visually-hidden">Жалобы и клинический вопрос</label>
+          <textarea
+            id="q"
+            name="q"
+            rows="6"
+            autocomplete="off"
+            maxlength="12000"
+            placeholder="Опишите жалобы, длительность, что уже пробовали, вопрос к протоколу…"
+            aria-label="Текст запроса: жалобы и вопрос"
+          ></textarea>
+          <div class="query-actions">
+            <button type="button" class="btn-voice" id="btn-voice" title="Надиктовать текст (Chrome, Edge, Safari)">
+              Голос
+            </button>
+            <p class="voice-hint" id="voice-hint">
+              На смартфоне разрешите доступ к микрофону. Распознавание — в браузере, аудио на сервер не отправляется.
+            </p>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-submit-row">Найти протоколы</button>
       </form>
       <p class="hint" id="hint"></p>
 
@@ -866,6 +1200,206 @@
 
   function pct01(x) {
     return Math.round(100 * Math.max(0, Math.min(1, Number(x) || 0)));
+  }
+
+  /** Если /api/specialties недоступен — тот же набор slug, что на сервере. */
+  var FALLBACK_SPECIALTIES = [
+    { slug: "akusherstvo-ginekologiya", label: "Акушерство и гинекология" },
+    { slug: "allergologiya-immunologiya", label: "Аллергология и иммунология" },
+    { slug: "anesteziologiya-reanimatologiya", label: "Анестезиология и реаниматология" },
+    { slug: "bolezni-sistemy-krovoobrashcheniya", label: "Болезни системы кровообращения" },
+    { slug: "dermatovenerologiya", label: "Дерматовенерология" },
+    { slug: "endokrinologiya-narusheniya-obmena-veshchestv", label: "Эндокринология и обмен веществ" },
+    { slug: "gastroenterologiya", label: "Гастроэнтерология" },
+    { slug: "gematologiya", label: "Гематология" },
+    { slug: "infektsionnye-zabolevaniya", label: "Инфекционные заболевания" },
+    { slug: "khirurgiya", label: "Хирургия" },
+    { slug: "nefrologiya", label: "Нефрология" },
+    { slug: "nevrologiya-neyrokhirurgiya", label: "Неврология и нейрохирургия" },
+    { slug: "novoobrazovaniya", label: "Новообразования" },
+    { slug: "oftalmologiya", label: "Офтальмология" },
+    { slug: "otorinolaringologiya", label: "Оториноларингология" },
+    { slug: "palliativnaya-pomoshch", label: "Паллиативная помощь" },
+    { slug: "psikhiatriya-narkologiya", label: "Психиатрия и наркология" },
+    { slug: "pulmonologiya-ftiziatriya", label: "Пульмонология и фтизиатрия" },
+    { slug: "revmatologiya", label: "Ревматология" },
+    { slug: "stomatologiya", label: "Стоматология" },
+    { slug: "transplantatsiya-organov-i-tkaney", label: "Трансплантация органов и тканей" },
+    { slug: "travmatologiya-ortopediya", label: "Травматология и ортопедия" },
+    { slug: "urologiya", label: "Урология" },
+    { slug: "zabolevaniya-perinatalnogo-perioda", label: "Перинатальный период" },
+  ];
+
+  function confidenceBadgeClass(mScore) {
+    var p = pct01(mScore);
+    if (p >= 100) return "llm-pct-badge--p100";
+    if (p >= 90) return "llm-pct-badge--p90";
+    if (p >= 80) return "llm-pct-badge--p80";
+    if (p >= 65) return "llm-pct-badge--p65";
+    if (p >= 50) return "llm-pct-badge--p50";
+    if (p >= 35) return "llm-pct-badge--p35";
+    return "llm-pct-badge--p20";
+  }
+
+  var RAG_SPECIALTY_KEY = "rag_category_slugs";
+
+  function getSelectedCategorySlugs() {
+    var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+    var out = [];
+    var i;
+    for (i = 0; i < boxes.length; i++) {
+      if (boxes[i].checked) out.push(boxes[i].value);
+    }
+    return out;
+  }
+
+  function saveSpecialtySelection() {
+    try {
+      localStorage.setItem(RAG_SPECIALTY_KEY, JSON.stringify(getSelectedCategorySlugs()));
+    } catch (e) {}
+  }
+
+  function loadSpecialtySelection() {
+    try {
+      var raw = localStorage.getItem(RAG_SPECIALTY_KEY);
+      if (!raw) return;
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return;
+      var set = {};
+      var i;
+      for (i = 0; i < arr.length; i++) set[arr[i]] = true;
+      var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+      for (i = 0; i < boxes.length; i++) {
+        if (set[boxes[i].value]) boxes[i].checked = true;
+      }
+    } catch (e) {}
+  }
+
+  function renderSpecialtyCheckboxes(list) {
+    var host = document.getElementById("specialty-rubrics");
+    if (!host) return;
+    if (!list || !list.length) {
+      host.innerHTML =
+        '<p style="margin:0;color:var(--red-700)">Не удалось загрузить рубрики.</p>';
+      return;
+    }
+    var html = "";
+    var i;
+    for (i = 0; i < list.length; i++) {
+      var it = list[i];
+      var slug = it.slug || it.id || "";
+      var lab = it.label || it.title || slug;
+      var id = "spec-" + slug.replace(/[^a-z0-9-]/gi, "-");
+      html +=
+        '<label class="specialty-chip" for="' +
+        id +
+        '"><input type="checkbox" name="specialty-slug" id="' +
+        id +
+        '" value="' +
+        escapeHtml(slug) +
+        '" /><span>' +
+        escapeHtml(lab) +
+        "</span></label>";
+    }
+    host.innerHTML = html;
+    loadSpecialtySelection();
+    var cbs = host.querySelectorAll('input[name="specialty-slug"]');
+    for (i = 0; i < cbs.length; i++) {
+      cbs[i].addEventListener("change", saveSpecialtySelection);
+    }
+  }
+
+  function initSpecialtiesFromServer() {
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl && baseEl.value ? baseEl.value : "");
+    if (baseEl && base !== (baseEl.value || "").trim().replace(/\/$/, "")) {
+      baseEl.value = base;
+    }
+    fetch(base + "/api/specialties")
+      .then(function (r) {
+        if (!r.ok) throw new Error("specialties");
+        return r.json();
+      })
+      .then(function (data) {
+        renderSpecialtyCheckboxes(data.specialties || []);
+      })
+      .catch(function () {
+        renderSpecialtyCheckboxes(FALLBACK_SPECIALTIES);
+      });
+  }
+
+  function bindSpecialtyPanel() {
+    var clearBtn = document.getElementById("specialty-clear");
+    var allBtn = document.getElementById("specialty-all");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+        var i;
+        for (i = 0; i < boxes.length; i++) boxes[i].checked = false;
+        saveSpecialtySelection();
+      });
+    }
+    if (allBtn) {
+      allBtn.addEventListener("click", function () {
+        var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+        var i;
+        for (i = 0; i < boxes.length; i++) boxes[i].checked = true;
+        saveSpecialtySelection();
+      });
+    }
+  }
+
+  function bindVoiceInput() {
+    var btn = document.getElementById("btn-voice");
+    var ta = document.getElementById("q");
+    var hint = document.getElementById("voice-hint");
+    if (!btn || !ta) return;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      btn.disabled = true;
+      if (hint) {
+        hint.textContent =
+          "Голосовой ввод недоступен в этом браузере. Используйте Chrome или Safari на телефоне.";
+      }
+      return;
+    }
+    var rec = new SR();
+    rec.lang = "ru-RU";
+    rec.interimResults = false;
+    rec.continuous = false;
+    var busy = false;
+    btn.addEventListener("click", function () {
+      if (busy) {
+        try {
+          rec.stop();
+        } catch (e) {}
+        return;
+      }
+      busy = true;
+      btn.classList.add("recording");
+      try {
+        rec.start();
+      } catch (e) {
+        busy = false;
+        btn.classList.remove("recording");
+      }
+    });
+    rec.onresult = function (ev) {
+      var last = ev.results.length - 1;
+      if (ev.results[last].isFinal) {
+        var t = ev.results[last][0].transcript;
+        var cur = ta.value.trim();
+        ta.value = (cur ? cur + " " : "") + String(t).trim();
+      }
+    };
+    rec.onend = function () {
+      busy = false;
+      btn.classList.remove("recording");
+    };
+    rec.onerror = function () {
+      busy = false;
+      btn.classList.remove("recording");
+    };
   }
 
   /** Нормализует score отбора RAG по path (0–1 внутри батча). */
@@ -1044,7 +1578,6 @@
     var title = formatDisplayTitle(pr.title || pr.path || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-    var isWeak = mScore < 0.8;
     var html = "<li>";
     html +=
       '<a href="' +
@@ -1054,8 +1587,9 @@
       "</a>";
     html +=
       '<span class="llm-pct-badge ' +
-      (isWeak ? "llm-pct-badge--low" : "llm-pct-badge--high") +
+      confidenceBadgeClass(mScore) +
       '" title="Оценка соответствия запросу">' +
+      '<span class="llm-pct-dot" aria-hidden="true"></span>' +
       pct01(mScore) +
       "%</span>";
     if (ragN > 0) {
@@ -1108,9 +1642,13 @@
       );
     }
     var ex = cd.extraction || {};
-    var html = '<div class="assist-clinical-detail">';
+    var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
     html +=
-      '<h3 class="assist-detail-head">По протоколу при полном соответствии (100%)</h3>';
+      '<h3 class="assist-detail-head">' +
+      (ex.detailed
+        ? "Развёрнутая выдержка из протокола (полное соответствие запросу)"
+        : "По протоколу при полном соответствии (100%)") +
+      "</h3>";
     if (cd.specialty_ru) {
       html +=
         '<p class="assist-detail-meta">' + escapeHtml(cd.specialty_ru) + "</p>";
@@ -1141,6 +1679,30 @@
         html += "<li>" + escapeHtml(String(med[mj])) + "</li>";
       }
       html += "</ul>";
+    }
+    var recs = ex.recommendations;
+    if (recs && recs.length) {
+      html +=
+        '<p class="assist-detail-label">Рекомендации и алгоритм (по тексту протокола)</p><ul class="assist-detail-list">';
+      var ri;
+      for (ri = 0; ri < recs.length; ri++) {
+        html += "<li>" + escapeHtml(String(recs[ri])) + "</li>";
+      }
+      html += "</ul>";
+    }
+    if (ex.monitoring_followup) {
+      html += '<p class="assist-detail-label">Наблюдение и контроль</p>';
+      html +=
+        '<div class="assist-detail-body">' +
+        formatSummaryHtml(String(ex.monitoring_followup)) +
+        "</div>";
+    }
+    if (ex.contraindications) {
+      html += '<p class="assist-detail-label">Противопоказания и ограничения</p>';
+      html +=
+        '<div class="assist-detail-body">' +
+        formatSummaryHtml(String(ex.contraindications)) +
+        "</div>";
     }
     if (ex.note) {
       html +=
@@ -1408,7 +1970,10 @@
           return fetch(base + "/api/assist", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: qSend }),
+            body: JSON.stringify({
+              query: qSend,
+              category_slugs: getSelectedCategorySlugs(),
+            }),
             signal: ctrl.signal,
           }).finally(function () {
             clearTimeout(tid);
@@ -1504,6 +2069,9 @@
       loadCtxFromStorage();
       bindCtxPersist();
       initRagBaseInput();
+      initSpecialtiesFromServer();
+      bindSpecialtyPanel();
+      bindVoiceInput();
 
       var btnAssist = document.getElementById("btn-assist");
       if (btnAssist) {
