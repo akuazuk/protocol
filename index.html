@@ -2265,13 +2265,33 @@
   var lastProtocolDetailOffer = null;
   var consultTplTimerId = null;
 
+  function normalizeProtocolPath(p) {
+    if (!p) return "";
+    var s = String(p).trim();
+    try {
+      if (/%[0-9A-Fa-f]{2}/.test(s)) {
+        try {
+          s = decodeURIComponent(s);
+        } catch (e) {}
+      }
+    } catch (e2) {}
+    return s.replace(/\\/g, "/").replace(/\/{2,}/g, "/");
+  }
+
+  function normalizeProtocolTitleKey(t) {
+    return String(t || "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
+
   function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
     var byPath = {};
     var i;
     for (i = 0; i < protocols.length; i++) {
       var pr = protocols[i];
-      var p = pr.path || "";
+      var p = normalizeProtocolPath(pr.path || "");
       if (!p) continue;
       if (
         !byPath[p] ||
@@ -2280,10 +2300,28 @@
         byPath[p] = pr;
       }
     }
-    var out = [];
+    var merged = [];
     for (var k in byPath) {
       if (Object.prototype.hasOwnProperty.call(byPath, k)) {
-        out.push(byPath[k]);
+        merged.push(byPath[k]);
+      }
+    }
+    var byTitle = {};
+    for (i = 0; i < merged.length; i++) {
+      var pr2 = merged[i];
+      var tk = normalizeProtocolTitleKey(pr2.title || "");
+      if (!tk) tk = normalizeProtocolPath(pr2.path || "");
+      if (
+        !byTitle[tk] ||
+        confidenceFromProtocol(pr2) > confidenceFromProtocol(byTitle[tk])
+      ) {
+        byTitle[tk] = pr2;
+      }
+    }
+    var out = [];
+    for (var t2 in byTitle) {
+      if (Object.prototype.hasOwnProperty.call(byTitle, t2)) {
+        out.push(byTitle[t2]);
       }
     }
     out.sort(function (a, b) {

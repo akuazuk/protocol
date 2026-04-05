@@ -17,6 +17,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
 from pathlib import Path
+from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parent
 
@@ -128,11 +129,12 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 - match_reason: не длиннее 70 символов, одно короткое предложение или фраза, законченная по смыслу.
 - differential: в приоритете точность, не «заполнить строки». По умолчанию 2 короткие строки (каждая 3–8 слов), порядок по убыванию вероятности. Добавь 3-й–5-й пункт только при явно широком дифференциале; не больше 5 строк. Не перечисляй маловероятное «для объёма».
 - questions_for_patient: если хотя бы у одного протокола confidence_score равен 1.0 (полное соответствие запросу) — пустой массив []. Иначе ровно 2 коротких вопроса.
-- protocols: все уникальные path из входных фрагментов; confidence_score 0.0–1.0.
+- protocols: все уникальные path из входных фрагментов; confidence_score 0.0–1.0. Каждый path и каждый протокол по названию (title) указывай только один раз — не дублируй одинаковые строки.
 Если не хватает места — сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
 
 SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН компактный JSON (без markdown).
 Не добавляй симптомы носа/горла/ОРВИ, если их не было в запросе пользователя. Эпиглоттит и др. редкие неотложные — только при красных флагах или прямо в фрагментах; при нормальном дыхании не веди с эпиглоттита.
+Не дублируй один и тот же протокол в protocols (один path / один title).
 Предыдущая попытка оборвалась по длине. Сделай ещё короче:
 - summary: РОВНО 2 коротких предложения, ВМЕСТЕ максимум 220 символов, последний символ — точка.
 - match_reason: до 55 символов на протокол.
@@ -1159,6 +1161,74 @@ def normalize_differential_field(parsed: dict | None) -> None:
     parsed["differential"] = out
 
 
+def _normalize_protocol_path_key(p: str) -> str:
+    s = (p or "").strip()
+    if not s:
+        return ""
+    try:
+        if "%" in s:
+            s = unquote(s)
+    except Exception:
+        pass
+    s = s.replace("\\", "/")
+    while "//" in s:
+        s = s.replace("//", "/")
+    return s
+
+
+def _normalize_protocol_title_key(t: str) -> str:
+    return " ".join((t or "").strip().lower().split())
+
+
+def dedupe_protocols_list(protocols: list) -> list:
+    """Один path и один title — с максимальным confidence_score (ответ модели без дублей)."""
+    if not protocols:
+        return []
+    by_path: dict[str, dict] = {}
+    for pr in protocols:
+        if not isinstance(pr, dict):
+            continue
+        p = _normalize_protocol_path_key(str(pr.get("path") or ""))
+        if not p:
+            continue
+        sc = _confidence_numeric(pr.get("confidence_score")) or 0.0
+        prev = by_path.get(p)
+        if prev is None:
+            by_path[p] = pr
+        else:
+            psc = _confidence_numeric(prev.get("confidence_score")) or 0.0
+            if sc > psc:
+                by_path[p] = pr
+    merged = list(by_path.values())
+    by_title: dict[str, dict] = {}
+    for pr in merged:
+        tk = _normalize_protocol_title_key(str(pr.get("title") or ""))
+        if not tk:
+            tk = _normalize_protocol_path_key(str(pr.get("path") or ""))
+        sc = _confidence_numeric(pr.get("confidence_score")) or 0.0
+        prev = by_title.get(tk)
+        if prev is None:
+            by_title[tk] = pr
+        else:
+            psc = _confidence_numeric(prev.get("confidence_score")) or 0.0
+            if sc > psc:
+                by_title[tk] = pr
+    out = list(by_title.values())
+    out.sort(
+        key=lambda x: -(_confidence_numeric(x.get("confidence_score")) or 0.0)
+    )
+    return out
+
+
+def dedupe_parsed_protocols(parsed: dict | None) -> None:
+    if not parsed or not isinstance(parsed, dict):
+        return
+    protos = parsed.get("protocols")
+    if not isinstance(protos, list):
+        return
+    parsed["protocols"] = dedupe_protocols_list(protos)
+
+
 def _finish_hits_max(resp) -> bool:
     fr = (_gemini_finish_reason(resp) or "").upper()
     return "MAX" in fr or "LENGTH" in fr
@@ -1401,6 +1471,9 @@ def api_assist(body: AssistIn) -> dict:
             resp, text, parsed = resp2, text2, parsed2
             finish = _gemini_finish_reason(resp)
 
+    if parsed and isinstance(parsed, dict):
+        dedupe_parsed_protocols(parsed)
+
     clinical_detail = None
     clinical_detail_offer: dict | None = None
     if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
@@ -1412,8 +1485,13 @@ def api_assist(body: AssistIn) -> dict:
         for pr in parsed.get("protocols") or []:
             if not confidence_for_detailed_extraction(pr.get("confidence_score")):
                 continue
-            pth = pr.get("path") or ""
-            if not pth or pth not in _chunks_by_path:
+            raw_p = str(pr.get("path") or "")
+            pth = raw_p if raw_p in _chunks_by_path else ""
+            if not pth:
+                nk = _normalize_protocol_path_key(raw_p)
+                if nk in _chunks_by_path:
+                    pth = nk
+            if not pth:
                 continue
             sc = _confidence_numeric(pr.get("confidence_score")) or 0.0
             candidates.append((sc, pr))
