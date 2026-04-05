@@ -753,9 +753,88 @@
     }
 
     .consultation-template-wrap {
-      margin-top: 1.15rem;
-      padding-top: 1rem;
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0.15rem;
+      border-top: none;
+      margin-bottom: 0.85rem;
+    }
+
+    .assist-detail-extract {
+      margin-top: 0;
+      padding-top: 1.05rem;
       border-top: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .consultation-placeholders-wrap {
+      margin-top: 0.85rem;
+      padding: 0.85rem 0.95rem;
+      border-radius: 12px;
+      border: 1px dashed rgba(26, 138, 114, 0.32);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .consultation-placeholders-wrap[hidden] {
+      display: none !important;
+    }
+
+    .consultation-placeholders-lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .consultation-placeholders-empty {
+      margin: 0 0 0.65rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .consultation-ph-row {
+      margin-bottom: 0.75rem;
+    }
+
+    .consultation-ph-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-800);
+      margin-bottom: 0.3rem;
+    }
+
+    .consultation-ph-input,
+    .consultation-additional-notes {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      background: rgba(255, 255, 255, 0.98);
+      resize: vertical;
+      min-height: 2.4rem;
+    }
+
+    .consultation-ph-notes-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-800);
+      margin: 0.35rem 0 0.3rem;
+    }
+
+    .btn-consultation-refine {
+      margin-top: 0.65rem;
+    }
+
+    .btn-consultation-refine:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .consultation-template-lead {
@@ -1559,7 +1638,8 @@
         width: 100%;
       }
 
-      .btn-copy-template {
+      .btn-copy-template,
+      .btn-consultation-refine {
         width: 100%;
       }
     }
@@ -2221,12 +2301,94 @@
     }, 1000);
   }
 
-  function loadConsultationTemplate() {
+  function extractPlaceholdersFromTemplate(text) {
+    var re = /\[[^\]]+\]/g;
+    var seen = {};
+    var order = [];
+    var m;
+    var s = String(text || "");
+    while ((m = re.exec(s)) !== null) {
+      if (!seen[m[0]]) {
+        seen[m[0]] = true;
+        order.push(m[0]);
+      }
+    }
+    return order;
+  }
+
+  function fillPlaceholdersInTemplate(template, map) {
+    var out = String(template || "");
+    var k;
+    for (k in map) {
+      if (!Object.prototype.hasOwnProperty.call(map, k)) continue;
+      var v = map[k];
+      if (v == null || !String(v).trim()) continue;
+      var esc = k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      out = out.replace(new RegExp(esc, "g"), String(v).trim());
+    }
+    return out;
+  }
+
+  function collectConsultationPlaceholderMap() {
+    var keys = window.__consultationPlaceholderKeys || [];
+    var map = {};
+    var i;
+    for (i = 0; i < keys.length; i++) {
+      var ta = document.getElementById("consultation-ph-" + i);
+      if (ta && ta.value.trim()) map[keys[i]] = ta.value.trim();
+    }
+    return map;
+  }
+
+  function populateConsultationPlaceholderForm(rawText) {
+    var wrap = document.getElementById("consultation-placeholders-wrap");
+    var fields = document.getElementById("consultation-placeholders-fields");
+    var refineBtn = document.querySelector(".btn-consultation-refine");
+    if (!fields || !wrap) return;
+    window.__consultationPlaceholderKeys = extractPlaceholdersFromTemplate(
+      rawText || ""
+    );
+    fields.innerHTML = "";
+    var keys = window.__consultationPlaceholderKeys;
+    if (keys.length === 0) {
+      fields.innerHTML =
+        '<p class="consultation-placeholders-empty">В тексте нет плейсхолдеров […]. Используйте поле «Дополнительные сведения» и нажмите «Сформировать полностью с учётом данных».</p>';
+    } else {
+      var i;
+      for (i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        fields.innerHTML +=
+          '<div class="consultation-ph-row">' +
+          '<label class="consultation-ph-label" for="consultation-ph-' +
+          i +
+          '">' +
+          escapeHtml(key) +
+          "</label>" +
+          '<textarea class="consultation-ph-input" id="consultation-ph-' +
+          i +
+          '" rows="2" placeholder="Введите текст вместо плейсхолдера"></textarea>' +
+          "</div>";
+      }
+    }
+    wrap.hidden = false;
+    if (refineBtn) refineBtn.disabled = !(rawText && String(rawText).trim());
+  }
+
+  function loadConsultationTemplate(opts) {
+    opts = opts || {};
+    var refine = opts.refine === true;
     var cd = window.__clinicalDetailForTemplate;
     var q = window.__assistQueryForTemplate || "";
     if (!cd || cd.error) {
       alert("Сначала загрузите развёрнутую выдержку из протокола.");
       return;
+    }
+    if (refine) {
+      var rawPrev = window.__lastConsultationTemplateRaw || "";
+      if (!rawPrev) {
+        alert("Сначала сформируйте первый вариант заключения.");
+        return;
+      }
     }
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
@@ -2235,12 +2397,32 @@
     var resultEl = document.getElementById("consultation-template-result");
     var bodyEl = document.getElementById("consultation-template-body");
     var genBtn = document.querySelector(".btn-consultation-template");
+    var refineBtn = document.querySelector(".btn-consultation-refine");
     if (genBtn) genBtn.disabled = true;
+    if (refineBtn) refineBtn.disabled = true;
     startConsultTplTimer();
+    var payloadBody;
+    if (refine) {
+      var merged = fillPlaceholdersInTemplate(
+        window.__lastConsultationTemplateRaw || "",
+        collectConsultationPlaceholderMap()
+      );
+      var notesEl = document.getElementById("consultation-additional-notes");
+      var notes = notesEl ? (notesEl.value || "").trim() : "";
+      payloadBody = {
+        query: q,
+        clinical_detail: cd,
+        refine: true,
+        previous_template: merged,
+        additional_notes: notes || null,
+      };
+    } else {
+      payloadBody = { query: q, clinical_detail: cd, refine: false };
+    }
     fetch(base + "/api/consultation-template", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: q, clinical_detail: cd }),
+      body: JSON.stringify(payloadBody),
     })
       .then(function (r) {
         return r.text().then(function (text) {
@@ -2274,6 +2456,14 @@
         }
         var copyBtn = document.querySelector(".btn-copy-template");
         if (copyBtn) copyBtn.disabled = !t;
+        if (t) {
+          window.__lastConsultationTemplateRaw = t;
+          populateConsultationPlaceholderForm(t);
+        } else {
+          window.__lastConsultationTemplateRaw = "";
+          var phWrap = document.getElementById("consultation-placeholders-wrap");
+          if (phWrap) phWrap.hidden = true;
+        }
       })
       .catch(function (err) {
         alert("Не удалось: " + String(err.message || err));
@@ -2281,6 +2471,13 @@
       .finally(function () {
         clearConsultTplTimer();
         if (genBtn) genBtn.disabled = false;
+        var rb = document.querySelector(".btn-consultation-refine");
+        if (rb) {
+          rb.disabled = !(
+            window.__lastConsultationTemplateRaw &&
+            String(window.__lastConsultationTemplateRaw).trim()
+          );
+        }
       });
   }
 
@@ -2293,7 +2490,12 @@
       if (!el || !el.closest) return;
       if (el.closest(".btn-consultation-template")) {
         ev.preventDefault();
-        loadConsultationTemplate();
+        loadConsultationTemplate({ refine: false });
+        return;
+      }
+      if (el.closest(".btn-consultation-refine")) {
+        ev.preventDefault();
+        loadConsultationTemplate({ refine: true });
         return;
       }
       if (el.closest(".btn-copy-template")) {
@@ -2486,6 +2688,7 @@
       .then(function (payload) {
         var block = document.getElementById("protocol-detail-block");
         if (block && payload.clinical_detail) {
+          window.__lastConsultationTemplateRaw = "";
           block.outerHTML = renderClinicalDetailBlock(payload.clinical_detail);
           if (payload.clinical_detail && !payload.clinical_detail.error) {
             window.__clinicalDetailForTemplate = payload.clinical_detail;
@@ -2594,7 +2797,37 @@
       );
     }
     var ex = cd.extraction || {};
+    var consultBlock =
+      '<div class="consultation-template-wrap">' +
+      '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке; требует проверки и при необходимости правки лечащим врачом.</p>' +
+      '<div class="consultation-template-actions">' +
+      '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
+      '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
+      '<span class="consultation-template-timer" id="consultation-template-timer" hidden aria-live="polite"></span>' +
+      "</div>" +
+      '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
+      '<article class="consultation-template-card">' +
+      '<header class="consultation-template-header">' +
+      '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="52" height="52" alt="" />' +
+      "<div>" +
+      '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
+      '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
+      "</div>" +
+      "</header>" +
+      '<div class="consultation-template-body" id="consultation-template-body"></div>' +
+      "</article>" +
+      "</div>" +
+      '<div class="consultation-placeholders-wrap" id="consultation-placeholders-wrap" hidden>' +
+      '<p class="consultation-placeholders-lead">Заполните значения вместо плейсхолдеров в квадратных скобках или укажите дополнительные сведения — затем сформируйте полное заключение по протоколу.</p>' +
+      '<div id="consultation-placeholders-fields"></div>' +
+      '<label class="consultation-ph-notes-label" for="consultation-additional-notes">Дополнительные сведения (необязательно)</label>' +
+      '<textarea id="consultation-additional-notes" class="consultation-additional-notes" rows="3" placeholder="Факты осмотра, анамнез, лабораторные данные…"></textarea>' +
+      '<button type="button" class="btn-assist btn-consultation-refine" disabled>Сформировать полностью с учётом данных</button>' +
+      "</div>" +
+      "</div>";
     var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
+    html += consultBlock;
+    html += '<div class="assist-detail-extract">';
     html += '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>';
     if (cd.detail_match_score != null && !isNaN(Number(cd.detail_match_score))) {
       var dp = pct01(Number(cd.detail_match_score));
@@ -2674,27 +2907,7 @@
       html +=
         '<p class="assist-detail-note">' + escapeHtml(String(ex.note)) + "</p>";
     }
-    html +=
-      '<div class="consultation-template-wrap">' +
-      '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке; требует проверки и при необходимости правки лечащим врачом.</p>' +
-      '<div class="consultation-template-actions">' +
-      '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
-      '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
-      '<span class="consultation-template-timer" id="consultation-template-timer" hidden aria-live="polite"></span>' +
-      "</div>" +
-      '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
-      '<article class="consultation-template-card">' +
-      '<header class="consultation-template-header">' +
-      '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="52" height="52" alt="" />' +
-      '<div>' +
-      '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
-      '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
-      "</div>" +
-      "</header>" +
-      '<div class="consultation-template-body" id="consultation-template-body"></div>' +
-      "</article>" +
-      "</div>" +
-      "</div>";
+    html += "</div>";
     html += "</div>";
     return html;
   }
@@ -2874,6 +3087,7 @@
 
       html += "</div></div>";
       window.__clinicalDetailForTemplate = null;
+      window.__lastConsultationTemplateRaw = "";
       window.__assistQueryForTemplate = data.query || "";
       if (data.clinical_detail && !data.clinical_detail.error) {
         window.__clinicalDetailForTemplate = data.clinical_detail;
