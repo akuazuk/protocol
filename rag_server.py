@@ -772,9 +772,15 @@ def extract_clinical_detail(
     struct = _structured_by_path.get(path) or {}
     extra = ""
     if struct.get("diagnosis"):
-        extra += "\n\n[Выдержка индекса: диагностика]\n" + str(struct["diagnosis"])[:idx_lim]
+        extra += (
+            "\n\n[Выдержка индекса: диагностика]\n"
+            + format_structured_index_text(str(struct["diagnosis"]), idx_lim)
+        )
     if struct.get("treatment"):
-        extra += "\n\n[Выдержка индекса: лечение]\n" + str(struct["treatment"])[:idx_lim]
+        extra += (
+            "\n\n[Выдержка индекса: лечение]\n"
+            + format_structured_index_text(str(struct["treatment"]), idx_lim)
+        )
     if len(body.strip()) < 120 and not extra.strip():
         return None
     meta = _protocol_meta.get(path) or {}
@@ -930,6 +936,7 @@ def retrieve(
         if per_path.get(p, 0) >= max_per_path:
             continue
         per_path[p] = per_path.get(p, 0) + 1
+        ex_lim = int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
         row: dict = {
             "path": p,
             "title": ch.get("title") or "",
@@ -937,9 +944,7 @@ def retrieve(
             "score": round(final, 3),
             "lexical_score": round(lex, 3),
             "routing_multiplier": round(mult, 4),
-            "excerpt": (ch.get("text") or "")[
-                : int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
-            ],
+            "excerpt": format_excerpt_for_display(ch.get("text") or "", ex_lim),
         }
         if rerank_used:
             row["embedding_rerank"] = True
@@ -1231,6 +1236,114 @@ def dedupe_parsed_protocols(parsed: dict | None) -> None:
     parsed["protocols"] = dedupe_protocols_list(protos)
 
 
+# --- Выдержки из PDF: склейка переносов, обрезка по границам слов (для UI) ---
+
+_RU_SINGLE_LETTER_WORDS = frozenset(
+    "и а в к о с у я ы э ю ё".split()
+)
+
+_PDF_HYPHEN_PAIR = re.compile(
+    r"([а-яёА-ЯЁa-zA-Z])-\s+([а-яёА-ЯЁa-zA-Z])"
+)
+_PDF_HYPHEN_NL = re.compile(
+    r"([а-яёА-ЯЁa-zA-Z])-\s*\n\s*([а-яёА-ЯЁa-zA-Z])"
+)
+
+
+def _normalize_pdf_hyphenation(text: str) -> str:
+    """Склеивает переносы из PDF: «меди- цинской», «Воз- можны» → цельные слова."""
+    if not text:
+        return ""
+    t = text.replace("\u00ad", "")
+    for _ in range(24):
+        t2 = _PDF_HYPHEN_PAIR.sub(lambda m: m.group(1) + m.group(2), t)
+        if t2 == t:
+            break
+        t = t2
+    for _ in range(24):
+        t2 = _PDF_HYPHEN_NL.sub(lambda m: m.group(1) + m.group(2), t)
+        if t2 == t:
+            break
+        t = t2
+    return t
+
+
+def _collapse_whitespace_for_excerpt(text: str) -> str:
+    """Один блок текста без разрывов строк из верстки PDF."""
+    if not text:
+        return ""
+    t = text.replace("\r\n", "\n").replace("\r", "\n")
+    t = re.sub(r"[ \t\u00a0]+", " ", t)
+    t = re.sub(r"\s*\n\s*", " ", t)
+    t = re.sub(r" +", " ", t)
+    return t.strip()
+
+
+def _strip_leading_word_fragment(text: str) -> str:
+    """Убирает обрезанное первое «слово» (часто 1 буква: «й» от «Настоящий»)."""
+    t = text.strip()
+    if len(t) < 3:
+        return t
+    m = re.match(r"^(\S+)(\s+)", t)
+    if not m:
+        return t
+    first = m.group(1)
+    if len(first) != 1:
+        return t
+    if not first.isalpha():
+        return t
+    if first.lower() in _RU_SINGLE_LETTER_WORDS:
+        return t
+    return t[m.end() :].lstrip()
+
+
+def _truncate_excerpt_for_ui(text: str, max_chars: int) -> str:
+    """Обрезка по границе слова; без обрыва на середине слова; многоточие при необходимости."""
+    text = (text or "").strip()
+    if not text:
+        return ""
+    if len(text) <= max_chars:
+        return text
+    window = text[:max_chars]
+    min_cut = max(24, int(max_chars * 0.5))
+    sp = window.rfind(" ")
+    if sp >= min_cut:
+        window = window[:sp]
+    else:
+        for sep in (";", ":", ",", "»", ")"):
+            ix = window.rfind(sep)
+            if ix >= min_cut // 2:
+                window = window[: ix + 1]
+                break
+    window = window.rstrip(" -–—")
+    while window.endswith("-") and len(window) > 1:
+        window = window[:-1].rstrip()
+    if not window:
+        window = text[: max_chars - 1].rstrip() + "…"
+        return window
+    if window[-1] not in ".!?…:;»)]":
+        window += "…"
+    return window
+
+
+def format_excerpt_for_display(raw: str, max_chars: int) -> str:
+    """Пайплайн для фрагмента КП в ответе API и промпте."""
+    t = _normalize_pdf_hyphenation(raw or "")
+    t = _collapse_whitespace_for_excerpt(t)
+    t = _strip_leading_word_fragment(t)
+    return _truncate_excerpt_for_ui(t, max_chars)
+
+
+def format_structured_index_text(raw: str, max_chars: int) -> str:
+    """Текст из structured_index: те же правила, другой лимит."""
+    t = _normalize_pdf_hyphenation(raw or "")
+    t = _collapse_whitespace_for_excerpt(t)
+    t = _strip_leading_word_fragment(t)
+    if len(t) <= max_chars:
+        return t
+    return _truncate_excerpt_for_ui(t, max_chars)
+
+
 _REDFLAGS_KEYWORDS = (
     "госпитализац",
     "стационар",
@@ -1303,9 +1416,9 @@ def _protocol_structures_for_response(protocols: list) -> dict[str, dict]:
         if not diag and not treat and not summ:
             continue
         out[raw] = {
-            "diagnosis": diag[:2500],
-            "treatment": treat[:2500],
-            "summary": summ[:800],
+            "diagnosis": format_structured_index_text(diag, 2500),
+            "treatment": format_structured_index_text(treat, 2500),
+            "summary": format_structured_index_text(summ, 800),
         }
     return out
 
