@@ -125,9 +125,9 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
   "disclaimer": "Информация из протоколов; не замена очной консультации."
 }
 ЖЁСТКИЕ ЛИМИТЫ (иначе ответ обрежется посередине):
-- summary: РОВНО 2 предложения на русском, каждое заканчивается точкой. Вместе НЕ ДЛИННЕЕ 280 символов (с пробелами). Без тире в конце; последний символ — точка.
+- summary: РОВНО 2 предложения на русском, каждое заканчивается точкой. Вместе НЕ ДЛИННЕЕ 280 символов (с пробелами). Без тире в конце; последний символ — точка. Не формулируй как установленный диагноз; это краткое сопоставление запроса с протоколами.
 - match_reason: не длиннее 70 символов, одно короткое предложение или фраза, законченная по смыслу.
-- differential: в приоритете точность, не «заполнить строки». По умолчанию 2 короткие строки (каждая 3–8 слов), порядок по убыванию вероятности. Добавь 3-й–5-й пункт только при явно широком дифференциале; не больше 5 строк. Не перечисляй маловероятное «для объёма».
+- differential: только дифференциальные ГИПОТЕЗЫ для обсуждения с врачом; не окончательный диагноз. Не используй формулировки «диагноз:», «установлен», «подтверждён». В приоритете точность. По умолчанию 2 короткие строки (каждая 3–8 слов), порядок по убыванию вероятности. Добавь 3-й–5-й пункт только при явно широком дифференциале; не больше 5 строк.
 - questions_for_patient: если хотя бы у одного протокола confidence_score равен 1.0 (полное соответствие запросу) — пустой массив []. Иначе ровно 2 коротких вопроса.
 - protocols: все уникальные path из входных фрагментов; confidence_score 0.0–1.0. Каждый path и каждый протокол по названию (title) указывай только один раз — не дублируй одинаковые строки.
 Если не хватает места — сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
@@ -138,7 +138,7 @@ SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН комп
 Предыдущая попытка оборвалась по длине. Сделай ещё короче:
 - summary: РОВНО 2 коротких предложения, ВМЕСТЕ максимум 220 символов, последний символ — точка.
 - match_reason: до 55 символов на протокол.
-- differential: 2 коротких пункта (или до 5 только если дифференциал широкий); по убыванию вероятности; questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
+- differential: только гипотезы, не окончательный диагноз; без формулировок «диагноз установлен». 2 коротких пункта (или до 5 только если дифференциал широкий); по убыванию вероятности; questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
 Сохрани все path из фрагментов. Не обрывай слова."""
 
 SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам клинического протокола Минздрава Республики Беларусь извлеки факты, относящиеся к запросу пользователя.
@@ -1231,6 +1231,85 @@ def dedupe_parsed_protocols(parsed: dict | None) -> None:
     parsed["protocols"] = dedupe_protocols_list(protos)
 
 
+_REDFLAGS_KEYWORDS = (
+    "госпитализац",
+    "стационар",
+    "неотложн",
+    "скорой помощ",
+    "экстренн",
+    "немедленн",
+    "угроза жизни",
+    "реанимац",
+    "орит",
+    "интенсивной терапии",
+    "показания к госпитал",
+    "направлени",
+    "жизнеугрожающ",
+    "опасн для жизни",
+    "срочной медицинской",
+)
+
+
+def _red_flags_from_retrieval(retrieved: list[dict]) -> list[str]:
+    """Эвристика по отобранным фрагментам: предложения/строки с маркерами срочности/стационара."""
+    if not retrieved:
+        return []
+    parts: list[str] = []
+    for row in retrieved[:6]:
+        ex = (row.get("excerpt") or "").strip()
+        if not ex:
+            continue
+        for para in re.split(r"(?<=[.!?])\s+|\n+", ex):
+            t = para.strip()
+            if len(t) < 30:
+                continue
+            low = t.lower()
+            if any(k in low for k in _REDFLAGS_KEYWORDS):
+                parts.append(t)
+    seen: set[str] = set()
+    out: list[str] = []
+    for s in parts:
+        s = re.sub(r"\s+", " ", s)
+        if len(s) > 240:
+            s = s[:237] + "…"
+        key = s[:72]
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+        if len(out) >= 5:
+            break
+    return out
+
+
+def _protocol_structures_for_response(protocols: list) -> dict[str, dict]:
+    """Фрагменты structured_index.json для path из ответа модели (диагностика/лечение)."""
+    out: dict[str, dict] = {}
+    if not _structured_by_path:
+        return out
+    for pr in protocols:
+        if not isinstance(pr, dict):
+            continue
+        raw = str(pr.get("path") or "").strip()
+        if not raw:
+            continue
+        nk = _normalize_protocol_path_key(raw)
+        struct = _structured_by_path.get(raw) or _structured_by_path.get(nk)
+        if not struct or not isinstance(struct, dict):
+            continue
+        diag = str(struct.get("diagnosis") or "").strip()
+        treat = str(struct.get("treatment") or "").strip()
+        summ = str(struct.get("summary") or "").strip()
+        if not diag and not treat and not summ:
+            continue
+        out[raw] = {
+            "diagnosis": diag[:2500],
+            "treatment": treat[:2500],
+            "summary": summ[:800],
+        }
+    return out
+
+
 def _finish_hits_max(resp) -> bool:
     fr = (_gemini_finish_reason(resp) or "").upper()
     return "MAX" in fr or "LENGTH" in fr
@@ -1525,6 +1604,10 @@ def api_assist(body: AssistIn) -> dict:
 
     normalize_differential_field(parsed)
 
+    proto_list = (parsed.get("protocols") or []) if parsed else []
+    protocol_structures = _protocol_structures_for_response(proto_list)
+    red_flags = _red_flags_from_retrieval(retrieved)
+
     return {
         "query": q,
         "retrieval": retrieved,
@@ -1542,6 +1625,8 @@ def api_assist(body: AssistIn) -> dict:
         "retrieval_embedding": dict(_retrieval_embed_meta)
         if _retrieval_embed_meta
         else {"used": False},
+        "red_flags": red_flags,
+        "protocol_structures": protocol_structures,
     }
 
 

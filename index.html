@@ -1213,6 +1213,104 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
     }
 
+    .assist-source-note {
+      margin: 0.5rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-sec--redflags {
+      margin-top: 0.85rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(254, 243, 199, 0.45);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+    }
+
+    .assist-sec-label--alert {
+      color: rgba(120, 53, 15, 0.95);
+    }
+
+    .assist-redflags-lead {
+      margin: 0.35rem 0 0.5rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-redflags-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .assist-redflags-list li {
+      margin-bottom: 0.35rem;
+    }
+
+    .assist-proto-excerpt {
+      margin: 0.45rem 0 0.35rem;
+      padding: 0.5rem 0.65rem;
+      border-left: 3px solid rgba(26, 138, 114, 0.45);
+      background: rgba(248, 250, 249, 0.95);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .assist-proto-excerpt-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--green-800);
+      margin-bottom: 0.3rem;
+    }
+
+    .assist-proto-excerpt-text {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+      word-wrap: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .assist-proto-structure {
+      margin: 0.5rem 0 0.25rem;
+      font-size: 0.82rem;
+    }
+
+    .assist-proto-structure summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--green-800);
+    }
+
+    .assist-structure-h {
+      margin: 0.5rem 0 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+    }
+
+    .assist-structure-summary {
+      margin: 0.35rem 0 0.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .assist-structure-body {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
     .assist-metrics-legend {
       margin: 0.85rem 0 0;
       padding-top: 0.65rem;
@@ -2158,6 +2256,43 @@
     };
   }
 
+  /** Лучший по длине фрагмент текста из отбора RAG для каждого path (цитата к протоколу). */
+  function ragExcerptByPath(retrieval) {
+    var m = {};
+    if (!retrieval || !retrieval.length) return m;
+    var i;
+    for (i = 0; i < retrieval.length; i++) {
+      var r = retrieval[i];
+      var p = r.path;
+      var ex = (r.excerpt || "").trim();
+      if (!p || !ex) continue;
+      if (!m[p] || ex.length > m[p].length) m[p] = ex;
+      var nk = normalizeProtocolPath(p);
+      if (nk && nk !== p && (!m[nk] || ex.length > m[nk].length)) {
+        m[nk] = ex;
+      }
+    }
+    return m;
+  }
+
+  function excerptForProtocol(pr, excerptByPath) {
+    if (!pr || !pr.path) return "";
+    var p = pr.path;
+    var ex = excerptByPath[p];
+    if (ex) return ex;
+    var nk = normalizeProtocolPath(p);
+    return nk ? excerptByPath[nk] || "" : "";
+  }
+
+  function structureForProtocol(pr, protocolStructures) {
+    if (!pr || !pr.path || !protocolStructures) return null;
+    var p = pr.path;
+    var st = protocolStructures[p];
+    if (st) return st;
+    var nk = normalizeProtocolPath(p);
+    return nk ? protocolStructures[nk] || null : null;
+  }
+
   /** Нормализует score отбора RAG по path (0–1 внутри батча). */
   function normalizeRagByPath(retrieval) {
     var m = {};
@@ -2911,7 +3046,10 @@
     return html || '<p class="llm-summary-para">' + escapeHtml(t) + "</p>";
   }
 
-  function renderProtoLi(pr, ragMap) {
+  function renderProtoLi(pr, ragMap, opts) {
+    opts = opts || {};
+    var excerptByPath = opts.excerptByPath || {};
+    var protocolStructures = opts.protocolStructures || {};
     var href = encodeURI(pr.path || "");
     var title = formatDisplayTitle(pr.title || pr.path || "");
     var mScore = confidenceFromProtocol(pr);
@@ -2944,6 +3082,43 @@
     if (pr.match_reason) {
       html +=
         '<p class="assist-reason">' + escapeHtml(pr.match_reason) + "</p>";
+    }
+    var cit = excerptForProtocol(pr, excerptByPath);
+    if (cit) {
+      html +=
+        '<blockquote class="assist-proto-excerpt" cite="' +
+        escapeHtmlAttr(href) +
+        '"><span class="assist-proto-excerpt-label">Фрагмент из отобранного текста КП (основание подбора)</span><p class="assist-proto-excerpt-text">' +
+        escapeHtml(cit) +
+        "</p></blockquote>";
+    }
+    var st = structureForProtocol(pr, protocolStructures);
+    if (
+      st &&
+      (st.diagnosis || st.treatment || st.summary)
+    ) {
+      html += '<details class="assist-proto-structure">';
+      html +=
+        '<summary>Структура протокола по индексу (диагностика / лечение)</summary>';
+      if (st.summary) {
+        html +=
+          '<p class="assist-structure-summary">' +
+          escapeHtml(st.summary) +
+          "</p>";
+      }
+      if (st.diagnosis) {
+        html +=
+          '<p class="assist-structure-h">Диагностика (индекс)</p><div class="assist-structure-body">' +
+          formatSummaryHtml(st.diagnosis) +
+          "</div>";
+      }
+      if (st.treatment) {
+        html +=
+          '<p class="assist-structure-h">Лечение и тактика (индекс)</p><div class="assist-structure-body">' +
+          formatSummaryHtml(st.treatment) +
+          "</div>";
+      }
+      html += "</details>";
     }
     html += "</li>";
     return html;
@@ -3303,6 +3478,12 @@
     var j = data.llm_json;
     if (j && typeof j === "object") {
       var ragMap = normalizeRagByPath(data.retrieval || []);
+      var excerptByPath = ragExcerptByPath(data.retrieval || []);
+      var protocolStructures = data.protocol_structures || {};
+      var protoRenderOpts = {
+        excerptByPath: excerptByPath,
+        protocolStructures: protocolStructures,
+      };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
       var high = [];
       var low = [];
@@ -3319,6 +3500,23 @@
       if (j.summary) {
         html +=
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
+      }
+
+      html +=
+        '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+
+      if (data.red_flags && data.red_flags.length) {
+        html += '<div class="assist-sec assist-sec--redflags">';
+        html +=
+          '<span class="assist-sec-label assist-sec-label--alert">Обратить внимание (по тексту отобранных фрагментов)</span>';
+        html +=
+          '<p class="assist-redflags-lead">Найдены формулировки о срочности, стационаре или угрозе для жизни — сверьтесь с полным протоколом и клиникой.</p><ul class="assist-redflags-list">';
+        var ri;
+        for (ri = 0; ri < data.red_flags.length; ri++) {
+          html +=
+            "<li>" + escapeHtml(String(data.red_flags[ri])) + "</li>";
+        }
+        html += "</ul></div>";
       }
 
       if (
@@ -3339,7 +3537,7 @@
         if (high.length) {
           html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="assist-proto-list">';
           for (hi = 0; hi < high.length; hi++) {
-            html += renderProtoLi(high[hi], ragMap);
+            html += renderProtoLi(high[hi], ragMap, protoRenderOpts);
           }
           html += "</ul>";
         }
@@ -3347,7 +3545,7 @@
           html +=
             '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="assist-proto-list">';
           for (hi = 0; hi < low.length; hi++) {
-            html += renderProtoLi(low[hi], ragMap);
+            html += renderProtoLi(low[hi], ragMap, protoRenderOpts);
           }
           html += "</ul>";
         }
@@ -3361,7 +3559,7 @@
       if (j.differential && j.differential.length) {
         html += '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential">';
         html +=
-          '<span class="assist-sec-label assist-sec-label--diff">Дифференциальный ряд</span><p class="assist-diff-lead">Для обсуждения с врачом. Обычно 2–3 гипотезы; при широком дифференциале — до 5, по убыванию вероятности (1 — наиболее вероятный). Нажмите кнопку — поиск по строке начнётся сразу.</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
+          '<span class="assist-sec-label assist-sec-label--diff">Дифференциальные гипотезы</span><p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 — относительно более вероятный. Обычно 2–3 пункта, до 5 при широком дифференциале. Кнопка запускает поиск по строке.</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
         var di;
         var diffItems = j.differential.slice(0, 5);
         for (di = 0; di < diffItems.length; di++) {
