@@ -337,6 +337,54 @@
       line-height: 1.45;
     }
 
+    .specialty-site-note {
+      margin: 0 0 0.85rem;
+      padding: 0.65rem 0.75rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 10px;
+      border-left: 4px solid var(--green-600);
+    }
+
+    .specialty-site-note a {
+      color: var(--green-800);
+      font-weight: 600;
+    }
+
+    .assist-compact li.assist-diff-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.45rem 0.65rem;
+      list-style-position: outside;
+    }
+
+    .assist-diff-text {
+      flex: 1 1 12rem;
+      min-width: 0;
+    }
+
+    .btn-diff-search {
+      flex: 0 0 auto;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      border: 2px solid var(--green-600);
+      background: linear-gradient(180deg, #fff 0%, var(--green-100) 100%);
+      color: var(--green-800);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-diff-search:hover {
+      background: var(--green-100);
+      box-shadow: 0 2px 8px rgba(13, 92, 74, 0.2);
+    }
+
     .specialty-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -1070,6 +1118,18 @@
         <p class="specialty-hint">
           Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
         </p>
+        <p class="specialty-site-note">
+          На сайте
+          <a
+            href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Минздрава</a
+          >
+          нет отдельной рубрики «Терапия»: перечень совпадает с каталогом (24 раздела). Общие и «терапевтические» протоколы
+          отнесены к профильным разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
+          <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
+        </p>
         <div class="specialty-toolbar">
           <button type="button" id="specialty-clear">Снять выбор</button>
           <button type="button" id="specialty-all">Выбрать все</button>
@@ -1606,6 +1666,36 @@
     return html;
   }
 
+  function bindDiffSearchButtons() {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    var buttons = out.querySelectorAll(".btn-diff-search");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener("click", function () {
+        var enc = this.getAttribute("data-q");
+        if (enc == null || enc === "") return;
+        var line = "";
+        try {
+          line = decodeURIComponent(enc);
+        } catch (e) {
+          return;
+        }
+        var qInput = document.getElementById("q");
+        if (qInput) qInput.value = line;
+        var panel = document.getElementById("llm-panel");
+        if (panel) panel.open = true;
+        var form = document.getElementById("search-form");
+        if (form) {
+          form.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        runAssist().catch(function (err) {
+          console.error(err);
+        });
+      });
+    }
+  }
+
   function bindLlmFollowupForm() {
     var form = document.getElementById("llm-followup-form");
     if (!form) return;
@@ -1763,10 +1853,17 @@
       if (j.differential && j.differential.length) {
         html += '<hr class="assist-hr" /><div class="assist-sec">';
         html +=
-          '<span class="assist-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом.</p><ul class="assist-compact">';
+          '<span class="assist-sec-label">Дифференциальный ряд</span><p style="margin:0 0 0.35rem;font-size:0.78rem;color:var(--muted)">Для обсуждения с врачом. По строке можно сразу искать протокол.</p><ul class="assist-compact">';
         var di;
         for (di = 0; di < j.differential.length; di++) {
-          html += "<li>" + escapeHtml(j.differential[di]) + "</li>";
+          var diffLine = j.differential[di];
+          var enc = encodeURIComponent(String(diffLine));
+          html +=
+            '<li class="assist-diff-row"><span class="assist-diff-text">' +
+            escapeHtml(diffLine) +
+            '</span><button type="button" class="btn-diff-search" data-q="' +
+            enc +
+            '">Искать протокол</button></li>';
         }
         html += "</ul></div>";
       }
@@ -1834,6 +1931,7 @@
       html += "</div></div>";
       out.innerHTML = html;
       bindLlmFollowupForm();
+      bindDiffSearchButtons();
       return;
     }
     out.innerHTML =

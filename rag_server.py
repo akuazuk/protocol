@@ -188,22 +188,13 @@ def _jsonl_chunk_files() -> list[Path]:
 
 
 def _memory_saver_enabled() -> bool:
-    """На Render (512Mi) полный JSONL с text + embedding_ready_text даёт OOM.
+    """По умолчанию — полный lex (embedding_ready_text при отличии от text).
 
-    RAG_MEMORY_SAVER=0 — полная точность лексики (дублирование embedding_ready_text).
-    RAG_MEMORY_SAVER=1 или не задано на Render — только text для поиска, без второй копии.
+    На слабом инстансе (например 512Mi) задайте RAG_MEMORY_SAVER=1 — без дубля
+    embedding_ready_text, чтобы избежать OOM при старте.
     """
     v = (os.environ.get("RAG_MEMORY_SAVER") or "").strip().lower()
-    if v in ("1", "true", "yes"):
-        return True
-    if v in ("0", "false", "no"):
-        return False
-    render = (os.environ.get("RENDER") or "").strip().lower()
-    if render in ("1", "true", "yes", "on"):
-        return True
-    if (os.environ.get("RENDER_EXTERNAL_URL") or "").strip():
-        return True
-    return False
+    return v in ("1", "true", "yes")
 
 
 def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
