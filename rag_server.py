@@ -169,6 +169,11 @@ slug ТОЛЬКО из этого списка (копируй точно):
 """ + ", ".join(sorted(ALLOWED_SPECIALTY_SLUGS)) + """
 Если нельзя уверенно сопоставить — верни "categories": []."""
 
+SYSTEM_QUERY_SPELLFIX = """По фрагменту текста жалобы (русский) исправь только орфографию и очевидные опечатки, в том числе в медицинских терминах (например лишние/пропущенные буквы).
+Не меняй смысл, не добавляй симптомы и диагнозы, не сокращай и не перефразируй свободно.
+Верни ОДИН JSON-объект (без markdown):
+{"corrected": "<тот же текст целиком, с исправлениями или без изменений>"}"""
+
 
 def _jsonl_chunk_files() -> list[Path]:
     """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
@@ -772,6 +777,7 @@ def retrieve(
 
 # Большой промпт и вызов модели могут занимать 2–3+ мин; клиент в index.html ждёт дольше сервера
 GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "180"))
+GEMINI_SPELLFIX_TIMEOUT = float(os.environ.get("GEMINI_SPELLFIX_TIMEOUT", "45"))
 
 
 def get_gemini():
@@ -860,6 +866,67 @@ def generate_gemini(model, full_prompt: str):
                 status_code=504,
                 detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
             ) from e
+
+
+def _generate_blocking_spellfix(model, full_prompt: str):
+    """Короткий JSON-ответ: исправление опечаток в запросе."""
+    import google.generativeai as genai
+
+    return model.generate_content(
+        full_prompt,
+        generation_config=genai.GenerationConfig(
+            temperature=0.1,
+            max_output_tokens=1024,
+            response_mime_type="application/json",
+        ),
+    )
+
+
+def generate_gemini_spellfix(model, full_prompt: str):
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking_spellfix, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_SPELLFIX_TIMEOUT)
+        except FuturesTimeout:
+            return None
+
+
+def apply_clinical_correction(full_q: str, corrected_rag: str) -> str:
+    """Подставляет исправленный клинический текст в полный запрос (контекст + ответы на уточнения сохраняются)."""
+    cq = (corrected_rag or "").strip()
+    sep = "=== Жалобы и вопрос ==="
+    if sep in full_q:
+        head = full_q.split(sep, 1)[0] + sep + "\n"
+        tail = full_q.split(sep, 1)[1]
+        mark = "— Ответы на уточняющие вопросы:"
+        if mark in tail:
+            return head + cq + "\n\n" + mark + tail.split(mark, 1)[1]
+        return head + cq
+    return cq
+
+
+def fix_query_spelling_medical(short_query: str, model) -> tuple[str, bool]:
+    """Исправление опечаток для лексического поиска. При сбое API — исходный текст, changed=False."""
+    sq = (short_query or "").strip()
+    if len(sq) < 2 or len(sq) > 8000:
+        return short_query, False
+    prompt = SYSTEM_QUERY_SPELLFIX + "\n\nТекст:\n" + sq[:6000]
+    try:
+        resp = generate_gemini_spellfix(model, prompt)
+        if resp is None:
+            return short_query, False
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+        if not parsed or not isinstance(parsed, dict):
+            return short_query, False
+        corrected = (parsed.get("corrected") or "").strip()
+        if not corrected:
+            return short_query, False
+        if corrected == sq:
+            return short_query, False
+        return corrected, True
+    except (HTTPException, Exception):
+        return short_query, False
 
 
 def _try_parse_json(t: str) -> dict | None:
@@ -969,6 +1036,29 @@ def api_assist(body: AssistIn) -> dict:
         category_boost=boost_merged or None,
         user_category_slugs=user_slugs or None,
     )
+    query_spelling_correction: dict | None = None
+    if not retrieved and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        fixed, changed = fix_query_spelling_medical(q_rag, model)
+        if changed and fixed.strip():
+            q_llm = apply_clinical_correction(q, fixed)
+            retrieved = retrieve(
+                fixed,
+                routing_query=q_llm,
+                category_boost=boost_merged or None,
+                user_category_slugs=user_slugs or None,
+            )
+            if retrieved:
+                q = q_llm
+                query_spelling_correction = {
+                    "applied": True,
+                    "rag_query_before": q_rag,
+                    "rag_query_after": fixed,
+                }
+
     if not retrieved:
         raise HTTPException(status_code=400, detail="Пустой отбор — уточните запрос")
 
@@ -1095,6 +1185,7 @@ def api_assist(body: AssistIn) -> dict:
         "gemini_finish_reason": finish,
         "gemini_retry_used": retry_used,
         "clinical_detail": clinical_detail,
+        "query_spelling_correction": query_spelling_correction,
     }
 
 

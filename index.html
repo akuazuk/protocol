@@ -756,6 +756,17 @@
       line-height: 1.5;
     }
 
+    .assist-spellfix-note {
+      margin: 0.65rem 0 0;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--green-800);
+      background: rgba(232, 245, 241, 0.95);
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+    }
+
     .assist-metrics-legend {
       margin: 0.85rem 0 0;
       padding-top: 0.65rem;
@@ -2007,6 +2018,18 @@
       if (j.summary) {
         html +=
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
+      }
+
+      if (
+        data.query_spelling_correction &&
+        data.query_spelling_correction.applied
+      ) {
+        var sp = data.query_spelling_correction;
+        html +=
+          '<p class="assist-spellfix-note">Для поиска текст жалобы был уточнён (орфография). ' +
+          "Использовано: «" +
+          escapeHtml(String(sp.rag_query_after || "")) +
+          "».</p>";
       }
 
       if (rawProtos.length) {
