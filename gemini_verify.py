@@ -71,7 +71,7 @@ def verify_gemini_key() -> tuple[bool, str]:
 
     try:
         genai.configure(api_key=key)
-        name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+        name = os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
         # Нейтральный промпт — фразы про «медицину» иногда дают пустой ответ из‑за фильтров
         safety = [
             {
@@ -112,7 +112,7 @@ def verify_gemini_key() -> tuple[bool, str]:
             False,
             "Пустой ответ модели. "
             + detail
-            + ". Проверьте GEMINI_MODEL (нужен gemini-2.5-flash или новее для новых ключей).",
+            + ". Проверьте GEMINI_MODEL (например gemini-3-flash-preview или gemini-2.5-flash).",
         )
 
     return True, text

@@ -117,14 +117,14 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 {
   "summary": "…",
   "protocols": [{"path":"…","title":"…","match_reason":"…","confidence":"низкая|средняя|высокая","confidence_score":0.0}],
-  "differential": ["…","…"],
+  "differential": ["…","…",…],
   "questions_for_patient": [] или ["…","…"],
   "disclaimer": "Информация из протоколов; не замена очной консультации."
 }
 ЖЁСТКИЕ ЛИМИТЫ (иначе ответ обрежется посередине):
 - summary: РОВНО 2 предложения на русском, каждое заканчивается точкой. Вместе НЕ ДЛИННЕЕ 280 символов (с пробелами). Без тире в конце; последний символ — точка.
 - match_reason: не длиннее 70 символов, одно короткое предложение или фраза, законченная по смыслу.
-- differential: ровно 2 строки, каждая 3–8 слов.
+- differential: не больше 5 строк, каждая 3–8 слов; при широком дифференциале давай 3–5 пунктов, при узкой картине допустимо 2; порядок строго по убыванию клинической вероятности (первая строка — наиболее вероятное объяснение по запросу и фрагментам).
 - questions_for_patient: если хотя бы у одного протокола confidence_score равен 1.0 (полное соответствие запросу) — пустой массив []. Иначе ровно 2 коротких вопроса.
 - protocols: все уникальные path из входных фрагментов; confidence_score 0.0–1.0.
 Если не хватает места — сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
@@ -134,7 +134,7 @@ SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН комп
 Предыдущая попытка оборвалась по длине. Сделай ещё короче:
 - summary: РОВНО 2 коротких предложения, ВМЕСТЕ максимум 220 символов, последний символ — точка.
 - match_reason: до 55 символов на протокол.
-- differential: 2 коротких пункта; questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
+- differential: до 5 коротких пунктов по убыванию вероятности (при узкой картине — 2); questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
 Сохрани все path из фрагментов. Не обрывай слова."""
 
 SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам клинического протокола Минздрава Республики Беларусь извлеки факты, относящиеся к запросу пользователя.
@@ -798,7 +798,7 @@ def get_gemini():
             detail="Установите: pip install google-generativeai",
         ) from e
     genai.configure(api_key=key)
-    name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    name = os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
     _model = genai.GenerativeModel(name)
     return _model
 
@@ -943,6 +943,26 @@ def _try_parse_json(t: str) -> dict | None:
         return None
 
 
+def normalize_differential_field(parsed: dict | None) -> None:
+    """До 5 строк; порядок как у модели (сверху — наиболее вероятное)."""
+    if not parsed or not isinstance(parsed, dict):
+        return
+    d = parsed.get("differential")
+    if not isinstance(d, list):
+        return
+    out: list[str] = []
+    for x in d:
+        if isinstance(x, str) and x.strip():
+            out.append(x.strip())
+        elif isinstance(x, dict):
+            t = (x.get("text") or x.get("label") or x.get("diagnosis") or "").strip()
+            if t:
+                out.append(t)
+        if len(out) >= 5:
+            break
+    parsed["differential"] = out
+
+
 def _finish_hits_max(resp) -> bool:
     fr = (_gemini_finish_reason(resp) or "").upper()
     return "MAX" in fr or "LENGTH" in fr
@@ -1012,7 +1032,7 @@ def verify_key() -> dict:
     return {
         "ok": True,
         "reply_preview": msg,
-        "model": os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
+        "model": os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview"),
     }
 
 
@@ -1172,6 +1192,8 @@ def api_assist(body: AssistIn) -> dict:
                 detailed=True,
                 protocol_confidence=best_sc,
             )
+
+    normalize_differential_field(parsed)
 
     return {
         "query": q,
