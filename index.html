@@ -802,6 +802,23 @@
       font-weight: 600;
       color: var(--green-800);
       margin-bottom: 0.3rem;
+      line-height: 1.4;
+    }
+
+    .consultation-ph-context {
+      font-weight: 700;
+      color: var(--green-900);
+    }
+
+    .consultation-ph-sep {
+      margin: 0 0.2em;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .consultation-ph-token {
+      font-weight: 600;
+      color: var(--text);
     }
 
     .consultation-ph-input,
@@ -973,6 +990,16 @@
     .consultation-tpl-li {
       margin: 0.25rem 0 0.35rem;
       padding-left: 0.35rem;
+    }
+
+    .consultation-tpl-placeholder {
+      background: rgba(255, 248, 190, 0.92);
+      color: var(--text);
+      padding: 0.08em 0.28em;
+      border-radius: 4px;
+      border: 1px solid rgba(218, 185, 70, 0.5);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
     }
 
     .assist-proto-meta {
@@ -2222,6 +2249,23 @@
       .replace(/^\s*#\s+/gm, "");
   }
 
+  function escapeHtmlWithPlaceholders(s) {
+    var parts = String(s).split(/(\[[^\]]+\])/g);
+    var i;
+    var out = "";
+    for (i = 0; i < parts.length; i++) {
+      if (/^\[[^\]]+\]$/.test(parts[i])) {
+        out +=
+          '<span class="consultation-tpl-placeholder">' +
+          escapeHtml(parts[i]) +
+          "</span>";
+      } else {
+        out += escapeHtml(parts[i]);
+      }
+    }
+    return out;
+  }
+
   function formatConsultationBodyHtml(raw) {
     var t = stripMarkdownForConsultation(String(raw));
     t = t.replace(/^\s*Консультативное заключение\s*[\r\n]+/im, "");
@@ -2234,7 +2278,7 @@
         if (text) {
           html +=
             '<p class="consultation-tpl-p">' +
-            escapeHtml(text).replace(/\n/g, "<br>") +
+            escapeHtmlWithPlaceholders(text).replace(/\n/g, "<br>") +
             "</p>";
         }
         acc = [];
@@ -2258,7 +2302,10 @@
       }
       if (/^[-•]\s+/.test(trimmed) || /^\d+\.\s+/.test(trimmed)) {
         flushAcc();
-        html += '<p class="consultation-tpl-li">' + escapeHtml(trimmed) + "</p>";
+        html +=
+          '<p class="consultation-tpl-li">' +
+          escapeHtmlWithPlaceholders(trimmed) +
+          "</p>";
         continue;
       }
       var sec = splitSectionHeader(trimmed);
@@ -2266,14 +2313,20 @@
         flushAcc();
         html += '<h4 class="consultation-tpl-section">' + escapeHtml(sec.head) + "</h4>";
         if (sec.rest) {
-          html += '<p class="consultation-tpl-p">' + escapeHtml(sec.rest) + "</p>";
+          html +=
+            '<p class="consultation-tpl-p">' +
+            escapeHtmlWithPlaceholders(sec.rest) +
+            "</p>";
         }
         continue;
       }
       acc.push(trimmed);
     }
     flushAcc();
-    return html || '<p class="consultation-tpl-p">' + escapeHtml(t) + "</p>";
+    return (
+      html ||
+      '<p class="consultation-tpl-p">' + escapeHtmlWithPlaceholders(t) + "</p>"
+    );
   }
 
   function clearConsultTplTimer() {
@@ -2301,43 +2354,72 @@
     }, 1000);
   }
 
-  function extractPlaceholdersFromTemplate(text) {
-    var re = /\[[^\]]+\]/g;
-    var seen = {};
-    var order = [];
-    var m;
-    var s = String(text || "");
-    while ((m = re.exec(s)) !== null) {
-      if (!seen[m[0]]) {
-        seen[m[0]] = true;
-        order.push(m[0]);
+  function nearestSectionLabelBefore(text, index) {
+    var before = text.slice(0, index);
+    var lines = before.split(/\r?\n/);
+    var i;
+    for (i = lines.length - 1; i >= 0; i--) {
+      var line = lines[i].trim();
+      if (!line) continue;
+      if (line.indexOf("[") !== -1) continue;
+      if (/^\d+\.\s+/.test(line)) continue;
+      if (/^[-•]\s+/.test(line)) continue;
+      if (
+        /^[^:]+:\s*$/.test(line) &&
+        line.length >= 3 &&
+        line.length < 160
+      ) {
+        return line;
       }
     }
-    return order;
+    return "";
   }
 
-  function fillPlaceholdersInTemplate(template, map) {
-    var out = String(template || "");
-    var k;
-    for (k in map) {
-      if (!Object.prototype.hasOwnProperty.call(map, k)) continue;
-      var v = map[k];
-      if (v == null || !String(v).trim()) continue;
-      var esc = k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      out = out.replace(new RegExp(esc, "g"), String(v).trim());
+  function extractPlaceholderOccurrences(text) {
+    var s = String(text || "");
+    var re = /\[[^\]]+\]/g;
+    var m;
+    var occ = [];
+    while ((m = re.exec(s)) !== null) {
+      var section = nearestSectionLabelBefore(s, m.index);
+      occ.push({
+        token: m[0],
+        sectionLabel: section || "Раздел не определён",
+      });
     }
+    return occ;
+  }
+
+  function fillPlaceholdersInTemplateSequential(template, values) {
+    var out = "";
+    var last = 0;
+    var str = String(template || "");
+    var re = /\[[^\]]+\]/g;
+    var m;
+    var vi = 0;
+    while ((m = re.exec(str)) !== null) {
+      out += str.slice(last, m.index);
+      if (vi < values.length && values[vi]) {
+        out += values[vi];
+      } else {
+        out += m[0];
+      }
+      vi++;
+      last = m.index + m[0].length;
+    }
+    out += str.slice(last);
     return out;
   }
 
-  function collectConsultationPlaceholderMap() {
-    var keys = window.__consultationPlaceholderKeys || [];
-    var map = {};
+  function collectConsultationPlaceholderValues() {
+    var occ = window.__consultationPlaceholderOccurrences || [];
+    var out = [];
     var i;
-    for (i = 0; i < keys.length; i++) {
+    for (i = 0; i < occ.length; i++) {
       var ta = document.getElementById("consultation-ph-" + i);
-      if (ta && ta.value.trim()) map[keys[i]] = ta.value.trim();
+      out.push(ta && ta.value.trim() ? ta.value.trim() : "");
     }
-    return map;
+    return out;
   }
 
   function populateConsultationPlaceholderForm(rawText) {
@@ -2345,28 +2427,36 @@
     var fields = document.getElementById("consultation-placeholders-fields");
     var refineBtn = document.querySelector(".btn-consultation-refine");
     if (!fields || !wrap) return;
-    window.__consultationPlaceholderKeys = extractPlaceholdersFromTemplate(
+    window.__consultationPlaceholderOccurrences = extractPlaceholderOccurrences(
       rawText || ""
     );
     fields.innerHTML = "";
-    var keys = window.__consultationPlaceholderKeys;
-    if (keys.length === 0) {
+    var occ = window.__consultationPlaceholderOccurrences;
+    if (occ.length === 0) {
       fields.innerHTML =
         '<p class="consultation-placeholders-empty">В тексте нет плейсхолдеров […]. Используйте поле «Дополнительные сведения» и нажмите «Сформировать полностью с учётом данных».</p>';
     } else {
       var i;
-      for (i = 0; i < keys.length; i++) {
-        var key = keys[i];
+      for (i = 0; i < occ.length; i++) {
+        var o = occ[i];
+        var ctx = o.sectionLabel || "";
+        var tok = o.token || "";
         fields.innerHTML +=
           '<div class="consultation-ph-row">' +
           '<label class="consultation-ph-label" for="consultation-ph-' +
           i +
           '">' +
-          escapeHtml(key) +
+          '<span class="consultation-ph-context">' +
+          escapeHtml(ctx) +
+          "</span>" +
+          '<span class="consultation-ph-sep">→</span>' +
+          '<span class="consultation-ph-token">' +
+          escapeHtml(tok) +
+          "</span>" +
           "</label>" +
           '<textarea class="consultation-ph-input" id="consultation-ph-' +
           i +
-          '" rows="2" placeholder="Введите текст вместо плейсхолдера"></textarea>' +
+          '" rows="2" placeholder="Текст вместо плейсхолдера в этом месте"></textarea>' +
           "</div>";
       }
     }
@@ -2403,9 +2493,9 @@
     startConsultTplTimer();
     var payloadBody;
     if (refine) {
-      var merged = fillPlaceholdersInTemplate(
+      var merged = fillPlaceholdersInTemplateSequential(
         window.__lastConsultationTemplateRaw || "",
-        collectConsultationPlaceholderMap()
+        collectConsultationPlaceholderValues()
       );
       var notesEl = document.getElementById("consultation-additional-notes");
       var notes = notesEl ? (notesEl.value || "").trim() : "";
