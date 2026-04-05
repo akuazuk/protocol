@@ -149,7 +149,7 @@ SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам 
 Не придумывай препараты, дозы и процедуры, которых нет во входном тексте."""
 
 SYSTEM_EXTRACT_FULL = """Ты помощник врача. По ПОЛНОМУ тексту фрагментов клинического протокола Минздрава Республики Беларусь извлеки структурированные сведения, релевантные запросу пользователя.
-Запрос считается полностью покрытым протоколом — дай развёрнутый, практичный разбор строго по тексту протокола.
+Запрос хорошо соответствует протоколу (оценка модели обычно ≥80%); это не обязательно «идеальные 100%» — дай развёрнутый практичный разбор строго по тексту протокола.
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
 Схема:
 {
@@ -563,6 +563,23 @@ def confidence_display_full(score: object) -> bool:
     return round(100 * x) >= 100
 
 
+def _confidence_numeric(score: object) -> float | None:
+    try:
+        x = float(score)
+    except (TypeError, ValueError):
+        return None
+    return max(0.0, min(1.0, x))
+
+
+def confidence_for_detailed_extraction(score: object) -> bool:
+    """Развёрнутая выдержка (SYSTEM_EXTRACT_FULL) при оценке ≥80%, не только при 100%."""
+    x = _confidence_numeric(score)
+    if x is None:
+        return False
+    min_s = float(os.environ.get("RAG_DETAIL_EXTRACT_MIN_SCORE", "0.8"))
+    return x >= min_s
+
+
 def infer_specialties_gemini(q: str, model) -> list[str]:
     """Опционально: первый короткий вызов LLM — к каким рубрикам относится запрос."""
     if os.environ.get("GEMINI_SPECIALTY_CLASSIFY", "0").strip().lower() not in (
@@ -594,6 +611,7 @@ def extract_clinical_detail(
     model,
     *,
     detailed: bool = False,
+    protocol_confidence: float | None = None,
 ) -> dict | None:
     """Второй вызов LLM: факты по протоколу; при detailed — расширенная схема и больший объём текста."""
     if detailed:
@@ -650,13 +668,16 @@ def extract_clinical_detail(
         ext["monitoring_followup"] = parsed.get("monitoring_followup") or ""
         ext["contraindications"] = parsed.get("contraindications") or ""
         ext["detailed"] = True
-    return {
+    out: dict = {
         "path": path,
         "title": title_line,
         "specialty_ru": spec or None,
         "category": meta.get("category"),
         "extraction": ext,
     }
+    if protocol_confidence is not None:
+        out["detail_match_score"] = protocol_confidence
+    return out
 
 
 def retrieve(
@@ -1040,20 +1061,27 @@ def api_assist(body: AssistIn) -> dict:
         "true",
         "yes",
     ):
+        candidates: list[tuple[float, dict]] = []
         for pr in parsed.get("protocols") or []:
-            if not confidence_display_full(pr.get("confidence_score")):
+            if not confidence_for_detailed_extraction(pr.get("confidence_score")):
                 continue
             pth = pr.get("path") or ""
             if not pth or pth not in _chunks_by_path:
                 continue
+            sc = _confidence_numeric(pr.get("confidence_score")) or 0.0
+            candidates.append((sc, pr))
+        candidates.sort(key=lambda x: -x[0])
+        if candidates:
+            best_sc, pr = candidates[0]
+            pth = pr.get("path") or ""
             clinical_detail = extract_clinical_detail(
                 pth,
                 q,
                 str(pr.get("title") or ""),
                 model,
                 detailed=True,
+                protocol_confidence=best_sc,
             )
-            break
 
     return {
         "query": q,

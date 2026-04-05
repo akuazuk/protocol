@@ -786,6 +786,14 @@
       border-color: rgba(196, 30, 58, 0.35);
     }
 
+    .assist-detail-confidence {
+      margin: 0.35rem 0 0.75rem;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
     .assist-detail-head {
       margin: 0 0 0.4rem;
       font-family: "Fraunces", Georgia, serif;
@@ -1891,12 +1899,26 @@
     }
     var ex = cd.extraction || {};
     var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
-    html +=
-      '<h3 class="assist-detail-head">' +
-      (ex.detailed
-        ? "Развёрнутая выдержка из протокола (полное соответствие запросу)"
-        : "По протоколу при полном соответствии (100%)") +
-      "</h3>";
+    html += '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>';
+    if (cd.detail_match_score != null && !isNaN(Number(cd.detail_match_score))) {
+      var dp = pct01(Number(cd.detail_match_score));
+      var confLine =
+        "Оценка соответствия запросу: " +
+        dp +
+        "%. Блок показывается при ≥80%; значение может быть ниже 100%.";
+      if (dp >= 100) {
+        confLine =
+          "Оценка соответствия запросу: 100% — развёрнутый разбор по тексту протокола.";
+      }
+      html +=
+        '<p class="assist-detail-confidence">' + escapeHtml(confLine) + "</p>";
+    } else if (ex.detailed) {
+      html +=
+        '<p class="assist-detail-confidence">Развёрнутый разбор по тексту протокола (высокое соответствие запросу).</p>';
+    } else {
+      html +=
+        '<p class="assist-detail-confidence">По протоколу при полном соответствии (100%).</p>';
+    }
     if (cd.specialty_ru) {
       html +=
         '<p class="assist-detail-meta">' + escapeHtml(cd.specialty_ru) + "</p>";
