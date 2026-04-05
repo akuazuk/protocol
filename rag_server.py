@@ -9,6 +9,7 @@
 """
 from __future__ import annotations
 
+import gc
 import json
 import os
 import re
@@ -186,9 +187,34 @@ def _jsonl_chunk_files() -> list[Path]:
     return sorted(ROOT.glob(CORPUS_CHUNKS_PARTS_GLOB))
 
 
+def _memory_saver_enabled() -> bool:
+    """На Render (512Mi) полный JSONL с text + embedding_ready_text даёт OOM.
+
+    RAG_MEMORY_SAVER=0 — полная точность лексики (дублирование embedding_ready_text).
+    RAG_MEMORY_SAVER=1 или не задано на Render — только text для поиска, без второй копии.
+    """
+    v = (os.environ.get("RAG_MEMORY_SAVER") or "").strip().lower()
+    if v in ("1", "true", "yes"):
+        return True
+    if v in ("0", "false", "no"):
+        return False
+    render = (os.environ.get("RENDER") or "").strip().lower()
+    if render in ("1", "true", "yes", "on"):
+        return True
+    if (os.environ.get("RENDER_EXTERNAL_URL") or "").strip():
+        return True
+    return False
+
+
 def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
-    """Корпусный pipeline: строки JSONL → формат retrieve() / gather_protocol_text."""
-    raw: list[dict] = []
+    """Корпусный pipeline: строки JSONL → формат retrieve() / gather_protocol_text.
+
+    Без промежуточного списка «всех сырых строк» — сразу группировка по path и только
+    нужные поля (экономия RAM). lex_text хранится только если отличается от text.
+    """
+    memory_saver = _memory_saver_enabled()
+    lex_cap = int(os.environ.get("RAG_LEXICAL_MAX_CHARS", "0") or "0")
+    by_path: dict[str, list[dict]] = {}
     for pp in part_paths:
         with pp.open(encoding="utf-8") as f:
             for line in f:
@@ -201,39 +227,50 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                     continue
                 if not isinstance(row, dict):
                     continue
-                raw.append(row)
-    by_path: dict[str, list[dict]] = {}
-    for row in raw:
-        p = (row.get("source_path") or "").strip()
-        if not p:
-            continue
-        by_path.setdefault(p, []).append(row)
+                p = (row.get("source_path") or "").strip()
+                if not p:
+                    continue
+                text = (row.get("text") or "").strip()
+                slim: dict = {
+                    "page_from": int(row.get("page_from") or 0),
+                    "page_to": int(row.get("page_to") or 0),
+                    "chunk_id": row.get("chunk_id"),
+                    "text": text,
+                    "chunk_type": (row.get("chunk_type") or "body").strip() or "body",
+                }
+                if not memory_saver:
+                    ert = (row.get("embedding_ready_text") or "").strip()
+                    if ert and ert != text:
+                        if lex_cap > 0 and len(ert) > lex_cap:
+                            ert = ert[:lex_cap]
+                        slim["lex_text"] = ert
+                elif lex_cap > 0 and len(text) > lex_cap:
+                    slim["lex_text"] = text[:lex_cap]
+                by_path.setdefault(p, []).append(slim)
     out: list[dict] = []
     for p in sorted(by_path.keys()):
         rows = sorted(
             by_path[p],
             key=lambda r: (
-                int(r.get("page_from") or 0),
-                int(r.get("page_to") or 0),
+                r["page_from"],
+                r["page_to"],
                 str(r.get("chunk_id") or ""),
             ),
         )
         for i, row in enumerate(rows):
             text = (row.get("text") or "").strip()
-            ert = (row.get("embedding_ready_text") or "").strip()
-            lex_text = ert if ert else text
-            out.append(
-                {
-                    "path": p,
-                    "text": text,
-                    "lex_text": lex_text,
-                    "title": "",
-                    "category": "",
-                    "kind": (row.get("chunk_type") or "body").strip() or "body",
-                    "chunk_index": i,
-                    "chunk_id": row.get("chunk_id"),
-                }
-            )
+            rec: dict = {
+                "path": p,
+                "text": text,
+                "title": "",
+                "category": "",
+                "kind": row.get("chunk_type") or "body",
+                "chunk_index": i,
+                "chunk_id": row.get("chunk_id"),
+            }
+            if "lex_text" in row:
+                rec["lex_text"] = row["lex_text"]
+            out.append(rec)
     return out
 
 
@@ -313,6 +350,7 @@ def load_data() -> None:
         _chunks_by_path.setdefault(p, []).append(ch)
     for plist in _chunks_by_path.values():
         plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
+    gc.collect()
 
 
 def tokenize_ru(s: str) -> list[str]:
@@ -860,6 +898,7 @@ def health() -> dict:
         "structured_index": len(_structured_by_path),
         "gemini_configured": has_key,
         "specialties_count": len(SPECIALTY_LABELS_RU),
+        "memory_saver": _memory_saver_enabled(),
     }
 
 
