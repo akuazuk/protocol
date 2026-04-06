@@ -1165,94 +1165,6 @@
       border-top: 1px solid rgba(16, 185, 129, 0.35);
     }
 
-    .consultation-placeholders-wrap {
-      margin-top: 0.85rem;
-      padding: 0.85rem 0.95rem;
-      border-radius: 12px;
-      border: 1px dashed rgba(26, 138, 114, 0.32);
-      background: rgba(255, 255, 255, 0.72);
-    }
-
-    .consultation-placeholders-wrap[hidden] {
-      display: none !important;
-    }
-
-    .consultation-placeholders-empty {
-      margin: 0 0 0.65rem;
-      font-size: 0.82rem;
-      line-height: 1.45;
-      color: var(--muted);
-    }
-
-    .consultation-ph-row {
-      margin-bottom: 0.75rem;
-    }
-
-    .consultation-ph-label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--green-800);
-      margin-bottom: 0.3rem;
-      line-height: 1.4;
-    }
-
-    .consultation-ph-context {
-      font-weight: 700;
-      color: var(--green-900);
-    }
-
-    .consultation-ph-sep {
-      margin: 0 0.2em;
-      color: var(--muted);
-      font-weight: 500;
-    }
-
-    .consultation-ph-token {
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .consultation-ph-hint {
-      margin: 0 0 0.4rem;
-      font-size: 0.76rem;
-      line-height: 1.45;
-      color: var(--muted);
-    }
-
-    .consultation-ph-input,
-    .consultation-additional-notes {
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
-      font-family: inherit;
-      font-size: 0.82rem;
-      line-height: 1.45;
-      padding: 0.45rem 0.55rem;
-      border-radius: 8px;
-      border: 1px solid rgba(26, 138, 114, 0.22);
-      background: rgba(255, 255, 255, 0.98);
-      resize: vertical;
-      min-height: 2.4rem;
-    }
-
-    .consultation-ph-notes-label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--green-800);
-      margin: 0.35rem 0 0.3rem;
-    }
-
-    .btn-consultation-refine {
-      margin-top: 0.65rem;
-    }
-
-    .btn-consultation-refine:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
     .consultation-template-lead {
       margin: 0 0 0.65rem;
       font-size: 0.82rem;
@@ -1269,8 +1181,8 @@
     }
 
     .consultation-template-timer {
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.95rem;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
       color: var(--green-800);
       letter-spacing: 0.02em;
@@ -1278,6 +1190,26 @@
     }
 
     .consultation-template-timer[hidden] {
+      display: none !important;
+    }
+
+    .consultation-facts-timer {
+      font-size: 1.12rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--green-950);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      padding: 0.55rem 1.1rem;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(232, 245, 241, 0.95) 100%);
+      border: 2px solid rgba(26, 138, 114, 0.4);
+      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.1);
+      min-width: 11.5rem;
+      text-align: center;
+    }
+
+    .consultation-facts-timer[hidden] {
       display: none !important;
     }
 
@@ -1970,6 +1902,10 @@
     }
 
     .assist-facts-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1rem;
       margin-top: 1rem;
       padding-top: 0.85rem;
       border-top: 1px solid rgba(26, 138, 114, 0.18);
@@ -1978,6 +1914,12 @@
     .btn-consultation-from-facts {
       font-size: 0.88rem;
       padding: 0.55rem 1rem;
+    }
+
+    .btn-consultation-from-facts:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .assist-detail-fact-empty {
@@ -2467,9 +2409,18 @@
         width: 100%;
       }
 
-      .btn-copy-template,
-      .btn-consultation-refine {
+      .btn-copy-template {
         width: 100%;
+      }
+
+      .assist-facts-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .consultation-facts-timer {
+        width: 100%;
+        font-size: 1.05rem;
       }
     }
   </style>
@@ -3314,10 +3265,8 @@
     showResultsSection(false);
     var st = document.getElementById("llm-status");
     if (st) st.textContent = "";
-    var phWrap = document.getElementById("consultation-placeholders-wrap");
     var tplRes = document.getElementById("consultation-template-result");
     if (tplRes) tplRes.hidden = true;
-    if (phWrap) phWrap.hidden = true;
   }
 
   function stripToClinicalOnly(fullQuery) {
@@ -3687,16 +3636,21 @@
       clearInterval(consultTplTimerId);
       consultTplTimerId = null;
     }
-    var tel = document.getElementById("consultation-template-timer");
-    if (tel) {
-      tel.hidden = true;
-      tel.textContent = "";
-    }
+    ["consultation-template-timer", "consultation-facts-timer"].forEach(
+      function (tid) {
+        var tel = document.getElementById(tid);
+        if (tel) {
+          tel.hidden = true;
+          tel.textContent = "";
+        }
+      }
+    );
   }
 
-  function startConsultTplTimer() {
+  function startConsultTplTimer(timerElId) {
     clearConsultTplTimer();
-    var tel = document.getElementById("consultation-template-timer");
+    var id = timerElId || "consultation-template-timer";
+    var tel = document.getElementById(id);
     if (!tel) return;
     var start = Date.now();
     tel.hidden = false;
@@ -3707,128 +3661,8 @@
     }, 1000);
   }
 
-  function nearestSectionLabelBefore(text, index) {
-    var before = text.slice(0, index);
-    var lines = before.split(/\r?\n/);
-    var i;
-    for (i = lines.length - 1; i >= 0; i--) {
-      var line = lines[i].trim();
-      if (!line) continue;
-      if (line.indexOf("[") !== -1) continue;
-      if (/^\d+\.\s+/.test(line)) continue;
-      if (/^[-•]\s+/.test(line)) continue;
-      if (
-        /^[^:]+:\s*$/.test(line) &&
-        line.length >= 3 &&
-        line.length < 160
-      ) {
-        return line;
-      }
-    }
-    return "";
-  }
-
-  function extractPlaceholderOccurrences(text) {
-    var s = String(text || "");
-    var re = /\[[^\]]+\]/g;
-    var m;
-    var occ = [];
-    while ((m = re.exec(s)) !== null) {
-      var section = nearestSectionLabelBefore(s, m.index);
-      occ.push({
-        token: m[0],
-        sectionLabel: section || "Раздел не определён",
-      });
-    }
-    return occ;
-  }
-
-  function fillPlaceholdersInTemplateSequential(template, values) {
-    var out = "";
-    var last = 0;
-    var str = String(template || "");
-    var re = /\[[^\]]+\]/g;
-    var m;
-    var vi = 0;
-    while ((m = re.exec(str)) !== null) {
-      out += str.slice(last, m.index);
-      if (vi < values.length && values[vi]) {
-        out += values[vi];
-      } else {
-        out += m[0];
-      }
-      vi++;
-      last = m.index + m[0].length;
-    }
-    out += str.slice(last);
-    return out;
-  }
-
-  function collectConsultationPlaceholderValues() {
-    var occ = window.__consultationPlaceholderOccurrences || [];
-    var out = [];
-    var i;
-    for (i = 0; i < occ.length; i++) {
-      var ta = document.getElementById("consultation-ph-" + i);
-      out.push(ta && ta.value.trim() ? ta.value.trim() : "");
-    }
-    return out;
-  }
-
-  function populateConsultationPlaceholderForm(rawText) {
-    var wrap = document.getElementById("consultation-placeholders-wrap");
-    var fields = document.getElementById("consultation-placeholders-fields");
-    var refineBtn = document.querySelector(".btn-consultation-refine");
-    if (!fields || !wrap) return;
-    window.__consultationPlaceholderOccurrences = extractPlaceholderOccurrences(
-      rawText || ""
-    );
-    fields.innerHTML = "";
-    var occ = window.__consultationPlaceholderOccurrences;
-    if (occ.length === 0) {
-      fields.innerHTML =
-        '<p class="consultation-placeholders-empty">В тексте нет плейсхолдеров […]. Используйте поле «Дополнительные сведения» и нажмите «Сформировать полностью с учётом данных».</p>';
-    } else {
-      var i;
-      for (i = 0; i < occ.length; i++) {
-        var o = occ[i];
-        var ctx = o.sectionLabel || "";
-        var tok = o.token || "";
-        var hint = consultationPlaceholderHint(ctx, tok);
-        var taPh = escapeHtmlAttr(
-          consultationTextareaPlaceholderShort(ctx, tok)
-        );
-        fields.innerHTML +=
-          '<div class="consultation-ph-row">' +
-          '<label class="consultation-ph-label" for="consultation-ph-' +
-          i +
-          '">' +
-          '<span class="consultation-ph-context">' +
-          escapeHtml(ctx) +
-          "</span>" +
-          '<span class="consultation-ph-sep">→</span>' +
-          '<span class="consultation-ph-token">' +
-          escapeHtml(tok) +
-          "</span>" +
-          "</label>" +
-          '<p class="consultation-ph-hint">' +
-          escapeHtml(hint) +
-          "</p>" +
-          '<textarea class="consultation-ph-input" id="consultation-ph-' +
-          i +
-          '" rows="2" placeholder="' +
-          taPh +
-          '"></textarea>' +
-          "</div>";
-      }
-    }
-    wrap.hidden = false;
-    if (refineBtn) refineBtn.disabled = !(rawText && String(rawText).trim());
-  }
-
   function loadConsultationTemplate(opts) {
     opts = opts || {};
-    var refine = opts.refine === true;
     var factsNotes = opts.factsNotes;
     if (factsNotes == null && opts.fromFacts === true) {
       factsNotes = collectSelectedFactsNotes();
@@ -3839,13 +3673,6 @@
       alert("Сначала загрузите развёрнутую выдержку из протокола.");
       return;
     }
-    if (refine) {
-      var rawPrev = window.__lastConsultationTemplateRaw || "";
-      if (!rawPrev) {
-        alert("Сначала сформируйте первый вариант заключения.");
-        return;
-      }
-    }
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -3853,38 +3680,26 @@
     var resultEl = document.getElementById("consultation-template-result");
     var bodyEl = document.getElementById("consultation-template-body");
     var genBtn = document.querySelector(".btn-consultation-template");
-    var refineBtn = document.querySelector(".btn-consultation-refine");
+    var factsBtn = document.querySelector(".btn-consultation-from-facts");
+    var useFactsTimer =
+      factsNotes != null && String(factsNotes).trim() !== "";
     if (genBtn) genBtn.disabled = true;
-    if (refineBtn) refineBtn.disabled = true;
-    startConsultTplTimer();
-    var payloadBody;
+    if (factsBtn) factsBtn.disabled = true;
+    if (useFactsTimer) {
+      startConsultTplTimer("consultation-facts-timer");
+    } else {
+      startConsultTplTimer("consultation-template-timer");
+    }
     var pctx = patientContextLines();
     var pctxPayload = pctx ? pctx : null;
-    if (refine) {
-      var merged = fillPlaceholdersInTemplateSequential(
-        window.__lastConsultationTemplateRaw || "",
-        collectConsultationPlaceholderValues()
-      );
-      var notesEl = document.getElementById("consultation-additional-notes");
-      var notes = notesEl ? (notesEl.value || "").trim() : "";
-      payloadBody = {
-        query: q,
-        clinical_detail: cd,
-        refine: true,
-        previous_template: merged,
-        additional_notes: notes || null,
-        patient_context: pctxPayload,
-      };
-    } else {
-      var fn = factsNotes != null ? String(factsNotes).trim() : "";
-      payloadBody = {
-        query: q,
-        clinical_detail: cd,
-        refine: false,
-        patient_context: pctxPayload,
-        additional_notes: fn || null,
-      };
-    }
+    var fn = factsNotes != null ? String(factsNotes).trim() : "";
+    var payloadBody = {
+      query: q,
+      clinical_detail: cd,
+      refine: false,
+      patient_context: pctxPayload,
+      additional_notes: fn || null,
+    };
     fetch(base + "/api/consultation-template", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -3925,11 +3740,8 @@
         if (copyBtn) copyBtn.disabled = !t;
         if (t) {
           window.__lastConsultationTemplateRaw = t;
-          populateConsultationPlaceholderForm(t);
         } else {
           window.__lastConsultationTemplateRaw = "";
-          var phWrap = document.getElementById("consultation-placeholders-wrap");
-          if (phWrap) phWrap.hidden = true;
         }
       })
       .catch(function (err) {
@@ -3938,13 +3750,8 @@
       .finally(function () {
         clearConsultTplTimer();
         if (genBtn) genBtn.disabled = false;
-        var rb = document.querySelector(".btn-consultation-refine");
-        if (rb) {
-          rb.disabled = !(
-            window.__lastConsultationTemplateRaw &&
-            String(window.__lastConsultationTemplateRaw).trim()
-          );
-        }
+        var fb = document.querySelector(".btn-consultation-from-facts");
+        if (fb) fb.disabled = false;
       });
   }
 
@@ -3957,7 +3764,7 @@
       if (!el || !el.closest) return;
       if (el.closest(".btn-consultation-template")) {
         ev.preventDefault();
-        loadConsultationTemplate({ refine: false });
+        loadConsultationTemplate({});
         return;
       }
       if (el.closest(".btn-consultation-from-facts")) {
@@ -3969,12 +3776,7 @@
           );
           return;
         }
-        loadConsultationTemplate({ refine: false, factsNotes: picked });
-        return;
-      }
-      if (el.closest(".btn-consultation-refine")) {
-        ev.preventDefault();
-        loadConsultationTemplate({ refine: true });
+        loadConsultationTemplate({ factsNotes: picked });
         return;
       }
       if (el.closest(".btn-copy-template")) {
@@ -4463,7 +4265,7 @@
           '">' +
           '<input type="checkbox" class="assist-fact-cb" id="' +
           escapeHtmlAttr(cid) +
-          '" checked data-fact-cat="' +
+          '" data-fact-cat="' +
           escapeHtmlAttr(catKey) +
           '" />' +
           '<span class="assist-fact-text">' +
@@ -4486,7 +4288,7 @@
       return (
         '<div class="assist-mf-pick">' +
         '<label class="assist-fact-label" for="assist-fact-monitoring_frequency">' +
-        '<input type="checkbox" class="assist-fact-cb" id="assist-fact-monitoring_frequency" checked data-fact-cat="monitoring_frequency" />' +
+        '<input type="checkbox" class="assist-fact-cb" id="assist-fact-monitoring_frequency" data-fact-cat="monitoring_frequency" />' +
         '<div class="' +
         wrapCls +
         ' assist-fact-mf-body">' +
@@ -4519,6 +4321,7 @@
     html +=
       '<div class="assist-facts-actions">' +
       '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному</button>' +
+      '<span class="consultation-facts-timer" id="consultation-facts-timer" hidden aria-live="polite"></span>' +
       "</div>";
     html += "</div>";
     return html;
@@ -4553,12 +4356,6 @@
       "</header>" +
       '<div class="consultation-template-body" id="consultation-template-body"></div>' +
       "</article>" +
-      "</div>" +
-      '<div class="consultation-placeholders-wrap" id="consultation-placeholders-wrap" hidden>' +
-      '<div id="consultation-placeholders-fields"></div>' +
-      '<label class="consultation-ph-notes-label" for="consultation-additional-notes">Дополнительные сведения (необязательно)</label>' +
-      '<textarea id="consultation-additional-notes" class="consultation-additional-notes" rows="3" placeholder="Факты осмотра, анамнез, лабораторные данные…"></textarea>' +
-      '<button type="button" class="btn-assist btn-consultation-refine" disabled>Сформировать полностью с учётом данных</button>' +
       "</div>" +
       "</div>";
     var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
