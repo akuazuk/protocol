@@ -1,10 +1,12 @@
 """
-МКБ-10: извлечение кодов из текста, лексическое сопоставление с русскими названиями (mkb10.su),
-справочные названия WHO (англ.) из icd10_who_2016_terminal_codes.json.
+МКБ-10: извлечение кодов из текста, лексическое сопоставление ТОЛЬКО с русским справочником
+(один JSON, собирается из официального Excel — см. scripts/export_icd_ru_from_xlsx.py).
+Англ. названия WHO (опционально) — только для подписи к уже известному коду, не для лексикона.
 """
 from __future__ import annotations
 
 import json
+import os
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -19,10 +21,22 @@ ICD10_CODE_RE = re.compile(
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
 
 # Слишком общие слова для лексического матчинга по названию МКБ.
+# «Хронический/острый» не отфильтровываем: в рубриках J** они различают диагнозы (J01 vs J32).
 _RU_STOP = frozenset(
     """
     болезнь болезни заболевание заболевания диагноз код мкб мкб-10 жалоба жалобы
-    пациент пациентка симптом симптомы острый острая острое хронический хроническая
+    пациент пациентка симптом симптомы
+    для при или без над под про как что это все всех между через
+    дифференциальная гипотеза подбора протокола протокол протокола
+    """.split()
+)
+
+# Сами по себе слабо различают рубрику; в паре с анатомией/носологией полезны.
+_RU_WEAK_ADJ = frozenset(
+    """
+    хронический хроническая хроническое хронические
+    острый острая острое острые
+    подострый подострая
     """.split()
 )
 
@@ -61,12 +75,35 @@ def _who_by_code() -> dict[str, dict]:
     return m
 
 
+def _ru_json_path() -> Path:
+    rel = (os.environ.get("ICD_RU_JSON") or "").strip()
+    if rel:
+        pp = Path(rel)
+        return pp if pp.is_absolute() else (ROOT / pp)
+    return ROOT / "data/icd_reference/icd10_ru_mkb10su.json"
+
+
 @lru_cache(maxsize=1)
 def _ru_rows() -> list[dict]:
-    p = ROOT / "data/icd_reference/icd10_ru_mkb10su.json"
+    p = _ru_json_path()
     if not p.is_file():
         return []
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
+def _ru_valid_codes() -> frozenset[str]:
+    """Коды из единственного русского справочника (Excel → JSON)."""
+    return frozenset(
+        _norm_icd_code(str(r.get("code") or ""))
+        for r in _ru_rows()
+        if (r.get("code") or "").strip()
+    )
+
+
+def is_code_in_ru_reference(code: str) -> bool:
+    c = _norm_icd_code(code)
+    return bool(c) and c in _ru_valid_codes()
 
 
 def who_title_en(code: str) -> str | None:
@@ -147,9 +184,24 @@ def resolve_extracted_codes(codes: list[str]) -> list[dict]:
     return out
 
 
+def _icd_extra_roots(text: str) -> list[str]:
+    """Подсказки к МКБ: разговорное «гайморит» ↔ формулировки справочника («верхнечелюстной»)."""
+    s = text.lower().replace("ё", "е")
+    extra: list[str] = []
+    if "гаймор" in s or "гайморит" in s:
+        extra.extend(["верхнечелюстн", "верхнечелюстной", "гайморова"])
+    if "риносинусит" in s or "синусит" in s:
+        extra.append("синусит")
+    return extra
+
+
 def _ru_words(text: str) -> list[str]:
     s = text.lower().replace("ё", "е")
-    return [w for w in re.findall(r"[а-яё]{3,}", s) if w not in _RU_STOP]
+    words = [w for w in re.findall(r"[а-яё]{3,}", s) if w not in _RU_STOP]
+    for r in _icd_extra_roots(s):
+        if r not in words and len(r) >= 3:
+            words.append(r)
+    return words
 
 
 def _lexicon_score_one_row(
@@ -158,11 +210,16 @@ def _lexicon_score_one_row(
     tlow = title.lower().replace("ё", "е")
     score = 0.0
     for w in words:
-        if len(w) >= 5 and w in tlow:
+        if w not in tlow:
+            continue
+        if w in _RU_WEAK_ADJ:
+            score += 1.0
+            continue
+        if len(w) >= 5:
             score += 3.0
-        elif len(w) == 4 and w in tlow:
+        elif len(w) == 4:
             score += 2.0
-        elif len(w) == 3 and w in tlow:
+        else:
             score += 1.0
     if len(qlow) >= 6 and qlow in tlow:
         score += 8.0
@@ -174,11 +231,12 @@ def _lexicon_score_one_row(
         score -= min(4.0, (len(tlow) - 55) * 0.06)
     if score <= 0:
         return 0.0
-    if code.endswith(".9") and not any(
+    # Раньше: +1.8 ко всем *.9 без контекста — тянуло «неуточнённ» коды из-за частицы «для» и т.п.
+    if code.endswith(".9") and score >= 4.5 and not any(
         x in qlow
         for x in ("mycoplasma", "микоплазм", "вирус", "бактер", "стрептококк", "гемофил")
     ):
-        score += 1.8
+        score += 1.2
     return score
 
 
@@ -276,26 +334,51 @@ def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
 def analyze_query_for_icd(full_query: str, rag_query: str) -> dict:
     """
     Объединяет: коды из полного запроса и RAG-части + лексические гипотезы по русскому тексту.
+
+    Если в тексте явно указаны коды МКБ — используются только они (после проверки по русскому
+    справочнику из Excel); лексические гипотезы не подмешиваются.
     """
     combined = f"{full_query}\n{rag_query}"
     extracted = extract_icd_codes_raw(combined)
-    detected = resolve_extracted_codes(extracted)
+    detected_raw = resolve_extracted_codes(extracted)
+
+    detected_valid: list[dict] = []
+    detected_unknown: list[dict] = []
+    for d in detected_raw:
+        c = normalize_icd_code(str(d.get("code") or ""))
+        if not c:
+            continue
+        if is_code_in_ru_reference(c):
+            detected_valid.append(d)
+        else:
+            detected_unknown.append({**d, "code": c, "match_method": "regex_query_unknown"})
+
+    # Явные коды в тексте, но ни один не из справочника — откатываемся к лексикону.
+    explicit_codes_in_query = bool(detected_raw)
+    if explicit_codes_in_query and not detected_valid and detected_unknown:
+        explicit_codes_in_query = False
 
     suggested: list[dict] = []
-    if rag_query.strip():
+    if rag_query.strip() and not explicit_codes_in_query:
         suggested = suggest_icd_from_russian(rag_query, max_results=8)
 
-    # Убрать из suggested коды, уже найденные regex'ом.
-    det_set = {d["code"] for d in detected}
+    det_set = {d["code"] for d in detected_valid}
     suggested = [s for s in suggested if s["code"] not in det_set]
 
-    codes_for_retrieval = list(
-        dict.fromkeys(
-            [d["code"] for d in detected] + [s["code"] for s in suggested[:8]]
-        )
-    )[:10]
+    if explicit_codes_in_query:
+        codes_for_retrieval = [d["code"] for d in detected_valid][:10]
+    else:
+        codes_for_retrieval = list(
+            dict.fromkeys(
+                [d["code"] for d in detected_valid]
+                + [s["code"] for s in suggested[:8]]
+            )
+        )[:10]
+
     return {
-        "detected": detected,
+        "detected": detected_valid,
+        "detected_unknown": detected_unknown,
         "suggested": suggested,
         "codes_for_retrieval": codes_for_retrieval,
+        "explicit_icd_in_query": explicit_codes_in_query,
     }

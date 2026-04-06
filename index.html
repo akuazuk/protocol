@@ -1931,6 +1931,30 @@
       line-height: 1.45;
     }
 
+    .assist-icd-explicit {
+      margin: 0.35rem 0 0.5rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--green-900);
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      background: rgba(13, 92, 74, 0.08);
+      border-left: 3px solid rgba(13, 92, 74, 0.42);
+    }
+
+    .assist-icd-unknown-sub {
+      margin: 0.5rem 0 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: rgba(120, 53, 15, 0.95);
+    }
+
+    ul.assist-icd-list--unknown .assist-icd-code {
+      color: rgba(120, 53, 15, 0.95);
+    }
+
     .assist-sec--redflags {
       margin-top: 0.85rem;
       padding: 0.75rem 0.85rem;
@@ -4237,17 +4261,35 @@
     if (!icd) return "";
     var det = icd.detected || [];
     var sug = icd.suggested || [];
-    if (!det.length && !sug.length) return "";
+    var unk = icd.detected_unknown || [];
+    var explicit = !!icd.explicit_icd_in_query;
+    if (!det.length && !sug.length && !unk.length) return "";
+    var i;
     var sugGem = [];
     var sugLex = [];
     for (var si = 0; si < sug.length; si++) {
       if (sug[si].role === "suggested_gemini") sugGem.push(sug[si]);
       else sugLex.push(sug[si]);
     }
+    var leadText =
+      "Коды из текста запроса; при подборе по жалобе формируется ограниченный список кандидатов (лексика и смысловая близость), затем из него отбираются варианты. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.";
+    if (explicit && det.length) {
+      leadText =
+        "В запросе указаны коды МКБ, подтверждённые справочником: они используются для поиска протоколов; лексические гипотезы по жалобе к кодам не подмешиваются. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.";
+    } else if (explicit && !det.length && unk.length) {
+      leadText =
+        "В тексте есть фрагменты, похожие на коды МКБ, но не найденные в справочнике (см. ниже). Подбор кодов по жалобе — по общим правилам. Англ. названия — справочник ВОЗ.";
+    }
     var html =
       '<div class="assist-sec assist-sec--icd">' +
       '<span class="assist-sec-label">Коды МКБ-10 (справочно)</span>' +
-      '<p class="assist-icd-lead">Коды из текста запроса; при подборе по жалобе формируется ограниченный список кандидатов (лексика и смысловая близость), затем из него отбираются варианты. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.</p>';
+      '<p class="assist-icd-lead">' +
+      escapeHtml(leadText) +
+      "</p>";
+    if (explicit && det.length) {
+      html +=
+        '<p class="assist-icd-explicit">Режим явных кодов: в ответе и поиске учитываются только перечисленные ниже коды из справочника (Excel → JSON на сервере).</p>';
+    }
     if (icd.meta && icd.meta.strategy) {
       html +=
         '<p class="assist-icd-meta">Пул: лексический топ — ' +
@@ -4280,10 +4322,17 @@
       return "<li>" + line + "</li>";
     }
     if (det.length) {
-      html += '<p class="assist-icd-sub">В запросе</p><ul class="assist-icd-list">';
-      var i;
+      html += '<p class="assist-icd-sub">В запросе (справочник)</p><ul class="assist-icd-list">';
       for (i = 0; i < det.length; i++) {
         html += oneItem(det[i]);
+      }
+      html += "</ul>";
+    }
+    if (unk.length) {
+      html +=
+        '<p class="assist-icd-unknown-sub">Не найдены в справочнике</p><ul class="assist-icd-list assist-icd-list--unknown">';
+      for (i = 0; i < unk.length; i++) {
+        html += oneItem(unk[i]);
       }
       html += "</ul>";
     }

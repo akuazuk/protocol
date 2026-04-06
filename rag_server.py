@@ -120,6 +120,7 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 Если возраст явно взрослый (например «49 лет», ≥18 лет) — не включай в protocols детские КП: в списке должны остаться только path из входных фрагментов; если фрагменты только детские (маловероятно), опирайся на них осторожно и не выдавай детский протокол как основной без пометки.
 Клиническая калибровка (обязательно):
 - Опирайся на симптомы и формулировки из «Запрос пользователя». Не приписывай пациенту симптомов, которых там нет (в частности: насморк, боль в горле, ангина, ОРВИ, если их не указали в запросе). Не переноси симптомы из фрагментов протоколов в описание жалобы, если их не было в запросе.
+- Если фрагменты явно про другую нозологию или орган (например вестибулярная патология или деформации позвоночника при жалобе на гайморит/синусы), не используй их как основу ответа и не повышай им confidence; укажи в match_reason несоответствие теме запроса или опусти такие протоколы из верхних позиций.
 - ОРВИ, фарингит, тонзиллит, риносинусит и др. типичные ЛОР-причины — только если они явно следуют из запроса пользователя и/или из приведённых фрагментов; не подставляй их «по умолчанию».
 - Редкие неотложные состояния (острый эпиглоттит, ретрофарингеальный абсцесс и т.п.) — только при явных красных флагах в тексте запроса (выраженная одышка, слюнотечение, невозможность глотать слюну, быстрое ухудшение) или если это прямо следует из фрагментов. Если пользователь указал нормальное дыхание без одышки — не ставь эпиглоттит первым в дифференциальный ряд и не формулируй ответ так, будто он наиболее вероятен.
 - Не противоречь явным фактам из запроса (например «дыхание нормальное»).
@@ -218,6 +219,19 @@ SYSTEM_QUERY_SPELLFIX = """По фрагменту текста жалобы (р
 Не меняй смысл, не добавляй симптомы и диагнозы, не сокращай и не перефразируй свободно.
 Верни ОДИН JSON-объект (без markdown):
 {"corrected": "<тот же текст целиком, с исправлениями или без изменений>"}"""
+
+SYSTEM_CLINICAL_QUERY_REFINE = """Ты помощник врача. Ниже — текст жалобы/клинического запроса (русский) для автоматического поиска по клиническим протоколам и справочнику МКБ-10.
+Задача: привести формулировки к общепринятой клинической терминологии (как в русскоязычных названиях МКБ-10 и протоколах), сохранив смысл и объём жалобы.
+Правила:
+- Не добавляй симптомы, жалобы, диагнозы и обстоятельства, которых нет во входном тексте.
+- Не приписывай пациенту пол, возраст и сопутствующие болезни, если их нет во входе (если в дополнительном контексте ниже указаны возраст/пол — можно использовать только для согласования формулировок «ребёнок/взрослый», без выдумок).
+- Разговорные названия замени на клинические эквиваленты там, где это однозначно (например «гайморит» → можно уточнить «острый/хронический верхнечелюстной синусит» только если степень остроты явно следует из текста; иначе оставь «гайморит» или нейтрально «синусит верхнечелюстной пазухи»).
+- Не ставь окончательный клинический диагноз; это подготовка текста к поиску, не заключение.
+- Исправь опечатки в медицинских терминах.
+- Сохрани структуру: если несколько предложений — не сливай в одно без необходимости; итог не длиннее исходного более чем на ~30% (не раздувай).
+Верни ОДИН JSON-объект (без markdown):
+{"refined": "<итоговый текст>", "applied": true или false, "note": "<одно короткое предложение или пустая строка: что изменилось; если изменений нет — пусто>"}
+Поле applied: false, если текст уже корректен и ты вернул его без существенных правок (допустимы микроисправления — тогда applied: true и кратко в note)."""
 
 SYSTEM_ICD_POOL_SELECT = """Ты помощник врача. По клиническому запросу (жалобы, симптомы) выбери до 5 кодов МКБ-10 ТОЛЬКО из списка allowed ниже.
 Запрещено: коды вне списка, выдуманные обозначения, текст вне JSON.
@@ -432,6 +446,87 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
+# Слабые модификаторы без смысла диагноза: совпадение только по ним не должно тянуть чужие протоколы.
+RAG_GENERIC_LEX: frozenset[str] = frozenset(
+    {
+        "правосторонний",
+        "левосторонний",
+        "двусторонний",
+        "односторонний",
+        "верхний",
+        "нижний",
+        "передний",
+        "задний",
+        "средний",
+        "острый",
+        "хронический",
+        "пациент",
+        "пациентка",
+        "лет",
+        "года",
+        "году",
+        "женский",
+        "мужской",
+        "возраст",
+        "жалуется",
+        "жалобы",
+        "жалоб",
+        "жалоба",
+        "предоставлен",
+        "предоставленные",
+        "отмечает",
+        "считает",
+        "наличие",
+        "дней",
+        "недель",
+        "месяц",
+        "месяцев",
+        "год",
+    }
+)
+
+
+def _extra_clinical_tokens(q_raw: str) -> set[str]:
+    """Доп. токены по подстрокам запроса (ЛОР, вестибулярная тема) — лучше пересечение с корпусом."""
+    rq = _norm_query(q_raw)
+    extra: set[str] = set()
+    if any(
+        x in rq
+        for x in (
+            "гаймор",
+            "синусит",
+            "пазух",
+            "этмоид",
+            "лор",
+            "носоглот",
+            "аденоид",
+            "тонзилл",
+            "ангин",
+            "фаринг",
+            "ларинг",
+        )
+    ):
+        extra.update(
+            {
+                "гаймор",
+                "синусит",
+                "пазух",
+                "придаточн",
+                "носоглот",
+                "этмоид",
+            }
+        )
+    if any(x in rq for x in ("вертиго", "дппг", "вестибуляр", "нистагм", "дикс", "холлпайк")):
+        extra.update({"вестибуляр", "вертиго", "дппг", "нистагм", "позицион"})
+    return extra
+
+
+def _anchor_tokens(qtok: set[str]) -> list[str]:
+    """Токены-якоря: не из общего списка модификаторов."""
+    a = [t for t in qtok if t not in RAG_GENERIC_LEX]
+    return a
+
+
 def _cosine_vec(a: list[float], b: list[float]) -> float:
     if not a or not b or len(a) != len(b):
         return 0.0
@@ -621,7 +716,9 @@ def _refine_icd_analysis_with_gemini(
     icd_analysis: dict,
     model,
 ) -> None:
-    """Уточнение suggested и codes_for_retrieval: Gemini выбирает только из лексического топа ∪ k-NN."""
+    """Уточнение suggested и codes_for_retrieval: Gemini выбирает только из лексического топа (без k-NN по умолчанию)."""
+    if icd_analysis.get("explicit_icd_in_query"):
+        return
     if os.environ.get("RAG_ICD_GEMINI_SELECT", "1").strip().lower() not in (
         "1",
         "true",
@@ -635,7 +732,7 @@ def _refine_icd_analysis_with_gemini(
         return
     n_lex = max(1, min(int(os.environ.get("RAG_ICD_LEX_TOP", "12")), 40))
     n_pool = max(n_lex, min(int(os.environ.get("RAG_ICD_EMBED_POOL", "32")), 120))
-    k_embed = max(0, min(int(os.environ.get("RAG_ICD_EMBED_K", "8")), 20))
+    k_embed = max(0, min(int(os.environ.get("RAG_ICD_EMBED_K", "0")), 20))
 
     lex_top = scored[:n_lex]
     pool = scored[:n_pool]
@@ -733,7 +830,11 @@ def _refine_icd_analysis_with_gemini(
         return
     icd_analysis["suggested"] = selected
     icd_analysis["icd_meta"] = {
-        "strategy": "gemini_from_lex_top_and_embed_knn",
+        "strategy": (
+            "gemini_from_lex_top_and_embed_knn"
+            if embed_top
+            else "gemini_from_lex_top"
+        ),
         "lex_top": n_lex,
         "embed_pool": n_pool,
         "embed_k": k_embed,
@@ -748,6 +849,51 @@ def _refine_icd_analysis_with_gemini(
     )
     merged_codes = [c for c in merged_codes if c][:10]
     icd_analysis["codes_for_retrieval"] = merged_codes
+
+
+def _top_retrieval_score_for_icd_gate(retrieved: list[dict]) -> tuple[float, bool]:
+    """После гибридного эмбеддинг-переранжирования чанков поле score ∈ [0,1]."""
+    if not retrieved:
+        return 0.0, False
+    r0 = retrieved[0]
+    if not r0.get("embedding_rerank"):
+        return 0.0, False
+    try:
+        sc = float(r0.get("score") or 0)
+    except (TypeError, ValueError):
+        return 0.0, False
+    return max(0.0, min(1.0, sc)), True
+
+
+def maybe_refine_icd_with_gemini_after_retrieve(
+    model,
+    rag_query: str,
+    icd_analysis: dict,
+    retrieved: list[dict],
+) -> None:
+    """Gemini выбирает коды из пула только при уверенном отборе протоколов (≥ порога) и без явных кодов в тексте."""
+    if icd_analysis.get("explicit_icd_in_query"):
+        return
+    if os.environ.get("RAG_ICD_GEMINI_SELECT", "1").strip().lower() not in (
+        "1",
+        "true",
+        "yes",
+    ):
+        return
+    if not (rag_query or "").strip():
+        return
+    require_embed = os.environ.get("RAG_ICD_GEMINI_REQUIRE_EMBED_RANK", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    top, emb_ok = _top_retrieval_score_for_icd_gate(retrieved)
+    if require_embed and not emb_ok:
+        return
+    min_sc = float(os.environ.get("RAG_ICD_GEMINI_MIN_TOP_SCORE", "0.8"))
+    if top < min_sc:
+        return
+    _refine_icd_analysis_with_gemini(rag_query, icd_analysis, model)
 
 
 def _norm_query(s: str) -> str:
@@ -1379,9 +1525,13 @@ def retrieve(
     user_uncertain = float(os.environ.get("RAG_USER_CATEGORY_UNCERTAIN", "0.78"))
     rq = routing_query if routing_query is not None else query
     icd_lex = icd_tokens_for_lex(icd_codes_for_lex or [])
-    qtok = set(tokenize_ru(query)) | icd_lex
+    qtok = set(tokenize_ru(query)) | icd_lex | _extra_clinical_tokens(rq)
     if not qtok:
         return []
+    anchor_list = _anchor_tokens(qtok)
+    anchor_set = frozenset(anchor_list)
+    generic_w = float(os.environ.get("RAG_GENERIC_LEX_WEIGHT", "0.22"))
+    anchor_miss_penalty = float(os.environ.get("RAG_ANCHOR_MISS_PENALTY", "0.045"))
     icd_chunk_boost = float(os.environ.get("RAG_ICD_CHUNK_BOOST", "1.65"))
     icd_norms = [
         c.strip().lower()
@@ -1396,10 +1546,17 @@ def retrieve(
         low = lex_src.lower()
         lex = 0.0
         for t in qtok:
-            if t in low:
-                lex += 1.0 + min(len(t), 10) * 0.02
+            if t not in low:
+                continue
+            wt = 1.0 + min(len(t), 10) * 0.02
+            if t in RAG_GENERIC_LEX:
+                wt *= generic_w
+            lex += wt
         if lex <= 0:
             continue
+        if anchor_set:
+            if not any(t in low for t in anchor_set):
+                lex *= anchor_miss_penalty
         mult = (
             routing_multiplier(rq, ch, _routing)
             if use_routing
@@ -1433,7 +1590,7 @@ def retrieve(
     )
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     pool_n = int(os.environ.get("RAG_EMBED_POOL", "40"))
-    alpha = float(os.environ.get("RAG_HYBRID_ALPHA", "0.35"))
+    alpha = float(os.environ.get("RAG_HYBRID_ALPHA", "0.46"))
     emb_model = os.environ.get(
         "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
     ).strip()
@@ -1442,6 +1599,9 @@ def retrieve(
     q_embed = query
     if icd_codes_for_lex:
         q_embed = (query + "\n" + " ".join(icd_codes_for_lex)).strip()[:8000]
+    ex_emb = _extra_clinical_tokens(rq)
+    if ex_emb:
+        q_embed = (q_embed + " " + " ".join(sorted(ex_emb))).strip()[:8000]
     if embed_on and api_key and scored:
         pool_n = min(pool_n, len(scored))
         pool_rows = scored[:pool_n]
@@ -1486,6 +1646,7 @@ def retrieve(
 # Большой промпт и вызов модели могут занимать 2–3+ мин; клиент в index.html ждёт дольше сервера
 GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "180"))
 GEMINI_SPELLFIX_TIMEOUT = float(os.environ.get("GEMINI_SPELLFIX_TIMEOUT", "45"))
+GEMINI_QUERY_REFINE_TIMEOUT = float(os.environ.get("RAG_QUERY_REFINE_TIMEOUT", "45"))
 
 
 def get_gemini():
@@ -1625,6 +1786,76 @@ def generate_gemini_spellfix(model, full_prompt: str):
             return None
 
 
+def _generate_blocking_query_refine(model, full_prompt: str):
+    """JSON: нормализация жалобы под МКБ/протоколы."""
+    import google.generativeai as genai
+
+    return model.generate_content(
+        full_prompt,
+        generation_config=genai.GenerationConfig(
+            temperature=0.15,
+            max_output_tokens=3072,
+            response_mime_type="application/json",
+        ),
+    )
+
+
+def generate_gemini_query_refine(model, full_prompt: str):
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking_query_refine, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_QUERY_REFINE_TIMEOUT)
+        except FuturesTimeout:
+            return None
+
+
+def refine_clinical_query_gemini(
+    complaint_rag: str, full_query: str, model
+) -> tuple[str, dict | None]:
+    """Уточнение формулировки жалобы через Gemini для лучшего совпадения с МКБ и RAG."""
+    sq = (complaint_rag or "").strip()
+    if len(sq) < 3 or len(sq) > 8000:
+        return complaint_rag, None
+    ctx = (full_query or "").strip()[:4500]
+    prompt = (
+        SYSTEM_CLINICAL_QUERY_REFINE
+        + "\n\n---\n\nТекст жалобы (основной):\n"
+        + sq[:6000]
+        + "\n\nДополнительный контекст запроса (если есть возраст/пол/шапка — только для согласования формулировок, не выдумывай факты):\n"
+        + ctx
+    )
+    try:
+        resp = generate_gemini_query_refine(model, prompt)
+        if resp is None:
+            return complaint_rag, None
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+        if not parsed or not isinstance(parsed, dict):
+            return complaint_rag, None
+        refined = (parsed.get("refined") or "").strip()
+        if not refined or len(refined) > 12000:
+            return complaint_rag, None
+        # Защита от чрезмерного сжатия/обнуления
+        if len(sq) >= 40 and len(refined) < max(12, int(len(sq) * 0.15)):
+            return complaint_rag, None
+        applied = bool(parsed.get("applied"))
+        note = (parsed.get("note") or "").strip()
+        if refined == sq and not applied:
+            return complaint_rag, None
+        if refined == sq:
+            applied = False
+        meta: dict = {
+            "applied": applied,
+            "before": sq,
+            "after": refined,
+        }
+        if note:
+            meta["note"] = note
+        return refined, meta
+    except (HTTPException, Exception):
+        return complaint_rag, None
+
+
 def apply_clinical_correction(full_q: str, corrected_rag: str) -> str:
     """Подставляет исправленный клинический текст в полный запрос (контекст + ответы на уточнения сохраняются)."""
     cq = (corrected_rag or "").strip()
@@ -1730,10 +1961,23 @@ def _icd_client_payload(icd_analysis: dict) -> dict:
         if role == "suggested_gemini" and s.get("rationale"):
             row["rationale"] = s.get("rationale")
         suggested.append(row)
+    du_list: list[dict] = []
+    for x in icd_analysis.get("detected_unknown") or []:
+        if not isinstance(x, dict):
+            continue
+        du_list.append(
+            {
+                "code": x.get("code"),
+                "title_ru": x.get("title_ru"),
+                "title_en": x.get("title_en"),
+            }
+        )
     out: dict = {
         "detected": detected,
         "suggested": suggested,
         "codes_for_retrieval": icd_analysis.get("codes_for_retrieval") or [],
+        "explicit_icd_in_query": bool(icd_analysis.get("explicit_icd_in_query")),
+        "detected_unknown": du_list,
     }
     meta = icd_analysis.get("icd_meta")
     if meta:
@@ -1743,6 +1987,13 @@ def _icd_client_payload(icd_analysis: dict) -> dict:
 
 def _icd_block_for_prompt(icd_analysis: dict) -> str:
     lines: list[str] = []
+    for d in icd_analysis.get("detected_unknown") or []:
+        if not isinstance(d, dict):
+            continue
+        c = d.get("code") or ""
+        lines.append(
+            f"- {c}: код не найден в справочнике МКБ-10 (Excel→JSON); проверьте написание."
+        )
     for d in icd_analysis.get("detected") or []:
         if not isinstance(d, dict):
             continue
@@ -2177,9 +2428,19 @@ def api_assist(body: AssistIn) -> dict:
     q_rag = clinical_query_for_rag(q)
     if not q_rag:
         raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
-    icd_analysis = analyze_query_for_icd(q, q_rag)
     model = get_gemini()
-    _refine_icd_analysis_with_gemini(q_rag, icd_analysis, model)
+    query_clinical_refinement: dict | None = None
+    if os.environ.get("RAG_GEMINI_QUERY_REFINE", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        q_rag_new, rmeta = refine_clinical_query_gemini(q_rag, q, model)
+        if rmeta is not None:
+            q_rag = q_rag_new
+            q = apply_clinical_correction(q, q_rag)
+            query_clinical_refinement = rmeta
+    icd_analysis = analyze_query_for_icd(q, q_rag)
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
     query_specialties = infer_specialties_gemini(q, model)
     user_slugs = [
@@ -2224,6 +2485,13 @@ def api_assist(body: AssistIn) -> dict:
 
     retrieved, audience_inferred, audience_fallback = filter_retrieval_by_audience(
         retrieved, q, _routing
+    )
+
+    maybe_refine_icd_with_gemini_after_retrieve(
+        model,
+        q_rag,
+        icd_analysis,
+        retrieved,
     )
 
     lines = []
@@ -2387,6 +2655,7 @@ def api_assist(body: AssistIn) -> dict:
         "clinical_detail": clinical_detail,
         "clinical_detail_offer": clinical_detail_offer,
         "query_spelling_correction": query_spelling_correction,
+        "query_clinical_refinement": query_clinical_refinement,
         "retrieval_embedding": dict(_retrieval_embed_meta)
         if _retrieval_embed_meta
         else {"used": False},
