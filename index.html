@@ -2339,20 +2339,9 @@
       </form>
       <p class="hint" id="hint"></p>
 
-      <details class="llm-panel assist-panel" id="llm-panel" open>
-        <summary class="assist-panel__summary">Подбор по протоколам</summary>
-        <div class="assist-panel__body">
-        <p class="assist-panel__muted">
-          Подбор по тексту жалобы и по кодам МКБ-10 (если указаны). Нажмите «Запустить подбор» — результат появится ниже.
-        </p>
-        <input type="hidden" id="rag-base" value="" autocomplete="off" />
-        <div class="llm-toolbar">
-          <button type="button" class="btn-assist" id="btn-assist">Запустить подбор</button>
-        </div>
-        <p class="hint" id="llm-status"></p>
-        <div id="llm-out" class="llm-out" hidden></div>
-        </div>
-      </details>
+      <input type="hidden" id="rag-base" value="" autocomplete="off" />
+      <p class="hint" id="llm-status" aria-live="polite"></p>
+      <div id="llm-out" class="llm-out" hidden></div>
     </section>
 
     <footer class="site-footer site-footer--compact">
@@ -3967,8 +3956,6 @@
         pushAssistUndoSnapshot();
         var qInput = document.getElementById("q");
         if (qInput) qInput.value = buildDiffHypothesisQuery(line);
-        var panel = document.getElementById("llm-panel");
-        if (panel) panel.open = true;
         var outEl = document.getElementById("llm-out");
         if (outEl) {
           outEl.hidden = false;
@@ -4472,12 +4459,10 @@
 
   function setSearchBusy(busy) {
     var btn = document.getElementById("btn-search-submit");
-    var btnAssist = document.getElementById("btn-assist");
     if (btn) {
       btn.disabled = !!busy;
       btn.classList.toggle("is-busy", !!busy);
     }
-    if (btnAssist) btnAssist.disabled = !!busy;
   }
 
   function getAssistLoadingHtml() {
@@ -4614,9 +4599,6 @@
         }
       }, 250);
 
-      var panel = document.getElementById("llm-panel");
-      if (panel) panel.open = true;
-
       fetch(base + "/health")
         .then(function (h) {
           if (!h.ok) {
@@ -4752,15 +4734,6 @@
       if (btnNewSearch) {
         btnNewSearch.addEventListener("click", function () {
           resetAllForNewProtocolSearch();
-        });
-      }
-
-      var btnAssist = document.getElementById("btn-assist");
-      if (btnAssist) {
-        btnAssist.addEventListener("click", function () {
-          runAssist().catch(function (e) {
-            console.error(e);
-          });
         });
       }
 
