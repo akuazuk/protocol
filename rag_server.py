@@ -163,14 +163,22 @@ SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам 
 
 SYSTEM_EXTRACT_FULL = """Ты помощник врача. По ПОЛНОМУ тексту фрагментов клинического протокола Минздрава Республики Беларусь извлеки структурированные сведения, релевантные запросу пользователя.
 Запрос хорошо соответствует протоколу (оценка модели обычно ≥80%); это не обязательно «идеальные 100%» — дай развёрнутый практичный разбор строго по тексту протокола.
+Обязательно заполни четыре логических блока (если в тексте нет данных — пустой массив [] или пустая строка ""):
+- investigations: обследование (лабораторные, инструментальные, иные диагностические мероприятия по протоколу);
+- medications: препараты (группы, МНН, режимы — только из текста);
+- treatment_methods: лечение (методы, этапы, тактика — по тексту);
+- monitoring_frequency: кратность наблюдения (частота визитов, контрольных осмотров, сроки повторного обращения — по тексту; одна связная строка или краткие пункты в одной строке через «;»).
+Не дублируй одно и то же между monitoring_frequency и monitoring_followup: в monitoring_frequency — именно кратность/режим наблюдения; в monitoring_followup — прочие формулировки наблюдения или пустая строка.
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
 Схема:
 {
   "diagnosis": "диагнозы, состояния, показания (2–8 предложений)",
-  "treatment_methods": ["этапы и методы лечения — по тексту протокола"],
+  "investigations": ["пункты обследования — по тексту протокола"],
   "medications": ["группы препаратов, МНН, режимы — только если есть во входном тексте"],
+  "treatment_methods": ["этапы и методы лечения — по тексту протокола"],
+  "monitoring_frequency": "кратность наблюдения одной строкой или пустая строка",
   "recommendations": ["рекомендации и алгоритм действий для врача/пациента — по тексту"],
-  "monitoring_followup": "наблюдение, контроль, когда обращаться — если есть в тексте, иначе кратко что не указано",
+  "monitoring_followup": "прочие формулировки наблюдения, когда обращаться — если уместно; иначе пустая строка",
   "contraindications": "противопоказания и ограничения — если названы во фрагментах, иначе пустая строка",
   "note": "чего нет в фрагментах; необходимость очной консультации"
 }
@@ -1032,6 +1040,17 @@ def extract_clinical_detail(
         return {"error": str(e)[:400], "path": path, "title": title_line}
     if not parsed or not isinstance(parsed, dict):
         return None
+
+    def _norm_str_list(val: object) -> list[str]:
+        if val is None:
+            return []
+        if isinstance(val, str):
+            s = val.strip()
+            return [s] if s else []
+        if isinstance(val, list):
+            return [str(x).strip() for x in val if str(x).strip()]
+        return []
+
     ext: dict = {
         "diagnosis": parsed.get("diagnosis") or "",
         "treatment_methods": parsed.get("treatment_methods") or [],
@@ -1039,6 +1058,11 @@ def extract_clinical_detail(
         "note": parsed.get("note") or "",
     }
     if detailed:
+        ext["investigations"] = _norm_str_list(parsed.get("investigations"))
+        mf = parsed.get("monitoring_frequency")
+        ext["monitoring_frequency"] = (
+            str(mf).strip() if mf is not None and str(mf).strip() else ""
+        )
         ext["recommendations"] = parsed.get("recommendations") or []
         ext["monitoring_followup"] = parsed.get("monitoring_followup") or ""
         ext["contraindications"] = parsed.get("contraindications") or ""
