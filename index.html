@@ -95,30 +95,6 @@
       margin-bottom: 0.85rem;
     }
 
-    .btn-new-search-full {
-      font-size: 0.86rem;
-      padding: 0.5rem 1rem;
-      border-radius: 12px;
-      background: linear-gradient(145deg, var(--green-100) 0%, #ffffff 100%);
-      color: var(--green-900);
-      border: 1px solid rgba(26, 138, 114, 0.45);
-      box-shadow: none;
-      cursor: pointer;
-      font-weight: 700;
-      font-family: inherit;
-      transition: filter 0.15s, border-color 0.15s;
-    }
-
-    .btn-new-search-full:hover {
-      filter: brightness(0.98);
-      box-shadow: none;
-    }
-
-    .btn-new-search-full:focus-visible {
-      outline: 2px solid rgba(26, 138, 114, 0.45);
-      outline-offset: 2px;
-    }
-
     .assist-undo-bar {
       margin: 0 0 1rem;
       padding: 0.75rem 0.9rem;
@@ -1994,7 +1970,7 @@
         justify-content: stretch;
       }
 
-      .btn-new-search-full {
+      .toolbar-new-search .btn-assist {
         width: 100%;
       }
 
@@ -2119,8 +2095,13 @@
     </header>
 
     <div class="toolbar-new-search">
-      <button type="button" class="btn-new-search-full" id="btn-new-search-full">
-        Новый поиск протокола — очистить всё
+      <button
+        type="button"
+        class="btn-assist"
+        id="btn-new-search-full"
+        title="Очистить запрос, контекст и результаты поиска"
+      >
+        Очистить
       </button>
     </div>
 
