@@ -1500,9 +1500,9 @@ def _icd_block_for_prompt(icd_analysis: dict) -> str:
         sc = s.get("score")
         if s.get("match_method") == "gemini_from_pool":
             rat = (s.get("rationale") or "").strip()
-            tail = " [Gemini из пула лексика+эмбеддинг]"
+            tail = " [подбор из пула кандидатов]"
             if rat:
-                tail = f" [Gemini: {rat[:160]}]"
+                tail = f" [подбор: {rat[:160]}]"
         elif sc is not None:
             tail = f" [лексикон, score={sc}]"
         else:

@@ -2307,11 +2307,11 @@
             rows="6"
             autocomplete="off"
             maxlength="12000"
-            placeholder="Жалобы, длительность, предполагаемый или установленный диагноз, что уже пробовали, вопрос к протоколу…"
+            placeholder="Жалобы, длительность, диагноз или код МКБ-10 (например J20.9), что уже пробовали, вопрос к протоколу…"
             aria-label="Текст запроса: жалобы и вопрос"
           ></textarea>
           <p class="query-form-hint" id="query-form-hint">
-            Можно указать <strong>диагноз</strong> (если известен), динамику и лечение. Подбор запускается
+            Можно указать <strong>диагноз</strong> или <strong>код МКБ-10</strong>, динамику и лечение. Подбор запускается
             <strong>после нажатия «Найти протоколы»</strong> — до этого запрос только вводится в поле.
           </p>
           <div class="query-actions">
@@ -2343,20 +2343,10 @@
         <summary class="assist-panel__summary">Подбор по протоколам</summary>
         <div class="assist-panel__body">
         <p class="assist-panel__muted">
-          Адрес сервера с базой фрагментов. На этом сайте обычно подставляется автоматически; меняйте только при отдельном бэкенде.
+          Подбор по тексту жалобы и по кодам МКБ-10 (если указаны). Нажмите «Запустить подбор» — результат появится ниже.
         </p>
+        <input type="hidden" id="rag-base" value="" autocomplete="off" />
         <div class="llm-toolbar">
-          <label for="rag-base">Сервер</label>
-          <input
-            type="url"
-            id="rag-base"
-            value=""
-            placeholder="подставится автоматически"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            aria-label="Базовый URL сервера"
-          />
           <button type="button" class="btn-assist" id="btn-assist">Запустить подбор</button>
         </div>
         <p class="hint" id="llm-status"></p>
@@ -3678,12 +3668,12 @@
     var html =
       '<div class="assist-sec assist-sec--icd">' +
       '<span class="assist-sec-label">Коды МКБ-10 (справочно)</span>' +
-      '<p class="assist-icd-lead">Коды из текста запроса; при подборе по жалобе используется пул кандидатов (лексический топ + ближайшие по эмбеддингу), затем Gemini выбирает только из этого пула. Англ. названия — WHO. Не заменяет клиническую классификацию.</p>';
+      '<p class="assist-icd-lead">Коды из текста запроса; при подборе по жалобе формируется ограниченный список кандидатов (лексика и смысловая близость), затем из него отбираются варианты. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.</p>';
     if (icd.meta && icd.meta.strategy) {
       html +=
         '<p class="assist-icd-meta">Пул: лексический топ — ' +
         escapeHtml(String(icd.meta.lex_top != null ? icd.meta.lex_top : "")) +
-        " кодов; эмбеддинг — до " +
+        " кодов; смысловое уточнение — до " +
         escapeHtml(String(icd.meta.embed_k != null ? icd.meta.embed_k : "")) +
         " из " +
         escapeHtml(String(icd.meta.embed_pool != null ? icd.meta.embed_pool : "")) +
@@ -3720,7 +3710,7 @@
     }
     if (sugGem.length) {
       html +=
-        '<p class="assist-icd-sub">По жалобе (Gemini, только из пула кандидатов)</p><ul class="assist-icd-list">';
+        '<p class="assist-icd-sub">По жалобе (только из пула кандидатов)</p><ul class="assist-icd-list">';
       for (i = 0; i < sugGem.length; i++) {
         html += oneItem(sugGem[i]);
       }
@@ -3824,7 +3814,7 @@
       '<span class="assist-timer-num">0</span>' +
       '<span class="assist-timer-unit">сек</span>' +
       "</div>" +
-      '<p class="assist-loading__hint">Запрос к модели по полному тексту протокола.</p>' +
+      '<p class="assist-loading__hint">Формирование развёрнутой выдержки по полному тексту протокола.</p>' +
       "</div>"
     );
   }
@@ -3858,7 +3848,7 @@
     if (useMobile) {
       showAssistTimerOverlay(
         "Загрузка выдержки",
-        "Идёт запрос к модели по полному тексту протокола."
+        "Идёт формирование развёрнутой выдержки по полному тексту протокола."
       );
     }
     tick = setInterval(function () {
@@ -4314,7 +4304,7 @@
         html += "</div>";
         if (data.retrieval_embedding && data.retrieval_embedding.used) {
           html +=
-            '<p class="assist-embed-note">Отбор фрагментов уточнён семантикой (Gemini Embedding 2) поверх лексического поиска.</p>';
+            '<p class="assist-embed-note">Отбор фрагментов дополнительно уточняется по смыслу запроса поверх текстового поиска.</p>';
         }
       }
 
@@ -4377,7 +4367,7 @@
 
       if (rawProtos.length) {
         html +=
-          '<p class="assist-metrics-legend"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по оценке модели (шкала 0–100%). ' +
+          '<p class="assist-metrics-legend"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0–100%). ' +
           "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p>";
       }
 
@@ -4631,9 +4621,9 @@
         .then(function (h) {
           if (!h.ok) {
             throw new Error(
-              "Сервер недоступен (HTTP " +
+              "Сервис временно недоступен (HTTP " +
                 h.status +
-                "). Проверьте адрес в поле «Сервер» и доступность сервиса."
+                "). Повторите попытку позже или обратитесь к администратору."
             );
           }
           return h.json();
