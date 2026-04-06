@@ -23,6 +23,14 @@ ROOT = Path(__file__).resolve().parent
 
 from env_load import load_project_env
 
+from icd_mkb import (
+    analyze_query_for_icd,
+    describe_code,
+    icd_tokens_for_lex,
+    normalize_icd_code,
+    ru_lexicon_scored_entries,
+)
+
 load_project_env(ROOT)
 
 try:
@@ -124,6 +132,7 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
   "questions_for_patient": [] или ["…","…"],
   "disclaimer": "Информация из протоколов; не замена очной консультации."
 }
+Не добавляй в JSON поле icd_codes — список кодов МКБ-10 формирует сервер.
 ЖЁСТКИЕ ЛИМИТЫ (иначе ответ обрежется посередине):
 - summary: РОВНО 2 предложения на русском, каждое заканчивается точкой. Вместе НЕ ДЛИННЕЕ 280 символов (с пробелами). Без тире в конце; последний символ — точка. Не формулируй как установленный диагноз; это краткое сопоставление запроса с протоколами.
 - match_reason: не длиннее 70 символов, одно короткое предложение или фраза, законченная по смыслу.
@@ -177,6 +186,13 @@ SYSTEM_QUERY_SPELLFIX = """По фрагменту текста жалобы (р
 Не меняй смысл, не добавляй симптомы и диагнозы, не сокращай и не перефразируй свободно.
 Верни ОДИН JSON-объект (без markdown):
 {"corrected": "<тот же текст целиком, с исправлениями или без изменений>"}"""
+
+SYSTEM_ICD_POOL_SELECT = """Ты помощник врача. По клиническому запросу (жалобы, симптомы) выбери до 5 кодов МКБ-10 ТОЛЬКО из списка allowed ниже.
+Запрещено: коды вне списка, выдуманные обозначения, текст вне JSON.
+Дублируй поле code ТОЧНО как в списке (латиница и цифры).
+Верни ОДИН JSON-объект (без markdown):
+{"codes":[{"code":"J20.9","rationale":"одно короткое предложение"}]}
+Если ни один код из списка не подходит — {"codes":[]}."""
 
 SYSTEM_CONSULTATION_TEMPLATE = """Ты помощник врача. По развёрнутой выдержке из клинического протокола Минздрава Республики Беларусь (структура JSON ниже) и по сути запроса пользователя составь текстовый ШАБЛОН консультативного заключения.
 Правила:
@@ -493,6 +509,213 @@ def _gemini_embed_rerank_pool(
         out_rows.append((h, lex, mult, ch))
     out_rows.sort(key=lambda x: -x[0])
     return out_rows
+
+
+def _icd_embed_rank_candidates(
+    rag_query: str,
+    pool: list[dict],
+    k: int,
+    emb_model: str,
+) -> list[dict]:
+    """k ближайших по косинусу (эмбеддинг запроса vs «код + название ru»)."""
+    if k <= 0 or not pool:
+        return []
+    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not key:
+        return []
+    rq = (rag_query or "").strip()[:8000]
+    try:
+        q_vec = _gemini_embed_one(emb_model, rq, "retrieval_query")
+    except Exception:
+        return []
+    doc_texts: list[str] = []
+    for p in pool:
+        t = f"{p.get('code') or ''} {p.get('title_ru') or ''}".strip()[:4000]
+        doc_texts.append(t if t else str(p.get("code") or "."))
+    max_workers = min(8, max(1, len(doc_texts)))
+    timeout = float(os.environ.get("GEMINI_EMBED_CALL_TIMEOUT", "45"))
+
+    def embed_doc(i: int) -> list[float]:
+        return _gemini_embed_one(emb_model, doc_texts[i], "retrieval_document")
+
+    try:
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            futures = [ex.submit(embed_doc, i) for i in range(len(pool))]
+            doc_vecs = [f.result(timeout=timeout) for f in futures]
+    except Exception:
+        return []
+    scored_pairs: list[tuple[float, dict]] = []
+    for i, row in enumerate(pool):
+        cos = _cosine_vec(q_vec, doc_vecs[i])
+        copy = dict(row)
+        copy["embed_sim"] = round(float(cos), 4)
+        scored_pairs.append((float(cos), copy))
+    scored_pairs.sort(key=lambda x: -x[0])
+    return [d for _, d in scored_pairs[:k]]
+
+
+def _merge_icd_allowed_for_gemini(
+    lex_top: list[dict], embed_top: list[dict]
+) -> list[dict]:
+    """Объединение лексического топ-N и k-NN по эмбеддингу; один код — одна строка."""
+    by_code: dict[str, dict] = {}
+    for it in lex_top:
+        c = normalize_icd_code(str(it.get("code") or ""))
+        if not c:
+            continue
+        row = dict(it)
+        row["code"] = c
+        row["pool_source"] = "lex_top"
+        by_code[c] = row
+    for it in embed_top:
+        c = normalize_icd_code(str(it.get("code") or ""))
+        if not c:
+            continue
+        row = dict(it)
+        row["code"] = c
+        if c not in by_code:
+            row["pool_source"] = "embed_knn"
+            by_code[c] = row
+        else:
+            prev = by_code[c]
+            if it.get("embed_sim") is not None:
+                prev["embed_sim"] = it.get("embed_sim")
+            prev["pool_source"] = "lex_top+embed"
+    return list(by_code.values())
+
+
+def _refine_icd_analysis_with_gemini(
+    rag_query: str,
+    icd_analysis: dict,
+    model,
+) -> None:
+    """Уточнение suggested и codes_for_retrieval: Gemini выбирает только из лексического топа ∪ k-NN."""
+    if os.environ.get("RAG_ICD_GEMINI_SELECT", "1").strip().lower() not in (
+        "1",
+        "true",
+        "yes",
+    ):
+        return
+    if not (rag_query or "").strip():
+        return
+    scored = ru_lexicon_scored_entries(rag_query)
+    if not scored:
+        return
+    n_lex = max(1, min(int(os.environ.get("RAG_ICD_LEX_TOP", "12")), 40))
+    n_pool = max(n_lex, min(int(os.environ.get("RAG_ICD_EMBED_POOL", "32")), 120))
+    k_embed = max(0, min(int(os.environ.get("RAG_ICD_EMBED_K", "8")), 20))
+
+    lex_top = scored[:n_lex]
+    pool = scored[:n_pool]
+    emb_model = os.environ.get(
+        "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
+    ).strip()
+    embed_top: list[dict] = []
+    if k_embed > 0 and os.environ.get("RAG_ICD_EMBED_RANK", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        embed_top = _icd_embed_rank_candidates(
+            rag_query, pool, k_embed, emb_model
+        )
+    allowed_list = _merge_icd_allowed_for_gemini(lex_top, embed_top)
+    present = {normalize_icd_code(str(x.get("code") or "")) for x in allowed_list}
+    present.discard("")
+    for d in icd_analysis.get("detected") or []:
+        if not isinstance(d, dict):
+            continue
+        dc = normalize_icd_code(str(d.get("code") or ""))
+        if not dc or dc in present:
+            continue
+        found = next((x for x in scored if x["code"] == dc), None)
+        if found is None:
+            info = describe_code(dc)
+            found = {
+                "code": dc,
+                "title_ru": info.get("title_ru"),
+                "title_en": info.get("title_en"),
+                "lex_score": None,
+            }
+        row = dict(found)
+        row["pool_source"] = "regex_query"
+        allowed_list.append(row)
+        present.add(dc)
+
+    allowed_by_code = {
+        normalize_icd_code(str(x.get("code") or "")): x for x in allowed_list
+    }
+    allowed_by_code.pop("", None)
+
+    payload = json.dumps(
+        [
+            {
+                "code": x["code"],
+                "title_ru": x.get("title_ru") or "",
+                "title_en": x.get("title_en") or "",
+            }
+            for x in sorted(allowed_list, key=lambda z: str(z.get("code") or ""))
+        ],
+        ensure_ascii=False,
+    )
+    prompt = (
+        SYSTEM_ICD_POOL_SELECT
+        + "\n\n---\n\nЗапрос пользователя:\n"
+        + rag_query.strip()[:4000]
+        + "\n\nallowed (единственный источник кодов):\n"
+        + payload[:14000]
+    )
+    parsed = None
+    try:
+        resp = generate_gemini(model, prompt)
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+    except HTTPException:
+        return
+    except Exception:
+        return
+    if not parsed or not isinstance(parsed, dict):
+        return
+    codes = parsed.get("codes")
+    if not isinstance(codes, list):
+        return
+    selected: list[dict] = []
+    for item in codes[:6]:
+        if not isinstance(item, dict):
+            continue
+        raw = normalize_icd_code(str(item.get("code") or ""))
+        if not raw or raw not in allowed_by_code:
+            continue
+        src = allowed_by_code[raw]
+        selected.append(
+            {
+                "code": raw,
+                "title_ru": src.get("title_ru"),
+                "title_en": src.get("title_en"),
+                "match_method": "gemini_from_pool",
+                "score": src.get("lex_score"),
+                "rationale": (item.get("rationale") or item.get("note") or "")[:320],
+            }
+        )
+    if not selected:
+        return
+    icd_analysis["suggested"] = selected
+    icd_analysis["icd_meta"] = {
+        "strategy": "gemini_from_lex_top_and_embed_knn",
+        "lex_top": n_lex,
+        "embed_pool": n_pool,
+        "embed_k": k_embed,
+        "embedding_used": bool(embed_top),
+        "allowed_count": len(allowed_list),
+    }
+    merged_codes = list(
+        dict.fromkeys(
+            [normalize_icd_code(str(d.get("code") or "")) for d in icd_analysis.get("detected") or []]
+            + [s["code"] for s in selected]
+        )
+    )
+    merged_codes = [c for c in merged_codes if c][:10]
+    icd_analysis["codes_for_retrieval"] = merged_codes
 
 
 def _norm_query(s: str) -> str:
@@ -839,6 +1062,7 @@ def retrieve(
     routing_query: str | None = None,
     category_boost: list[str] | None = None,
     user_category_slugs: list[str] | None = None,
+    icd_codes_for_lex: list[str] | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
@@ -846,6 +1070,7 @@ def retrieve(
     routing_query — полный запрос для правил возраста/рубрик; если None, берётся query.
     category_boost — slug рубрик из опционального LLM-классификатора запроса.
     user_category_slugs — рубрики, выбранные пользователем в форме: усиление совпадений и штраф нерелевантных чанков.
+    icd_codes_for_lex — нормализованные коды МКБ-10: дополнительные лексические токены и усиление чанков, где встречается код.
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -863,9 +1088,16 @@ def retrieve(
     user_penalty = float(os.environ.get("RAG_USER_CATEGORY_PENALTY", "0.32"))
     user_uncertain = float(os.environ.get("RAG_USER_CATEGORY_UNCERTAIN", "0.78"))
     rq = routing_query if routing_query is not None else query
-    qtok = set(tokenize_ru(query))
+    icd_lex = icd_tokens_for_lex(icd_codes_for_lex or [])
+    qtok = set(tokenize_ru(query)) | icd_lex
     if not qtok:
         return []
+    icd_chunk_boost = float(os.environ.get("RAG_ICD_CHUNK_BOOST", "1.65"))
+    icd_norms = [
+        c.strip().lower()
+        for c in (icd_codes_for_lex or [])
+        if isinstance(c, str) and len(c.strip()) >= 3
+    ]
     scored: list[tuple[float, float, float, dict]] = []
     for ch in _chunks:
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
@@ -884,6 +1116,10 @@ def retrieve(
             else 1.0
         )
         final = lex * mult
+        if icd_norms and any(
+            code in low for code in icd_norms
+        ):
+            final *= icd_chunk_boost
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
             final *= boost_factor
@@ -913,11 +1149,14 @@ def retrieve(
     ).strip()
 
     work_rows: list[tuple[float, float, float, dict]] = scored
+    q_embed = query
+    if icd_codes_for_lex:
+        q_embed = (query + "\n" + " ".join(icd_codes_for_lex)).strip()[:8000]
     if embed_on and api_key and scored:
         pool_n = min(pool_n, len(scored))
         pool_rows = scored[:pool_n]
         try:
-            work_rows = _gemini_embed_rerank_pool(query, pool_rows, alpha, emb_model)
+            work_rows = _gemini_embed_rerank_pool(q_embed, pool_rows, alpha, emb_model)
             _retrieval_embed_meta = {
                 "used": True,
                 "model": emb_model,
@@ -1166,6 +1405,97 @@ def normalize_differential_field(parsed: dict | None) -> None:
         if len(out) >= 5:
             break
     parsed["differential"] = out
+
+
+def _icd_client_payload(icd_analysis: dict) -> dict:
+    """Единый JSON для API и llm_json.icd_codes."""
+    detected: list[dict] = []
+    for d in icd_analysis.get("detected") or []:
+        if not isinstance(d, dict):
+            continue
+        detected.append(
+            {
+                "code": d.get("code"),
+                "title_ru": d.get("title_ru"),
+                "title_en": d.get("title_en"),
+                "role": "detected_in_query",
+            }
+        )
+    suggested: list[dict] = []
+    for s in icd_analysis.get("suggested") or []:
+        if not isinstance(s, dict):
+            continue
+        role = (
+            "suggested_gemini"
+            if s.get("match_method") == "gemini_from_pool"
+            else "suggested_lexicon"
+        )
+        row = {
+            "code": s.get("code"),
+            "title_ru": s.get("title_ru"),
+            "title_en": s.get("title_en"),
+            "role": role,
+            "score": s.get("score"),
+        }
+        if role == "suggested_gemini" and s.get("rationale"):
+            row["rationale"] = s.get("rationale")
+        suggested.append(row)
+    out: dict = {
+        "detected": detected,
+        "suggested": suggested,
+        "codes_for_retrieval": icd_analysis.get("codes_for_retrieval") or [],
+    }
+    meta = icd_analysis.get("icd_meta")
+    if meta:
+        out["meta"] = meta
+    return out
+
+
+def _icd_block_for_prompt(icd_analysis: dict) -> str:
+    lines: list[str] = []
+    for d in icd_analysis.get("detected") or []:
+        if not isinstance(d, dict):
+            continue
+        c = d.get("code") or ""
+        tr = (d.get("title_ru") or "").strip()
+        ten = (d.get("title_en") or "").strip()
+        if tr and ten:
+            lines.append(f"- {c}: {tr} ({ten})")
+        elif tr:
+            lines.append(f"- {c}: {tr}")
+        elif ten:
+            lines.append(f"- {c}: ({ten})")
+        else:
+            lines.append(f"- {c}")
+    for s in icd_analysis.get("suggested") or []:
+        if not isinstance(s, dict):
+            continue
+        c = s.get("code") or ""
+        tr = (s.get("title_ru") or "").strip()
+        ten = (s.get("title_en") or "").strip()
+        sc = s.get("score")
+        if s.get("match_method") == "gemini_from_pool":
+            rat = (s.get("rationale") or "").strip()
+            tail = " [Gemini из пула лексика+эмбеддинг]"
+            if rat:
+                tail = f" [Gemini: {rat[:160]}]"
+        elif sc is not None:
+            tail = f" [лексикон, score={sc}]"
+        else:
+            tail = " [лексикон]"
+        if tr and ten:
+            lines.append(f"- {c}: {tr} ({ten}){tail}")
+        elif tr:
+            lines.append(f"- {c}: {tr}{tail}")
+        else:
+            lines.append(f"- {c}{tail}")
+    if not lines:
+        return ""
+    return (
+        "=== Сопоставление МКБ-10 (автоматически, справочно) ===\n"
+        + "Не выдумывай коды вне этого списка. При кратком summary можно упомянуть релевантные коды из списка.\n"
+        + "\n".join(lines)
+    )
 
 
 def _normalize_protocol_path_key(p: str) -> str:
@@ -1490,12 +1820,22 @@ class ConsultationTemplateIn(BaseModel):
 @app.get("/health")
 def health() -> dict:
     has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    icd_ru_n = 0
+    try:
+        icd_ru_n = len(
+            json.loads(
+                (ROOT / "data/icd_reference/icd10_ru_mkb10su.json").read_text(encoding="utf-8")
+            )
+        )
+    except (OSError, ValueError, TypeError):
+        icd_ru_n = 0
     return {
         "ok": True,
         "chunks": len(_chunks),
         "protocols": len(_protocols_by_path),
         "protocol_meta": len(_protocol_meta),
         "structured_index": len(_structured_by_path),
+        "icd_ru_entries": icd_ru_n,
         "gemini_configured": has_key,
         "specialties_count": len(SPECIALTY_LABELS_RU),
         "memory_saver": _memory_saver_enabled(),
@@ -1547,7 +1887,10 @@ def api_assist(body: AssistIn) -> dict:
     q_rag = clinical_query_for_rag(q)
     if not q_rag:
         raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
+    icd_analysis = analyze_query_for_icd(q, q_rag)
     model = get_gemini()
+    _refine_icd_analysis_with_gemini(q_rag, icd_analysis, model)
+    icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
     query_specialties = infer_specialties_gemini(q, model)
     user_slugs = [
         s
@@ -1560,6 +1903,7 @@ def api_assist(body: AssistIn) -> dict:
         routing_query=q,
         category_boost=boost_merged or None,
         user_category_slugs=user_slugs or None,
+        icd_codes_for_lex=icd_codes_for_lex,
     )
     query_spelling_correction: dict | None = None
     if not retrieved and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
@@ -1575,6 +1919,7 @@ def api_assist(body: AssistIn) -> dict:
                 routing_query=q_llm,
                 category_boost=boost_merged or None,
                 user_category_slugs=user_slugs or None,
+                icd_codes_for_lex=icd_codes_for_lex,
             )
             if retrieved:
                 q = q_llm
@@ -1616,7 +1961,14 @@ def api_assist(body: AssistIn) -> dict:
             + ", ".join(sorted(set(meta_specs)))
             + "\n\n"
         )
-    user_block = hint_block + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
+    icd_block = _icd_block_for_prompt(icd_analysis)
+    if icd_block:
+        icd_block = icd_block + "\n\n"
+    user_block = (
+        icd_block
+        + hint_block
+        + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
+    )
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
     prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
     if len(full_prompt) > prompt_limit:
@@ -1673,6 +2025,15 @@ def api_assist(body: AssistIn) -> dict:
     if parsed and isinstance(parsed, dict):
         dedupe_parsed_protocols(parsed)
 
+    icd_payload = _icd_client_payload(icd_analysis)
+    if parsed and isinstance(parsed, dict):
+        merged_icd: list[dict] = []
+        for it in icd_payload.get("detected") or []:
+            merged_icd.append(dict(it))
+        for it in icd_payload.get("suggested") or []:
+            merged_icd.append(dict(it))
+        parsed["icd_codes"] = merged_icd
+
     clinical_detail = None
     clinical_detail_offer: dict | None = None
     if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
@@ -1728,6 +2089,7 @@ def api_assist(body: AssistIn) -> dict:
         "retrieval_audience_fallback": audience_fallback,
         "query_specialties": query_specialties,
         "user_category_slugs": user_slugs,
+        "icd": icd_payload,
         "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,

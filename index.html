@@ -1411,6 +1411,70 @@
       color: var(--muted);
     }
 
+    .assist-sec--icd {
+      margin-top: 0.85rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(248, 250, 252, 0.98);
+      border: 1px solid rgba(13, 92, 74, 0.2);
+    }
+
+    .assist-icd-lead {
+      margin: 0.35rem 0 0.5rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-icd-sub {
+      margin: 0.5rem 0 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--green-800);
+    }
+
+    .assist-icd-list {
+      margin: 0.25rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .assist-icd-list li {
+      margin-bottom: 0.35rem;
+    }
+
+    .assist-icd-code {
+      font-weight: 700;
+      color: var(--green-900);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .assist-icd-lexscore {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .assist-icd-meta {
+      margin: 0.35rem 0 0;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-icd-rationale {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
     .assist-sec--redflags {
       margin-top: 0.85rem;
       padding: 0.75rem 0.85rem;
@@ -3540,6 +3604,80 @@
     return html || '<p class="llm-summary-para">' + escapeHtml(t) + "</p>";
   }
 
+  function formatIcdSectionHtml(icd) {
+    if (!icd) return "";
+    var det = icd.detected || [];
+    var sug = icd.suggested || [];
+    if (!det.length && !sug.length) return "";
+    var sugGem = [];
+    var sugLex = [];
+    for (var si = 0; si < sug.length; si++) {
+      if (sug[si].role === "suggested_gemini") sugGem.push(sug[si]);
+      else sugLex.push(sug[si]);
+    }
+    var html =
+      '<div class="assist-sec assist-sec--icd">' +
+      '<span class="assist-sec-label">Коды МКБ-10 (справочно)</span>' +
+      '<p class="assist-icd-lead">Коды из текста запроса; при подборе по жалобе используется пул кандидатов (лексический топ + ближайшие по эмбеддингу), затем Gemini выбирает только из этого пула. Англ. названия — WHO. Не заменяет клиническую классификацию.</p>';
+    if (icd.meta && icd.meta.strategy) {
+      html +=
+        '<p class="assist-icd-meta">Пул: лексический топ — ' +
+        escapeHtml(String(icd.meta.lex_top != null ? icd.meta.lex_top : "")) +
+        " кодов; эмбеддинг — до " +
+        escapeHtml(String(icd.meta.embed_k != null ? icd.meta.embed_k : "")) +
+        " из " +
+        escapeHtml(String(icd.meta.embed_pool != null ? icd.meta.embed_pool : "")) +
+        " (разрешённых кандидатов: " +
+        escapeHtml(String(icd.meta.allowed_count != null ? icd.meta.allowed_count : "")) +
+        ").</p>";
+    }
+    function oneItem(it) {
+      var code = escapeHtml(String(it.code || ""));
+      var tr = (it.title_ru || "").trim();
+      var ten = (it.title_en || "").trim();
+      var line = '<span class="assist-icd-code">' + code + "</span>";
+      if (tr) line += " — " + escapeHtml(tr);
+      if (ten) line += " — «" + escapeHtml(ten) + "»";
+      if (it.score != null && it.role === "suggested_lexicon") {
+        line +=
+          ' <span class="assist-icd-lexscore">(лексикон · ' +
+          escapeHtml(String(it.score)) +
+          ")</span>";
+      }
+      if (it.rationale && it.role === "suggested_gemini") {
+        line +=
+          '<span class="assist-icd-rationale">' + escapeHtml(String(it.rationale)) + "</span>";
+      }
+      return "<li>" + line + "</li>";
+    }
+    if (det.length) {
+      html += '<p class="assist-icd-sub">В запросе</p><ul class="assist-icd-list">';
+      var i;
+      for (i = 0; i < det.length; i++) {
+        html += oneItem(det[i]);
+      }
+      html += "</ul>";
+    }
+    if (sugGem.length) {
+      html +=
+        '<p class="assist-icd-sub">По жалобе (Gemini, только из пула кандидатов)</p><ul class="assist-icd-list">';
+      for (i = 0; i < sugGem.length; i++) {
+        html += oneItem(sugGem[i]);
+      }
+      html += "</ul>";
+    }
+    if (sugLex.length) {
+      html +=
+        '<p class="assist-icd-sub">По тексту жалобы (лексический подбор)</p><ul class="assist-icd-list">';
+      for (i = 0; i < sugLex.length; i++) {
+        html += oneItem(sugLex[i]);
+      }
+      html += "</ul>";
+    }
+    html += "</div>";
+    return html;
+  }
+
   function renderProtoLi(pr, ragMap, opts) {
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
@@ -4007,6 +4145,8 @@
 
       html +=
         '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+
+      html += formatIcdSectionHtml(data.icd || {});
 
       if (data.red_flags && data.red_flags.length) {
         html += '<div class="assist-sec assist-sec--redflags">';
