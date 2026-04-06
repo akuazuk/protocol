@@ -732,6 +732,221 @@
       color: var(--green-800);
     }
 
+    /* Навигация по разделам и якоря */
+    .page-steps {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 0.65rem;
+      margin: 0 0 1.25rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      position: sticky;
+      top: 0.5rem;
+      z-index: 5;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.06);
+    }
+
+    .page-steps__label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--green-800);
+      margin-right: 0.25rem;
+    }
+
+    .page-steps a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-700);
+      text-decoration: none;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(232, 245, 241, 0.9);
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .page-steps a:hover {
+      background: rgba(26, 138, 114, 0.12);
+      color: var(--green-950);
+    }
+
+    .page-steps a[hidden] {
+      display: none !important;
+    }
+
+    .hero-help {
+      margin: 0 0 1.1rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-help summary {
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--green-800);
+      list-style: none;
+    }
+
+    .hero-help summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .hero-help[open] summary {
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-help .lead {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .lead--short {
+      margin: 0 0 0.75rem !important;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .section-anchor {
+      scroll-margin-top: 5.5rem;
+    }
+
+    .section-block--filters {
+      margin-bottom: 1rem;
+    }
+
+    .section-block--query {
+      margin-bottom: 0.5rem;
+    }
+
+    .section-results {
+      margin-top: 1.5rem;
+      padding: 1.15rem 1.1rem 1.25rem;
+      border-radius: 18px;
+      border: 1px solid rgba(26, 138, 114, 0.32);
+      background: linear-gradient(165deg, #ffffff 0%, rgba(232, 245, 241, 0.35) 100%);
+      box-shadow: 0 10px 36px rgba(6, 61, 53, 0.08);
+      scroll-margin-top: 5rem;
+    }
+
+    .section-results[hidden] {
+      display: none !important;
+    }
+
+    .section-results__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.65rem 1rem;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid rgba(26, 138, 114, 0.2);
+    }
+
+    .section-results__title {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .btn-link-nav {
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--green-800);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      border-radius: 10px;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-link-nav:hover {
+      background: rgba(232, 245, 241, 0.95);
+    }
+
+    .scroll-actions {
+      position: fixed;
+      right: max(0.75rem, env(safe-area-inset-right));
+      bottom: max(0.75rem, env(safe-area-inset-bottom));
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      align-items: flex-end;
+      pointer-events: none;
+    }
+
+    .scroll-actions[hidden] {
+      display: none !important;
+    }
+
+    .scroll-fab {
+      pointer-events: auto;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.55rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--green-900);
+      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.15);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+
+    .scroll-fab:hover {
+      background: rgba(232, 245, 241, 0.98);
+    }
+
+    .assist-collapsible {
+      margin: 0.75rem 0 0;
+      padding: 0.5rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(13, 92, 74, 0.15);
+      background: rgba(248, 250, 249, 0.85);
+    }
+
+    .assist-collapsible > summary {
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--green-800);
+      list-style: none;
+      padding: 0.25rem 0;
+    }
+
+    .assist-collapsible > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .assist-collapsible[open] > summary {
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid rgba(13, 92, 74, 0.1);
+    }
+
+    .assist-collapsible--legend > summary {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
     .llm-panel.assist-panel {
       margin-top: 1.35rem;
       padding: 0;
@@ -2231,11 +2446,24 @@
 
     <section class="hero" aria-labelledby="search-title">
       <h2 id="search-title">Опишите симптомы или клиническую ситуацию</h2>
-      <p class="lead">
-        Система сопоставит запрос с фрагментами протоколов и предложит релевантные документы с кратким разбором.
-        Примеры: «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
-        Укажите рубрики Минздрава и контекст пациента — так отбор точнее; на телефоне можно надиктовать жалобы кнопкой «Голос».
+      <p class="lead lead--short">
+        Введите жалобу или код МКБ-10 и нажмите «Найти протоколы». При необходимости уточните рубрики и контекст пациента — шаги ниже.
       </p>
+      <details class="hero-help">
+        <summary>Подробнее о поиске</summary>
+        <p class="lead">
+          Система сопоставит запрос с фрагментами протоколов и предложит релевантные документы с кратким разбором.
+          Примеры: «сухой кашель 2 недели», «изжога после еды», <em>сахарный диабет 2 типа</em>.
+          Укажите рубрики Минздрава и контекст пациента — так отбор точнее; на телефоне можно надиктовать жалобы кнопкой «Голос».
+        </p>
+      </details>
+      <nav class="page-steps" aria-label="Разделы страницы">
+        <span class="page-steps__label">Перейти</span>
+        <a href="#section-query">К запросу</a>
+        <a href="#section-filters">Рубрики и контекст</a>
+        <a href="#section-results" id="page-step-results" hidden>К результату</a>
+      </nav>
+      <div id="section-filters" class="section-anchor section-block--filters">
       <details class="specialty-panel" id="specialty-panel">
         <summary>Медицинское направление (рубрики протоколов)</summary>
         <p class="specialty-hint">
@@ -2261,7 +2489,7 @@
           <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
         </div>
       </details>
-      <details class="ctx-panel" id="ctx-panel" open>
+      <details class="ctx-panel" id="ctx-panel">
         <summary>Контекст пациента</summary>
         <p class="ctx-hint">
           Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
@@ -2298,6 +2526,8 @@
           </label>
         </div>
       </details>
+      </div>
+      <div id="section-query" class="section-anchor section-block--query">
       <form class="search-row" id="search-form" action="#" method="get">
         <div class="query-stack">
           <label for="q" class="visually-hidden">Жалобы и клинический вопрос</label>
@@ -2337,11 +2567,25 @@
           Найти протоколы
         </button>
       </form>
+      </div>
       <p class="hint" id="hint"></p>
 
       <input type="hidden" id="rag-base" value="" autocomplete="off" />
       <p class="hint" id="llm-status" aria-live="polite"></p>
-      <div id="llm-out" class="llm-out" hidden></div>
+      <section
+        id="section-results"
+        class="section-results section-anchor"
+        hidden
+        aria-labelledby="section-results-title"
+      >
+        <div class="section-results__head">
+          <h2 id="section-results-title" class="section-results__title">Результат подбора</h2>
+          <button type="button" class="btn-link-nav" id="btn-back-to-query">
+            Изменить запрос
+          </button>
+        </div>
+        <div id="llm-out" class="llm-out"></div>
+      </section>
     </section>
 
     <footer class="site-footer site-footer--compact">
@@ -2351,6 +2595,11 @@
         Не замена очной консультации.
       </p>
     </footer>
+  </div>
+
+  <div class="scroll-actions" id="scroll-actions" hidden>
+    <button type="button" class="scroll-fab" id="btn-fab-query">К запросу</button>
+    <button type="button" class="scroll-fab" id="btn-fab-top">Наверх</button>
   </div>
 
   <div
@@ -2889,7 +3138,7 @@
     if (qInput) qInput.value = s.q != null ? s.q : "";
     if (out) {
       out.innerHTML = s.outHtml || "";
-      out.hidden = false;
+      showResultsSection(true);
     }
     lastAssistClinical = s.lastAssistClinical || "";
     lastAssistFullQuery = s.lastAssistFullQuery || "";
@@ -2920,6 +3169,59 @@
     });
   }
 
+  function showResultsSection(visible) {
+    var sec = document.getElementById("section-results");
+    var step = document.getElementById("page-step-results");
+    if (sec) sec.hidden = !visible;
+    if (step) step.hidden = !visible;
+    updateScrollFabVisibility();
+  }
+
+  function updateScrollFabVisibility() {
+    var sa = document.getElementById("scroll-actions");
+    if (!sa) return;
+    var sec = document.getElementById("section-results");
+    var hasResults = sec && !sec.hidden;
+    var scrolled = window.scrollY > 300;
+    sa.hidden = !hasResults && !scrolled;
+  }
+
+  function scrollToQueryBlock() {
+    var el = document.getElementById("section-query");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    var q = document.getElementById("q");
+    if (q) {
+      try {
+        q.focus();
+      } catch (e) {}
+    }
+  }
+
+  function scrollToPageTop() {
+    var el = document.getElementById("search-title");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function bindPageNav() {
+    var b1 = document.getElementById("btn-back-to-query");
+    var b2 = document.getElementById("btn-fab-query");
+    var b3 = document.getElementById("btn-fab-top");
+    if (b1) b1.addEventListener("click", scrollToQueryBlock);
+    if (b2) b2.addEventListener("click", scrollToQueryBlock);
+    if (b3) b3.addEventListener("click", scrollToPageTop);
+    window.addEventListener(
+      "scroll",
+      function () {
+        updateScrollFabVisibility();
+      },
+      { passive: true }
+    );
+  }
+
   function resetAllForNewProtocolSearch() {
     if (
       !confirm(
@@ -2943,8 +3245,8 @@
     var out = document.getElementById("llm-out");
     if (out) {
       out.innerHTML = "";
-      out.hidden = true;
     }
+    showResultsSection(false);
     var st = document.getElementById("llm-status");
     if (st) st.textContent = "";
     var phWrap = document.getElementById("consultation-placeholders-wrap");
@@ -3957,8 +4259,8 @@
         var qInput = document.getElementById("q");
         if (qInput) qInput.value = buildDiffHypothesisQuery(line);
         var outEl = document.getElementById("llm-out");
+        showResultsSection(true);
         if (outEl) {
-          outEl.hidden = false;
           outEl.scrollIntoView({ behavior: "smooth", block: "center" });
         }
         runAssist(undefined, { preserveUndo: true }).catch(function (err) {
@@ -4200,7 +4502,7 @@
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
-    out.hidden = false;
+    showResultsSection(true);
     lastAssistFullQuery = data.query || "";
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
@@ -4296,9 +4598,11 @@
       }
 
       if (j.differential && j.differential.length) {
-        html += '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential">';
         html +=
-          '<span class="assist-sec-label assist-sec-label--diff">Дифференциальные гипотезы</span><p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 — относительно более вероятный. Кнопка «Искать протокол» подставляет гипотезу в запрос вместе с предыдущим текстом жалобы и контекстом пациента (если он был указан).</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
+          '<hr class="assist-hr" /><details class="assist-collapsible"><summary>Дифференциальные гипотезы <span style="font-weight:500;color:var(--muted);font-size:0.85em">(развернуть)</span></summary>';
+        html += '<div class="assist-sec assist-sec--differential">';
+        html +=
+          '<p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 — относительно более вероятный. Кнопка «Искать протокол» подставляет гипотезу в запрос вместе с предыдущим текстом жалобы и контекстом пациента (если он был указан).</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
         var di;
         var diffItems = j.differential.slice(0, 5);
         for (di = 0; di < diffItems.length; di++) {
@@ -4319,7 +4623,7 @@
             enc +
             '">Искать протокол</button></li>';
         }
-        html += "</ul></div></div>";
+        html += "</ul></div></div></details>";
       }
 
       if (
@@ -4328,9 +4632,10 @@
         !hasAnyProtocolAt100Pct(rawProtos)
       ) {
         lastAssistQuestions = j.questions_for_patient.slice();
-        html += '<hr class="assist-hr" /><div class="assist-sec">';
         html +=
-          '<span class="assist-sec-label">Уточняющие вопросы</span><p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
+          '<hr class="assist-hr" /><details class="assist-collapsible"><summary>Уточняющие вопросы <span style="font-weight:500;color:var(--muted);font-size:0.85em">(развернуть)</span></summary><div class="assist-sec">';
+        html +=
+          '<p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
         html +=
           '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
@@ -4349,13 +4654,13 @@
         }
         html +=
           "</ol><button type=\"submit\" class=\"btn-assist btn-followup\">Отправить ответы и обновить подбор</button></form>";
-        html += "</div>";
+        html += "</div></details>";
       }
 
       if (rawProtos.length) {
         html +=
-          '<p class="assist-metrics-legend"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0–100%). ' +
-          "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p>";
+          '<details class="assist-collapsible assist-collapsible--legend"><summary>Пояснение к оценкам (%)</summary><p class="assist-metrics-legend" style="margin:0"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0–100%). ' +
+          "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
       if (data.clinical_detail) {
@@ -4396,11 +4701,20 @@
       bindDiffSearchButtons();
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
+      updateScrollFabVisibility();
+      var sr = document.getElementById("section-results");
+      if (sr) {
+        try {
+          sr.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (e) {}
+      }
       return;
     }
     lastAssistFullQuery = data.query || "";
+    showResultsSection(true);
     out.innerHTML =
       '<pre class="assist-raw">' + escapeHtml(data.llm_text || "") + "</pre>";
+    updateScrollFabVisibility();
   }
 
   function parseJsonSafe(text) {
@@ -4571,11 +4885,11 @@
       }
 
       setSearchBusy(true);
+      showResultsSection(true);
       var useMobileTimerOverlay =
         typeof window.matchMedia === "function" &&
         window.matchMedia("(max-width: 640px)").matches;
       if (out) {
-        out.hidden = false;
         if (useMobileTimerOverlay) {
           out.innerHTML =
             '<p class="assist-mobile-placeholder" role="status">Результат появится здесь после подбора.</p>';
@@ -4662,7 +4976,7 @@
           if (st) st.textContent = "Готово.";
           var qInput = document.getElementById("q");
           if (qInput) qInput.value = stripToClinicalOnly(qSend);
-          var elOut = document.getElementById("llm-out");
+          var elOut = document.getElementById("section-results");
           if (elOut) {
             elOut.scrollIntoView({ behavior: "smooth", block: "nearest" });
           }
@@ -4682,7 +4996,7 @@
           }
           console.error("Assist:", err);
           if (out) {
-            out.hidden = false;
+            showResultsSection(true);
             out.innerHTML =
               '<p class="error">Не удалось: ' +
               escapeHtml(msg) +
@@ -4729,6 +5043,7 @@
       initSpecialtiesFromServer();
       bindSpecialtyPanel();
       bindVoiceInput();
+      bindPageNav();
 
       var btnNewSearch = document.getElementById("btn-new-search-full");
       if (btnNewSearch) {
