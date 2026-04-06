@@ -1005,6 +1005,11 @@
       color: var(--text);
     }
 
+    .hero-help-lead--tight {
+      margin-bottom: 0.55rem;
+      font-size: 0.87rem;
+    }
+
     .hero-help-steps {
       display: flex;
       flex-direction: column;
@@ -1087,6 +1092,17 @@
 
     .hero-help-footnote strong {
       color: var(--amber-600);
+    }
+
+    .hero-help-section-title {
+      margin: 1.05rem 0 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--green-800);
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid rgba(26, 138, 114, 0.2);
     }
 
     .lead--short {
@@ -2806,13 +2822,45 @@
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">2</span>
               <div class="hero-help-step-body">
-                <strong>Список документов</strong> — с оценкой соответствия и ссылками на PDF при необходимости.
+                <strong>Список протоколов</strong> — с процентами соответствия запросу (см. п. 4 ниже) и ссылками на PDF.
               </div>
             </div>
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">3</span>
               <div class="hero-help-step-body">
                 <strong>Краткий разбор</strong> — ориентир по запросу; не заменяет решение врача.
+              </div>
+            </div>
+          </div>
+          <p class="hero-help-section-title">Оценка соответствия, гипотезы и шаблон заключения</p>
+          <p class="hero-help-lead hero-help-lead--tight">
+            Ниже после ответа вы увидите блок <strong>«Результат подбора»</strong>: там же — проценты, при необходимости
+            гипотезы и возможность сформировать текстовый шаблон по протоколу.
+          </p>
+          <div class="hero-help-steps">
+            <div class="hero-help-step">
+              <span class="hero-help-step-num" aria-hidden="true">4</span>
+              <div class="hero-help-step-body">
+                <strong>Проценты соответствия</strong> — автоматическая оценка (0–100%), насколько протокол и отобранные
+                фрагменты текста близки к вашему запросу. Это ориентир для выбора PDF, а не клиническая «вероятность
+                диагноза».
+              </div>
+            </div>
+            <div class="hero-help-step">
+              <span class="hero-help-step-num" aria-hidden="true">5</span>
+              <div class="hero-help-step-body">
+                <strong>Дифференциальные гипотезы</strong> — краткий ряд возможных направлений для обсуждения с врачом; это
+                не установленный диагноз. Кнопка «Искать протокол» подставляет выбранную гипотезу в запрос (вместе с жалобой
+                и контекстом пациента) и запускает новый подбор.
+              </div>
+            </div>
+            <div class="hero-help-step">
+              <span class="hero-help-step-num" aria-hidden="true">6</span>
+              <div class="hero-help-step-body">
+                <strong>Шаблон консультативного заключения</strong> — при развёрнутой выдержке из протокола можно
+                сформировать черновик текста заключения по данным протокола Минздрава РБ; можно отметить
+                обследование, препараты, лечение и кратность наблюдения и сразу сформировать текст. Требует проверки и
+                правки лечащим врачом, не заменяет очный приём.
               </div>
             </div>
           </div>
