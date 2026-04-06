@@ -1555,6 +1555,56 @@
       margin-top: 0.65rem;
     }
 
+    .consultation-template-pending {
+      margin-bottom: 0.75rem;
+      padding: 0.65rem 1rem;
+      border-radius: 14px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(232, 245, 241, 0.95) 100%
+      );
+      border: 2px solid rgba(26, 138, 114, 0.35);
+      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.08);
+      text-align: center;
+    }
+
+    .consultation-template-pending .consultation-template-timer {
+      font-size: 1.12rem;
+      font-weight: 800;
+      display: inline-block;
+    }
+
+    .assist-detail-extract-details {
+      margin-top: 0;
+      padding-top: 1.05rem;
+      border-top: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .assist-detail-extract-summary {
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--green-900);
+      list-style: none;
+      padding: 0.35rem 0;
+    }
+
+    .assist-detail-extract-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .assist-detail-extract-summary::before {
+      content: "▸ ";
+      display: inline-block;
+      transition: transform 0.15s ease;
+      color: var(--green-700);
+    }
+
+    .assist-detail-extract-details[open] .assist-detail-extract-summary::before {
+      transform: rotate(90deg);
+    }
+
     .consultation-template-card {
       margin: 0;
       padding: 0;
@@ -2764,8 +2814,11 @@
         align-items: stretch;
       }
 
-      .consultation-facts-timer {
+      .consultation-template-pending {
         width: 100%;
+      }
+
+      .consultation-template-pending .consultation-template-timer {
         font-size: 1.05rem;
       }
     }
@@ -4063,20 +4116,16 @@
       clearInterval(consultTplTimerId);
       consultTplTimerId = null;
     }
-    ["consultation-template-timer", "consultation-facts-timer"].forEach(
-      function (tid) {
-        var tel = document.getElementById(tid);
-        if (tel) {
-          tel.hidden = true;
-          tel.textContent = "";
-        }
-      }
-    );
+    var tel = document.getElementById("consultation-unified-timer");
+    if (tel) {
+      tel.hidden = true;
+      tel.textContent = "";
+    }
   }
 
   function startConsultTplTimer(timerElId) {
     clearConsultTplTimer();
-    var id = timerElId || "consultation-template-timer";
+    var id = timerElId || "consultation-unified-timer";
     var tel = document.getElementById(id);
     if (!tel) return;
     var start = Date.now();
@@ -4106,16 +4155,25 @@
     );
     var resultEl = document.getElementById("consultation-template-result");
     var bodyEl = document.getElementById("consultation-template-body");
+    var cardRoot = document.getElementById("consultation-template-card-root");
+    var pendingEl = document.getElementById("consultation-template-pending");
     var genBtn = document.querySelector(".btn-consultation-template");
     var factsBtn = document.querySelector(".btn-consultation-from-facts");
-    var useFactsTimer =
-      factsNotes != null && String(factsNotes).trim() !== "";
     if (genBtn) genBtn.disabled = true;
     if (factsBtn) factsBtn.disabled = true;
-    if (useFactsTimer) {
-      startConsultTplTimer("consultation-facts-timer");
-    } else {
-      startConsultTplTimer("consultation-template-timer");
+    var dex = document.getElementById("assist-detail-extract-wrap");
+    if (dex) dex.open = false;
+    if (resultEl) resultEl.hidden = false;
+    if (pendingEl) pendingEl.hidden = false;
+    if (cardRoot) cardRoot.hidden = true;
+    if (bodyEl) bodyEl.innerHTML = "";
+    startConsultTplTimer("consultation-unified-timer");
+    if (resultEl && resultEl.scrollIntoView) {
+      try {
+        resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      } catch (e) {
+        resultEl.scrollIntoView(true);
+      }
     }
     var pctx = patientContextLines();
     var pctxPayload = pctx ? pctx : null;
@@ -4160,6 +4218,10 @@
         if (bodyEl) {
           bodyEl.innerHTML = t ? formatConsultationBodyHtml(t) : "";
         }
+        var pendingE = document.getElementById("consultation-template-pending");
+        var cardR = document.getElementById("consultation-template-card-root");
+        if (pendingE) pendingE.hidden = true;
+        if (cardR) cardR.hidden = !t;
         if (resultEl) {
           resultEl.hidden = !t;
         }
@@ -4167,12 +4229,25 @@
         if (copyBtn) copyBtn.disabled = !t;
         if (t) {
           window.__lastConsultationTemplateRaw = t;
+          if (cardR && cardR.scrollIntoView) {
+            try {
+              cardR.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            } catch (e2) {
+              cardR.scrollIntoView(true);
+            }
+          }
         } else {
           window.__lastConsultationTemplateRaw = "";
         }
       })
       .catch(function (err) {
         alert("Не удалось: " + String(err.message || err));
+        var pendingE2 = document.getElementById("consultation-template-pending");
+        var cardR2 = document.getElementById("consultation-template-card-root");
+        var resE = document.getElementById("consultation-template-result");
+        if (pendingE2) pendingE2.hidden = true;
+        if (cardR2) cardR2.hidden = true;
+        if (resE) resE.hidden = true;
       })
       .finally(function () {
         clearConsultTplTimer();
@@ -4773,7 +4848,6 @@
     html +=
       '<div class="assist-facts-actions">' +
       '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному</button>' +
-      '<span class="consultation-facts-timer" id="consultation-facts-timer" hidden aria-live="polite"></span>' +
       "</div>";
     html += "</div>";
     return html;
@@ -4795,10 +4869,12 @@
       '<div class="consultation-template-actions">' +
       '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
       '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
-      '<span class="consultation-template-timer" id="consultation-template-timer" hidden aria-live="polite"></span>' +
       "</div>" +
       '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
-      '<article class="consultation-template-card">' +
+      '<div class="consultation-template-pending" id="consultation-template-pending" hidden>' +
+      '<span class="consultation-template-timer" id="consultation-unified-timer" hidden aria-live="polite"></span>' +
+      "</div>" +
+      '<article class="consultation-template-card" id="consultation-template-card-root" hidden>' +
       '<header class="consultation-template-header">' +
       '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="88" height="88" alt="" />' +
       "<div>" +
@@ -4812,8 +4888,11 @@
       "</div>";
     var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
     html += consultBlock;
+    html +=
+      '<details class="assist-detail-extract-details" id="assist-detail-extract-wrap" open>';
+    html +=
+      '<summary class="assist-detail-extract-summary">Развёрнутая выдержка из протокола</summary>';
     html += '<div class="assist-detail-extract">';
-    html += '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>';
     if (cd.detail_match_score != null && !isNaN(Number(cd.detail_match_score))) {
       var dp = pct01(Number(cd.detail_match_score));
       var confLine =
@@ -4900,6 +4979,7 @@
         '<p class="assist-detail-note">' + escapeHtml(String(ex.note)) + "</p>";
     }
     html += "</div>";
+    html += "</details>";
     html += "</div>";
     return html;
   }
