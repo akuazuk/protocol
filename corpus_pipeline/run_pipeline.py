@@ -18,7 +18,10 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from corpus_pipeline.chunk_build import build_chunks_for_section
+from corpus_pipeline.chunk_build import (
+    build_chunks_for_section,
+    build_table_chunks_for_document,
+)
 from corpus_pipeline.config import (
     OUT_CHUNKS,
     OUT_DOCS,
@@ -153,6 +156,18 @@ def main() -> None:
                         extracted.page_starts,
                         sec,
                         sec.get("section_type") or "body",
+                    )
+                )
+            # Таблицы pdfplumber — отдельные чанки table_block (только первый логический документ PDF)
+            if li == 0:
+                doc_chunks.extend(
+                    build_table_chunks_for_document(
+                        full_doc_id,
+                        full,
+                        extracted.page_starts,
+                        tables_merged,
+                        rel,
+                        file_name,
                     )
                 )
 

@@ -1577,6 +1577,18 @@ def retrieve(
                 final *= user_penalty
             else:
                 final *= user_uncertain
+        if (ch.get("kind") or "").strip() == "table_block":
+            ql = (query or "").lower()
+            if (
+                any(c.isdigit() for c in query)
+                or "таблиц" in ql
+                or "доз" in ql
+                or "мг" in ql
+                or "мкг" in ql
+                or "мл" in ql
+                or "сут" in ql
+            ):
+                final *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
         scored.append((final, lex, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
