@@ -1177,13 +1177,6 @@
       display: none !important;
     }
 
-    .consultation-placeholders-lead {
-      margin: 0 0 0.65rem;
-      font-size: 0.82rem;
-      line-height: 1.45;
-      color: var(--muted);
-    }
-
     .consultation-placeholders-empty {
       margin: 0 0 0.65rem;
       font-size: 0.82rem;
@@ -1932,6 +1925,59 @@
 
     .assist-detail-fact-body .assist-detail-list {
       margin-top: 0;
+    }
+
+    .assist-detail-list--pick {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .assist-detail-list--pick > li {
+      margin: 0.35rem 0;
+    }
+
+    .assist-fact-label {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      cursor: pointer;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .assist-fact-cb {
+      flex-shrink: 0;
+      width: 1.05rem;
+      height: 1.05rem;
+      margin-top: 0.15rem;
+      accent-color: var(--green-600);
+      cursor: pointer;
+    }
+
+    .assist-fact-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .assist-mf-pick .assist-fact-label {
+      align-items: flex-start;
+    }
+
+    .assist-mf-pick .assist-fact-mf-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .assist-facts-actions {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.18);
+    }
+
+    .btn-consultation-from-facts {
+      font-size: 0.88rem;
+      padding: 0.55rem 1rem;
     }
 
     .assist-detail-fact-empty {
@@ -3783,6 +3829,10 @@
   function loadConsultationTemplate(opts) {
     opts = opts || {};
     var refine = opts.refine === true;
+    var factsNotes = opts.factsNotes;
+    if (factsNotes == null && opts.fromFacts === true) {
+      factsNotes = collectSelectedFactsNotes();
+    }
     var cd = window.__clinicalDetailForTemplate;
     var q = window.__assistQueryForTemplate || "";
     if (!cd || cd.error) {
@@ -3826,11 +3876,13 @@
         patient_context: pctxPayload,
       };
     } else {
+      var fn = factsNotes != null ? String(factsNotes).trim() : "";
       payloadBody = {
         query: q,
         clinical_detail: cd,
         refine: false,
         patient_context: pctxPayload,
+        additional_notes: fn || null,
       };
     }
     fetch(base + "/api/consultation-template", {
@@ -3906,6 +3958,18 @@
       if (el.closest(".btn-consultation-template")) {
         ev.preventDefault();
         loadConsultationTemplate({ refine: false });
+        return;
+      }
+      if (el.closest(".btn-consultation-from-facts")) {
+        ev.preventDefault();
+        var picked = collectSelectedFactsNotes();
+        if (!picked || !String(picked).trim()) {
+          alert(
+            "Отметьте хотя бы один пункт в блоке «По протоколу: обследование, препараты…»."
+          );
+          return;
+        }
+        loadConsultationTemplate({ refine: false, factsNotes: picked });
         return;
       }
       if (el.closest(".btn-consultation-refine")) {
@@ -4315,25 +4379,96 @@
     });
   }
 
+  var FACT_SECTION_TITLES = {
+    investigations: "Обследование",
+    medications: "Препараты",
+    treatment_methods: "Лечение",
+    monitoring_frequency: "Кратность наблюдения",
+  };
+
+  function collectSelectedFactsNotes() {
+    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
+    if (!wrap) return "";
+    var cbs = wrap.querySelectorAll(".assist-fact-cb:checked");
+    if (!cbs.length) return "";
+    var byCat = {};
+    var i;
+    for (i = 0; i < cbs.length; i++) {
+      var cb = cbs[i];
+      var cat = cb.getAttribute("data-fact-cat");
+      if (!cat) continue;
+      var text = "";
+      if (cat === "monitoring_frequency") {
+        var body = wrap.querySelector(".assist-fact-mf-body");
+        text = body ? String(body.innerText || body.textContent || "").trim() : "";
+      } else {
+        var lab = cb.closest(".assist-fact-label");
+        var span = lab && lab.querySelector(".assist-fact-text");
+        text = span ? String(span.textContent || "").trim() : "";
+      }
+      if (!text) continue;
+      if (!byCat[cat]) byCat[cat] = [];
+      byCat[cat].push(text);
+    }
+    var order = [
+      "investigations",
+      "medications",
+      "treatment_methods",
+      "monitoring_frequency",
+    ];
+    var parts = [];
+    for (i = 0; i < order.length; i++) {
+      var oc = order[i];
+      var arr = byCat[oc];
+      if (!arr || !arr.length) continue;
+      var title = FACT_SECTION_TITLES[oc] || oc;
+      var lines = [];
+      var j;
+      for (j = 0; j < arr.length; j++) {
+        lines.push("- " + arr[j]);
+      }
+      parts.push(title + ":\n" + lines.join("\n"));
+    }
+    if (!parts.length) return "";
+    return (
+      "Пользователь выбрал включить в консультативное заключение следующие пункты из выдержки по протоколу:\n\n" +
+      parts.join("\n\n")
+    );
+  }
+
   function renderClinicalFactsBlock(ex) {
     var inv = Array.isArray(ex.investigations) ? ex.investigations : [];
     var med = Array.isArray(ex.medications) ? ex.medications : [];
     var tm = Array.isArray(ex.treatment_methods) ? ex.treatment_methods : [];
     var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
     var NP_MARK = "[не из протокола]";
-    function listHtml(items) {
+    function listHtmlChecks(items, catKey) {
       if (!items || !items.length) {
         return (
           '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
         );
       }
-      var h = '<ul class="assist-detail-list">';
+      var h = '<ul class="assist-detail-list assist-detail-list--pick">';
       var li;
       for (li = 0; li < items.length; li++) {
         var line = String(items[li]);
         var liCls =
           line.indexOf(NP_MARK) === 0 ? ' class="assist-detail-li-nonprotocol"' : "";
-        h += "<li" + liCls + ">" + escapeHtml(line) + "</li>";
+        var cid = "assist-fact-" + catKey + "-" + li;
+        h +=
+          "<li" +
+          liCls +
+          '><label class="assist-fact-label" for="' +
+          escapeHtmlAttr(cid) +
+          '">' +
+          '<input type="checkbox" class="assist-fact-cb" id="' +
+          escapeHtmlAttr(cid) +
+          '" checked data-fact-cat="' +
+          escapeHtmlAttr(catKey) +
+          '" />' +
+          '<span class="assist-fact-text">' +
+          escapeHtml(line) +
+          "</span></label></li>";
       }
       h += "</ul>";
       return h;
@@ -4348,7 +4483,16 @@
         mf.indexOf(NP_MARK) === 0
           ? "assist-detail-body assist-detail-body--nonprotocol"
           : "assist-detail-body";
-      return '<div class="' + wrapCls + '">' + formatSummaryHtml(mf) + "</div>";
+      return (
+        '<div class="assist-mf-pick">' +
+        '<label class="assist-fact-label" for="assist-fact-monitoring_frequency">' +
+        '<input type="checkbox" class="assist-fact-cb" id="assist-fact-monitoring_frequency" checked data-fact-cat="monitoring_frequency" />' +
+        '<div class="' +
+        wrapCls +
+        ' assist-fact-mf-body">' +
+        formatSummaryHtml(mf) +
+        "</div></label></div>"
+      );
     }
     var html =
       '<div class="assist-detail-facts-wrap" role="region" aria-label="Обследование, препараты, лечение, кратность наблюдения">';
@@ -4357,21 +4501,26 @@
     html += '<div class="assist-detail-facts-grid">';
     html +=
       '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Обследование</h4><div class="assist-detail-fact-body">' +
-      listHtml(inv) +
+      listHtmlChecks(inv, "investigations") +
       "</div></div>";
     html +=
       '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Препараты</h4><div class="assist-detail-fact-body">' +
-      listHtml(med) +
+      listHtmlChecks(med, "medications") +
       "</div></div>";
     html +=
       '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Лечение</h4><div class="assist-detail-fact-body">' +
-      listHtml(tm) +
+      listHtmlChecks(tm, "treatment_methods") +
       "</div></div>";
     html +=
       '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Кратность наблюдения</h4><div class="assist-detail-fact-body">' +
       freqHtml() +
       "</div></div>";
-    html += "</div></div>";
+    html += "</div>";
+    html +=
+      '<div class="assist-facts-actions">' +
+      '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному</button>' +
+      "</div>";
+    html += "</div>";
     return html;
   }
 
@@ -4406,7 +4555,6 @@
       "</article>" +
       "</div>" +
       '<div class="consultation-placeholders-wrap" id="consultation-placeholders-wrap" hidden>' +
-      '<p class="consultation-placeholders-lead">Заполните значения вместо плейсхолдеров в квадратных скобках или укажите дополнительные сведения — затем сформируйте полное заключение по протоколу.</p>' +
       '<div id="consultation-placeholders-fields"></div>' +
       '<label class="consultation-ph-notes-label" for="consultation-additional-notes">Дополнительные сведения (необязательно)</label>' +
       '<textarea id="consultation-additional-notes" class="consultation-additional-notes" rows="3" placeholder="Факты осмотра, анамнез, лабораторные данные…"></textarea>' +

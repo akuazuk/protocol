@@ -2470,11 +2470,19 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
             + payload
         )
     else:
+        notes0 = (body.additional_notes or "").strip()[:8000]
+        notes_block0 = (
+            "\n\nВыбранные пользователем пункты для включения в заключение (приоритетно отразить в соответствующих разделах):\n"
+            + notes0
+            if notes0
+            else ""
+        )
         full_prompt = (
             SYSTEM_CONSULTATION_TEMPLATE
             + "\n\n---\n\nЗапрос пользователя:\n"
             + q
             + pctx
+            + notes_block0
             + "\n\nВыдержка (JSON):\n"
             + payload
         )
