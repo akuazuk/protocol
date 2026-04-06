@@ -230,7 +230,8 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
       margin-bottom: 1.75rem;
       position: relative;
-      overflow: hidden;
+      /* visible — иначе position:sticky у .page-steps не закрепляется при прокрутке */
+      overflow: visible;
       isolation: isolate;
     }
 
@@ -741,14 +742,16 @@
       margin: 0 0 1.25rem;
       padding: 0.65rem 0.85rem;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(26, 138, 114, 0.22);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(26, 138, 114, 0.28);
       position: sticky;
-      top: 0.5rem;
-      z-index: 5;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.06);
+      top: max(0.35rem, env(safe-area-inset-top, 0px));
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:
+        0 4px 18px rgba(6, 61, 53, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
     }
 
     .page-steps__label {
@@ -2465,7 +2468,7 @@
       <p class="lead lead--short">
         Введите жалобу или код МКБ-10 и нажмите «Найти протоколы». При необходимости уточните рубрики и контекст пациента — шаги ниже.
       </p>
-      <details class="hero-help">
+      <details class="hero-help" open>
         <summary>Подробнее о поиске</summary>
         <p class="lead">
           Система сопоставит запрос с фрагментами протоколов и предложит релевантные документы с кратким разбором.
