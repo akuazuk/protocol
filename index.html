@@ -1938,6 +1938,22 @@
       font-style: italic;
     }
 
+    .assist-detail-li-nonprotocol {
+      list-style-position: outside;
+      border-left: 3px solid rgba(217, 119, 6, 0.65);
+      padding: 0.35rem 0.5rem 0.35rem 0.65rem;
+      margin: 0.25rem 0;
+      border-radius: 0 8px 8px 0;
+      background: rgba(251, 191, 36, 0.08);
+    }
+
+    .assist-detail-body--nonprotocol {
+      border-left: 3px solid rgba(217, 119, 6, 0.65);
+      padding: 0.5rem 0.65rem;
+      border-radius: 8px;
+      background: rgba(251, 191, 36, 0.08);
+    }
+
     .assist-card {
       margin: 0;
       padding: 1.25rem 1.35rem;
@@ -2489,7 +2505,7 @@
           <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
         </div>
       </details>
-      <details class="ctx-panel" id="ctx-panel">
+      <details class="ctx-panel" id="ctx-panel" open>
         <summary>Контекст пациента</summary>
         <p class="ctx-hint">
           Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
@@ -4301,6 +4317,7 @@
     var med = Array.isArray(ex.medications) ? ex.medications : [];
     var tm = Array.isArray(ex.treatment_methods) ? ex.treatment_methods : [];
     var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
+    var NP_MARK = "[не из протокола]";
     function listHtml(items) {
       if (!items || !items.length) {
         return (
@@ -4310,7 +4327,10 @@
       var h = '<ul class="assist-detail-list">';
       var li;
       for (li = 0; li < items.length; li++) {
-        h += "<li>" + escapeHtml(String(items[li])) + "</li>";
+        var line = String(items[li]);
+        var liCls =
+          line.indexOf(NP_MARK) === 0 ? ' class="assist-detail-li-nonprotocol"' : "";
+        h += "<li" + liCls + ">" + escapeHtml(line) + "</li>";
       }
       h += "</ul>";
       return h;
@@ -4321,7 +4341,11 @@
           '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
         );
       }
-      return '<div class="assist-detail-body">' + formatSummaryHtml(mf) + "</div>";
+      var wrapCls =
+        mf.indexOf(NP_MARK) === 0
+          ? "assist-detail-body assist-detail-body--nonprotocol"
+          : "assist-detail-body";
+      return '<div class="' + wrapCls + '">' + formatSummaryHtml(mf) + "</div>";
     }
     var html =
       '<div class="assist-detail-facts-wrap" role="region" aria-label="Обследование, препараты, лечение, кратность наблюдения">';
@@ -4599,8 +4623,9 @@
 
       if (j.differential && j.differential.length) {
         html +=
-          '<hr class="assist-hr" /><details class="assist-collapsible"><summary>Дифференциальные гипотезы <span style="font-weight:500;color:var(--muted);font-size:0.85em">(развернуть)</span></summary>';
-        html += '<div class="assist-sec assist-sec--differential">';
+          '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
+        html +=
+          '<span class="assist-sec-label">Дифференциальные гипотезы</span>';
         html +=
           '<p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 — относительно более вероятный. Кнопка «Искать протокол» подставляет гипотезу в запрос вместе с предыдущим текстом жалобы и контекстом пациента (если он был указан).</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
         var di;
@@ -4623,7 +4648,7 @@
             enc +
             '">Искать протокол</button></li>';
         }
-        html += "</ul></div></div></details>";
+        html += "</ul></div></div>";
       }
 
       if (
