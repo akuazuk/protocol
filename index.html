@@ -2172,6 +2172,17 @@
       line-height: 1.5;
     }
 
+    .assist-detail-warning {
+      margin: 0.6rem 0 0.8rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(217, 119, 6, 0.45);
+      background: rgba(255, 247, 237, 0.92);
+      color: #92400e;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
     .assist-detail-facts-wrap {
       margin: 0.85rem 0 1rem;
       padding: 0.9rem 1rem;
@@ -5078,6 +5089,33 @@
     return html;
   }
 
+  function extractPatientAgeFromQueryText(fullQuery) {
+    var q = String(fullQuery || "");
+    if (!q) return null;
+    var m = q.match(/Возраст:\s*([^\n\r]+)/i);
+    var source = m ? m[1] : q;
+    var d = source.match(/(\d{1,3})\s*(?:лет|года|год|г\.|y\.?o\.?|years?)/i);
+    if (!d) return null;
+    var n = Number(d[1]);
+    if (!isFinite(n) || n <= 0 || n > 120) return null;
+    return n;
+  }
+
+  function isPediatricProtocolForAdult(cd, fullQuery) {
+    var age = extractPatientAgeFromQueryText(fullQuery);
+    if (age == null || age < 18) return false;
+    var ex = (cd && cd.extraction) || {};
+    var text = [
+      cd && cd.title,
+      cd && cd.specialty_ru,
+      ex && ex.diagnosis,
+      ex && ex.note,
+    ]
+      .filter(Boolean)
+      .join("\n");
+    return /(детск|детское население|педиатр)/i.test(text);
+  }
+
   function renderClinicalDetailBlock(cd) {
     if (!cd) return "";
     if (cd.error) {
@@ -5088,6 +5126,10 @@
       );
     }
     var ex = cd.extraction || {};
+    var adultPediatricMismatch = isPediatricProtocolForAdult(
+      cd,
+      window.__assistQueryForTemplate || ""
+    );
     var consultBlock =
       '<div class="consultation-template-wrap">' +
       '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке; требует проверки и при необходимости правки лечащим врачом.</p>' +
@@ -5148,7 +5190,10 @@
         formatSummaryHtml(String(ex.diagnosis)) +
         "</div>";
     }
-    if (ex.detailed) {
+    if (adultPediatricMismatch) {
+      html +=
+        '<p class="assist-detail-warning"><strong>Важно:</strong> возраст пациента во входных данных — взрослый, а текущая развёрнутая выдержка относится к детскому протоколу. Чтобы не вводить в заблуждение, блок рекомендаций по обследованию/лечению скрыт. Запустите новый поиск с акцентом на взрослый протокол.</p>';
+    } else if (ex.detailed) {
       html += renderClinicalFactsBlock(ex);
     } else {
       var tm = ex.treatment_methods;
