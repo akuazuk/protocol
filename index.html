@@ -337,7 +337,7 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
       margin-bottom: 1.75rem;
       position: relative;
-      /* visible — иначе position:sticky у .page-nav не закрепляется при прокрутке */
+      /* overflow: visible — для корректного sticky у дочерних элементов при необходимости */
       overflow: visible;
       isolation: isolate;
     }
@@ -868,89 +868,6 @@
       color: var(--green-800);
     }
 
-    /* Навигация: выбор раздела + компактные действия */
-    .page-nav {
-      margin: 0 0 1.1rem;
-      padding: 0.55rem 0.75rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(26, 138, 114, 0.28);
-      position: sticky;
-      top: max(0.35rem, env(safe-area-inset-top, 0px));
-      z-index: 50;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow:
-        0 4px 18px rgba(6, 61, 53, 0.08),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset;
-    }
-
-    .page-nav__row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem 0.75rem;
-    }
-
-    .page-nav__select-wrap {
-      flex: 1 1 220px;
-      min-width: min(100%, 14rem);
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .page-nav__select-label {
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--green-800);
-    }
-
-    .page-nav__select {
-      width: 100%;
-      font-family: inherit;
-      font-size: 0.88rem;
-      font-weight: 600;
-      padding: 0.5rem 0.65rem;
-      border-radius: 10px;
-      border: 1px solid rgba(26, 138, 114, 0.38);
-      background: #fff;
-      color: var(--green-900);
-      cursor: pointer;
-    }
-
-    .page-nav__select:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.22);
-    }
-
-    .page-nav__tools {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .page-nav__tools-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      width: 100%;
-      flex-basis: 100%;
-    }
-
-    @media (min-width: 560px) {
-      .page-nav__tools-label {
-        width: auto;
-        flex-basis: auto;
-        margin-right: 0.15rem;
-      }
-    }
-
     #section-help {
       scroll-margin-top: 5.5rem;
     }
@@ -1205,25 +1122,6 @@
 
     #section-footer {
       scroll-margin-top: 4rem;
-    }
-
-    .page-steps-btn {
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--green-800);
-      min-width: 2.35rem;
-      padding: 0.38rem 0.5rem;
-      border-radius: 10px;
-      border: 1px solid rgba(26, 138, 114, 0.35);
-      background: rgba(255, 255, 255, 0.95);
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .page-steps-btn:hover {
-      background: rgba(232, 245, 241, 0.98);
-      border-color: var(--green-600);
     }
 
     .section-results {
@@ -2956,37 +2854,6 @@
         <p class="hero-eyebrow">Ваш запрос</p>
         <h2 id="search-title">Опишите симптомы, ситуацию или введите код МКБ-10</h2>
       </div>
-      <nav class="page-nav" aria-label="Навигация по странице">
-        <div class="page-nav__row">
-          <div class="page-nav__select-wrap">
-            <label class="page-nav__select-label" for="page-nav-jump">Перейти к разделу</label>
-            <select id="page-nav-jump" class="page-nav__select" autocomplete="off">
-              <option value="">Выберите раздел…</option>
-              <option value="#section-header">Начало (шапка)</option>
-              <option value="#section-filters">Контекст и рубрики</option>
-              <option value="#section-query">Поиск протоколов</option>
-              <option value="#section-help">Справка по поиску</option>
-              <option value="#section-footer">Подвал страницы</option>
-            </select>
-          </div>
-          <div class="page-nav__tools" role="toolbar" aria-label="Шаг по странице и история браузера">
-            <span class="page-nav__tools-label">По странице</span>
-            <button type="button" class="page-steps-btn" id="btn-nav-section-up" title="Предыдущий раздел" aria-label="Предыдущий раздел страницы">
-              ↑
-            </button>
-            <button type="button" class="page-steps-btn" id="btn-nav-section-down" title="Следующий раздел" aria-label="Следующий раздел страницы">
-              ↓
-            </button>
-            <span class="page-nav__tools-label">История</span>
-            <button type="button" class="page-steps-btn" id="btn-nav-history-back" title="Назад в истории браузера" aria-label="Назад в истории браузера">
-              ←
-            </button>
-            <button type="button" class="page-steps-btn" id="btn-nav-history-forward" title="Вперёд в истории браузера" aria-label="Вперёд в истории браузера">
-              →
-            </button>
-          </div>
-        </div>
-      </nav>
 
       <div id="section-filters" class="section-anchor section-block--filters">
         <details class="ctx-panel" id="ctx-panel" open>
@@ -3751,78 +3618,9 @@
     });
   }
 
-  function syncResultsNavOption(visible) {
-    var sel = document.getElementById("page-nav-jump");
-    if (!sel) return;
-    var opt = document.getElementById("page-nav-opt-results");
-    if (visible) {
-      if (!opt) {
-        opt = document.createElement("option");
-        opt.id = "page-nav-opt-results";
-        opt.value = "#section-results";
-        opt.textContent = "Результат подбора";
-        sel.appendChild(opt);
-      }
-    } else if (opt && opt.parentNode) {
-      opt.parentNode.removeChild(opt);
-    }
-  }
-
-  function expandSectionForNav(sectionId) {
-    var id = String(sectionId || "").replace(/^#/, "");
-    if (id === "section-filters") {
-      var sp = document.getElementById("specialty-panel");
-      var cp = document.getElementById("ctx-panel");
-      if (sp) sp.open = true;
-      if (cp) cp.open = true;
-      return;
-    }
-    if (id === "section-help") {
-      var h = document.getElementById("section-help");
-      if (h && h.tagName === "DETAILS") h.open = true;
-    }
-  }
-
-  function navigateToSectionHash(hash) {
-    var raw = String(hash || "").trim();
-    if (!raw || raw === "#") return;
-    var id = raw.replace(/^#/, "");
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (el.hasAttribute("hidden") && el.hidden) return;
-    expandSectionForNav(id);
-    try {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (e1) {
-      try {
-        el.scrollIntoView(true);
-      } catch (e2) {}
-    }
-    if (id === "section-query") {
-      var q = document.getElementById("q");
-      if (q) {
-        try {
-          q.focus();
-        } catch (e3) {}
-      }
-    }
-  }
-
-  function bindPageNavJumpSelect() {
-    var sel = document.getElementById("page-nav-jump");
-    if (!sel) return;
-    sel.addEventListener("change", function () {
-      var v = sel.value;
-      if (!v) return;
-      navigateToSectionHash(v);
-      sel.value = "";
-    });
-  }
-
   function showResultsSection(visible) {
     var sec = document.getElementById("section-results");
     if (sec) sec.hidden = !visible;
-    syncResultsNavOption(visible);
     updateScrollFabVisibility();
   }
 
@@ -3863,66 +3661,15 @@
     }
   }
 
-  function getSectionNavIds() {
-    var ids = ["section-header", "section-filters", "section-query", "section-help"];
-    var res = document.getElementById("section-results");
-    if (res && !res.hidden) ids.push("section-results");
-    ids.push("section-footer");
-    return ids;
-  }
-
-  function scrollSectionByDelta(delta) {
-    var ids = getSectionNavIds();
-    var y = window.scrollY + window.innerHeight * 0.2;
-    var bestIx = 0;
-    for (var i = 0; i < ids.length; i++) {
-      var el = document.getElementById(ids[i]);
-      if (!el) continue;
-      if (el.hasAttribute("hidden") && el.hidden) continue;
-      var top = el.getBoundingClientRect().top + window.scrollY;
-      if (top <= y + 1) bestIx = i;
-    }
-    var next = bestIx + delta;
-    if (next < 0) next = 0;
-    if (next >= ids.length) next = ids.length - 1;
-    var nextId = ids[next];
-    expandSectionForNav(nextId);
-    var target = document.getElementById(nextId);
-    if (target) {
-      try {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (e) {
-        target.scrollIntoView(true);
-      }
-    }
-    if (nextId === "section-query") {
-      var q = document.getElementById("q");
-      if (q) {
-        try {
-          q.focus();
-        } catch (e2) {}
-      }
-    }
-  }
-
   function bindPageNav() {
     var b1 = document.getElementById("btn-back-to-query");
     var b2 = document.getElementById("btn-fab-query");
     var b3 = document.getElementById("btn-fab-top");
     var b4 = document.getElementById("btn-fab-bottom");
-    var up = document.getElementById("btn-nav-section-up");
-    var down = document.getElementById("btn-nav-section-down");
-    var hb = document.getElementById("btn-nav-history-back");
-    var hf = document.getElementById("btn-nav-history-forward");
     if (b1) b1.addEventListener("click", scrollToQueryBlock);
     if (b2) b2.addEventListener("click", scrollToQueryBlock);
     if (b3) b3.addEventListener("click", scrollToPageTop);
     if (b4) b4.addEventListener("click", scrollToPageBottom);
-    if (up) up.addEventListener("click", function () { scrollSectionByDelta(-1); });
-    if (down) down.addEventListener("click", function () { scrollSectionByDelta(1); });
-    if (hb) hb.addEventListener("click", function () { history.back(); });
-    if (hf) hf.addEventListener("click", function () { history.forward(); });
-    bindPageNavJumpSelect();
     window.addEventListener(
       "scroll",
       function () {
@@ -3930,12 +3677,6 @@
       },
       { passive: true }
     );
-    window.addEventListener("hashchange", function () {
-      var h = window.location.hash;
-      if (h && h.indexOf("section-") !== -1) {
-        navigateToSectionHash(h);
-      }
-    });
   }
 
   function resetAllForNewProtocolSearch() {
@@ -5772,9 +5513,6 @@
       bindSpecialtyPanel();
       bindVoiceInput();
       bindPageNav();
-      if (window.location.hash && window.location.hash.indexOf("section-") !== -1) {
-        navigateToSectionHash(window.location.hash);
-      }
 
       var btnNewSearch = document.getElementById("btn-new-search-full");
       if (btnNewSearch) {
