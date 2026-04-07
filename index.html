@@ -202,33 +202,12 @@
     }
 
     .logo img {
-      width: 88px;
+      width: 120px;
       height: auto;
-      max-height: 92px;
+      max-height: 128px;
       display: block;
       object-fit: contain;
       filter: drop-shadow(0 6px 20px rgba(13, 92, 74, 0.12));
-    }
-
-    .brand-kicker {
-      margin: 0 0 0.25rem;
-      font-size: 0.62rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--green-700);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .brand-kicker::before {
-      content: "";
-      width: 22px;
-      height: 3px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--green-400), var(--emerald-500), var(--green-600));
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
     }
 
     .brand h1 {
@@ -358,7 +337,7 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
       margin-bottom: 1.75rem;
       position: relative;
-      /* visible — иначе position:sticky у .page-steps не закрепляется при прокрутке */
+      /* visible — иначе position:sticky у .page-nav не закрепляется при прокрутке */
       overflow: visible;
       isolation: isolate;
     }
@@ -889,16 +868,12 @@
       color: var(--green-800);
     }
 
-    /* Навигация по разделам и якоря */
-    .page-steps {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.4rem 0.65rem;
-      margin: 0 0 1.25rem;
-      padding: 0.65rem 0.85rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.92);
+    /* Навигация: выбор раздела + компактные действия */
+    .page-nav {
+      margin: 0 0 1.1rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.94);
       border: 1px solid rgba(26, 138, 114, 0.28);
       position: sticky;
       top: max(0.35rem, env(safe-area-inset-top, 0px));
@@ -910,34 +885,70 @@
         0 1px 0 rgba(255, 255, 255, 0.9) inset;
     }
 
-    .page-steps__label {
-      font-size: 0.72rem;
+    .page-nav__row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+    }
+
+    .page-nav__select-wrap {
+      flex: 1 1 220px;
+      min-width: min(100%, 14rem);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .page-nav__select-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green-800);
+    }
+
+    .page-nav__select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.5rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.38);
+      background: #fff;
+      color: var(--green-900);
+      cursor: pointer;
+    }
+
+    .page-nav__select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.22);
+    }
+
+    .page-nav__tools {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .page-nav__tools-label {
+      font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--green-800);
-      margin-right: 0.25rem;
+      color: var(--muted);
+      width: 100%;
+      flex-basis: 100%;
     }
 
-    .page-steps a {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--green-700);
-      text-decoration: none;
-      padding: 0.35rem 0.65rem;
-      border-radius: 999px;
-      background: rgba(232, 245, 241, 0.9);
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .page-steps a:hover {
-      background: rgba(26, 138, 114, 0.12);
-      color: var(--green-950);
-    }
-
-    .page-steps a[hidden] {
-      display: none !important;
+    @media (min-width: 560px) {
+      .page-nav__tools-label {
+        width: auto;
+        flex-basis: auto;
+        margin-right: 0.15rem;
+      }
     }
 
     #section-help {
@@ -1198,11 +1209,12 @@
 
     .page-steps-btn {
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--green-800);
-      padding: 0.32rem 0.55rem;
-      border-radius: 999px;
+      min-width: 2.35rem;
+      padding: 0.38rem 0.5rem;
+      border-radius: 10px;
       border: 1px solid rgba(26, 138, 114, 0.35);
       background: rgba(255, 255, 255, 0.95);
       cursor: pointer;
@@ -1212,15 +1224,6 @@
     .page-steps-btn:hover {
       background: rgba(232, 245, 241, 0.98);
       border-color: var(--green-600);
-    }
-
-    .page-steps__hist {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-left: 0.15rem;
-      padding-left: 0.55rem;
-      border-left: 1px solid rgba(26, 138, 114, 0.2);
     }
 
     .section-results {
@@ -2799,8 +2802,8 @@
       }
 
       .logo img {
-        width: 80px;
-        max-height: 88px;
+        width: 104px;
+        max-height: 112px;
       }
 
       .brand h1 {
@@ -2909,25 +2912,24 @@
       <div class="logo">
         <img
           src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg"
-          width="96"
-          height="96"
+          width="128"
+          height="128"
           alt="Логотип медицинского центра"
         />
       </div>
       <div class="brand">
-        <p class="brand-kicker">Официальные документы Минздрава РБ</p>
         <h1>
           <span class="brand-title-line">Клинические протоколы</span>
           <span class="brand-title-line brand-title-accent">Минздрава Республики Беларусь</span>
         </h1>
         <p class="tagline tagline--rich">
           <span class="tagline-lead"
-            >Здесь можно <span class="hl">найти и открыть</span> нужный протокол по жалобам, описанию случая или коду
-            МКБ-10.</span>
+            ><span class="hl">Поиск и подбор информации</span> по официальным PDF протоколам: опишите жалобы, клиническую
+            ситуацию или укажите код МКБ-10 — сервис предложит релевантные документы, краткий разбор и ссылки на
+            первоисточник, чтобы быстрее найти нужные сведения.</span>
           <span class="tagline-sub"
-            >Поиск идёт по текстам <span class="hl-doc">официальных PDF</span> клинических протоколов, опубликованных
-            Министерством здравоохранения Республики Беларусь. Это вспомогательный инструмент для ориентира в
-            документах, а не установление диагноза.</span>
+            >Источник — публикации <span class="hl-doc">Минздрава РБ</span>. Инструмент для ориентира в нормативных
+            текстах; не замена очной консультации и не установление диагноза.</span>
         </p>
         <div class="badge-row">
           <span class="badge badge--green" id="proto-count-badge"
@@ -2954,34 +2956,109 @@
         <p class="hero-eyebrow">Ваш запрос</p>
         <h2 id="search-title">Опишите симптомы, ситуацию или введите код МКБ-10</h2>
       </div>
-      <nav class="page-steps" aria-label="Разделы страницы">
-        <span class="page-steps__label">К разделу</span>
-        <a href="#section-header">Шапка</a>
-        <a href="#section-query">Поиск</a>
-        <a href="#section-filters">Рубрики и контекст</a>
-        <a href="#section-help">Справка</a>
-        <a href="#section-results" id="page-step-results" hidden>Результат</a>
-        <a href="#section-footer">Внизу страницы</a>
-        <span class="page-steps__hist" role="group" aria-label="Переход между блоками страницы">
-          <button type="button" class="page-steps-btn" id="btn-nav-section-up" title="Предыдущий блок">↑ Блок</button>
-          <button type="button" class="page-steps-btn" id="btn-nav-section-down" title="Следующий блок">↓ Блок</button>
-        </span>
-        <span class="page-steps__hist" role="group" aria-label="История браузера">
-          <button type="button" class="page-steps-btn" id="btn-nav-history-back" title="Назад в истории браузера">
-            ← Назад
-          </button>
-          <button type="button" class="page-steps-btn" id="btn-nav-history-forward" title="Вперёд в истории браузера">
-            Вперёд →
-          </button>
-        </span>
+      <nav class="page-nav" aria-label="Навигация по странице">
+        <div class="page-nav__row">
+          <div class="page-nav__select-wrap">
+            <label class="page-nav__select-label" for="page-nav-jump">Перейти к разделу</label>
+            <select id="page-nav-jump" class="page-nav__select" autocomplete="off">
+              <option value="">Выберите раздел…</option>
+              <option value="#section-header">Начало (шапка)</option>
+              <option value="#section-filters">Контекст и рубрики</option>
+              <option value="#section-query">Поиск протоколов</option>
+              <option value="#section-help">Справка по поиску</option>
+              <option value="#section-footer">Подвал страницы</option>
+            </select>
+          </div>
+          <div class="page-nav__tools" role="toolbar" aria-label="Шаг по странице и история браузера">
+            <span class="page-nav__tools-label">По странице</span>
+            <button type="button" class="page-steps-btn" id="btn-nav-section-up" title="Предыдущий раздел" aria-label="Предыдущий раздел страницы">
+              ↑
+            </button>
+            <button type="button" class="page-steps-btn" id="btn-nav-section-down" title="Следующий раздел" aria-label="Следующий раздел страницы">
+              ↓
+            </button>
+            <span class="page-nav__tools-label">История</span>
+            <button type="button" class="page-steps-btn" id="btn-nav-history-back" title="Назад в истории браузера" aria-label="Назад в истории браузера">
+              ←
+            </button>
+            <button type="button" class="page-steps-btn" id="btn-nav-history-forward" title="Вперёд в истории браузера" aria-label="Вперёд в истории браузера">
+              →
+            </button>
+          </div>
+        </div>
       </nav>
+
+      <div id="section-filters" class="section-anchor section-block--filters">
+        <details class="ctx-panel" id="ctx-panel" open>
+          <summary>Контекст пациента</summary>
+          <p class="ctx-hint">
+            Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
+          </p>
+          <div class="ctx-grid">
+            <label class="ctx-label" for="ctx-age"
+              >Возраст
+              <input
+                type="text"
+                id="ctx-age"
+                placeholder="например 38 лет или ребёнок 5 лет"
+                autocomplete="off"
+                maxlength="80"
+                aria-label="Возраст пациента"
+              />
+            </label>
+            <label class="ctx-label" for="ctx-sex"
+              >Пол
+              <select id="ctx-sex" aria-label="Пол пациента">
+                <option value="">— не указано —</option>
+                <option value="женский">женский</option>
+                <option value="мужской">мужской</option>
+              </select>
+            </label>
+            <label class="ctx-label ctx-span-2" for="ctx-extra"
+              >Сопутствующие заболевания, аллергии, беременность (если уместно)
+              <textarea
+                id="ctx-extra"
+                rows="2"
+                maxlength="500"
+                placeholder="Необязательно, кратко"
+                aria-label="Дополнительный контекст"
+              ></textarea>
+            </label>
+          </div>
+        </details>
+        <details class="specialty-panel" id="specialty-panel">
+          <summary>Медицинское направление (рубрики протоколов)</summary>
+          <p class="specialty-hint">
+            Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
+          </p>
+          <p class="specialty-site-note">
+            На сайте
+            <a
+              href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Минздрава</a
+            >
+            нет отдельной рубрики «Терапия»: перечень совпадает с каталогом (24 раздела). Общие и «терапевтические» протоколы
+            отнесены к профильным разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
+            <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
+          </p>
+          <div class="specialty-toolbar">
+            <button type="button" id="specialty-clear">Снять выбор</button>
+            <button type="button" id="specialty-all">Выбрать все</button>
+          </div>
+          <div class="specialty-grid" id="specialty-rubrics" aria-label="Рубрики клинических протоколов">
+            <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
+          </div>
+        </details>
+      </div>
 
       <div class="search-panel">
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
-            Введите текст и нажмите <strong>«Найти протоколы»</strong>. Рубрики и контекст пациента — блоком ниже, они
-            уточняют подбор.
+            Сначала при необходимости заполните <strong>контекст и рубрики</strong> выше, затем введите запрос и нажмите
+            <strong>«Найти протоколы»</strong>.
           </p>
         </div>
         <div id="section-query" class="section-anchor section-block--query">
@@ -3027,71 +3104,6 @@
         </div>
       </div>
 
-      <div id="section-filters" class="section-anchor section-block--filters">
-      <details class="specialty-panel" id="specialty-panel">
-        <summary>Медицинское направление (рубрики протоколов)</summary>
-        <p class="specialty-hint">
-          Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
-        </p>
-        <p class="specialty-site-note">
-          На сайте
-          <a
-            href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Минздрава</a
-          >
-          нет отдельной рубрики «Терапия»: перечень совпадает с каталогом (24 раздела). Общие и «терапевтические» протоколы
-          отнесены к профильным разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
-          <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
-        </p>
-        <div class="specialty-toolbar">
-          <button type="button" id="specialty-clear">Снять выбор</button>
-          <button type="button" id="specialty-all">Выбрать все</button>
-        </div>
-        <div class="specialty-grid" id="specialty-rubrics" aria-label="Рубрики клинических протоколов">
-          <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
-        </div>
-      </details>
-      <details class="ctx-panel" id="ctx-panel" open>
-        <summary>Контекст пациента</summary>
-        <p class="ctx-hint">
-          Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
-        </p>
-        <div class="ctx-grid">
-          <label class="ctx-label" for="ctx-age"
-            >Возраст
-            <input
-              type="text"
-              id="ctx-age"
-              placeholder="например 38 лет или ребёнок 5 лет"
-              autocomplete="off"
-              maxlength="80"
-              aria-label="Возраст пациента"
-            />
-          </label>
-          <label class="ctx-label" for="ctx-sex"
-            >Пол
-            <select id="ctx-sex" aria-label="Пол пациента">
-              <option value="">— не указано —</option>
-              <option value="женский">женский</option>
-              <option value="мужской">мужской</option>
-            </select>
-          </label>
-          <label class="ctx-label ctx-span-2" for="ctx-extra"
-            >Сопутствующие заболевания, аллергии, беременность (если уместно)
-            <textarea
-              id="ctx-extra"
-              rows="2"
-              maxlength="500"
-              placeholder="Необязательно, кратко"
-              aria-label="Дополнительный контекст"
-            ></textarea>
-          </label>
-        </div>
-      </details>
-      </div>
-
       <details class="hero-help section-anchor" id="section-help">
         <summary class="hero-help-summary">Как устроен поиск</summary>
         <div class="hero-help-content">
@@ -3104,8 +3116,8 @@
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">1</span>
               <div class="hero-help-step-body">
-                Ввод запроса и кнопка <strong>«Найти протоколы»</strong>. При необходимости уточните
-                <strong>рубрики</strong> и <strong>контекст пациента</strong> — подбор станет точнее.
+                При необходимости заполните <strong>контекст пациента</strong> и <strong>рубрики</strong> (блок выше), затем
+                введите запрос и нажмите <strong>«Найти протоколы»</strong> — так подбор точнее.
               </div>
             </div>
             <div class="hero-help-step">
@@ -3739,11 +3751,78 @@
     });
   }
 
+  function syncResultsNavOption(visible) {
+    var sel = document.getElementById("page-nav-jump");
+    if (!sel) return;
+    var opt = document.getElementById("page-nav-opt-results");
+    if (visible) {
+      if (!opt) {
+        opt = document.createElement("option");
+        opt.id = "page-nav-opt-results";
+        opt.value = "#section-results";
+        opt.textContent = "Результат подбора";
+        sel.appendChild(opt);
+      }
+    } else if (opt && opt.parentNode) {
+      opt.parentNode.removeChild(opt);
+    }
+  }
+
+  function expandSectionForNav(sectionId) {
+    var id = String(sectionId || "").replace(/^#/, "");
+    if (id === "section-filters") {
+      var sp = document.getElementById("specialty-panel");
+      var cp = document.getElementById("ctx-panel");
+      if (sp) sp.open = true;
+      if (cp) cp.open = true;
+      return;
+    }
+    if (id === "section-help") {
+      var h = document.getElementById("section-help");
+      if (h && h.tagName === "DETAILS") h.open = true;
+    }
+  }
+
+  function navigateToSectionHash(hash) {
+    var raw = String(hash || "").trim();
+    if (!raw || raw === "#") return;
+    var id = raw.replace(/^#/, "");
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.hasAttribute("hidden") && el.hidden) return;
+    expandSectionForNav(id);
+    try {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e1) {
+      try {
+        el.scrollIntoView(true);
+      } catch (e2) {}
+    }
+    if (id === "section-query") {
+      var q = document.getElementById("q");
+      if (q) {
+        try {
+          q.focus();
+        } catch (e3) {}
+      }
+    }
+  }
+
+  function bindPageNavJumpSelect() {
+    var sel = document.getElementById("page-nav-jump");
+    if (!sel) return;
+    sel.addEventListener("change", function () {
+      var v = sel.value;
+      if (!v) return;
+      navigateToSectionHash(v);
+      sel.value = "";
+    });
+  }
+
   function showResultsSection(visible) {
     var sec = document.getElementById("section-results");
-    var step = document.getElementById("page-step-results");
     if (sec) sec.hidden = !visible;
-    if (step) step.hidden = !visible;
+    syncResultsNavOption(visible);
     updateScrollFabVisibility();
   }
 
@@ -3785,7 +3864,7 @@
   }
 
   function getSectionNavIds() {
-    var ids = ["section-header", "section-query", "section-filters", "section-help"];
+    var ids = ["section-header", "section-filters", "section-query", "section-help"];
     var res = document.getElementById("section-results");
     if (res && !res.hidden) ids.push("section-results");
     ids.push("section-footer");
@@ -3806,8 +3885,24 @@
     var next = bestIx + delta;
     if (next < 0) next = 0;
     if (next >= ids.length) next = ids.length - 1;
-    var target = document.getElementById(ids[next]);
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    var nextId = ids[next];
+    expandSectionForNav(nextId);
+    var target = document.getElementById(nextId);
+    if (target) {
+      try {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        target.scrollIntoView(true);
+      }
+    }
+    if (nextId === "section-query") {
+      var q = document.getElementById("q");
+      if (q) {
+        try {
+          q.focus();
+        } catch (e2) {}
+      }
+    }
   }
 
   function bindPageNav() {
@@ -3827,6 +3922,7 @@
     if (down) down.addEventListener("click", function () { scrollSectionByDelta(1); });
     if (hb) hb.addEventListener("click", function () { history.back(); });
     if (hf) hf.addEventListener("click", function () { history.forward(); });
+    bindPageNavJumpSelect();
     window.addEventListener(
       "scroll",
       function () {
@@ -3834,6 +3930,12 @@
       },
       { passive: true }
     );
+    window.addEventListener("hashchange", function () {
+      var h = window.location.hash;
+      if (h && h.indexOf("section-") !== -1) {
+        navigateToSectionHash(h);
+      }
+    });
   }
 
   function resetAllForNewProtocolSearch() {
@@ -5670,6 +5772,9 @@
       bindSpecialtyPanel();
       bindVoiceInput();
       bindPageNav();
+      if (window.location.hash && window.location.hash.indexOf("section-") !== -1) {
+        navigateToSectionHash(window.location.hash);
+      }
 
       var btnNewSearch = document.getElementById("btn-new-search-full");
       if (btnNewSearch) {
