@@ -5566,6 +5566,83 @@
     } catch (e) {}
   }
 
+  function mapKeyboardEnToRu(s) {
+    var map = {
+      q: "й", w: "ц", e: "у", r: "к", t: "е", y: "н", u: "г", i: "ш", o: "щ", p: "з",
+      "[": "х", "]": "ъ", a: "ф", s: "ы", d: "в", f: "а", g: "п", h: "р", j: "о",
+      k: "л", l: "д", ";": "ж", "'": "э", z: "я", x: "ч", c: "с", v: "м", b: "и",
+      n: "т", m: "ь", ",": "б", ".": "ю", "`": "ё",
+    };
+    var out = "";
+    var i;
+    for (i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      var low = ch.toLowerCase();
+      var rep = map[low];
+      if (!rep) {
+        out += ch;
+      } else {
+        out += ch === low ? rep : rep.toUpperCase();
+      }
+    }
+    return out;
+  }
+
+  function preprocessSearchQuery(raw) {
+    var q = String(raw || "").trim();
+    if (!q) {
+      return { ok: false, message: "Введите запрос в поле поиска." };
+    }
+    var hasRu = /[а-яё]/i.test(q);
+    var hasEn = /[a-z]/i.test(q);
+    if (!hasRu && hasEn) {
+      var qRu = mapKeyboardEnToRu(q);
+      var lettersRu = (qRu.match(/[а-яё]/gi) || []).length;
+      var vowelsRu = (qRu.match(/[аеёиоуыэюя]/gi) || []).length;
+      if (lettersRu >= 4 && vowelsRu >= 1) {
+        q = qRu;
+      }
+    }
+
+    var lettersOnly = q.replace(/[^a-zа-яё]/gi, "");
+    if (!lettersOnly || lettersOnly.length < 3) {
+      return {
+        ok: false,
+        message:
+          "Запрос слишком короткий или некорректный. Опишите симптом или ситуацию (например: «боль в горле 3 дня»).",
+      };
+    }
+    if (/^(.)\1{4,}$/i.test(lettersOnly) || /^([a-zа-яё]{1,2})\1{3,}$/i.test(lettersOnly)) {
+      return {
+        ok: false,
+        message:
+          "Похоже на случайный набор символов. Опишите, пожалуйста, симптомы или клиническую ситуацию.",
+      };
+    }
+    var unique = {};
+    var ui;
+    for (ui = 0; ui < lettersOnly.length; ui++) unique[lettersOnly[ui].toLowerCase()] = 1;
+    var uniqCount = Object.keys(unique).length;
+    if (lettersOnly.length >= 6 && uniqCount <= 2) {
+      return {
+        ok: false,
+        message:
+          "Запрос выглядит как случайный набор. Укажите жалобы, длительность и при необходимости код МКБ-10.",
+      };
+    }
+
+    var badWords = /(бляд|блят|сук[аи]|нах(уй|ер)|пизд|еба|ёба|хуй|мудак|мраз)/i;
+    var medHints = /(бол|боль|температур|каш|насморк|диар|рвот|давлен|пульс|одыш|горл|живот|голов|диабет|гиперт|астм|код|мкб|симптом)/i;
+    if (badWords.test(q) && !medHints.test(q)) {
+      return {
+        ok: false,
+        message:
+          "Пожалуйста, сформулируйте запрос без грубости: кратко опишите симптомы или клинический вопрос.",
+      };
+    }
+    return { ok: true, query: q };
+  }
+
   function runAssist(queryOverride, opts) {
     opts = opts || {};
     if (!opts.preserveUndo) {
@@ -5588,17 +5665,29 @@
         queryOverride != null && String(queryOverride).trim() !== ""
           ? String(queryOverride).trim()
           : ((document.getElementById("q") || {}).value || "").trim();
-      if (!qRaw) {
-        alert("Введите запрос в поле поиска.");
-        reject(new Error("empty"));
+      var out = document.getElementById("llm-out");
+      var st = document.getElementById("llm-status");
+      var prep = preprocessSearchQuery(qRaw);
+      if (!prep.ok) {
+        if (out) {
+          showResultsSection(true);
+          out.innerHTML = '<p class="error">' + escapeHtml(prep.message) + "</p>";
+        } else {
+          alert(prep.message);
+        }
+        if (st) st.textContent = "";
+        reject(new Error("invalid_query"));
         return;
+      }
+      qRaw = prep.query;
+      var qInputNormalize = document.getElementById("q");
+      if (qInputNormalize && queryOverride == null) {
+        qInputNormalize.value = qRaw;
       }
       var qSend =
         qRaw.indexOf("=== Контекст пациента ===") === 0
           ? qRaw
           : buildFullQuery(qRaw);
-      var out = document.getElementById("llm-out");
-      var st = document.getElementById("llm-status");
       var assistStart = Date.now();
       var assistTick = null;
       var abortTid = null;
