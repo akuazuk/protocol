@@ -5593,6 +5593,13 @@
     if (!q) {
       return { ok: false, message: "Введите запрос в поле поиска." };
     }
+    var compact = q.replace(/\s+/g, "");
+    var hasIcdCode =
+      /^[A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?$/.test(compact) ||
+      /^[A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?[-–][A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?$/.test(compact);
+    if (hasIcdCode) {
+      return { ok: true, query: q };
+    }
     var hasRu = /[а-яё]/i.test(q);
     var hasEn = /[a-z]/i.test(q);
     if (!hasRu && hasEn) {
