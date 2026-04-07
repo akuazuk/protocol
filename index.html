@@ -2258,6 +2258,68 @@
       min-width: 0;
     }
 
+    .assist-fact-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.25rem 0.5rem;
+      width: 100%;
+    }
+
+    .assist-fact-item .assist-fact-label {
+      flex: 1 1 12rem;
+      min-width: 0;
+    }
+
+    .assist-text-clamp-inner {
+      display: block;
+      max-height: 5.25rem;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+
+    .assist-mf-rich.assist-text-clamp-inner {
+      max-height: 7.5rem;
+    }
+
+    .assist-fact-item.is-expanded .assist-text-clamp-inner,
+    .assist-clamp-para-wrap.is-expanded .assist-para-clamp-inner {
+      max-height: none;
+    }
+
+    .assist-text-toggle {
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 0.28rem 0.6rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--green-800);
+      background: rgba(232, 245, 241, 0.95);
+      border: 1px solid rgba(26, 138, 114, 0.38);
+      border-radius: 8px;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+
+    .assist-text-toggle:hover {
+      background: rgba(255, 255, 255, 0.98);
+      border-color: var(--green-600);
+    }
+
+    .assist-text-toggle[hidden] {
+      display: none !important;
+    }
+
+    .assist-clamp-para-wrap {
+      margin: 0.35rem 0 0.5rem;
+    }
+
+    .assist-para-clamp-inner {
+      max-height: 6rem;
+      overflow: hidden;
+    }
+
     .assist-mf-pick .assist-fact-label {
       align-items: flex-start;
     }
@@ -3587,6 +3649,7 @@
     if (qInput) qInput.value = s.q != null ? s.q : "";
     if (out) {
       out.innerHTML = s.outHtml || "";
+      enhanceCollapsibleBlocks(out);
       showResultsSection(true);
     }
     lastAssistClinical = s.lastAssistClinical || "";
@@ -4178,6 +4241,7 @@
         var t = (payload.template || "").trim();
         if (bodyEl) {
           bodyEl.innerHTML = t ? formatConsultationBodyHtml(t) : "";
+          if (t) enhanceCollapsibleBlocks(bodyEl);
         }
         var pendingE = document.getElementById("consultation-template-pending");
         var cardR = document.getElementById("consultation-template-card-root");
@@ -4577,6 +4641,8 @@
             window.__clinicalDetailForTemplate = payload.clinical_detail;
             window.__assistQueryForTemplate = queryText;
           }
+          var outRoot = document.getElementById("llm-out");
+          if (outRoot) enhanceCollapsibleBlocks(outRoot);
         }
       })
       .catch(function (err) {
@@ -4726,6 +4792,96 @@
     );
   }
 
+  function enhanceCollapsibleBlocks(root) {
+    if (!root) return;
+    var items = root.querySelectorAll(".assist-fact-item");
+    var ii;
+    for (ii = 0; ii < items.length; ii++) {
+      setupFactItemClamp(items[ii]);
+    }
+    var paras = root.querySelectorAll("p.llm-summary-para");
+    for (ii = 0; ii < paras.length; ii++) {
+      if (paras[ii].closest(".assist-fact-item")) continue;
+      setupParagraphClamp(paras[ii]);
+    }
+    var tplRoot = root.id === "consultation-template-body" ? root : root.querySelector("#consultation-template-body");
+    if (tplRoot) {
+      var tps = tplRoot.querySelectorAll("p.consultation-tpl-p, p.consultation-tpl-li");
+      for (ii = 0; ii < tps.length; ii++) {
+        setupParagraphClamp(tps[ii]);
+      }
+    }
+  }
+
+  function setupFactItemClamp(item) {
+    if (!item || item.getAttribute("data-clamp-ready") === "1") return;
+    var inner = item.querySelector(".assist-text-collapsible-inner");
+    var btn = item.querySelector(".assist-text-toggle");
+    if (!inner || !btn) return;
+    item.setAttribute("data-clamp-ready", "1");
+    inner.classList.add("assist-text-clamp-inner");
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (inner.scrollHeight <= inner.clientHeight + 3) {
+          btn.parentNode.removeChild(btn);
+          return;
+        }
+        btn.hidden = false;
+        if (btn._clampBound) return;
+        btn._clampBound = true;
+        btn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var expanded = item.classList.toggle("is-expanded");
+          btn.setAttribute("aria-expanded", expanded ? "true" : "false");
+          btn.textContent = expanded ? "Свернуть" : "Показать полностью";
+        });
+      });
+    });
+  }
+
+  function setupParagraphClamp(p) {
+    if (!p || p.getAttribute("data-clamp-para") === "1") return;
+    var txt = (p.textContent || "").trim();
+    if (txt.length < 200) return;
+    p.setAttribute("data-clamp-para", "1");
+    var wrap = document.createElement("div");
+    wrap.className = "assist-clamp-para-wrap";
+    var parent = p.parentNode;
+    if (!parent) return;
+    parent.insertBefore(wrap, p);
+    var inner = document.createElement("div");
+    inner.className = "assist-text-clamp-inner assist-para-clamp-inner";
+    inner.appendChild(p);
+    wrap.appendChild(inner);
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "assist-text-toggle";
+    btn.textContent = "Показать полностью";
+    btn.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    wrap.appendChild(btn);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (inner.scrollHeight <= inner.clientHeight + 3) {
+          while (inner.firstChild) parent.insertBefore(inner.firstChild, wrap);
+          parent.removeChild(wrap);
+          p.removeAttribute("data-clamp-para");
+          return;
+        }
+        btn.hidden = false;
+        if (btn._clampBound) return;
+        btn._clampBound = true;
+        btn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          var expanded = wrap.classList.toggle("is-expanded");
+          btn.setAttribute("aria-expanded", expanded ? "true" : "false");
+          btn.textContent = expanded ? "Свернуть" : "Показать полностью";
+        });
+      });
+    });
+  }
+
   function renderClinicalFactsBlock(ex) {
     var inv = Array.isArray(ex.investigations) ? ex.investigations : [];
     var med = Array.isArray(ex.medications) ? ex.medications : [];
@@ -4748,7 +4904,8 @@
         h +=
           "<li" +
           liCls +
-          '><label class="assist-fact-label" for="' +
+          '><div class="assist-fact-item">' +
+          '<label class="assist-fact-label" for="' +
           escapeHtmlAttr(cid) +
           '">' +
           '<input type="checkbox" class="assist-fact-cb" id="' +
@@ -4757,8 +4914,11 @@
           escapeHtmlAttr(catKey) +
           '" />' +
           '<span class="assist-fact-text">' +
+          '<span class="assist-text-collapsible-inner">' +
           escapeHtml(line) +
-          "</span></label></li>";
+          "</span></span></label>" +
+          '<button type="button" class="assist-text-toggle" hidden aria-expanded="false">Показать полностью</button>' +
+          "</div></li>";
       }
       h += "</ul>";
       return h;
@@ -4774,14 +4934,17 @@
           ? "assist-detail-body assist-detail-body--nonprotocol"
           : "assist-detail-body";
       return (
-        '<div class="assist-mf-pick">' +
+        '<div class="assist-mf-pick assist-fact-item">' +
         '<label class="assist-fact-label" for="assist-fact-monitoring_frequency">' +
         '<input type="checkbox" class="assist-fact-cb" id="assist-fact-monitoring_frequency" data-fact-cat="monitoring_frequency" />' +
         '<div class="' +
         wrapCls +
         ' assist-fact-mf-body">' +
+        '<div class="assist-text-collapsible-inner assist-mf-rich">' +
         formatSummaryHtml(mf) +
-        "</div></label></div>"
+        "</div></div></label>" +
+        '<button type="button" class="assist-text-toggle" hidden aria-expanded="false">Показать полностью</button>' +
+        "</div>"
       );
     }
     var html =
@@ -5163,6 +5326,7 @@
         window.__clinicalDetailForTemplate = data.clinical_detail;
       }
       out.innerHTML = html;
+      enhanceCollapsibleBlocks(out);
       bindLlmFollowupForm();
       bindDiffSearchButtons();
       bindAssistUndoButton();
