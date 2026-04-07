@@ -2206,6 +2206,54 @@
       min-width: 0;
     }
 
+    .assist-detail-fact-row--investigations {
+      padding: 0.65rem 0.75rem 0.75rem;
+      border-radius: 12px;
+      background: linear-gradient(
+        145deg,
+        rgba(254, 249, 231, 0.85) 0%,
+        rgba(232, 245, 241, 0.65) 55%,
+        rgba(255, 255, 255, 0.75) 100%
+      );
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      box-shadow: 0 2px 14px rgba(180, 83, 9, 0.1);
+    }
+
+    @media (min-width: 560px) {
+      .assist-detail-facts-grid .assist-detail-fact-row--investigations {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .assist-detail-fact-callout {
+      margin: 0 0 0.55rem;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      font-weight: 600;
+      color: #92400e;
+      background: rgba(255, 247, 237, 0.95);
+      border-radius: 8px;
+      border: 1px dashed rgba(217, 119, 6, 0.45);
+    }
+
+    .assist-detail-fact-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.45rem;
+      margin-right: 0.35rem;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      color: #422006;
+      background: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+      border: 1px solid rgba(180, 83, 9, 0.35);
+      box-shadow: 0 1px 3px rgba(180, 83, 9, 0.2);
+      vertical-align: 0.08em;
+    }
+
     .assist-detail-fact-h {
       margin: 0 0 0.35rem;
       font-size: 0.8rem;
@@ -2213,6 +2261,12 @@
       font-family: inherit;
       color: var(--green-800);
       letter-spacing: 0.02em;
+    }
+
+    .assist-detail-fact-h--emphasis {
+      font-size: 0.86rem;
+      color: var(--green-950);
+      line-height: 1.35;
     }
 
     .assist-detail-fact-body {
@@ -2302,9 +2356,40 @@
       align-self: flex-start;
     }
 
+    .assist-detail-facts-wrap .assist-text-toggle--fact {
+      margin-left: 1.5rem;
+      padding: 0.2rem 0.55rem 0.22rem 0.42rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--green-700);
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      border-radius: 999px;
+      box-shadow: 0 1px 3px rgba(6, 61, 53, 0.06);
+    }
+
+    .assist-detail-facts-wrap .assist-text-toggle--fact::before {
+      content: "▼";
+      display: inline-block;
+      margin-right: 0.35rem;
+      font-size: 0.58rem;
+      opacity: 0.72;
+      vertical-align: 0.05em;
+    }
+
+    .assist-fact-item.is-expanded .assist-text-toggle--fact::before {
+      content: "▲";
+    }
+
     .assist-text-toggle:hover {
       background: rgba(255, 255, 255, 0.98);
       border-color: var(--green-600);
+    }
+
+    .assist-detail-facts-wrap .assist-text-toggle--fact:hover {
+      background: rgba(232, 245, 241, 0.98);
+      border-color: rgba(26, 138, 114, 0.45);
     }
 
     .assist-text-toggle[hidden] {
@@ -4827,6 +4912,11 @@
           return;
         }
         btn.hidden = false;
+        var isFactToggle = btn.classList.contains("assist-text-toggle--fact");
+        if (isFactToggle) {
+          btn.textContent = "Ещё";
+          btn.setAttribute("aria-label", "Показать полный текст пункта");
+        }
         if (btn._clampBound) return;
         btn._clampBound = true;
         btn.addEventListener("click", function (ev) {
@@ -4834,7 +4924,15 @@
           ev.stopPropagation();
           var expanded = item.classList.toggle("is-expanded");
           btn.setAttribute("aria-expanded", expanded ? "true" : "false");
-          btn.textContent = expanded ? "Свернуть" : "Показать полностью";
+          if (btn.classList.contains("assist-text-toggle--fact")) {
+            btn.textContent = expanded ? "Свернуть" : "Ещё";
+            btn.setAttribute(
+              "aria-label",
+              expanded ? "Свернуть текст пункта" : "Показать полный текст пункта"
+            );
+          } else {
+            btn.textContent = expanded ? "Свернуть" : "Показать полностью";
+          }
         });
       });
     });
@@ -4917,7 +5015,7 @@
           '<span class="assist-text-collapsible-inner">' +
           escapeHtml(line) +
           "</span></span></label>" +
-          '<button type="button" class="assist-text-toggle" hidden aria-expanded="false">Показать полностью</button>' +
+          '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
           "</div></li>";
       }
       h += "</ul>";
@@ -4943,7 +5041,7 @@
         '<div class="assist-text-collapsible-inner assist-mf-rich">' +
         formatSummaryHtml(mf) +
         "</div></div></label>" +
-        '<button type="button" class="assist-text-toggle" hidden aria-expanded="false">Показать полностью</button>' +
+        '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
         "</div>"
       );
     }
@@ -4953,7 +5051,10 @@
       '<p class="assist-detail-facts-title">По протоколу: обследование, препараты, лечение, кратность наблюдения</p>';
     html += '<div class="assist-detail-facts-grid">';
     html +=
-      '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Обследование</h4><div class="assist-detail-fact-body">' +
+      '<div class="assist-detail-fact-row assist-detail-fact-row--investigations">' +
+      '<h4 class="assist-detail-fact-h assist-detail-fact-h--emphasis"><span class="assist-detail-fact-badge">Важно</span> Обследование</h4>' +
+      '<p class="assist-detail-fact-callout">Сверьте перечень с клиникой — обязательные исследования по протоколу легко пропустить.</p>' +
+      '<div class="assist-detail-fact-body">' +
       listHtmlChecks(inv, "investigations") +
       "</div></div>";
     html +=
