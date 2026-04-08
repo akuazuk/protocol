@@ -2283,6 +2283,44 @@
       border: 1px solid rgba(26, 138, 114, 0.22);
     }
 
+    .assist-focus-indicator {
+      margin: 0 0 0.55rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--green-800);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(232, 245, 241, 0.9);
+      border: 1px solid rgba(26, 138, 114, 0.24);
+    }
+
+    .assist-focus-indicator::before {
+      content: "●";
+      font-size: 0.52rem;
+      opacity: 0.85;
+    }
+
+    .assist-focus-indicator[data-state="loading"] {
+      color: #8a4f00;
+      background: #fff8e8;
+      border-color: rgba(217, 119, 6, 0.32);
+    }
+
+    .assist-focus-indicator[data-state="updated"] {
+      color: var(--green-800);
+      background: rgba(220, 252, 231, 0.8);
+      border-color: rgba(22, 163, 74, 0.28);
+    }
+
+    .assist-focus-indicator[data-state="error"] {
+      color: var(--red-700);
+      background: #fff6f7;
+      border-color: rgba(196, 30, 58, 0.32);
+    }
+
     .assist-fact-tab-panel--investigations .assist-fact-tab-panel-inner {
       border-width: 2px;
       border-color: rgba(26, 138, 114, 0.42);
@@ -2520,6 +2558,10 @@
       -webkit-line-clamp: 6;
     }
 
+    .assist-detail-facts-wrap .assist-fact-item.assist-algo-item:not(.is-expanded) .assist-text-clamp-inner {
+      -webkit-line-clamp: 12;
+    }
+
     .assist-detail-facts-wrap .assist-fact-item.is-expanded .assist-text-clamp-inner {
       display: block;
       -webkit-line-clamp: unset;
@@ -2613,6 +2655,43 @@
 
     .assist-fact-tab-panel[data-fact-tab="monitoring_frequency"] .assist-fact-tab-panel-inner {
       padding-bottom: 0.85rem;
+    }
+
+    .assist-algo-title {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-weight: 800;
+      color: var(--green-950);
+    }
+
+    .assist-algo-entry {
+      display: block;
+      margin-bottom: 0.28rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .assist-algo-entry b {
+      color: #8a4f00;
+    }
+
+    .assist-algo-steps {
+      margin: 0.2rem 0 0;
+      padding-left: 1rem;
+      line-height: 1.45;
+    }
+
+    .assist-algo-steps li {
+      margin: 0.12rem 0;
+    }
+
+    .assist-algo-hl {
+      background: rgba(251, 191, 36, 0.26);
+      color: #7c2d12;
+      border-radius: 4px;
+      padding: 0 0.15em;
+      font-weight: 700;
     }
 
     .assist-facts-actions {
@@ -5155,30 +5234,65 @@
     var alg = Array.isArray(ex.care_algorithms) ? ex.care_algorithms : [];
     var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
     var NP_MARK = "[не из протокола]";
-    function algorithmItems() {
-      if (!alg.length) return [];
-      var out = [];
+    function algoHighlight(text) {
+      var h = escapeHtml(String(text || ""));
+      return h.replace(
+        /\b(если|то|при отсутствии эффекта|госпитализация|дефибрилляция|ивл|spo2|ад|чсс|асистолия|фж|жт)\b/gi,
+        '<mark class="assist-algo-hl">$1</mark>'
+      );
+    }
+    function algorithmsHtml() {
+      if (!alg.length) {
+        return '<p class="assist-detail-fact-empty">— алгоритмы в этой выдержке не выделены</p>';
+      }
+      var h = '<ul class="assist-detail-list assist-detail-list--pick">';
       var i;
       for (i = 0; i < alg.length; i++) {
         var row = alg[i];
-        if (row == null) continue;
+        var cid = "assist-fact-care_algorithms-" + i;
+        var title = "";
+        var entry = [];
+        var steps = [];
         if (typeof row === "string") {
-          var ss = String(row).trim();
-          if (ss) out.push(ss);
-          continue;
+          title = "Алгоритм " + (i + 1);
+          steps = [String(row)];
+        } else if (row && typeof row === "object") {
+          title = row.title != null && String(row.title).trim()
+            ? String(row.title).trim()
+            : "Алгоритм " + (i + 1);
+          entry = Array.isArray(row.entry_conditions) ? row.entry_conditions : [];
+          steps = Array.isArray(row.steps) ? row.steps : [];
         }
-        if (typeof row !== "object") continue;
-        var title = row.title != null ? String(row.title).trim() : "";
-        var entry = Array.isArray(row.entry_conditions) ? row.entry_conditions : [];
-        var steps = Array.isArray(row.steps) ? row.steps : [];
-        var parts = [];
-        if (title) parts.push(title);
-        if (entry.length) parts.push("Условия: " + entry.slice(0, 2).join("; "));
-        if (steps.length) parts.push("Шаги: " + steps.slice(0, 4).join("; "));
-        var line = parts.join(" — ").trim();
-        if (line) out.push(line);
+        if (!steps.length) continue;
+        h +=
+          '<li><div class="assist-fact-item assist-algo-item">' +
+          '<label class="assist-fact-label" for="' +
+          escapeHtmlAttr(cid) +
+          '">' +
+          '<input type="checkbox" class="assist-fact-cb" id="' +
+          escapeHtmlAttr(cid) +
+          '" data-fact-cat="care_algorithms" />' +
+          '<span class="assist-fact-text"><span class="assist-text-collapsible-inner assist-algo-rich">' +
+          '<span class="assist-algo-title">' +
+          algoHighlight(title) +
+          "</span>" +
+          (entry.length
+            ? '<span class="assist-algo-entry"><b>Условия:</b> ' + algoHighlight(entry.join("; ")) + "</span>"
+            : "") +
+          '<ol class="assist-algo-steps">' +
+          steps
+            .slice(0, 12)
+            .map(function (s) {
+              return "<li>" + algoHighlight(String(s)) + "</li>";
+            })
+            .join("") +
+          "</ol>" +
+          "</span></span></label>" +
+          '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
+          "</div></li>";
       }
-      return out;
+      h += "</ul>";
+      return h;
     }
     function listHtmlChecks(items, catKey) {
       if (!items || !items.length) {
@@ -5287,10 +5401,9 @@
       );
     }
     if (tabKey === "care_algorithms") {
-      var ai = algorithmItems();
       return (
         '<div class="assist-detail-fact-body">' +
-        sectionHtml("Алгоритмы и этапность", listHtmlChecks(ai, "care_algorithms"), ai.length, true) +
+        sectionHtml("Алгоритмы и этапность", algorithmsHtml(), alg.length, true) +
         "</div>"
       );
     }
@@ -5318,9 +5431,14 @@
       ? wrap.querySelector('.assist-fact-tab-panel[data-fact-tab="' + tabKey + '"]')
       : null;
     var inner = panel ? panel.querySelector(".assist-fact-tab-panel-inner") : null;
+    var ind = inner ? inner.querySelector("[data-focus-indicator]") : null;
     if (inner) {
       inner.setAttribute("data-loading", "1");
       inner.style.opacity = "0.65";
+    }
+    if (ind) {
+      ind.setAttribute("data-state", "loading");
+      ind.textContent = "Обновление по фокусному извлечению…";
     }
     return fetch(base + "/api/protocol-detail", {
       method: "POST",
@@ -5352,6 +5470,10 @@
           : cd.extraction;
         if (inner) {
           inner.innerHTML = buildFactTabPanelInnerHtml(tabKey, merged);
+          inner.insertAdjacentHTML(
+            "afterbegin",
+            '<p class="assist-focus-indicator" data-focus-indicator data-state="updated">Обновлено по фокусному извлечению</p>'
+          );
           inner.style.opacity = "";
           inner.removeAttribute("data-loading");
         }
@@ -5362,6 +5484,11 @@
       })
       .catch(function () {
         if (inner) {
+          var errInd = inner.querySelector("[data-focus-indicator]");
+          if (errInd) {
+            errInd.setAttribute("data-state", "error");
+            errInd.textContent = "Фокусное извлечение недоступно, показана исходная выдержка";
+          }
           inner.style.opacity = "";
           inner.removeAttribute("data-loading");
         }
@@ -5640,6 +5767,7 @@
         escapeHtmlAttr(d2.key) +
         '">';
       html += '<div class="assist-fact-tab-panel-inner">';
+      html += '<p class="assist-focus-indicator" data-focus-indicator data-state="idle">Исходная выдержка протокола</p>';
       html += buildFactTabPanelInnerHtml(d2.key, ex);
       html += "</div>";
       html +=
