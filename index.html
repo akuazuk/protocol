@@ -4796,6 +4796,10 @@
           offer.confidence_score != null && !isNaN(Number(offer.confidence_score))
             ? Number(offer.confidence_score)
             : null,
+        client_rag_support:
+          offer.rag_support != null && !isNaN(Number(offer.rag_support))
+            ? Number(offer.rag_support)
+            : null,
       }),
       signal: ctrl.signal,
     })
@@ -5339,6 +5343,14 @@
     } else {
       html +=
         '<p class="assist-detail-confidence">По протоколу при полном соответствии (100%).</p>';
+    }
+    if (cd.detail_prompt_truncated) {
+      html +=
+        '<p class="assist-detail-warning assist-detail-warning--context">Текст протокола в запросе к модели обрезан по лимиту контекста — проверьте полноту разделов по файлу PDF на сайте Минздрава.</p>';
+    }
+    if (cd.low_protocol_match_support) {
+      html +=
+        '<p class="assist-detail-warning assist-detail-warning--context">Отбор фрагментов по этому протоколу был слабым (низкая опора в поиске); сверяйте пункты с полным текстом клинического протокола.</p>';
     }
     if (cd.specialty_ru) {
       html +=
