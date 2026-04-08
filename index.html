@@ -487,11 +487,85 @@
       color: #8aa39c;
     }
 
-    .query-actions {
+    /* Панель под полем: голос и МКБ — две колонки с подписями */
+    .query-toolbar {
+      margin-top: 0.35rem;
+      padding: 0.85rem 0.95rem;
+      border-radius: 12px;
+      background: linear-gradient(
+        165deg,
+        rgba(248, 253, 251, 0.98) 0%,
+        rgba(255, 255, 255, 0.92) 100%
+      );
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    }
+
+    .query-toolbar__main {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
+      align-items: flex-start;
+      gap: 0.85rem 1.1rem;
+    }
+
+    .query-toolbar__col {
+      flex: 1 1 240px;
+      min-width: min(100%, 220px);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .query-toolbar__label {
+      margin: 0;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--green-950);
+      line-height: 1.25;
+    }
+
+    .query-toolbar__hint {
+      margin: 0;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    .query-toolbar__sep {
+      flex: 0 0 1px;
+      width: 1px;
+      align-self: stretch;
+      min-height: 4.5rem;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(26, 138, 114, 0.28) 15%,
+        rgba(26, 138, 114, 0.28) 85%,
+        transparent
+      );
+    }
+
+    .query-toolbar__full {
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed rgba(26, 138, 114, 0.2);
+    }
+
+    .query-toolbar__full .voice-status-wrap {
+      margin-top: 0;
+    }
+
+    @media (max-width: 639px) {
+      .query-toolbar__sep {
+        display: none;
+      }
+
+      .query-toolbar__col {
+        flex: 1 1 100%;
+        min-width: 100%;
+      }
     }
 
     .btn-voice {
@@ -1860,17 +1934,10 @@
       font-weight: 600;
     }
 
-    .icd-preflight {
-      margin: 0.65rem 0 0.5rem;
-      padding: 0.65rem 0.75rem;
-      border-radius: 10px;
-      border: 1px dashed rgba(26, 138, 114, 0.35);
-      background: rgba(236, 253, 245, 0.45);
-    }
-
     .btn-icd-preflight {
-      font-size: 0.84rem;
-      padding: 0.5rem 0.85rem;
+      font-size: 0.88rem;
+      padding: 0.62rem 1rem;
+      align-self: flex-start;
     }
 
     .icd-preflight-result {
@@ -3497,27 +3564,49 @@
                 протоколов. Если указаны только симптомы, сервис при полном поиске тоже пытается вывести коды, но надёжнее
                 сначала нажать <strong>«Подобрать коды МКБ»</strong>, проверить строку и затем <strong>«Найти протоколы»</strong>.
               </p>
-              <div class="icd-preflight" id="icd-preflight">
-                <button type="button" class="btn-assist btn-icd-preflight" id="btn-icd-preflight">
-                  Подобрать коды МКБ по жалобам (шаг перед поиском)
-                </button>
-                <div class="icd-preflight-result" id="icd-preflight-result" hidden></div>
-              </div>
-              <div class="query-actions">
-                <button type="button" class="btn-voice" id="btn-voice" title="Надиктовать текст (Chrome, Edge, Safari)">
-                  Голос
-                </button>
-                <p class="voice-hint" id="voice-hint">
-                  На смартфоне разрешите доступ к микрофону. Распознавание — в браузере, аудио на сервер не отправляется.
-                </p>
-                <div class="voice-status-wrap" id="voice-status-wrap" hidden>
-                  <div class="voice-status voice-status--recording" id="voice-status" role="status" aria-live="polite">
-                    <span class="voice-status__dot" aria-hidden="true"></span>
-                    <span class="voice-status__text" id="voice-status-text"></span>
+              <div
+                class="query-toolbar"
+                role="group"
+                aria-label="Действия под полем: голосовой ввод и подбор кодов МКБ"
+              >
+                <div class="query-toolbar__main">
+                  <div class="query-toolbar__col">
+                    <p class="query-toolbar__label" id="query-toolbar-voice-label">Голосовой ввод</p>
+                    <button
+                      type="button"
+                      class="btn-voice"
+                      id="btn-voice"
+                      title="Речь превращается в текст в поле выше (Chrome, Edge, Safari)"
+                      aria-describedby="voice-hint"
+                    >
+                      Надиктовать в поле
+                    </button>
+                    <p class="query-toolbar__hint" id="voice-hint">
+                      Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
+                    </p>
                   </div>
-                  <div class="voice-interim" id="voice-interim" hidden>
-                    <span class="voice-interim-label">Распознавание в текст (предпросмотр)</span>
-                    <span id="voice-interim-body"></span>
+                  <div class="query-toolbar__sep" aria-hidden="true"></div>
+                  <div class="query-toolbar__col" id="icd-preflight">
+                    <p class="query-toolbar__label" id="query-toolbar-icd-label">Сначала коды МКБ</p>
+                    <button type="button" class="btn-assist btn-icd-preflight" id="btn-icd-preflight">
+                      Подобрать коды МКБ-10
+                    </button>
+                    <p class="query-toolbar__hint">
+                      Если в поле только жалобы без диагноза — подбор кодов перед поиском протоколов.
+                    </p>
+                    <div class="icd-preflight-result" id="icd-preflight-result" hidden></div>
+                  </div>
+                </div>
+                <div class="query-toolbar__full">
+                  <div class="voice-status-wrap" id="voice-status-wrap" hidden>
+                    <div class="voice-status voice-status--recording" id="voice-status" role="status" aria-live="polite">
+                      <span class="voice-status__dot" aria-hidden="true"></span>
+                      <span class="voice-status__text" id="voice-status-text"></span>
+                    </div>
+                    <div class="voice-interim" id="voice-interim" hidden>
+                      <span class="voice-interim-label">Распознавание в текст (предпросмотр)</span>
+                      <span id="voice-interim-body"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3569,7 +3658,8 @@
             <span class="hero-chip">жалобы → «Подобрать коды МКБ», затем поиск</span>
           </div>
           <p class="hero-help-footnote">
-            <strong>Совет:</strong> на телефоне можно надиктовать жалобы кнопкой «Голос» — текст остаётся в браузере.
+            <strong>Совет:</strong> на телефоне можно надиктовать в поле кнопкой <strong>«Надиктовать в поле»</strong> (слева под
+            полем) — аудио на сервер не уходит.
           </p>
         </div>
       </details>
@@ -3831,6 +3921,7 @@
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
       btn.disabled = true;
+      btn.classList.add("voice-unavailable");
       if (hint) {
         hint.textContent =
           "Голосовой ввод недоступен в этом браузере. Используйте Chrome или Safari на телефоне.";
@@ -3910,10 +4001,10 @@
       } catch (e) {
         busy = false;
         btn.classList.remove("recording");
-        btn.textContent = "Голос";
+        btn.textContent = "Надиктовать в поле";
         showVoicePanel(
           "processing",
-          "Не удалось запустить запись. Разрешите доступ к микрофону и нажмите «Голос» снова."
+          "Не удалось запустить запись. Разрешите доступ к микрофону и нажмите «Надиктовать в поле» снова."
         );
         scheduleHidePanel(5000);
       }
@@ -3958,7 +4049,7 @@
     rec.onend = function () {
       busy = false;
       btn.classList.remove("recording");
-      btn.textContent = "Голос";
+      btn.textContent = "Надиктовать в поле";
       setInterim("");
       if (statusText) {
         statusText.textContent =
@@ -3975,7 +4066,7 @@
     rec.onerror = function (ev) {
       busy = false;
       btn.classList.remove("recording");
-      btn.textContent = "Голос";
+      btn.textContent = "Надиктовать в поле";
       var err = ev && ev.error ? String(ev.error) : "";
       showVoicePanel(
         "processing",
@@ -6287,6 +6378,10 @@
     if (btnIcd) {
       btnIcd.disabled = !!busy;
     }
+    var btnVoice = document.getElementById("btn-voice");
+    if (btnVoice && !btnVoice.classList.contains("voice-unavailable")) {
+      btnVoice.disabled = !!busy;
+    }
   }
 
   function renderIcdPreflightResult(data) {
@@ -6438,7 +6533,7 @@
       .finally(function () {
         if (btn) {
           btn.disabled = false;
-          btn.textContent = "Подобрать коды МКБ по жалобам (шаг перед поиском)";
+          btn.textContent = "Подобрать коды МКБ-10";
         }
       });
   }
