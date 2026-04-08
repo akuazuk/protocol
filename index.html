@@ -2840,6 +2840,13 @@
       color: var(--green-700);
     }
 
+    .assist-pct--warn {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--amber-700, #b45309);
+      margin-left: 0.2rem;
+    }
+
     .assist-reason {
       margin: 0.35rem 0 0;
       font-size: 0.82rem;
@@ -4652,7 +4659,7 @@
     html +=
       '<span class="llm-pct-badge ' +
       confidenceBadgeClass(mScore) +
-      '" title="Оценка соответствия запросу">' +
+      '" title="Соответствие запросу (модель, согласовано с отбором фрагментов)">' +
       '<span class="llm-pct-dot" aria-hidden="true"></span>' +
       pct01(mScore) +
       "%</span>";
@@ -4663,9 +4670,13 @@
     }
     if (ragN > 0) {
       html +=
-        '<span class="assist-pct assist-pct-rag" title="Сходство фрагмента протокола с запросом"> · фрагмент ' +
+        '<span class="assist-pct assist-pct-rag" title="Нормализованный скор отбора RAG (лексика, рубрики, эмбеддинг) по этому протоколу"> · фрагмент ' +
         pct01(ragN) +
         "%</span>";
+    }
+    if (pr.low_retrieval_support) {
+      html +=
+        '<span class="assist-pct assist-pct--warn" title="Слабая опора в отобранных фрагментах"> · слабая опора в отборе</span>';
     }
     if (pr.match_reason) {
       html +=

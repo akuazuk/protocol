@@ -14,6 +14,7 @@ import json
 import math
 import os
 import re
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
 from pathlib import Path
@@ -30,6 +31,8 @@ from icd_mkb import (
     normalize_icd_code,
     ru_lexicon_scored_entries,
 )
+
+from retrieval_bm25 import build_bm25_index
 
 load_project_env(ROOT)
 
@@ -53,6 +56,7 @@ _structured_by_path: dict[str, dict] = {}
 _routing: dict = {}
 _model = None
 _retrieval_embed_meta: dict | None = None
+_bm25_index = None
 
 PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
 STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
@@ -266,6 +270,10 @@ SYSTEM_CONSULTATION_REFINE = """Ты помощник врача. Ниже — �
 - Не дублируй заголовок «Консультативное заключение» в теле текста.
 Верни ТОЛЬКО полный текст заключения."""
 
+SYSTEM_CONFIDENCE_REFINE = """Ты помощник врача. По запросу и кратким сведениям о протоколе оцени, насколько протокол соответствует сути жалобы (0.0–1.0).
+Верни ОДИН JSON без markdown: {"scores":[{"path":"…","confidence_score":0.0}]}
+Копируй path точно из списка ниже; не добавляй протоколы вне списка."""
+
 
 def _jsonl_chunk_files() -> list[Path]:
     """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
@@ -440,6 +448,18 @@ def load_data() -> None:
         plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
     gc.collect()
 
+    global _bm25_index
+    _bm25_alpha_chk = float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55"))
+    _pool_merge_chk = os.environ.get("RAG_EMBED_POOL_MERGE", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if _bm25_alpha_chk < 0.999 or _pool_merge_chk:
+        _bm25_index = build_bm25_index(_chunks, tokenize_ru)
+    else:
+        _bm25_index = None
+
 
 def tokenize_ru(s: str) -> list[str]:
     s = s.lower().replace("ё", "е")
@@ -611,7 +631,9 @@ def _gemini_embed_rerank_pool(
     finals = [float(r[0]) for r in pool_rows]
     lex_norm = _norm_minmax(finals)
 
-    doc_texts = [_chunk_text_for_embedding(r[3]) for r in pool_rows]
+    doc_texts = [
+        _chunk_text_for_embedding(r[4] if len(r) >= 5 else r[3]) for r in pool_rows
+    ]
     max_workers = min(8, max(1, len(doc_texts)))
 
     def embed_doc(i: int) -> list[float]:
@@ -630,7 +652,11 @@ def _gemini_embed_rerank_pool(
 
     out_rows: list[tuple[float, float, float, dict]] = []
     for i, row in enumerate(pool_rows):
-        final, lex, mult, ch = row
+        if len(row) >= 5:
+            # (final, lex_raw, bm25_raw, routing_mult, ch)
+            final, lex, mult, ch = row[0], row[1], row[3], row[4]
+        else:
+            final, lex, mult, ch = row
         cos = _cosine_vec(q_vec, doc_vecs[i])
         h = alpha * lex_norm[i] + (1.0 - alpha) * cos
         out_rows.append((h, lex, mult, ch))
@@ -1127,6 +1153,206 @@ def confidence_for_detailed_extraction(score: object) -> bool:
     return x >= min_s
 
 
+def _protocol_meta_icd_boost(path: str, icd_norms: list[str]) -> float:
+    """Усиление, если в protocol_meta заданы icd_codes/mkb_codes и они пересекаются с запросом."""
+    if not icd_norms:
+        return 1.0
+    pm = _protocol_meta.get(path) or {}
+    raw = pm.get("icd_codes") or pm.get("mkb_codes") or []
+    if not isinstance(raw, list):
+        return 1.0
+    boost = float(os.environ.get("RAG_ICD_META_BOOST", "1.35"))
+    want = {x.strip().lower() for x in icd_norms if isinstance(x, str)}
+    for c in raw:
+        if not isinstance(c, str):
+            continue
+        n = normalize_icd_code(c).strip().lower()
+        if n and n in want:
+            return boost
+    return 1.0
+
+
+def _rag_support_map(retrieved: list[dict]) -> tuple[dict[str, float], float]:
+    """path → нормализованный score / max в батче; второе значение — max score."""
+    max_s = 0.0
+    for r in retrieved:
+        try:
+            s = float(r.get("score") or 0)
+        except (TypeError, ValueError):
+            s = 0.0
+        if s > max_s:
+            max_s = s
+    if max_s <= 0:
+        max_s = 1.0
+    m: dict[str, float] = {}
+    for r in retrieved:
+        p = str(r.get("path") or "")
+        if not p:
+            continue
+        try:
+            s = float(r.get("score") or 0)
+        except (TypeError, ValueError):
+            s = 0.0
+        n = s / max_s
+        if p not in m or n > m[p]:
+            m[p] = n
+    return m, max_s
+
+
+def apply_protocol_confidence_calibration(
+    parsed: dict | None, retrieved: list[dict]
+) -> dict[str, float]:
+    """Смешивает оценку модели с опорой отбора (rag_support); правит confidence_score."""
+    rag_map, _ = _rag_support_map(retrieved)
+    if not parsed or not isinstance(parsed, dict):
+        return rag_map
+    w = float(os.environ.get("RAG_LLM_CONF_BLEND_W", "0.62"))
+    cap_low = float(os.environ.get("RAG_MIN_RAG_SUPPORT_CAP", "0.74"))
+    min_rag_high = float(os.environ.get("RAG_MIN_RAG_SUPPORT_FOR_HIGH_CONF", "0.2"))
+    protos = parsed.get("protocols")
+    if not isinstance(protos, list):
+        return rag_map
+    for pr in protos:
+        if not isinstance(pr, dict):
+            continue
+        p = str(pr.get("path") or "")
+        rag_sup = float(rag_map.get(p, 0.0))
+        pr["rag_support"] = round(rag_sup, 4)
+        llm_c = _confidence_numeric(pr.get("confidence_score"))
+        if llm_c is None:
+            llm_c = 0.55
+        pr["confidence_score_llm"] = pr.get("confidence_score")
+        blended = w * llm_c + (1.0 - w) * rag_sup
+        if rag_sup < min_rag_high:
+            blended = min(blended, cap_low)
+            pr["low_retrieval_support"] = True
+        pr["confidence_score"] = round(max(0.0, min(1.0, blended)), 4)
+    return rag_map
+
+
+def _majority_category_from_retrieval(retrieved: list[dict]) -> str | None:
+    """Рубрика (slug), чаще всего встречающаяся среди отобранных чанков."""
+    cats: list[str] = []
+    for r in retrieved:
+        c = (r.get("category") or "").strip()
+        if c:
+            cats.append(c)
+            continue
+        p = r.get("path") or ""
+        pr = _protocols_by_path.get(p) or {}
+        pm = _protocol_meta.get(p) or {}
+        x = (pr.get("category") or pm.get("category") or "").strip()
+        if x:
+            cats.append(x)
+    if not cats:
+        return None
+    return Counter(cats).most_common(1)[0][0]
+
+
+def refine_protocol_confidences_gemini(
+    model,
+    q: str,
+    parsed: dict,
+    retrieved: list[dict],
+) -> bool:
+    """Второй короткий вызов модели для калибровки confidence_score (опционально)."""
+    protos = parsed.get("protocols") or []
+    if not protos:
+        return False
+    ex_by_path: dict[str, str] = {}
+    for r in retrieved:
+        p = r.get("path") or ""
+        if p and p not in ex_by_path:
+            ex_by_path[p] = str(r.get("excerpt") or "")[:500]
+    lines: list[str] = []
+    for pr in protos[:8]:
+        if not isinstance(pr, dict):
+            continue
+        p = str(pr.get("path") or "")
+        ex = ex_by_path.get(p, "")
+        lines.append(f"path={p}\ntitle={pr.get('title')}\nфрагмент: {ex}\n")
+    if not lines:
+        return False
+    prompt = (
+        SYSTEM_CONFIDENCE_REFINE
+        + "\n\nЗапрос:\n"
+        + (q or "")[:6000]
+        + "\n\nПротоколы:\n"
+        + "\n---\n".join(lines)
+    )
+    try:
+        resp = generate_gemini(model, prompt)
+        txt = _extract_gemini_text(resp)
+        pj = _try_parse_json(txt)
+    except Exception:
+        return False
+    if not pj or isinstance(pj, bool) or not isinstance(pj, dict):
+        return False
+    scores = pj.get("scores") or []
+    by_path: dict[str, float] = {}
+    for s in scores:
+        if not isinstance(s, dict):
+            continue
+        p = str(s.get("path") or "")
+        try:
+            c = float(s.get("confidence_score"))
+        except (TypeError, ValueError):
+            continue
+        if p:
+            by_path[p] = max(0.0, min(1.0, c))
+    if not by_path:
+        return False
+    mix = float(os.environ.get("RAG_CONFIDENCE_SECOND_BLEND", "0.55"))
+    touched = False
+    for pr in protos:
+        if not isinstance(pr, dict):
+            continue
+        p = str(pr.get("path") or "")
+        if p not in by_path:
+            continue
+        cur = _confidence_numeric(pr.get("confidence_score"))
+        if cur is None:
+            cur = 0.55
+        new = mix * by_path[p] + (1.0 - mix) * cur
+        pr["confidence_score"] = round(max(0.0, min(1.0, new)), 4)
+        pr["confidence_second_pass"] = True
+        touched = True
+    return touched
+
+
+def _merge_embed_pool_rows(
+    scored: list[tuple],
+    pool_n: int,
+    merge_on: bool,
+) -> list[tuple]:
+    """Топ по score + доп. кандидаты с высоким BM25, чтобы не терять чанки вне первых N."""
+    if not scored:
+        return []
+    pool_n = min(int(pool_n), len(scored))
+    if not merge_on or len(scored) <= pool_n:
+        return scored[:pool_n]
+    primary = scored[:pool_n]
+    primary_ids: set[int] = set()
+    for row in primary:
+        ch = row[4] if len(row) >= 5 else row[3]
+        primary_ids.add(id(ch))
+    bm25_i = 2
+    by_bm25 = sorted(scored, key=lambda x: -float(x[bm25_i]))
+    cap = min(len(scored), max(pool_n * 2, pool_n + 24))
+    out = list(primary)
+    seen = set(primary_ids)
+    for row in by_bm25:
+        if len(out) >= cap:
+            break
+        ch = row[4] if len(row) >= 5 else row[3]
+        if id(ch) in seen:
+            continue
+        seen.add(id(ch))
+        out.append(row)
+    out.sort(key=lambda x: -float(x[0]))
+    return out
+
+
 _GAP_FIELD_LABELS_RU: dict[str, str] = {
     "investigations": "обследование (диагностика)",
     "medications": "препараты и группы лекарственных средств",
@@ -1538,7 +1764,14 @@ def retrieve(
         for c in (icd_codes_for_lex or [])
         if isinstance(c, str) and len(c.strip()) >= 3
     ]
-    scored: list[tuple[float, float, float, dict]] = []
+    bm25_alpha = float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55"))
+    use_bm25_blend = _bm25_index is not None and bm25_alpha < 0.999
+    pool_merge = os.environ.get("RAG_EMBED_POOL_MERGE", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    raw_rows: list[tuple[float, float, float, dict, float]] = []
     for ch in _chunks:
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
             ch.get("title") or ""
@@ -1557,26 +1790,29 @@ def retrieve(
         if anchor_set:
             if not any(t in low for t in anchor_set):
                 lex *= anchor_miss_penalty
+        bm25_s = 0.0
+        if _bm25_index is not None:
+            bm25_s = _bm25_index.score_doc(qtok, ch)
         mult = (
             routing_multiplier(rq, ch, _routing)
             if use_routing
             else 1.0
         )
-        final = lex * mult
-        if icd_norms and any(
-            code in low for code in icd_norms
-        ):
-            final *= icd_chunk_boost
+        post = 1.0
+        if icd_norms and any(code in low for code in icd_norms):
+            post *= icd_chunk_boost
+        pth = ch.get("path") or ""
+        post *= _protocol_meta_icd_boost(pth, icd_norms)
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
-            final *= boost_factor
+            post *= boost_factor
         if user_slugs:
             if cat and cat in user_slugs:
-                final *= user_boost
+                post *= user_boost
             elif cat and cat not in user_slugs:
-                final *= user_penalty
+                post *= user_penalty
             else:
-                final *= user_uncertain
+                post *= user_uncertain
         if (ch.get("kind") or "").strip() == "table_block":
             ql = (query or "").lower()
             if (
@@ -1588,8 +1824,26 @@ def retrieve(
                 or "мл" in ql
                 or "сут" in ql
             ):
-                final *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
-        scored.append((final, lex, mult, ch))
+                post *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
+        raw_rows.append((lex, bm25_s, mult, ch, post))
+    if not raw_rows:
+        return []
+
+    lex_vals = [r[0] for r in raw_rows]
+    bm25_vals = [r[1] for r in raw_rows]
+    lex_n = _norm_minmax(lex_vals)
+    bm25_n = _norm_minmax(bm25_vals)
+    scored: list[tuple[float, float, float, float, dict]] = []
+    for i, row in enumerate(raw_rows):
+        lex, bm25_s, mult, ch, post = row
+        ln = lex_n[i]
+        bn = bm25_n[i]
+        if use_bm25_blend:
+            blend = bm25_alpha * ln + (1.0 - bm25_alpha) * bn
+        else:
+            blend = ln
+        final = blend * mult * post
+        scored.append((final, lex, bm25_s, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
     global _retrieval_embed_meta
@@ -1607,7 +1861,7 @@ def retrieve(
         "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
     ).strip()
 
-    work_rows: list[tuple[float, float, float, dict]] = scored
+    work_rows: list[tuple[float, float, float, dict]] | list[tuple] = scored
     q_embed = query
     if icd_codes_for_lex:
         q_embed = (query + "\n" + " ".join(icd_codes_for_lex)).strip()[:8000]
@@ -1616,14 +1870,14 @@ def retrieve(
         q_embed = (q_embed + " " + " ".join(sorted(ex_emb))).strip()[:8000]
     if embed_on and api_key and scored:
         pool_n = min(pool_n, len(scored))
-        pool_rows = scored[:pool_n]
+        pool_rows = _merge_embed_pool_rows(scored, pool_n, pool_merge)
         try:
             work_rows = _gemini_embed_rerank_pool(q_embed, pool_rows, alpha, emb_model)
             _retrieval_embed_meta = {
                 "used": True,
                 "model": emb_model,
                 "alpha": alpha,
-                "pool": pool_n,
+                "pool": len(pool_rows),
             }
         except Exception as e:
             work_rows = scored
@@ -1632,13 +1886,15 @@ def retrieve(
     per_path: dict[str, int] = {}
     out: list[dict] = []
     rerank_used = bool(_retrieval_embed_meta and _retrieval_embed_meta.get("used"))
-    for final, lex, mult, ch in work_rows:
+    for row in work_rows:
+        final, lex, mult, ch = row[0], row[1], row[2], row[3]
         p = ch.get("path") or ""
         if per_path.get(p, 0) >= max_per_path:
             continue
         per_path[p] = per_path.get(p, 0) + 1
         ex_lim = int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
-        row: dict = {
+        cat_out = (ch.get("category") or "").strip()
+        row_out: dict = {
             "path": p,
             "title": ch.get("title") or "",
             "kind": ch.get("kind") or "general",
@@ -1647,9 +1903,11 @@ def retrieve(
             "routing_multiplier": round(mult, 4),
             "excerpt": format_excerpt_for_display(ch.get("text") or "", ex_lim),
         }
+        if cat_out:
+            row_out["category"] = cat_out
         if rerank_used:
-            row["embedding_rerank"] = True
-        out.append(row)
+            row_out["embedding_rerank"] = True
+        out.append(row_out)
         if len(out) >= max_chunks:
             break
     return out
@@ -2499,6 +2757,28 @@ def api_assist(body: AssistIn) -> dict:
         retrieved, q, _routing
     )
 
+    chunk_vote_majority: str | None = None
+    if retrieved and os.environ.get("RAG_CHUNK_VOTE_RERETRIEVE", "0").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        maj = _majority_category_from_retrieval(retrieved)
+        chunk_vote_majority = maj
+        if maj and (not boost_merged or maj not in boost_merged):
+            boost2 = [maj] + [x for x in (boost_merged or []) if x != maj]
+            r2 = retrieve(
+                q_rag,
+                routing_query=q,
+                category_boost=boost2,
+                user_category_slugs=user_slugs or None,
+                icd_codes_for_lex=icd_codes_for_lex,
+            )
+            if r2:
+                retrieved, audience_inferred, audience_fallback = (
+                    filter_retrieval_by_audience(r2, q, _routing)
+                )
+
     maybe_refine_icd_with_gemini_after_retrieve(
         model,
         q_rag,
@@ -2593,6 +2873,7 @@ def api_assist(body: AssistIn) -> dict:
             finish = _gemini_finish_reason(resp)
 
     if parsed and isinstance(parsed, dict):
+        apply_protocol_confidence_calibration(parsed, retrieved)
         dedupe_parsed_protocols(parsed)
 
     icd_payload = _icd_client_payload(icd_analysis)
@@ -2604,6 +2885,14 @@ def api_assist(body: AssistIn) -> dict:
             merged_icd.append(dict(it))
         parsed["icd_codes"] = merged_icd
 
+    confidence_second_pass_used = False
+    if parsed and isinstance(parsed, dict) and os.environ.get(
+        "RAG_CONFIDENCE_SECOND_PASS", "0"
+    ).strip().lower() in ("1", "true", "yes"):
+        confidence_second_pass_used = bool(
+            refine_protocol_confidences_gemini(model, q, parsed, retrieved)
+        )
+
     clinical_detail = None
     clinical_detail_offer: dict | None = None
     if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
@@ -2612,8 +2901,11 @@ def api_assist(body: AssistIn) -> dict:
         "yes",
     ):
         candidates: list[tuple[float, dict]] = []
+        min_detail_rag = float(os.environ.get("RAG_DETAIL_MIN_RAG_SUPPORT", "0.12"))
         for pr in parsed.get("protocols") or []:
             if not confidence_for_detailed_extraction(pr.get("confidence_score")):
+                continue
+            if float(pr.get("rag_support") or 0.0) < min_detail_rag:
                 continue
             raw_p = str(pr.get("path") or "")
             pth = raw_p if raw_p in _chunks_by_path else ""
@@ -2673,6 +2965,9 @@ def api_assist(body: AssistIn) -> dict:
         else {"used": False},
         "red_flags": red_flags,
         "protocol_structures": protocol_structures,
+        "routing_version": int(_routing.get("version", 1)) if _routing else 1,
+        "chunk_vote_majority": chunk_vote_majority,
+        "confidence_second_pass_used": confidence_second_pass_used,
     }
 
 
