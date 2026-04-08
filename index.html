@@ -1860,6 +1860,45 @@
       font-weight: 600;
     }
 
+    .icd-preflight {
+      margin: 0.65rem 0 0.5rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      background: rgba(236, 253, 245, 0.45);
+    }
+
+    .btn-icd-preflight {
+      font-size: 0.84rem;
+      padding: 0.5rem 0.85rem;
+    }
+
+    .icd-preflight-result {
+      margin-top: 0.65rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(26, 138, 114, 0.2);
+    }
+
+    .icd-preflight-result--hint {
+      color: #92400e;
+      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(255, 247, 237, 0.95);
+    }
+
+    .icd-preflight-codes {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .btn-icd-apply {
+      margin-top: 0.55rem;
+      font-size: 0.84rem;
+    }
+
     .llm-toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -3328,9 +3367,9 @@
           </h1>
           <p class="tagline tagline--rich">
             <span class="tagline-lead"
-              ><span class="hl">Поиск и подбор информации</span> по официальным PDF протоколам: опишите жалобы, клиническую
-              ситуацию или укажите код МКБ-10 — сервис предложит релевантные документы, краткий разбор и ссылки на
-              первоисточник.</span>
+              ><span class="hl">Поиск по клиническим протоколам</span> в первую очередь по <strong>диагнозу</strong> и
+              <strong>кодам МКБ-10</strong>: они лучше всего сопоставляются с текстом PDF. Жалобы и симптомы можно
+              сначала перевести в коды МКБ (кнопка под полем), затем запустить подбор протоколов.</span>
             <span class="tagline-sub"
               >Источник — публикации <span class="hl-doc">Минздрава РБ</span>. Инструмент для ориентира в нормативных
               текстах; не замена очной консультации и не установление диагноза.</span>
@@ -3363,8 +3402,8 @@
 
     <section class="hero" aria-labelledby="search-title">
       <div class="hero-intro">
-        <p class="hero-eyebrow">Ваш запрос</p>
-        <h2 id="search-title">Опишите симптомы, ситуацию или введите код МКБ-10</h2>
+        <p class="hero-eyebrow">Запрос для поиска</p>
+        <h2 id="search-title">Диагноз или код МКБ-10 — основа подбора; жалобы можно уточнить до кодов</h2>
       </div>
 
       <div id="section-filters" class="section-anchor section-block--filters">
@@ -3436,27 +3475,34 @@
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
-            Сначала при необходимости заполните <strong>контекст и рубрики</strong> выше, затем введите запрос и нажмите
-            <strong>«Найти протоколы»</strong>.
+            Индекс рассчитан под сопоставление с <strong>формулировками диагноза и МКБ-10</strong> в протоколах. При
+            одних жалобах сначала нажмите <strong>«Подобрать коды МКБ»</strong>, затем — <strong>«Найти протоколы»</strong>.
           </p>
         </div>
         <div id="section-query" class="section-anchor section-block--query">
           <form class="search-row" id="search-form" action="#" method="get">
             <div class="query-stack">
-              <label for="q" class="visually-hidden">Жалобы и клинический вопрос</label>
+              <label for="q" class="visually-hidden">Диагноз, код МКБ-10 или жалобы для подбора протокола</label>
               <textarea
                 id="q"
                 name="q"
                 rows="6"
                 autocomplete="off"
                 maxlength="12000"
-                placeholder="Жалобы, длительность, диагноз или код МКБ-10 (например J20.9), что уже пробовали, вопрос к протоколу…"
-                aria-label="Текст запроса: жалобы и вопрос"
+                placeholder="Предпочтительно: диагноз словами и/или код МКБ-10 (например J20.9, I10). Можно кратко описать жалобы — тогда сначала нажмите «Подобрать коды МКБ» под полем."
+                aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
               ></textarea>
               <p class="query-form-hint" id="query-form-hint">
-                Можно указать <strong>диагноз</strong> или <strong>код МКБ-10</strong>, динамику и лечение. Подбор
-                запускается <strong>после нажатия «Найти протоколы»</strong> — до этого запрос только вводится в поле.
+                Поиск в корпусе ведётся в основном по <strong>совпадению с диагнозом и кодами МКБ-10</strong> в текстах
+                протоколов. Если указаны только симптомы, сервис при полном поиске тоже пытается вывести коды, но надёжнее
+                сначала нажать <strong>«Подобрать коды МКБ»</strong>, проверить строку и затем <strong>«Найти протоколы»</strong>.
               </p>
+              <div class="icd-preflight" id="icd-preflight">
+                <button type="button" class="btn-assist btn-icd-preflight" id="btn-icd-preflight">
+                  Подобрать коды МКБ по жалобам (шаг перед поиском)
+                </button>
+                <div class="icd-preflight-result" id="icd-preflight-result" hidden></div>
+              </div>
               <div class="query-actions">
                 <button type="button" class="btn-voice" id="btn-voice" title="Надиктовать текст (Chrome, Edge, Safari)">
                   Голос
@@ -3487,16 +3533,16 @@
         <summary class="hero-help-summary">Как устроен поиск</summary>
         <div class="hero-help-content">
           <p class="hero-help-lead">
-            Текст запроса сопоставляется с фрагментами <strong>официальных PDF</strong> клинических протоколов Минздрава
-            РБ; сервис предлагает релевантные документы и краткое пояснение. Это ориентир в документах, не диагноз и не
-            замена очного приёма.
+            Отбор фрагментов PDF рассчитан на совпадение с <strong>диагнозом и кодами МКБ-10</strong> в тексте протоколов.
+            Краткий ответ — ориентир по документам, не установление диагноза и не замена очного приёма.
           </p>
           <div class="hero-help-steps">
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">1</span>
               <div class="hero-help-step-body">
-                При необходимости заполните <strong>контекст пациента</strong> и <strong>рубрики</strong> (блок выше), затем
-                введите запрос и нажмите <strong>«Найти протоколы»</strong> — так подбор точнее.
+                Укажите при необходимости <strong>контекст и рубрики</strong>. В поле запроса лучше сразу ввести
+                <strong>диагноз и/или МКБ-10</strong>. Если есть только жалобы — нажмите <strong>«Подобрать коды МКБ»</strong>,
+                проверьте предложенные коды, при необходимости отредактируйте текст и затем <strong>«Найти протоколы»</strong>.
               </div>
             </div>
             <div class="hero-help-step">
@@ -3515,12 +3561,12 @@
               </div>
             </div>
           </div>
-          <p class="hero-help-examples-label">Примеры формулировок</p>
+          <p class="hero-help-examples-label">Примеры (сначала диагноз/МКБ — точнее подбор)</p>
           <div class="hero-help-chips">
-            <span class="hero-chip">«сухой кашель около двух недель»</span>
-            <span class="hero-chip">«изжога после еды»</span>
-            <span class="hero-chip">сахарный диабет 2 типа</span>
-            <span class="hero-chip">код J20.9</span>
+            <span class="hero-chip">J20.9 острый бронхит</span>
+            <span class="hero-chip">I10 эссенциальная гипертензия</span>
+            <span class="hero-chip">E11.9 сахарный диабет 2 типа</span>
+            <span class="hero-chip">жалобы → «Подобрать коды МКБ», затем поиск</span>
           </div>
           <p class="hero-help-footnote">
             <strong>Совет:</strong> на телефоне можно надиктовать жалобы кнопкой «Голос» — текст остаётся в браузере.
@@ -4222,6 +4268,12 @@
     if (st) st.textContent = "";
     var tplRes = document.getElementById("consultation-template-result");
     if (tplRes) tplRes.hidden = true;
+    var icdBox = document.getElementById("icd-preflight-result");
+    if (icdBox) {
+      icdBox.hidden = true;
+      icdBox.innerHTML = "";
+    }
+    window.__icdAppendLine = "";
   }
 
   function stripToClinicalOnly(fullQuery) {
@@ -6231,6 +6283,164 @@
       btn.disabled = !!busy;
       btn.classList.toggle("is-busy", !!busy);
     }
+    var btnIcd = document.getElementById("btn-icd-preflight");
+    if (btnIcd) {
+      btnIcd.disabled = !!busy;
+    }
+  }
+
+  function renderIcdPreflightResult(data) {
+    var box = document.getElementById("icd-preflight-result");
+    if (!box) return;
+    var icd = data.icd || {};
+    var codes = icd.codes_for_retrieval || [];
+    var hint = data.hint;
+    var appendLine = data.append_line;
+    window.__icdAppendLine = appendLine || "";
+    var html = "";
+    if (hint) {
+      html +=
+        '<div class="icd-preflight-result icd-preflight-result--hint">' +
+        escapeHtml(hint) +
+        "</div>";
+    }
+    if (codes.length || (icd.detected && icd.detected.length) || (icd.suggested && icd.suggested.length)) {
+      html += "<p><strong>Предложенные коды МКБ-10:</strong></p><ul class=\"icd-preflight-codes\">";
+      var merged = [];
+      var di;
+      var detected = icd.detected || [];
+      var suggested = icd.suggested || [];
+      for (di = 0; di < detected.length; di++) merged.push(detected[di]);
+      for (di = 0; di < suggested.length; di++) merged.push(suggested[di]);
+      var seen = {};
+      var row;
+      for (di = 0; di < merged.length; di++) {
+        row = merged[di];
+        if (!row || !row.code) continue;
+        var c = String(row.code);
+        if (seen[c]) continue;
+        seen[c] = true;
+        var tr = (row.title_ru || "").trim();
+        html +=
+          "<li><code>" +
+          escapeHtml(c) +
+          "</code>" +
+          (tr ? " — " + escapeHtml(tr) : "") +
+          "</li>";
+      }
+      if (!Object.keys(seen).length) {
+        for (di = 0; di < codes.length; di++) {
+          html += "<li><code>" + escapeHtml(String(codes[di])) + "</code></li>";
+        }
+      }
+      html += "</ul>";
+    }
+    if (appendLine) {
+      html +=
+        '<p style="margin-top:0.5rem">Будет добавлена строка: <em>' +
+        escapeHtml(appendLine) +
+        "</em></p>" +
+        '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
+    } else if (!hint && !codes.length) {
+      html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
+    }
+    box.innerHTML = html;
+    box.hidden = false;
+    var applyBtn = document.getElementById("btn-icd-apply");
+    if (applyBtn) {
+      applyBtn.addEventListener("click", function () {
+        var line = window.__icdAppendLine;
+        var inp = document.getElementById("q");
+        if (line && inp) {
+          var cur = (inp.value || "").trim();
+          inp.value = cur ? cur + "\n\n" + line : line;
+        }
+        box.hidden = true;
+        box.innerHTML = "";
+        runAssist().catch(function (e) {
+          console.error(e);
+        });
+      });
+    }
+  }
+
+  function runIcdPreflight() {
+    var qInput = document.getElementById("q");
+    var raw = ((qInput && qInput.value) || "").trim();
+    var prep = preprocessSearchQuery(raw);
+    if (!prep.ok) {
+      alert(prep.message);
+      return;
+    }
+    raw = prep.query;
+    if (qInput) qInput.value = raw;
+    var qSend =
+      raw.indexOf("=== Контекст пациента ===") === 0
+        ? raw
+        : buildFullQuery(raw);
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    var btn = document.getElementById("btn-icd-preflight");
+    var box = document.getElementById("icd-preflight-result");
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Подбор кодов…";
+    }
+    if (box) {
+      box.hidden = false;
+      box.innerHTML =
+        '<p class="icd-preflight-result">Сопоставление с справочником МКБ-10…</p>';
+    }
+    fetch(base + "/health")
+      .then(function (h) {
+        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+        return h.json();
+      })
+      .then(function (health) {
+        if (!health.gemini_configured) {
+          throw new Error("На сервере не настроен ключ доступа к обработке запросов.");
+        }
+        return fetch(base + "/api/icd-suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: qSend }),
+        });
+      })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!r.ok || !j || typeof j !== "object") {
+            var d = j && j.detail;
+            if (Array.isArray(d)) {
+              d = d
+                .map(function (x) {
+                  return x.msg || JSON.stringify(x);
+                })
+                .join("; ");
+            }
+            throw new Error(d || text || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (data) {
+        renderIcdPreflightResult(data);
+      })
+      .catch(function (err) {
+        if (box) {
+          box.hidden = false;
+          box.innerHTML =
+            '<p class="error">' + escapeHtml(String(err.message || err)) + "</p>";
+        }
+      })
+      .finally(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Подобрать коды МКБ по жалобам (шаг перед поиском)";
+        }
+      });
   }
 
   function getAssistLoadingHtml() {
@@ -6357,7 +6567,7 @@
       return {
         ok: false,
         message:
-          "Запрос выглядит как случайный набор. Укажите жалобы, длительность и при необходимости код МКБ-10.",
+          "Запрос выглядит как случайный набор. Укажите диагноз, код МКБ-10 или развёрнуто опишите жалобы.",
       };
     }
 
@@ -6615,6 +6825,12 @@
         e.preventDefault();
         doAssist();
       });
+      var btnIcdPf = document.getElementById("btn-icd-preflight");
+      if (btnIcdPf) {
+        btnIcdPf.addEventListener("click", function () {
+          runIcdPreflight();
+        });
+      }
       var params = new URLSearchParams(window.location.search).get("q");
       if (params) {
         input.value = params;

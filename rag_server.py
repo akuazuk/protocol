@@ -2896,6 +2896,12 @@ class AssistIn(BaseModel):
     )
 
 
+class IcdSuggestIn(BaseModel):
+    """Подбор кодов МКБ-10 по жалобам до полного поиска протоколов (шаг 1)."""
+
+    query: str = Field(..., min_length=4, max_length=12000)
+
+
 class ProtocolDetailIn(BaseModel):
     """Развёрнутая выдержка по протоколу — отдельный запрос (после краткого ответа assist)."""
 
@@ -3083,13 +3089,25 @@ def verify_key() -> dict:
     }
 
 
-@app.post("/api/assist")
-def api_assist(body: AssistIn) -> dict:
-    q = body.query.strip()
+def _infer_icd_pipeline_from_full_query(
+    full_query: str,
+    model,
+) -> tuple[dict | None, str, str, dict | None, str | None]:
+    """Та же цепочка МКБ, что в начале api_assist (до retrieve).
+
+    Возвращает:
+      icd_analysis, q_эффективный, q_rag, query_clinical_refinement | None, сообщение_об_ошибке | None
+    """
+    q = (full_query or "").strip()
     q_rag = clinical_query_for_rag(q)
     if not q_rag:
-        raise HTTPException(status_code=400, detail="Пустой текст жалобы — заполните блок «Жалобы и вопрос»")
-    model = get_gemini()
+        return (
+            None,
+            q,
+            q_rag,
+            None,
+            "Пустой текст жалобы — заполните блок «Жалобы и вопрос»",
+        )
     query_clinical_refinement: dict | None = None
     if os.environ.get("RAG_GEMINI_QUERY_REFINE", "1").strip().lower() in (
         "1",
@@ -3113,6 +3131,47 @@ def api_assist(body: AssistIn) -> dict:
         and not (icd_analysis.get("detected") or [])
     ):
         _refine_icd_analysis_with_gemini(q_rag, icd_analysis, model)
+    return icd_analysis, q, q_rag, query_clinical_refinement, None
+
+
+def _format_icd_append_line(icd_analysis: dict) -> str | None:
+    """Строка для добавления в поле запроса перед поиском протокола."""
+    codes = icd_analysis.get("codes_for_retrieval") or []
+    if not codes:
+        return None
+    by_code: dict[str, dict] = {}
+    for bucket in (icd_analysis.get("detected") or [], icd_analysis.get("suggested") or []):
+        for row in bucket:
+            if not isinstance(row, dict):
+                continue
+            c = normalize_icd_code(str(row.get("code") or ""))
+            if c:
+                by_code[c] = row
+    parts: list[str] = []
+    for raw in codes[:8]:
+        c = normalize_icd_code(str(raw))
+        if not c:
+            continue
+        row = by_code.get(c) or {}
+        tr = (row.get("title_ru") or "").strip()
+        if tr:
+            parts.append(f"{c} ({tr})")
+        else:
+            parts.append(c)
+    if not parts:
+        return None
+    return "МКБ-10 для поиска протокола: " + "; ".join(parts)
+
+
+@app.post("/api/assist")
+def api_assist(body: AssistIn) -> dict:
+    model = get_gemini()
+    icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
+        _infer_icd_pipeline_from_full_query(body.query, model)
+    )
+    if icd_err:
+        raise HTTPException(status_code=400, detail=icd_err)
+    assert icd_analysis is not None
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
     query_specialties = infer_specialties_gemini(q, model)
     user_slugs = [
@@ -3419,6 +3478,34 @@ def api_protocol_detail(body: ProtocolDetailIn) -> dict:
         client_rag_support=body.client_rag_support,
     )
     return {"clinical_detail": clinical_detail}
+
+
+@app.post("/api/icd-suggest")
+def api_icd_suggest(body: IcdSuggestIn) -> dict:
+    """Та же логика МКБ, что в начале /api/assist, без RAG и без ответа LLM по протоколам."""
+    model = get_gemini()
+    icd_analysis, q, q_rag, _, err = _infer_icd_pipeline_from_full_query(
+        body.query.strip(), model
+    )
+    if err:
+        raise HTTPException(status_code=400, detail=err)
+    assert icd_analysis is not None
+    payload = _icd_client_payload(icd_analysis)
+    append_line = _format_icd_append_line(icd_analysis)
+    hint = None
+    if not (icd_analysis.get("codes_for_retrieval") or []) and not (
+        icd_analysis.get("detected") or []
+    ):
+        hint = (
+            "Коды МКБ-10 по описанию не подобраны — уточните формулировку, рубрику или введите код вручную."
+        )
+    return {
+        "icd": payload,
+        "query_effective": q,
+        "rag_query": q_rag,
+        "append_line": append_line,
+        "hint": hint,
+    }
 
 
 @app.post("/api/consultation-template")
