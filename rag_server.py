@@ -40,6 +40,7 @@ load_project_env(ROOT)
 try:
     from fastapi import FastAPI, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import FileResponse
     from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
@@ -3675,6 +3676,16 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
 # Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
 if (ROOT / "index.html").is_file():
+
+    @app.get("/", include_in_schema=False)
+    def _serve_index_html() -> FileResponse:
+        """Без долгого кэша HTML: после деплоя сразу подхватывается новый JS/разметка."""
+        return FileResponse(
+            path=str(ROOT / "index.html"),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
+
     app.mount(
         "/",
         StaticFiles(directory=str(ROOT), html=True),

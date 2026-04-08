@@ -6783,15 +6783,17 @@
         clearAssistHintRotation();
         var idx = 0;
         setAssistPhaseHintByIndex(0);
-        function scheduleNext() {
-          var delay = 5000 + Math.floor(Math.random() * 3001);
+        function scheduleNext(isFirst) {
+          var delay = isFirst
+            ? 2200 + Math.floor(Math.random() * 1301)
+            : 5000 + Math.floor(Math.random() * 3001);
           assistHintRotateTid = setTimeout(function () {
             idx += 1;
             setAssistPhaseHintByIndex(idx);
-            scheduleNext();
+            scheduleNext(false);
           }, delay);
         }
-        scheduleNext();
+        scheduleNext(true);
       }
 
       function clearAssistTick() {
