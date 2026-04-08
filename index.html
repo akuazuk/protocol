@@ -3264,6 +3264,8 @@
     footer.site-footer {
       margin-top: 2.5rem;
       padding-top: 1.25rem;
+      padding-left: 0;
+      padding-right: 0;
       border-top: 1px solid rgba(13, 92, 74, 0.15);
       font-size: 0.8rem;
       color: var(--muted);
@@ -3278,7 +3280,8 @@
       header.site-header {
         gap: 0.65rem;
         text-align: center;
-        padding: 0.78rem 0.78rem 0.82rem;
+        padding: 0.65rem max(0.5rem, env(safe-area-inset-left, 0px)) 0.72rem
+          max(0.5rem, env(safe-area-inset-right, 0px));
       }
 
       .toolbar-new-search {
@@ -3332,7 +3335,70 @@
       }
 
       .hero {
-        padding: 1.35rem 1rem 1.35rem;
+        padding: 1rem 0.55rem 1.15rem;
+        border-radius: 16px;
+        margin-bottom: 1.35rem;
+      }
+
+      .brand .tagline {
+        max-width: none;
+      }
+
+      .search-panel {
+        padding: 0.8rem 0.55rem 0.85rem;
+        border-radius: 14px;
+      }
+
+      .search-panel__hint {
+        max-width: none;
+      }
+
+      .section-results {
+        padding: 0.95rem 0.5rem 1.05rem;
+        border-radius: 14px;
+      }
+
+      .hero-help summary.hero-help-summary {
+        padding: 0.75rem 0.55rem 0.78rem 0.6rem;
+      }
+
+      .hero-help-content {
+        padding: 0.85rem 0.55rem 0.95rem;
+      }
+
+      .query-stack textarea#q {
+        padding: 0.8rem 0.65rem;
+        font-size: 1rem;
+      }
+
+      .query-toolbar {
+        padding: 0.7rem 0.55rem;
+      }
+
+      .assist-loading__hint,
+      .assist-loading__disclaimer,
+      .assist-timer-overlay__disclaimer {
+        max-width: none;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .assist-timer-overlay__card {
+        width: 100%;
+        max-width: min(100%, calc(100vw - 1rem));
+        padding: 1.15rem 0.75rem 1.35rem;
+        box-sizing: border-box;
+      }
+
+      .llm-out {
+        font-size: 0.93rem;
+        line-height: 1.58;
+        overflow-wrap: anywhere;
+      }
+
+      .llm-panel.assist-panel summary.assist-panel__summary {
+        padding: 0.85rem 0.6rem;
       }
 
       .search-row {
@@ -3359,23 +3425,23 @@
       }
 
       .wrap {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: max(0.45rem, env(safe-area-inset-left, 0px));
+        padding-right: max(0.45rem, env(safe-area-inset-right, 0px));
+        padding-top: 0.65rem;
       }
 
       .assist-panel__body {
-        padding-left: 0.35rem;
-        padding-right: 0.35rem;
+        padding: 0.85rem 0.55rem 1rem;
       }
 
       .assist-card {
-        padding: 0.85rem 0.45rem;
+        padding: 0.75rem 0.45rem;
       }
 
       .assist-clinical-detail,
       .assist-clinical-detail--rich {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: 0.45rem;
+        padding-right: 0.45rem;
       }
 
       .assist-detail-body {
@@ -3422,6 +3488,22 @@
 
       .consultation-template-pending .consultation-template-timer {
         font-size: 1.05rem;
+      }
+
+      footer.site-footer,
+      footer.site-footer--compact {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .assist-raw,
+      .assist-compact,
+      .assist-proto-list {
+        padding-left: 0.85rem;
+      }
+
+      .ctx-panel {
+        padding: 0.65rem 0.55rem;
       }
     }
   </style>
