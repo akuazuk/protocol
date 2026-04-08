@@ -2589,6 +2589,35 @@ def _diagnostic_mode_summary(icd_payload: dict, retrieved: list[dict]) -> dict:
     }
 
 
+def _ensure_symptom_followup_questions(parsed: dict | None, diag_mode: str, conf: float) -> None:
+    if not parsed or not isinstance(parsed, dict):
+        return
+    if diag_mode not in ("symptom_inferred", "symptom_only"):
+        return
+    if conf >= 0.62:
+        return
+    existing = parsed.get("questions_for_patient")
+    questions: list[str] = []
+    if isinstance(existing, list):
+        for q in existing:
+            s = str(q).strip()
+            if s:
+                questions.append(s)
+    extra = [
+        "Какова длительность симптомов и динамика ухудшения за последние 24–72 часа?",
+        "Есть ли объективные показатели: температура, SpO2, АД, ЧСС или другие измерения?",
+        "Какие симптомы тревоги присутствуют сейчас (одышка в покое, боль в груди, выраженная слабость, нарушение сознания)?",
+    ]
+    seen = set(questions)
+    for e in extra:
+        if e not in seen:
+            questions.append(e)
+            seen.add(e)
+        if len(questions) >= 4:
+            break
+    parsed["questions_for_patient"] = questions[:4]
+
+
 def _normalize_protocol_path_key(p: str) -> str:
     s = (p or "").strip()
     if not s:
@@ -3251,6 +3280,11 @@ def api_assist(body: AssistIn) -> dict:
 
     icd_payload = _icd_client_payload(icd_analysis)
     diag_mode = _diagnostic_mode_summary(icd_payload, retrieved)
+    _ensure_symptom_followup_questions(
+        parsed,
+        str(diag_mode.get("mode") or ""),
+        float(diag_mode.get("confidence") or 0.0),
+    )
     if parsed and isinstance(parsed, dict):
         merged_icd: list[dict] = []
         for it in icd_payload.get("detected") or []:
