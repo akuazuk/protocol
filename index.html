@@ -2353,12 +2353,6 @@
       border-color: rgba(26, 138, 114, 0.42);
     }
 
-    .btn-consultation-tab-facts {
-      margin-top: 0.75rem;
-      width: 100%;
-      max-width: 100%;
-    }
-
     .assist-detail-facts-wrap {
       margin: 0.85rem 0 1rem;
       padding: 0.9rem 1rem;
@@ -4591,8 +4585,12 @@
   function loadConsultationTemplate(opts) {
     opts = opts || {};
     var factsNotes = opts.factsNotes;
-    if (factsNotes == null && opts.fromFacts === true) {
-      factsNotes = collectSelectedFactsNotes();
+    var selectedFactsPayload = opts.selectedFactsPayload || null;
+    if (selectedFactsPayload == null && opts.fromFacts === true) {
+      selectedFactsPayload = collectSelectedFactsPayload();
+    }
+    if (factsNotes == null && selectedFactsPayload && selectedFactsPayload.notes) {
+      factsNotes = selectedFactsPayload.notes;
     }
     var cd = window.__clinicalDetailForTemplate;
     var q = window.__assistQueryForTemplate || "";
@@ -4610,13 +4608,8 @@
     var pendingEl = document.getElementById("consultation-template-pending");
     var genBtn = document.querySelector(".btn-consultation-template");
     var factsBtn = document.querySelector(".btn-consultation-from-facts");
-    var tabFactsBtns = document.querySelectorAll(".btn-consultation-tab-facts");
     if (genBtn) genBtn.disabled = true;
     if (factsBtn) factsBtn.disabled = true;
-    var tbi;
-    for (tbi = 0; tbi < tabFactsBtns.length; tbi++) {
-      tabFactsBtns[tbi].disabled = true;
-    }
     var dex = document.getElementById("assist-detail-extract-wrap");
     if (dex) dex.open = false;
     if (resultEl) resultEl.hidden = false;
@@ -4634,12 +4627,26 @@
     var pctx = patientContextLines();
     var pctxPayload = pctx ? pctx : null;
     var fn = factsNotes != null ? String(factsNotes).trim() : "";
+    if (selectedFactsPayload && selectedFactsPayload.selected_count) {
+      var secSummary = (selectedFactsPayload.sections || [])
+        .map(function (s) {
+          return s.title + ": " + (s.items ? s.items.length : 0);
+        })
+        .join(", ");
+      fn =
+        fn +
+        "\n\nСводка выбранного: " +
+        String(selectedFactsPayload.selected_count) +
+        " пункт(ов). " +
+        secSummary;
+    }
     var payloadBody = {
       query: q,
       clinical_detail: cd,
       refine: false,
       patient_context: pctxPayload,
       additional_notes: fn || null,
+      selected_facts_payload: selectedFactsPayload || null,
     };
     fetch(base + "/api/consultation-template", {
       method: "POST",
@@ -4672,7 +4679,18 @@
         clearPatientContextFromForm();
         var t = (payload.template || "").trim();
         if (bodyEl) {
-          bodyEl.innerHTML = t ? formatConsultationBodyHtml(t) : "";
+          var cov = payload.selected_facts_coverage;
+          var covHtml = "";
+          if (cov != null && !isNaN(Number(cov))) {
+            var cp = Math.round(Number(cov) * 100);
+            covHtml =
+              '<p class="assist-note" style="margin:0 0 0.55rem">Покрытие выбранных пунктов: <strong>' +
+              String(cp) +
+              '%</strong>' +
+              (payload.selected_facts_repair_used ? " (выполнена автодоработка шаблона)." : ".") +
+              "</p>";
+          }
+          bodyEl.innerHTML = (covHtml || "") + (t ? formatConsultationBodyHtml(t) : "");
           if (t) enhanceCollapsibleBlocks(bodyEl);
         }
         var pendingE = document.getElementById("consultation-template-pending");
@@ -4711,11 +4729,6 @@
         if (genBtn) genBtn.disabled = false;
         var fb = document.querySelector(".btn-consultation-from-facts");
         if (fb) fb.disabled = false;
-        var tfb = document.querySelectorAll(".btn-consultation-tab-facts");
-        var j;
-        for (j = 0; j < tfb.length; j++) {
-          tfb[j].disabled = false;
-        }
       });
   }
 
@@ -4733,26 +4746,17 @@
       }
       if (el.closest(".btn-consultation-from-facts")) {
         ev.preventDefault();
-        var picked = collectSelectedFactsNotes();
-        if (!picked || !String(picked).trim()) {
+        var selected = collectSelectedFactsPayload();
+        if (!selected || !selected.notes || !String(selected.notes).trim()) {
           alert(
             "Отметьте хотя бы один пункт в блоке «По протоколу: обследование, препараты…»."
           );
           return;
         }
-        loadConsultationTemplate({ factsNotes: picked });
-        return;
-      }
-      if (el.closest(".btn-consultation-tab-facts")) {
-        ev.preventDefault();
-        var pickedTab = collectSelectedFactsNotesFromActiveTab();
-        if (!pickedTab || !String(pickedTab).trim()) {
-          alert(
-            "Отметьте хотя бы один пункт на активной вкладке раздела протокола."
-          );
-          return;
-        }
-        loadConsultationTemplate({ factsNotes: pickedTab });
+        loadConsultationTemplate({
+          selectedFactsPayload: selected,
+          factsNotes: selected.notes,
+        });
         return;
       }
       if (el.closest(".btn-copy-template")) {
@@ -5567,47 +5571,13 @@
     if (first) ensureProtocolTabFocusLoad(first.getAttribute("data-fact-tab"));
   }
 
-  function collectSelectedFactsNotesFromActiveTab() {
+  function collectSelectedFactsPayload() {
     var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
-    if (!wrap) return "";
-    var panel = wrap.querySelector(".assist-fact-tab-panel.is-active");
-    if (!panel) return collectSelectedFactsNotes();
-    var tabKey = panel.getAttribute("data-fact-tab") || "";
-    var cbs = panel.querySelectorAll(".assist-fact-cb:checked");
-    if (!cbs.length) return "";
-    var title = FACT_SECTION_TITLES[tabKey] || tabKey;
-    var lines = [];
-    var i;
-    for (i = 0; i < cbs.length; i++) {
-      var cb = cbs[i];
-      var cat = cb.getAttribute("data-fact-cat");
-      var text = "";
-      if (cat === "monitoring_frequency") {
-        var mfItem = cb.closest(".assist-fact-item");
-        var mfBody = mfItem && mfItem.querySelector(".assist-fact-mf-body");
-        text = mfBody ? String(mfBody.innerText || mfBody.textContent || "").trim() : "";
-      } else {
-        var lab = cb.closest(".assist-fact-label");
-        var span = lab && lab.querySelector(".assist-fact-text");
-        text = span ? String(span.textContent || "").trim() : "";
-      }
-      if (text) lines.push("- " + text);
-    }
-    if (!lines.length) return "";
-    return (
-      "Пользователь выбрал включить в консультативное заключение (вкладка «" +
-      title +
-      "»):\n\n" +
-      lines.join("\n")
-    );
-  }
-
-  function collectSelectedFactsNotes() {
-    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
-    if (!wrap) return "";
+    if (!wrap) return { notes: "", selected_count: 0, sections: [] };
     var cbs = wrap.querySelectorAll(".assist-fact-cb:checked");
-    if (!cbs.length) return "";
+    if (!cbs.length) return { notes: "", selected_count: 0, sections: [] };
     var byCat = {};
+    var total = 0;
     var i;
     for (i = 0; i < cbs.length; i++) {
       var cb = cbs[i];
@@ -5626,6 +5596,7 @@
       if (!text) continue;
       if (!byCat[cat]) byCat[cat] = [];
       byCat[cat].push(text);
+      total += 1;
     }
     var order = [
       "investigations",
@@ -5635,6 +5606,7 @@
       "monitoring_frequency",
     ];
     var parts = [];
+    var sections = [];
     for (i = 0; i < order.length; i++) {
       var oc = order[i];
       var arr = byCat[oc];
@@ -5646,11 +5618,35 @@
         lines.push("- " + arr[j]);
       }
       parts.push(title + ":\n" + lines.join("\n"));
+      sections.push({
+        key: oc,
+        title: title,
+        items: arr.slice(0),
+      });
     }
-    if (!parts.length) return "";
+    if (!parts.length) return { notes: "", selected_count: 0, sections: [] };
+    return {
+      selected_count: total,
+      sections: sections,
+      notes:
+        "Пользователь выбрал включить в консультативное заключение следующие пункты из выдержки по протоколу:\n\n" +
+        parts.join("\n\n"),
+    };
+  }
+
+  function collectSelectedFactsNotes() {
+    var payload = collectSelectedFactsPayload();
+    if (!payload || !payload.notes) return "";
     return (
       "Пользователь выбрал включить в консультативное заключение следующие пункты из выдержки по протоколу:\n\n" +
-      parts.join("\n\n")
+      payload.sections
+        .map(function (s) {
+          var lines = s.items.map(function (it) {
+            return "- " + it;
+          });
+          return s.title + ":\n" + lines.join("\n");
+        })
+        .join("\n\n")
     );
   }
 
@@ -5811,14 +5807,12 @@
         html += buildFactTabPanelPlaceholderHtml(d2.key);
       }
       html += "</div>";
-      html +=
-        '<button type="button" class="btn-assist btn-consultation-tab-facts">Добавить выбранное в консультативное заключение (вкладка)</button>';
       html += "</div>";
     }
     html += "</div>";
     html +=
       '<div class="assist-facts-actions">' +
-      '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному (все вкладки)</button>' +
+      '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному</button>' +
       "</div>";
     html += "</div>";
     return html;
