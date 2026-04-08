@@ -5094,6 +5094,7 @@
     investigations: "Обследование",
     medications: "Препараты",
     treatment_methods: "Лечение",
+    care_algorithms: "Алгоритмы",
     monitoring_frequency: "Кратность наблюдения",
   };
 
@@ -5136,10 +5137,14 @@
     if (focusKey === "monitoring_frequency" && extraction.monitoring_frequency != null) {
       x.monitoring_frequency = extraction.monitoring_frequency;
     }
+    if (focusKey === "care_algorithms" && Array.isArray(extraction.care_algorithms)) {
+      x.care_algorithms = extraction.care_algorithms;
+    }
   }
 
   function apiExtractFocusForTab(tabKey) {
     if (tabKey === "monitoring_frequency") return "monitoring";
+    if (tabKey === "care_algorithms") return "algorithms";
     return tabKey;
   }
 
@@ -5147,8 +5152,34 @@
     var inv = Array.isArray(ex.investigations) ? ex.investigations : [];
     var med = Array.isArray(ex.medications) ? ex.medications : [];
     var tm = Array.isArray(ex.treatment_methods) ? ex.treatment_methods : [];
+    var alg = Array.isArray(ex.care_algorithms) ? ex.care_algorithms : [];
     var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
     var NP_MARK = "[не из протокола]";
+    function algorithmItems() {
+      if (!alg.length) return [];
+      var out = [];
+      var i;
+      for (i = 0; i < alg.length; i++) {
+        var row = alg[i];
+        if (row == null) continue;
+        if (typeof row === "string") {
+          var ss = String(row).trim();
+          if (ss) out.push(ss);
+          continue;
+        }
+        if (typeof row !== "object") continue;
+        var title = row.title != null ? String(row.title).trim() : "";
+        var entry = Array.isArray(row.entry_conditions) ? row.entry_conditions : [];
+        var steps = Array.isArray(row.steps) ? row.steps : [];
+        var parts = [];
+        if (title) parts.push(title);
+        if (entry.length) parts.push("Условия: " + entry.slice(0, 2).join("; "));
+        if (steps.length) parts.push("Шаги: " + steps.slice(0, 4).join("; "));
+        var line = parts.join(" — ").trim();
+        if (line) out.push(line);
+      }
+      return out;
+    }
     function listHtmlChecks(items, catKey) {
       if (!items || !items.length) {
         return (
@@ -5252,6 +5283,14 @@
       return (
         '<div class="assist-detail-fact-body">' +
         sectionHtml("Пункты по лечению", listHtmlChecks(tm, "treatment_methods"), tm.length, true) +
+        "</div>"
+      );
+    }
+    if (tabKey === "care_algorithms") {
+      var ai = algorithmItems();
+      return (
+        '<div class="assist-detail-fact-body">' +
+        sectionHtml("Алгоритмы и этапность", listHtmlChecks(ai, "care_algorithms"), ai.length, true) +
         "</div>"
       );
     }
@@ -5429,6 +5468,7 @@
       "investigations",
       "medications",
       "treatment_methods",
+      "care_algorithms",
       "monitoring_frequency",
     ];
     var parts = [];
@@ -5560,6 +5600,7 @@
       { key: "investigations", label: "Обследование", panelMod: " assist-fact-tab-panel--investigations" },
       { key: "medications", label: "Препараты", panelMod: "" },
       { key: "treatment_methods", label: "Лечение", panelMod: "" },
+      { key: "care_algorithms", label: "Алгоритмы", panelMod: "" },
       { key: "monitoring_frequency", label: "Наблюдение", panelMod: "" },
     ];
     var html =
@@ -5708,6 +5749,19 @@
     if (cd.detail_prompt_truncated) {
       html +=
         '<p class="assist-detail-warning assist-detail-warning--context">Текст протокола в запросе к модели обрезан по лимиту контекста — проверьте полноту разделов по файлу PDF на сайте Минздрава.</p>';
+    }
+    if (cd.is_algorithmic_protocol) {
+      html +=
+        '<p class="assist-detail-warning assist-detail-warning--context">Обнаружены признаки алгоритмического протокола: проверьте вкладку «Алгоритмы» и подтвердите ветку по клинической ситуации пациента.</p>';
+    }
+    if (Array.isArray(cd.algorithm_warnings) && cd.algorithm_warnings.length) {
+      var awi;
+      for (awi = 0; awi < cd.algorithm_warnings.length; awi++) {
+        html +=
+          '<p class="assist-detail-warning assist-detail-warning--context">' +
+          escapeHtml(String(cd.algorithm_warnings[awi])) +
+          "</p>";
+      }
     }
     if (cd.low_protocol_match_support) {
       html +=
