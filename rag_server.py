@@ -2550,6 +2550,45 @@ def _icd_block_for_prompt(icd_analysis: dict) -> str:
     )
 
 
+def _diagnostic_mode_summary(icd_payload: dict, retrieved: list[dict]) -> dict:
+    explicit = bool(icd_payload.get("explicit_icd_in_query"))
+    detected = icd_payload.get("detected") or []
+    suggested = icd_payload.get("suggested") or []
+    top_score = 0.0
+    if retrieved:
+        try:
+            top_score = float(retrieved[0].get("score") or 0.0)
+        except (TypeError, ValueError):
+            top_score = 0.0
+    top_score = max(0.0, min(1.0, top_score))
+    if explicit or detected:
+        mode = "diagnosis_or_icd"
+        conf = max(0.72, min(0.98, 0.78 + top_score * 0.2))
+        notice = (
+            "Подбор выполнен с опорой на диагноз/код МКБ-10; "
+            "соответствие обычно выше, но всё равно сверяйте с полным текстом протокола."
+        )
+    elif suggested:
+        mode = "symptom_inferred"
+        conf = max(0.45, min(0.86, 0.52 + top_score * 0.26))
+        notice = (
+            "Точный диагноз/код МКБ-10 не указан. Сервис использовал симптомный поиск и "
+            "предположительное сопоставление с МКБ-10; результаты ориентировочные."
+        )
+    else:
+        mode = "symptom_only"
+        conf = max(0.3, min(0.74, 0.38 + top_score * 0.18))
+        notice = (
+            "Диагноз/код МКБ-10 не определён. Протоколы подобраны по симптомам; "
+            "точность ограничена, рекомендуется уточнить клинические детали."
+        )
+    return {
+        "mode": mode,
+        "confidence": round(float(conf), 4),
+        "notice": notice,
+    }
+
+
 def _normalize_protocol_path_key(p: str) -> str:
     s = (p or "").strip()
     if not s:
@@ -3034,6 +3073,17 @@ def api_assist(body: AssistIn) -> dict:
             q = apply_clinical_correction(q, q_rag)
             query_clinical_refinement = rmeta
     icd_analysis = analyze_query_for_icd(q, q_rag)
+    pre_icd_infer_on = os.environ.get("RAG_ICD_PRE_RETRIEVE_INFER", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if (
+        pre_icd_infer_on
+        and not icd_analysis.get("explicit_icd_in_query")
+        and not (icd_analysis.get("detected") or [])
+    ):
+        _refine_icd_analysis_with_gemini(q_rag, icd_analysis, model)
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
     query_specialties = infer_specialties_gemini(q, model)
     user_slugs = [
@@ -3200,6 +3250,7 @@ def api_assist(body: AssistIn) -> dict:
         dedupe_parsed_protocols(parsed)
 
     icd_payload = _icd_client_payload(icd_analysis)
+    diag_mode = _diagnostic_mode_summary(icd_payload, retrieved)
     if parsed and isinstance(parsed, dict):
         merged_icd: list[dict] = []
         for it in icd_payload.get("detected") or []:
@@ -3284,6 +3335,9 @@ def api_assist(body: AssistIn) -> dict:
         "query_specialties": query_specialties,
         "user_category_slugs": user_slugs,
         "icd": icd_payload,
+        "diagnostic_mode": diag_mode.get("mode"),
+        "diagnostic_confidence": diag_mode.get("confidence"),
+        "diagnostic_notice": diag_mode.get("notice"),
         "llm_text": text,
         "llm_json": parsed,
         "gemini_finish_reason": finish,
