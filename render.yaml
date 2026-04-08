@@ -1,6 +1,10 @@
 # Настройки для Render Blueprint / справочно для ручного сервиса.
 # PYTHON_VERSION: в Dashboard → Environment добавьте вручную, если сборка тянет Python 3.14.
 # https://render.com/docs/python-version
+#
+# Тяжёлые corpus_chunks_parts/*.jsonl лучше не коммитить в git: подключите Persistent Disk,
+# один раз залейте туда каталог corpus_chunks_parts (SSH / scp / скрипт), задайте RAG_CHUNKS_DIR.
+# https://render.com/docs/disks
 
 services:
   - type: web
@@ -8,6 +12,13 @@ services:
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn rag_server:app --host 0.0.0.0 --port $PORT
+    # Раскомментируйте после создания диска в UI и заливки чанков на mountPath:
+    # disk:
+    #   name: rag-chunks
+    #   mountPath: /var/data
+    #   sizeGB: 10
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.8"
+      # - key: RAG_CHUNKS_DIR
+      #   value: /var/data
