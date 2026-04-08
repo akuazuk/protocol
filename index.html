@@ -2484,14 +2484,15 @@
 
     .assist-fact-item {
       display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 0.25rem 0.5rem;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.4rem;
       width: 100%;
     }
 
     .assist-fact-item .assist-fact-label {
-      flex: 1 1 12rem;
+      flex: 0 1 auto;
+      width: 100%;
       min-width: 0;
     }
 
@@ -2504,6 +2505,26 @@
 
     .assist-mf-rich.assist-text-clamp-inner {
       max-height: 7.5rem;
+    }
+
+    /* Блок «По протоколу»: ровная обрезка по строкам без «съедания» низа */
+    .assist-detail-facts-wrap .assist-fact-item:not(.is-expanded) .assist-text-clamp-inner {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .assist-detail-facts-wrap .assist-fact-item:not(.is-expanded) .assist-mf-rich.assist-text-clamp-inner {
+      -webkit-line-clamp: 6;
+    }
+
+    .assist-detail-facts-wrap .assist-fact-item.is-expanded .assist-text-clamp-inner {
+      display: block;
+      -webkit-line-clamp: unset;
+      max-height: none;
+      overflow: visible;
     }
 
     .assist-fact-item.is-expanded .assist-text-clamp-inner,
@@ -2527,8 +2548,10 @@
     }
 
     .assist-detail-facts-wrap .assist-text-toggle--fact {
-      margin-left: 1.5rem;
-      padding: 0.2rem 0.55rem 0.22rem 0.42rem;
+      margin-left: 0;
+      margin-top: 0.05rem;
+      align-self: flex-start;
+      padding: 0.28rem 0.65rem 0.3rem 0.5rem;
       font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 0.02em;
@@ -2582,6 +2605,14 @@
     .assist-mf-pick .assist-fact-mf-body {
       flex: 1;
       min-width: 0;
+    }
+
+    .assist-mf-pick .assist-fact-label {
+      width: 100%;
+    }
+
+    .assist-fact-tab-panel[data-fact-tab="monitoring_frequency"] .assist-fact-tab-panel-inner {
+      padding-bottom: 0.85rem;
     }
 
     .assist-facts-actions {
