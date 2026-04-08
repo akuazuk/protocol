@@ -2371,6 +2371,13 @@
       color: var(--green-950);
     }
 
+    .assist-protocol-facts-note {
+      margin: -0.25rem 0 0.75rem;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
     .assist-fact-section {
       border: 1px solid rgba(26, 138, 114, 0.2);
       border-radius: 10px;
@@ -5250,35 +5257,6 @@
           ? Number(cd.client_rag_support)
           : null,
     };
-    window.__protocolFactsFocusFetched = {};
-  }
-
-  function mergeProtocolExtractionFromFocus(focusKey, extraction) {
-    var cd = window.__clinicalDetailForTemplate;
-    if (!cd || !extraction || typeof extraction !== "object") return;
-    if (!cd.extraction) cd.extraction = {};
-    var x = cd.extraction;
-    if (focusKey === "investigations" && extraction.investigations) {
-      x.investigations = extraction.investigations;
-    }
-    if (focusKey === "medications" && extraction.medications) {
-      x.medications = extraction.medications;
-    }
-    if (focusKey === "treatment_methods" && extraction.treatment_methods) {
-      x.treatment_methods = extraction.treatment_methods;
-    }
-    if (focusKey === "monitoring_frequency" && extraction.monitoring_frequency != null) {
-      x.monitoring_frequency = extraction.monitoring_frequency;
-    }
-    if (focusKey === "care_algorithms" && Array.isArray(extraction.care_algorithms)) {
-      x.care_algorithms = extraction.care_algorithms;
-    }
-  }
-
-  function apiExtractFocusForTab(tabKey) {
-    if (tabKey === "monitoring_frequency") return "monitoring";
-    if (tabKey === "care_algorithms") return "algorithms";
-    return tabKey;
   }
 
   function buildFactTabPanelInnerHtml(tabKey, ex) {
@@ -5471,95 +5449,6 @@
     return "";
   }
 
-  function buildFactTabPanelPlaceholderHtml(tabKey) {
-    var label = FACT_SECTION_TITLES[tabKey] || "раздел";
-    return (
-      '<p class="assist-focus-placeholder">Нажмите вкладку «' +
-      escapeHtml(label) +
-      '», чтобы загрузить релевантные пункты по фокусному извлечению.</p>'
-    );
-  }
-
-  function ensureProtocolTabFocusLoad(tabKey) {
-    var fetched = window.__protocolFactsFocusFetched || {};
-    if (fetched[tabKey]) return Promise.resolve();
-    var meta = window.__protocolFactsMeta;
-    if (!meta || !meta.path) return Promise.resolve();
-    var baseEl = document.getElementById("rag-base");
-    var base = normalizeRagBaseForRequest(
-      baseEl && baseEl.value ? baseEl.value : ""
-    );
-    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
-    var panel = wrap
-      ? wrap.querySelector('.assist-fact-tab-panel[data-fact-tab="' + tabKey + '"]')
-      : null;
-    var inner = panel ? panel.querySelector(".assist-fact-tab-panel-inner") : null;
-    var ind = inner ? inner.querySelector("[data-focus-indicator]") : null;
-    if (inner) {
-      inner.setAttribute("data-loading", "1");
-      inner.style.opacity = "0.65";
-    }
-    if (ind) {
-      ind.setAttribute("data-state", "loading");
-      ind.textContent = "Обновление по фокусному извлечению…";
-    }
-    return fetch(base + "/api/protocol-detail", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: meta.query,
-        path: meta.path,
-        title: meta.title || "",
-        protocol_confidence: meta.protocol_confidence,
-        client_rag_support: meta.rag_support,
-        extract_focus: apiExtractFocusForTab(tabKey),
-      }),
-    })
-      .then(function (r) {
-        return r.text().then(function (text) {
-          var j = parseJsonSafe(text);
-          if (!r.ok || !j || typeof j !== "object") {
-            throw new Error((j && j.detail) || text || r.statusText);
-          }
-          return j;
-        });
-      })
-      .then(function (payload) {
-        var cd = payload.clinical_detail;
-        if (!cd || !cd.extraction) return;
-        mergeProtocolExtractionFromFocus(tabKey, cd.extraction);
-        var merged = window.__clinicalDetailForTemplate
-          ? window.__clinicalDetailForTemplate.extraction || {}
-          : cd.extraction;
-        if (inner) {
-          inner.innerHTML = buildFactTabPanelInnerHtml(tabKey, merged);
-          inner.insertAdjacentHTML(
-            "afterbegin",
-            '<p class="assist-focus-indicator" data-focus-indicator data-state="updated">Обновлено по фокусному извлечению</p>'
-          );
-          inner.style.opacity = "";
-          inner.removeAttribute("data-loading");
-        }
-        if (!window.__protocolFactsFocusFetched) window.__protocolFactsFocusFetched = {};
-        window.__protocolFactsFocusFetched[tabKey] = true;
-        var outRoot = document.getElementById("llm-out");
-        if (outRoot) enhanceCollapsibleBlocks(outRoot);
-      })
-      .catch(function () {
-        if (inner) {
-          var errInd = inner.querySelector("[data-focus-indicator]");
-          if (errInd) {
-            errInd.setAttribute("data-state", "error");
-            errInd.textContent = "Фокусное извлечение недоступно, показана исходная выдержка";
-          }
-          inner.style.opacity = "";
-          inner.removeAttribute("data-loading");
-        }
-        if (!window.__protocolFactsFocusFetched) window.__protocolFactsFocusFetched = {};
-        window.__protocolFactsFocusFetched[tabKey] = true;
-      });
-  }
-
   function bindProtocolFactsTabs() {
     var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
     if (!wrap || wrap._factsTabsBound) return;
@@ -5581,7 +5470,6 @@
         var pk = p.getAttribute("data-fact-tab");
         p.classList.toggle("is-active", pk === key);
       }
-      ensureProtocolTabFocusLoad(key);
     }
     for (i = 0; i < tabs.length; i++) {
       tabs[i].addEventListener("click", function () {
@@ -5590,8 +5478,6 @@
         activate(key);
       });
     }
-    var first = wrap.querySelector(".assist-fact-tab.is-active");
-    if (first) ensureProtocolTabFocusLoad(first.getAttribute("data-fact-tab"));
   }
 
   function collectSelectedFactsPayload() {
@@ -5783,12 +5669,18 @@
       { key: "medications", label: "Препараты", panelMod: "" },
       { key: "treatment_methods", label: "Лечение", panelMod: "" },
       { key: "care_algorithms", label: "Алгоритмы", panelMod: "" },
-      { key: "monitoring_frequency", label: "Наблюдение", panelMod: "" },
+      {
+        key: "monitoring_frequency",
+        label: "Кратность наблюдения",
+        panelMod: "",
+      },
     ];
     var html =
       '<div class="assist-detail-facts-wrap" role="region" aria-label="По протоколу: вкладки разделов">';
     html +=
       '<p class="assist-detail-facts-title">По протоколу: обследование, препараты, лечение, кратность наблюдения</p>';
+    html +=
+      '<p class="assist-protocol-facts-note">Разделы заполняются из одной развёрнутой выдержки протокола (один проход модели при подборе); переключение вкладок не выполняет повторных запросов и не меняет данные.</p>';
     html += '<div class="assist-fact-tabs" role="tablist" aria-label="Разделы протокола">';
     var ti;
     for (ti = 0; ti < tabDefs.length; ti++) {
@@ -5822,13 +5714,7 @@
         escapeHtmlAttr(d2.key) +
         '">';
       html += '<div class="assist-fact-tab-panel-inner">';
-      if (isAct) {
-        html += '<p class="assist-focus-indicator" data-focus-indicator data-state="idle">Исходная выдержка протокола</p>';
-        html += buildFactTabPanelInnerHtml(d2.key, ex);
-      } else {
-        html += '<p class="assist-focus-indicator" data-focus-indicator data-state="idle">Данные ещё не загружены</p>';
-        html += buildFactTabPanelPlaceholderHtml(d2.key);
-      }
+      html += buildFactTabPanelInnerHtml(d2.key, ex);
       html += "</div>";
       html += "</div>";
     }
