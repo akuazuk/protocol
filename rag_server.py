@@ -14,6 +14,7 @@ import json
 import math
 import os
 import re
+import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
@@ -71,6 +72,8 @@ _routing: dict = {}
 _model = None
 _retrieval_embed_meta: dict | None = None
 _bm25_index = None
+_chunks_load_done = threading.Event()
+_chunks_load_error: str | None = None
 
 PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
 STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
@@ -500,6 +503,39 @@ def load_data() -> None:
         _bm25_index = build_bm25_index(_chunks, tokenize_ru)
     else:
         _bm25_index = None
+
+
+def _run_load_data_background() -> None:
+    """Тяжёлый корпус грузится в фоне — uvicorn успевает открыть порт (Render health check)."""
+    global _chunks_load_error
+    try:
+        load_data()
+        _chunks_load_error = None
+    except SystemExit as e:
+        code = e.code
+        if isinstance(code, str):
+            _chunks_load_error = code
+        elif isinstance(code, int):
+            _chunks_load_error = f"Ошибка запуска (код {code})"
+        else:
+            _chunks_load_error = repr(code)
+    except Exception as e:
+        _chunks_load_error = str(e)
+    finally:
+        _chunks_load_done.set()
+
+
+def _require_rag_loaded() -> None:
+    if not _chunks_load_done.is_set():
+        raise HTTPException(
+            status_code=503,
+            detail="Индекс протоколов загружается. Повторите запрос через минуту.",
+        )
+    if _chunks_load_error is not None:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Не удалось загрузить корпус: {_chunks_load_error}",
+        )
 
 
 def tokenize_ru(s: str) -> list[str]:
@@ -2919,7 +2955,11 @@ def _finish_hits_max(resp) -> bool:
     return "MAX" in fr or "LENGTH" in fr
 
 
-load_data()
+threading.Thread(
+    target=_run_load_data_background,
+    daemon=True,
+    name="rag-load-chunks",
+).start()
 app = FastAPI(title="Protocol RAG", version="1")
 app.add_middleware(
     CORSMiddleware,
@@ -3080,6 +3120,8 @@ def health() -> dict:
         icd_ru_n = 0
     return {
         "ok": True,
+        "rag_ready": _chunks_load_done.is_set(),
+        "rag_load_error": _chunks_load_error,
         "chunks": len(_chunks),
         "protocols": len(_protocols_by_path),
         "protocol_meta": len(_protocol_meta),
@@ -3206,6 +3248,7 @@ def _format_icd_append_line(icd_analysis: dict) -> str | None:
 
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
+    _require_rag_loaded()
     model = get_gemini()
     icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
         _infer_icd_pipeline_from_full_query(body.query, model)
@@ -3499,6 +3542,7 @@ def api_assist(body: AssistIn) -> dict:
 @app.post("/api/protocol-detail")
 def api_protocol_detail(body: ProtocolDetailIn) -> dict:
     """Развёрнутая выдержка по одному протоколу (второй вызов модели) — по кнопке после краткого ответа."""
+    _require_rag_loaded()
     q = body.query.strip()
     pth = body.path.strip()
     if not pth or pth not in _chunks_by_path:

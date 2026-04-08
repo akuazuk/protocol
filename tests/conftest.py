@@ -17,3 +17,16 @@ if _MINI_JSONL.is_file():
 
 # Без вызова Gemini embedding в retrieve (стабильные юнит-тесты без ключа API)
 os.environ.setdefault("RAG_GEMINI_EMBED_RERANK", "0")
+
+import pytest
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _wait_for_rag_chunks() -> None:
+    """Корпус грузится в фоне при импорте rag_server — ждём перед API-тестами."""
+    import rag_server as rs
+
+    if not rs._chunks_load_done.wait(timeout=120):
+        pytest.fail("rag_server: таймаут загрузки корпуса для тестов", pytrace=False)
+    if rs._chunks_load_error:
+        pytest.fail(rs._chunks_load_error, pytrace=False)
