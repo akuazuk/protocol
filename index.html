@@ -1481,6 +1481,18 @@
       margin-right: auto;
     }
 
+    .assist-loading__disclaimer,
+    .assist-timer-overlay__disclaimer {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--muted);
+      max-width: 22rem;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 0.92;
+    }
+
     /* Мобильный таймер: всплывающее окно поверх страницы */
     .assist-timer-overlay {
       position: fixed;
@@ -3713,8 +3725,15 @@
         <span class="assist-timer-num">0</span>
         <span class="assist-timer-unit">сек</span>
       </div>
-      <p id="assist-timer-overlay-hint" class="assist-timer-overlay__hint">
-        Запрос обрабатывается на сервере. Окно закроется автоматически.
+      <p
+        id="assist-timer-overlay-hint"
+        class="assist-timer-overlay__hint"
+        aria-live="polite"
+      >
+        Анализ запроса и подбор кодов МКБ-10…
+      </p>
+      <p class="assist-timer-overlay__disclaimer">
+        Этапы ориентировочные: фактическое время зависит от нагрузки и длины ответа.
       </p>
     </div>
   </div>
@@ -3745,6 +3764,17 @@
   function pct01(x) {
     return Math.round(100 * Math.max(0, Math.min(1, Number(x) || 0)));
   }
+
+  /** Подсказки этапов для assist (вариант A): ротация на клиенте, не привязана к реальным таймингам сервера. */
+  var ASSIST_PHASE_HINTS = [
+    "Анализ запроса и подбор кодов МКБ-10…",
+    "Соответствие рубрикам и специальностям протоколов…",
+    "Поиск по релевантным фрагментам клинических протоколов…",
+    "Дополнительное семантическое уточнение (если включено на сервере)…",
+    "Формирование ответа и списка протоколов…",
+  ];
+  var ASSIST_PHASE_DISCLAIMER =
+    "Этапы ориентировочные: фактическое время зависит от нагрузки и длины ответа.";
 
   /** Если /api/specialties недоступен — тот же набор slug, что на сервере. */
   var FALLBACK_SPECIALTIES = [
@@ -6539,6 +6569,8 @@
   }
 
   function getAssistLoadingHtml() {
+    var h0 = escapeHtml(ASSIST_PHASE_HINTS[0]);
+    var disc = escapeHtml(ASSIST_PHASE_DISCLAIMER);
     return (
       '<div class="assist-loading" role="status" aria-live="polite">' +
       '<div class="assist-loading__title">Подбор протоколов</div>' +
@@ -6546,7 +6578,12 @@
       '<span class="assist-timer-num">0</span>' +
       '<span class="assist-timer-unit">сек</span>' +
       "</div>" +
-      '<p class="assist-loading__hint">Поиск начат. Подождите — запрос обрабатывается на сервере.</p>' +
+      '<p class="assist-loading__hint" id="assist-inline-phase-hint">' +
+      h0 +
+      "</p>" +
+      '<p class="assist-loading__disclaimer">' +
+      disc +
+      "</p>" +
       "</div>"
     );
   }
@@ -6566,7 +6603,7 @@
       hintEl.textContent =
         hintStr != null && String(hintStr).length
           ? String(hintStr)
-          : "Запрос обрабатывается на сервере. Окно закроется автоматически.";
+          : ASSIST_PHASE_HINTS[0];
     }
     ov.hidden = false;
     ov.setAttribute("aria-hidden", "false");
@@ -6584,8 +6621,7 @@
     var hintEl = document.getElementById("assist-timer-overlay-hint");
     if (titleEl) titleEl.textContent = "Подбор протоколов";
     if (hintEl) {
-      hintEl.textContent =
-        "Запрос обрабатывается на сервере. Окно закроется автоматически.";
+      hintEl.textContent = ASSIST_PHASE_HINTS[0];
     }
     ov.hidden = true;
     ov.setAttribute("aria-hidden", "true");
@@ -6726,8 +6762,40 @@
       var assistStart = Date.now();
       var assistTick = null;
       var abortTid = null;
+      var assistHintRotateTid = null;
+
+      function clearAssistHintRotation() {
+        if (assistHintRotateTid !== null) {
+          clearTimeout(assistHintRotateTid);
+          assistHintRotateTid = null;
+        }
+      }
+
+      function setAssistPhaseHintByIndex(i) {
+        var t = ASSIST_PHASE_HINTS[i % ASSIST_PHASE_HINTS.length];
+        var hOv = document.getElementById("assist-timer-overlay-hint");
+        if (hOv) hOv.textContent = t;
+        var hIn = document.getElementById("assist-inline-phase-hint");
+        if (hIn) hIn.textContent = t;
+      }
+
+      function startAssistHintRotation() {
+        clearAssistHintRotation();
+        var idx = 0;
+        setAssistPhaseHintByIndex(0);
+        function scheduleNext() {
+          var delay = 5000 + Math.floor(Math.random() * 3001);
+          assistHintRotateTid = setTimeout(function () {
+            idx += 1;
+            setAssistPhaseHintByIndex(idx);
+            scheduleNext();
+          }, delay);
+        }
+        scheduleNext();
+      }
 
       function clearAssistTick() {
+        clearAssistHintRotation();
         if (assistTick) {
           clearInterval(assistTick);
           assistTick = null;
@@ -6753,6 +6821,7 @@
           out.innerHTML = getAssistLoadingHtml();
         }
       }
+      startAssistHintRotation();
       if (st) st.textContent = "";
       assistTick = setInterval(function () {
         var sec = Math.floor((Date.now() - assistStart) / 1000);
