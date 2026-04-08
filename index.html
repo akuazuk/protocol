@@ -2183,6 +2183,68 @@
       line-height: 1.5;
     }
 
+    .assist-fact-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.65rem 0 0.75rem;
+    }
+
+    .assist-fact-tab {
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.45rem 0.75rem;
+      border-radius: 10px;
+      border: 2px solid rgba(26, 138, 114, 0.38);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--green-800);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .assist-fact-tab:hover {
+      border-color: rgba(26, 138, 114, 0.65);
+      box-shadow: 0 1px 4px rgba(26, 138, 114, 0.12);
+    }
+
+    .assist-fact-tab.is-active {
+      border-color: rgba(26, 138, 114, 0.85);
+      background: rgba(236, 253, 245, 0.98);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .assist-fact-tab-panels {
+      margin-top: 0.35rem;
+    }
+
+    .assist-fact-tab-panel {
+      display: none;
+      padding: 0.5rem 0 0.65rem;
+    }
+
+    .assist-fact-tab-panel.is-active {
+      display: block;
+    }
+
+    .assist-fact-tab-panel-inner {
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+    }
+
+    .assist-fact-tab-panel--investigations .assist-fact-tab-panel-inner {
+      border-width: 2px;
+      border-color: rgba(26, 138, 114, 0.42);
+    }
+
+    .btn-consultation-tab-facts {
+      margin-top: 0.75rem;
+      width: 100%;
+      max-width: 100%;
+    }
+
     .assist-detail-facts-wrap {
       margin: 0.85rem 0 1rem;
       padding: 0.9rem 1rem;
@@ -2199,30 +2261,6 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--green-950);
-    }
-
-    .assist-refine-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin: 0 0 0.7rem;
-    }
-
-    .btn-proto-refine {
-      font-family: inherit;
-      font-size: 0.76rem;
-      font-weight: 700;
-      padding: 0.3rem 0.58rem;
-      border-radius: 999px;
-      border: 1px solid rgba(26, 138, 114, 0.35);
-      background: rgba(232, 245, 241, 0.95);
-      color: var(--green-800);
-      cursor: pointer;
-    }
-
-    .btn-proto-refine:hover {
-      background: #fff;
-      border-color: var(--green-600);
     }
 
     .assist-fact-section {
@@ -3792,15 +3830,6 @@
     return base + tag + hyp;
   }
 
-  function buildProtocolRefineQuery(refineLine) {
-    var base = (lastAssistClinical || "").trim();
-    var t = String(refineLine || "").trim();
-    if (!t) return base;
-    var tag = "\n\n— Уточнение по протоколу: ";
-    if (!base) return t;
-    return base + tag + t;
-  }
-
   function pushAssistUndoSnapshot() {
     var qInput = document.getElementById("q");
     var out = document.getElementById("llm-out");
@@ -3850,7 +3879,7 @@
     if (st && s.llmStatusText != null) st.textContent = s.llmStatusText;
     bindLlmFollowupForm();
     bindDiffSearchButtons();
-    bindProtocolRefineButtons();
+    bindProtocolFactsTabs();
     bindAssistUndoButton();
     bindProtocolDetailLoader(lastAssistFullQuery || "");
     try {
@@ -4368,8 +4397,13 @@
     var pendingEl = document.getElementById("consultation-template-pending");
     var genBtn = document.querySelector(".btn-consultation-template");
     var factsBtn = document.querySelector(".btn-consultation-from-facts");
+    var tabFactsBtns = document.querySelectorAll(".btn-consultation-tab-facts");
     if (genBtn) genBtn.disabled = true;
     if (factsBtn) factsBtn.disabled = true;
+    var tbi;
+    for (tbi = 0; tbi < tabFactsBtns.length; tbi++) {
+      tabFactsBtns[tbi].disabled = true;
+    }
     var dex = document.getElementById("assist-detail-extract-wrap");
     if (dex) dex.open = false;
     if (resultEl) resultEl.hidden = false;
@@ -4464,6 +4498,11 @@
         if (genBtn) genBtn.disabled = false;
         var fb = document.querySelector(".btn-consultation-from-facts");
         if (fb) fb.disabled = false;
+        var tfb = document.querySelectorAll(".btn-consultation-tab-facts");
+        var j;
+        for (j = 0; j < tfb.length; j++) {
+          tfb[j].disabled = false;
+        }
       });
   }
 
@@ -4489,6 +4528,18 @@
           return;
         }
         loadConsultationTemplate({ factsNotes: picked });
+        return;
+      }
+      if (el.closest(".btn-consultation-tab-facts")) {
+        ev.preventDefault();
+        var pickedTab = collectSelectedFactsNotesFromActiveTab();
+        if (!pickedTab || !String(pickedTab).trim()) {
+          alert(
+            "Отметьте хотя бы один пункт на активной вкладке раздела протокола."
+          );
+          return;
+        }
+        loadConsultationTemplate({ factsNotes: pickedTab });
         return;
       }
       if (el.closest(".btn-copy-template")) {
@@ -4829,13 +4880,17 @@
         var block = document.getElementById("protocol-detail-block");
         if (block && payload.clinical_detail) {
           window.__lastConsultationTemplateRaw = "";
-          block.outerHTML = renderClinicalDetailBlock(payload.clinical_detail);
+          block.outerHTML = renderClinicalDetailBlock(
+            payload.clinical_detail,
+            queryText
+          );
           if (payload.clinical_detail && !payload.clinical_detail.error) {
             window.__clinicalDetailForTemplate = payload.clinical_detail;
             window.__assistQueryForTemplate = queryText;
           }
           var outRoot = document.getElementById("llm-out");
           if (outRoot) enhanceCollapsibleBlocks(outRoot);
+          bindProtocolFactsTabs();
         }
       })
       .catch(function (err) {
@@ -4902,31 +4957,6 @@
     }
   }
 
-  function bindProtocolRefineButtons() {
-    var out = document.getElementById("llm-out");
-    if (!out) return;
-    var buttons = out.querySelectorAll(".btn-proto-refine");
-    var i;
-    for (i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener("click", function () {
-        var enc = this.getAttribute("data-q");
-        if (enc == null || enc === "") return;
-        var line = "";
-        try {
-          line = decodeURIComponent(enc);
-        } catch (e) {
-          return;
-        }
-        pushAssistUndoSnapshot();
-        var qInput = document.getElementById("q");
-        if (qInput) qInput.value = buildProtocolRefineQuery(line);
-        runAssist(undefined, { preserveUndo: true }).catch(function (err) {
-          console.error(err);
-        });
-      });
-    }
-  }
-
   function bindLlmFollowupForm() {
     var form = document.getElementById("llm-followup-form");
     if (!form) return;
@@ -4960,6 +4990,309 @@
     monitoring_frequency: "Кратность наблюдения",
   };
 
+  function setProtocolFactsMetaFromDetail(cd, queryOverride) {
+    if (!cd || cd.error) return;
+    var qForMeta =
+      queryOverride !== undefined && queryOverride !== null
+        ? String(queryOverride)
+        : window.__assistQueryForTemplate || "";
+    window.__protocolFactsMeta = {
+      query: qForMeta,
+      path: cd.path || "",
+      title: cd.title || "",
+      protocol_confidence:
+        cd.detail_match_score != null && !isNaN(Number(cd.detail_match_score))
+          ? Number(cd.detail_match_score)
+          : null,
+      rag_support:
+        cd.client_rag_support != null && !isNaN(Number(cd.client_rag_support))
+          ? Number(cd.client_rag_support)
+          : null,
+    };
+    window.__protocolFactsFocusFetched = {};
+  }
+
+  function mergeProtocolExtractionFromFocus(focusKey, extraction) {
+    var cd = window.__clinicalDetailForTemplate;
+    if (!cd || !extraction || typeof extraction !== "object") return;
+    if (!cd.extraction) cd.extraction = {};
+    var x = cd.extraction;
+    if (focusKey === "investigations" && extraction.investigations) {
+      x.investigations = extraction.investigations;
+    }
+    if (focusKey === "medications" && extraction.medications) {
+      x.medications = extraction.medications;
+    }
+    if (focusKey === "treatment_methods" && extraction.treatment_methods) {
+      x.treatment_methods = extraction.treatment_methods;
+    }
+    if (focusKey === "monitoring_frequency" && extraction.monitoring_frequency != null) {
+      x.monitoring_frequency = extraction.monitoring_frequency;
+    }
+  }
+
+  function apiExtractFocusForTab(tabKey) {
+    if (tabKey === "monitoring_frequency") return "monitoring";
+    return tabKey;
+  }
+
+  function buildFactTabPanelInnerHtml(tabKey, ex) {
+    var inv = Array.isArray(ex.investigations) ? ex.investigations : [];
+    var med = Array.isArray(ex.medications) ? ex.medications : [];
+    var tm = Array.isArray(ex.treatment_methods) ? ex.treatment_methods : [];
+    var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
+    var NP_MARK = "[не из протокола]";
+    function listHtmlChecks(items, catKey) {
+      if (!items || !items.length) {
+        return (
+          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
+        );
+      }
+      var h = '<ul class="assist-detail-list assist-detail-list--pick">';
+      var li;
+      for (li = 0; li < items.length; li++) {
+        var line = String(items[li]);
+        var liCls =
+          line.indexOf(NP_MARK) === 0 ? ' class="assist-detail-li-nonprotocol"' : "";
+        var cid = "assist-fact-" + catKey + "-" + li;
+        h +=
+          "<li" +
+          liCls +
+          '><div class="assist-fact-item">' +
+          '<label class="assist-fact-label" for="' +
+          escapeHtmlAttr(cid) +
+          '">' +
+          '<input type="checkbox" class="assist-fact-cb" id="' +
+          escapeHtmlAttr(cid) +
+          '" data-fact-cat="' +
+          escapeHtmlAttr(catKey) +
+          '" />' +
+          '<span class="assist-fact-text">' +
+          '<span class="assist-text-collapsible-inner">' +
+          escapeHtml(line) +
+          "</span></span></label>" +
+          '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
+          "</div></li>";
+      }
+      h += "</ul>";
+      return h;
+    }
+    var mfId = "assist-fact-monitoring_frequency-" + String(tabKey).replace(/[^a-zA-Z0-9_-]/g, "_");
+    function freqHtml() {
+      if (!mf) {
+        return (
+          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
+        );
+      }
+      var wrapCls =
+        mf.indexOf(NP_MARK) === 0
+          ? "assist-detail-body assist-detail-body--nonprotocol"
+          : "assist-detail-body";
+      return (
+        '<div class="assist-mf-pick assist-fact-item">' +
+        '<label class="assist-fact-label" for="' +
+        escapeHtmlAttr(mfId) +
+        '">' +
+        '<input type="checkbox" class="assist-fact-cb" id="' +
+        escapeHtmlAttr(mfId) +
+        '" data-fact-cat="monitoring_frequency" />' +
+        '<div class="' +
+        wrapCls +
+        ' assist-fact-mf-body">' +
+        '<div class="assist-text-collapsible-inner assist-mf-rich">' +
+        formatSummaryHtml(mf) +
+        "</div></div></label>" +
+        '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
+        "</div>"
+      );
+    }
+    function sectionHtml(title, bodyHtml, count, openByDefault) {
+      var cc = count > 0 ? String(count) + " пунктов" : "нет данных";
+      return (
+        '<details class="assist-fact-section"' +
+        (openByDefault ? " open" : "") +
+        ">" +
+        "<summary>" +
+        "<span>" +
+        escapeHtml(title) +
+        "</span>" +
+        '<span class="assist-fact-section__count">' +
+        escapeHtml(cc) +
+        "</span>" +
+        "</summary>" +
+        '<div class="assist-fact-section__body">' +
+        bodyHtml +
+        "</div>" +
+        "</details>"
+      );
+    }
+    if (tabKey === "investigations") {
+      return (
+        '<p class="assist-detail-fact-callout">Сверьте перечень с клиникой — обязательные исследования по протоколу легко пропустить.</p>' +
+        '<div class="assist-detail-fact-body">' +
+        sectionHtml("Пункты обследования", listHtmlChecks(inv, "investigations"), inv.length, true) +
+        "</div>"
+      );
+    }
+    if (tabKey === "medications") {
+      return (
+        '<div class="assist-detail-fact-body">' +
+        sectionHtml("Пункты по препаратам", listHtmlChecks(med, "medications"), med.length, true) +
+        "</div>"
+      );
+    }
+    if (tabKey === "treatment_methods") {
+      return (
+        '<div class="assist-detail-fact-body">' +
+        sectionHtml("Пункты по лечению", listHtmlChecks(tm, "treatment_methods"), tm.length, true) +
+        "</div>"
+      );
+    }
+    if (tabKey === "monitoring_frequency") {
+      return (
+        '<div class="assist-detail-fact-body">' +
+        sectionHtml("Контроль и кратность", freqHtml(), mf ? 1 : 0, true) +
+        "</div>"
+      );
+    }
+    return "";
+  }
+
+  function ensureProtocolTabFocusLoad(tabKey) {
+    var fetched = window.__protocolFactsFocusFetched || {};
+    if (fetched[tabKey]) return Promise.resolve();
+    var meta = window.__protocolFactsMeta;
+    if (!meta || !meta.path) return Promise.resolve();
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
+    var panel = wrap
+      ? wrap.querySelector('.assist-fact-tab-panel[data-fact-tab="' + tabKey + '"]')
+      : null;
+    var inner = panel ? panel.querySelector(".assist-fact-tab-panel-inner") : null;
+    if (inner) {
+      inner.setAttribute("data-loading", "1");
+      inner.style.opacity = "0.65";
+    }
+    return fetch(base + "/api/protocol-detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: meta.query,
+        path: meta.path,
+        title: meta.title || "",
+        protocol_confidence: meta.protocol_confidence,
+        client_rag_support: meta.rag_support,
+        extract_focus: apiExtractFocusForTab(tabKey),
+      }),
+    })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!r.ok || !j || typeof j !== "object") {
+            throw new Error((j && j.detail) || text || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (payload) {
+        var cd = payload.clinical_detail;
+        if (!cd || !cd.extraction) return;
+        mergeProtocolExtractionFromFocus(tabKey, cd.extraction);
+        var merged = window.__clinicalDetailForTemplate
+          ? window.__clinicalDetailForTemplate.extraction || {}
+          : cd.extraction;
+        if (inner) {
+          inner.innerHTML = buildFactTabPanelInnerHtml(tabKey, merged);
+          inner.style.opacity = "";
+          inner.removeAttribute("data-loading");
+        }
+        if (!window.__protocolFactsFocusFetched) window.__protocolFactsFocusFetched = {};
+        window.__protocolFactsFocusFetched[tabKey] = true;
+        var outRoot = document.getElementById("llm-out");
+        if (outRoot) enhanceCollapsibleBlocks(outRoot);
+      })
+      .catch(function () {
+        if (inner) {
+          inner.style.opacity = "";
+          inner.removeAttribute("data-loading");
+        }
+        if (!window.__protocolFactsFocusFetched) window.__protocolFactsFocusFetched = {};
+        window.__protocolFactsFocusFetched[tabKey] = true;
+      });
+  }
+
+  function bindProtocolFactsTabs() {
+    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
+    if (!wrap || wrap._factsTabsBound) return;
+    wrap._factsTabsBound = true;
+    var tabs = wrap.querySelectorAll(".assist-fact-tab");
+    var panels = wrap.querySelectorAll(".assist-fact-tab-panel");
+    var i;
+    function activate(key) {
+      var ti;
+      for (ti = 0; ti < tabs.length; ti++) {
+        var t = tabs[ti];
+        var k = t.getAttribute("data-fact-tab");
+        var on = k === key;
+        t.classList.toggle("is-active", on);
+        t.setAttribute("aria-selected", on ? "true" : "false");
+      }
+      for (ti = 0; ti < panels.length; ti++) {
+        var p = panels[ti];
+        var pk = p.getAttribute("data-fact-tab");
+        p.classList.toggle("is-active", pk === key);
+      }
+      ensureProtocolTabFocusLoad(key);
+    }
+    for (i = 0; i < tabs.length; i++) {
+      tabs[i].addEventListener("click", function () {
+        var key = this.getAttribute("data-fact-tab");
+        if (!key) return;
+        activate(key);
+      });
+    }
+    var first = wrap.querySelector(".assist-fact-tab.is-active");
+    if (first) ensureProtocolTabFocusLoad(first.getAttribute("data-fact-tab"));
+  }
+
+  function collectSelectedFactsNotesFromActiveTab() {
+    var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
+    if (!wrap) return "";
+    var panel = wrap.querySelector(".assist-fact-tab-panel.is-active");
+    if (!panel) return collectSelectedFactsNotes();
+    var tabKey = panel.getAttribute("data-fact-tab") || "";
+    var cbs = panel.querySelectorAll(".assist-fact-cb:checked");
+    if (!cbs.length) return "";
+    var title = FACT_SECTION_TITLES[tabKey] || tabKey;
+    var lines = [];
+    var i;
+    for (i = 0; i < cbs.length; i++) {
+      var cb = cbs[i];
+      var cat = cb.getAttribute("data-fact-cat");
+      var text = "";
+      if (cat === "monitoring_frequency") {
+        var mfItem = cb.closest(".assist-fact-item");
+        var mfBody = mfItem && mfItem.querySelector(".assist-fact-mf-body");
+        text = mfBody ? String(mfBody.innerText || mfBody.textContent || "").trim() : "";
+      } else {
+        var lab = cb.closest(".assist-fact-label");
+        var span = lab && lab.querySelector(".assist-fact-text");
+        text = span ? String(span.textContent || "").trim() : "";
+      }
+      if (text) lines.push("- " + text);
+    }
+    if (!lines.length) return "";
+    return (
+      "Пользователь выбрал включить в консультативное заключение (вкладка «" +
+      title +
+      "»):\n\n" +
+      lines.join("\n")
+    );
+  }
+
   function collectSelectedFactsNotes() {
     var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
     if (!wrap) return "";
@@ -4973,7 +5306,8 @@
       if (!cat) continue;
       var text = "";
       if (cat === "monitoring_frequency") {
-        var body = wrap.querySelector(".assist-fact-mf-body");
+        var item = cb.closest(".assist-fact-item");
+        var body = item && item.querySelector(".assist-fact-mf-body");
         text = body ? String(body.innerText || body.textContent || "").trim() : "";
       } else {
         var lab = cb.closest(".assist-fact-label");
@@ -5113,142 +5447,61 @@
     });
   }
 
-  function renderClinicalFactsBlock(ex) {
-    var inv = Array.isArray(ex.investigations) ? ex.investigations : [];
-    var med = Array.isArray(ex.medications) ? ex.medications : [];
-    var tm = Array.isArray(ex.treatment_methods) ? ex.treatment_methods : [];
-    var mf = ex.monitoring_frequency != null ? String(ex.monitoring_frequency).trim() : "";
-    var NP_MARK = "[не из протокола]";
-    function listHtmlChecks(items, catKey) {
-      if (!items || !items.length) {
-        return (
-          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
-        );
-      }
-      var h = '<ul class="assist-detail-list assist-detail-list--pick">';
-      var li;
-      for (li = 0; li < items.length; li++) {
-        var line = String(items[li]);
-        var liCls =
-          line.indexOf(NP_MARK) === 0 ? ' class="assist-detail-li-nonprotocol"' : "";
-        var cid = "assist-fact-" + catKey + "-" + li;
-        h +=
-          "<li" +
-          liCls +
-          '><div class="assist-fact-item">' +
-          '<label class="assist-fact-label" for="' +
-          escapeHtmlAttr(cid) +
-          '">' +
-          '<input type="checkbox" class="assist-fact-cb" id="' +
-          escapeHtmlAttr(cid) +
-          '" data-fact-cat="' +
-          escapeHtmlAttr(catKey) +
-          '" />' +
-          '<span class="assist-fact-text">' +
-          '<span class="assist-text-collapsible-inner">' +
-          escapeHtml(line) +
-          "</span></span></label>" +
-          '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
-          "</div></li>";
-      }
-      h += "</ul>";
-      return h;
-    }
-    function freqHtml() {
-      if (!mf) {
-        return (
-          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
-        );
-      }
-      var wrapCls =
-        mf.indexOf(NP_MARK) === 0
-          ? "assist-detail-body assist-detail-body--nonprotocol"
-          : "assist-detail-body";
-      return (
-        '<div class="assist-mf-pick assist-fact-item">' +
-        '<label class="assist-fact-label" for="assist-fact-monitoring_frequency">' +
-        '<input type="checkbox" class="assist-fact-cb" id="assist-fact-monitoring_frequency" data-fact-cat="monitoring_frequency" />' +
-        '<div class="' +
-        wrapCls +
-        ' assist-fact-mf-body">' +
-        '<div class="assist-text-collapsible-inner assist-mf-rich">' +
-        formatSummaryHtml(mf) +
-        "</div></div></label>" +
-        '<button type="button" class="assist-text-toggle assist-text-toggle--fact" hidden aria-expanded="false">Ещё</button>' +
-        "</div>"
-      );
-    }
-    function sectionHtml(title, bodyHtml, count, openByDefault) {
-      var cc = count > 0 ? String(count) + " пунктов" : "нет данных";
-      return (
-        '<details class="assist-fact-section"' +
-        (openByDefault ? " open" : "") +
-        ">" +
-        "<summary>" +
-        "<span>" +
-        escapeHtml(title) +
-        "</span>" +
-        '<span class="assist-fact-section__count">' +
-        escapeHtml(cc) +
-        "</span>" +
-        "</summary>" +
-        '<div class="assist-fact-section__body">' +
-        bodyHtml +
-        "</div>" +
-        "</details>"
-      );
-    }
-    function refineButtonsHtml() {
-      var items = [
-        "сфокусировать поиск на диагностике и обследовании по данному протоколу",
-        "сфокусировать поиск на медикаментозной терапии по данному протоколу",
-        "сфокусировать поиск на тактике лечения и этапности по данному протоколу",
-      ];
-      if (mf) {
-        items.push("сфокусировать поиск на кратности наблюдения и контроле по данному протоколу");
-      }
-      var h = '<div class="assist-refine-row" role="group" aria-label="Уточнить поиск по протоколу">';
-      var i;
-      for (i = 0; i < items.length; i++) {
-        h +=
-          '<button type="button" class="btn-proto-refine" data-q="' +
-          encodeURIComponent(items[i]) +
-          '">' +
-          escapeHtml(i === 0 ? "Диагностика" : i === 1 ? "Препараты" : i === 2 ? "Лечение" : "Наблюдение") +
-          "</button>";
-      }
-      h += "</div>";
-      return h;
-    }
+  function renderClinicalFactsBlock(ex, cd, assistQuery) {
+    if (cd) setProtocolFactsMetaFromDetail(cd, assistQuery);
+    var tabDefs = [
+      { key: "investigations", label: "Обследование", panelMod: " assist-fact-tab-panel--investigations" },
+      { key: "medications", label: "Препараты", panelMod: "" },
+      { key: "treatment_methods", label: "Лечение", panelMod: "" },
+      { key: "monitoring_frequency", label: "Наблюдение", panelMod: "" },
+    ];
     var html =
-      '<div class="assist-detail-facts-wrap" role="region" aria-label="Обследование, препараты, лечение, кратность наблюдения">';
+      '<div class="assist-detail-facts-wrap" role="region" aria-label="По протоколу: вкладки разделов">';
     html +=
       '<p class="assist-detail-facts-title">По протоколу: обследование, препараты, лечение, кратность наблюдения</p>';
-    html += refineButtonsHtml();
-    html += '<div class="assist-detail-facts-grid">';
-    html +=
-      '<div class="assist-detail-fact-row assist-detail-fact-row--investigations">' +
-      '<h4 class="assist-detail-fact-h assist-detail-fact-h--emphasis"><span class="assist-detail-fact-badge">Важно</span> Обследование</h4>' +
-      '<p class="assist-detail-fact-callout">Сверьте перечень с клиникой — обязательные исследования по протоколу легко пропустить.</p>' +
-      '<div class="assist-detail-fact-body">' +
-      sectionHtml("Пункты обследования", listHtmlChecks(inv, "investigations"), inv.length, true) +
-      "</div></div>";
-    html +=
-      '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Препараты</h4><div class="assist-detail-fact-body">' +
-      sectionHtml("Пункты по препаратам", listHtmlChecks(med, "medications"), med.length, med.length <= 8) +
-      "</div></div>";
-    html +=
-      '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Лечение</h4><div class="assist-detail-fact-body">' +
-      sectionHtml("Пункты по лечению", listHtmlChecks(tm, "treatment_methods"), tm.length, tm.length <= 8) +
-      "</div></div>";
-    html +=
-      '<div class="assist-detail-fact-row"><h4 class="assist-detail-fact-h">Кратность наблюдения</h4><div class="assist-detail-fact-body">' +
-      sectionHtml("Контроль и кратность", freqHtml(), mf ? 1 : 0, true) +
-      "</div></div>";
+    html += '<div class="assist-fact-tabs" role="tablist" aria-label="Разделы протокола">';
+    var ti;
+    for (ti = 0; ti < tabDefs.length; ti++) {
+      var def = tabDefs[ti];
+      var isFirst = ti === 0;
+      html +=
+        '<button type="button" class="assist-fact-tab' +
+        (isFirst ? " is-active" : "") +
+        '" role="tab" data-fact-tab="' +
+        escapeHtmlAttr(def.key) +
+        '" aria-selected="' +
+        (isFirst ? "true" : "false") +
+        '" id="assist-fact-tab-' +
+        escapeHtmlAttr(def.key) +
+        '">' +
+        escapeHtml(def.label) +
+        "</button>";
+    }
+    html += "</div>";
+    html += '<div class="assist-fact-tab-panels">';
+    for (ti = 0; ti < tabDefs.length; ti++) {
+      var d2 = tabDefs[ti];
+      var isAct = ti === 0;
+      html +=
+        '<div class="assist-fact-tab-panel' +
+        (isAct ? " is-active" : "") +
+        (d2.panelMod || "") +
+        '" role="tabpanel" data-fact-tab="' +
+        escapeHtmlAttr(d2.key) +
+        '" aria-labelledby="assist-fact-tab-' +
+        escapeHtmlAttr(d2.key) +
+        '">';
+      html += '<div class="assist-fact-tab-panel-inner">';
+      html += buildFactTabPanelInnerHtml(d2.key, ex);
+      html += "</div>";
+      html +=
+        '<button type="button" class="btn-assist btn-consultation-tab-facts">Добавить выбранное в консультативное заключение (вкладка)</button>';
+      html += "</div>";
+    }
     html += "</div>";
     html +=
       '<div class="assist-facts-actions">' +
-      '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному</button>' +
+      '<button type="button" class="btn-assist btn-consultation-from-facts">Сформировать консультативное заключение по выбранному (все вкладки)</button>' +
       "</div>";
     html += "</div>";
     return html;
@@ -5281,7 +5534,7 @@
     return /(детск|детское население|педиатр)/i.test(text);
   }
 
-  function renderClinicalDetailBlock(cd) {
+  function renderClinicalDetailBlock(cd, assistQuery) {
     if (!cd) return "";
     if (cd.error) {
       return (
@@ -5291,10 +5544,11 @@
       );
     }
     var ex = cd.extraction || {};
-    var adultPediatricMismatch = isPediatricProtocolForAdult(
-      cd,
-      window.__assistQueryForTemplate || ""
-    );
+    var qForBlock =
+      assistQuery !== undefined && assistQuery !== null
+        ? String(assistQuery)
+        : window.__assistQueryForTemplate || "";
+    var adultPediatricMismatch = isPediatricProtocolForAdult(cd, qForBlock);
     var consultBlock =
       '<div class="consultation-template-wrap">' +
       '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке; требует проверки и при необходимости правки лечащим врачом.</p>' +
@@ -5367,7 +5621,7 @@
       html +=
         '<p class="assist-detail-warning"><strong>Важно:</strong> возраст пациента во входных данных — взрослый, а текущая развёрнутая выдержка относится к детскому протоколу. Чтобы не вводить в заблуждение, блок рекомендаций по обследованию/лечению скрыт. Запустите новый поиск с акцентом на взрослый протокол.</p>';
     } else if (ex.detailed) {
-      html += renderClinicalFactsBlock(ex);
+      html += renderClinicalFactsBlock(ex, cd, assistQuery);
     } else {
       var tm = ex.treatment_methods;
       if (tm && tm.length) {
@@ -5612,7 +5866,7 @@
       }
 
       if (data.clinical_detail) {
-        html += renderClinicalDetailBlock(data.clinical_detail);
+        html += renderClinicalDetailBlock(data.clinical_detail, data.query || "");
       } else if (data.clinical_detail_offer) {
         html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
       }
@@ -5648,7 +5902,7 @@
       enhanceCollapsibleBlocks(out);
       bindLlmFollowupForm();
       bindDiffSearchButtons();
-      bindProtocolRefineButtons();
+      bindProtocolFactsTabs();
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
       updateScrollFabVisibility();
