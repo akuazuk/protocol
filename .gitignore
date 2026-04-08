@@ -13,3 +13,12 @@ output/tables/
 
 # Локальный эталон дымового теста RAG (генерируется scripts/rag_smoke.py --write-baseline)
 scripts/rag_smoke_baseline.json
+
+# Локальные golden-запросы под полный корпус (копия из .prod.example)
+eval/golden_queries.prod.jsonl
+
+# Локальные таблицы (часто большие); при необходимости закоммить вручную
+/МКБ-10.xlsx
+
+# GitHub Actions: при HTTPS+PAT без scope «workflow» push отклоняется — положите yaml локально или используйте SSH/токен с правом workflow
+/.github/workflows/

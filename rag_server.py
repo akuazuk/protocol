@@ -27,6 +27,7 @@ from env_load import load_project_env
 from icd_mkb import (
     analyze_query_for_icd,
     describe_code,
+    extract_icd_codes_raw,
     icd_tokens_for_lex,
     normalize_icd_code,
     ru_lexicon_scored_entries,
@@ -128,6 +129,8 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 - ОРВИ, фарингит, тонзиллит, риносинусит и др. типичные ЛОР-причины — только если они явно следуют из запроса пользователя и/или из приведённых фрагментов; не подставляй их «по умолчанию».
 - Редкие неотложные состояния (острый эпиглоттит, ретрофарингеальный абсцесс и т.п.) — только при явных красных флагах в тексте запроса (выраженная одышка, слюнотечение, невозможность глотать слюну, быстрое ухудшение) или если это прямо следует из фрагментов. Если пользователь указал нормальное дыхание без одышки — не ставь эпиглоттит первым в дифференциальный ряд и не формулируй ответ так, будто он наиболее вероятен.
 - Не противоречь явным фактам из запроса (например «дыхание нормальное»).
+- Summary — только краткое сопоставление запроса с отобранными протоколами. Не перечисляй в нём конкретные лекарства, дозы, схемы и перечни анализов/инструментальных исследований (их место — в развёрнутой выдержке по выбранному протоколу); не выдумывай детали вне фрагментов.
+- Дифференциальный ряд (differential) в первую очередь из гипотез, согласующихся с тематикой входных фрагментов; расширяй до 3–5 пунктов только если запрос или фрагменты действительно допускают широкий дифференциал.
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
 Схема полей:
 {
@@ -155,6 +158,11 @@ SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН комп
 - differential: только гипотезы, не окончательный диагноз; без формулировок «диагноз установлен». 2 коротких пункта (или до 5 только если дифференциал широкий); по убыванию вероятности; questions_for_patient: [] если есть протокол с confidence_score 1.0, иначе 2 коротких вопроса.
 Сохрани все path из фрагментов. Не обрывай слова."""
 
+ASSIST_USER_CONTEXT_GUIDE = """Как читать фрагменты выше:
+- Они перечислены в порядке отбора; поля score и lexical_score отражают силу совпадения с поисковым запросом (ориентир, не клинический скоринг).
+- При противоречии между фрагментами разных протоколов приоритет — согласованность с формулировкой «Запрос пользователя» и с рубрикой фрагмента; не смешивай тактику из явно нерелевантного фрагмента в summary и match_reason.
+- Детальные назначения, обследования и режимы лечения не раскрывай в summary JSON — они доступны пользователю при раскрытии протокола (вторая ступень)."""
+
 SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам клинического протокола Минздрава Республики Беларусь извлеки факты, относящиеся к запросу пользователя.
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
 Схема:
@@ -168,6 +176,7 @@ SYSTEM_EXTRACT = """Ты помощник врача. По фрагментам 
 
 SYSTEM_EXTRACT_FULL = """Ты помощник врача. По ПОЛНОМУ тексту фрагментов клинического протокола Минздрава Республики Беларусь извлеки структурированные сведения, релевантные запросу пользователя.
 Запрос хорошо соответствует протоколу (оценка модели обычно ≥80%); это не обязательно «идеальные 100%» — дай развёрнутый практичный разбор строго по тексту протокола.
+В списках investigations, medications, treatment_methods и recommendations сначала помещай пункты, прямо относящиеся к формулировке запроса пользователя (симптомы, этап, цель обращения), затем — остальные релевантные пункты протокола по возрастанию общности.
 
 Различай четыре блока (если в тексте нет данных — пустой массив [] или пустая строка ""):
 - investigations: только диагностика и обследование (анализы, инструментальные методы, осмотры, критерии до постановки диагноза). Пример: «Общий анализ крови», «УЗИ органов брюшной полости», «рентгенография» — если это в тексте.
@@ -204,6 +213,7 @@ monitoring_followup — отдельно: когда срочно обращат
 SYSTEM_EXTRACT_GAP_SCAN = """Ты помощник врача. Ниже — полный текст фрагментов клинического протокола Минздрава Республики Беларусь (и при необходимости — выдержка из индекса).
 В первом проходе не были извлечены или остались пустыми разделы: {fields_ru}.
 Задача: ещё раз внимательно прочитай ВЕСЬ текст ниже и найди в нём сведения, относящиеся к этим разделам.
+Сопоставь с формулировкой запроса пользователя: для investigations и medications в первую очередь извлеки то, что напрямую относится к жалобе/ситуации из запроса, затем прочие пункты из протокола.
 Особое внимание: таблицы (каждая осмысленная строка таблицы с обследованием, препаратом или режимом — отдельный короткий пункт списка, если ячейки читаемы), перечни с маркерами, подпункты в скобках.
 Каждый пункт — не длиннее ~2 строк текста; при необходимости разбей на несколько пунктов.
 Верни ОДИН JSON-объект (без markdown, без текста до/после).
@@ -1992,7 +2002,14 @@ def retrieve(
     user_uncertain = float(os.environ.get("RAG_USER_CATEGORY_UNCERTAIN", "0.78"))
     rq = routing_query if routing_query is not None else query
     icd_lex = icd_tokens_for_lex(icd_codes_for_lex or [])
-    qtok = set(tokenize_ru(query)) | icd_lex | _extra_clinical_tokens(rq)
+    # Коды вида J20.9 в самом запросе не попадают в tokenize_ru — извлекаем отдельно.
+    icd_from_query = icd_tokens_for_lex(extract_icd_codes_raw(query))
+    qtok = (
+        set(tokenize_ru(query))
+        | icd_lex
+        | icd_from_query
+        | _extra_clinical_tokens(rq)
+    )
     if not qtok:
         return []
     anchor_list = _anchor_tokens(qtok)
@@ -2096,13 +2113,13 @@ def retrieve(
         "yes",
     )
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    pool_n = int(os.environ.get("RAG_EMBED_POOL", "40"))
+    pool_n = int(os.environ.get("RAG_EMBED_POOL", "44"))
     alpha = float(os.environ.get("RAG_HYBRID_ALPHA", "0.46"))
     emb_model = os.environ.get(
         "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
     ).strip()
 
-    work_rows: list[tuple[float, float, float, dict]] | list[tuple] = scored
+    work_rows: list[tuple] = scored
     q_embed = query
     if icd_codes_for_lex:
         q_embed = (query + "\n" + " ".join(icd_codes_for_lex)).strip()[:8000]
@@ -2128,7 +2145,16 @@ def retrieve(
     out: list[dict] = []
     rerank_used = bool(_retrieval_embed_meta and _retrieval_embed_meta.get("used"))
     for row in work_rows:
-        final, lex, mult, ch = row[0], row[1], row[2], row[3]
+        if len(row) >= 5:
+            final, lex, _bm25_s, mult, ch = (
+                row[0],
+                row[1],
+                row[2],
+                row[3],
+                row[4],
+            )
+        else:
+            final, lex, mult, ch = row[0], row[1], row[2], row[3]
         p = ch.get("path") or ""
         if per_path.get(p, 0) >= max_per_path:
             continue
@@ -3257,10 +3283,14 @@ def api_assist(body: AssistIn) -> dict:
         pm = _protocol_meta.get(p)
         if pm and pm.get("specialty_ru"):
             meta_specs.append(pm["specialty_ru"])
+        sc = r.get("score")
+        lx = r.get("lexical_score")
+        rm = r.get("routing_multiplier")
         lines.append(
             f"[{i}] path={p}\n"
             f"рубрика={cat}\n"
             f"тип_фрагмента={r['kind']}\n"
+            f"score={sc} lexical_score={lx} routing_multiplier={rm}\n"
             f"текст:\n{r['excerpt']}\n"
         )
     context = "\n---\n".join(lines)
@@ -3278,7 +3308,8 @@ def api_assist(body: AssistIn) -> dict:
     user_block = (
         icd_block
         + hint_block
-        + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}"
+        + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}\n\n"
+        + ASSIST_USER_CONTEXT_GUIDE
     )
     full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
     prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))

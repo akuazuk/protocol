@@ -1,0 +1,5 @@
+{"query": "кашель острый бронхит J20", "must_substrings": ["бронхит"], "expected_any_path_contains": ["test_protocol_smoke", "_smoke"], "notes": "бронхит: фикстура test_protocol_smoke.pdf"}
+{"query": "протокол лечения амбулаторно", "must_substrings": ["протокол"], "expected_any_path_contains": ["general_ambulatory_mini"], "min_chunks": 1, "notes": "второй PDF в мини-корпусе"}
+{"query": "zzzz_nonexistent_token_xyz_12345", "expect_empty": true, "notes": "негатив: не должно находить мусор по несуществующему токену"}
+{"query": "J20.9 кашель", "must_substrings": ["j20"], "expected_any_path_contains": ["test_protocol_smoke"], "notes": "код МКБ в запросе + текст чанка"}
+{"query": "кашель бронхит", "must_substrings": ["бронхит"], "forbidden_substrings": ["general_ambulatory"], "expected_any_path_contains": ["test_protocol_smoke"], "notes": "релевантный PDF не должен смешиваться с вторым документом в топе"}

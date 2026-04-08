@@ -1,0 +1,2 @@
+{"query": "ЗАМЕНИТЕ: клинический запрос по вашей специальности", "must_substrings": ["ключевое слово из эталонного протокола"], "expected_any_path_contains": ["фрагмент_имени_pdf_из_корпуса"], "forbidden_substrings": [], "min_chunks": 1, "notes": "Скопируйте в golden_queries.prod.jsonl (не коммитьте секреты). Запуск: RAG_CHUNKS_JSONL=... python3 eval/search_quality_eval.py --embed-on --golden eval/golden_queries.prod.jsonl"}
+{"query": "негативный запрос без протокола в базе", "expect_empty": true, "notes": "пример: ожидаем пустой отбор"}
