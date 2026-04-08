@@ -3085,6 +3085,29 @@
       color: var(--muted);
     }
 
+    .assist-diagnostic-note {
+      margin: 0.55rem 0 0.7rem;
+      padding: 0.55rem 0.68rem;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.25);
+      background: rgba(240, 253, 250, 0.85);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--green-900);
+    }
+
+    .assist-diagnostic-note--symptom {
+      border-color: rgba(217, 119, 6, 0.35);
+      background: #fff8e8;
+      color: #8a4f00;
+    }
+
+    .assist-diagnostic-note--weak {
+      border-color: rgba(196, 30, 58, 0.32);
+      background: #fff6f7;
+      color: var(--red-700);
+    }
+
     .assist-raw {
       margin: 0;
       white-space: pre-wrap;
@@ -6068,6 +6091,23 @@
 
       html +=
         '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+
+      if (data.diagnostic_notice) {
+        var dmode = String(data.diagnostic_mode || "");
+        var dconf = data.diagnostic_confidence != null && !isNaN(Number(data.diagnostic_confidence))
+          ? Math.round(Number(data.diagnostic_confidence) * 100)
+          : null;
+        var dcls = "assist-diagnostic-note";
+        if (dmode === "symptom_inferred") dcls += " assist-diagnostic-note--symptom";
+        if (dmode === "symptom_only") dcls += " assist-diagnostic-note--weak";
+        html +=
+          '<p class="' +
+          dcls +
+          '">' +
+          escapeHtml(String(data.diagnostic_notice)) +
+          (dconf != null ? " Уверенность режима: " + String(dconf) + "%." : "") +
+          "</p>";
+      }
 
       html += formatIcdSectionHtml(data.icd || {});
 
