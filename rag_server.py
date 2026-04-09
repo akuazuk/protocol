@@ -27,6 +27,7 @@ from env_load import load_project_env
 
 from icd_mkb import (
     analyze_query_for_icd,
+    count_icd_code_mentions,
     describe_code,
     extract_icd_codes_raw,
     icd_tokens_for_lex,
@@ -2922,9 +2923,9 @@ def _red_flags_from_retrieval(retrieved: list[dict]) -> list[str]:
     return out
 
 
-def _protocol_structures_for_response(protocols: list) -> dict[str, dict]:
-    """Фрагменты structured_index.json для path из ответа модели (диагностика/лечение)."""
-    out: dict[str, dict] = {}
+def _protocol_icd_mentions_for_response(protocols: list, *, top_n: int = 5) -> dict[str, list[dict]]:
+    """Топ кодов МКБ-10 по числу вхождений в полном тексте structured_index (диагноз/лечение/сводка)."""
+    out: dict[str, list[dict]] = {}
     if not _structured_by_path:
         return out
     for pr in protocols:
@@ -2937,16 +2938,17 @@ def _protocol_structures_for_response(protocols: list) -> dict[str, dict]:
         struct = _structured_by_path.get(raw) or _structured_by_path.get(nk)
         if not struct or not isinstance(struct, dict):
             continue
-        diag = str(struct.get("diagnosis") or "").strip()
-        treat = str(struct.get("treatment") or "").strip()
-        summ = str(struct.get("summary") or "").strip()
-        if not diag and not treat and not summ:
+        parts = [
+            str(struct.get("diagnosis") or ""),
+            str(struct.get("treatment") or ""),
+            str(struct.get("summary") or ""),
+        ]
+        blob = "\n\n".join(p for p in parts if p.strip()).strip()
+        if not blob:
             continue
-        out[raw] = {
-            "diagnosis": format_structured_index_text(diag, 2500),
-            "treatment": format_structured_index_text(treat, 2500),
-            "summary": format_structured_index_text(summ, 800),
-        }
+        rows = count_icd_code_mentions(blob, top_n=top_n)
+        if rows:
+            out[raw] = rows
     return out
 
 
@@ -3506,7 +3508,7 @@ def api_assist(body: AssistIn) -> dict:
     normalize_differential_field(parsed)
 
     proto_list = (parsed.get("protocols") or []) if parsed else []
-    protocol_structures = _protocol_structures_for_response(proto_list)
+    protocol_icd_mentions = _protocol_icd_mentions_for_response(proto_list, top_n=5)
     red_flags = _red_flags_from_retrieval(retrieved)
 
     return {
@@ -3532,7 +3534,7 @@ def api_assist(body: AssistIn) -> dict:
         if _retrieval_embed_meta
         else {"used": False},
         "red_flags": red_flags,
-        "protocol_structures": protocol_structures,
+        "protocol_icd_mentions": protocol_icd_mentions,
         "routing_version": int(_routing.get("version", 1)) if _routing else 1,
         "chunk_vote_majority": chunk_vote_majority,
         "confidence_second_pass_used": confidence_second_pass_used,

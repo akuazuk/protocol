@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from collections import Counter
 from functools import lru_cache
 from pathlib import Path
 
@@ -138,6 +139,25 @@ def extract_icd_codes_raw(text: str) -> list[str]:
         if n and n not in seen:
             seen.add(n)
             out.append(n)
+    return out
+
+
+def count_icd_code_mentions(text: str, *, top_n: int = 5) -> list[dict]:
+    """Топ кодов МКБ-10 по числу вхождений; только коды из русского справочника."""
+    if not text or top_n <= 0:
+        return []
+    counts: Counter[str] = Counter()
+    for m in ICD10_CODE_RE.finditer(text):
+        n = _norm_icd_code(m.group(1))
+        if not n or not is_code_in_ru_reference(n):
+            continue
+        counts[n] += 1
+    if not counts:
+        return []
+    out: list[dict] = []
+    for code, cnt in counts.most_common(top_n):
+        tru = ru_title(code) or ""
+        out.append({"code": code, "count": int(cnt), "title_ru": tru})
     return out
 
 

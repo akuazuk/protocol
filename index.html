@@ -2271,6 +2271,29 @@
       hyphens: manual;
     }
 
+    .assist-proto-icd-top-list {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .assist-proto-icd-top-list li {
+      margin: 0.22rem 0;
+    }
+
+    .assist-proto-icd-top-count {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--green-800);
+      margin-left: 0.2rem;
+    }
+
+    .assist-proto-icd-top-title {
+      color: var(--muted);
+    }
+
     .assist-metrics-legend {
       margin: 0.85rem 0 0;
       padding-top: 0.65rem;
@@ -4237,13 +4260,15 @@
     return nk ? excerptByPath[nk] || "" : "";
   }
 
-  function structureForProtocol(pr, protocolStructures) {
-    if (!pr || !pr.path || !protocolStructures) return null;
+  function icdMentionsForProtocol(pr, protocolIcdMentions) {
+    if (!pr || !pr.path || !protocolIcdMentions) return null;
     var p = pr.path;
-    var st = protocolStructures[p];
-    if (st) return st;
+    var rows = protocolIcdMentions[p];
+    if (rows && rows.length) return rows;
     var nk = normalizeProtocolPath(p);
-    return nk ? protocolStructures[nk] || null : null;
+    return nk && protocolIcdMentions[nk] && protocolIcdMentions[nk].length
+      ? protocolIcdMentions[nk]
+      : null;
   }
 
   /** Нормализует score отбора RAG по path (0–1 внутри батча). */
@@ -5217,7 +5242,7 @@
   function renderProtoLi(pr, ragMap, opts) {
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
-    var protocolStructures = opts.protocolStructures || {};
+    var protocolIcdMentions = opts.protocolIcdMentions || {};
     var href = encodeURI(pr.path || "");
     var title = formatDisplayTitle(pr.title || pr.path || "");
     var mScore = confidenceFromProtocol(pr);
@@ -5264,33 +5289,32 @@
         escapeHtml(cit) +
         "</p></blockquote>";
     }
-    var st = structureForProtocol(pr, protocolStructures);
-    if (
-      st &&
-      (st.diagnosis || st.treatment || st.summary)
-    ) {
-      html += '<details class="assist-proto-structure">';
+    var icdTop = icdMentionsForProtocol(pr, protocolIcdMentions);
+    if (icdTop && icdTop.length) {
+      html += '<details class="assist-proto-structure assist-proto-icd-top">';
       html +=
-        '<summary>Структура протокола по индексу (диагностика / лечение)</summary>';
-      if (st.summary) {
+        '<summary>Упоминания кодов МКБ-10 в тексте индекса (топ по частоте)</summary>';
+      html += '<ul class="assist-proto-icd-top-list">';
+      var ti;
+      for (ti = 0; ti < icdTop.length; ti++) {
+        var row = icdTop[ti];
+        var cnt = Number(row.count);
+        if (isNaN(cnt)) cnt = 0;
+        html += "<li>";
+        html += "<code>" + escapeHtml(String(row.code || "")) + "</code>";
         html +=
-          '<p class="assist-structure-summary">' +
-          escapeHtml(st.summary) +
-          "</p>";
+          '<span class="assist-proto-icd-top-count">×' +
+          String(cnt) +
+          "</span>";
+        if (row.title_ru) {
+          html +=
+            '<span class="assist-proto-icd-top-title"> — ' +
+            escapeHtml(String(row.title_ru)) +
+            "</span>";
+        }
+        html += "</li>";
       }
-      if (st.diagnosis) {
-        html +=
-          '<p class="assist-structure-h">Диагностика (индекс)</p><div class="assist-structure-body">' +
-          formatSummaryHtml(st.diagnosis) +
-          "</div>";
-      }
-      if (st.treatment) {
-        html +=
-          '<p class="assist-structure-h">Лечение и тактика (индекс)</p><div class="assist-structure-body">' +
-          formatSummaryHtml(st.treatment) +
-          "</div>";
-      }
-      html += "</details>";
+      html += "</ul></details>";
     }
     html += "</li>";
     return html;
@@ -6220,10 +6244,10 @@
     if (j && typeof j === "object") {
       var ragMap = normalizeRagByPath(data.retrieval || []);
       var excerptByPath = ragExcerptByPath(data.retrieval || []);
-      var protocolStructures = data.protocol_structures || {};
+      var protocolIcdMentions = data.protocol_icd_mentions || {};
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
-        protocolStructures: protocolStructures,
+        protocolIcdMentions: protocolIcdMentions,
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
       var high = [];
