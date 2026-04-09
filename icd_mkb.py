@@ -21,6 +21,19 @@ ICD10_CODE_RE = re.compile(
 )
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
 
+# Русские PDF/протоколы: рубрику K** часто печатают кириллической «К»: «К60», «К 60», «(К60)».
+_ICD_CYR_CAPITAL_K_ICD = re.compile(
+    r"(?<![A-Za-zА-Яа-яЁё0-9])(К)\s*(\d{2}(?:\.\d{1,4})?)\b",
+)
+
+
+def latinize_icd_cyrillic_letters_for_scan(text: str) -> str:
+    """Заменяет кириллическую «К» на латинскую K в типичных написаниях кодов МКБ-10."""
+    if not text:
+        return text
+    return _ICD_CYR_CAPITAL_K_ICD.sub(lambda m: "K" + m.group(2), text)
+
+
 # Слишком общие слова для лексического матчинга по названию МКБ.
 # «Хронический/острый» не отфильтровываем: в рубриках J** они различают диагнозы (J01 vs J32).
 _RU_STOP = frozenset(
@@ -133,7 +146,8 @@ def extract_icd_codes_raw(text: str) -> list[str]:
         return []
     seen: set[str] = set()
     out: list[str] = []
-    for m in ICD10_CODE_RE.finditer(text):
+    scan = latinize_icd_cyrillic_letters_for_scan(text)
+    for m in ICD10_CODE_RE.finditer(scan):
         raw = m.group(1)
         n = _norm_icd_code(raw)
         if n and n not in seen:
@@ -157,7 +171,8 @@ def count_icd_code_mentions(
     if not text or top_n <= 0:
         return []
     counts: Counter[str] = Counter()
-    for m in ICD10_CODE_RE.finditer(text):
+    scan = latinize_icd_cyrillic_letters_for_scan(text)
+    for m in ICD10_CODE_RE.finditer(scan):
         n = _norm_icd_code(m.group(1))
         if not n or not is_code_in_ru_reference(n):
             continue

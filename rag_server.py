@@ -31,6 +31,7 @@ from icd_mkb import (
     describe_code,
     extract_icd_codes_raw,
     icd_tokens_for_lex,
+    latinize_icd_cyrillic_letters_for_scan,
     normalize_icd_code,
     ru_lexicon_scored_entries,
 )
@@ -2087,6 +2088,7 @@ def retrieve(
             ch.get("title") or ""
         )
         low = lex_src.lower()
+        lex_icd = latinize_icd_cyrillic_letters_for_scan(lex_src).lower()
         lex = 0.0
         for t in qtok:
             if t not in low:
@@ -2110,7 +2112,7 @@ def retrieve(
         )
         post = 1.0
         if icd_norms:
-            if any(code in low for code in icd_norms):
+            if any(code in lex_icd for code in icd_norms):
                 post *= icd_chunk_boost
             else:
                 post *= float(
