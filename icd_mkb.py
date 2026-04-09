@@ -15,8 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 # ICD-10: первая буква категории + две цифры + необязательный подуровень (без U).
+# Допускаем пробел после буквы и запятую как десятичный разделитель:
+# «K 64.9», «K64,9».
 ICD10_CODE_RE = re.compile(
-    r"\b([A-TV-Z]\d{2}(?:\.\d{1,4})?)\b",
+    r"\b([A-TV-Z]\s*\d{2}(?:[.,]\d{1,4})?)\b",
     re.IGNORECASE,
 )
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
@@ -25,6 +27,10 @@ ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECAS
 _ICD_CYR_CAPITAL_K_ICD = re.compile(
     r"(?<![A-Za-zА-Яа-яЁё0-9])(К)\s*(\d{2}(?:\.\d{1,4})?)\b",
 )
+_ICD_LATIN_SPACE_NUM = re.compile(
+    r"\b([A-TV-Z])\s+(\d{2}(?:[.,]\d{1,4})?)\b",
+    re.IGNORECASE,
+)
 
 
 def latinize_icd_cyrillic_letters_for_scan(text: str) -> str:
@@ -32,6 +38,15 @@ def latinize_icd_cyrillic_letters_for_scan(text: str) -> str:
     if not text:
         return text
     return _ICD_CYR_CAPITAL_K_ICD.sub(lambda m: "K" + m.group(2), text)
+
+
+def normalize_text_for_icd_scan(text: str) -> str:
+    """Нормализует типичные формы кодов для regex-сканирования МКБ-10."""
+    if not text:
+        return text
+    x = latinize_icd_cyrillic_letters_for_scan(text)
+    x = _ICD_LATIN_SPACE_NUM.sub(lambda m: m.group(1) + m.group(2), x)
+    return x.replace(",", ".")
 
 
 # Слишком общие слова для лексического матчинга по названию МКБ.
@@ -146,7 +161,7 @@ def extract_icd_codes_raw(text: str) -> list[str]:
         return []
     seen: set[str] = set()
     out: list[str] = []
-    scan = latinize_icd_cyrillic_letters_for_scan(text)
+    scan = normalize_text_for_icd_scan(text)
     for m in ICD10_CODE_RE.finditer(scan):
         raw = m.group(1)
         n = _norm_icd_code(raw)
@@ -171,7 +186,7 @@ def count_icd_code_mentions(
     if not text or top_n <= 0:
         return []
     counts: Counter[str] = Counter()
-    scan = latinize_icd_cyrillic_letters_for_scan(text)
+    scan = normalize_text_for_icd_scan(text)
     for m in ICD10_CODE_RE.finditer(scan):
         n = _norm_icd_code(m.group(1))
         if not n or not is_code_in_ru_reference(n):

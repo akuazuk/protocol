@@ -31,7 +31,7 @@ from icd_mkb import (
     describe_code,
     extract_icd_codes_raw,
     icd_tokens_for_lex,
-    latinize_icd_cyrillic_letters_for_scan,
+    normalize_text_for_icd_scan,
     normalize_icd_code,
     ru_lexicon_scored_entries,
 )
@@ -2088,7 +2088,7 @@ def retrieve(
             ch.get("title") or ""
         )
         low = lex_src.lower()
-        lex_icd = latinize_icd_cyrillic_letters_for_scan(lex_src).lower()
+        lex_icd = normalize_text_for_icd_scan(lex_src).lower()
         lex = 0.0
         for t in qtok:
             if t not in low:
