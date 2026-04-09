@@ -23,21 +23,45 @@ ICD10_CODE_RE = re.compile(
 )
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
 
-# Русские PDF/протоколы: рубрику K** часто печатают кириллической «К»: «К60», «К 60», «(К60)».
-_ICD_CYR_CAPITAL_K_ICD = re.compile(
-    r"(?<![A-Za-zА-Яа-яЁё0-9])(К)\s*(\d{2}(?:\.\d{1,4})?)\b",
+# Русские PDF/протоколы: коды МКБ нередко содержат кириллические look-alike буквы
+# (напр. К60, Н10, Р07) и вариативные разделители.
+_ICD_CYR_TO_LAT = {
+    "А": "A",
+    "В": "B",
+    "С": "C",
+    "Е": "E",
+    "Н": "H",
+    "К": "K",
+    "М": "M",
+    "О": "O",
+    "Р": "P",
+    "Т": "T",
+    "Х": "X",
+    "У": "Y",
+    "Ј": "J",
+}
+_ICD_CYR_LEAD = "".join(_ICD_CYR_TO_LAT.keys())
+_ICD_CYR_LEAD_CODE = re.compile(
+    rf"(?<![A-Za-zА-Яа-яЁё0-9])([{_ICD_CYR_LEAD}])\s*(\d{{2}}(?:[.,]\d{{1,4}})?)\b",
 )
 _ICD_LATIN_SPACE_NUM = re.compile(
     r"\b([A-TV-Z])\s+(\d{2}(?:[.,]\d{1,4})?)\b",
     re.IGNORECASE,
 )
+_ICD_LATIN_SPLIT_DEC = re.compile(
+    r"\b([A-TV-Z])\s*(\d{2})\s*[.,]\s*(\d{1,4})\b",
+    re.IGNORECASE,
+)
 
 
 def latinize_icd_cyrillic_letters_for_scan(text: str) -> str:
-    """Заменяет кириллическую «К» на латинскую K в типичных написаниях кодов МКБ-10."""
+    """Заменяет кириллические look-alike буквы на латиницу в кодах МКБ-10."""
     if not text:
         return text
-    return _ICD_CYR_CAPITAL_K_ICD.sub(lambda m: "K" + m.group(2), text)
+    return _ICD_CYR_LEAD_CODE.sub(
+        lambda m: _ICD_CYR_TO_LAT.get(m.group(1), m.group(1)) + m.group(2),
+        text,
+    )
 
 
 def normalize_text_for_icd_scan(text: str) -> str:
@@ -45,6 +69,7 @@ def normalize_text_for_icd_scan(text: str) -> str:
     if not text:
         return text
     x = latinize_icd_cyrillic_letters_for_scan(text)
+    x = _ICD_LATIN_SPLIT_DEC.sub(lambda m: m.group(1) + m.group(2) + "." + m.group(3), x)
     x = _ICD_LATIN_SPACE_NUM.sub(lambda m: m.group(1) + m.group(2), x)
     return x.replace(",", ".")
 

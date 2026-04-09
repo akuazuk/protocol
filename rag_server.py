@@ -2936,9 +2936,9 @@ def _protocol_icd_mentions_for_response(
     top_n: int = 5,
     focus_codes: list[str] | None = None,
 ) -> dict[str, list[dict]]:
-    """Топ кодов МКБ-10 в полном тексте structured_index; при focus_codes — сначала сверка с запросом."""
+    """Топ кодов МКБ-10 по тексту протокола; при focus_codes — сначала сверка с запросом."""
     out: dict[str, list[dict]] = {}
-    if not _structured_by_path:
+    if not _chunks_by_path and not _structured_by_path:
         return out
     fc = [normalize_icd_code(str(c)) for c in (focus_codes or []) if c]
     fc = list(dict.fromkeys([x for x in fc if x]))
@@ -2950,22 +2950,32 @@ def _protocol_icd_mentions_for_response(
         if not raw:
             continue
         nk = _normalize_protocol_path_key(raw)
-        struct = _structured_by_path.get(raw) or _structured_by_path.get(nk)
-        if not struct or not isinstance(struct, dict):
-            continue
-        parts = [
-            str(struct.get("diagnosis") or ""),
-            str(struct.get("treatment") or ""),
-            str(struct.get("summary") or ""),
-        ]
-        blob = "\n\n".join(p for p in parts if p.strip()).strip()
+        blob_parts: list[str] = []
+        # Приоритет — полный текст по чанкам данного протокола (на практике точнее structured_index).
+        rows = _chunks_by_path.get(raw) or _chunks_by_path.get(nk) or []
+        if rows:
+            for ch in rows:
+                if not isinstance(ch, dict):
+                    continue
+                txt = str(ch.get("text") or "").strip()
+                if txt:
+                    blob_parts.append(txt)
+        if not blob_parts:
+            struct = _structured_by_path.get(raw) or _structured_by_path.get(nk)
+            if struct and isinstance(struct, dict):
+                blob_parts = [
+                    str(struct.get("diagnosis") or "").strip(),
+                    str(struct.get("treatment") or "").strip(),
+                    str(struct.get("summary") or "").strip(),
+                ]
+        blob = "\n\n".join(p for p in blob_parts if p).strip()
         if not blob:
             continue
-        rows = count_icd_code_mentions(
+        top_rows = count_icd_code_mentions(
             blob, top_n=top_n, focus_codes=use_focus
         )
-        if rows:
-            out[raw] = rows
+        if top_rows:
+            out[raw] = top_rows
     return out
 
 
