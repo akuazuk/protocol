@@ -142,8 +142,18 @@ def extract_icd_codes_raw(text: str) -> list[str]:
     return out
 
 
-def count_icd_code_mentions(text: str, *, top_n: int = 5) -> list[dict]:
-    """Топ кодов МКБ-10 по числу вхождений; только коды из русского справочника."""
+def count_icd_code_mentions(
+    text: str,
+    *,
+    top_n: int = 5,
+    focus_codes: list[str] | None = None,
+) -> list[dict]:
+    """Топ упоминаний МКБ-10 в тексте; только коды из русского справочника.
+
+    Если задан focus_codes (коды из запроса подбора), сначала — по каждому из них
+    фактическое число вхождений в текст (включая 0), затем дополнение до top_n
+    по частоте остальных кодов в том же тексте.
+    """
     if not text or top_n <= 0:
         return []
     counts: Counter[str] = Counter()
@@ -152,9 +162,48 @@ def count_icd_code_mentions(text: str, *, top_n: int = 5) -> list[dict]:
         if not n or not is_code_in_ru_reference(n):
             continue
         counts[n] += 1
+
+    focus_norm: list[str] = []
+    seen_fc: set[str] = set()
+    for c in focus_codes or []:
+        if not isinstance(c, str):
+            continue
+        nn = _norm_icd_code(c.strip())
+        if not nn or nn in seen_fc:
+            continue
+        if not is_code_in_ru_reference(nn):
+            continue
+        seen_fc.add(nn)
+        focus_norm.append(nn)
+
+    out: list[dict] = []
+    if focus_norm:
+        used: set[str] = set()
+        for code in focus_norm:
+            cnt = int(counts.get(code, 0))
+            tru = ru_title(code) or ""
+            out.append(
+                {
+                    "code": code,
+                    "count": cnt,
+                    "title_ru": tru,
+                    "from_query": True,
+                }
+            )
+            used.add(code)
+            if len(out) >= top_n:
+                return out
+        for code, cnt in counts.most_common():
+            if code in used:
+                continue
+            tru = ru_title(code) or ""
+            out.append({"code": code, "count": int(cnt), "title_ru": tru})
+            if len(out) >= top_n:
+                break
+        return out
+
     if not counts:
         return []
-    out: list[dict] = []
     for code, cnt in counts.most_common(top_n):
         tru = ru_title(code) or ""
         out.append({"code": code, "count": int(cnt), "title_ru": tru})

@@ -2294,6 +2294,26 @@
       color: var(--muted);
     }
 
+    .assist-proto-icd-query {
+      display: inline-block;
+      margin-right: 0.35rem;
+      padding: 0.06rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--green-900);
+      background: rgba(26, 138, 114, 0.12);
+    }
+
+    .assist-proto-icd-top-list__miss {
+      opacity: 0.92;
+      border-left: 3px solid rgba(180, 83, 9, 0.55);
+      padding-left: 0.45rem;
+      margin-left: -0.45rem;
+    }
+
     .assist-metrics-legend {
       margin: 0.85rem 0 0;
       padding-top: 0.65rem;
@@ -5292,15 +5312,31 @@
     var icdTop = icdMentionsForProtocol(pr, protocolIcdMentions);
     if (icdTop && icdTop.length) {
       html += '<details class="assist-proto-structure assist-proto-icd-top">';
-      html +=
-        '<summary>Упоминания кодов МКБ-10 в тексте индекса (топ по частоте)</summary>';
+      var sumLab = "Упоминания МКБ-10 в тексте индекса (топ по частоте)";
+      var tq;
+      for (tq = 0; tq < icdTop.length; tq++) {
+        if (icdTop[tq].from_query) {
+          sumLab =
+            "МКБ-10 в индексе: коды из запроса и прочие частые упоминания";
+          break;
+        }
+      }
+      html += "<summary>" + sumLab + "</summary>";
       html += '<ul class="assist-proto-icd-top-list">';
       var ti;
       for (ti = 0; ti < icdTop.length; ti++) {
         var row = icdTop[ti];
         var cnt = Number(row.count);
         if (isNaN(cnt)) cnt = 0;
-        html += "<li>";
+        var liCls = "";
+        if (row.from_query && cnt === 0) {
+          liCls = ' class="assist-proto-icd-top-list__miss"';
+        }
+        html += "<li" + liCls + ">";
+        if (row.from_query) {
+          html +=
+            '<span class="assist-proto-icd-query" title="Код из подбора по запросу">запрос</span>';
+        }
         html += "<code>" + escapeHtml(String(row.code || "")) + "</code>";
         html +=
           '<span class="assist-proto-icd-top-count">×' +

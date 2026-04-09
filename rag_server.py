@@ -2109,8 +2109,13 @@ def retrieve(
             else 1.0
         )
         post = 1.0
-        if icd_norms and any(code in low for code in icd_norms):
-            post *= icd_chunk_boost
+        if icd_norms:
+            if any(code in low for code in icd_norms):
+                post *= icd_chunk_boost
+            else:
+                post *= float(
+                    os.environ.get("RAG_ICD_QUERY_MISS_CHUNK_MULT", "0.62")
+                )
         pth = ch.get("path") or ""
         post *= _protocol_meta_icd_boost(pth, icd_norms)
         cat = (ch.get("category") or "").strip()
@@ -2923,11 +2928,19 @@ def _red_flags_from_retrieval(retrieved: list[dict]) -> list[str]:
     return out
 
 
-def _protocol_icd_mentions_for_response(protocols: list, *, top_n: int = 5) -> dict[str, list[dict]]:
-    """Топ кодов МКБ-10 по числу вхождений в полном тексте structured_index (диагноз/лечение/сводка)."""
+def _protocol_icd_mentions_for_response(
+    protocols: list,
+    *,
+    top_n: int = 5,
+    focus_codes: list[str] | None = None,
+) -> dict[str, list[dict]]:
+    """Топ кодов МКБ-10 в полном тексте structured_index; при focus_codes — сначала сверка с запросом."""
     out: dict[str, list[dict]] = {}
     if not _structured_by_path:
         return out
+    fc = [normalize_icd_code(str(c)) for c in (focus_codes or []) if c]
+    fc = list(dict.fromkeys([x for x in fc if x]))
+    use_focus = fc or None
     for pr in protocols:
         if not isinstance(pr, dict):
             continue
@@ -2946,7 +2959,9 @@ def _protocol_icd_mentions_for_response(protocols: list, *, top_n: int = 5) -> d
         blob = "\n\n".join(p for p in parts if p.strip()).strip()
         if not blob:
             continue
-        rows = count_icd_code_mentions(blob, top_n=top_n)
+        rows = count_icd_code_mentions(
+            blob, top_n=top_n, focus_codes=use_focus
+        )
         if rows:
             out[raw] = rows
     return out
@@ -3508,7 +3523,12 @@ def api_assist(body: AssistIn) -> dict:
     normalize_differential_field(parsed)
 
     proto_list = (parsed.get("protocols") or []) if parsed else []
-    protocol_icd_mentions = _protocol_icd_mentions_for_response(proto_list, top_n=5)
+    icd_for_focus = icd_analysis.get("codes_for_retrieval") or []
+    protocol_icd_mentions = _protocol_icd_mentions_for_response(
+        proto_list,
+        top_n=5,
+        focus_codes=icd_for_focus if icd_for_focus else None,
+    )
     red_flags = _red_flags_from_retrieval(retrieved)
 
     return {
