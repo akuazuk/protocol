@@ -1970,7 +1970,27 @@
 
     .icd-preflight-codes {
       margin: 0.35rem 0 0;
-      padding-left: 1.1rem;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .icd-preflight-codes__item {
+      margin: 0.35rem 0;
+    }
+
+    .icd-preflight-codes__label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      cursor: pointer;
+      font-size: 0.88rem;
+      line-height: 1.42;
+    }
+
+    .icd-preflight-codes__label input[type="radio"] {
+      margin-top: 0.22rem;
+      flex-shrink: 0;
+      accent-color: var(--green-600);
     }
 
     .btn-icd-apply {
@@ -6496,6 +6516,15 @@
     }
   }
 
+  function buildIcdPreflightAppendLine(code, titleRu) {
+    var c = String(code || "").trim();
+    if (!c) return "";
+    var tr = String(titleRu || "").trim();
+    return tr
+      ? "МКБ-10 для поиска протокола: " + c + " (" + tr + ")"
+      : "МКБ-10 для поиска протокола: " + c;
+  }
+
   function renderIcdPreflightResult(data) {
     var box = document.getElementById("icd-preflight-result");
     if (!box) return;
@@ -6503,7 +6532,8 @@
     var codes = icd.codes_for_retrieval || [];
     var hint = data.hint;
     var appendLine = data.append_line;
-    window.__icdAppendLine = appendLine || "";
+    window.__icdPreflightChoices = [];
+    window.__icdAppendLine = "";
     var html = "";
     if (hint) {
       html +=
@@ -6511,7 +6541,13 @@
         escapeHtml(hint) +
         "</div>";
     }
-    if (codes.length || (icd.detected && icd.detected.length) || (icd.suggested && icd.suggested.length)) {
+    var choices = [];
+    var seenCodes = {};
+    var showCodesBlock =
+      codes.length ||
+      (icd.detected && icd.detected.length) ||
+      (icd.suggested && icd.suggested.length);
+    if (showCodesBlock) {
       html += "<p><strong>Предложенные коды МКБ-10:</strong></p><ul class=\"icd-preflight-codes\">";
       var merged = [];
       var di;
@@ -6519,40 +6555,84 @@
       var suggested = icd.suggested || [];
       for (di = 0; di < detected.length; di++) merged.push(detected[di]);
       for (di = 0; di < suggested.length; di++) merged.push(suggested[di]);
-      var seen = {};
       var row;
       for (di = 0; di < merged.length; di++) {
         row = merged[di];
         if (!row || !row.code) continue;
-        var c = String(row.code);
-        if (seen[c]) continue;
-        seen[c] = true;
+        var c = String(row.code).trim();
+        if (!c || seenCodes[c]) continue;
+        seenCodes[c] = true;
         var tr = (row.title_ru || "").trim();
-        html +=
-          "<li><code>" +
-          escapeHtml(c) +
-          "</code>" +
-          (tr ? " — " + escapeHtml(tr) : "") +
-          "</li>";
+        var line = buildIcdPreflightAppendLine(c, tr);
+        choices.push({ code: c, title_ru: tr, appendLine: line });
       }
-      if (!Object.keys(seen).length) {
+      if (!choices.length) {
         for (di = 0; di < codes.length; di++) {
-          html += "<li><code>" + escapeHtml(String(codes[di])) + "</code></li>";
+          var c2 = String(codes[di]).trim();
+          if (!c2 || seenCodes[c2]) continue;
+          seenCodes[c2] = true;
+          var line2 = buildIcdPreflightAppendLine(c2, "");
+          choices.push({ code: c2, title_ru: "", appendLine: line2 });
         }
+      }
+      var ci;
+      for (ci = 0; ci < choices.length; ci++) {
+        var ch = choices[ci];
+        var rid = "icd-preflight-radio-" + ci;
+        html +=
+          '<li class="icd-preflight-codes__item">' +
+          '<label class="icd-preflight-codes__label" for="' +
+          escapeHtmlAttr(rid) +
+          '">' +
+          '<input type="radio" name="icd-preflight-choice" id="' +
+          escapeHtmlAttr(rid) +
+          '" value="' +
+          String(ci) +
+          '"' +
+          (ci === 0 ? " checked" : "") +
+          " />" +
+          "<code>" +
+          escapeHtml(ch.code) +
+          "</code>" +
+          (ch.title_ru ? " — " + escapeHtml(ch.title_ru) : "") +
+          "</label></li>";
       }
       html += "</ul>";
     }
-    if (appendLine) {
+    window.__icdPreflightChoices = choices;
+    if (choices.length) {
+      window.__icdAppendLine = choices[0].appendLine;
       html +=
-        '<p style="margin-top:0.5rem">Будет добавлена строка: <em>' +
+        '<p class="icd-preflight-append-preview" style="margin-top:0.5rem">Будет добавлена строка: <em id="icd-preflight-append-em">' +
+        escapeHtml(choices[0].appendLine) +
+        "</em></p>" +
+        '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
+    } else if (appendLine) {
+      window.__icdAppendLine = appendLine;
+      html +=
+        '<p class="icd-preflight-append-preview" style="margin-top:0.5rem">Будет добавлена строка: <em id="icd-preflight-append-em">' +
         escapeHtml(appendLine) +
         "</em></p>" +
         '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
-    } else if (!hint && !codes.length) {
+    } else if (!hint && !showCodesBlock) {
+      html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
+    } else if (!hint && showCodesBlock && !choices.length) {
       html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
     }
     box.innerHTML = html;
     box.hidden = false;
+    var radios = box.querySelectorAll('input[name="icd-preflight-choice"]');
+    var ri;
+    for (ri = 0; ri < radios.length; ri++) {
+      radios[ri].addEventListener("change", function () {
+        var idx = parseInt(this.value, 10);
+        var chList = window.__icdPreflightChoices;
+        if (!chList || !chList[idx]) return;
+        window.__icdAppendLine = chList[idx].appendLine;
+        var em = document.getElementById("icd-preflight-append-em");
+        if (em) em.textContent = chList[idx].appendLine;
+      });
+    }
     var applyBtn = document.getElementById("btn-icd-apply");
     if (applyBtn) {
       applyBtn.addEventListener("click", function () {
@@ -6564,6 +6644,8 @@
         }
         box.hidden = true;
         box.innerHTML = "";
+        window.__icdPreflightChoices = [];
+        window.__icdAppendLine = "";
         runAssist().catch(function (e) {
           console.error(e);
         });
