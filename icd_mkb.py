@@ -15,10 +15,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 # ICD-10: первая буква категории + две цифры + необязательный подуровень (без U).
-# Допускаем пробел после буквы и запятую как десятичный разделитель:
-# «K 64.9», «K64,9».
+# Для парсинга допускаем типовые OCR/наборные варианты: пробелы, запятая/дефис/слэш.
 ICD10_CODE_RE = re.compile(
-    r"\b([A-TV-Z]\s*\d{2}(?:[.,]\d{1,4})?)\b",
+    r"\b([A-TV-Z]\s*\d{2}(?:[.,/\-]\s*\d{1,4})?)\b",
     re.IGNORECASE,
 )
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
@@ -41,37 +40,40 @@ _ICD_CYR_TO_LAT = {
     "Ј": "J",
 }
 _ICD_CYR_LEAD = "".join(_ICD_CYR_TO_LAT.keys())
-_ICD_CYR_LEAD_CODE = re.compile(
-    rf"(?<![A-Za-zА-Яа-яЁё0-9])([{_ICD_CYR_LEAD}])\s*(\d{{2}}(?:[.,]\d{{1,4}})?)\b",
-)
-_ICD_LATIN_SPACE_NUM = re.compile(
-    r"\b([A-TV-Z])\s+(\d{2}(?:[.,]\d{1,4})?)\b",
-    re.IGNORECASE,
-)
-_ICD_LATIN_SPLIT_DEC = re.compile(
-    r"\b([A-TV-Z])\s*(\d{2})\s*[.,]\s*(\d{1,4})\b",
+_ICD_CAND_RE = re.compile(
+    rf"(?<![A-Za-zА-Яа-яЁё0-9])([A-TV-Z{_ICD_CYR_LEAD}]\s*\d{{2}}(?:\s*[.,/\-]\s*\d{{1,4}})?)(?![A-Za-zА-Яа-яЁё0-9])",
     re.IGNORECASE,
 )
 
 
-def latinize_icd_cyrillic_letters_for_scan(text: str) -> str:
-    """Заменяет кириллические look-alike буквы на латиницу в кодах МКБ-10."""
-    if not text:
-        return text
-    return _ICD_CYR_LEAD_CODE.sub(
-        lambda m: _ICD_CYR_TO_LAT.get(m.group(1), m.group(1)) + m.group(2),
-        text,
-    )
+def _canonicalize_icd_like_token(token: str) -> str | None:
+    """Нормализует похожий на ICD токен к виду K64.9; None если невалидный."""
+    if not token:
+        return None
+    t = token.strip().upper()
+    if not t:
+        return None
+    lead = t[0]
+    lead = _ICD_CYR_TO_LAT.get(lead, lead)
+    if not re.match(r"[A-TV-Z]", lead, re.IGNORECASE):
+        return None
+    rest = t[1:]
+    rest = re.sub(r"\s+", "", rest)
+    rest = rest.replace(",", ".").replace("/", ".").replace("-", ".")
+    rest = re.sub(r"\.+", ".", rest).strip(".")
+    if not re.match(r"^\d{2}(?:\.\d{1,4})?$", rest):
+        return None
+    return lead + rest
 
 
 def normalize_text_for_icd_scan(text: str) -> str:
-    """Нормализует типичные формы кодов для regex-сканирования МКБ-10."""
+    """Нормализует типичные формы кодов для стабильного ICD-сканирования."""
     if not text:
         return text
-    x = latinize_icd_cyrillic_letters_for_scan(text)
-    x = _ICD_LATIN_SPLIT_DEC.sub(lambda m: m.group(1) + m.group(2) + "." + m.group(3), x)
-    x = _ICD_LATIN_SPACE_NUM.sub(lambda m: m.group(1) + m.group(2), x)
-    return x.replace(",", ".")
+    return _ICD_CAND_RE.sub(
+        lambda m: _canonicalize_icd_like_token(m.group(1)) or m.group(1),
+        text,
+    )
 
 
 # Слишком общие слова для лексического матчинга по названию МКБ.
