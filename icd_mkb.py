@@ -198,6 +198,87 @@ def extract_icd_codes_raw(text: str) -> list[str]:
     return out
 
 
+def extract_icd_codes_diagnosis_focused(text: str) -> list[str]:
+    """Коды МКБ из строк блока «Диагноз…» до рекомендаций (приоритет для подбора протоколов)."""
+    if not text:
+        return []
+    blob = text.replace("\r\n", "\n").replace("\r", "\n")
+    lines = blob.split("\n")
+    out: list[str] = []
+    seen_codes: set[str] = set()
+
+    diag_touch_re = re.compile(
+        r"^\s*(клинический\s+диагноз|диагноз\s+по\s+мкб|диагноз\s*[:\.]?)\s*",
+        re.IGNORECASE,
+    )
+    stop_re = re.compile(
+        r"^\s*(рекомендаци|назначени|назначено|назначены|лекарственн|"
+        r"повторн[ауы]?.{0,24}(осмотр|осмотре|приём|явк)|заключение\s+врача)\w*\s*[:\.]",
+        re.IGNORECASE,
+    )
+
+    capturing = False
+    for raw_ln in lines:
+        ln_st = raw_ln.strip()
+        if not ln_st:
+            continue
+        low = ln_st.lower()
+
+        if "закон " in low and "здравоохранен" in low:
+            capturing = False
+            continue
+
+        if diag_touch_re.match(raw_ln) or (
+            low.startswith("диагноз") and ":" in raw_ln[:56]
+        ):
+            capturing = True
+        elif stop_re.match(raw_ln):
+            capturing = False
+
+        if not capturing:
+            continue
+
+        scanned = normalize_text_for_icd_scan(ln_st)
+        for m in ICD10_CODE_RE.finditer(scanned):
+            n = _norm_icd_code(m.group(1))
+            if not n or not is_code_in_ru_reference(n):
+                continue
+            if n in seen_codes:
+                continue
+            seen_codes.add(n)
+            out.append(n)
+            if len(out) >= 16:
+                return out
+
+    return out
+
+
+def text_mentions_icd_code(text: str, code_norm: str) -> bool:
+    """True, если в тексте есть тот же код МКБ-10 или явное продолжение базы блока."""
+    if not text or not code_norm:
+        return False
+    c = _norm_icd_code(code_norm).upper().replace(" ", "")
+    if len(c) < 3:
+        return False
+    scan_compact = "".join(normalize_text_for_icd_scan(text).upper().split())
+    if c in scan_compact:
+        return True
+    if "." not in c:
+        return c in scan_compact
+    stem, dot, sub = c.partition(".")
+    if not stem:
+        return False
+    idx = scan_compact.find(stem)
+    if idx < 0:
+        return stem in scan_compact
+    after = scan_compact[idx + len(stem) :]
+    if after.startswith("." + sub):
+        return True
+    if sub and after.startswith(sub):
+        return True
+    return False
+
+
 def count_icd_code_mentions(
     text: str,
     *,

@@ -32,11 +32,13 @@ from icd_mkb import (
     analyze_query_for_icd,
     count_icd_code_mentions,
     describe_code,
+    extract_icd_codes_diagnosis_focused,
     extract_icd_codes_raw,
     icd_tokens_for_lex,
     normalize_text_for_icd_scan,
     normalize_icd_code,
     ru_lexicon_scored_entries,
+    text_mentions_icd_code,
 )
 
 from retrieval_bm25 import build_bm25_index
@@ -334,6 +336,7 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
 - Если в выдержках протокола нет данных по разделу заключения — снизь балл по соответствующему критерию и объясни это в limitations_ru.
 - Не придумывай цитаты: conclusion_excerpt и protocol_excerpt должны быть буквальными короткими вырезками из соответствующих текстов ниже (или пустая строка если невозможно).
 - Все пояснения на русском.
+- Подсказка path протоколов в преамбуле ниже упорядочена автоматически: первыми идут выдержки, где в тексте фрагмента встречаются коды МКБ из диагностического блока консультативного заключения (если такие коды извлечены).
 
 Верни ОДИН JSON-объект (без markdown, без текста до/после) строго следуя схеме:
 {"overall_compliance_pct": <целое 0-100>,
@@ -2827,9 +2830,10 @@ def _consult_gemini_clinical_focus_text(model, pdf_digest_input: str) -> tuple[s
 
 def _merge_icd_codes_for_consult_retrieval(
     icd_analysis: dict, full_pdf_text: str
-) -> list[str]:
-    """Объединяет коды МКБ из разбора с явными кодами из текста заключения (приоритет PDF)."""
+) -> tuple[list[str], dict[str, object]]:
+    """Коды МКБ для RAG: сначала блок «Диагноз», затем остальной PDF, затем pipeline."""
     max_n = max(5, min(16, int(os.environ.get("CONSULT_REVIEW_ICD_MERGE_CAP", "12"))))
+    from_diag = extract_icd_codes_diagnosis_focused(full_pdf_text or "")
     from_pdf_raw = extract_icd_codes_raw(full_pdf_text or "")
     from_pipe = icd_analysis.get("codes_for_retrieval") if isinstance(icd_analysis, dict) else None
     if not isinstance(from_pipe, list):
@@ -2846,11 +2850,219 @@ def _merge_icd_codes_for_consult_retrieval(
         seen.add(n)
         merged.append(n)
 
+    for c in from_diag:
+        push(c)
     for c in from_pdf_raw:
         push(c)
     for c in from_pipe:
         push(str(c))
-    return merged[:max_n]
+    trimmed = merged[:max_n]
+    dn = {normalize_icd_code(x) for x in from_diag}
+    meta: dict[str, object] = {
+        "diag_block_icd_codes": list(from_diag),
+        "codes_for_merge_order": trimmed,
+        "cap_applied": max_n,
+        "codes_outside_diag_block_pdf": [
+            normalize_icd_code(x) for x in from_pdf_raw if normalize_icd_code(x) not in dn
+        ],
+    }
+    return trimmed, meta
+
+
+def _consult_row_text_for_icd_scan(row: dict) -> str:
+    chunks: list[str] = []
+    for key in ("title", "path"):
+        raw = row.get(key)
+        if isinstance(raw, str) and raw.strip():
+            chunks.append(raw.strip())
+    for key in ("excerpt", "text"):
+        raw = row.get(key)
+        if isinstance(raw, str) and raw.strip():
+            chunks.append(raw.strip())
+        elif isinstance(raw, dict):
+            t = raw.get("text") or raw.get("excerpt")
+            if isinstance(t, str) and t.strip():
+                chunks.append(t.strip())
+    return "\n".join(chunks)
+
+
+def _consult_needles_icd_fragments_consult_review(
+    diag_block_icd: list[str],
+    merged_icd: list[str],
+) -> list[str]:
+    if diag_block_icd:
+        base = diag_block_icd
+    elif merged_icd:
+        base = merged_icd
+    else:
+        return []
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in base:
+        if not isinstance(raw, str):
+            continue
+        n = normalize_icd_code(raw.strip())
+        if not n or n in seen:
+            continue
+        seen.add(n)
+        out.append(n)
+        if len(out) >= 12:
+            break
+    return out
+
+
+def _consult_path_icd_match_meta(
+    retrieved: list[dict], icd_needles: list[str]
+) -> dict[str, tuple[bool, float, list[str]]]:
+    """path → есть ли совпадение кода МКБ в хотя бы одном фрагменте; лучший score; коды."""
+    paths_blob: dict[str, list[tuple[float, dict]]] = {}
+    if not retrieved or not icd_needles:
+        return {}
+
+    def row_score(rd: dict) -> float:
+        try:
+            return float(rd.get("score") or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    for row in retrieved:
+        if not isinstance(row, dict):
+            continue
+        pth = str(row.get("path") or "").strip()
+        if not pth:
+            continue
+        paths_blob.setdefault(pth, []).append((row_score(row), row))
+
+    out: dict[str, tuple[bool, float, list[str]]] = {}
+    for pth, pairs in paths_blob.items():
+        best_s = max((sc for sc, _ in pairs), default=0.0)
+        hits: list[str] = []
+        matched = False
+        for _, row in pairs:
+            blob = _consult_row_text_for_icd_scan(row)
+            if not blob:
+                continue
+            for code in icd_needles:
+                if text_mentions_icd_code(blob, code):
+                    n = normalize_icd_code(code)
+                    if n and n not in hits:
+                        hits.append(n)
+            if hits:
+                matched = True
+        out[pth] = (matched, best_s, hits)
+    return out
+
+
+def _consult_sort_retrieval_by_icd_fragments_first(
+    retrieved: list[dict], icd_needles: list[str]
+) -> list[dict]:
+    if not retrieved or not icd_needles:
+        return retrieved
+    meta = _consult_path_icd_match_meta(retrieved, icd_needles)
+
+    def key_row(row: dict) -> tuple[int, float]:
+        if not isinstance(row, dict):
+            return 1, 0.0
+        pth = str(row.get("path") or "").strip()
+        m = meta.get(pth)
+        hit = bool(m and m[0])
+        try:
+            sc = float(row.get("score") or 0)
+        except (TypeError, ValueError):
+            sc = 0.0
+        return (0 if hit else 1, -sc)
+
+    return sorted(retrieved, key=key_row)
+
+
+def _consult_precise_links_for_icd_in_fragments(
+    retrieved: list[dict],
+    *,
+    diag_block_icd: list[str],
+    merged_icd: list[str],
+) -> tuple[list[dict], str]:
+    """Протоколы из отбора с явным упоминанием кода диагноза в тексте переданной выдержки."""
+    icd_needles = _consult_needles_icd_fragments_consult_review(diag_block_icd, merged_icd)
+    if not icd_needles:
+        return [], (
+            "В блоке диагноза консультативного заключения не найдено однозначных кодов МКБ‑10 для "
+            "сопоставления с текстом фрагментов протоколов. Ниже — полный результат автоматического отбора."
+        )
+
+    paths_meta = _consult_path_icd_match_meta(retrieved, icd_needles)
+    rows_list: list[tuple[float, dict]] = []
+    for path, tup in paths_meta.items():
+        matched, best_s, hit_codes = tup
+        if not matched:
+            continue
+        pr = _protocols_by_path.get(path) or {}
+        ttl = (
+            str(pr.get("title") or "").strip()
+            or str(Path(path).name or path).strip()
+            or path
+        )
+        rows_list.append(
+            (
+                -best_s,
+                {
+                    "path": path,
+                    "title": ttl,
+                    "matched_icd_codes": hit_codes,
+                },
+            )
+        )
+    rows_list.sort(key=lambda x: x[0])
+    slim = [r[1] for r in rows_list]
+    if slim:
+        return slim, ""
+
+    quoted = ", ".join(icd_needles[:8])
+    note = (
+        f"Для кодов ({quoted}) в переданных выдержках из протоколов не найдено явного упоминания МКБ — "
+        "многие КП задают содержание по рубрике без кодов в оглавлении. Ниже — полный автоматический отбор."
+    )
+    return [], note
+
+
+def _consult_icd_banner_for_retrieval(icd_diag: list[str], icd_ordered: list[str]) -> str:
+    lines: list[str] = []
+    di = [
+        normalize_icd_code(str(c))
+        for c in (icd_diag or [])
+        if isinstance(c, str) and normalize_icd_code(str(c))
+    ]
+    if di:
+        lines.append(
+            "КОДЫ МКБ ИЗ ФОРМУЛИРОВОК ДИАГНОЗА В ЗАКЛЮЧЕНИИ: " + ", ".join(di[:14])
+        )
+    oc = []
+    seen: set[str] = set()
+    for raw in icd_ordered or []:
+        if not isinstance(raw, str):
+            continue
+        n = normalize_icd_code(raw.strip())
+        if n and n not in seen:
+            seen.add(n)
+            oc.append(n)
+        if len(oc) >= 14:
+            break
+    if oc:
+        lines.append("УПОРЯДОЧЕННЫЙ СПИСОК КОДОВ МКБ ДЛЯ ПОИСКА: " + ", ".join(oc))
+    return "\n".join(lines).strip()
+
+
+def _consult_review_paths_hint(
+    paths_used_hint: list[str],
+    *,
+    retrieved: list[dict],
+    icd_needles: list[str],
+) -> list[str]:
+    if not paths_used_hint:
+        return paths_used_hint
+    pm = _consult_path_icd_match_meta(retrieved, icd_needles) if icd_needles else {}
+    prio = [p for p in paths_used_hint if pm.get(p, (False, 0.0, []))[0]]
+    rest = [p for p in paths_used_hint if p not in prio]
+    return prio + rest
 
 
 def _consult_retrieval_quality_metrics(retrieved: list[dict]) -> dict[str, float | int]:
@@ -4899,8 +5111,15 @@ async def api_consult_review(
             icd_analysis = analyze_query_for_icd(q, q_rag)
 
     assert icd_analysis is not None
-    merged_icd = _merge_icd_codes_for_consult_retrieval(icd_analysis, full_text)
+    merged_icd, icd_merge_meta = _merge_icd_codes_for_consult_retrieval(
+        icd_analysis, full_text
+    )
     icd_codes_for_lex = merged_icd or (icd_analysis.get("codes_for_retrieval") or None)
+    diag_codes_list = (
+        icd_merge_meta.get("diag_block_icd_codes")
+        if isinstance(icd_merge_meta.get("diag_block_icd_codes"), list)
+        else []
+    )
 
     user_slugs = [
         s.strip()
@@ -4917,13 +5136,19 @@ async def api_consult_review(
 
     rq = q
 
+    prefix_parts: list[str] = []
     demographics_banner, demographics_meta = consult_demographics_banner_from_kz(full_text)
     if demographics_banner.strip():
-        head = demographics_banner.strip() + "\n\n"
+        prefix_parts.append(demographics_banner.strip())
+    icd_banner = _consult_icd_banner_for_retrieval(list(diag_codes_list), merged_icd)
+    if icd_banner.strip():
+        prefix_parts.append(icd_banner.strip())
+    if prefix_parts:
+        head = "\n\n".join(prefix_parts) + "\n\n"
         q = head + q.lstrip()
         rq = head + rq.lstrip()
         qr_lim = max(900, int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000")))
-        q_rag = (q_rag.strip() + "\n\n" + demographics_banner.strip()).strip()[:qr_lim]
+        q_rag = (head.strip() + "\n\n" + q_rag.strip()).strip()[:qr_lim]
 
     max_chunks_r = int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
     max_per_path_r = int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
@@ -5031,8 +5256,26 @@ async def api_consult_review(
     retrieved, audience_hint, audience_fb = filter_retrieval_by_audience(
         retrieved, rq, _routing
     )
+    icd_frag_needles = _consult_needles_icd_fragments_consult_review(
+        list(diag_codes_list),
+        merged_icd,
+    )
+    retrieved = _consult_sort_retrieval_by_icd_fragments_first(
+        retrieved, icd_frag_needles
+    )
+    precise_links, precise_note_ru = _consult_precise_links_for_icd_in_fragments(
+        retrieved,
+        diag_block_icd=list(diag_codes_list),
+        merged_icd=merged_icd,
+    )
+
     proto_max = int(os.environ.get("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", "16500"))
     protocol_ctx, paths_used = _build_review_chunks_context(retrieved, proto_max)
+    paths_hint_for_llm = _consult_review_paths_hint(
+        paths_used,
+        retrieved=retrieved,
+        icd_needles=icd_frag_needles,
+    )
 
     consult_max = int(os.environ.get("CONSULT_REVIEW_CONSULT_CHARS", "20000"))
     multi_intro = (
@@ -5068,7 +5311,7 @@ async def api_consult_review(
         model,
         consult_excerpt,
         protocol_ctx,
-        paths_used,
+        paths_hint_for_llm,
         extra_context=oncology_extra,
     )
 
@@ -5082,14 +5325,20 @@ async def api_consult_review(
         "retrieval_paths": paths_used,
         "consult_protocol_fragments": ui_frags,
         "consult_oncology_flags": oncology,
+        "consult_icd_precise_links": precise_links,
+        "consult_icd_precise_note_ru": precise_note_ru,
         "audience_filter": audience_hint,
         "audience_fallback": audience_fb,
         "consult_retrieval": {
             "focus": retrieval_focus_meta,
             "icd_codes_lex_merged": merged_icd,
+            "diag_block_icd_codes": diag_codes_list,
+            "icd_merge_meta": icd_merge_meta,
+            "fragments_icd_needles": icd_frag_needles,
             "second_pass": second_pass_diag,
         },
         "icd": _icd_client_payload(icd_analysis),
+        "demographics_meta": demographics_meta,
     }
 
 
