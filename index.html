@@ -175,6 +175,64 @@
       margin-bottom: 1rem;
     }
 
+    .consult-file-row {
+      margin-bottom: 0.35rem;
+    }
+
+    .consult-file-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 0.35rem;
+    }
+
+    #consult-pdf-file.consult-file-native {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .btn-consult-file-pick {
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 0.68rem 1.25rem;
+      border-radius: 14px;
+      cursor: pointer;
+      border: none;
+      color: #fff;
+      background: linear-gradient(145deg, var(--green-400) 0%, var(--green-600) 42%, var(--green-950) 100%);
+      box-shadow: 0 6px 20px rgba(13, 92, 74, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+      transition: transform 0.12s, filter 0.12s;
+    }
+
+    .btn-consult-file-pick:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .consult-file-name {
+      font-size: 0.85rem;
+      color: var(--green-800);
+      font-weight: 600;
+      flex: 1 1 8rem;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .consult-file-name.consult-file-name--empty {
+      font-weight: 500;
+      color: var(--muted);
+      font-style: italic;
+    }
+
     .consult-label {
       display: block;
       font-weight: 800;
@@ -199,11 +257,6 @@
       border: 2px solid rgba(26, 138, 114, 0.3);
       resize: vertical;
       box-sizing: border-box;
-    }
-
-    #consult-pdf-file {
-      width: 100%;
-      font-size: 0.9rem;
     }
 
     .consult-actions {
@@ -320,88 +373,168 @@
       font-weight: 800;
     }
 
-    .consult-tech-summary {
-      margin-top: 1rem;
-      padding: 0.95rem 1rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(26, 138, 114, 0.2);
+    .consult-proto-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
 
-    .consult-tech-summary h3 {
-      margin: 0 0 0.65rem;
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 1rem;
-      color: var(--green-950);
+    .consult-proto-li {
+      margin: 0.55rem 0 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.12);
     }
 
-    .consult-tech-blocks {
-      display: grid;
-      gap: 0.65rem;
+    .consult-proto-li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
 
-    @media (min-width: 620px) {
-      .consult-tech-blocks {
-        grid-template-columns: 1fr 1fr;
-      }
+    .consult-proto-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.85rem;
+      align-items: center;
     }
 
-    .consult-tech-block {
-      padding: 0.65rem 0.72rem;
+    .btn-consult-proto-text {
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.86rem;
+      padding: 0.52rem 0.92rem;
       border-radius: 12px;
-      background: rgba(248, 250, 249, 0.98);
-      border: 1px solid rgba(13, 92, 74, 0.12);
+      cursor: pointer;
+      border: 2px solid rgba(26, 138, 114, 0.45);
+      color: var(--green-950);
+      background: linear-gradient(180deg, #fffefb 0%, rgba(232, 245, 241, 0.55) 100%);
+      text-align: left;
+      transition: border-color 0.12s, box-shadow 0.12s;
     }
 
-    .consult-tech-block h4 {
-      margin: 0 0 0.35rem;
-      font-size: 0.72rem;
+    .btn-consult-proto-text:hover {
+      border-color: var(--green-600);
+      box-shadow: 0 4px 14px rgba(13, 92, 74, 0.1);
+    }
+
+    .consult-proto-pdf-link {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--green-700);
+      text-decoration: underline;
+      text-underline-offset: 0.12em;
+      white-space: nowrap;
+    }
+
+    .consult-frag-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+      background: rgba(6, 45, 40, 0.48);
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .consult-frag-overlay[hidden] {
+      display: none !important;
+    }
+
+    .consult-frag-dialog {
+      width: min(44rem, 100%);
+      max-height: min(88vh, 100%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff 0%, #f6faf8 100%);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      box-shadow: 0 28px 60px rgba(6, 45, 40, 0.28);
+    }
+
+    .consult-frag-dialog__top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 0.95rem 1rem 0.75rem;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.15);
+    }
+
+    #consult-frag-title {
+      margin: 0;
+      flex: 1 1 10rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.05rem;
+      color: var(--green-950);
+      line-height: 1.25;
+    }
+
+    .consult-frag-close {
+      flex-shrink: 0;
+      font: inherit;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 0.42rem 0.85rem;
+      border-radius: 12px;
+      border: 2px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      color: var(--green-800);
+      cursor: pointer;
+    }
+
+    .consult-frag-body {
+      padding: 0.95rem 1rem 1.1rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .consult-frag-kind {
+      margin: 0 0 0.15rem;
+      font-size: 0.74rem;
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--green-700);
+      color: var(--green-600);
     }
 
-    .consult-tech-block p,
-    .consult-tech-block ul {
-      margin: 0;
-      font-size: 0.82rem;
-      line-height: 1.48;
-      color: var(--text);
-    }
-
-    .consult-tech-block ul {
-      padding-left: 1.05rem;
-    }
-
-    .consult-tech-block code {
-      font-size: 0.78rem;
-      word-break: break-all;
-    }
-
-    .consult-tech-raw-details {
-      margin-top: 0.75rem;
-    }
-
-    .consult-tech-raw-details summary {
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      color: var(--green-800);
-      padding: 0.35rem 0;
-    }
-
-    .consult-tech-raw-pre {
-      font-size: 0.74rem;
-      overflow: auto;
-      max-height: 16rem;
-      margin: 0.5rem 0 0;
-      padding: 0.65rem;
-      border-radius: 10px;
-      background: rgba(26, 46, 42, 0.04);
-      border: 1px dashed rgba(26, 138, 114, 0.28);
+    mark.consult-frag-mark {
+      display: block;
+      margin: 0 0 0.95rem;
+      padding: 0.65rem 0.72rem;
+      border-radius: 11px;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 235, 59, 0.95) 0%,
+        rgba(255, 249, 196, 0.98) 45%,
+        rgba(255, 241, 118, 0.82) 100%
+      );
+      color: var(--green-950);
+      font-family: inherit;
+      font-size: 0.86rem;
+      line-height: 1.52;
+      box-shadow: 0 2px 0 rgba(13, 92, 74, 0.14);
       white-space: pre-wrap;
       word-break: break-word;
+      border: 1px solid rgba(251, 192, 45, 0.45);
+    }
+
+    mark.consult-frag-mark:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .consult-frag-footer {
+      padding: 0 1rem 1rem;
+      font-size: 0.82rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.1);
+    }
+
+    #consult-frag-pdf {
+      font-weight: 700;
+      color: var(--green-800);
     }
 
     .consult-result-actions {
@@ -411,23 +544,13 @@
       margin: 0.85rem 0 0;
     }
 
-    .consult-tag-pill {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.52rem;
-      border-radius: 999px;
-      background: rgba(232, 245, 241, 0.96);
-      border: 1px solid rgba(26, 138, 114, 0.32);
-      margin: 0.15rem 0.28rem 0 0;
-    }
-
     @media print {
       body.printing-consult-report .bg-pattern,
       body.printing-consult-report .scroll-actions,
       body.printing-consult-report .app-main-tabs,
       body.printing-consult-report .assist-timer-overlay,
-      body.printing-consult-report #panel-main-search {
+      body.printing-consult-report #panel-main-search,
+      body.printing-consult-report #consult-frag-overlay {
         display: none !important;
       }
 
@@ -4240,19 +4363,37 @@
         </header>
 
         <div class="consult-upload-card consult-hide-print">
-          <label class="consult-label" for="consult-pdf-file">Файл PDF</label>
-          <input type="file" id="consult-pdf-file" accept=".pdf,application/pdf" />
+          <div class="consult-file-row">
+            <span class="consult-label" id="consult-pdf-label">Файл PDF</span>
+            <div class="consult-file-controls">
+              <input
+                type="file"
+                id="consult-pdf-file"
+                class="consult-file-native"
+                accept=".pdf,application/pdf"
+                aria-labelledby="consult-pdf-label"
+              />
+              <button
+                type="button"
+                class="btn-consult-file-pick"
+                id="consult-btn-pick-file"
+                aria-controls="consult-pdf-file"
+              >
+                Выберите файл…
+              </button>
+              <span id="consult-file-name" class="consult-file-name consult-file-name--empty">Файл не выбран</span>
+            </div>
+          </div>
 
           <label class="consult-label" for="consult-category-slugs" style="margin-top: 1rem">Рубрики (необязательно)</label>
           <p class="consult-hint-small">
-            Укажите через запятую идентификаторы разделов из каталога (это же <code lang="ru">slug</code> в адресе страницы
-            рубрики), например:
-            <code>pulmonologiya-ftiziatriya</code>
+            Укажите через запятую идентификаторы разделов из каталога (это же slug в адресе страницы рубрики), например:
+            pulmonologiya-ftiziatriya
           </p>
           <textarea
             id="consult-category-slugs"
             maxlength="500"
-            placeholder="например: pulmonologiya-ftiziatriya, kardiologiya"
+            placeholder="pulmonologiya-ftiziatriya, kardiologiya"
             rows="2"
           ></textarea>
 
@@ -4294,15 +4435,6 @@
             </table>
           </div>
 
-          <div class="consult-tech-summary">
-            <h3>Техническая сводка</h3>
-            <div id="consult-tech-summary-body" class="consult-tech-blocks"></div>
-            <details class="consult-tech-raw-details">
-              <summary>Сырой ответ сервера (JSON)</summary>
-              <pre class="consult-tech-raw-pre" id="consult-out-json"></pre>
-            </details>
-          </div>
-
           <div class="consult-result-actions consult-hide-print">
             <button type="button" class="btn-consult-outline" id="consult-btn-print">Печать отчёта</button>
             <button type="button" class="btn-consult-soft" id="consult-btn-save">Сохранить отчёт (JSON)</button>
@@ -4319,6 +4451,19 @@
         Не замена очной консультации.
       </p>
     </footer>
+  </div>
+
+  <div id="consult-frag-overlay" class="consult-frag-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="consult-frag-title">
+    <div class="consult-frag-dialog">
+      <div class="consult-frag-dialog__top">
+        <h2 id="consult-frag-title">Протокол</h2>
+        <button type="button" class="consult-frag-close" id="consult-frag-close-btn">Закрыть</button>
+      </div>
+      <div id="consult-frag-body" class="consult-frag-body"></div>
+      <div class="consult-frag-footer">
+        <a id="consult-frag-pdf" href="#" target="_blank" rel="noopener noreferrer">Открыть оригинальный PDF</a>
+      </div>
+    </div>
   </div>
 
   <div class="scroll-actions" id="scroll-actions" hidden>
@@ -7069,110 +7214,164 @@
     updateScrollFabVisibility();
   }
 
-  function renderConsultTechnicalSummary(data) {
-    var root = document.getElementById("consult-tech-summary-body");
-    if (!root || !data) return;
-    var blocks = [];
+  function nl2brEscapedConsult(s) {
+    return escapeHtml(String(s || "")).replace(/\n/g, "<br />");
+  }
 
-    function addBlock(title, htmlBody) {
-      blocks.push(
-        '<div class="consult-tech-block"><h4>' +
-          escapeHtml(title) +
-          "</h4>" +
-          htmlBody +
-          "</div>"
-      );
+  function closeConsultFragOverlay() {
+    var ov = document.getElementById("consult-frag-overlay");
+    if (!ov || ov.hidden) return;
+    ov.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  function openConsultFragOverlay(row) {
+    if (!row || !row.path) return;
+    var ov = document.getElementById("consult-frag-overlay");
+    var titleEl = document.getElementById("consult-frag-title");
+    var bodyEl = document.getElementById("consult-frag-body");
+    var pdfA = document.getElementById("consult-frag-pdf");
+    if (!ov || !titleEl || !bodyEl || !pdfA) return;
+    titleEl.textContent = row.title || formatDisplayTitle(row.path) || "Протокол";
+    var href = encodeURI(row.path);
+    pdfA.href = href;
+    var html = "";
+    var parts = row.fragments || [];
+    var fi;
+    for (fi = 0; fi < parts.length; fi++) {
+      var frag = parts[fi] || {};
+      html +=
+        '<p class="consult-frag-kind">' +
+        escapeHtml(String(frag.kind || "выдержка")) +
+        "</p>";
+      html += '<mark class="consult-frag-mark">' + nl2brEscapedConsult(frag.text) + "</mark>";
     }
-
-    var extraction =
-      typeof data.extraction_chars === "number"
-        ? data.extraction_chars.toLocaleString("ru-RU") + " знаков после извлечения текста из PDF"
-        : "—";
-
-    var aud = "";
-    var af = data.audience_filter;
-    var afb = data.audience_fallback;
-    if ((af || "").trim()) aud += escapeHtml(String(af).trim());
-    if ((afb || "").trim()) {
-      aud += (aud ? "<br/>" : "") + "<strong>Примечание фильтра:</strong> " + escapeHtml(String(afb).trim());
+    if (!html) {
+      html =
+        '<p class="consult-hint-small">Для этого протокола сервер не вернул сохранённые текстовые фрагменты отбора. Откройте PDF по ссылке ниже.</p>';
     }
-    if (!aud.trim()) aud = "Нет особых пометок.";
+    bodyEl.innerHTML = html;
+    ov.hidden = false;
+    try {
+      document.body.style.overflow = "hidden";
+    } catch (e) {}
+    try {
+      document.getElementById("consult-frag-close-btn").focus();
+    } catch (e2) {}
+  }
 
-    addBlock("Извлечение и аудитория", "<p>" + extraction + "</p><p style=\"margin-top:0.55rem;margin-bottom:0\">" + aud + "</p>");
-
-    var icd = data.icd || {};
-    var retr = icd.codes_for_retrieval || [];
-    var retrLine =
-      retr && retr.length
-        ? escapeHtml(retr.join(", "))
-        : "Коды для отбора фрагментов не закреплены автоматически — по возможности укажите МКБ в тексте заключения.";
-
-    function icdPairs(list, lim) {
-      if (!list || !list.length) return "";
-      var out = "<ul>";
-      var i;
-      var L = typeof lim === "number" ? Math.min(list.length, lim) : list.length;
-      for (i = 0; i < L; i++) {
-        var row = list[i];
-        if (!row || typeof row !== "object") continue;
-        var code = escapeHtml(String(row.code || ""));
-        var tr = escapeHtml(String(row.title_ru || "").trim());
-        var role =
-          escapeHtml(String(row.role || row.match_method || "").trim()) || "—";
-        out += "<li><code>" + code + "</code>" + (tr ? " — " + tr : "") + " <span style=\"color:var(--muted);font-size:0.78rem\">(" + role + ")</span></li>";
-      }
-      if (list.length > L) out += "<li style=\"color:var(--muted)\">… и ещё " + String(list.length - L) + "</li>";
-      out += "</ul>";
-      return out;
+  function bindConsultFragOverlay() {
+    var ov = document.getElementById("consult-frag-overlay");
+    var dlg = ov && ov.querySelector(".consult-frag-dialog");
+    var closeBtn = document.getElementById("consult-frag-close-btn");
+    if (ov) {
+      ov.addEventListener("click", function (ev) {
+        if (ev.target === ov) closeConsultFragOverlay();
+      });
     }
+    if (dlg) {
+      dlg.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        closeConsultFragOverlay();
+      });
+    }
+    window.addEventListener("keydown", function (ev) {
+      var o = document.getElementById("consult-frag-overlay");
+      if (ev.key === "Escape" && o && !o.hidden) closeConsultFragOverlay();
+    });
+  }
 
-    var icdBody =
-      "<p style=\"margin:0 0 0.5rem\"><strong>Коды для RAG:</strong> " +
-      retrLine +
-      "</p>" +
-      ((icd.detected && icd.detected.length) ? "<p style=\"margin:0 0 0.35rem;font-weight:700\">Найдено в тексте</p>" + icdPairs(icd.detected, 15) : "") +
-      ((icd.suggested && icd.suggested.length) ? "<p style=\"margin:0.65rem 0 0.35rem;font-weight:700\">Предложено лексиконом/Gemini</p>" + icdPairs(icd.suggested, 12) : "");
-    addBlock("МКБ-10 по тексту документа", icdBody || "<p>Нет блока icd.</p>");
+  function renderConsultProtocolsSection(data, rev) {
+    var pw = document.getElementById("consult-out-paths");
+    if (!pw) return;
+    pw.innerHTML = "";
+    var headline = document.createElement("div");
+    headline.className = "consult-hint-small";
+    headline.style.marginTop = "0.68rem";
+    headline.style.marginBottom = "0.42rem";
+    headline.style.fontWeight = "800";
+    headline.style.color = "var(--green-950)";
+    headline.textContent = "Протоколы (отбор фрагментов):";
+    pw.appendChild(headline);
 
-    var paths = data.retrieval_paths || [];
-    var pathHtml;
-    if (paths && paths.length) {
-      pathHtml =
-        '<p style="margin:0;font-size:0.82rem">Файлы протоколов, из которых взяты фрагменты для сравнения:</p><ul style="margin:0.55rem 0 0">';
-      var pj;
-      for (pj = 0; pj < paths.length && pj < 24; pj++) {
-        pathHtml +=
-          '<li style="margin-bottom:0.28rem"><code style="word-break:break-all">' +
-          escapeHtml(String(paths[pj])) +
-          "</code></li>";
-      }
-      pathHtml += "</ul>";
-      if (paths.length > 24)
-        pathHtml += '<p style="margin:0.45rem 0 0;color:var(--muted)">… всего путей: ' + paths.length + "</p>";
+    var ul = document.createElement("ul");
+    ul.className = "consult-proto-links";
+
+    var fragsList = data && data.consult_protocol_fragments;
+    if (fragsList && fragsList.length) {
+      fragsList.forEach(function (row) {
+        var li = document.createElement("li");
+        li.className = "consult-proto-li";
+        var rowDiv = document.createElement("div");
+        rowDiv.className = "consult-proto-row";
+        var bt = document.createElement("button");
+        bt.type = "button";
+        bt.className = "btn-consult-proto-text";
+        bt.textContent = row.title || formatDisplayTitle(row.path || "");
+        bt.addEventListener("click", function () {
+          openConsultFragOverlay(row);
+        });
+        var a = document.createElement("a");
+        a.href = encodeURI(row.path || "#");
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.className = "consult-proto-pdf-link";
+        a.textContent = "PDF";
+        rowDiv.appendChild(bt);
+        rowDiv.appendChild(a);
+        li.appendChild(rowDiv);
+        ul.appendChild(li);
+      });
     } else {
-      pathHtml = "<p>Список путей retrieval не передан.</p>";
+      var paths = (data && data.retrieval_paths) || (rev && rev.protocol_paths_used) || [];
+      paths.forEach(function (ppath) {
+        var li2 = document.createElement("li");
+        li2.className = "consult-proto-li";
+        var rowDiv2 = document.createElement("div");
+        rowDiv2.className = "consult-proto-row";
+        var a2 = document.createElement("a");
+        var ps = String(ppath);
+        a2.href = encodeURI(ps);
+        a2.target = "_blank";
+        a2.rel = "noopener noreferrer";
+        a2.className = "consult-proto-pdf-link";
+        a2.style.fontSize = "0.92rem";
+        a2.textContent = formatDisplayTitle(ps.split("/").pop() || ps);
+        rowDiv2.appendChild(a2);
+        var span = document.createElement("span");
+        span.className = "consult-hint-small";
+        span.style.margin = "0";
+        span.textContent = " (нет текстовых выдержек в ответе — только файл)";
+        rowDiv2.appendChild(span);
+        li2.appendChild(rowDiv2);
+        ul.appendChild(li2);
+      });
     }
-    addBlock("Пути протоколов (retrieval)", pathHtml);
 
-    var warns = data.pdf_warnings || [];
-    if (warns && warns.length) {
-      var wUl = "<ul>";
-      var wi;
-      for (wi = 0; wi < warns.length; wi++) {
-        wUl += "<li>" + escapeHtml(String(warns[wi])) + "</li>";
-      }
-      wUl += "</ul>";
-      addBlock("Предупреждения PDF", wUl);
-    } else {
-      addBlock("Предупреждения PDF", "<p>Сервер не сообщил технических замечаний по разбору PDF.</p>");
+    pw.appendChild(ul);
+
+    if (data && data.pdf_warnings && data.pdf_warnings.length) {
+      var w = document.createElement("p");
+      w.className = "consult-hint-small";
+      w.style.marginTop = "0.75rem";
+      w.textContent = "Предупреждения PDF: " + data.pdf_warnings.join("; ");
+      pw.appendChild(w);
     }
-
-    root.innerHTML = '<div class="consult-tech-blocks">' + blocks.join("") + "</div>";
   }
 
   function resetConsultReviewSection() {
+    closeConsultFragOverlay();
     var inp = document.getElementById("consult-pdf-file");
     if (inp) inp.value = "";
+    var fn = document.getElementById("consult-file-name");
+    if (fn) {
+      fn.textContent = "Файл не выбран";
+      fn.classList.add("consult-file-name--empty");
+    }
     var slugs = document.getElementById("consult-category-slugs");
     if (slugs) slugs.value = "";
     var st = document.getElementById("consult-out-status");
@@ -7184,10 +7383,6 @@
     }
     var resWrap = document.getElementById("consult-results-wrap");
     if (resWrap) resWrap.hidden = true;
-    var tech = document.getElementById("consult-tech-summary-body");
-    if (tech) tech.innerHTML = "";
-    var pre = document.getElementById("consult-out-json");
-    if (pre) pre.textContent = "";
     var pw = document.getElementById("consult-out-paths");
     if (pw) pw.innerHTML = "";
     window.__consultReviewLastPayload = null;
@@ -7213,6 +7408,29 @@
     });
     var hi = window.location.hash || "";
     if (hi === "#consult-review") switchMainAppTab(MAIN_TAB_CONSULT);
+
+    bindConsultFragOverlay();
+
+    var pickBtn = document.getElementById("consult-btn-pick-file");
+    var pdfInPick = document.getElementById("consult-pdf-file");
+    var fnLbl = document.getElementById("consult-file-name");
+    function refreshConsultFileName() {
+      if (!fnLbl || !pdfInPick) return;
+      var fp = pdfInPick.files && pdfInPick.files[0];
+      if (!fp) {
+        fnLbl.textContent = "Файл не выбран";
+        fnLbl.classList.add("consult-file-name--empty");
+      } else {
+        fnLbl.textContent = fp.name;
+        fnLbl.classList.remove("consult-file-name--empty");
+      }
+    }
+    if (pickBtn && pdfInPick) {
+      pickBtn.addEventListener("click", function () {
+        pdfInPick.click();
+      });
+      pdfInPick.addEventListener("change", refreshConsultFileName);
+    }
 
     var btnRun = document.getElementById("consult-btn-run");
     var btnReset = document.getElementById("consult-btn-reset");
@@ -7277,6 +7495,9 @@
 
       if (!errEl) return;
 
+      var elapsedTid = null;
+      var t0Analyze = null;
+
       errEl.hidden = true;
       errEl.textContent = "";
 
@@ -7289,7 +7510,12 @@
 
       var baseEl = document.getElementById("rag-base");
       var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
-      if (st) st.textContent = "Загрузка и разбор … (может занять до нескольких минут)";
+      t0Analyze = Date.now();
+      if (st) st.textContent = "Идёт анализ… 0 с";
+      elapsedTid = window.setInterval(function () {
+        var sec = Math.floor((Date.now() - t0Analyze) / 1000);
+        if (st) st.textContent = "Идёт анализ… " + sec + " с";
+      }, 450);
       btnRun.disabled = true;
 
       var fd = new FormData();
@@ -7314,6 +7540,10 @@
           });
         })
         .then(function (data) {
+          if (elapsedTid) {
+            window.clearInterval(elapsedTid);
+            elapsedTid = null;
+          }
           window.__consultReviewLastPayload = data;
           if (st) st.textContent = "Готово.";
           var rev = (data && data.review) || {};
@@ -7325,35 +7555,7 @@
             : "";
           document.getElementById("consult-out-disclaimer").textContent = rev.disclaimer_ru || "";
 
-          var pw = document.getElementById("consult-out-paths");
-          if (pw) {
-            pw.innerHTML = "";
-            var paths = data.retrieval_paths || rev.protocol_paths_used || [];
-            if (paths && paths.length) {
-              var tp = document.createElement("p");
-              tp.className = "consult-hint-small";
-              tp.style.marginTop = "0.65rem";
-              tp.style.marginBottom = "0.25rem";
-              tp.textContent = "Протоколы (отбор фрагментов): ";
-              var pi;
-              for (pi = 0; pi < paths.length; pi++) {
-                var p = paths[pi];
-                var s = document.createElement("span");
-                s.className = "consult-tag-pill";
-                s.textContent = String(p).split("/").pop() || String(p);
-                s.title = String(p);
-                tp.appendChild(s);
-              }
-              pw.appendChild(tp);
-            }
-            if (data.pdf_warnings && data.pdf_warnings.length) {
-              var w = document.createElement("p");
-              w.className = "consult-hint-small";
-              w.style.marginTop = "0.55rem";
-              w.textContent = "Предупреждения PDF: " + data.pdf_warnings.join("; ");
-              pw.appendChild(w);
-            }
-          }
+          renderConsultProtocolsSection(data, rev);
 
           var tb = document.querySelector("#consult-out-table tbody");
           if (tb) {
@@ -7374,17 +7576,22 @@
             });
           }
 
-          renderConsultTechnicalSummary(data);
-          var preEl = document.getElementById("consult-out-json");
-          if (preEl) preEl.textContent = JSON.stringify(data, null, 2);
           if (res) res.hidden = false;
         })
         .catch(function (e) {
+          if (elapsedTid) {
+            window.clearInterval(elapsedTid);
+            elapsedTid = null;
+          }
           if (st) st.textContent = "";
           errEl.textContent = "Ошибка: " + (e.message || e);
           errEl.hidden = false;
         })
         .finally(function () {
+          if (elapsedTid) {
+            window.clearInterval(elapsedTid);
+            elapsedTid = null;
+          }
           btnRun.disabled = false;
         });
     });

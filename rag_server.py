@@ -2619,23 +2619,53 @@ def _consult_review_synthesize(
             detail="Модель вернула ответ без корректного JSON. Повторите попытку или сократите объём PDF.",
         )
     return parsed
-    """До 5 строк; порядок как у модели (сверху — наиболее вероятное)."""
-    if not parsed or not isinstance(parsed, dict):
-        return
-    d = parsed.get("differential")
-    if not isinstance(d, list):
-        return
-    out: list[str] = []
-    for x in d:
-        if isinstance(x, str) and x.strip():
-            out.append(x.strip())
-        elif isinstance(x, dict):
-            t = (x.get("text") or x.get("label") or x.get("diagnosis") or "").strip()
-            if t:
-                out.append(t)
-        if len(out) >= 5:
-            break
-    parsed["differential"] = out
+
+
+def _consult_ui_protocol_fragments(
+    retrieved: list[dict], paths_used: list[str]
+) -> list[dict]:
+    """Фрагменты текста протоколов по отбору RAG для ссылок клиента с подсветкой (выдержки)."""
+    max_frag_chars = int(os.environ.get("CONSULT_REVIEW_UI_FRAG_CHARS", "1400"))
+    max_frags = int(os.environ.get("CONSULT_REVIEW_UI_FRAGS_PER_PATH", "4"))
+    allow = set(paths_used)
+    counts: dict[str, int] = {}
+    buckets: dict[str, list[dict[str, str]]] = {}
+
+    def add_frag(pth: str, kind: str, text: str) -> None:
+        if pth not in allow:
+            return
+        n = counts.get(pth, 0)
+        if n >= max_frags:
+            return
+        t = text.strip()
+        if not t:
+            return
+        if len(t) > max_frag_chars:
+            t = t[: max_frag_chars - 1].rstrip() + "…"
+        buckets.setdefault(pth, []).append(
+            {"kind": kind.strip() if kind.strip() else "fragment", "text": t}
+        )
+        counts[pth] = n + 1
+
+    for row in retrieved:
+        pth = str(row.get("path") or "").strip()
+        if not pth:
+            continue
+        raw_txt = row.get("text")
+        txt = raw_txt.strip() if isinstance(raw_txt, str) else ""
+        if not txt:
+            continue
+        kd = row.get("kind")
+        kind = kd.strip() if isinstance(kd, str) else "fragment"
+        add_frag(pth, kind, txt)
+
+    out: list[dict] = []
+    for pth in paths_used:
+        frags = buckets.get(pth) or []
+        pr = _protocols_by_path.get(pth) or {}
+        ttl = str(pr.get("title") or "").strip() or Path(pth).name
+        out.append({"path": pth, "title": ttl, "fragments": frags})
+    return out
 
 
 def _icd_client_payload(icd_analysis: dict) -> dict:
@@ -4005,12 +4035,14 @@ async def api_consult_review(
         model, consult_excerpt, protocol_ctx, paths_used
     )
 
+    ui_frags = _consult_ui_protocol_fragments(retrieved, paths_used)
     return {
         "ok": True,
         "review": review,
         "pdf_warnings": pdf_warnings,
         "extraction_chars": len(full_text),
         "retrieval_paths": paths_used,
+        "consult_protocol_fragments": ui_frags,
         "audience_filter": audience_hint,
         "audience_fallback": audience_fb,
         "icd": _icd_client_payload(icd_analysis),
