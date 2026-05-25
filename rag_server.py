@@ -3884,7 +3884,10 @@ async def api_consult_review(
     file: UploadFile = File(..., description="PDF консультативного заключения"),
     category_slugs: str = Form(
         "",
-        description="Через запятую slug рубрик (как на главной странице)",
+        description=(
+            "Необязательно: через запятую идентификаторы рубрик каталога (тот же slug, что в адресе раздела сайта Минздрава "
+            'РБ, например pulmonologiya-ftiziatriya)'
+        ),
     ),
 ) -> dict:
     """Загрузка PDF заключения → отбор фрагментов протоколов → JSON-оценка соответствия (LLM).
