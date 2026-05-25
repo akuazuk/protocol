@@ -248,6 +248,21 @@
       color: var(--muted);
     }
 
+    /* Единый стиль необязательных блоков-сворачиваний */
+    .optional-mark {
+      font-weight: 500;
+      font-size: 0.88em;
+      color: var(--muted);
+    }
+
+    .specialty-panel summary .optional-mark {
+      font-family: inherit;
+    }
+
+    .consult-slugs-panel {
+      margin-top: 0.85rem;
+    }
+
     #consult-category-slugs {
       width: 100%;
       min-height: 3rem;
@@ -337,47 +352,52 @@
 
     .consult-analyze-banner {
       margin-top: 0.75rem;
-      padding: 0.55rem 0.65rem;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      background: #f7f8f8;
-      box-shadow: none;
+      padding: 0.65rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      background: rgba(232, 245, 241, 0.45);
+      box-shadow: 0 2px 10px rgba(6, 45, 40, 0.06);
       text-align: left;
     }
 
     .consult-analyze-banner__inner {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
+      align-items: center;
       justify-content: flex-start;
-      gap: 0.25rem 0.45rem;
-      font-size: 0.84rem;
-      font-weight: 400;
+      gap: 0.35rem 0.55rem;
+      font-size: 0.88rem;
+      font-weight: 500;
       line-height: 1.35;
-      color: var(--muted);
+      color: var(--green-800);
     }
 
     .consult-analyze-banner__caption {
-      font-weight: 400;
-      font-size: 0.84rem;
-      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--green-900);
       letter-spacing: normal;
     }
 
     #consult-analyze-secs-num {
       font-family: inherit;
-      font-size: 0.84rem;
-      font-weight: 400;
-      line-height: inherit;
-      color: var(--muted);
+      font-size: 1.42rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--green-950);
       font-variant-numeric: tabular-nums;
-      min-width: 0;
+      min-width: 2.4ch;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.32);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
     .consult-analyze-banner__unit {
-      font-weight: 400;
-      font-size: 0.84rem;
-      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--green-800);
       text-transform: none;
       letter-spacing: normal;
     }
@@ -392,13 +412,12 @@
     }
 
     .consult-analyze-banner__note {
-      margin: 0.35rem 0 0;
-      font-size: 0.72rem;
-      font-weight: 400;
+      margin: 0.4rem 0 0;
+      font-size: 0.74rem;
+      font-weight: 500;
       color: var(--muted);
       line-height: 1.38;
       max-width: 36rem;
-      opacity: 0.92;
     }
 
     .consult-results-card {
@@ -3622,6 +3641,25 @@
       font-weight: 700;
       font-size: 0.98rem;
       color: var(--green-900);
+      list-style: none;
+      padding: 0.45rem 0.15rem;
+      margin: -0.25rem -0.15rem 0.4rem;
+      border-radius: 12px;
+    }
+
+    .ctx-panel summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .ctx-panel summary::before {
+      content: "▸ ";
+      display: inline-block;
+      transition: transform 0.2s;
+      color: var(--green-700);
+    }
+
+    .ctx-panel[open] summary::before {
+      transform: rotate(90deg);
     }
 
     .ctx-hint {
@@ -4158,8 +4196,8 @@
       </div>
 
       <div id="section-filters" class="section-anchor section-block--filters">
-        <details class="ctx-panel" id="ctx-panel" open>
-          <summary>Контекст пациента</summary>
+        <details class="ctx-panel" id="ctx-panel">
+          <summary>Контекст пациента <span class="optional-mark">(необязательно)</span></summary>
           <p class="ctx-hint">
             Возраст и пол помогают отбирать детские и взрослые протоколы. Данные сохраняются в браузере.
           </p>
@@ -4196,7 +4234,7 @@
           </div>
         </details>
         <details class="specialty-panel" id="specialty-panel">
-          <summary>Медицинское направление (рубрики протоколов)</summary>
+          <summary>Медицинское направление — рубрики протоколов <span class="optional-mark">(необязательно)</span></summary>
           <p class="specialty-hint">
             Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
           </p>
@@ -4419,20 +4457,23 @@
             <strong>Три КЗ за раз:</strong> в диалоге «Выбрать» отметьте до трёх PDF одновременно (Ctrl/⌘ + щелчок).
           </p>
 
-          <label class="consult-label" for="consult-category-slugs" style="margin-top: 1rem">Рубрики (необязательно)</label>
-          <p class="consult-hint-small">
-            Укажите через запятую обозначения разделов каталога. В браузере в адресной строке раздел записан <strong
-              >латиницей через дефис</strong>
-            — это технический код раздела (его и нужно перечислить). По-русски раздел может называться, например,
-            «пульмонология и фтизиатрия», а копировать в это поле следует уже готовое латинское написание из адреса, например:
-            <strong>pulmonologiya-ftiziatriya</strong>
-          </p>
-          <textarea
-            id="consult-category-slugs"
-            maxlength="500"
-            placeholder="пример для раздела «пульмонология»: pulmonologiya-ftiziatriya — через запятую, если несколько"
-            rows="3"
-          ></textarea>
+          <details class="specialty-panel consult-slugs-panel" id="consult-rubrics-details">
+            <summary>Рубрики каталога <span class="optional-mark">(необязательно)</span></summary>
+            <p class="consult-hint-small" style="margin-top: 0.35rem">
+              Укажите через запятую обозначения разделов каталога. В браузере в адресной строке раздел записан <strong
+                >латиницей через дефис</strong>
+              — технический код раздела (его и перечислите). Пример названия раздела: «пульмонология и фтизиатрия» —
+              скопируйте латинский slug из адреса страницы, например:
+              <strong>pulmonologiya-ftiziatriya</strong>
+            </p>
+            <label class="consult-label" for="consult-category-slugs">Slug рубрик через запятую</label>
+            <textarea
+              id="consult-category-slugs"
+              maxlength="500"
+              placeholder="пример для раздела «пульмонология»: pulmonologiya-ftiziatriya — несколько через запятую"
+              rows="3"
+            ></textarea>
+          </details>
 
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать</button>
