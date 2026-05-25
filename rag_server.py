@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import gc
+import io
 import json
 import math
 import os
@@ -41,7 +42,7 @@ from retrieval_bm25 import build_bm25_index
 load_project_env(ROOT)
 
 try:
-    from fastapi import FastAPI, HTTPException
+    from fastapi import FastAPI, HTTPException, File, Form, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import FileResponse
     from fastapi.staticfiles import StaticFiles
@@ -317,6 +318,27 @@ SYSTEM_CONSULTATION_REFINE = """Ты помощник врача. Ниже — �
 SYSTEM_CONFIDENCE_REFINE = """Ты помощник врача. По запросу и кратким сведениям о протоколе оцени, насколько протокол соответствует сути жалобы (0.0–1.0).
 Верни ОДИН JSON без markdown: {"scores":[{"path":"…","confidence_score":0.0}]}
 Копируй path точно из списка ниже; не добавляй протоколы вне списка."""
+
+SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
+1) текст, извлечённый из PDF консультативного заключения;
+2) выдержки из клинических протоколов Минздрава Республики Беларусь (автоматический поисковый отбор по смыслу, неполный и может не охватывать все разделы документа).
+
+Задача: оценить, насколько формулировки заключения в целом согласуются с тем, что видно в переданных выдержках протоколов (диагностика, тактика ведения, наблюдение — по релевантности фрагментов).
+
+Строгие правила:
+- Не выдавай юридических или МЭЭ-вердиктов. Не утверждай, что заключение «неверно» в клиническом смысле вне сопоставления с выдержками.
+- Если в выдержках протокола нет данных по разделу заключения — снизь балл по соответствующему критерию и объясни это в limitations_ru.
+- Не придумывай цитаты: conclusion_excerpt и protocol_excerpt должны быть буквальными короткими вырезками из соответствующих текстов ниже (или пустая строка если невозможно).
+- Все пояснения на русском.
+
+Верни ОДИН JSON-объект (без markdown, без текста до/после) строго следуя схеме:
+{"overall_compliance_pct": <целое 0-100>,
+ "summary_ru": "<2-4 предложения>",
+ "criteria": [{"name_ru": "<например Обследование>", "score_pct": <0-100>, "comment_ru": "<...>", "conclusion_excerpt": "<...>", "protocol_excerpt": "<...>"}],
+ "limitations_ru": "<что не удалось проверить>",
+ "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
+ "protocol_paths_used": [<строки путей протоколов из выдержек, если удалось из текста>]}
+Ровно 4–6 объектов в criteria. overall_compliance_pct — взвешенное обобщение, не простое среднее без осмысления."""
 
 
 def _jsonl_chunk_files() -> list[Path]:
@@ -2504,7 +2526,99 @@ def _try_parse_json(t: str) -> dict | None:
         return None
 
 
-def normalize_differential_field(parsed: dict | None) -> None:
+def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
+    """Извлечение текстового слоя PDF (без OCR). Для сканов вернёт пустую строку."""
+    warnings: list[str] = []
+    try:
+        from pypdf import PdfReader  # type: ignore[import-untyped]
+    except ImportError as e:
+        raise HTTPException(
+            status_code=503,
+            detail="Установите пакет pypdf: pip install pypdf",
+        ) from e
+    bio = io.BytesIO(data)
+    try:
+        reader = PdfReader(bio)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Файл не читается как PDF: {e!s}",
+        ) from e
+    if getattr(reader, "is_encrypted", False):
+        try:
+            reader.decrypt("")
+        except Exception:
+            raise HTTPException(
+                status_code=400,
+                detail="PDF защищён паролем — загрузите незашифрованную копию",
+            )
+    parts: list[str] = []
+    for i, page in enumerate(reader.pages or []):
+        try:
+            t = page.extract_text() or ""
+        except Exception as e:
+            warnings.append(f"Стр. {i + 1}: не извлечён текст ({e!s})")
+            t = ""
+        t = t.strip()
+        if t:
+            parts.append(t)
+    full = "\n\n".join(parts).strip()
+    return full, warnings
+
+
+def _build_review_chunks_context(
+    retrieved: list[dict], max_chars: int
+) -> tuple[str, list[str]]:
+    """Склеивает топ-чанки retrieve() для промпта сравнения."""
+    lines: list[str] = []
+    paths_order: list[str] = []
+    seen: set[str] = set()
+    n = 0
+    for r in retrieved:
+        p = (r.get("path") or "").strip()
+        if p and p not in seen:
+            seen.add(p)
+            paths_order.append(p)
+        txt = (r.get("text") or "").strip()
+        if not txt:
+            continue
+        kind = (r.get("kind") or "").strip()
+        block = f"path={p}\ntype={kind}\n{txt}\n"
+        if n + len(block) > max_chars:
+            rest = max_chars - n
+            if rest > 120:
+                lines.append(block[:rest])
+            break
+        lines.append(block)
+        n += len(block)
+    return "\n---\n".join(lines), paths_order
+
+
+def _consult_review_synthesize(
+    model,
+    consultation_excerpt: str,
+    protocol_excerpt: str,
+    paths_hint: list[str],
+) -> dict:
+    paths_line = ", ".join(paths_hint[:12]) if paths_hint else "(не определены)"
+    full_prompt = (
+        SYSTEM_CONSULT_REVIEW_JSON
+        + "\n\nОжидаемые path протоколов (подсказка): "
+        + paths_line
+        + "\n\n--- ТЕКСТ ЗАКЛЮЧЕНИЯ (фрагмент из PDF) ---\n\n"
+        + consultation_excerpt
+        + "\n\n--- ВЫДЕРЖКИ ПРОТОКОЛОВ (RAG) ---\n\n"
+        + protocol_excerpt
+    )
+    resp = generate_gemini(model, full_prompt)
+    txt = _extract_gemini_text(resp)
+    parsed = _try_parse_json(txt)
+    if not parsed:
+        raise HTTPException(
+            status_code=502,
+            detail="Модель вернула ответ без корректного JSON. Повторите попытку или сократите объём PDF.",
+        )
+    return parsed
     """До 5 строк; порядок как у модели (сверху — наиболее вероятное)."""
     if not parsed or not isinstance(parsed, dict):
         return
@@ -3765,6 +3879,141 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
     return out
 
 
+@app.post("/api/consult-review")
+async def api_consult_review(
+    file: UploadFile = File(..., description="PDF консультативного заключения"),
+    category_slugs: str = Form(
+        "",
+        description="Через запятую slug рубрик (как на главной странице)",
+    ),
+) -> dict:
+    """Загрузка PDF заключения → отбор фрагментов протоколов → JSON-оценка соответствия (LLM).
+
+    Не медико-правовая экспертиза; ориентир для методиста при наличии ключа API Gemini.
+    """
+    _require_rag_loaded()
+    fn = (file.filename or "").strip().lower()
+    if not fn.endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Ожидается файл с расширением .pdf",
+        )
+    max_mb = float(os.environ.get("CONSULT_REVIEW_MAX_MB", "15"))
+    data = await file.read()
+    lim_b = int(max_mb * 1024 * 1024)
+    if len(data) > lim_b:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Размер файла превышает {max_mb} МБ",
+        )
+    try:
+        full_text, pdf_warnings = extract_pdf_text_from_bytes(data)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Ошибка чтения PDF: {e!s}",
+        ) from e
+    full_text = full_text.strip()
+    if not full_text:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Не удалось извлечь текст из PDF (часто это скан без текстового слоя). "
+                "Нужен текстовый PDF или отдельный конвейер с OCR."
+            ),
+        )
+    max_store = int(os.environ.get("CONSULT_REVIEW_MAX_TEXT_CHARS", "120000"))
+    if len(full_text) > max_store:
+        full_text = (
+            full_text[:max_store].rstrip()
+            + "\n\n[…текст документа обрезан для обработки]"
+        )
+
+    q_slice = int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
+    synthetic = "=== Жалобы и вопрос ===\n\n" + full_text[:q_slice]
+    model = get_gemini()
+
+    icd_analysis, q, q_rag, _, icd_err = _infer_icd_pipeline_from_full_query(
+        synthetic, model
+    )
+    if icd_err or not (q_rag or "").strip():
+        q = synthetic.strip()
+        q_rag = clinical_query_for_rag(synthetic) or full_text[:7000]
+        icd_analysis = analyze_query_for_icd(q, q_rag)
+
+    assert icd_analysis is not None
+    icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
+
+    user_slugs = [
+        s.strip()
+        for s in (category_slugs or "").split(",")
+        if s.strip() in ALLOWED_SPECIALTY_SLUGS
+    ]
+
+    query_specialties: list[str] = []
+    try:
+        query_specialties = infer_specialties_gemini(q, model) if q_rag.strip() else []
+    except HTTPException:
+        query_specialties = []
+    boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
+
+    rq = q
+
+    retrieved = retrieve(
+        q_rag,
+        routing_query=rq,
+        category_boost=boost_merged or None,
+        user_category_slugs=user_slugs or None,
+        icd_codes_for_lex=icd_codes_for_lex,
+        max_chunks=int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14")),
+        max_per_path=int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3")),
+    )
+    if not retrieved:
+        fallback_q = full_text[: min(5500, len(full_text))]
+        retrieved = retrieve(
+            fallback_q,
+            routing_query=full_text[: min(9500, len(full_text))],
+            category_boost=boost_merged or None,
+            user_category_slugs=user_slugs or None,
+            icd_codes_for_lex=None,
+            max_chunks=16,
+            max_per_path=3,
+        )
+    if not retrieved:
+        raise HTTPException(
+            status_code=400,
+            detail="Не удалось подобрать фрагменты протоколов по тексту PDF — попробуйте другой файл или явно опишите диагноз/МКБ в документе.",
+        )
+
+    retrieved, audience_hint, audience_fb = filter_retrieval_by_audience(
+        retrieved, rq, _routing
+    )
+    proto_max = int(os.environ.get("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", "16500"))
+    protocol_ctx, paths_used = _build_review_chunks_context(retrieved, proto_max)
+
+    consult_max = int(os.environ.get("CONSULT_REVIEW_CONSULT_CHARS", "20000"))
+    consult_excerpt = full_text[:consult_max].strip()
+    if len(full_text) > len(consult_excerpt):
+        consult_excerpt += "\n\n[…остаток заключения не передан в модель из-за лимита]"
+
+    review = _consult_review_synthesize(
+        model, consult_excerpt, protocol_ctx, paths_used
+    )
+
+    return {
+        "ok": True,
+        "review": review,
+        "pdf_warnings": pdf_warnings,
+        "extraction_chars": len(full_text),
+        "retrieval_paths": paths_used,
+        "audience_filter": audience_hint,
+        "audience_fallback": audience_fb,
+        "icd": _icd_client_payload(icd_analysis),
+    }
+
+
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
 # Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
 if (ROOT / "index.html").is_file():
@@ -3774,6 +4023,17 @@ if (ROOT / "index.html").is_file():
         """Без долгого кэша HTML: после деплоя сразу подхватывается новый JS/разметка."""
         return FileResponse(
             path=str(ROOT / "index.html"),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
+
+    @app.get("/consult_review.html", include_in_schema=False)
+    def _serve_consult_review_html() -> FileResponse:
+        p = ROOT / "consult_review.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница consult_review.html не найдена")
+        return FileResponse(
+            path=str(p),
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache"},
         )
