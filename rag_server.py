@@ -2566,6 +2566,20 @@ def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
     return full, warnings
 
 
+
+def _retrieval_fragment_body(row: dict) -> str:
+    """Видимый текст фрагмента из результата retrieve(): в ответах API поле excerpt, не text."""
+    if not isinstance(row, dict):
+        return ""
+    txt = row.get("text")
+    if isinstance(txt, str) and txt.strip():
+        return txt.strip()
+    exc = row.get("excerpt")
+    if isinstance(exc, str) and exc.strip():
+        return exc.strip()
+    return ""
+
+
 def _build_review_chunks_context(
     retrieved: list[dict], max_chars: int
 ) -> tuple[str, list[str]]:
@@ -2579,7 +2593,7 @@ def _build_review_chunks_context(
         if p and p not in seen:
             seen.add(p)
             paths_order.append(p)
-        txt = (r.get("text") or "").strip()
+        txt = _retrieval_fragment_body(r)
         if not txt:
             continue
         kind = (r.get("kind") or "").strip()
@@ -2599,6 +2613,7 @@ def _consult_review_synthesize(
     consultation_excerpt: str,
     protocol_excerpt: str,
     paths_hint: list[str],
+    extra_context: str = "",
 ) -> dict:
     paths_line = ", ".join(paths_hint[:12]) if paths_hint else "(не определены)"
     full_prompt = (
@@ -2609,6 +2624,7 @@ def _consult_review_synthesize(
         + consultation_excerpt
         + "\n\n--- ВЫДЕРЖКИ ПРОТОКОЛОВ (RAG) ---\n\n"
         + protocol_excerpt
+        + (extra_context.strip() + "\n" if extra_context and extra_context.strip() else "")
     )
     resp = generate_gemini(model, full_prompt)
     txt = _extract_gemini_text(resp)
@@ -2651,8 +2667,7 @@ def _consult_ui_protocol_fragments(
         pth = str(row.get("path") or "").strip()
         if not pth:
             continue
-        raw_txt = row.get("text")
-        txt = raw_txt.strip() if isinstance(raw_txt, str) else ""
+        txt = _retrieval_fragment_body(row)
         if not txt:
             continue
         kd = row.get("kind")
@@ -2666,6 +2681,129 @@ def _consult_ui_protocol_fragments(
         ttl = str(pr.get("title") or "").strip() or Path(pth).name
         out.append({"path": pth, "title": ttl, "fragments": frags})
     return out
+
+
+def _consult_oncology_flags(
+    ui_frags: list[dict], consultation_text_raw: str
+) -> dict:
+    """Признаки онкологии/повышенного онкологического риска в заключении и в отборе протоколов."""
+    needles: tuple[str, ...] = (
+        "онколог",
+        "опухол",
+        "новообразован",
+        "злокачеств",
+        "карцино",
+        "метастаз",
+        "лейкоз",
+        "лимфом",
+        "миелом",
+        "меланом",
+        "сарком",
+        "химиотерап",
+        "полихимиотерап",
+        "лучевая терап",
+        "стереотакс",
+        "биопси",
+        "гистолог",
+        "онкомаркер",
+        "tnm",
+        "гер2",
+        "her2",
+        "ki-67",
+        "ki67",
+        " паллиатив ",
+        "инвазивная карцино",
+        "рецидив опухоли",
+        "семейная нагруженность по онколог",
+        "онкоти",
+        "oncotype",
+        "oncolog",
+        "staging",
+        "стационар по онколог",
+    )
+
+    def scan_blob(blob: str) -> list[str]:
+        b = blob.lower()
+        found: list[str] = []
+        for n in needles:
+            if n in b:
+                found.append(n.strip())
+        return sorted(set(found))[:14]
+
+    cons = consultation_text_raw or ""
+    con_l = scan_blob(cons)
+
+    prot_items: list[dict] = []
+    seen_paths: set[str] = set()
+    for row in ui_frags or []:
+        if not isinstance(row, dict):
+            continue
+        pth = str(row.get("path") or "").strip()
+        if not pth or pth in seen_paths:
+            continue
+        path_l = pth.lower()
+        title_raw = row.get("title") or ""
+        title_l = str(title_raw).lower()
+        pieces = [title_l, path_l]
+        fragments = row.get("fragments") or []
+        for fr in fragments:
+            if isinstance(fr, dict) and isinstance(fr.get("text"), str):
+                pieces.append(fr["text"])
+        merged = "\n".join(pieces)
+
+        hints_ru: list[str] = []
+        pr_meta = _protocols_by_path.get(pth) or {}
+        cat = str(pr_meta.get("category") or "").lower()
+        if "novoobrazovan" in path_l or "novoobrazovan" in cat:
+            hints_ru.append(
+                'протокол отнесён к рубрике каталога, связанной с новообразованиями (например, раздел «онкология» / novoobrazovaniya)'
+            )
+        marks = scan_blob(merged)
+        if marks:
+            hints_ru.append(
+                "в названии протокола и/или в отобранных выдержках встретились ключевые сочетания, характерные для опухолевой патологии"
+            )
+        if not hints_ru:
+            continue
+        seen_paths.add(pth)
+        prot_items.append(
+            {
+                "path": pth,
+                "title": title_raw or Path(pth).name,
+                "hints_ru": hints_ru,
+                "markers": marks,
+            }
+        )
+
+    in_consult = len(con_l) > 0
+    in_proto = len(prot_items) > 0
+
+    sentences: list[str] = []
+    if in_consult:
+        sentences.append(
+            "В тексте загруженного заключения обнаружены формулировки, которые могут относиться к опухоли, её подозрению, наблюдению после лечения или онкологическому контролю."
+        )
+    if in_proto:
+        sentences.append(
+            "В списке отобранных протоколов есть документы и/или выдержки с онкологическим профилем — особенно внимательно сверьте заключение с ними по пунктам допустимости обследований и наблюдения."
+        )
+
+    banner = " ".join(sentences) if sentences else ""
+    instruction_ru = (
+        banner
+        if banner
+        else "При анализе учитывай возможное сочетание общетерапевтического протокола с онкологическим контекстом заключения."
+    )
+
+    return {
+        "any": in_consult or in_proto,
+        "consultation_hit": in_consult,
+        "protocol_hit": in_proto,
+        "consultation_markers": con_l[:14],
+        "protocol_items": prot_items,
+        "banner_ru": banner,
+        "instruction_ru": instruction_ru,
+    }
 
 
 def _icd_client_payload(icd_analysis: dict) -> dict:
@@ -4031,11 +4169,27 @@ async def api_consult_review(
     if len(full_text) > len(consult_excerpt):
         consult_excerpt += "\n\n[…остаток заключения не передан в модель из-за лимита]"
 
+    ui_frags = _consult_ui_protocol_fragments(retrieved, paths_used)
+    oncology = _consult_oncology_flags(ui_frags, full_text)
+
+    oncology_extra = ""
+    if oncology.get("any"):
+        oncology_extra = (
+            "\n\nВАЖНО ДЛЯ ОЦЕНКИ ЭТОГО КОНСУЛЬТАТИВНОГО ЗАКЛЮЧЕНИЯ:\n"
+            + str(oncology.get("instruction_ru") or "").strip()
+            + "\nЕсли текст заключения связан с онкологическим риском или опухолевой патологией, отдельно оцените клиническую "
+            "безопасность формулировок применительно к выдержкам; при недостаточном покрытии протоколами усильте ограничения "
+            "(limitations_ru) и понизьте баллы по затронутым критериям.\n"
+        )
+
     review = _consult_review_synthesize(
-        model, consult_excerpt, protocol_ctx, paths_used
+        model,
+        consult_excerpt,
+        protocol_ctx,
+        paths_used,
+        extra_context=oncology_extra,
     )
 
-    ui_frags = _consult_ui_protocol_fragments(retrieved, paths_used)
     return {
         "ok": True,
         "review": review,
@@ -4043,6 +4197,7 @@ async def api_consult_review(
         "extraction_chars": len(full_text),
         "retrieval_paths": paths_used,
         "consult_protocol_fragments": ui_frags,
+        "consult_oncology_flags": oncology,
         "audience_filter": audience_hint,
         "audience_fallback": audience_fb,
         "icd": _icd_client_payload(icd_analysis),
