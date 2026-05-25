@@ -357,6 +357,22 @@ SYSTEM_CONSULT_PDF_FOR_PROTOCOL_SEARCH = """Ты помощник врача. Н
 {"clinical_search_text": "<…>", "confidence": "high"|"medium"|"low"}
 Поле confidence: high если структура заключения ясна и ядро случая восстановимо; medium если часть сведений потеряна при OCR/обрывах; low если текст почти только реквизиты или противоречив. Если клинической сути нет — "clinical_search_text": "" и confidence low."""
 
+SYSTEM_CONSULT_RAG_SECOND_PASS_QUERY = """Ты помощник врача. Первый автоматический поиск по текстам протоколов дал средние баллы совпадения — нужен более прицельный текст запроса для ВТОРОГО поиска по тому же корпусу.
+
+Ниже:
+1) клинический текст запроса из консультативного заключения (уже без шапки учреждения);
+2) краткое напоминание фокуса из PDF (если есть);
+3) кандидатные протоколы — название и начало найденного фрагмента (это может быть промах; не принимай всё как верное).
+
+Задача: составить ОДНУ связную русскоязычную строку для полнотекстового поиска по протоколам (плотные термины, диагнозы, этапы, ключевые обследования), без выдувания фактов, которых не было ни в заключении, ни в названиях/фрагментах кандидатов.
+- Если кандидаты явно офтальмология, а в заключении пульмонология — не смешивай; опирайся на заключение.
+- Если первые найденные протоколы могут быть нерелевантны — переформулируй запрос по тексту заключения и добавь только уместные синонимы из их названий/фрагментов.
+- Итог: 120–2200 символов либо пустая строка, если нечего уточнить.
+
+Верни ОДИН JSON без markdown:
+{"refined_search_text": "<…>", "draft_note": "<одно короткое предложение почему уточнили или оставили пусто>", "confidence_in_candidates": "high"|"medium"|"low"}
+"""
+
 
 def _jsonl_chunk_files() -> list[Path]:
     """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
@@ -2285,6 +2301,9 @@ GEMINI_QUERY_REFINE_TIMEOUT = float(os.environ.get("RAG_QUERY_REFINE_TIMEOUT", "
 GEMINI_CONSULT_DIGEST_TIMEOUT = float(
     os.environ.get("GEMINI_CONSULT_DIGEST_TIMEOUT", str(GEMINI_QUERY_REFINE_TIMEOUT))
 )
+GEMINI_CONSULT_RAG_REFINE_TIMEOUT = float(
+    os.environ.get("GEMINI_CONSULT_RAG_REFINE_TIMEOUT", "42")
+)
 
 
 def get_gemini():
@@ -2466,6 +2485,29 @@ def generate_gemini_consult_pdf_digest(model, full_prompt: str):
         fut = ex.submit(_generate_blocking_consult_pdf_digest, model, full_prompt)
         try:
             return fut.result(timeout=GEMINI_CONSULT_DIGEST_TIMEOUT)
+        except FuturesTimeout:
+            return None
+
+
+def _generate_blocking_consult_rag_second_pass(model, full_prompt: str):
+    """JSON: уточнение строки запроса RAG между проходами на проверке КЗ."""
+    import google.generativeai as genai
+
+    return model.generate_content(
+        full_prompt,
+        generation_config=genai.GenerationConfig(
+            temperature=0.22,
+            max_output_tokens=1024,
+            response_mime_type="application/json",
+        ),
+    )
+
+
+def generate_gemini_consult_rag_second_pass(model, full_prompt: str):
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking_consult_rag_second_pass, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_CONSULT_RAG_REFINE_TIMEOUT)
         except FuturesTimeout:
             return None
 
@@ -2706,6 +2748,260 @@ def _merge_icd_codes_for_consult_retrieval(
     for c in from_pipe:
         push(str(c))
     return merged[:max_n]
+
+
+def _consult_retrieval_quality_metrics(retrieved: list[dict]) -> dict[str, float | int]:
+    """Компактные метрики первого отбора для решения о второй проходке retrieve."""
+    if not retrieved:
+        return {
+            "max_score": 0.0,
+            "top3_lex_avg": 0.0,
+            "n_chunks": 0,
+            "uniq_paths": 0,
+        }
+    paths: set[str] = set()
+    scores: list[float] = []
+    lexs: list[float] = []
+    for r in retrieved:
+        if not isinstance(r, dict):
+            continue
+        pth = str(r.get("path") or "").strip()
+        if pth:
+            paths.add(pth)
+        try:
+            scores.append(float(r.get("score") or 0))
+        except (TypeError, ValueError):
+            scores.append(0.0)
+        try:
+            lexs.append(float(r.get("lexical_score") or 0))
+        except (TypeError, ValueError):
+            lexs.append(0.0)
+    top_lex = sorted(lexs, reverse=True)[:3]
+    return {
+        "max_score": max(scores) if scores else 0.0,
+        "top3_lex_avg": (sum(top_lex) / len(top_lex)) if top_lex else 0.0,
+        "n_chunks": len(retrieved),
+        "uniq_paths": len(paths),
+    }
+
+
+def _merge_chunk_retrieval_lists(
+    buckets: list[list[dict]],
+    *,
+    max_chunks: int,
+    max_per_path: int,
+) -> list[dict]:
+    """Объединяет несколько списков чанков retrieve(): по убыванию score, разнообразие по path."""
+    pool: list[dict] = []
+    for lst in buckets:
+        if lst:
+            pool.extend(lst)
+    if not pool:
+        return []
+    pool.sort(key=lambda r: float((r.get("score") if isinstance(r, dict) else 0) or 0), reverse=True)
+    per_path: dict[str, int] = {}
+    out: list[dict] = []
+    for row in pool:
+        if not isinstance(row, dict):
+            continue
+        pth = str(row.get("path") or "").strip()
+        if not pth:
+            continue
+        if per_path.get(pth, 0) >= max_per_path:
+            continue
+        per_path[pth] = per_path.get(pth, 0) + 1
+        out.append(row)
+        if len(out) >= max_chunks:
+            break
+    return out
+
+
+def _consult_candidates_blob_for_second_pass(retrieved: list[dict]) -> tuple[str, int]:
+    """Текстовый блок кандидатов для промпта второй проходки."""
+    lines: list[str] = []
+    lim = max(4, min(14, int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_CANDIDATES", "8"))))
+    n = 0
+    seen_path: set[str] = set()
+    for row in retrieved:
+        if not isinstance(row, dict):
+            continue
+        p = str(row.get("path") or "").strip()
+        if not p or p in seen_path:
+            continue
+        seen_path.add(p)
+        ttl = str(row.get("title") or "").strip() or Path(p).name
+        body = _retrieval_fragment_body(row).replace("\n", " ").strip()
+        if len(body) > 420:
+            body = body[:419].rstrip() + "…"
+        lines.append(f"- path: {p}\n  title: {ttl}\n  fragment_start: {body}")
+        n += 1
+        if n >= lim:
+            break
+    return "\n".join(lines), n
+
+
+def _consult_titles_fallback_augment(
+    q_rag: str, retrieved: list[dict], *, cap: int = 2600
+) -> tuple[str, dict]:
+    """Добавляет к запросу названия к протоколов из первого отбора без вызова LLM."""
+    base = (q_rag or "").strip()
+    titles: list[str] = []
+    seen: set[str] = set()
+    for row in retrieved:
+        if not isinstance(row, dict):
+            continue
+        tt = str(row.get("title") or "").strip()
+        if tt and tt not in seen:
+            seen.add(tt)
+            titles.append(tt)
+        if len(titles) >= 14:
+            break
+    extra = ""
+    if titles:
+        extra = "\nНазвания протоколов-кандидатов (первый отбор): " + "; ".join(titles)
+    merged = (base + extra).strip()[:cap]
+    return merged, {"source": "titles_append", "titles_used": len(titles)}
+
+
+def _consult_gemini_second_pass_augment(
+    model,
+    *,
+    q_rag: str,
+    rq_trim: str,
+    focus_preview: str,
+    candidates_blob: str,
+) -> tuple[str | None, dict]:
+    meta: dict = {"ok": False}
+    use = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_GEMINI", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if not use:
+        meta["reason"] = "disabled_via_env"
+        return None, meta
+    if not (q_rag or "").strip():
+        meta["reason"] = "empty_q_rag"
+        return None, meta
+    max_out = max(480, min(3200, int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_MAX_CHARS", "2200"))))
+    qr = (q_rag or "").strip()[:7600]
+    rq_s = (rq_trim or "").strip()[:5200]
+    fp = (focus_preview or "").strip()[:900]
+    cb = (candidates_blob or "").strip()
+    if not cb:
+        meta["reason"] = "no_candidates_blob"
+        return None, meta
+    prompt = (
+        SYSTEM_CONSULT_RAG_SECOND_PASS_QUERY
+        + "\n\n--- ТЕКУЩИЙ ЗАПРОС ДЛЯ RAG (из заключения) ---\n"
+        + qr
+        + "\n\n--- КОРОТКИЙ ФОКУС ИЗ PDF (если был) ---\n"
+        + (fp if fp else "(нет)")
+        + "\n\n--- МАРШРУТИЗАЦИЯ (фрагмент полного синтетического запроса) ---\n"
+        + (rq_s if rq_s else "(нет)")
+        + "\n\n--- КАНДИДАТЫ ПЕРВОГО ОТБОРА ---\n"
+        + cb
+    )
+    try:
+        resp = generate_gemini_consult_rag_second_pass(model, prompt)
+        if resp is None:
+            meta["reason"] = "timeout_or_empty_response"
+            return None, meta
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+        if not parsed or not isinstance(parsed, dict):
+            meta["reason"] = "bad_json"
+            return None, meta
+        refined = (parsed.get("refined_search_text") or "").strip()
+        note = (parsed.get("draft_note") or "").strip()
+        conf_c = str(parsed.get("confidence_in_candidates") or "").strip().lower()
+        meta["draft_note"] = note[:420]
+        meta["confidence_in_candidates"] = conf_c or ""
+        meta["ok"] = bool(refined)
+        meta["parsed_len"] = len(refined)
+        if len(refined) > max_out:
+            refined = refined[: max_out - 1].rstrip() + "…"
+            meta["truncated_to"] = max_out
+        if not refined or len(refined) < 72:
+            meta["reason"] = "too_short_or_empty_refined"
+            return None, meta
+        meta["source"] = "gemini_second_pass"
+        return refined, meta
+    except HTTPException:
+        meta["reason"] = "http_exception"
+        return None, meta
+    except Exception as e:
+        meta["reason"] = "error"
+        meta["detail"] = str(e)[:200]
+        return None, meta
+
+
+def _consult_second_pass_build_query(
+    model,
+    q_rag: str,
+    rq: str,
+    focus_meta: dict,
+    retrieved: list[dict],
+) -> tuple[str, dict]:
+    """Строка для второго retrieve: черновой анализ кандидатов + Gemini или заголовочный fallback."""
+    out_meta: dict = {
+        "candidates_summarized": 0,
+        "chosen_source": "",
+    }
+    blob, n_seen = _consult_candidates_blob_for_second_pass(retrieved)
+    out_meta["candidates_summarized"] = n_seen
+    preview = ""
+    if isinstance(focus_meta, dict):
+        preview = str(focus_meta.get("focus_preview") or "").strip()
+
+    rq_cap = rq.strip()[:6000]
+
+    refined, gm = _consult_gemini_second_pass_augment(
+        model,
+        q_rag=q_rag,
+        rq_trim=rq_cap,
+        focus_preview=preview,
+        candidates_blob=blob,
+    )
+    out_meta["gemini"] = gm
+
+    if refined and len(refined.strip()) >= 40:
+        out_meta["chosen_source"] = "gemini_second_pass"
+        max_total = max(800, int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_JOIN_MAX", "8000")))
+        return refined.strip()[:max_total], out_meta
+
+    fb, fb_meta = _consult_titles_fallback_augment(q_rag, retrieved)
+    out_meta["fallback"] = fb_meta
+    out_meta["chosen_source"] = fb_meta.get("source", "titles_append")
+    return fb, out_meta
+
+
+def _consult_should_second_pass(metrics: dict) -> tuple[bool, str]:
+    """Низкая «уверенность» по скорингам первого батча — повод запустить второй retrieve."""
+    if not metrics:
+        return False, "no_metrics"
+    on = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if not on:
+        return False, "disabled_env"
+
+    max_sc = float(metrics.get("max_score") or 0)
+    thr = float(os.environ.get("CONSULT_REVIEW_RAG_LOW_MAX_SCORE", "0.32"))
+    lex3 = float(metrics.get("top3_lex_avg") or 0)
+    lex_thr = float(os.environ.get("CONSULT_REVIEW_RAG_LOW_LEX_AVG", "0"))
+    uniq = int(metrics.get("uniq_paths") or 0)
+    min_paths = int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_MIN_UNIQUE_PATHS", "3"))
+
+    if max_sc < thr:
+        return True, f"max_score_below_{thr}"
+    if lex_thr > 0 and lex3 > 0 and lex3 < lex_thr:
+        return True, f"weak_top3_lex_below_{lex_thr}"
+    if 0 < uniq < min_paths:
+        return True, f"few_protocols_{uniq}_lt_{min_paths}"
+    return False, "confidence_ok"
 
 
 def _build_consult_review_pipeline_query(model, full_text: str) -> tuple[str, dict]:
@@ -4470,14 +4766,17 @@ async def api_consult_review(
 
     rq = q
 
+    max_chunks_r = int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
+    max_per_path_r = int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
+
     retrieved = retrieve(
         q_rag,
         routing_query=rq,
         category_boost=boost_merged or None,
         user_category_slugs=user_slugs or None,
         icd_codes_for_lex=icd_codes_for_lex,
-        max_chunks=int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14")),
-        max_per_path=int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3")),
+        max_chunks=max_chunks_r,
+        max_per_path=max_per_path_r,
     )
     if not retrieved:
         fallback_q = full_text[: min(5500, len(full_text))]
@@ -4487,14 +4786,88 @@ async def api_consult_review(
             category_boost=boost_merged or None,
             user_category_slugs=user_slugs or None,
             icd_codes_for_lex=(merged_icd or None),
-            max_chunks=16,
-            max_per_path=3,
+            max_chunks=max(14, max_chunks_r + 2),
+            max_per_path=max_per_path_r,
         )
     if not retrieved:
         raise HTTPException(
             status_code=400,
             detail="Не удалось подобрать фрагменты протоколов по тексту PDF — попробуйте другой файл или явно опишите диагноз/МКБ в документе.",
         )
+
+    second_pass_on = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    second_pass_diag: dict = {
+        "enabled": second_pass_on,
+        "applied": False,
+        "reason": "",
+        "trigger_eval": False,
+    }
+
+    if retrieved:
+        m1 = _consult_retrieval_quality_metrics(retrieved)
+        second_pass_diag["first_pass_metrics"] = {
+            "max_score": round(float(m1["max_score"]), 4),
+            "top3_lex_avg": round(float(m1["top3_lex_avg"]), 4),
+            "n_chunks": int(m1["n_chunks"]),
+            "uniq_paths": int(m1["uniq_paths"]),
+        }
+        need2 = False
+        why = ""
+        if second_pass_on:
+            need2, why = _consult_should_second_pass(m1)
+        second_pass_diag["trigger_eval"] = bool(need2)
+        second_pass_diag["trigger_reason_code"] = why if second_pass_on else "second_pass_disabled"
+        if second_pass_on and need2:
+            try:
+                q2, aug_meta = _consult_second_pass_build_query(
+                    model,
+                    q_rag,
+                    rq,
+                    retrieval_focus_meta if isinstance(retrieval_focus_meta, dict) else {},
+                    retrieved,
+                )
+                second_pass_diag["augment"] = aug_meta
+                second_pass_diag["augment_query_preview"] = (
+                    (q2[:480] + "…") if len(q2) > 480 else q2
+                )
+                bump = max(0, int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_EXTRA_CHUNKS", "4")))
+                r2 = retrieve(
+                    q2.strip(),
+                    routing_query=rq,
+                    category_boost=boost_merged or None,
+                    user_category_slugs=user_slugs or None,
+                    icd_codes_for_lex=icd_codes_for_lex,
+                    max_chunks=max_chunks_r + bump,
+                    max_per_path=max_per_path_r,
+                )
+                if r2:
+                    merge_max = max_chunks_r + bump
+                    retrieved = _merge_chunk_retrieval_lists(
+                        [retrieved, r2],
+                        max_chunks=merge_max,
+                        max_per_path=max_per_path_r,
+                    )
+                    second_pass_diag["applied"] = True
+                    second_pass_diag["reason"] = why
+                    second_pass_diag["second_retrieve_rows"] = len(r2)
+                    second_pass_diag["merged_rows"] = len(retrieved)
+                else:
+                    second_pass_diag["reason"] = (
+                        why + ";second_retrieve_empty"
+                        if why
+                        else "second_retrieve_empty"
+                    )
+            except Exception as e:
+                second_pass_diag["reason"] = (why + ";exception") if why else "exception"
+                second_pass_diag["error"] = str(e)[:240]
+        elif not second_pass_on:
+            second_pass_diag["reason"] = "feature_disabled_env"
+        else:
+            second_pass_diag["reason"] = "first_pass_ok"
 
     retrieved, audience_hint, audience_fb = filter_retrieval_by_audience(
         retrieved, rq, _routing
@@ -4555,6 +4928,7 @@ async def api_consult_review(
         "consult_retrieval": {
             "focus": retrieval_focus_meta,
             "icd_codes_lex_merged": merged_icd,
+            "second_pass": second_pass_diag,
         },
         "icd": _icd_client_payload(icd_analysis),
     }
