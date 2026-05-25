@@ -336,59 +336,69 @@
     }
 
     .consult-analyze-banner {
-      margin-top: 0.85rem;
-      padding: 0.82rem 0.92rem;
-      border-radius: 18px;
-      border: 2px solid rgba(255, 160, 0, 0.55);
-      background: linear-gradient(135deg, #fffceb 0%, #fff5d6 42%, #ffecb3 100%);
-      box-shadow: 0 10px 32px rgba(230, 130, 0, 0.18);
-      text-align: center;
+      margin-top: 0.75rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: #f7f8f8;
+      box-shadow: none;
+      text-align: left;
     }
 
     .consult-analyze-banner__inner {
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
-      justify-content: center;
-      gap: 0.55rem 0.95rem;
+      justify-content: flex-start;
+      gap: 0.25rem 0.45rem;
+      font-size: 0.84rem;
+      font-weight: 400;
+      line-height: 1.35;
+      color: var(--muted);
     }
 
     .consult-analyze-banner__caption {
-      font-weight: 900;
-      font-size: clamp(1.05rem, 3vw, 1.2rem);
-      color: var(--green-950);
-      letter-spacing: 0.04em;
+      font-weight: 400;
+      font-size: 0.84rem;
+      color: var(--muted);
+      letter-spacing: normal;
     }
 
     #consult-analyze-secs-num {
-      font-family: "Fraunces", Georgia, serif;
-      font-size: clamp(2.85rem, 12vw, 4.85rem);
-      font-weight: 900;
-      line-height: 0.92;
-      color: #bf360c;
-      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.55);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 400;
+      line-height: inherit;
+      color: var(--muted);
       font-variant-numeric: tabular-nums;
-      min-width: 1.75ch;
-      text-align: center;
-      filter: drop-shadow(0 3px 6px rgba(191, 54, 12, 0.25));
+      min-width: 0;
     }
 
     .consult-analyze-banner__unit {
-      font-weight: 900;
-      font-size: clamp(1.15rem, 3.5vw, 1.45rem);
-      color: var(--green-900);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      font-weight: 400;
+      font-size: 0.84rem;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    .consult-analyze-tip {
+      margin: 0.45rem 0 0;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.4;
+      max-width: 36rem;
     }
 
     .consult-analyze-banner__note {
-      margin: 0.55rem 0 0;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--green-800);
-      line-height: 1.4;
-      max-width: 28rem;
-      margin-inline: auto;
+      margin: 0.35rem 0 0;
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.38;
+      max-width: 36rem;
+      opacity: 0.92;
     }
 
     .consult-results-card {
@@ -429,283 +439,135 @@
       font-weight: 800;
     }
 
+    .consult-protocols-footer-wrap {
+      margin-top: 1rem;
+      padding-top: 0.88rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.16);
+    }
+
     .consult-proto-links {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .consult-protocols-heading {
+      margin: 0 0 0.52rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: var(--green-950);
+      line-height: 1.35;
     }
 
     .consult-proto-li {
-      margin: 0.55rem 0 0;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid rgba(26, 138, 114, 0.12);
+      margin: 0;
+      padding: 0;
+      list-style: none;
     }
 
-    .consult-proto-li:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
+    .consult-proto-li--onco {
+      padding-left: 0.45rem;
+      border-left: 2px solid rgba(72, 120, 102, 0.36);
     }
 
-    .consult-proto-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 0.85rem;
-      align-items: center;
-    }
-
-    .btn-consult-proto-text {
+    .consult-proto-footer__link {
       font-family: inherit;
-      font-weight: 800;
       font-size: 0.86rem;
-      padding: 0.52rem 0.92rem;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 2px solid rgba(26, 138, 114, 0.45);
+      font-weight: 600;
+      color: var(--green-800);
+      text-decoration: underline;
+      text-underline-offset: 0.12em;
+      word-break: break-word;
+      line-height: 1.38;
+    }
+
+    .consult-proto-footer__link:visited {
+      color: var(--green-800);
+    }
+
+    .consult-proto-footer__link:hover {
       color: var(--green-950);
-      background: linear-gradient(180deg, #fffefb 0%, rgba(232, 245, 241, 0.55) 100%);
-      text-align: left;
-      transition: border-color 0.12s, box-shadow 0.12s;
-    }
-
-    .btn-consult-proto-text:hover:not(:disabled) {
-      border-color: var(--green-600);
-      box-shadow: 0 4px 14px rgba(13, 92, 74, 0.1);
-    }
-
-    .btn-consult-proto-text:disabled {
-      opacity: 0.48;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-      filter: grayscale(0.2);
     }
 
     #consult-oncology-banner.consult-onco-alert {
       margin-bottom: 1rem;
-      padding: 0.92rem 1rem 1rem;
-      border-radius: 16px;
-      border: 3px solid #c62828;
-      background:
-        radial-gradient(circle at 10% 20%, rgba(255, 213, 79, 0.95), transparent 45%),
-        linear-gradient(120deg, #ff5252 0%, #ff6d00 22%, #ffea00 90%);
-      box-shadow:
-        0 0 0 2px rgba(255, 255, 255, 0.55) inset,
-        0 18px 50px rgba(198, 40, 40, 0.45);
-      color: #1a0707;
+      padding: 1rem 1.05rem 1.08rem;
+      border-radius: 14px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: rgba(239, 248, 244, 0.96);
+      box-shadow: 0 8px 28px rgba(6, 45, 40, 0.07);
+      color: rgba(14, 48, 38, 0.96);
     }
 
     .consult-onco-alert__title {
       margin: 0 0 0.45rem;
       font-family: "Fraunces", Georgia, serif;
-      font-size: clamp(1.06rem, 3.8vw, 1.38rem);
-      font-weight: 900;
-      line-height: 1.22;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
+      font-size: clamp(1rem, 3.8vw, 1.26rem);
+      font-weight: 800;
+      line-height: 1.28;
+      letter-spacing: normal;
+      text-transform: none;
     }
 
     .consult-onco-alert__txt {
       margin: 0;
-      font-size: 0.9rem;
-      font-weight: 800;
-      line-height: 1.45;
+      font-size: 0.86rem;
+      font-weight: 600;
+      line-height: 1.52;
+      color: rgba(10, 50, 40, 0.9);
     }
 
     .consult-onco-alert__sub {
       margin: 0.55rem 0 0;
       font-size: 0.84rem;
-      font-weight: 700;
+      font-weight: 600;
+      line-height: 1.52;
+      color: rgba(10, 50, 40, 0.88);
+    }
+
+    .consult-onco-alert__method {
+      margin: 0.62rem 0 0;
+      padding: 0.42rem 0.55rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(26, 138, 114, 0.12);
+      font-size: 0.73rem;
+      font-weight: 500;
       line-height: 1.45;
+      color: var(--muted);
     }
 
     ul.consult-onco-list {
       margin: 0.38rem 0 0;
-      padding-left: 1.1rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      line-height: 1.45;
+      padding-left: 1rem;
+      font-size: 0.81rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: rgba(10, 50, 40, 0.9);
     }
 
-    .consult-proto-li--onco {
-      box-shadow: 0 0 0 2px rgba(255, 82, 82, 0.55);
-      border-radius: 12px;
-      padding: 0.45rem 0.52rem;
-      margin-left: -0.52rem !important;
-      margin-right: -0.52rem !important;
-      background: linear-gradient(
-        175deg,
-        rgba(255, 235, 238, 0.95) 0%,
-        rgba(255, 248, 224, 0.55) 100%
-      );
-    }
-
-    .consult-rag-chip {
-      display: inline-block;
-      font-size: 0.76rem;
-      font-weight: 800;
-      padding: 0.28rem 0.62rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      max-width: 100%;
-    }
-
-    .consult-rag-chip--yes {
+    ul.consult-onco-list > li strong {
+      font-weight: 750;
       color: var(--green-950);
-      background: rgba(200, 230, 201, 0.95);
-      border-color: rgba(46, 125, 50, 0.45);
     }
 
-    .consult-rag-chip--no {
-      color: var(--muted);
-      background: rgba(245, 245, 245, 0.95);
-      border-color: rgba(120, 120, 120, 0.28);
-      font-weight: 700;
+    ul.consult-onco-basis-list {
+      margin: 0.32rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      line-height: 1.48;
+      color: rgba(10, 50, 40, 0.87);
+      list-style: disc;
     }
 
-    .consult-onco-micro {
-      font-size: 0.72rem;
-      font-weight: 900;
-      padding: 0.22rem 0.52rem;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #ff1744, #ff6d00);
-      color: #fff;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      flex-shrink: 0;
-      box-shadow: 0 2px 12px rgba(255, 23, 68, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+    ul.consult-onco-basis-list.consult-onco-basis-list--nested {
+      margin-bottom: 0.15rem;
     }
 
-    .btn-consult-proto-text:disabled,
-    .btn-consult-proto-text.is-disabled {
-      opacity: 0.48;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-      filter: grayscale(0.25);
-    }
-
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--green-700);
-      text-decoration: underline;
-      text-underline-offset: 0.12em;
-      white-space: nowrap;
-    }
-
-    .consult-frag-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 80;
-      display: grid;
-      place-items: center;
-      padding: 1rem;
-      padding-bottom: max(1rem, env(safe-area-inset-bottom));
-      background: rgba(6, 45, 40, 0.48);
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-
-    .consult-frag-overlay[hidden] {
-      display: none !important;
-    }
-
-    .consult-frag-dialog {
-      width: min(44rem, 100%);
-      max-height: min(88vh, 100%);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border-radius: 18px;
-      background: linear-gradient(180deg, #fff 0%, #f6faf8 100%);
-      border: 1px solid rgba(26, 138, 114, 0.35);
-      box-shadow: 0 28px 60px rgba(6, 45, 40, 0.28);
-    }
-
-    .consult-frag-dialog__top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 0.95rem 1rem 0.75rem;
-      border-bottom: 1px solid rgba(26, 138, 114, 0.15);
-    }
-
-    #consult-frag-title {
-      margin: 0;
-      flex: 1 1 10rem;
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 1.05rem;
-      color: var(--green-950);
-      line-height: 1.25;
-    }
-
-    .consult-frag-close {
-      flex-shrink: 0;
-      font: inherit;
-      font-weight: 800;
-      font-size: 0.82rem;
-      padding: 0.42rem 0.85rem;
-      border-radius: 12px;
-      border: 2px solid rgba(26, 138, 114, 0.35);
-      background: #fff;
-      color: var(--green-800);
-      cursor: pointer;
-    }
-
-    .consult-frag-body {
-      padding: 0.95rem 1rem 1.1rem;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .consult-frag-kind {
-      margin: 0 0 0.15rem;
-      font-size: 0.74rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--green-600);
-    }
-
-    mark.consult-frag-mark {
-      display: block;
-      margin: 0 0 0.95rem;
-      padding: 0.65rem 0.72rem;
-      border-radius: 11px;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 235, 59, 0.95) 0%,
-        rgba(255, 249, 196, 0.98) 45%,
-        rgba(255, 241, 118, 0.82) 100%
-      );
-      color: var(--green-950);
-      font-family: inherit;
-      font-size: 0.86rem;
-      line-height: 1.52;
-      box-shadow: 0 2px 0 rgba(13, 92, 74, 0.14);
-      white-space: pre-wrap;
-      word-break: break-word;
-      border: 1px solid rgba(251, 192, 45, 0.45);
-    }
-
-    mark.consult-frag-mark:last-of-type {
-      margin-bottom: 0;
-    }
-
-    .consult-frag-footer {
-      padding: 0 1rem 1rem;
-      font-size: 0.82rem;
-      border-top: 1px solid rgba(26, 138, 114, 0.1);
-    }
-
-    #consult-frag-pdf {
-      font-weight: 700;
-      color: var(--green-800);
-    }
-
-    .consult-result-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
@@ -717,8 +579,7 @@
       body.printing-consult-report .scroll-actions,
       body.printing-consult-report .app-main-tabs,
       body.printing-consult-report .assist-timer-overlay,
-      body.printing-consult-report #panel-main-search,
-      body.printing-consult-report #consult-frag-overlay {
+      body.printing-consult-report #panel-main-search {
         display: none !important;
       }
 
@@ -4520,9 +4381,10 @@
         <header class="consult-intro-card consult-print-header">
           <h2>Проверка КЗ (PDF)</h2>
           <p class="consult-hint-small">
-            Загрузите PDF с текстовым слоем (не скан без OCR). Сервис подберёт фрагменты клинических протоколов
-            Минздрава РБ и даст <strong>ориентировочную</strong> оценку согласованности с выдержками (не МЭЭ и не
-            юридическая экспертиза).
+            Выберите <strong>сразу до трёх</strong> PDF консультативных заключений в одном окне (несколько приёмов: удерживайте
+            <strong>Ctrl</strong> или <strong>⌘</strong> и отметьте нужные файлы). Нужны PDF с текстовым слоем, не только сканы.
+            Сервис объединит тексты, отберёт подходящие фрагменты клинических протоколов Минздрава РБ в модели и даст
+            <strong>ориентировочную</strong> оценку соответствия (не МЭЭ и не юридическая экспертиза).
           </p>
           <p class="consult-hint-small consult-intro-hide-print" style="margin-top: 0.45rem; margin-bottom: 0">
             Документ может содержать персональные данные — не передавайте через публичные незащищённые каналы без решения по
@@ -4532,13 +4394,14 @@
 
         <div class="consult-upload-card consult-hide-print">
           <div class="consult-file-row">
-            <span class="consult-label" id="consult-pdf-label">Файл PDF</span>
+            <span class="consult-label" id="consult-pdf-label">Файлы PDF</span>
             <div class="consult-file-controls">
               <input
                 type="file"
                 id="consult-pdf-file"
                 class="consult-file-native"
                 accept=".pdf,application/pdf"
+                multiple
                 aria-labelledby="consult-pdf-label"
               />
               <button
@@ -4547,11 +4410,14 @@
                 id="consult-btn-pick-file"
                 aria-controls="consult-pdf-file"
               >
-                Выберите файл…
+                Выбрать…
               </button>
-              <span id="consult-file-name" class="consult-file-name consult-file-name--empty">Файл не выбран</span>
+              <span id="consult-file-name" class="consult-file-name consult-file-name--empty">Файлы не выбраны</span>
             </div>
           </div>
+          <p class="consult-hint-small" style="margin-top: 0.5rem; margin-bottom: 0">
+            <strong>Три КЗ за раз:</strong> в диалоге «Выбрать» отметьте до трёх PDF одновременно (Ctrl/⌘ + щелчок).
+          </p>
 
           <label class="consult-label" for="consult-category-slugs" style="margin-top: 1rem">Рубрики (необязательно)</label>
           <p class="consult-hint-small">
@@ -4578,8 +4444,9 @@
               <span id="consult-analyze-secs-num" aria-live="polite">0</span>
               <span class="consult-analyze-banner__unit">сек</span>
             </div>
+            <p id="consult-wait-tip" class="consult-analyze-tip"></p>
             <p class="consult-analyze-banner__note">
-              Отсчитывается время ожидания ответа (отбор фрагментов протоколов и обращение к модели могут занимать несколько минут).
+              Ответ может занять несколько минут: извлекается текст, подбираются протоколы, затем модель формирует оценку.
             </p>
           </div>
           <p id="consult-out-status" aria-live="polite"></p>
@@ -4597,7 +4464,6 @@
           <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-out-summary"></p>
           <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
           <p class="consult-hint-small" style="margin: 0.45rem 0 0; font-style: italic" id="consult-out-disclaimer"></p>
-          <div id="consult-out-paths"></div>
 
           <h3 style="font-family: Fraunces, Georgia, serif; font-size: 1.02rem; margin: 1.05rem 0 0.45rem; color: var(--green-950)">
             Критерии
@@ -4609,12 +4475,16 @@
                   <th scope="col">Критерий</th>
                   <th scope="col">%</th>
                   <th scope="col">Комментарий</th>
-                  <th scope="col">Выдержка закл.</th>
-                  <th scope="col">Выдержка протокола</th>
+                  <th scope="col">Фрагмент из КЗ</th>
+                  <th scope="col">Фрагмент из протокола</th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
+          </div>
+
+          <div id="consult-protocols-footer" class="consult-protocols-footer-wrap">
+            <div id="consult-out-paths"></div>
           </div>
 
           <div class="consult-result-actions consult-hide-print">
@@ -4635,20 +4505,6 @@
     </footer>
   </div>
 
-  <div id="consult-frag-overlay" class="consult-frag-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="consult-frag-title">
-    <div class="consult-frag-dialog">
-      <div class="consult-frag-dialog__top">
-        <h2 id="consult-frag-title">Протокол</h2>
-        <button type="button" class="consult-frag-close" id="consult-frag-close-btn">Закрыть</button>
-      </div>
-      <div id="consult-frag-body" class="consult-frag-body"></div>
-      <div class="consult-frag-footer">
-        <a id="consult-frag-pdf" href="#" target="_blank" rel="noopener noreferrer">Открыть оригинальный PDF</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="scroll-actions" id="scroll-actions" hidden>
     <button type="button" class="scroll-fab" id="btn-fab-top">Вверх</button>
     <button type="button" class="scroll-fab" id="btn-fab-query">К поиску</button>
     <button type="button" class="scroll-fab" id="btn-fab-bottom">Вниз</button>
@@ -7373,6 +7229,38 @@
 
   window.__consultReviewLastPayload = null;
 
+  /** Подсказки во время ожидания проверки КЗ — постепенно сменяются по мере роста секунд. */
+  var CONSULT_WAIT_TIPS = [
+    "Можно выбрать до трёх PDF заключений в одном окне (Ctrl/⌘ + щёлчки) — сервер соберёт их в правильном порядке.",
+    "Из каждого PDF извлекается текст и по нему подбираются протоколы.",
+    "Отобранные фрагменты текстов протоколов сопоставляются с вашим текстом через поиск по смыслу — полный охват протоколов не гарантирован.",
+    "Проверьте рубрики в поле ниже — они повышают шанс, что нужные разделы каталога попадут в отбор.",
+    "Если есть несколько PDF, сервер добавляет блоки вида «ЗАКЛЮЧЕНИЕ N» в порядке выбора файлов.",
+    "Редакции протоколов на сайте могут меняться; при разночтениях ориентируйтесь на актуальный файл в каталоге Минздрава.",
+    "Не выдёргайте текст из столбца критериев судебного значения без проверки с исходником протокола.",
+    "Раз в минуту «отведите стопу» со стула или пройдите к окну без телефона — микродвижения уменьшают заторможенность после сидения.",
+    "Стакан воды маленькими глотками и простое выпрямление плеч — быстрый способ немного освежиться за экраном.",
+    "Длинным запрос часто становится именно очередь к языковой модели в облаке, не «сломался» браузер.",
+    "Явное упоминание диагноза или МКБ в тексте обычно улучшает прицельность источников.",
+    "При сюрпризе в баллах иногда достаточно указать нужную специализированную рубрику в поле ниже или в тексте.",
+    "Протокол опирается на типичную популяцию; ваш случай может честнее быть «между формулировками», чем против них.",
+    "Пока идёт ожидание, можно порядком пройти путь пациента: жалобы → вывод → план наблюдения — так таблица критериев восприятия яснее.",
+    "Не закрывайте вкладку: после ответа данные раздела останутся на экране."
+  ];
+
+  function consultWaitingTip(sec) {
+    var tips = CONSULT_WAIT_TIPS;
+    var n = tips.length;
+    if (n <= 1) return tips[0] || "";
+    var span = 17;
+    var phaseEnd = span * (n - 1);
+    if (sec <= phaseEnd) {
+      return tips[Math.min(Math.floor(sec / span), n - 1)] || "";
+    }
+    var off = sec - phaseEnd;
+    return tips[Math.floor(off / 19) % n] || "";
+  }
+
   function switchMainAppTab(which) {
     var tabSearch = document.getElementById("tab-main-search");
     var tabConsult = document.getElementById("tab-consult-review");
@@ -7396,76 +7284,6 @@
     updateScrollFabVisibility();
   }
 
-  function nl2brEscapedConsult(s) {
-    return escapeHtml(String(s || "")).replace(/\n/g, "<br />");
-  }
-
-  function closeConsultFragOverlay() {
-    var ov = document.getElementById("consult-frag-overlay");
-    if (!ov || ov.hidden) return;
-    ov.hidden = true;
-    document.body.style.overflow = "";
-  }
-
-  function openConsultFragOverlay(row) {
-    if (!row || !row.path) return;
-    var ov = document.getElementById("consult-frag-overlay");
-    var titleEl = document.getElementById("consult-frag-title");
-    var bodyEl = document.getElementById("consult-frag-body");
-    var pdfA = document.getElementById("consult-frag-pdf");
-    if (!ov || !titleEl || !bodyEl || !pdfA) return;
-    titleEl.textContent = row.title || formatDisplayTitle(row.path) || "Протокол";
-    var href = encodeURI(row.path);
-    pdfA.href = href;
-    var html = "";
-    var parts = row.fragments || [];
-    var fi;
-    for (fi = 0; fi < parts.length; fi++) {
-      var frag = parts[fi] || {};
-      html +=
-        '<p class="consult-frag-kind">' +
-        escapeHtml(String(frag.kind || "выдержка")) +
-        "</p>";
-      html += '<mark class="consult-frag-mark">' + nl2brEscapedConsult(frag.text) + "</mark>";
-    }
-    if (!html) {
-      html =
-        '<p class="consult-hint-small">Для этого файла сервер не включил текст выдержки отбора — откройте оригинальный PDF по ссылке ниже.</p>';
-    }
-    bodyEl.innerHTML = html;
-    ov.hidden = false;
-    try {
-      document.body.style.overflow = "hidden";
-    } catch (e) {}
-    try {
-      document.getElementById("consult-frag-close-btn").focus();
-    } catch (e2) {}
-  }
-
-  function bindConsultFragOverlay() {
-    var ov = document.getElementById("consult-frag-overlay");
-    var dlg = ov && ov.querySelector(".consult-frag-dialog");
-    var closeBtn = document.getElementById("consult-frag-close-btn");
-    if (ov) {
-      ov.addEventListener("click", function (ev) {
-        if (ev.target === ov) closeConsultFragOverlay();
-      });
-    }
-    if (dlg) {
-      dlg.addEventListener("click", function (ev) {
-        ev.stopPropagation();
-      });
-    }
-    if (closeBtn) {
-      closeBtn.addEventListener("click", function () {
-        closeConsultFragOverlay();
-      });
-    }
-    window.addEventListener("keydown", function (ev) {
-      var o = document.getElementById("consult-frag-overlay");
-      if (ev.key === "Escape" && o && !o.hidden) closeConsultFragOverlay();
-    });
-  }
 
   function renderConsultOncologyBanner(flags) {
     var el = document.getElementById("consult-oncology-banner");
@@ -7479,26 +7297,51 @@
     el.hidden = false;
     var parts = [];
     parts.push(
-      '<div class="consult-onco-alert__title">Онкология или повышенный онкологический риск — требуется усиленное внимание</div>'
+      '<div class="consult-onco-alert__title">Обнаружен возможный онкологический контекст</div>'
     );
+    if (flags.method_note_ru) {
+      parts.push(
+        '<p class="consult-onco-alert__method">' + escapeHtml(flags.method_note_ru) + "</p>"
+      );
+    }
     if (flags.banner_ru) {
       parts.push('<p class="consult-onco-alert__txt">' + escapeHtml(flags.banner_ru) + "</p>");
     }
-    if (flags.consultation_hit) {
+    var consBasis = flags.consultation_basis_ru;
+    if (consBasis && consBasis.length) {
       parts.push(
-        '<p class="consult-onco-alert__sub"><strong>По тексту заключения:</strong> обнаружены фрагменты, которые могут относиться к онкологической тематике; перепроверьте формулировки и полноту обследования/наблюдения.</p>'
+        '<p class="consult-onco-alert__sub"><strong>По тексту заключения — основание:</strong></p>'
+      );
+      parts.push('<ul class="consult-onco-basis-list">');
+      consBasis.forEach(function (ln) {
+        parts.push("<li>" + escapeHtml(ln) + "</li>");
+      });
+      parts.push("</ul>");
+    } else if (flags.consultation_hit) {
+      parts.push(
+        '<p class="consult-onco-alert__sub"><strong>По тексту заключения:</strong> сработали лексические маркеры автоматической проверки; перепроверьте формулировки и полноту обследования/наблюдения.</p>'
       );
     }
     if (flags.protocol_hit && flags.protocol_items && flags.protocol_items.length) {
       parts.push(
-        '<p class="consult-onco-alert__sub"><strong>По отобранным протоколам</strong> найдены профильные источники (выделены в списке ниже):</p>'
+        '<p class="consult-onco-alert__sub"><strong>По протоколам из отбора — основание:</strong></p>'
       );
       parts.push('<ul class="consult-onco-list">');
       flags.protocol_items.forEach(function (it) {
         var t = escapeHtml(String((it && it.title) || (it && it.path) || ""));
-        var hr = (it && it.hints_ru) || [];
-        var hint = Array.isArray(hr) ? hr.map(escapeHtml).join(" ") : "";
-        parts.push("<li><strong>" + t + "</strong> — " + hint + "</li>");
+        parts.push("<li><strong>" + t + "</strong>");
+        var basis =
+          (Array.isArray(it && it.basis_ru) && it.basis_ru) ||
+          (Array.isArray(it && it.hints_ru) && it.hints_ru) ||
+          [];
+        if (basis.length) {
+          parts.push('<ul class="consult-onco-basis-list consult-onco-basis-list--nested">');
+          basis.forEach(function (ln) {
+            parts.push("<li>" + escapeHtml(ln) + "</li>");
+          });
+          parts.push("</ul>");
+        }
+        parts.push("</li>");
       });
       parts.push("</ul>");
     }
@@ -7518,93 +7361,64 @@
     }
 
     var headline = document.createElement("div");
-    headline.className = "consult-hint-small";
-    headline.style.marginTop = "0.68rem";
-    headline.style.marginBottom = "0.42rem";
-    headline.style.fontWeight = "800";
-    headline.style.color = "var(--green-950)";
-    headline.textContent = "Протоколы (отбор фрагментов):";
+    headline.className = "consult-protocols-heading";
+    headline.textContent = "Ссылки на протоколы из отбора";
     pw.appendChild(headline);
+
+    var hint = document.createElement("p");
+    hint.className = "consult-hint-small";
+    hint.style.margin = "0 0 0.55rem";
+    hint.textContent =
+      "Откройте PDF по полной ссылке — подбор по смыслу не заменяет чтение исходного документа.";
+    pw.appendChild(hint);
 
     var ul = document.createElement("ul");
     ul.className = "consult-proto-links";
 
     var fragsList = data && data.consult_protocol_fragments;
+    var rowsOrdered = [];
+
+    function pushOrdered(pth, ttl) {
+      if (!pth) return;
+      var key = String(pth);
+      for (var oi = 0; oi < rowsOrdered.length; oi++) {
+        if (rowsOrdered[oi].path === key) return;
+      }
+      rowsOrdered.push({ path: key, title: ttl || formatDisplayTitle(key.split("/").pop() || key) });
+    }
+
     if (fragsList && fragsList.length) {
       fragsList.forEach(function (row) {
-        var pth = row.path || "";
-        var nf = row.fragments && row.fragments.length ? row.fragments.length : 0;
+        pushOrdered(row.path, row.title);
+      });
+    }
 
+    var extra = (data && data.retrieval_paths) || (rev && rev.protocol_paths_used) || [];
+    extra.forEach(function (p) {
+      pushOrdered(p);
+    });
+
+    if (!rowsOrdered.length) {
+      var emptyLi = document.createElement("li");
+      emptyLi.className = "consult-hint-small";
+      emptyLi.textContent = "Список протоколов пуст.";
+      ul.appendChild(emptyLi);
+    } else {
+      rowsOrdered.forEach(function (row) {
+        var pth = row.path;
         var li = document.createElement("li");
         li.className = "consult-proto-li";
         if (oncByPath[pth]) li.classList.add("consult-proto-li--onco");
-
-        var rowDiv = document.createElement("div");
-        rowDiv.className = "consult-proto-row";
-
-        var bt = document.createElement("button");
-        bt.type = "button";
-        bt.className = "btn-consult-proto-text";
-        bt.textContent = row.title || formatDisplayTitle(pth || "");
-        if (nf) {
-          bt.addEventListener("click", function () {
-            openConsultFragOverlay(row);
-          });
-        } else {
-          bt.disabled = true;
-          bt.title = "Выдержки для подсветки не переданы — откройте PDF.";
-        }
-
-        var rag = document.createElement("span");
-        rag.className =
-          "consult-rag-chip " +
-          (nf ? "consult-rag-chip--yes" : "consult-rag-chip--no");
-        rag.textContent = nf ? "можно открыть выдержки: " + nf : "только файл PDF (выдержки в ответе нет)";
-
-        if (oncByPath[pth]) {
-          var mx = document.createElement("span");
-          mx.className = "consult-onco-micro";
-          mx.textContent = "онко-риск";
-          rowDiv.appendChild(mx);
-        }
-
-        rowDiv.appendChild(bt);
-        rowDiv.appendChild(rag);
 
         var a = document.createElement("a");
         a.href = encodeURI(pth || "#");
         a.target = "_blank";
         a.rel = "noopener noreferrer";
-        a.className = "consult-proto-pdf-link";
-        a.textContent = "PDF";
+        a.className = "consult-proto-footer__link";
+        a.textContent = row.title || formatDisplayTitle(pth || "");
 
-        rowDiv.appendChild(a);
-        li.appendChild(rowDiv);
+        li.appendChild(a);
         ul.appendChild(li);
-      });
-    } else {
-      var paths = (data && data.retrieval_paths) || (rev && rev.protocol_paths_used) || [];
-      paths.forEach(function (ppath) {
-        var li2 = document.createElement("li");
-        li2.className = "consult-proto-li";
-        var rowDiv2 = document.createElement("div");
-        rowDiv2.className = "consult-proto-row";
-        var a2 = document.createElement("a");
-        var ps = String(ppath);
-        a2.href = encodeURI(ps);
-        a2.target = "_blank";
-        a2.rel = "noopener noreferrer";
-        a2.className = "consult-proto-pdf-link";
-        a2.style.fontSize = "0.92rem";
-        a2.textContent = formatDisplayTitle(ps.split("/").pop() || ps);
-        rowDiv2.appendChild(a2);
-        var span = document.createElement("span");
-        span.className = "consult-hint-small";
-        span.style.margin = "0";
-        span.textContent = " (список без выдержек — откройте PDF)";
-        rowDiv2.appendChild(span);
-        li2.appendChild(rowDiv2);
-        ul.appendChild(li2);
       });
     }
 
@@ -7620,17 +7434,18 @@
   }
 
   function resetConsultReviewSection() {
-    closeConsultFragOverlay();
     renderConsultOncologyBanner({ any: false });
     var analyzeBan = document.getElementById("consult-analyze-banner");
     if (analyzeBan) analyzeBan.hidden = true;
     var analyzeNum = document.getElementById("consult-analyze-secs-num");
     if (analyzeNum) analyzeNum.textContent = "0";
+    var waitTip = document.getElementById("consult-wait-tip");
+    if (waitTip) waitTip.textContent = "";
     var inp = document.getElementById("consult-pdf-file");
     if (inp) inp.value = "";
     var fn = document.getElementById("consult-file-name");
     if (fn) {
-      fn.textContent = "Файл не выбран";
+      fn.textContent = "Файлы не выбраны";
       fn.classList.add("consult-file-name--empty");
     }
     var slugs = document.getElementById("consult-category-slugs");
@@ -7670,21 +7485,30 @@
     var hi = window.location.hash || "";
     if (hi === "#consult-review") switchMainAppTab(MAIN_TAB_CONSULT);
 
-    bindConsultFragOverlay();
-
-    var pickBtn = document.getElementById("consult-btn-pick-file");
     var pdfInPick = document.getElementById("consult-pdf-file");
     var fnLbl = document.getElementById("consult-file-name");
     function refreshConsultFileName() {
       if (!fnLbl || !pdfInPick) return;
-      var fp = pdfInPick.files && pdfInPick.files[0];
-      if (!fp) {
-        fnLbl.textContent = "Файл не выбран";
+      var nf = pdfInPick.files ? pdfInPick.files.length : 0;
+      if (!nf) {
+        fnLbl.textContent = "Файлы не выбраны";
         fnLbl.classList.add("consult-file-name--empty");
-      } else {
-        fnLbl.textContent = fp.name;
-        fnLbl.classList.remove("consult-file-name--empty");
+        return;
       }
+      fnLbl.classList.remove("consult-file-name--empty");
+      if (nf === 1) {
+        fnLbl.textContent = pdfInPick.files[0].name + " (всего 1 PDF)";
+        return;
+      }
+      var names = [];
+      var k;
+      var maxList = 4;
+      var u = Math.min(nf, maxList);
+      for (k = 0; k < u; k++) {
+        names.push(pdfInPick.files[k].name);
+      }
+      var tail = nf > maxList ? " и ещё " + (nf - maxList) : "";
+      fnLbl.textContent = nf + " PDF: " + names.join(", ") + tail;
     }
     if (pickBtn && pdfInPick) {
       pickBtn.addEventListener("click", function () {
@@ -7762,29 +7586,51 @@
       errEl.hidden = true;
       errEl.textContent = "";
 
-      var f = inpF && inpF.files && inpF.files[0];
-      if (!f) {
-        errEl.textContent = "Выберите PDF-файл.";
+      var list = inpF && inpF.files ? inpF.files : null;
+      var nPdf = list ? list.length : 0;
+      if (!nPdf) {
+        errEl.textContent = "Выберите один или несколько PDF (до трёх файлов за раз).";
         errEl.hidden = false;
         return;
+      }
+      if (nPdf > 3) {
+        errEl.textContent = "За один раз можно не более трёх PDF. Уберите лишние файлы или запустите анализ несколько раз.";
+        errEl.hidden = false;
+        return;
+      }
+      var qi;
+      for (qi = 0; qi < nPdf; qi++) {
+        var fnm = String(list[qi].name || "").trim().toLowerCase();
+        if (!fnm.endsWith(".pdf")) {
+          errEl.textContent =
+            "Поддерживаются только PDF — проверьте файл «" + (list[qi].name || "") + "».";
+          errEl.hidden = false;
+          return;
+        }
       }
 
       var baseEl = document.getElementById("rag-base");
       var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
       var analyzeBan = document.getElementById("consult-analyze-banner");
       var analyzeNum = document.getElementById("consult-analyze-secs-num");
+      var waitTip = document.getElementById("consult-wait-tip");
       t0Analyze = Date.now();
       if (analyzeBan) analyzeBan.hidden = false;
       if (analyzeNum) analyzeNum.textContent = "0";
+      if (waitTip) waitTip.textContent = consultWaitingTip(0);
       if (st) st.textContent = "";
       elapsedTid = window.setInterval(function () {
         var sec = Math.floor((Date.now() - t0Analyze) / 1000);
         if (analyzeNum) analyzeNum.textContent = String(sec);
+        if (waitTip) waitTip.textContent = consultWaitingTip(sec);
       }, 450);
       btnRun.disabled = true;
 
       var fd = new FormData();
-      fd.append("file", f, f.name);
+      var fi;
+      for (fi = 0; fi < nPdf; fi++) {
+        fd.append("files", list[fi], list[fi].name);
+      }
       fd.append("category_slugs", slugsEl && slugsEl.value ? slugsEl.value.trim() : "");
 
       fetch(base + "/api/consult-review", { method: "POST", body: fd })
@@ -7817,7 +7663,9 @@
           var rev = (data && data.review) || {};
           document.getElementById("consult-out-pct").textContent =
             typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : "—";
-          document.getElementById("consult-out-summary").textContent = rev.summary_ru || "";
+          var docN = Number((data && data.documents_count) || 1);
+          var sumPref = docN > 1 ? "Объединённый разбор " + docN + " загруженных заключений. " : "";
+          document.getElementById("consult-out-summary").textContent = sumPref + (rev.summary_ru || "");
           document.getElementById("consult-out-limit").textContent = rev.limitations_ru
             ? "Ограничения: " + rev.limitations_ru
             : "";
@@ -7865,6 +7713,8 @@
           }
           var analyzeBan4 = document.getElementById("consult-analyze-banner");
           if (analyzeBan4) analyzeBan4.hidden = true;
+          var wtip = document.getElementById("consult-wait-tip");
+          if (wtip) wtip.textContent = "";
           btnRun.disabled = false;
         });
     });

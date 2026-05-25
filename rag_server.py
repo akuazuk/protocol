@@ -41,6 +41,8 @@ from retrieval_bm25 import build_bm25_index
 
 load_project_env(ROOT)
 
+from typing import Annotated
+
 try:
     from fastapi import FastAPI, HTTPException, File, Form, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
@@ -320,7 +322,7 @@ SYSTEM_CONFIDENCE_REFINE = """Ты помощник врача. По запро�
 Копируй path точно из списка ниже; не добавляй протоколы вне списка."""
 
 SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
-1) текст, извлечённый из PDF консультативного заключения;
+1) текст(ы), извлечённый из одного или нескольких PDF консультативных заключений (если блоков несколько и они помечены «=== ЗАКЛЮЧЕНИЕ …», это может быть несколько приёмов — учитывай согласованность между ними и возможные временные линии);
 2) выдержки из клинических протоколов Минздрава Республики Беларусь (автоматический поисковый отбор по смыслу, неполный и может не охватывать все разделы документа).
 
 Задача: оценить, насколько формулировки заключения в целом согласуются с тем, что видно в переданных выдержках протоколов (диагностика, тактика ведения, наблюдение — по релевантности фрагментов).
@@ -2730,6 +2732,21 @@ def _consult_oncology_flags(
                 found.append(n.strip())
         return sorted(set(found))[:14]
 
+    def needle_basis_sentence(where_human: str, found: list[str]) -> str:
+        """Человекочитаемое пояснение: какие подстроки сработали (без NLP)."""
+        if not found:
+            return ""
+        uniq = sorted(set(found))
+        shown = uniq[:14]
+        more = len(uniq) - len(shown)
+        tail = f" (+ ещё {more})" if more > 0 else ""
+        joined = ", ".join(shown)
+        return (
+            f"{where_human}: при простом посимвольном поиске найдены подстроки из списка "
+            f'лексических маркеров: {joined}{tail}. Без учёта семантики возможны ложные '
+            f"срабатывания или пропуски."
+        )
+
     cons = consultation_text_raw or ""
     con_l = scan_blob(cons)
 
@@ -2747,30 +2764,45 @@ def _consult_oncology_flags(
         pieces = [title_l, path_l]
         fragments = row.get("fragments") or []
         for fr in fragments:
-            if isinstance(fr, dict) and isinstance(fr.get("text"), str):
-                pieces.append(fr["text"])
+            if isinstance(fr, dict):
+                blk = ""
+                tx = fr.get("text")
+                if isinstance(tx, str) and tx.strip():
+                    blk = tx
+                else:
+                    ex = fr.get("excerpt")
+                    if isinstance(ex, str):
+                        blk = ex
+                if blk:
+                    pieces.append(blk)
         merged = "\n".join(pieces)
 
-        hints_ru: list[str] = []
+        basis_lines: list[str] = []
         pr_meta = _protocols_by_path.get(pth) or {}
         cat = str(pr_meta.get("category") or "").lower()
         if "novoobrazovan" in path_l or "novoobrazovan" in cat:
-            hints_ru.append(
-                'протокол отнесён к рубрике каталога, связанной с новообразованиями (например, раздел «онкология» / novoobrazovaniya)'
+            basis_lines.append(
+                'Каталог протоколов: файл отнесён к ветви «новообразования» — в URL пути или в '
+                "поле category присутствует «novoobrazovan»."
             )
         marks = scan_blob(merged)
         if marks:
-            hints_ru.append(
-                "в названии протокола и/или в отобранных выдержках встретились ключевые сочетания, характерные для опухолевой патологии"
+            basis_lines.append(
+                needle_basis_sentence(
+                    "Совокупно по названию файла, пути в каталоге и отобранным фрагментам текста",
+                    marks,
+                )
             )
-        if not hints_ru:
+        if not basis_lines:
             continue
         seen_paths.add(pth)
         prot_items.append(
             {
                 "path": pth,
                 "title": title_raw or Path(pth).name,
-                "hints_ru": hints_ru,
+                "basis_ru": list(basis_lines),
+                # Совместимость со старым фронтом: то же содержание, но конкретнее.
+                "hints_ru": list(basis_lines),
                 "markers": marks,
             }
         )
@@ -2785,7 +2817,7 @@ def _consult_oncology_flags(
         )
     if in_proto:
         sentences.append(
-            "В списке отобранных протоколов есть документы и/или выдержки с онкологическим профилем — особенно внимательно сверьте заключение с ними по пунктам допустимости обследований и наблюдения."
+            "В числе отобранных протоколов есть источники с онкологическим профилем (рубрика каталога и/или фрагменты из отбора) — особенно внимательно сверьте заключение с ними по допустимости обследований и наблюдения."
         )
 
     banner = " ".join(sentences) if sentences else ""
@@ -2795,14 +2827,43 @@ def _consult_oncology_flags(
         else "При анализе учитывай возможное сочетание общетерапевтического протокола с онкологическим контекстом заключения."
     )
 
+    consultation_basis_ru: list[str] = []
+    if con_l:
+        consultation_basis_ru.append(
+            needle_basis_sentence(
+                "Текст загруженного заключения (извлечённый из PDF)", con_l
+            )
+        )
+
+    basis_for_prompt: list[str] = []
+    basis_for_prompt.extend(consultation_basis_ru)
+    for pi in prot_items:
+        t_raw = str(pi.get("title") or pi.get("path") or "")
+        for sentence in pi.get("basis_ru") or []:
+            basis_for_prompt.append(f"[{t_raw}] {sentence}")
+
+    if basis_for_prompt:
+        clipped = " ".join(basis_for_prompt)
+        if len(clipped) > 1400:
+            clipped = clipped[:1397].rstrip() + "…"
+        instruction_ru = f"{instruction_ru} Основание (эвристика): {clipped}"
+
+    method_note_ru = (
+        "Это не клиническое решение модели про «онко-риск»: срабатывает автоматический поиск "
+        "подстрок в тексте заключения, путях к файлам и фрагментах текстов протоколов (RAG) без понимания контекста "
+        "(возможны ложные совпадения и пропуски)."
+    )
+
     return {
         "any": in_consult or in_proto,
         "consultation_hit": in_consult,
         "protocol_hit": in_proto,
         "consultation_markers": con_l[:14],
+        "consultation_basis_ru": consultation_basis_ru,
         "protocol_items": prot_items,
         "banner_ru": banner,
         "instruction_ru": instruction_ru,
+        "method_note_ru": method_note_ru,
     }
 
 
@@ -4049,7 +4110,10 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 @app.post("/api/consult-review")
 async def api_consult_review(
-    file: UploadFile = File(..., description="PDF консультативного заключения"),
+    files: Annotated[
+        list[UploadFile],
+        File(description="1–3 PDF консультативных заключения (можно с разных приёмов)"),
+    ],
     category_slugs: str = Form(
         "",
         description=(
@@ -4058,48 +4122,82 @@ async def api_consult_review(
         ),
     ),
 ) -> dict:
-    """Загрузка PDF заключения → отбор фрагментов протоколов → JSON-оценка соответствия (LLM).
+    """Загрузка одного или нескольких PDF заключений → отбор фрагментов протоколов → JSON-оценка (LLM).
 
     Не медико-правовая экспертиза; ориентир для методиста при наличии ключа API Gemini.
     """
     _require_rag_loaded()
-    fn = (file.filename or "").strip().lower()
-    if not fn.endswith(".pdf"):
+    if not files:
         raise HTTPException(
             status_code=400,
-            detail="Ожидается файл с расширением .pdf",
+            detail="Не переданы файлы: загрузите хотя бы один PDF.",
         )
+    max_n = max(1, min(25, int(os.environ.get("CONSULT_REVIEW_MAX_FILES", "3"))))
+    if len(files) > max_n:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Можно не более {max_n} PDF за один запрос.",
+        )
+
     max_mb = float(os.environ.get("CONSULT_REVIEW_MAX_MB", "15"))
-    data = await file.read()
     lim_b = int(max_mb * 1024 * 1024)
-    if len(data) > lim_b:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Размер файла превышает {max_mb} МБ",
+
+    blocks: list[str] = []
+    consult_docs_meta: list[dict] = []
+    pdf_warnings: list[str] = []
+
+    for i, uf in enumerate(files):
+        raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}.pdf"
+        low = raw_fn.lower()
+        if not low.endswith(".pdf"):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл «{raw_fn}»: ожидается расширение .pdf",
+            )
+        data = await uf.read()
+        if len(data) > lim_b:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл «{raw_fn}» превышает {max_mb} МБ",
+            )
+        try:
+            txt, warns = extract_pdf_text_from_bytes(data)
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Ошибка чтения PDF «{raw_fn}»: {e!s}",
+            ) from e
+        txt = txt.strip()
+        if not txt:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Не удалось извлечь текст из «{raw_fn}» (часто скан без текстового слоя). "
+                    "Нужен текстовый PDF или OCR."
+                ),
+            )
+        for w in warns or []:
+            pdf_warnings.append(f"{raw_fn}: {w}")
+
+        consult_docs_meta.append(
+            {"index": i + 1, "filename": raw_fn, "extraction_chars": len(txt)}
         )
-    try:
-        full_text, pdf_warnings = extract_pdf_text_from_bytes(data)
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Ошибка чтения PDF: {e!s}",
-        ) from e
-    full_text = full_text.strip()
-    if not full_text:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                "Не удалось извлечь текст из PDF (часто это скан без текстового слоя). "
-                "Нужен текстовый PDF или отдельный конвейер с OCR."
-            ),
+
+        shown_name = raw_fn.replace("\r", "").replace("\n", " ").strip()
+        if len(shown_name) > 220:
+            shown_name = shown_name[:217].rstrip() + "…"
+        blocks.append(
+            f"=== ЗАКЛЮЧЕНИЕ {i + 1} ИЗ PDF: {shown_name} ===\n\n" + txt
         )
+
+    full_text = "\n\n".join(blocks).strip()
     max_store = int(os.environ.get("CONSULT_REVIEW_MAX_TEXT_CHARS", "120000"))
     if len(full_text) > max_store:
         full_text = (
             full_text[:max_store].rstrip()
-            + "\n\n[…текст документа обрезан для обработки]"
+            + "\n\n[…тексты объединённых PDF обрезаны для обработки]"
         )
 
     q_slice = int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
@@ -4165,9 +4263,21 @@ async def api_consult_review(
     protocol_ctx, paths_used = _build_review_chunks_context(retrieved, proto_max)
 
     consult_max = int(os.environ.get("CONSULT_REVIEW_CONSULT_CHARS", "20000"))
-    consult_excerpt = full_text[:consult_max].strip()
-    if len(full_text) > len(consult_excerpt):
-        consult_excerpt += "\n\n[…остаток заключения не передан в модель из-за лимита]"
+    multi_intro = (
+        ""
+        if len(files) <= 1
+        else (
+            "Несколько документов: блоки ниже — в порядке загрузки; при оценке учитывай "
+            "согласованность между приёмами, хронологию формулировок и возможные противоречия между частями.\n\n"
+        )
+    )
+    reserve_for_suffix = 100
+    room = max(400, consult_max - len(multi_intro) - reserve_for_suffix)
+    consult_body = full_text[:room].strip()
+    suffix = ""
+    if len(full_text) > len(consult_body):
+        suffix += "\n\n[…остаток заключений не передан в модель из-за лимита]"
+    consult_excerpt = multi_intro + consult_body + suffix
 
     ui_frags = _consult_ui_protocol_fragments(retrieved, paths_used)
     oncology = _consult_oncology_flags(ui_frags, full_text)
@@ -4178,7 +4288,7 @@ async def api_consult_review(
             "\n\nВАЖНО ДЛЯ ОЦЕНКИ ЭТОГО КОНСУЛЬТАТИВНОГО ЗАКЛЮЧЕНИЯ:\n"
             + str(oncology.get("instruction_ru") or "").strip()
             + "\nЕсли текст заключения связан с онкологическим риском или опухолевой патологией, отдельно оцените клиническую "
-            "безопасность формулировок применительно к выдержкам; при недостаточном покрытии протоколами усильте ограничения "
+            "безопасность формулировок применительно к переданным фрагментам протоколов; при недостаточном покрытии протоколами усильте ограничения "
             "(limitations_ru) и понизьте баллы по затронутым критериям.\n"
         )
 
@@ -4194,6 +4304,8 @@ async def api_consult_review(
         "ok": True,
         "review": review,
         "pdf_warnings": pdf_warnings,
+        "consult_documents": consult_docs_meta,
+        "documents_count": len(consult_docs_meta),
         "extraction_chars": len(full_text),
         "retrieval_paths": paths_used,
         "consult_protocol_fragments": ui_frags,
