@@ -263,16 +263,7 @@
       margin-top: 0.85rem;
     }
 
-    #consult-category-slugs {
-      width: 100%;
-      min-height: 3rem;
-      font: inherit;
-      padding: 0.55rem 0.68rem;
-      border-radius: 12px;
-      border: 2px solid rgba(26, 138, 114, 0.3);
-      resize: vertical;
-      box-sizing: border-box;
-    }
+    /* сетка рубрик — те же классы, что у поиска (.specialty-grid внутри вкладки КЗ) */
 
     .consult-actions {
       display: flex;
@@ -4459,20 +4450,28 @@
 
           <details class="specialty-panel consult-slugs-panel" id="consult-rubrics-details">
             <summary>Рубрики каталога <span class="optional-mark">(необязательно)</span></summary>
-            <p class="consult-hint-small" style="margin-top: 0.35rem">
-              Укажите через запятую обозначения разделов каталога. В браузере в адресной строке раздел записан <strong
-                >латиницей через дефис</strong>
-              — технический код раздела (его и перечислите). Пример названия раздела: «пульмонология и фтизиатрия» —
-              скопируйте латинский slug из адреса страницы, например:
-              <strong>pulmonologiya-ftiziatriya</strong>
+            <p class="specialty-hint">
+              Можно выбрать несколько областей — отбор протоколов будет сильнее ориентироваться на эти разделы каталога.
             </p>
-            <label class="consult-label" for="consult-category-slugs">Slug рубрик через запятую</label>
-            <textarea
-              id="consult-category-slugs"
-              maxlength="500"
-              placeholder="пример для раздела «пульмонология»: pulmonologiya-ftiziatriya — несколько через запятую"
-              rows="3"
-            ></textarea>
+            <p class="specialty-site-note">
+              На сайте
+              <a
+                href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Минздрава</a
+              >
+              перечень совпадает с каталогом ниже (24 раздела). Общие и «терапевтические» протоколы отнесены к профильным
+              разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
+              <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
+            </p>
+            <div class="specialty-toolbar">
+              <button type="button" id="consult-specialty-clear">Снять выбор</button>
+              <button type="button" id="consult-specialty-all">Выбрать все</button>
+            </div>
+            <div class="specialty-grid" id="consult-specialty-rubrics" aria-label="Рубрики для проверки консультативного заключения">
+              <p style="margin: 0; font-size: 0.85rem; color: var(--muted)">Загрузка списка рубрик…</p>
+            </div>
           </details>
 
           <div class="consult-actions">
@@ -4656,9 +4655,22 @@
   }
 
   var RAG_SPECIALTY_KEY = "rag_category_slugs";
+  var RAG_CONSULT_SPECIALTY_KEY = "rag_consult_category_slugs";
 
   function getSelectedCategorySlugs() {
     var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+    var out = [];
+    var i;
+    for (i = 0; i < boxes.length; i++) {
+      if (boxes[i].checked) out.push(boxes[i].value);
+    }
+    return out;
+  }
+
+  function getConsultSelectedCategorySlugs() {
+    var boxes = document.querySelectorAll(
+      '#consult-specialty-rubrics input[name="consult-specialty-slug"]'
+    );
     var out = [];
     var i;
     for (i = 0; i < boxes.length; i++) {
@@ -4673,6 +4685,15 @@
     } catch (e) {}
   }
 
+  function saveConsultSpecialtySelection() {
+    try {
+      localStorage.setItem(
+        RAG_CONSULT_SPECIALTY_KEY,
+        JSON.stringify(getConsultSelectedCategorySlugs())
+      );
+    } catch (e) {}
+  }
+
   function loadSpecialtySelection() {
     try {
       var raw = localStorage.getItem(RAG_SPECIALTY_KEY);
@@ -4683,6 +4704,24 @@
       var i;
       for (i = 0; i < arr.length; i++) set[arr[i]] = true;
       var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+      for (i = 0; i < boxes.length; i++) {
+        if (set[boxes[i].value]) boxes[i].checked = true;
+      }
+    } catch (e) {}
+  }
+
+  function loadConsultSpecialtySelection() {
+    try {
+      var raw = localStorage.getItem(RAG_CONSULT_SPECIALTY_KEY);
+      if (!raw) return;
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return;
+      var set = {};
+      var i;
+      for (i = 0; i < arr.length; i++) set[arr[i]] = true;
+      var boxes = document.querySelectorAll(
+        '#consult-specialty-rubrics input[name="consult-specialty-slug"]'
+      );
       for (i = 0; i < boxes.length; i++) {
         if (set[boxes[i].value]) boxes[i].checked = true;
       }
@@ -4704,9 +4743,13 @@
     if (sp) sp.removeAttribute("open");
   }
 
-  function renderSpecialtyCheckboxes(list) {
-    var host = document.getElementById("specialty-rubrics");
+  function renderSpecialtyGrid(host, list, cfg) {
     if (!host) return;
+    var inputName = (cfg && cfg.inputName) || "specialty-slug";
+    var idPrefix = (cfg && cfg.idPrefix) || "spec-";
+    var onAfter = cfg && cfg.onAfterRender;
+    var onChange = (cfg && cfg.onChange) || function () {};
+
     if (!list || !list.length) {
       host.innerHTML =
         '<p style="margin:0;color:var(--red-700)">Не удалось загрузить рубрики.</p>';
@@ -4718,11 +4761,13 @@
       var it = list[i];
       var slug = it.slug || it.id || "";
       var lab = it.label || it.title || slug;
-      var id = "spec-" + slug.replace(/[^a-z0-9-]/gi, "-");
+      var id = idPrefix + slug.replace(/[^a-z0-9-]/gi, "-");
       html +=
         '<label class="specialty-chip" for="' +
         id +
-        '"><input type="checkbox" name="specialty-slug" id="' +
+        '"><input type="checkbox" name="' +
+        inputName +
+        '" id="' +
         id +
         '" value="' +
         escapeHtml(slug) +
@@ -4731,11 +4776,26 @@
         "</span></label>";
     }
     host.innerHTML = html;
-    loadSpecialtySelection();
-    var cbs = host.querySelectorAll('input[name="specialty-slug"]');
-    for (i = 0; i < cbs.length; i++) {
-      cbs[i].addEventListener("change", saveSpecialtySelection);
+    if (typeof onAfter === "function") onAfter();
+    var cbs = host.querySelectorAll('input[type="checkbox"]');
+    for (var j = 0; j < cbs.length; j++) {
+      cbs[j].addEventListener("change", onChange);
     }
+  }
+
+  function renderSpecialtyCheckboxes(list) {
+    renderSpecialtyGrid(document.getElementById("specialty-rubrics"), list, {
+      inputName: "specialty-slug",
+      idPrefix: "spec-",
+      onAfterRender: loadSpecialtySelection,
+      onChange: saveSpecialtySelection,
+    });
+    renderSpecialtyGrid(document.getElementById("consult-specialty-rubrics"), list, {
+      inputName: "consult-specialty-slug",
+      idPrefix: "consult-spec-",
+      onAfterRender: loadConsultSpecialtySelection,
+      onChange: saveConsultSpecialtySelection,
+    });
   }
 
   function initSpecialtiesFromServer() {
@@ -4774,6 +4834,31 @@
         var i;
         for (i = 0; i < boxes.length; i++) boxes[i].checked = true;
         saveSpecialtySelection();
+      });
+    }
+  }
+
+  function bindConsultSpecialtyToolbar() {
+    var clearBtn = document.getElementById("consult-specialty-clear");
+    var allBtn = document.getElementById("consult-specialty-all");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        var boxes = document.querySelectorAll(
+          '#consult-specialty-rubrics input[name="consult-specialty-slug"]'
+        );
+        var i;
+        for (i = 0; i < boxes.length; i++) boxes[i].checked = false;
+        saveConsultSpecialtySelection();
+      });
+    }
+    if (allBtn) {
+      allBtn.addEventListener("click", function () {
+        var boxes = document.querySelectorAll(
+          '#consult-specialty-rubrics input[name="consult-specialty-slug"]'
+        );
+        var i;
+        for (i = 0; i < boxes.length; i++) boxes[i].checked = true;
+        saveConsultSpecialtySelection();
       });
     }
   }
@@ -7275,7 +7360,7 @@
     "Можно выбрать до трёх PDF заключений в одном окне (Ctrl/⌘ + щёлчки) — сервер соберёт их в правильном порядке.",
     "Из каждого PDF извлекается текст и по нему подбираются протоколы.",
     "Отобранные фрагменты текстов протоколов сопоставляются с вашим текстом через поиск по смыслу — полный охват протоколов не гарантирован.",
-    "Проверьте рубрики в поле ниже — они повышают шанс, что нужные разделы каталога попадут в отбор.",
+    "Проверьте нужные рубрики каталога в блоке ниже — отмеченные разделы усиливают прицельность отбора протоколов.",
     "Если есть несколько PDF, сервер добавляет блоки вида «ЗАКЛЮЧЕНИЕ N» в порядке выбора файлов.",
     "Редакции протоколов на сайте могут меняться; при разночтениях ориентируйтесь на актуальный файл в каталоге Минздрава.",
     "Не выдёргайте текст из столбца критериев судебного значения без проверки с исходником протокола.",
@@ -7283,7 +7368,7 @@
     "Стакан воды маленькими глотками и простое выпрямление плеч — быстрый способ немного освежиться за экраном.",
     "Длинным запрос часто становится именно очередь к языковой модели в облаке, не «сломался» браузер.",
     "Явное упоминание диагноза или МКБ в тексте обычно улучшает прицельность источников.",
-    "При сюрпризе в баллах иногда достаточно указать нужную специализированную рубрику в поле ниже или в тексте.",
+    "При сюрпризе в баллах иногда достаточно отметить специализированную рубрику в блоке ниже или уточнить диагноз в тексте КЗ.",
     "Протокол опирается на типичную популяцию; ваш случай может честнее быть «между формулировками», чем против них.",
     "Пока идёт ожидание, можно порядком пройти путь пациента: жалобы → вывод → план наблюдения — так таблица критериев восприятия яснее.",
     "Не закрывайте вкладку: после ответа данные раздела останутся на экране."
@@ -7489,8 +7574,14 @@
       fn.textContent = "Файлы не выбраны";
       fn.classList.add("consult-file-name--empty");
     }
-    var slugs = document.getElementById("consult-category-slugs");
-    if (slugs) slugs.value = "";
+    var cbx = document.querySelectorAll(
+      '#consult-specialty-rubrics input[name="consult-specialty-slug"]'
+    );
+    var ci;
+    for (ci = 0; ci < cbx.length; ci++) cbx[ci].checked = false;
+    try {
+      localStorage.removeItem(RAG_CONSULT_SPECIALTY_KEY);
+    } catch (e) {}
     var st = document.getElementById("consult-out-status");
     if (st) st.textContent = "";
     var errEl = document.getElementById("consult-out-error");
@@ -7615,7 +7706,6 @@
 
     btnRun.addEventListener("click", function () {
       var inpF = document.getElementById("consult-pdf-file");
-      var slugsEl = document.getElementById("consult-category-slugs");
       var st = document.getElementById("consult-out-status");
       var errEl = document.getElementById("consult-out-error");
       var res = document.getElementById("consult-results-wrap");
@@ -7673,7 +7763,7 @@
       for (fi = 0; fi < nPdf; fi++) {
         fd.append("files", list[fi], list[fi].name);
       }
-      fd.append("category_slugs", slugsEl && slugsEl.value ? slugsEl.value.trim() : "");
+      fd.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
 
       fetch(base + "/api/consult-review", { method: "POST", body: fd })
         .then(function (r) {
@@ -8398,6 +8488,7 @@
       initRagBaseInput();
       initSpecialtiesFromServer();
       bindSpecialtyPanel();
+      bindConsultSpecialtyToolbar();
       bindVoiceInput();
       bindPageNav();
 
