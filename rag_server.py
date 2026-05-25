@@ -19,6 +19,7 @@ import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
+from datetime import date
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -1150,6 +1151,108 @@ def filter_retrieval_by_audience(
     if not out:
         return rows, aud, True
     return out, aud, False
+
+
+def _age_full_years(birth: date, ref: date) -> int:
+    a = ref.year - birth.year
+    if (ref.month, ref.day) < (birth.month, birth.day):
+        a -= 1
+    return a
+
+
+def _consult_extract_date_of_birth(raw: str) -> tuple[date | None, dict]:
+    """Ищет дату рождения в форме ДД.ММ.ГГГГ — приоритет строке с Ф.И.О. или маркерами ДР."""
+    blob = normalize_text_for_icd_scan(raw or "").replace("\u00a0", " ").strip()
+    meta_trace: dict[str, object] = {}
+    if not blob:
+        return None, meta_trace
+    dob_re = re.compile(r"\b(\d{2})\.(\d{2})\.(19\d{2}|20\d{2})\b")
+    fio_here = re.compile(
+        r"ф\s*\.\s*и\s*\.\s*о\s*", re.I
+    )
+
+    cand: list[tuple[int, int, date, str]] = []
+    for m in dob_re.finditer(blob):
+        try:
+            dd = int(m.group(1))
+            mo = int(m.group(2))
+            yr = int(m.group(3))
+            birth_d = date(yr, mo, dd)
+        except ValueError:
+            continue
+        if not (1870 <= birth_d.year <= date.today().year + 1):
+            continue
+
+        ls = blob.rfind("\n", 0, m.start())
+        le = blob.find("\n", m.end())
+        if ls < 0:
+            ls = 0
+        else:
+            ls += 1
+        if le < 0:
+            le = len(blob)
+        line = blob[ls:le]
+
+        prio = 0
+        ll = line.lower()
+        if fio_here.search(line):
+            prio += 6
+        if (
+            ("дата" in ll and "рожд" in ll)
+            or "д р" in ll
+            or " д.р" in ll
+            or "д/р" in ll
+            or ll.strip().startswith("др ")
+        ):
+            prio += 4
+        if "пациент" in ll[:40]:
+            prio += 1
+
+        cand.append((prio, -m.start(), birth_d, line.strip()[:220]))
+
+    if not cand:
+        return None, meta_trace
+    cand.sort(key=lambda x: (-x[0], x[1]))
+    best = cand[0]
+    meta_trace.update(
+        {
+            "dob_ddmmyyyy": best[2].strftime("%d.%m.%Y"),
+            "confidence_prio": best[0],
+            "snippet": best[3],
+            "candidate_dates": len(cand),
+        }
+    )
+    return best[2], meta_trace
+
+
+def consult_demographics_banner_from_kz(full_text_raw: str) -> tuple[str, dict]:
+    """Одна–две строки для добавления к routing/full query при известной ДР из КЗ."""
+    ref = date.today()
+    dob, trace = _consult_extract_date_of_birth(full_text_raw)
+    meta: dict[str, object] = {"date_of_birth": None, "age_years": None, "audience": None}
+    meta.update(trace)
+    if dob is None:
+        return "", meta
+
+    yrs = _age_full_years(dob, ref)
+    meta["date_of_birth"] = dob.isoformat()
+    meta["age_years"] = yrs
+    if yrs >= 18:
+        meta["audience"] = "adult"
+        band = (
+            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')} — {yrs} полных лет; пациент взрослый (≥18 лет)."
+        )
+    elif yrs >= 0:
+        meta["audience"] = "child"
+        band = (
+            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')} — {yrs} полных лет; пациент ребёнок (<18 лет)."
+        )
+    else:
+        return "", meta
+
+    return band, meta
 
 
 def routing_multiplier(raw_query: str, ch: dict, routing: dict | None) -> float:
@@ -3208,55 +3311,96 @@ def _consult_ui_protocol_fragments(
     return out
 
 
+def _consult_oncology_dual_scan(blob: str) -> tuple[list[str], list[str]]:
+    """Сильные маркеры (достаточно одного) и слабые (скрининг/общие — по порогу количества)."""
+    nb = (_norm_query(blob or "")).strip()
+    if not nb:
+        return [], []
+    strong: set[str] = set()
+    weak: set[str] = set()
+
+    for s in (
+        "метастаз",
+        "полихимиотерап",
+        "химиотерапия",
+        "химиотерапию",
+        "химиотерапией",
+        "семейная нагруженность по онколог",
+        "инвазивная карцино",
+        "инвазивной карцино",
+        "рецидив опухоли",
+        "злокачественн",
+        "стереотакс",
+        "лучевая терап",
+        "стационар по онколог",
+        "онкохирург",
+        "онкоцентр",
+        "онкодиагност",
+    ):
+        if s in nb:
+            strong.add(s)
+
+    for s in ("онкология", "онкологии", "онкологией", "онкологическ", "онкологию"):
+        if s in nb:
+            strong.add("онкология (форма слова)")
+
+    for s in ("онколога", "онкологу", "онкологом"):
+        if s in nb:
+            strong.add("онколог (специалист)")
+
+    for w in (
+        "онкомаркер",
+        "онкоцитолог",
+        "патоморфолог",
+        "патолого-анатом",
+        "патологоанатом",
+        "биопсия",
+        " биопс",
+        "гистологическ",
+        "гистологию",
+        "опухоль",
+        "опухоли",
+        "опухолью",
+        "новообразован",
+        "онкоскрин",
+        "онкоскр",
+    ):
+        w = w.strip()
+        if w and w in nb:
+            weak.add(w)
+
+    rxs: tuple[tuple[re.Pattern[str], str], ...] = (
+        (re.compile(r"(?:^|[^а-яё])лимфом(?!енинго)", re.I), "лимфома"),
+        (re.compile(r"(?:^|[^а-яё])миелом(?!енинго)", re.I), "миелома"),
+        (
+            re.compile(
+                r"\b(?:карцином\w*|аденокарцином\w*|холангиокарцин\w*|сарком\w*|меланом\w*)",
+                re.I,
+            ),
+            "карцинома/саркома/меланома",
+        ),
+        (re.compile(r"\bher2\b|\bгер\s*[-–]?\s*2\b|\bгер2\b", re.I), "HER2"),
+        (re.compile(r"\bki\s*[-–]?\s*67\b|\bki67\b", re.I), "Ki-67"),
+        (re.compile(r"\btnm\b", re.I), "TNM"),
+        (re.compile(r"\bstaging\b", re.I), "staging"),
+        (re.compile(r"\boncolog\w+", re.I), "oncology_en"),
+        (re.compile(r"\b(?:лейкоз\w*|лейкем)", re.I), "лейкоз"),
+        (re.compile(r"(?:^|[^а-яё])раху\b|(?:^|[^а-яё])рахом\b|\bрак\b", re.I), "рак"),
+    )
+    for rgx, lab in rxs:
+        if rgx.search(nb):
+            strong.add(lab)
+
+    return sorted(strong), sorted(weak)
+
+
 def _consult_oncology_flags(
     ui_frags: list[dict], consultation_text_raw: str
 ) -> dict:
     """Признаки онкологии/повышенного онкологического риска в заключении и в отборе протоколов."""
-    needles: tuple[str, ...] = (
-        "онколог",
-        "опухол",
-        "новообразован",
-        "злокачеств",
-        "карцино",
-        "метастаз",
-        "лейкоз",
-        "лимфом",
-        "миелом",
-        "меланом",
-        "сарком",
-        "химиотерап",
-        "полихимиотерап",
-        "лучевая терап",
-        "стереотакс",
-        "биопси",
-        "гистолог",
-        "онкомаркер",
-        "tnm",
-        "гер2",
-        "her2",
-        "ki-67",
-        "ki67",
-        " паллиатив ",
-        "инвазивная карцино",
-        "рецидив опухоли",
-        "семейная нагруженность по онколог",
-        "онкоти",
-        "oncotype",
-        "oncolog",
-        "staging",
-        "стационар по онколог",
-    )
-
-    def scan_blob(blob: str) -> list[str]:
-        b = blob.lower()
-        found: list[str] = []
-        for n in needles:
-            if n in b:
-                found.append(n.strip())
-        return sorted(set(found))[:14]
+    weak_min = max(1, min(9, int(os.environ.get("CONSULT_REVIEW_ONCOLOGY_WEAK_MIN_HITS", "2"))))
 
     def needle_basis_sentence(where_human: str, found: list[str]) -> str:
-        """Человекочитаемое пояснение: какие подстроки сработали (без NLP)."""
         if not found:
             return ""
         uniq = sorted(set(found))
@@ -3265,13 +3409,14 @@ def _consult_oncology_flags(
         tail = f" (+ ещё {more})" if more > 0 else ""
         joined = ", ".join(shown)
         return (
-            f"{where_human}: при простом посимвольном поиске найдены подстроки из списка "
-            f'лексических маркеров: {joined}{tail}. Без учёта семантики возможны ложные '
-            f"срабатывания или пропуски."
+            f"{where_human}: эвристика с сильными и слабыми маркерами; признаки: {joined}{tail}. "
+            f"Слабые скрининговые признаки учитываются при сумме не менее {weak_min}."
         )
 
     cons = consultation_text_raw or ""
-    con_l = scan_blob(cons)
+    cons_strong, cons_weak = _consult_oncology_dual_scan(cons)
+    cons_hits = sorted(set(cons_strong + cons_weak))
+    in_consult = bool(cons_strong) or len(cons_weak) >= weak_min
 
     prot_items: list[dict] = []
     seen_paths: set[str] = set()
@@ -3299,17 +3444,20 @@ def _consult_oncology_flags(
                 if blk:
                     pieces.append(blk)
         merged = "\n".join(pieces)
+        prot_strong, prot_weak = _consult_oncology_dual_scan(merged)
+        oncology_in_text = bool(prot_strong) or len(prot_weak) >= weak_min
+        marks = sorted(set(prot_strong + prot_weak))
 
         basis_lines: list[str] = []
         pr_meta = _protocols_by_path.get(pth) or {}
         cat = str(pr_meta.get("category") or "").lower()
-        if "novoobrazovan" in path_l or "novoobrazovan" in cat:
+        in_onco_catalog = "novoobrazovan" in path_l or "novoobrazovan" in cat
+        if in_onco_catalog:
             basis_lines.append(
                 'Каталог протоколов: файл отнесён к ветви «новообразования» — в URL пути или в '
                 "поле category присутствует «novoobrazovan»."
             )
-        marks = scan_blob(merged)
-        if marks:
+        if oncology_in_text and marks:
             basis_lines.append(
                 needle_basis_sentence(
                     "Совокупно по названию файла, пути в каталоге и отобранным фрагментам текста",
@@ -3326,11 +3474,10 @@ def _consult_oncology_flags(
                 "basis_ru": list(basis_lines),
                 # Совместимость со старым фронтом: то же содержание, но конкретнее.
                 "hints_ru": list(basis_lines),
-                "markers": marks,
+                "markers": marks[:16],
             }
         )
 
-    in_consult = len(con_l) > 0
     in_proto = len(prot_items) > 0
 
     sentences: list[str] = []
@@ -3351,10 +3498,11 @@ def _consult_oncology_flags(
     )
 
     consultation_basis_ru: list[str] = []
-    if con_l:
+    if in_consult and cons_hits:
         consultation_basis_ru.append(
             needle_basis_sentence(
-                "Текст загруженного заключения (извлечённый из PDF)", con_l
+                "Текст загруженного заключения (извлечённый из PDF)",
+                cons_hits,
             )
         )
 
@@ -3372,16 +3520,19 @@ def _consult_oncology_flags(
         instruction_ru = f"{instruction_ru} Основание (эвристика): {clipped}"
 
     method_note_ru = (
-        "Это не клиническое решение модели про «онко-риск»: срабатывает автоматический поиск "
-        "подстрок в тексте заключения, путях к файлам и фрагментах текстов протоколов (RAG) без понимания контекста "
-        "(возможны ложные совпадения и пропуски)."
+        "Это не клиническое решение модели про «онко-риск»: учитываются сильные маркеры (злокачественность, "
+        "химиотерапия, типичные паттерны рака/миеломы/лимфомы с отсечением ложных вроде «лимфоменингит», и т.д.) "
+        f"или не менее {weak_min} слабых скрининговых; совпадение по одному нейтральному слову недостаточно. "
+        "В тексте названий протоколов и фрагментах RAG возможны ошибки классификации."
     )
 
     return {
         "any": in_consult or in_proto,
         "consultation_hit": in_consult,
         "protocol_hit": in_proto,
-        "consultation_markers": con_l[:14],
+        "consultation_markers": cons_hits[:16],
+        "consultation_strong_markers": list(cons_strong),
+        "consultation_weak_markers": list(cons_weak),
         "consultation_basis_ru": consultation_basis_ru,
         "protocol_items": prot_items,
         "banner_ru": banner,
@@ -4765,6 +4916,14 @@ async def api_consult_review(
     boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
 
     rq = q
+
+    demographics_banner, demographics_meta = consult_demographics_banner_from_kz(full_text)
+    if demographics_banner.strip():
+        head = demographics_banner.strip() + "\n\n"
+        q = head + q.lstrip()
+        rq = head + rq.lstrip()
+        qr_lim = max(900, int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000")))
+        q_rag = (q_rag.strip() + "\n\n" + demographics_banner.strip()).strip()[:qr_lim]
 
     max_chunks_r = int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
     max_per_path_r = int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
