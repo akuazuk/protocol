@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parent
 from env_load import load_project_env
 
 from icd_mkb import (
+    ICD10_CODE_RE,
     analyze_query_for_icd,
     count_icd_code_mentions,
     describe_code,
@@ -341,6 +342,20 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
  "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
  "protocol_paths_used": [<строки путей протоколов из выдержек, если удалось из текста>]}
 Ровно 4–6 объектов в criteria. overall_compliance_pct — взвешенное обобщение, не простое среднее без осмысления."""
+
+SYSTEM_CONSULT_PDF_FOR_PROTOCOL_SEARCH = """Ты помощник врача. Ниже — текст, машинно извлечённый из PDF консультативного заключения (может содержать шапку организации, реквизиты, ФИО).
+
+Задача: выделить суть клинического случая для ПОИСКА по текстам клинических протоколов Минздрава Республики Беларусь (подбор фрагментов документов).
+- Возьми из текста только клинически значимое: жалобы и анамнез (если есть), объективный статус/осмотр, результаты обследований с короткой формулировкой находок, ключевые диагнозы из заключения, этап ведения (наблюдение, подготовка к операции, послеоперационный период и т.п.), упомянутые в документе коды МКБ-10 и их текстовые формулировки рядом.
+- Не включай названия организаций, адреса, телефоны, рекламные блоки, штампы «выдан пациенту», подписи без клинической сути, если они не задают содержание помощи.
+- Не добавляй диагнозов, симптомов и назначений, которых НЕТ во входном тексте.
+- Если в документе указаны возраст и пол — кратко включи их (важно для детских vs взрослых протоколов).
+
+Итог — один связный текст на русском, плотный по терминам (как в выписках), пригодный как текст запроса к поиску по протоколам: минимум 100 символов, если медицинский смысл в документе вообще есть; максимум 2000 символов.
+
+Верни ОДИН JSON (без markdown, без текста до/после):
+{"clinical_search_text": "<…>", "confidence": "high"|"medium"|"low"}
+Поле confidence: high если структура заключения ясна и ядро случая восстановимо; medium если часть сведений потеряна при OCR/обрывах; low если текст почти только реквизиты или противоречив. Если клинической сути нет — "clinical_search_text": "" и confidence low."""
 
 
 def _jsonl_chunk_files() -> list[Path]:
@@ -2267,6 +2282,9 @@ def retrieve(
 GEMINI_CALL_TIMEOUT = float(os.environ.get("GEMINI_CALL_TIMEOUT", "180"))
 GEMINI_SPELLFIX_TIMEOUT = float(os.environ.get("GEMINI_SPELLFIX_TIMEOUT", "45"))
 GEMINI_QUERY_REFINE_TIMEOUT = float(os.environ.get("RAG_QUERY_REFINE_TIMEOUT", "45"))
+GEMINI_CONSULT_DIGEST_TIMEOUT = float(
+    os.environ.get("GEMINI_CONSULT_DIGEST_TIMEOUT", str(GEMINI_QUERY_REFINE_TIMEOUT))
+)
 
 
 def get_gemini():
@@ -2429,6 +2447,29 @@ def generate_gemini_query_refine(model, full_prompt: str):
             return None
 
 
+def _generate_blocking_consult_pdf_digest(model, full_prompt: str):
+    """JSON: извлечение клинического ядра из текста PDF КЗ под RAG."""
+    import google.generativeai as genai
+
+    return model.generate_content(
+        full_prompt,
+        generation_config=genai.GenerationConfig(
+            temperature=0.18,
+            max_output_tokens=2048,
+            response_mime_type="application/json",
+        ),
+    )
+
+
+def generate_gemini_consult_pdf_digest(model, full_prompt: str):
+    with ThreadPoolExecutor(max_workers=1) as ex:
+        fut = ex.submit(_generate_blocking_consult_pdf_digest, model, full_prompt)
+        try:
+            return fut.result(timeout=GEMINI_CONSULT_DIGEST_TIMEOUT)
+        except FuturesTimeout:
+            return None
+
+
 def refine_clinical_query_gemini(
     complaint_rag: str, full_query: str, model
 ) -> tuple[str, dict | None]:
@@ -2526,6 +2567,192 @@ def _try_parse_json(t: str) -> dict | None:
         return out if isinstance(out, dict) else None
     except json.JSONDecodeError:
         return None
+
+
+_DIAG_LINE_HINTS_RU: tuple[str, ...] = (
+    "диагноз",
+    "заключени",
+    "рекомендац",
+    "мкб-10",
+    "мкб 10",
+    "международн",
+    "код по мкб",
+    "клиническ",
+    "основной",
+    "сопутствующ",
+    "жалоб",
+    "анамнез",
+    "объективно",
+    "локальный статус",
+    "осмотр",
+    "пальпац",
+    "аускульт",
+    "узи ",
+    " узд ",
+    " кт ",
+    " мрт ",
+    "эхокг",
+    "эндоскоп",
+    "операци",
+    "послеоперац",
+    "госпитал",
+    "объективный статус",
+)
+
+
+def _consult_heuristic_focus_text(pdf_plain: str, *, max_chars: int = 4500) -> str:
+    """Выдёргивает из КЗ строки с клиническими маркерами и блоки с кодами МКБ (без LLM)."""
+    if not pdf_plain.strip():
+        return ""
+    norm_full = normalize_text_for_icd_scan(pdf_plain.replace("\u00a0", " "))
+    lines = norm_full.replace("\r", "\n").split("\n")
+    picked: list[str] = []
+    seen_norm: set[str] = set()
+    for ln in lines:
+        s = (ln or "").strip()
+        if not s or len(s) > 480:
+            continue
+        low = s.lower()
+        hit = False
+        for hint in _DIAG_LINE_HINTS_RU:
+            if hint.strip() and hint.lower() in low:
+                hit = True
+                break
+        if not hit and ICD10_CODE_RE.search(normalize_text_for_icd_scan(s)):
+            hit = True
+        if hit:
+            key = low[:280]
+            if key in seen_norm:
+                continue
+            seen_norm.add(key)
+            picked.append(s)
+    out = "\n".join(picked).strip()
+    if len(out) > max_chars:
+        out = out[: max_chars - 1].rstrip() + "…"
+    return out
+
+
+def _consult_gemini_clinical_focus_text(model, pdf_digest_input: str) -> tuple[str | None, dict]:
+    """Один короткий вызов модели — клиническое «ядро» для поиска по протоколам."""
+    meta: dict = {"ok": False}
+    pdf_digest_input = (pdf_digest_input or "").strip()
+    if not pdf_digest_input:
+        return None, meta
+    use = os.environ.get("CONSULT_REVIEW_GEMINI_DIGEST", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if not use:
+        meta["reason"] = "disabled_via_env"
+        return None, meta
+    cap = max(3500, int(os.environ.get("CONSULT_REVIEW_DIGEST_PROMPT_CHARS", "12000")))
+    body = pdf_digest_input[:cap]
+    prompt = (
+        SYSTEM_CONSULT_PDF_FOR_PROTOCOL_SEARCH
+        + "\n\n--- ТЕКСТ ИЗ PDF (может быть с обрывами) ---\n\n"
+        + body
+    )
+    try:
+        resp = generate_gemini_consult_pdf_digest(model, prompt)
+        if resp is None:
+            meta["reason"] = "timeout_or_empty_response"
+            return None, meta
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+        if not parsed or not isinstance(parsed, dict):
+            meta["reason"] = "bad_json"
+            return None, meta
+        clinic = (parsed.get("clinical_search_text") or "").strip()
+        conf = str(parsed.get("confidence") or "").strip().lower()
+        meta["confidence"] = conf or "unknown"
+        meta["ok"] = bool(clinic)
+        if not clinic:
+            meta["reason"] = "empty_clinical_search_text"
+            return None, meta
+        return clinic, meta
+    except HTTPException:
+        meta["reason"] = "http_exception"
+        return None, meta
+    except Exception as e:
+        meta["reason"] = "error"
+        meta["detail"] = str(e)[:200]
+        return None, meta
+
+
+def _merge_icd_codes_for_consult_retrieval(
+    icd_analysis: dict, full_pdf_text: str
+) -> list[str]:
+    """Объединяет коды МКБ из разбора с явными кодами из текста заключения (приоритет PDF)."""
+    max_n = max(5, min(16, int(os.environ.get("CONSULT_REVIEW_ICD_MERGE_CAP", "12"))))
+    from_pdf_raw = extract_icd_codes_raw(full_pdf_text or "")
+    from_pipe = icd_analysis.get("codes_for_retrieval") if isinstance(icd_analysis, dict) else None
+    if not isinstance(from_pipe, list):
+        from_pipe = []
+    seen: set[str] = set()
+    merged: list[str] = []
+
+    def push(code: object) -> None:
+        if not isinstance(code, str):
+            return
+        n = normalize_icd_code(code.strip())
+        if not n or n in seen:
+            return
+        seen.add(n)
+        merged.append(n)
+
+    for c in from_pdf_raw:
+        push(c)
+    for c in from_pipe:
+        push(str(c))
+    return merged[:max_n]
+
+
+def _build_consult_review_pipeline_query(model, full_text: str) -> tuple[str, dict]:
+    """Синтетический запрос под цепочку МКБ+refine+RAG без «шумной» шапки PDF."""
+    sep = "=== Жалобы и вопрос ==="
+    meta: dict = {
+        "focus_source": "",
+        "focus_chars": 0,
+        "gemini_digest": None,
+    }
+    q_slice = max(2000, int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000")))
+    dig_in_lim = max(3500, int(os.environ.get("CONSULT_REVIEW_DIGEST_INPUT_CHARS", "14000")))
+    min_focus = max(50, int(os.environ.get("CONSULT_REVIEW_DIGEST_MIN_CHARS", "100")))
+    max_focus = max(min_focus + 80, int(os.environ.get("CONSULT_REVIEW_DIGEST_MAX_CHARS", "2000")))
+
+    excerpt = full_text[: min(len(full_text), dig_in_lim)]
+
+    heuristic = _consult_heuristic_focus_text(excerpt)
+    gemini_focus, gmeta = _consult_gemini_clinical_focus_text(model, excerpt)
+    meta["gemini_digest"] = gmeta
+
+    focus_plain = ""
+    if gemini_focus:
+        gf = gemini_focus.strip()
+        cf = str(gmeta.get("confidence") or "").lower()
+        too_short = len(gf) < min_focus
+        low_conf_short = cf == "low" and len(gf) < max(240, min_focus * 2)
+        if not too_short and not low_conf_short:
+            focus_plain = gf
+            meta["focus_source"] = "gemini_digest"
+
+    if not focus_plain.strip():
+        h = heuristic.strip()
+        if len(h) >= min_focus:
+            focus_plain = h
+            meta["focus_source"] = "heuristic_sections"
+        else:
+            focus_plain = excerpt[: min(len(excerpt), q_slice)].strip()
+            meta["focus_source"] = "truncated_pdf"
+
+    if len(focus_plain) > max_focus:
+        focus_plain = focus_plain[: max_focus - 1].rstrip() + "…"
+
+    meta["focus_chars"] = len(focus_plain)
+    meta["focus_preview"] = (focus_plain[:420] + "…") if len(focus_plain) > 420 else focus_plain
+    synthetic = sep + "\n\n" + focus_plain
+    return synthetic, meta
 
 
 def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
@@ -4200,20 +4427,33 @@ async def api_consult_review(
             + "\n\n[…тексты объединённых PDF обрезаны для обработки]"
         )
 
-    q_slice = int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
-    synthetic = "=== Жалобы и вопрос ===\n\n" + full_text[:q_slice]
     model = get_gemini()
+
+    synthetic, retrieval_focus_meta = _build_consult_review_pipeline_query(
+        model, full_text
+    )
 
     icd_analysis, q, q_rag, _, icd_err = _infer_icd_pipeline_from_full_query(
         synthetic, model
     )
+    q_slice_fb = int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
+    fallback_synthetic_legacy = (
+        "=== Жалобы и вопрос ===\n\n" + full_text[: min(len(full_text), q_slice_fb)]
+    )
     if icd_err or not (q_rag or "").strip():
-        q = synthetic.strip()
-        q_rag = clinical_query_for_rag(synthetic) or full_text[:7000]
-        icd_analysis = analyze_query_for_icd(q, q_rag)
+        icd_analysis_fb, q_fb, q_rag_fb, _, icd_err_fb = (
+            _infer_icd_pipeline_from_full_query(fallback_synthetic_legacy, model)
+        )
+        if not icd_err_fb and (q_rag_fb or "").strip():
+            icd_analysis, q, q_rag = icd_analysis_fb, q_fb, q_rag_fb
+        else:
+            q = synthetic.strip()
+            q_rag = clinical_query_for_rag(synthetic) or full_text[:7000]
+            icd_analysis = analyze_query_for_icd(q, q_rag)
 
     assert icd_analysis is not None
-    icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
+    merged_icd = _merge_icd_codes_for_consult_retrieval(icd_analysis, full_text)
+    icd_codes_for_lex = merged_icd or (icd_analysis.get("codes_for_retrieval") or None)
 
     user_slugs = [
         s.strip()
@@ -4246,7 +4486,7 @@ async def api_consult_review(
             routing_query=full_text[: min(9500, len(full_text))],
             category_boost=boost_merged or None,
             user_category_slugs=user_slugs or None,
-            icd_codes_for_lex=None,
+            icd_codes_for_lex=(merged_icd or None),
             max_chunks=16,
             max_per_path=3,
         )
@@ -4312,6 +4552,10 @@ async def api_consult_review(
         "consult_oncology_flags": oncology,
         "audience_filter": audience_hint,
         "audience_fallback": audience_fb,
+        "consult_retrieval": {
+            "focus": retrieval_focus_meta,
+            "icd_codes_lex_merged": merged_icd,
+        },
         "icd": _icd_client_payload(icd_analysis),
     }
 
