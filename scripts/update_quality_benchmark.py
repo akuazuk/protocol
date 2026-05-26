@@ -33,7 +33,7 @@ def main() -> int:
     else:
         golden = ROOT / args.golden
         if not golden.is_file():
-            golden = ROOT / "eval/golden_queries.prod.example.jsonl"
+            golden = ROOT / "eval/golden_queries.prod.sample.jsonl"
 
     from eval.query_tester import load_golden_lines  # noqa: E402
     from eval.search_quality_eval import evaluate_one  # noqa: E402
