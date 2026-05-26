@@ -4214,6 +4214,26 @@ def _protocol_icd_mentions_for_response(
     return out
 
 
+def normalize_differential_field(parsed: dict | None) -> None:
+    """До 5 строк; порядок как у модели (сверху — наиболее вероятное)."""
+    if not parsed or not isinstance(parsed, dict):
+        return
+    d = parsed.get("differential")
+    if not isinstance(d, list):
+        return
+    out: list[str] = []
+    for x in d:
+        if isinstance(x, str) and x.strip():
+            out.append(x.strip())
+        elif isinstance(x, dict):
+            t = (x.get("text") or x.get("label") or x.get("diagnosis") or "").strip()
+            if t:
+                out.append(t)
+        if len(out) >= 5:
+            break
+    parsed["differential"] = out
+
+
 def _finish_hits_max(resp) -> bool:
     fr = (_gemini_finish_reason(resp) or "").upper()
     return "MAX" in fr or "LENGTH" in fr

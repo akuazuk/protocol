@@ -44,3 +44,12 @@ def test_quality_benchmark_ok(client: TestClient) -> None:
     data = r.json()
     assert "pass_rate_pct" in data
     assert int(data.get("queries_total") or 0) >= 1
+
+
+def test_normalize_differential_field_module() -> None:
+    from rag_server import normalize_differential_field
+
+    parsed: dict = {"differential": ["а", {"text": "б"}, "  ", "c", "d", "e", "f"]}
+    normalize_differential_field(parsed)
+    assert parsed["differential"] == ["а", "б", "c", "d", "e"]
+    normalize_differential_field(None)
