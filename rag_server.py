@@ -19,7 +19,8 @@ import threading
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
-from datetime import date
+import csv
+from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -86,6 +87,11 @@ _chunks_load_error: str | None = None
 
 PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
 STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
+INDEX_CSV_PATH = ROOT / "index.csv"
+QUALITY_BENCHMARK_PATH = ROOT / "data" / "quality_benchmark.json"
+MINZDRAV_PROTOCOLS_INDEX_URL = (
+    "https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
+)
 
 ALLOWED_SPECIALTY_SLUGS = frozenset(
     [
@@ -4362,6 +4368,71 @@ def _selected_facts_coverage(template_text: str, payload: dict) -> tuple[float, 
     if total <= 0:
         return 1.0, []
     return hit / float(total), missing[:20]
+
+
+def _corpus_stats_from_index_csv() -> dict:
+    """Сводка по index.csv (скачанный каталог PDF) без загрузки RAG-чанков."""
+    p = INDEX_CSV_PATH
+    if not p.is_file():
+        return {"index_csv_available": False}
+    rows: list[dict[str, str]] = []
+    with p.open(encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    post_mz = sum(1 for r in rows if (r.get("has_post_mz") or "").strip().lower() == "yes")
+    years: Counter[str] = Counter()
+    categories: Counter[str] = Counter()
+    for r in rows:
+        y = (r.get("years_in_filename") or "").strip()
+        if y:
+            years[y] += 1
+        cat = (r.get("category") or "").strip()
+        if cat:
+            categories[cat] += 1
+    mtime = datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc)
+    return {
+        "index_csv_available": True,
+        "protocols_in_index": len(rows),
+        "protocols_post_mz": post_mz,
+        "rubrics_in_index": len(categories),
+        "index_csv_updated_utc": mtime.isoformat(),
+        "years_top": [{"year": y, "count": c} for y, c in years.most_common(8)],
+        "source_url": MINZDRAV_PROTOCOLS_INDEX_URL,
+    }
+
+
+@app.get("/api/corpus-stats")
+def api_corpus_stats() -> dict:
+    """Состояние корпуса для UI: каталог index.csv + загруженные чанки (если RAG готов)."""
+    out = _corpus_stats_from_index_csv()
+    out["specialties_catalog"] = len(SPECIALTY_LABELS_RU)
+    out["rag_ready"] = _chunks_load_done.is_set()
+    out["rag_load_error"] = _chunks_load_error
+    if _chunks_load_done.is_set():
+        out["chunks_loaded"] = len(_chunks)
+        out["protocols_loaded"] = len(_protocols_by_path)
+        out["protocol_meta_entries"] = len(_protocol_meta)
+    else:
+        out["chunks_loaded"] = None
+        out["protocols_loaded"] = None
+        out["protocol_meta_entries"] = None
+    return out
+
+
+@app.get("/api/quality-benchmark")
+def api_quality_benchmark() -> dict:
+    """Эталонные метрики качества подбора (для блока «качество поиска» на главной)."""
+    if not QUALITY_BENCHMARK_PATH.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail="data/quality_benchmark.json не найден",
+        )
+    try:
+        data = json.loads(QUALITY_BENCHMARK_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise HTTPException(status_code=500, detail=f"quality_benchmark.json: {e!s}") from e
+    if not isinstance(data, dict):
+        raise HTTPException(status_code=500, detail="quality_benchmark.json: ожидается объект")
+    return data
 
 
 @app.get("/health")

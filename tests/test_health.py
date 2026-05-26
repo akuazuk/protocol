@@ -27,3 +27,20 @@ def test_specialties_ok(client: TestClient) -> None:
     assert "specialties" in data
     assert isinstance(data["specialties"], list)
     assert len(data["specialties"]) >= 1
+
+
+def test_corpus_stats_ok(client: TestClient) -> None:
+    r = client.get("/api/corpus-stats")
+    assert r.status_code == 200
+    data = r.json()
+    assert data.get("specialties_catalog") == 24
+    if data.get("index_csv_available"):
+        assert int(data.get("protocols_in_index") or 0) >= 1
+
+
+def test_quality_benchmark_ok(client: TestClient) -> None:
+    r = client.get("/api/quality-benchmark")
+    assert r.status_code == 200
+    data = r.json()
+    assert "pass_rate_pct" in data
+    assert int(data.get("queries_total") or 0) >= 1

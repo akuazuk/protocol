@@ -1,0 +1,15 @@
+{
+  "title": "Эталонная проверка подбора протоколов",
+  "corpus": "мини-корпус (smoke-фикстуры) + полный корпус на проде",
+  "queries_total": 5,
+  "queries_passed": 5,
+  "pass_rate_pct": 100,
+  "methodology_ru": "Набор эталонных запросов eval/golden_queries.jsonl; проверка retrieve() — см. eval/README.md и eval/query_tester.py.",
+  "prod_note_ru": "На полном корпусе (~450 PDF) рекомендуется периодический прогон eval/search_quality_eval.py с отчётом для методслужбы.",
+  "updated": "2026-05-26",
+  "metrics": [
+    { "label": "Попадание в нужный протокол (мини)", "value": "5/5", "hint": "expected_any_path_contains + must_substrings" },
+    { "label": "Негативные запросы", "value": "1/1", "hint": "пустой отбор для мусорного токена" },
+    { "label": "Рубрики каталога Минздрава", "value": "24", "hint": "синхронизация slug с сайтом" }
+  ]
+}
