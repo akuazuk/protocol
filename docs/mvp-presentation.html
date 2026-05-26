@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Презентация MVP: навигатор протоколов, контроль качества КЗ, интеграция с МИС и региональная аналитика для Минздрава РБ." />
+  <title>Презентация MVP — навигатор протоколов и контроль качества КЗ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --green-950: #063d35;
+      --green-700: #126b5c;
+      --green-600: #1a8a72;
+      --green-400: #3cb89a;
+      --green-100: #e8f5f1;
+      --cream: #f7faf8;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+      --card: #ffffff;
+      --amber: #d97706;
+      --risk: #9b1c2e;
+      --radius: 18px;
+      --shadow: 0 14px 40px rgba(6, 61, 53, 0.09);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--cream) 0%, #e8f0ec 65%, #dceae4 100%);
+      line-height: 1.52;
+      font-size: 1rem;
+    }
+    .bg-soft {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 50% 40% at 92% -5%, rgba(26, 138, 114, 0.09), transparent 55%),
+        radial-gradient(ellipse 45% 35% at 4% 100%, rgba(13, 92, 74, 0.08), transparent 50%);
+    }
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 3rem;
+    }
+    .nav-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 0.65rem 0.95rem;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(26, 138, 114, 0.25);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+    }
+    .nav-top a {
+      color: var(--green-700);
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+    .nav-top a:hover { text-decoration: underline; }
+
+    header.hero {
+      padding: 2rem 1.5rem;
+      border-radius: 26px;
+      background:
+        radial-gradient(ellipse 80% 70% at 100% -20%, rgba(60, 184, 154, 0.25), transparent 55%),
+        linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.85) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow {
+      font-family: "Outfit", sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green-600);
+      margin: 0 0 0.6rem;
+    }
+    header.hero h1 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(1.45rem, 4.2vw, 2rem);
+      color: var(--green-950);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      max-width: 28em;
+    }
+    .hero-lead {
+      margin: 1rem 0 0;
+      font-size: 1.03rem;
+      color: var(--muted);
+      max-width: 40em;
+    }
+    .tag-demo {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--amber);
+      border: 1px dashed rgba(217, 119, 6, 0.45);
+    }
+
+    h2 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.25rem;
+      color: var(--green-950);
+      margin: 2.2rem 0 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.02rem;
+      color: var(--green-700);
+      margin: 1.35rem 0 0.5rem;
+    }
+    p { margin: 0.55rem 0; max-width: 52em; }
+    ul { margin: 0.35rem 0 0.6rem 1.2rem; max-width: 52em; }
+    li { margin: 0.35rem 0; }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .card {
+      padding: 1.1rem 1.05rem;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 6px 24px rgba(6, 61, 53, 0.06);
+    }
+    .card strong { color: var(--green-950); font-family: "Outfit", sans-serif; }
+    .card-num {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--green-600);
+      line-height: 1.1;
+    }
+    .card-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 1.25rem;
+      margin: 1rem 0 1.5rem;
+      align-items: stretch;
+    }
+    .chart-box {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1rem 1rem 1.15rem;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      box-shadow: var(--shadow);
+    }
+    .chart-caption {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0.5rem 0 0;
+    }
+
+    .mermaid-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 1rem 1rem 1.25rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(26, 138, 114, 0.25);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.45rem;
+      max-width: 520px;
+      margin: 1rem auto;
+      font-family: "Outfit", sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .pyramid span {
+      text-align: center;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      color: var(--green-950);
+      background: linear-gradient(90deg, rgba(232, 245, 241, 0.95), #fff);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+    }
+    .pyramid .p1 { width: 96%; margin: 0 auto; background: rgba(232, 245, 241, 0.6); font-size: 0.74rem; }
+    .pyramid .p2 { width: 84%; margin: 0 auto; }
+    .pyramid .p3 { width: 72%; margin: 0 auto; }
+    .pyramid .p4 { width: 60%; margin: 0 auto; }
+    .pyramid .p5 { width: 48%; margin: 0 auto; }
+    .pyramid .p6 { width: 36%; margin: 0 auto; background: rgba(26, 138, 114, 0.12); }
+
+    .timeline {
+      margin: 1rem 0 1.5rem;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: t;
+      border-left: 3px solid rgba(26, 138, 114, 0.35);
+      margin-inline-start: 0.65rem;
+    }
+    .timeline li {
+      position: relative;
+      padding: 0.65rem 0 0.65rem 1.25rem;
+      margin: 0;
+    }
+    .timeline li::before {
+      counter-increment: t;
+      content: counter(t);
+      position: absolute;
+      left: -0.92rem;
+      top: 0.55rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: var(--green-600);
+      color: #fff;
+      font-size: 0.72rem;
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--cream);
+    }
+
+    .signal-box {
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(253, 236, 239, 0.85) 0%, #fff 50%);
+      border: 1px solid rgba(155, 28, 46, 0.28);
+      margin: 1rem 0;
+    }
+    .signal-box svg { flex-shrink: 0; opacity: 0.9; }
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+      gap: 0.75rem;
+      margin-top: 0.65rem;
+    }
+    .idea-item {
+      padding: 0.75rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      font-size: 0.92rem;
+    }
+    footer.page-foot {
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.2);
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    @media print {
+      .nav-top .no-print { display: none; }
+      .chart-box, .mermaid-wrap { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-soft" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="nav-top" aria-label="Навигация документа">
+      <span style="font-family: Outfit, sans-serif; font-weight: 700; color: var(--green-950)"
+        >Презентация MVP</span>
+      <span class="no-print">
+        <a href="../index.html#consult-review">К приложению</a>
+        ·
+        <a href="ministry-brief-print.html">Буклет (печать)</a>
+      </span>
+    </nav>
+
+    <header class="hero">
+      <p class="hero-eyebrow">Цифровой контроль качества</p>
+      <h1>Протоколы Минздрава РБ как опора для каждого консультативного заключения</h1>
+      <p class="hero-lead">
+        Проект связывает официальные клинические протоколы, разбор текста заключений и объективную оценку соответствия.
+        MVP уже помогает врачам и методслужбе. Следующий шаг&nbsp;— встроить оценку в МИС, чтобы качество становилось
+        измеримым на уровне врача, клиники, района и региона, с прозрачной эскалацией при падении баллов.
+      </p>
+      <span class="tag-demo">Диаграммы ниже — иллюстративная концепция (не живые производственные данные)</span>
+    </header>
+
+    <h2>Сегодня: что даёт MVP</h2>
+    <div class="grid-cards">
+      <div class="card">
+        <div class="card-num">Два контура</div>
+        <p class="card-sub">Поиск по корпусу протоколов + проверка 1–3 PDF КЗ с таблицей критериев и долей соответствия.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">МКБ‑10 в ядре</div>
+        <p class="card-sub">
+          Извлечение кодов из блока диагноза, приоритет протоколов, где код встречается в выдержке RAG&nbsp;— меньше
+          «случайных» попаданий.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-num">Методисту</div>
+        <p class="card-sub">
+          Сводки зон риска, точечные рекомендации к доработке документации до жалоб и конфликтных кейсов во внесудебной
+          плоскости.
+        </p>
+      </div>
+    </div>
+
+    <h2>Эффект на контроль качества оказания услуг</h2>
+    <p>
+      Качество не сводится к «чувствую, что всё ок». Нужна <strong>единая шкала соответствия протоколу</strong>,
+      понятная врачу, заведующему и экономике здравоохранения. Автоматизированное сравнение КЗ с релевантными фрагментами КП даёт повторяемую оценку, которую можно сравнивать во времени и между подразделениями без субъективного «понравилось/не понравилось».
+    </p>
+
+    <div class="signal-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="var(--risk)" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="17" r="0.5" fill="var(--risk)"/>
+      </svg>
+      <div>
+        <strong style="font-family: Outfit, sans-serif; color: var(--risk)">Сигнал руководству</strong>
+        <p style="margin: 0.35rem 0 0; font-size: 0.92rem">
+          При оценке ниже порога (например&nbsp;&lt;&nbsp;70% по суммарному профилю или по критичным блокам&nbsp;— обследование,
+          тактика, наблюдение) МИС формирует уведомление: ответственный за качество и руководитель структурного подразделения получают факт падения качества документации <strong>до</strong> эскалации со стороны пациента.
+        </p>
+      </div>
+    </div>
+
+    <h2>От МИС центра до Минздрава — целевая схема</h2>
+    <div class="mermaid-wrap">
+      <pre class="mermaid">
+flowchart TB
+    subgraph MIS["Медицинский центр"]
+        A["Врач закрывает КЗ в МИС"] --> B["Электронная подпись"]
+        B --> C["Структурированный текст + МКБ + PDF"]
+        C --> D{"Сервис соответствия протоколу"}
+        D --> E["Индекс КЗ для врача и клиники"]
+        E --> F["Если балл &lt; порога → уведомление руководству"]
+    end
+    subgraph RAG["Ядро оценки (как MVP)"]
+        D --> G["Отбор Фрагментов КП (RAG)"]
+        G --> H["Эвристика + ИИ-сравнение"]
+        H --> I["Общая оценка % и профили по критериям"]
+    end
+    subgraph SCALE["Развитие"]
+        J["Центры и поликлиники Минска"]
+        K["Областной и республиканский срезы"]
+        L["Приём данных в контур Минздрава"]
+    end
+    E --> J
+    J --> K
+    K --> L
+    L --> M["Рейтинг: врач · клиника · район · регион"]
+      </pre>
+    </div>
+
+    <h3>Сверху вниз — агрегация данных (демо-схема)</h3>
+    <div class="pyramid" aria-label="Пирамида агрегации рейтинга">
+      <span class="p1">Облако Минздрава Республики Беларусь — методология, методики, KPI отрасли</span>
+      <span class="p2">Областной / столичный срез качества документации</span>
+      <span class="p3">Районы, сетевые партнёрства поликлиник</span>
+      <span class="p4">Клиника / центр / филиалы</span>
+      <span class="p5">Отделение, профиль, врач</span>
+      <span class="p6">Конкретное КЗ после подписания</span>
+    </div>
+
+    <h2>Индикаторы (иллюстрация)</h2>
+    <div class="charts-row">
+      <div class="chart-box">
+        <h3 style="margin-top: 0">Распределение последних отчётных оценок (концепт)</h3>
+        <div style="height: 260px; position: relative;">
+          <canvas id="chartBar" aria-label="Столбчатая диаграмма распределения оценок соответствия"></canvas>
+        </div>
+        <p class="chart-caption">Столбцы показывают долю случаев в диапазонах качества после внедрения сквозного учёта в МИС.</p>
+      </div>
+      <div class="chart-box">
+        <h3 style="margin-top: 0">Средний балл документации по месяцам после пилота</h3>
+        <div style="height: 260px; position: relative;">
+          <canvas id="chartLine" aria-label="Линейный график динамики среднего балла"></canvas>
+        </div>
+        <p class="chart-caption">Тренд отражает гипотезу: методическая работа + обратная связь по КЗ улучшают средний результат.</p>
+      </div>
+    </div>
+
+    <h2>Дорожная карта (этапы)</h2>
+    <ol class="timeline">
+      <li>
+        <strong>MVP без МИС</strong>&nbsp;— навигация по протоколам, загрузка КЗ для проверки, отчёт для методслужбы (как сейчас у
+        пилота).
+      </li>
+      <li>
+        <strong>Интеграция МИС</strong>&nbsp;— автоматическая подача текста заключений, привязка к приёму, фиксация рейтинга в карте качества.</li>
+      <li>
+        <strong>Центральный контур качества города</strong>&nbsp;— единый дашборд по учреждениям Минска, управленческие отчёты.</li>
+      <li>
+        <strong>Витрина Минздрава</strong>&nbsp;— приём данных после усиленной квалифицированной электронной подписи КЗ:
+        обезличенные агрегаты и реестр отклонений для надзора и методической поддержки регионов.</li>
+    </ol>
+
+    <h2>Что ещё полезного даёт связка «протокол&nbsp;↔ КЗ»</h2>
+    <div class="ideas-grid">
+      <div class="idea-item">
+        <strong>Раннее обучение</strong>&nbsp;— низкая оценка не для наказания, а для триггера короткого обучения или семинара по конкретной рубрике
+        протокола.
+      </div>
+      <div class="idea-item">
+        <strong>Выявление узких мест</strong>&nbsp;— если по целому отделению одинаково «проседают» пункты наблюдения или обследований,
+        это сигнал к закупке или изменению маршрутизации пациентов.</div>
+      <div class="idea-item">
+        <strong>Сопоставление с исходами</strong>&nbsp;— связка качества документации с повторными обращениями и жалобами (при сохранении
+        этических и правовых норм).
+      </div>
+      <div class="idea-item">
+        <strong>Доказательная база для аккредитации</strong>&nbsp;— автоматический отчёт о доле заключений, прошедших проверку с высоким
+        баллом за период.</div>
+      <div class="idea-item">
+        <strong>Согласование с фармацевтической политикой</strong>&nbsp;— при расширении контекста: сверка назначений с разделами КП про
+        фармотерапию (во второй версии решения).</div>
+      <div class="idea-item">
+        <strong>Справедливое сравнение клиник</strong>&nbsp;— методика нормализует случайность: одни и те же протоколы и правила расчёта
+        для государственной и частной системы при согласии на обмен метаданными.</div>
+      <div class="idea-item">
+        <strong>Снижение нагрузки на МЭЭ</strong>&nbsp;— значительная часть формальных несоответствий находится автоматически на этапе
+        выписки, без отложенного выявления.</div>
+      <div class="idea-item">
+        <strong>Open-data рейтингов качества процесса</strong>&nbsp;(публичная агрегированная информация без персональных данных) —
+        поддержка осознанного выбора гражданином при сохранении врачебной тайны.</div>
+    </div>
+
+    <footer class="page-foot">
+      Материал носит прогностический и методический характер; конкретные юридические форматы обмена с Минздравом и технические средства ЭЦП должны быть согласованы по отдельной дорожной карте законодательства и информационной безопасности.
+      Протоколы остаются актуальной версией на&nbsp;<a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">сайте Минздрава РБ</a>.
+    </footer>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "neutral", securityLevel: "loose", fontFamily: "DM Sans, sans-serif" });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof Chart === "undefined") return;
+      var g = "#1a8a72";
+      var muted = "#5a6f6a";
+
+      var ctxBar = document.getElementById("chartBar");
+      if (ctxBar) {
+        new Chart(ctxBar, {
+          type: "bar",
+          data: {
+            labels: ["&lt; 50%", "50–69%", "70–84%", "85–94%", "95–100%"],
+            datasets: [
+              {
+                label: "Доля случаев, %",
+                data: [3, 8, 18, 35, 36],
+                backgroundColor: [
+                  "rgba(155, 28, 46, 0.55)",
+                  "rgba(217, 119, 6, 0.55)",
+                  "rgba(26, 138, 114, 0.45)",
+                  "rgba(26, 138, 114, 0.72)",
+                  "rgba(13, 92, 74, 0.82)",
+                ],
+                borderRadius: 8,
+                borderSkipped: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (c) {
+                    return c.raw + "% (демо)";
+                  },
+                },
+              },
+            },
+            scales: {
+              y: { beginAtZero: true, max: 40, ticks: { callback: function (v) { return v + "%"; }, color: muted } },
+              x: { ticks: { color: muted, maxRotation: 0 } },
+            },
+          },
+        });
+      }
+
+      var ctxLine = document.getElementById("chartLine");
+      if (ctxLine) {
+        new Chart(ctxLine, {
+          type: "line",
+          data: {
+            labels: ["−3 мес.", "−2 мес.", "Старт", "+1 мес.", "+3 мес.", "+6 мес."],
+            datasets: [
+              {
+                label: "Средний балл соответствия, %",
+                data: [62, 64, 66, 71, 74, 78],
+                borderColor: g,
+                backgroundColor: "rgba(26, 138, 114, 0.12)",
+                fill: true,
+                tension: 0.35,
+                pointRadius: 5,
+                pointBackgroundColor: g,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true, labels: { color: muted } },
+              tooltip: {
+                callbacks: {
+                  label: function (c) {
+                    return c.dataset.label + ": " + c.raw + "% (демо)";
+                  },
+                },
+              },
+            },
+            scales: {
+              y: { beginAtZero: false, min: 50, max: 90, ticks: { callback: function (v) { return v + "%"; }, color: muted } },
+              x: { ticks: { color: muted } },
+            },
+          },
+        });
+      }
+    });
+  </script>
+</body>
+</html>

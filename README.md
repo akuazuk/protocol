@@ -19,11 +19,13 @@
 3. Главная страница по умолчанию — **Проверка КЗ**; вкладку **Поиск протоколов** можно открыть через `#search`.
 4. **Поиск:** демо «I10» / «M32.9 СКВ» или учебный кейс → «Найти протоколы» (быстрее без inline-выдержки; кнопка «Загрузить развёрнутую выдержку»).
 5. **Проверка КЗ:** PDF или «Демо-текст КЗ (СКВ)» → «Проанализировать».
-6. Буклет: [docs/ministry-brief-print.html](docs/ministry-brief-print.html) → печать в PDF.
+6. Презентация качества MVP: [docs/mvp-presentation.html](docs/mvp-presentation.html) — диаграммы, схема контура качества и дорожная карта (концепт).
+7. Буклет: [docs/ministry-brief-print.html](docs/ministry-brief-print.html) → печать в PDF.
 
 ## Документы для руководства
 
 - [docs/ministry-brief-ru.md](docs/ministry-brief-ru.md) — краткое описание и KPI пилота
+- [docs/mvp-presentation.html](docs/mvp-presentation.html) — презентация MVP для руководства (качество, МИС, Минздрав; концепт-демо графики)
 - [docs/deployment-belarus.md](docs/deployment-belarus.md) — развёртывание в контуре РБ
 - [docs/roadmap-mis.md](docs/roadmap-mis.md) — этап 2: интеграция с МИС
 
