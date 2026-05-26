@@ -4499,6 +4499,136 @@
       line-height: 1.4;
     }
 
+    .practical-review-panel {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem 1.15rem;
+      border-radius: 14px;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      background: linear-gradient(155deg, #ecfdf5 0%, #ffffff 55%);
+      box-shadow: 0 8px 26px rgba(16, 185, 129, 0.1);
+      text-align: left;
+    }
+
+    .practical-review-panel--loading .assist-loading {
+      margin-top: 0.5rem;
+    }
+
+    .practical-review-head {
+      margin: 0 0 0.35rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .practical-review-summary {
+      margin: 0 0 0.65rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .practical-review-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.65rem 0 0.85rem;
+    }
+
+    .practical-review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .practical-review-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .practical-col {
+      padding: 0.75rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid rgba(13, 92, 74, 0.15);
+      background: rgba(255, 255, 255, 0.92);
+      min-height: 4rem;
+    }
+
+    .practical-col-title {
+      margin: 0 0 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--green-800);
+    }
+
+    .kz-matrix-section {
+      margin-bottom: 0.75rem;
+    }
+
+    .kz-matrix-section h5 {
+      margin: 0 0 0.35rem;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .kz-matrix-item {
+      display: flex;
+      gap: 0.45rem;
+      align-items: flex-start;
+      margin: 0.35rem 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .kz-matrix-item--icd {
+      background: rgba(254, 243, 199, 0.55);
+      border-radius: 8px;
+      padding: 0.35rem 0.4rem;
+    }
+
+    .kz-obligation-badge {
+      flex-shrink: 0;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.35rem;
+      border-radius: 6px;
+      line-height: 1.2;
+    }
+
+    .kz-obligation-badge--required {
+      background: rgba(196, 30, 58, 0.12);
+      color: #9f1239;
+    }
+
+    .kz-obligation-badge--recommended {
+      background: rgba(26, 138, 114, 0.14);
+      color: var(--green-900);
+    }
+
+    .kz-obligation-badge--conditional {
+      background: rgba(59, 130, 246, 0.12);
+      color: #1d4ed8;
+    }
+
+    .kz-matrix-excerpt {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .practical-kz-slot {
+      margin-top: 0.75rem;
+    }
+
     .minister-doc-links {
       margin: 0.5rem 0 0;
       font-size: 0.78rem;
@@ -6363,12 +6493,38 @@
         loadConsultationTemplate({});
         return;
       }
+      if (el.closest(".btn-practical-draft-kz")) {
+        ev.preventDefault();
+        var selPr = collectSelectedFactsPayload();
+        if (!selPr || !selPr.selected_count) {
+          alert(
+            "Отметьте пункты в матрице КЗ или в выдержке по протоколу, затем нажмите снова."
+          );
+          return;
+        }
+        loadConsultationTemplate({
+          selectedFactsPayload: selPr,
+          factsNotes: selPr.notes,
+        });
+        return;
+      }
+      if (el.closest(".btn-practical-verify-kz")) {
+        ev.preventDefault();
+        switchMainAppTab(MAIN_TAB_CONSULT);
+        var panelC = document.getElementById("panel-consult-review");
+        if (panelC && panelC.scrollIntoView) {
+          try {
+            panelC.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (ePv) {}
+        }
+        return;
+      }
       if (el.closest(".btn-consultation-from-facts")) {
         ev.preventDefault();
         var selected = collectSelectedFactsPayload();
         if (!selected || !selected.notes || !String(selected.notes).trim()) {
           alert(
-            "Отметьте хотя бы один пункт в блоке «По протоколу: обследование, препараты…»."
+            "Отметьте хотя бы один пункт в матрице КЗ или в блоке «По протоколу: обследование, препараты…»."
           );
           return;
         }
@@ -7085,11 +7241,422 @@
     }
   }
 
+  function icdCodesFromAssistData(data) {
+    var out = [];
+    var icd = data && data.icd;
+    if (!icd) return out;
+    var cr = icd.codes_for_retrieval || [];
+    var i;
+    for (i = 0; i < cr.length; i++) {
+      var c = String(cr[i] || "").trim();
+      if (c && out.indexOf(c) === -1) out.push(c);
+    }
+    var det = icd.detected || [];
+    for (i = 0; i < det.length; i++) {
+      var d = det[i];
+      var code =
+        typeof d === "string"
+          ? d
+          : d && (d.code || d.icd || d.icd_code);
+      code = String(code || "").trim();
+      if (code && out.indexOf(code) === -1) out.push(code);
+    }
+    return out.slice(0, 12);
+  }
+
+  function pickTopProtocolForPractical(protocols, minScore) {
+    minScore = minScore == null ? 0.8 : minScore;
+    var best = null;
+    var bestSc = -1;
+    if (!protocols || !protocols.length) return null;
+    var i;
+    for (i = 0; i < protocols.length; i++) {
+      var pr = protocols[i];
+      var sc = confidenceFromProtocol(pr);
+      if (sc >= minScore && sc > bestSc) {
+        bestSc = sc;
+        best = pr;
+      }
+    }
+    return best;
+  }
+
+  function obligationBadgeHtml(obligation) {
+    var ob = String(obligation || "recommended").toLowerCase();
+    var label = "рекомендуется";
+    var cls = "recommended";
+    if (ob === "required") {
+      label = "обязательно";
+      cls = "required";
+    } else if (ob === "conditional") {
+      label = "по показаниям";
+      cls = "conditional";
+    } else if (ob === "not_applicable") {
+      label = "не применимо";
+      cls = "conditional";
+    }
+    return (
+      '<span class="kz-obligation-badge kz-obligation-badge--' +
+      cls +
+      '">' +
+      escapeHtml(label) +
+      "</span>"
+    );
+  }
+
+  function renderKzMatrixColumn(matrix) {
+    if (!matrix || !matrix.sections || !matrix.sections.length) {
+      return (
+        '<p class="assist-detail-note">Матрица пунктов КЗ не сформирована — используйте выдержку слева и PDF протокола.</p>'
+      );
+    }
+    var html = "";
+    if (matrix.summary_ru) {
+      html +=
+        '<p class="practical-review-summary">' +
+        escapeHtml(String(matrix.summary_ru)) +
+        "</p>";
+    }
+    var si;
+    for (si = 0; si < matrix.sections.length; si++) {
+      var sec = matrix.sections[si];
+      var items = sec.items || [];
+      if (!items.length) continue;
+      html +=
+        '<div class="kz-matrix-section" data-kz-section="' +
+        escapeHtml(String(sec.kz_section || "")) +
+        '">';
+      html +=
+        "<h5>" + escapeHtml(String(sec.kz_section || "")) + "</h5>";
+      var ii;
+      for (ii = 0; ii < items.length; ii++) {
+        var it = items[ii];
+        var icdCls = it.icd_related ? " kz-matrix-item--icd" : "";
+        html += '<label class="kz-matrix-item' + icdCls + '">';
+        html +=
+          '<input type="checkbox" class="kz-matrix-cb" data-kz-section="' +
+          escapeHtml(String(sec.kz_section || "")) +
+          '" />';
+        html += obligationBadgeHtml(it.obligation);
+        html += "<span>";
+        html += escapeHtml(String(it.text || ""));
+        if (it.protocol_ref) {
+          html +=
+            ' <span class="assist-detail-meta">(' +
+            escapeHtml(String(it.protocol_ref)) +
+            ")</span>";
+        }
+        if (it.protocol_excerpt) {
+          html +=
+            '<span class="kz-matrix-excerpt">' +
+            escapeHtml(String(it.protocol_excerpt)) +
+            "</span>";
+        }
+        html += "</span></label>";
+      }
+      html += "</div>";
+    }
+    if (matrix.disclaimer_ru) {
+      html +=
+        '<p class="assist-detail-note" style="margin-top:0.5rem">' +
+        escapeHtml(String(matrix.disclaimer_ru)) +
+        "</p>";
+    }
+    return html;
+  }
+
+  function renderPracticalReviewLoading(offer) {
+    var titleLine = (offer && offer.title) || (offer && offer.path) || "";
+    return (
+      '<div class="practical-review-panel practical-review-panel--loading" id="practical-review-panel">' +
+      '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
+      '<p class="assist-detail-meta">' +
+      escapeHtml(String(titleLine)) +
+      " — загрузка выдержки и матрицы для КЗ…</p>" +
+      getDetailLoadingHtml() +
+      "</div>"
+    );
+  }
+
+  function renderConsultationTemplateWrapHtml() {
+    return (
+      '<div class="consultation-template-wrap">' +
+      '<p class="consultation-template-lead">Шаблон консультативного заключения формируется по выдержке и отмеченным пунктам матрицы; требует проверки лечащим врачом.</p>' +
+      '<div class="consultation-template-actions">' +
+      '<button type="button" class="btn-assist btn-consultation-template">Сформировать шаблон консультативного заключения</button>' +
+      '<button type="button" class="btn-assist btn-consultation-from-facts">Шаблон по отмеченным пунктам</button>' +
+      '<button type="button" class="btn-copy-assist btn-copy-template" disabled>Скопировать шаблон</button>' +
+      "</div>" +
+      '<div class="consultation-template-result" id="consultation-template-result" hidden>' +
+      '<div class="consultation-template-pending" id="consultation-template-pending" hidden>' +
+      '<span class="consultation-template-timer" id="consultation-unified-timer" hidden aria-live="polite"></span>' +
+      "</div>" +
+      '<article class="consultation-template-card" id="consultation-template-card-root" hidden>' +
+      '<header class="consultation-template-header">' +
+      '<img class="consultation-template-logo" src="https://kravira.by/upload/CMedc2/af0/af03fc233c8d9202f2e1e246301d8405.svg" width="88" height="88" alt="" />' +
+      "<div>" +
+      '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
+      '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
+      "</div></header>" +
+      '<div class="consultation-template-body" id="consultation-template-body"></div>' +
+      "</article></div></div>"
+    );
+  }
+
+  function renderPracticalReviewPanel(cd, matrix, query, meta) {
+    var html =
+      '<div class="practical-review-panel" id="practical-review-panel">';
+    html +=
+      '<h3 class="practical-review-head">Практический разбор по протоколу</h3>';
+    if (cd && cd.title) {
+      html +=
+        '<p class="assist-detail-meta">' + escapeHtml(String(cd.title)) + "</p>";
+    }
+    var pthMeta = (cd && cd.path) || "";
+    var metaMap = {};
+    if (pthMeta && meta) metaMap[pthMeta] = meta;
+    html += catalogBadgesHtml(pthMeta, metaMap);
+    html += '<div class="practical-review-actions">';
+    html +=
+      '<button type="button" class="btn-assist btn-practical-draft-kz">Собрать черновик КЗ</button>';
+    html +=
+      '<button type="button" class="btn-assist btn-practical-verify-kz">Проверить готовое КЗ (PDF)</button>';
+    html += "</div>";
+    html += renderConsultationTemplateWrapHtml();
+    html += '<div class="practical-review-grid">';
+    html += '<div class="practical-col practical-col--protocol">';
+    html += '<p class="practical-col-title">Разделы протокола</p>';
+    if (cd && !cd.error) {
+      var ex = cd.extraction || {};
+      var qForBlock = query || "";
+      if (!isPediatricProtocolForAdult(cd, qForBlock) && ex.detailed) {
+        html += renderClinicalFactsBlock(ex, cd, query);
+      } else if (ex.diagnosis) {
+        html +=
+          '<p class="assist-detail-label">Диагноз</p><div class="assist-detail-body">' +
+          formatSummaryHtml(String(ex.diagnosis)) +
+          "</div>";
+      }
+      if (cd.detail_match_score != null && !isNaN(Number(cd.detail_match_score))) {
+        html +=
+          '<p class="assist-detail-confidence">Соответствие запросу: ' +
+          pct01(Number(cd.detail_match_score)) +
+          "%.</p>";
+      }
+    } else if (cd && cd.error) {
+      html += '<p class="error">' + escapeHtml(String(cd.error)) + "</p>";
+    }
+    html += "</div>";
+    html += '<div class="practical-col practical-col--kz">';
+    html += '<p class="practical-col-title">Матрица для консультативного заключения</p>';
+    html += renderKzMatrixColumn(matrix);
+    html += "</div></div>";
+    html +=
+      '<details class="assist-collapsible" style="margin-top:0.75rem"><summary>Полная развёрнутая выдержка</summary>';
+    html += renderClinicalDetailBlock(cd, query, true);
+    html += "</details>";
+    html += "</div>";
+    return html;
+  }
+
+  function mountKzMatrixSlot(matrix) {
+    var slot = document.getElementById("practical-kz-slot");
+    if (!slot || !matrix) return;
+    slot.innerHTML =
+      '<div class="practical-col practical-col--kz">' +
+      '<p class="practical-col-title">Матрица для консультативного заключения</p>' +
+      renderKzMatrixColumn(matrix) +
+      "</div>";
+    if (matrix && !matrix.error) {
+      window.__kzMatrixForTemplate = matrix;
+    }
+  }
+
+  function mountPracticalReviewPanel(cd, matrix, query, meta) {
+    var panel = document.getElementById("practical-review-panel");
+    if (!panel) {
+      mountKzMatrixSlot(matrix);
+      return;
+    }
+    var html = renderPracticalReviewPanel(cd, matrix, query, meta);
+    panel.outerHTML = html;
+    if (cd && !cd.error) {
+      window.__clinicalDetailForTemplate = cd;
+      window.__assistQueryForTemplate = query || "";
+      window.__kzMatrixForTemplate = matrix || null;
+    }
+    var outRoot = document.getElementById("llm-out");
+    if (outRoot) {
+      enhanceCollapsibleBlocks(outRoot);
+      bindProtocolFactsTabs();
+    }
+  }
+
+  function loadProtocolPractical(offer, queryText, icdCodes) {
+    if (!offer || !offer.path) return;
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    var ctrl = new AbortController();
+    var abortTid = setTimeout(function () {
+      ctrl.abort();
+    }, 300000);
+    fetch(base + "/api/protocol-practical", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: queryText,
+        path: offer.path,
+        title: offer.title || "",
+        icd_codes: icdCodes || [],
+        protocol_confidence:
+          offer.confidence_score != null && !isNaN(Number(offer.confidence_score))
+            ? Number(offer.confidence_score)
+            : null,
+        client_rag_support:
+          offer.rag_support != null && !isNaN(Number(offer.rag_support))
+            ? Number(offer.rag_support)
+            : null,
+      }),
+      signal: ctrl.signal,
+    })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!j || typeof j !== "object") {
+            throw new Error(text ? text.slice(0, 220) : "Пустой ответ");
+          }
+          if (!r.ok) {
+            var d = j.detail;
+            if (Array.isArray(d)) {
+              d = d.map(function (x) {
+                return x.msg || JSON.stringify(x);
+              }).join("; ");
+            }
+            throw new Error(d || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (payload) {
+        mountPracticalReviewPanel(
+          payload.clinical_detail,
+          payload.kz_matrix,
+          queryText,
+          payload.protocol_ui_meta
+        );
+        var block = document.getElementById("protocol-detail-block");
+        if (block) block.remove();
+      })
+      .catch(function (err) {
+        var panel = document.getElementById("practical-review-panel");
+        var msg = String(err.message || err);
+        if (err && err.name === "AbortError") {
+          msg = "Превышено время ожидания. Попробуйте «Загрузить развёрнутую выдержку».";
+        }
+        if (panel) {
+          panel.classList.remove("practical-review-panel--loading");
+          panel.innerHTML =
+            '<h3 class="practical-review-head">Практический разбор</h3><p class="error">' +
+            escapeHtml(msg) +
+            '</p><button type="button" class="btn-assist btn-load-protocol-detail">Загрузить только выдержку</button>';
+          bindProtocolDetailLoader(queryText);
+        }
+      })
+      .finally(function () {
+        clearTimeout(abortTid);
+      });
+  }
+
+  function loadKzMatrixOnly(offer, queryText, icdCodes, clinicalDetail) {
+    if (!offer || !offer.path) return;
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    fetch(base + "/api/kz-matrix", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: queryText,
+        path: offer.path,
+        title: offer.title || "",
+        icd_codes: icdCodes || [],
+        clinical_detail: clinicalDetail || null,
+      }),
+    })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (payload) {
+        if (!payload || !payload.kz_matrix) return;
+        mountKzMatrixSlot(payload.kz_matrix);
+      })
+      .catch(function () {});
+  }
+
+  function collectKzMatrixSelectedPayload() {
+    var panel = document.getElementById("practical-review-panel");
+    if (!panel) return null;
+    var cbs = panel.querySelectorAll(".kz-matrix-cb:checked");
+    if (!cbs.length) return null;
+    var bySec = {};
+    var total = 0;
+    var i;
+    for (i = 0; i < cbs.length; i++) {
+      var cb = cbs[i];
+      var sec = cb.getAttribute("data-kz-section") || "";
+      var item = cb.closest(".kz-matrix-item");
+      var span = item && item.querySelector("span");
+      var text = span ? String(span.textContent || "").trim() : "";
+      if (!sec || !text) continue;
+      if (!bySec[sec]) bySec[sec] = [];
+      bySec[sec].push(text);
+      total += 1;
+    }
+    var sections = [];
+    var parts = [];
+    for (var k in bySec) {
+      if (!Object.prototype.hasOwnProperty.call(bySec, k)) continue;
+      var arr = bySec[k];
+      sections.push({ key: "kz_" + k, title: k, items: arr.slice(0) });
+      var lines = [];
+      var j;
+      for (j = 0; j < arr.length; j++) lines.push("- " + arr[j]);
+      parts.push(k + ":\n" + lines.join("\n"));
+    }
+    if (!sections.length) return null;
+    return {
+      selected_count: total,
+      sections: sections,
+      notes:
+        "Пользователь выбрал включить в консультативное заключение пункты из матрицы КЗ по протоколу:\n\n" +
+        parts.join("\n\n"),
+    };
+  }
+
+  function mergeSelectedFactsPayloads(a, b) {
+    if (!a || !a.sections || !a.sections.length) return b || { notes: "", selected_count: 0, sections: [] };
+    if (!b || !b.sections || !b.sections.length) return a;
+    return {
+      selected_count: (a.selected_count || 0) + (b.selected_count || 0),
+      sections: (a.sections || []).concat(b.sections || []),
+      notes: [a.notes, b.notes].filter(Boolean).join("\n\n"),
+    };
+  }
+
   function collectSelectedFactsPayload() {
     var wrap = document.querySelector("#llm-out .assist-detail-facts-wrap");
-    if (!wrap) return { notes: "", selected_count: 0, sections: [] };
+    if (!wrap) {
+      var kzOnly = collectKzMatrixSelectedPayload();
+      return kzOnly || { notes: "", selected_count: 0, sections: [] };
+    }
     var cbs = wrap.querySelectorAll(".assist-fact-cb:checked");
-    if (!cbs.length) return { notes: "", selected_count: 0, sections: [] };
+    if (!cbs.length) {
+      var kzEmpty = collectKzMatrixSelectedPayload();
+      return kzEmpty || { notes: "", selected_count: 0, sections: [] };
+    }
     var byCat = {};
     var total = 0;
     var i;
@@ -7138,14 +7705,18 @@
         items: arr.slice(0),
       });
     }
-    if (!parts.length) return { notes: "", selected_count: 0, sections: [] };
-    return {
+    if (!parts.length) {
+      var kzNone = collectKzMatrixSelectedPayload();
+      return kzNone || { notes: "", selected_count: 0, sections: [] };
+    }
+    var factsOut = {
       selected_count: total,
       sections: sections,
       notes:
         "Пользователь выбрал включить в консультативное заключение следующие пункты из выдержки по протоколу:\n\n" +
         parts.join("\n\n"),
     };
+    return mergeSelectedFactsPayloads(factsOut, collectKzMatrixSelectedPayload());
   }
 
   function collectSelectedFactsNotes() {
@@ -7359,7 +7930,7 @@
     return /(детск|детское население|педиатр)/i.test(text);
   }
 
-  function renderClinicalDetailBlock(cd, assistQuery) {
+  function renderClinicalDetailBlock(cd, assistQuery, skipConsultWrap) {
     if (!cd) return "";
     if (cd.error) {
       return (
@@ -7398,7 +7969,9 @@
       "</div>" +
       "</div>";
     var html = '<div class="assist-clinical-detail assist-clinical-detail--rich">';
-    html += consultBlock;
+    if (!skipConsultWrap) {
+      html += consultBlock;
+    }
     html +=
       '<details class="assist-detail-extract-details" id="assist-detail-extract-wrap" open>';
     html +=
@@ -7741,13 +8314,29 @@
           "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
+      var practicalOffer = pickTopProtocolForPractical(rawProtos, 0.8);
+      var icdForPractical = icdCodesFromAssistData(data);
+      if (practicalOffer && !data.clinical_detail_offer) {
+        lastProtocolDetailOffer = {
+          path: practicalOffer.path,
+          title: practicalOffer.title || "",
+          confidence_score: practicalOffer.confidence_score,
+          rag_support: practicalOffer.rag_support,
+        };
+      }
       var checklistHtml = renderProtocolChecklistHtml(data);
-      if (checklistHtml && !citationsOnly) {
+      if (checklistHtml && !citationsOnly && !practicalOffer) {
         html += checklistHtml;
       }
 
-      if (data.clinical_detail) {
+      if (practicalOffer && !citationsOnly && !data.clinical_detail) {
+        html += renderPracticalReviewLoading(practicalOffer);
+      } else if (data.clinical_detail) {
         html += renderClinicalDetailBlock(data.clinical_detail, data.query || "");
+        if (practicalOffer && !citationsOnly) {
+          html +=
+            '<div id="practical-kz-slot" class="practical-kz-slot"><p class="assist-detail-meta">Загрузка матрицы для КЗ…</p></div>';
+        }
       } else if (data.clinical_detail_offer && !citationsOnly) {
         html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
       } else if (data.clinical_detail_offer && citationsOnly) {
@@ -7789,6 +8378,21 @@
       bindProtocolFactsTabs();
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
+      if (practicalOffer && !citationsOnly && !data.clinical_detail) {
+        loadProtocolPractical(practicalOffer, data.query || "", icdForPractical);
+      } else if (
+        practicalOffer &&
+        !citationsOnly &&
+        data.clinical_detail &&
+        !data.clinical_detail.error
+      ) {
+        loadKzMatrixOnly(
+          practicalOffer,
+          data.query || "",
+          icdForPractical,
+          data.clinical_detail
+        );
+      }
       updateScrollFabVisibility();
       var sr = document.getElementById("section-results");
       if (sr) {

@@ -349,6 +349,50 @@ SYSTEM_ICD_POOL_SELECT = """Ты помощник врача. По клинич�
 {"codes":[{"code":"J20.9","rationale":"одно короткое предложение"}]}
 Если ни один код из списка не подходит — {"codes":[]}."""
 
+KZ_MATRIX_SECTIONS = (
+    "Жалобы и анамнез",
+    "Объективный статус",
+    "Диагноз и коды МКБ-10",
+    "Обследование",
+    "Лечение и назначения",
+    "Наблюдение и контроль",
+    "Направления и консультации специалистов",
+)
+
+SYSTEM_KZ_MATRIX = """Ты методист-врач. По тексту клинического протокола Минздрава Республики Беларусь составь структуру «что должно быть отражено в консультативном заключении» для данного случая.
+
+Правила:
+- Каждый пункт items должен опираться на текст протокола ниже; protocol_excerpt — короткая дословная вырезка (до 220 символов) или пустая строка, если нельзя процитировать.
+- protocol_ref — ссылка на раздел/пункт протокола, если есть в тексте (например «п. 3.2»), иначе пустая строка.
+- obligation: required — если протокол прямо требует/рекомендует как обязательное; recommended — желательно; conditional — по показаниям/ветке алгоритма; not_applicable — если для данного запроса раздел КЗ не применим (редко).
+- icd_related: true, если пункт прямо связан с кодами МКБ из запроса (перечислены ниже).
+- Не выдумывай препараты, дозы и обследования, которых нет в тексте протокола.
+- kz_section — ТОЛЬКО из фиксированного списка (скопируй точно):
+  """ + "; ".join(KZ_MATRIX_SECTIONS) + """
+
+Верни ОДИН JSON (без markdown):
+{
+  "icd_codes": ["M32.9"],
+  "protocol_title": "…",
+  "summary_ru": "2–3 предложения: на что обратить внимание при оформлении КЗ",
+  "sections": [
+    {
+      "kz_section": "Обследование",
+      "items": [
+        {
+          "text": "краткая формулировка для врача",
+          "obligation": "required|recommended|conditional|not_applicable",
+          "protocol_ref": "",
+          "protocol_excerpt": "",
+          "icd_related": false
+        }
+      ]
+    }
+  ],
+  "disclaimer_ru": "Ориентир по протоколу; не замена очного приёма и не юридическая экспертиза."
+}
+Включи только разделы, по которым в протоколе есть релевантные сведения для запроса; пустые разделы не добавляй."""
+
 SYSTEM_CONSULTATION_TEMPLATE = """Ты помощник врача. По развёрнутой выдержке из клинического протокола Минздрава Республики Беларусь (структура JSON ниже) и по сути запроса пользователя составь текстовый ШАБЛОН консультативного заключения.
 Правила:
 - Опирайся только на поля выдержки и на запрос; не выдумывай диагнозы, препараты, дозы и процедуры, которых нет во входных данных.
@@ -401,7 +445,8 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
  "limitations_ru": "<что не удалось проверить>",
  "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
  "protocol_paths_used": [<строки путей протоколов из выдержек, если удалось из текста>]}
-Ровно 4–6 объектов в criteria. overall_compliance_pct — взвешенное обобщение, не простое среднее без осмысления."""
+По возможности используй в name_ru стандартные названия: «Обследование», «Лечение и назначения», «Наблюдение и контроль», «Диагноз и коды МКБ-10», «Жалобы и анамнез», «Объективный статус», «Направления специалистам».
+Ровно 4–7 объектов в criteria. overall_compliance_pct — взвешенное обобщение, не простое среднее без осмысления."""
 
 SYSTEM_CONSULT_PDF_FOR_PROTOCOL_SEARCH = """Ты помощник врача. Ниже — текст, машинно извлечённый из PDF консультативного заключения (может содержать шапку организации, реквизиты, ФИО).
 
@@ -4264,6 +4309,226 @@ def _protocol_icd_mentions_for_response(
     return out
 
 
+def _icd_codes_from_query_and_analysis(
+    query: str, icd_codes: list[str] | None = None
+) -> list[str]:
+    if icd_codes:
+        return [normalize_icd_code(str(c)) for c in icd_codes if normalize_icd_code(str(c))]
+    q_rag = clinical_query_for_rag(query)
+    analysis = analyze_query_for_icd(query, q_rag)
+    raw = analysis.get("codes_for_retrieval") or []
+    out: list[str] = []
+    for c in raw:
+        nc = normalize_icd_code(str(c))
+        if nc and nc not in out:
+            out.append(nc)
+    return out[:12]
+
+
+def _mark_icd_related_in_matrix(matrix: dict, icd_codes: list[str]) -> None:
+    if not icd_codes:
+        return
+    icd_low = [c.lower() for c in icd_codes]
+    for sec in matrix.get("sections") or []:
+        if not isinstance(sec, dict):
+            continue
+        for it in sec.get("items") or []:
+            if not isinstance(it, dict):
+                continue
+            blob = " ".join(
+                str(it.get(x) or "")
+                for x in ("text", "protocol_excerpt", "protocol_ref")
+            ).lower()
+            for c in icd_low:
+                if c in blob:
+                    it["icd_related"] = True
+                    break
+
+
+def _normalize_kz_matrix(parsed: dict, path: str, title: str, icd_codes: list[str]) -> dict:
+    sections_out: list[dict] = []
+    allowed = set(KZ_MATRIX_SECTIONS)
+    for sec in parsed.get("sections") or []:
+        if not isinstance(sec, dict):
+            continue
+        kz = str(sec.get("kz_section") or "").strip()
+        if kz not in allowed:
+            for cand in KZ_MATRIX_SECTIONS:
+                if cand.lower() in kz.lower() or kz.lower() in cand.lower():
+                    kz = cand
+                    break
+            else:
+                continue
+        items_in: list[dict] = []
+        for it in sec.get("items") or []:
+            if not isinstance(it, dict):
+                continue
+            text = str(it.get("text") or "").strip()
+            if not text:
+                continue
+            ob = str(it.get("obligation") or "recommended").strip().lower()
+            if ob not in ("required", "recommended", "conditional", "not_applicable"):
+                ob = "recommended"
+            items_in.append(
+                {
+                    "text": text[:500],
+                    "obligation": ob,
+                    "protocol_ref": str(it.get("protocol_ref") or "").strip()[:120],
+                    "protocol_excerpt": str(it.get("protocol_excerpt") or "").strip()[:280],
+                    "icd_related": bool(it.get("icd_related")),
+                }
+            )
+        if items_in:
+            sections_out.append({"kz_section": kz, "items": items_in})
+    order = {s: i for i, s in enumerate(KZ_MATRIX_SECTIONS)}
+    sections_out.sort(key=lambda s: order.get(s["kz_section"], 99))
+    return {
+        "path": path,
+        "protocol_title": title,
+        "icd_codes": icd_codes,
+        "summary_ru": str(parsed.get("summary_ru") or "").strip(),
+        "sections": sections_out,
+        "disclaimer_ru": str(parsed.get("disclaimer_ru") or "").strip()
+        or "Ориентир по протоколу; не замена очной экспертизы.",
+    }
+
+
+def kz_matrix_from_clinical_detail_heuristic(
+    cd: dict,
+    path: str,
+    title: str,
+    icd_codes: list[str],
+) -> dict:
+    """Быстрый ориентир без LLM (если отдельный вызов матрицы недоступен)."""
+    ex = cd.get("extraction") if isinstance(cd.get("extraction"), dict) else cd
+    sections: list[dict] = []
+
+    def add_section(kz_section: str, texts: list[str], obligation: str = "recommended") -> None:
+        items = []
+        for t in texts:
+            t = str(t).strip()
+            if not t:
+                continue
+            items.append(
+                {
+                    "text": t[:500],
+                    "obligation": obligation,
+                    "protocol_ref": "",
+                    "protocol_excerpt": "",
+                    "icd_related": False,
+                }
+            )
+        if items:
+            sections.append({"kz_section": kz_section, "items": items})
+
+    diag = str(ex.get("diagnosis") or "").strip()
+    if diag:
+        add_section("Диагноз и коды МКБ-10", [diag], "required")
+    inv = [str(x).strip() for x in (ex.get("investigations") or []) if str(x).strip()]
+    if inv:
+        add_section("Обследование", inv[:12], "required")
+    meds = [str(x).strip() for x in (ex.get("medications") or []) if str(x).strip()]
+    treat = [str(x).strip() for x in (ex.get("treatment_methods") or []) if str(x).strip()]
+    if meds or treat:
+        add_section("Лечение и назначения", (meds + treat)[:14], "recommended")
+    mon = str(ex.get("monitoring_frequency") or "").strip()
+    fol = str(ex.get("monitoring_followup") or "").strip()
+    if mon or fol:
+        add_section("Наблюдение и контроль", [x for x in [mon, fol] if x], "recommended")
+    recs = [str(x).strip() for x in (ex.get("recommendations") or []) if str(x).strip()]
+    if recs:
+        add_section("Направления и консультации специалистов", recs[:8], "conditional")
+    out = {
+        "path": path,
+        "protocol_title": title,
+        "icd_codes": icd_codes,
+        "summary_ru": "Ориентир составлен по развёрнутой выдержке из протокола (без отдельного прохода модели).",
+        "sections": sections,
+        "disclaimer_ru": "Проверьте полноту по PDF на сайте Минздрава.",
+        "source": "heuristic",
+    }
+    _mark_icd_related_in_matrix(out, icd_codes)
+    return out
+
+
+def build_kz_matrix(
+    model,
+    query: str,
+    path: str,
+    title: str,
+    icd_codes: list[str] | None = None,
+    clinical_detail: dict | None = None,
+) -> dict:
+    icd_norm = _icd_codes_from_query_and_analysis(query, icd_codes)
+    meta = _protocol_meta.get(path) or {}
+    title_line = title or meta.get("title") or Path(path).name
+    max_body = int(os.environ.get("RAG_KZ_MATRIX_MAX_CHARS", "24000"))
+    body = gather_protocol_text(path, max_body)
+    if len(body.strip()) < 80:
+        if clinical_detail and not clinical_detail.get("error"):
+            return kz_matrix_from_clinical_detail_heuristic(
+                clinical_detail, path, title_line, icd_norm
+            )
+        return {
+            "path": path,
+            "protocol_title": title_line,
+            "icd_codes": icd_norm,
+            "sections": [],
+            "summary_ru": "Недостаточно текста протокола для матрицы КЗ.",
+            "disclaimer_ru": "",
+            "source": "empty",
+        }
+    icd_line = ", ".join(icd_norm) if icd_norm else "(не указаны явно)"
+    cd_hint = ""
+    if clinical_detail and isinstance(clinical_detail.get("extraction"), dict):
+        cd_hint = "\n\nПодсказка (уже извлечённая выдержка JSON, не добавляй лишнего):\n" + json.dumps(
+            clinical_detail.get("extraction"),
+            ensure_ascii=False,
+        )[:6000]
+    prompt = (
+        SYSTEM_KZ_MATRIX
+        + "\n\n---\n\nЗапрос пользователя / случай:\n"
+        + query[:8000]
+        + "\n\nКоды МКБ для акцента:\n"
+        + icd_line
+        + "\n\nНазвание протокола:\n"
+        + title_line
+        + "\n\nТекст протокола:\n"
+        + body
+        + cd_hint
+    )
+    plim = int(os.environ.get("RAG_KZ_MATRIX_PROMPT_MAX_CHARS", "28000"))
+    if len(prompt) > plim:
+        prompt = prompt[: plim - 80] + "\n…[обрезано]"
+    try:
+        resp = generate_gemini(model, prompt)
+        txt = _extract_gemini_text(resp)
+        parsed = _try_parse_json(txt)
+    except HTTPException:
+        raise
+    except Exception as e:
+        if clinical_detail and not clinical_detail.get("error"):
+            out = kz_matrix_from_clinical_detail_heuristic(
+                clinical_detail, path, title_line, icd_norm
+            )
+            out["note"] = f"Матрица КЗ (эвристика): {e!s}"[:200]
+            return out
+        raise HTTPException(status_code=502, detail=f"Матрица КЗ: {e!s}") from e
+    if not parsed or not isinstance(parsed, dict):
+        if clinical_detail and not clinical_detail.get("error"):
+            return kz_matrix_from_clinical_detail_heuristic(
+                clinical_detail, path, title_line, icd_norm
+            )
+        raise HTTPException(
+            status_code=502,
+            detail="Модель не вернула JSON для матрицы консультативного заключения.",
+        )
+    out = _normalize_kz_matrix(parsed, path, title_line, icd_norm)
+    out["source"] = "llm"
+    _mark_icd_related_in_matrix(out, icd_norm)
+    return out
+
+
 def normalize_differential_field(parsed: dict | None) -> None:
     """До 5 строк; порядок как у модели (сверху — наиболее вероятное)."""
     if not parsed or not isinstance(parsed, dict):
@@ -4341,6 +4606,35 @@ class ProtocolDetailIn(BaseModel):
         ge=0.0,
         le=1.0,
         description="rag_support из assist для предупреждения о слабом отборе",
+    )
+
+
+class KzMatrixIn(BaseModel):
+    """Матрица «что должно быть в КЗ» по протоколу."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    path: str = Field(..., min_length=1, max_length=2048)
+    title: str = Field(default="", max_length=2000)
+    icd_codes: list[str] = Field(default_factory=list, max_length=24)
+    clinical_detail: dict | None = Field(
+        default=None,
+        description="Уже загруженная выдержка — ускоряет fallback и подсказку модели",
+    )
+
+
+class ProtocolPracticalIn(BaseModel):
+    """Развёрнутая выдержка + матрица КЗ одним запросом (после подбора протокола ≥80%)."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    path: str = Field(..., min_length=1, max_length=2048)
+    title: str = Field(default="", max_length=2000)
+    icd_codes: list[str] = Field(default_factory=list, max_length=24)
+    protocol_confidence: float | None = Field(default=None)
+    client_rag_support: float | None = Field(default=None, ge=0.0, le=1.0)
+    extract_focus: str | None = Field(default=None, max_length=32)
+    skip_kz_matrix: bool = Field(
+        default=False,
+        description="Только clinical_detail (без второго вызова LLM для матрицы)",
     )
 
 
@@ -5042,6 +5336,74 @@ def api_protocol_detail(body: ProtocolDetailIn) -> dict:
         client_rag_support=body.client_rag_support,
     )
     return {"clinical_detail": clinical_detail}
+
+
+@app.post("/api/kz-matrix")
+def api_kz_matrix(body: KzMatrixIn) -> dict:
+    """Структура пунктов консультативного заключения по тексту протокола."""
+    _require_rag_loaded()
+    pth = body.path.strip()
+    if not pth or pth not in _chunks_by_path:
+        raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
+    model = get_gemini()
+    cd = body.clinical_detail if isinstance(body.clinical_detail, dict) else None
+    matrix = build_kz_matrix(
+        model,
+        body.query.strip(),
+        pth,
+        body.title.strip(),
+        icd_codes=body.icd_codes or None,
+        clinical_detail=cd,
+    )
+    return {"kz_matrix": matrix, "protocol_ui_meta": protocol_ui_meta_for_path(pth)}
+
+
+@app.post("/api/protocol-practical")
+def api_protocol_practical(body: ProtocolPracticalIn) -> dict:
+    """Практический разбор: выдержка из протокола + матрица для оформления КЗ."""
+    _require_rag_loaded()
+    q = body.query.strip()
+    pth = body.path.strip()
+    if not pth or pth not in _chunks_by_path:
+        raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
+    model = get_gemini()
+    pc = body.protocol_confidence
+    if pc is not None:
+        try:
+            pc = float(max(0.0, min(1.0, pc)))
+        except (TypeError, ValueError):
+            pc = None
+    crs = body.client_rag_support
+    if crs is not None:
+        try:
+            crs = float(max(0.0, min(1.0, crs)))
+        except (TypeError, ValueError):
+            crs = None
+    clinical_detail = extract_clinical_detail(
+        pth,
+        q,
+        body.title.strip(),
+        model,
+        detailed=True,
+        protocol_confidence=pc,
+        extract_focus=body.extract_focus,
+        client_rag_support=crs,
+    )
+    kz_matrix: dict | None = None
+    if not body.skip_kz_matrix and not clinical_detail.get("error"):
+        kz_matrix = build_kz_matrix(
+            model,
+            q,
+            pth,
+            body.title.strip(),
+            icd_codes=body.icd_codes or None,
+            clinical_detail=clinical_detail,
+        )
+    return {
+        "clinical_detail": clinical_detail,
+        "kz_matrix": kz_matrix,
+        "protocol_ui_meta": protocol_ui_meta_for_path(pth),
+    }
 
 
 @app.post("/api/icd-suggest")

@@ -43,6 +43,10 @@ python3 scripts/update_quality_benchmark.py --mini # smoke
 | Метод | Путь | Назначение |
 |-------|------|------------|
 | POST | `/api/assist` | Подбор протоколов по запросу |
+| POST | `/api/protocol-detail` | Развёрнутая выдержка по одному протоколу |
+| POST | `/api/protocol-practical` | Выдержка + матрица пунктов для КЗ (≥80% соответствия) |
+| POST | `/api/kz-matrix` | Матрица «что должно быть в КЗ» по протоколу |
+| POST | `/api/consultation-template` | Черновик консультативного заключения |
 | POST | `/api/consult-review` | Проверка 1–3 PDF заключений |
 | POST | `/api/icd-suggest` | Подбор кодов МКБ-10 |
 | GET | `/api/corpus-stats` | Состояние корпуса (каталог, дата index.csv) |

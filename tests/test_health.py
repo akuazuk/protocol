@@ -75,3 +75,52 @@ def test_protocol_ui_meta() -> None:
     )
     assert m.get("post_mz") is True
     assert m.get("year")
+
+
+def test_kz_matrix_heuristic() -> None:
+    from rag_server import kz_matrix_from_clinical_detail_heuristic
+
+    cd = {
+        "extraction": {
+            "diagnosis": "СКВ",
+            "investigations": ["ОАК", "АНА"],
+            "medications": ["гидроксихлорохин"],
+            "monitoring_frequency": "каждые 3 мес",
+        }
+    }
+    m = kz_matrix_from_clinical_detail_heuristic(
+        cd, "path/x.pdf", "КП СКВ", ["M32.9"]
+    )
+    assert m["icd_codes"] == ["M32.9"]
+    assert len(m["sections"]) >= 2
+    assert m["sections"][0]["kz_section"]
+
+
+def test_normalize_kz_matrix() -> None:
+    from rag_server import _normalize_kz_matrix
+
+    raw = {
+        "summary_ru": "Тест",
+        "sections": [
+            {
+                "kz_section": "Обследование",
+                "items": [
+                    {
+                        "text": "ОАК",
+                        "obligation": "required",
+                        "protocol_excerpt": "…",
+                    }
+                ],
+            }
+        ],
+    }
+    out = _normalize_kz_matrix(raw, "p.pdf", "КП", ["M32.9"])
+    assert out["sections"][0]["items"][0]["obligation"] == "required"
+
+
+def test_kz_matrix_endpoint_404(client: TestClient) -> None:
+    r = client.post(
+        "/api/kz-matrix",
+        json={"query": "тест", "path": "nonexistent.pdf", "title": ""},
+    )
+    assert r.status_code == 404
