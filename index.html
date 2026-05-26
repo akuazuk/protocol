@@ -3141,14 +3141,8 @@
 
     .assist-detail-facts-grid {
       display: grid;
+      grid-template-columns: 1fr;
       gap: 0.75rem;
-    }
-
-    @media (min-width: 560px) {
-      .assist-detail-facts-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.85rem 1rem;
-      }
     }
 
     .assist-detail-fact-row {
@@ -3170,7 +3164,7 @@
 
     @media (min-width: 560px) {
       .assist-detail-facts-grid .assist-detail-fact-row--investigations {
-        grid-column: 1 / -1;
+        grid-column: auto;
       }
     }
 
@@ -4535,60 +4529,115 @@
       margin: 0.65rem 0 0.85rem;
     }
 
-    .practical-review-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.85rem;
-      align-items: start;
+    .practical-review-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
     }
 
-    @media (max-width: 900px) {
-      .practical-review-grid {
-        grid-template-columns: 1fr;
-      }
+    .practical-section {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 1rem 1.1rem 1.05rem;
+      border-radius: 14px;
+      border: 1px solid rgba(13, 92, 74, 0.18);
+      background: rgba(255, 255, 255, 0.96);
     }
 
-    .practical-col {
-      padding: 0.75rem 0.8rem;
-      border-radius: 12px;
-      border: 1px solid rgba(13, 92, 74, 0.15);
-      background: rgba(255, 255, 255, 0.92);
-      min-height: 4rem;
+    .practical-section--protocol {
+      border-color: rgba(26, 138, 114, 0.28);
+      background: linear-gradient(180deg, rgba(240, 253, 244, 0.5) 0%, #ffffff 100%);
     }
 
-    .practical-col-title {
-      margin: 0 0 0.55rem;
-      font-size: 0.72rem;
+    .practical-section--kz {
+      border-color: rgba(16, 185, 129, 0.35);
+      background: linear-gradient(180deg, #ffffff 0%, rgba(236, 253, 245, 0.45) 100%);
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.08);
+    }
+
+    .practical-section-title {
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 2px solid rgba(26, 138, 114, 0.18);
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--green-800);
+      color: var(--green-950);
+      line-height: 1.35;
+    }
+
+    .practical-section--kz .practical-section-title {
+      border-bottom-color: rgba(16, 185, 129, 0.35);
     }
 
     .kz-matrix-section {
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid rgba(13, 92, 74, 0.1);
+    }
+
+    .kz-matrix-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
 
     .kz-matrix-section h5 {
-      margin: 0 0 0.35rem;
-      font-size: 0.84rem;
+      margin: 0 0 0.55rem;
+      font-size: 0.92rem;
       font-weight: 700;
-      color: var(--green-950);
+      color: var(--green-900);
+    }
+
+    .kz-matrix-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
     }
 
     .kz-matrix-item {
       display: flex;
-      gap: 0.45rem;
+      gap: 0.55rem;
       align-items: flex-start;
-      margin: 0.35rem 0;
-      font-size: 0.84rem;
-      line-height: 1.45;
+      margin: 0;
+      padding: 0.55rem 0.65rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      border-radius: 10px;
+      border: 1px solid rgba(13, 92, 74, 0.12);
+      background: rgba(255, 255, 255, 0.98);
+      cursor: pointer;
+    }
+
+    .kz-matrix-item:hover {
+      border-color: rgba(26, 138, 114, 0.35);
+      background: rgba(240, 253, 244, 0.65);
     }
 
     .kz-matrix-item--icd {
       background: rgba(254, 243, 199, 0.55);
-      border-radius: 8px;
-      padding: 0.35rem 0.4rem;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .kz-matrix-item input[type="checkbox"] {
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--green-700);
+    }
+
+    .kz-matrix-item__body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .kz-matrix-item__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 0.55rem;
     }
 
     .kz-obligation-badge {
@@ -4627,6 +4676,26 @@
 
     .practical-kz-slot {
       margin-top: 0.75rem;
+      width: 100%;
+    }
+
+    .practical-kz-slot .practical-section {
+      margin: 0;
+    }
+
+    .consultation-template-wrap {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .assist-clinical-detail--rich {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .practical-review-full-detail {
+      margin-top: 1rem;
+      width: 100%;
     }
 
     .minister-doc-links {
@@ -7343,7 +7412,7 @@
   function renderKzMatrixColumn(matrix) {
     if (!matrix || !matrix.sections || !matrix.sections.length) {
       return (
-        '<p class="assist-detail-note">Матрица пунктов КЗ не сформирована — используйте выдержку слева и PDF протокола.</p>'
+        '<p class="assist-detail-note">Матрица пунктов КЗ не сформирована — используйте выдержку по протоколу выше и PDF на сайте Минздрава.</p>'
       );
     }
     var html = "";
@@ -7364,6 +7433,7 @@
         '">';
       html +=
         "<h5>" + escapeHtml(String(sec.kz_section || "")) + "</h5>";
+      html += '<div class="kz-matrix-items">';
       var ii;
       for (ii = 0; ii < items.length; ii++) {
         var it = items[ii];
@@ -7373,15 +7443,20 @@
           '<input type="checkbox" class="kz-matrix-cb" data-kz-section="' +
           escapeHtml(String(sec.kz_section || "")) +
           '" />';
+        html += '<span class="kz-matrix-item__body">';
+        html += '<span class="kz-matrix-item__head">';
         html += obligationBadgeHtml(it.obligation);
-        html += "<span>";
-        html += escapeHtml(String(it.text || ""));
+        html +=
+          '<span class="kz-matrix-item__text">' +
+          escapeHtml(String(it.text || "")) +
+          "</span>";
         if (it.protocol_ref) {
           html +=
             ' <span class="assist-detail-meta">(' +
             escapeHtml(String(it.protocol_ref)) +
             ")</span>";
         }
+        html += "</span>";
         if (it.protocol_excerpt) {
           html +=
             '<span class="kz-matrix-excerpt">' +
@@ -7390,11 +7465,11 @@
         }
         html += "</span></label>";
       }
-      html += "</div>";
+      html += "</div></div>";
     }
     if (matrix.disclaimer_ru) {
       html +=
-        '<p class="assist-detail-note" style="margin-top:0.5rem">' +
+        '<p class="assist-detail-note" style="margin-top:0.65rem">' +
         escapeHtml(String(matrix.disclaimer_ru)) +
         "</p>";
     }
@@ -7458,10 +7533,11 @@
     html +=
       '<button type="button" class="btn-assist btn-practical-verify-kz">Проверить готовое КЗ (PDF)</button>';
     html += "</div>";
-    html += renderConsultationTemplateWrapHtml();
-    html += '<div class="practical-review-grid">';
-    html += '<div class="practical-col practical-col--protocol">';
-    html += '<p class="practical-col-title">Разделы протокола</p>';
+    html += '<div class="practical-review-stack">';
+    html +=
+      '<section class="practical-section practical-section--protocol" aria-labelledby="practical-protocol-title">';
+    html +=
+      '<h4 class="practical-section-title" id="practical-protocol-title">Разделы протокола</h4>';
     if (cd && !cd.error) {
       var ex = cd.extraction || {};
       var qForBlock = query || "";
@@ -7482,13 +7558,16 @@
     } else if (cd && cd.error) {
       html += '<p class="error">' + escapeHtml(String(cd.error)) + "</p>";
     }
-    html += "</div>";
-    html += '<div class="practical-col practical-col--kz">';
-    html += '<p class="practical-col-title">Матрица для консультативного заключения</p>';
-    html += renderKzMatrixColumn(matrix);
-    html += "</div></div>";
+    html += "</section>";
     html +=
-      '<details class="assist-collapsible" style="margin-top:0.75rem"><summary>Полная развёрнутая выдержка</summary>';
+      '<section class="practical-section practical-section--kz" aria-labelledby="practical-kz-title">';
+    html +=
+      '<h4 class="practical-section-title" id="practical-kz-title">Матрица для консультативного заключения</h4>';
+    html += renderKzMatrixColumn(matrix);
+    html += "</section></div>";
+    html += renderConsultationTemplateWrapHtml();
+    html +=
+      '<details class="assist-collapsible practical-review-full-detail"><summary>Полная развёрнутая выдержка</summary>';
     html += renderClinicalDetailBlock(cd, query, true);
     html += "</details>";
     html += "</div>";
@@ -7499,10 +7578,10 @@
     var slot = document.getElementById("practical-kz-slot");
     if (!slot || !matrix) return;
     slot.innerHTML =
-      '<div class="practical-col practical-col--kz">' +
-      '<p class="practical-col-title">Матрица для консультативного заключения</p>' +
+      '<section class="practical-section practical-section--kz" aria-labelledby="practical-kz-slot-title">' +
+      '<h4 class="practical-section-title" id="practical-kz-slot-title">Матрица для консультативного заключения</h4>' +
       renderKzMatrixColumn(matrix) +
-      "</div>";
+      "</section>";
     if (matrix && !matrix.error) {
       window.__kzMatrixForTemplate = matrix;
     }
@@ -7652,7 +7731,9 @@
   }
 
   function collectKzMatrixSelectedPayload() {
-    var panel = document.getElementById("practical-review-panel");
+    var panel =
+      document.getElementById("practical-review-panel") ||
+      document.getElementById("practical-kz-slot");
     if (!panel) return null;
     var cbs = panel.querySelectorAll(".kz-matrix-cb:checked");
     if (!cbs.length) return null;
@@ -7663,8 +7744,12 @@
       var cb = cbs[i];
       var sec = cb.getAttribute("data-kz-section") || "";
       var item = cb.closest(".kz-matrix-item");
-      var span = item && item.querySelector("span");
-      var text = span ? String(span.textContent || "").trim() : "";
+      var textEl = item && item.querySelector(".kz-matrix-item__text");
+      var text = textEl
+        ? String(textEl.textContent || "").trim()
+        : item
+          ? String(item.textContent || "").trim()
+          : "";
       if (!sec || !text) continue;
       if (!bySec[sec]) bySec[sec] = [];
       bySec[sec].push(text);
