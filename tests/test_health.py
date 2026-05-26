@@ -53,3 +53,25 @@ def test_normalize_differential_field_module() -> None:
     normalize_differential_field(parsed)
     assert parsed["differential"] == ["а", "б", "c", "d", "e"]
     normalize_differential_field(None)
+
+
+def test_training_cases_ok(client: TestClient) -> None:
+    r = client.get("/api/training-cases")
+    assert r.status_code == 200
+    assert len(r.json().get("cases") or []) >= 5
+
+
+def test_pilot_analytics_demo_ok(client: TestClient) -> None:
+    r = client.get("/api/pilot-analytics-demo")
+    assert r.status_code == 200
+    assert r.json().get("demo") is True
+
+
+def test_protocol_ui_meta() -> None:
+    from rag_server import protocol_ui_meta_for_path
+
+    m = protocol_ui_meta_for_path(
+        "minzdrav_protocols/revmatologiya/КП_взр_СКВ_пост_МЗ_2022_1.pdf"
+    )
+    assert m.get("post_mz") is True
+    assert m.get("year")

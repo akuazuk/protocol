@@ -46,7 +46,7 @@ from retrieval_bm25 import build_bm25_index
 
 load_project_env(ROOT)
 
-from typing import Annotated
+from typing import Annotated, Iterable
 
 try:
     from fastapi import FastAPI, HTTPException, File, Form, UploadFile
@@ -92,6 +92,56 @@ QUALITY_BENCHMARK_PATH = ROOT / "data" / "quality_benchmark.json"
 MINZDRAV_PROTOCOLS_INDEX_URL = (
     "https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/"
 )
+TRAINING_CASES_PATH = ROOT / "data" / "training_cases.json"
+DEMO_CONSULT_TEXT_PATH = ROOT / "data" / "demo_consult_kz_sample.txt"
+_index_csv_by_path: dict[str, dict[str, str]] | None = None
+
+
+def _load_index_csv_by_path() -> dict[str, dict[str, str]]:
+    global _index_csv_by_path
+    if _index_csv_by_path is not None:
+        return _index_csv_by_path
+    out: dict[str, dict[str, str]] = {}
+    if INDEX_CSV_PATH.is_file():
+        with INDEX_CSV_PATH.open(encoding="utf-8", newline="") as f:
+            for row in csv.DictReader(f):
+                rel = (row.get("relative_path") or "").strip()
+                if rel:
+                    out[rel] = row
+    _index_csv_by_path = out
+    return out
+
+
+def protocol_ui_meta_for_path(path: str) -> dict:
+    """Метаданные КП для UI: год, пост МЗ, аудитория (из index.csv и имени файла)."""
+    fn = Path(path).name if path else ""
+    nb = _norm_query(fn)
+    row = _load_index_csv_by_path().get(path.strip(), {}) if path else {}
+    audience: list[str] = []
+    if any(x in nb for x in ("д-нас", "детс", "детей", "дет ", "неонат", "новорож")):
+        audience.append("детское население")
+    if any(x in nb for x in ("взр", "взросл")):
+        audience.append("взрослое население")
+    if "беремен" in nb:
+        audience.append("беременность")
+    post_csv = (row.get("has_post_mz") or "").strip().lower() == "yes"
+    post_fn = any(x in nb for x in ("пост_мз", "post_mz", "постановление_мз", "постановление мз"))
+    year = (row.get("years_in_filename") or "").strip() or None
+    if not year:
+        ym = re.search(r"(20\d{2})", fn)
+        if ym:
+            year = ym.group(1)
+    mz_m = re.search(r"№\s*(\d+)", fn)
+    return {
+        "year": year,
+        "post_mz": bool(post_csv or post_fn),
+        "audience_hint": "; ".join(audience) if audience else None,
+        "mz_number": mz_m.group(1) if mz_m else None,
+    }
+
+
+def protocol_ui_meta_bundle(paths: Iterable[str]) -> dict[str, dict]:
+    return {p: protocol_ui_meta_for_path(p) for p in paths if p and str(p).strip()}
 
 ALLOWED_SPECIALTY_SLUGS = frozenset(
     [
@@ -4259,6 +4309,10 @@ class AssistIn(BaseModel):
         default_factory=list,
         description="Рубрики Минздрава (slug), выбранные пользователем — усиливают отбор",
     )
+    inline_clinical_detail: bool = Field(
+        default=False,
+        description="true — сразу развёрнутая выдержка (дольше); false — только кнопка загрузки",
+    )
 
 
 class IcdSuggestIn(BaseModel):
@@ -4436,6 +4490,53 @@ def api_corpus_stats() -> dict:
         out["protocols_loaded"] = None
         out["protocol_meta_entries"] = None
     return out
+
+
+@app.get("/api/training-cases")
+def api_training_cases() -> dict:
+    if not TRAINING_CASES_PATH.is_file():
+        raise HTTPException(status_code=404, detail="data/training_cases.json не найден")
+    try:
+        data = json.loads(TRAINING_CASES_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+    if not isinstance(data, dict):
+        raise HTTPException(status_code=500, detail="training_cases.json: ожидается объект")
+    return data
+
+
+@app.get("/api/demo-consult-text")
+def api_demo_consult_text() -> dict:
+    """Текст демо-КЗ для показа (без PDF)."""
+    if not DEMO_CONSULT_TEXT_PATH.is_file():
+        raise HTTPException(status_code=404, detail="demo_consult_kz_sample.txt не найден")
+    try:
+        text = DEMO_CONSULT_TEXT_PATH.read_text(encoding="utf-8").strip()
+    except OSError as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+    return {"text": text, "title": "Демо: консультативное заключение (СКВ, обезличено)"}
+
+
+@app.get("/api/pilot-analytics-demo")
+def api_pilot_analytics_demo() -> dict:
+    """Агрегированная аналитика пилота (демо, без ПДн) для презентации руководству."""
+    corpus = _corpus_stats_from_index_csv()
+    return {
+        "demo": True,
+        "period_label": "Пилот (иллюстрация, обезличенные данные)",
+        "reviews_total": 124,
+        "avg_compliance_pct": 76,
+        "reviews_with_risk_zones": 41,
+        "risk_zone_rate_pct": 33,
+        "top_weak_criteria": [
+            {"name": "Обследование", "avg_pct": 68},
+            {"name": "Специализированная помощь", "avg_pct": 71},
+            {"name": "Диспансерное наблюдение", "avg_pct": 72},
+            {"name": "Лечение", "avg_pct": 74},
+        ],
+        "protocols_in_corpus": corpus.get("protocols_in_index"),
+        "note_ru": "Цифры для демонстрации интерфейса; в пилоте заменяются реальной агрегацией без ПДн.",
+    }
 
 
 @app.get("/api/quality-benchmark")
@@ -4800,10 +4901,17 @@ def api_assist(body: AssistIn) -> dict:
 
     clinical_detail = None
     clinical_detail_offer: dict | None = None
-    if parsed and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
+    inline_detail = body.inline_clinical_detail or os.environ.get(
+        "RAG_ASSIST_INLINE_DETAIL", "0"
+    ).strip().lower() in ("1", "true", "yes")
+    if (
+        parsed
+        and inline_detail
+        and os.environ.get("GEMINI_EXTRACT_FULL_MATCH", "1").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        )
     ):
         candidates: list[tuple[float, dict]] = []
         min_detail_rag = float(os.environ.get("RAG_DETAIL_MIN_RAG_SUPPORT", "0.12"))
@@ -4863,9 +4971,21 @@ def api_assist(body: AssistIn) -> dict:
     )
     red_flags = _red_flags_from_retrieval(retrieved)
 
+    meta_paths: set[str] = set()
+    for r in retrieved:
+        p = str(r.get("path") or "").strip()
+        if p:
+            meta_paths.add(p)
+    for pr in proto_list:
+        if isinstance(pr, dict):
+            p = str(pr.get("path") or "").strip()
+            if p:
+                meta_paths.add(p)
+
     return {
         "query": q,
         "retrieval": retrieved,
+        "protocol_ui_meta": protocol_ui_meta_bundle(meta_paths),
         "audience_inferred": audience_inferred,
         "retrieval_audience_fallback": audience_fallback,
         "query_specialties": query_specialties,

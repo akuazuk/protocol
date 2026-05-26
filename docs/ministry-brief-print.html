@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Навигатор протоколов Минздрава РБ — буклет</title>
+  <style>
+    @page { margin: 18mm; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; color: #1a2e2a; max-width: 42rem; margin: 1.5rem auto; line-height: 1.45; font-size: 11pt; }
+    h1 { font-size: 1.35rem; color: #063d35; margin: 0 0 0.5rem; }
+    h2 { font-size: 1rem; color: #0d5c4a; margin: 1.1rem 0 0.4rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 0.5rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.35rem 0.5rem; text-align: left; }
+    .muted { color: #5a6f6a; font-size: 9.5pt; }
+    @media print { .no-print { display: none; } }
+  </style>
+</head>
+<body>
+  <p class="no-print muted">Печать: Ctrl+P → «Сохранить как PDF»</p>
+  <h1>Навигатор клинических протоколов Минздрава Республики Беларусь</h1>
+  <p class="muted">Пилот: медицинский центр «Кравира» · источник: minzdrav.gov.by</p>
+
+  <h2>Задача</h2>
+  <p>Сотни клинических протоколов — врач не успевает держать все редакции в памяти. Разное соблюдение стандартов ведёт к разному качеству помощи и претензиям. Консультативные заключения нужно сверять с протоколом <strong>до</strong> эскалации жалобы.</p>
+
+  <h2>Два контура</h2>
+  <table>
+    <tr><th>Контур</th><th>Назначение</th></tr>
+    <tr><td>Поиск протоколов</td><td>Врач: МКБ-10, выдержки, алгоритмы</td></tr>
+    <tr><td>Проверка КЗ (PDF)</td><td>Методслужба: % соответствия, зоны риска</td></tr>
+  </table>
+
+  <h2>KPI пилота (3 месяца)</h2>
+  <ul>
+    <li>Доля приёмов с открытым релевантным КП</li>
+    <li>Время поиска протокола</li>
+    <li>Доля КЗ с зоной риска (&lt; 70% по критерию)</li>
+    <li>Оценка методслужбы</li>
+  </ul>
+
+  <h2>Ограничения</h2>
+  <p>Не замена очного приёма, МЭЭ и юридической экспертизы. При расхождении с сайтом Минздрава действует официальный PDF.</p>
+
+  <p class="muted">Демо: <code>/?presentation=1</code></p>
+</body>
+</html>

@@ -4360,14 +4360,161 @@
       color: var(--muted);
       line-height: 1.4;
     }
+
+    .compliance-norm-panel {
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(232, 245, 241, 0.5) 100%);
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .compliance-norm-panel a {
+      color: var(--green-700);
+      font-weight: 650;
+    }
+
+    .pilot-analytics-panel {
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: #fff;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.06);
+    }
+
+    .pilot-analytics-panel h3 {
+      margin: 0 0 0.5rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 0.98rem;
+      color: var(--green-950);
+    }
+
+    .pilot-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .pilot-stat {
+      border-radius: 12px;
+      background: rgba(232, 245, 241, 0.55);
+      padding: 0.45rem 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    .pilot-stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: var(--green-800);
+    }
+
+    .training-panel {
+      border-radius: 16px;
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .training-panel summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--green-900);
+    }
+
+    .search-mode-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem 1rem;
+      margin: 0 0 0.75rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      font-size: 0.82rem;
+    }
+
+    .search-mode-toolbar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--green-900);
+    }
+
+    .assist-catalog-badge {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      background: rgba(26, 138, 114, 0.14);
+      color: var(--green-800);
+      vertical-align: middle;
+    }
+
+    .assist-catalog-badge--mz {
+      background: rgba(59, 130, 246, 0.12);
+      color: #1e40af;
+    }
+
+    .assist-audience-banner {
+      margin: 0 0 0.75rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.3);
+      background: rgba(232, 245, 241, 0.65);
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--green-900);
+    }
+
+    .assist-protocol-checklist {
+      margin: 0.85rem 0;
+      padding: 0.75rem 0.85rem;
+      border-radius: 14px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .assist-protocol-checklist h4 {
+      margin: 0 0 0.45rem;
+      font-size: 0.92rem;
+      color: var(--green-950);
+    }
+
+    .assist-checklist-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .minister-doc-links {
+      margin: 0.5rem 0 0;
+      font-size: 0.78rem;
+    }
+
+    .minister-doc-links a {
+      margin-right: 0.75rem;
+      color: var(--green-700);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
   <div id="presentation-overlay" class="presentation-overlay" hidden aria-hidden="true">
     <div class="presentation-card" role="dialog" aria-labelledby="presentation-title" aria-modal="true">
-      <div class="presentation-steps" id="presentation-steps" aria-hidden="true">
-        <span class="is-active"></span><span></span><span></span>
-      </div>
+      <div class="presentation-steps" id="presentation-steps" aria-hidden="true"></div>
       <div id="presentation-slide-body"></div>
       <div class="presentation-actions">
         <button type="button" class="btn-presentation-ghost" id="presentation-btn-prev" hidden>Назад</button>
@@ -4444,6 +4591,30 @@
         </div>
       </div>
     </header>
+
+    <section class="compliance-norm-panel" id="compliance-norm-panel" aria-label="Нормативная база">
+      <strong>Соответствие публикациям Минздрава РБ.</strong>
+      Источник — раздел
+      <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">«Стандарты обследования и лечения»</a>
+      на minzdrav.gov.by. При расхождении с интерфейсом действует актуальный PDF на сайте Минздрава. Сервис не изменяет тексты протоколов.
+      <p class="minister-doc-links">
+        <a href="docs/ministry-brief-print.html" target="_blank" rel="noopener">Буклет для руководства (PDF через печать)</a>
+        <a href="docs/roadmap-mis.md" target="_blank" rel="noopener">Этап 2: МИС</a>
+        <a href="docs/deployment-belarus.md" target="_blank" rel="noopener">Развёртывание в РБ</a>
+      </p>
+    </section>
+
+    <section class="pilot-analytics-panel" id="pilot-analytics-panel" hidden aria-labelledby="pilot-analytics-title">
+      <h3 id="pilot-analytics-title">Аналитика пилота (обезличенно)</h3>
+      <div id="pilot-analytics-body"></div>
+      <p class="info-panel-note" id="pilot-analytics-note"></p>
+    </section>
+
+    <details class="training-panel" id="training-panel">
+      <summary>Учебные клинические ситуации (10 кейсов)</summary>
+      <p class="info-panel-note" style="margin: 0.45rem 0">Для ординаторов и демонстрации: подставляет запрос и запускает подбор.</p>
+      <div class="demo-cases-chips" id="training-cases-chips"></div>
+    </details>
 
     <div class="info-panels-row" id="info-panels-row">
       <section class="info-panel" id="corpus-stats-panel" aria-labelledby="corpus-stats-title">
@@ -4534,6 +4705,13 @@
       </div>
 
       <div class="search-panel">
+        <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
+          <label>
+            <input type="checkbox" id="citations-only-mode" />
+            Только цитаты из протоколов (без краткого ответа модели)
+          </label>
+          <span class="info-panel-note" style="margin: 0">Для аудита: видны PDF-выдержки и ссылки, без интерпретации ИИ.</span>
+        </div>
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
@@ -4763,8 +4941,10 @@
 
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
+          <p class="consult-hint-small consult-hide-print" id="consult-demo-text-hint" hidden></p>
           <div id="consult-analyze-banner" class="consult-analyze-banner consult-hide-print" hidden role="status" aria-live="polite">
             <div class="consult-analyze-banner__inner">
               <span class="consult-analyze-banner__caption">Идёт анализ</span>
@@ -4855,8 +5035,11 @@
   >
     <div class="assist-timer-overlay__card" role="dialog" aria-modal="true" aria-labelledby="assist-timer-overlay-title">
       <div id="assist-timer-overlay-title" class="assist-timer-overlay__title">
-        Подбор протоколов
+        Сверка с протоколами Минздрава…
       </div>
+      <p class="assist-timer-overlay__disclaimer" style="margin: 0.35rem 0 0; font-size: 0.78rem; color: var(--muted)">
+        Обычно 40–90 с: подбор кодов МКБ, поиск по корпусу PDF, формирование ответа. Не закрывайте вкладку.
+      </p>
       <div class="assist-loading__timer">
         <span class="assist-timer-num">0</span>
         <span class="assist-timer-unit">сек</span>
@@ -6360,6 +6543,7 @@
       '" target="_blank" rel="noopener">' +
       escapeHtml(title) +
       "</a>";
+    html += catalogBadgesHtml(pr.path, opts.protocolUiMeta);
     html +=
       '<span class="llm-pct-badge ' +
       confidenceBadgeClass(mScore) +
@@ -7367,9 +7551,11 @@
       var ragMap = normalizeRagByPath(data.retrieval || []);
       var excerptByPath = ragExcerptByPath(data.retrieval || []);
       var protocolIcdMentions = data.protocol_icd_mentions || {};
+      var citationsOnly = isCitationsOnlyMode();
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
         protocolIcdMentions: protocolIcdMentions,
+        protocolUiMeta: data.protocol_ui_meta || {},
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
       var high = [];
@@ -7391,15 +7577,31 @@
           "</div>";
       }
 
-      if (j.summary) {
+      if (!citationsOnly && j.summary) {
         html +=
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
 
-      html +=
-        '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+      if (citationsOnly) {
+        html +=
+          '<p class="assist-source-note"><strong>Режим «только цитаты»:</strong> показаны выдержки из PDF протоколов Минздрава и ссылки; краткий ответ модели скрыт.</p>';
+      } else {
+        html +=
+          '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+      }
 
-      if (data.diagnostic_notice) {
+      if (data.audience_inferred) {
+        var audLabel =
+          data.audience_inferred === "pediatric"
+            ? "Детская аудитория (по запросу)"
+            : data.audience_inferred === "adult"
+              ? "Взрослая аудитория (по запросу)"
+              : String(data.audience_inferred);
+        html +=
+          '<p class="assist-audience-banner">' + escapeHtml(audLabel) + "</p>";
+      }
+
+      if (!citationsOnly && data.diagnostic_notice) {
         var dmode = String(data.diagnostic_mode || "");
         var dconf = data.diagnostic_confidence != null && !isNaN(Number(data.diagnostic_confidence))
           ? Math.round(Number(data.diagnostic_confidence) * 100)
@@ -7416,9 +7618,11 @@
           "</p>";
       }
 
-      html += formatIcdSectionHtml(data.icd || {});
+      if (!citationsOnly) {
+        html += formatIcdSectionHtml(data.icd || {});
+      }
 
-      if (data.red_flags && data.red_flags.length) {
+      if (!citationsOnly && data.red_flags && data.red_flags.length) {
         html += '<div class="assist-sec assist-sec--redflags">';
         html +=
           '<span class="assist-sec-label assist-sec-label--alert">Обратить внимание (по тексту отобранных фрагментов)</span>';
@@ -7469,7 +7673,7 @@
         }
       }
 
-      if (j.differential && j.differential.length) {
+      if (!citationsOnly && j.differential && j.differential.length) {
         html +=
           '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
         html +=
@@ -7500,6 +7704,7 @@
       }
 
       if (
+        !citationsOnly &&
         j.questions_for_patient &&
         j.questions_for_patient.length &&
         !hasAnyProtocolAt100Pct(rawProtos)
@@ -7536,10 +7741,18 @@
           "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
+      var checklistHtml = renderProtocolChecklistHtml(data);
+      if (checklistHtml && !citationsOnly) {
+        html += checklistHtml;
+      }
+
       if (data.clinical_detail) {
         html += renderClinicalDetailBlock(data.clinical_detail, data.query || "");
-      } else if (data.clinical_detail_offer) {
+      } else if (data.clinical_detail_offer && !citationsOnly) {
         html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
+      } else if (data.clinical_detail_offer && citationsOnly) {
+        html +=
+          '<p class="assist-source-note">Развёрнутая выдержка: откройте PDF по ссылке выше или снимите режим «только цитаты» и нажмите «Загрузить развёрнутую выдержку».</p>';
       }
 
       if (j.disclaimer) {
@@ -7652,6 +7865,207 @@
 
   window.__consultReviewLastPayload = null;
 
+  var CITATIONS_ONLY_KEY = "rag_citations_only";
+
+  function isCitationsOnlyMode() {
+    var el = document.getElementById("citations-only-mode");
+    return !!(el && el.checked);
+  }
+
+  function initCitationsOnlyToggle() {
+    var el = document.getElementById("citations-only-mode");
+    if (!el) return;
+    try {
+      el.checked = localStorage.getItem(CITATIONS_ONLY_KEY) === "1";
+    } catch (e) {}
+    el.addEventListener("change", function () {
+      try {
+        localStorage.setItem(CITATIONS_ONLY_KEY, el.checked ? "1" : "0");
+      } catch (e) {}
+    });
+  }
+
+  function catalogBadgesHtml(path, protocolUiMeta) {
+    var m = (protocolUiMeta || {})[path] || {};
+    var h = "";
+    if (m.post_mz) {
+      h += '<span class="assist-catalog-badge assist-catalog-badge--mz">пост МЗ</span>';
+    }
+    if (m.year) {
+      h += '<span class="assist-catalog-badge">' + escapeHtml(String(m.year)) + "</span>";
+    }
+    if (m.mz_number) {
+      h +=
+        '<span class="assist-catalog-badge" title="Номер в имени файла">№' +
+        escapeHtml(String(m.mz_number)) +
+        "</span>";
+    }
+    if (m.audience_hint) {
+      h +=
+        '<span class="assist-catalog-badge" title="Аудитория по названию КП">' +
+        escapeHtml(String(m.audience_hint)) +
+        "</span>";
+    }
+    return h;
+  }
+
+  function renderProtocolChecklistHtml(data) {
+    var cd = data.clinical_detail;
+    if (!cd || cd.error) return "";
+    var sections = [
+      ["Обследования по протоколу", cd.investigations],
+      ["Лекарственная терапия", cd.medications],
+      ["Методы лечения", cd.treatment_methods],
+      [
+        "Наблюдение",
+        cd.monitoring_frequency
+          ? [String(cd.monitoring_frequency)]
+          : cd.monitoring_followup
+            ? [String(cd.monitoring_followup)]
+            : [],
+      ],
+    ];
+    var html =
+      '<div class="assist-protocol-checklist"><h4>Чек-лист сверки с протоколом (для врача / методслужбы)</h4><ul class="assist-checklist-list">';
+    var hasAny = false;
+    var si;
+    for (si = 0; si < sections.length; si++) {
+      var label = sections[si][0];
+      var items = sections[si][1];
+      if (!items || !items.length) continue;
+      hasAny = true;
+      html += "<li><strong>" + escapeHtml(label) + ":</strong> ";
+      html += escapeHtml(items.slice(0, 6).join("; "));
+      if (items.length > 6) html += " …";
+      html += " — отметить в КЗ: да / нет / не применимо</li>";
+    }
+    html += "</ul>";
+    html +=
+      '<p class="info-panel-note" style="margin:0.35rem 0 0">Не юридический акт; фиксация для внутреннего аудита качества.</p></div>';
+    return hasAny ? html : "";
+  }
+
+  function loadPilotAnalyticsPanel() {
+    var panel = document.getElementById("pilot-analytics-panel");
+    var body = document.getElementById("pilot-analytics-body");
+    var note = document.getElementById("pilot-analytics-note");
+    if (!panel || !body) return;
+    panel.hidden = false;
+    fetch(apiBaseUrl() + "/api/pilot-analytics-demo")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (d) {
+        if (!d) {
+          body.innerHTML = "<span>Нет данных</span>";
+          return;
+        }
+        body.innerHTML =
+          '<div class="pilot-stat-grid">' +
+          '<div class="pilot-stat"><strong>' +
+          d.reviews_total +
+          "</strong> проверок КЗ</div>" +
+          '<div class="pilot-stat"><strong>' +
+          d.avg_compliance_pct +
+          "%</strong> среднее соответствие</div>" +
+          '<div class="pilot-stat"><strong>' +
+          d.risk_zone_rate_pct +
+          "%</strong> с зоной риска</div>" +
+          '<div class="pilot-stat"><strong>' +
+          (d.protocols_in_corpus || "—") +
+          "</strong> протоколов в корпусе</div></div>";
+        var crit = d.top_weak_criteria || [];
+        var ch = "<ul class=\"assist-checklist-list\">";
+        var ci;
+        for (ci = 0; ci < crit.length; ci++) {
+          ch +=
+            "<li>" +
+            escapeHtml(crit[ci].name || "") +
+            " — ср. " +
+            crit[ci].avg_pct +
+            "%</li>";
+        }
+        ch += "</ul>";
+        body.innerHTML += "<p style=\"margin:0.5rem 0 0.2rem;font-weight:650\">Слабые критерии (типично):</p>" + ch;
+        if (note) note.textContent = d.note_ru || "";
+      })
+      .catch(function () {
+        body.innerHTML = "<span>Аналитика недоступна</span>";
+      });
+  }
+
+  function loadTrainingCasesChips() {
+    var wrap = document.getElementById("training-cases-chips");
+    if (!wrap) return;
+    fetch(apiBaseUrl() + "/api/training-cases")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (data) {
+        wrap.innerHTML = "";
+        (data.cases || []).forEach(function (tc) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn-demo-case";
+          b.title = tc.hint || "";
+          b.textContent = tc.label || tc.query;
+          b.addEventListener("click", function () {
+            switchMainAppTab(MAIN_TAB_SEARCH);
+            var inp = document.getElementById("q");
+            if (inp && tc.query) inp.value = tc.query;
+            if (tc.icd_preflight) {
+              runIcdPreflight().catch(function () {});
+            } else if (tc.query) {
+              runAssist().catch(function () {});
+            }
+          });
+          wrap.appendChild(b);
+        });
+      })
+      .catch(function () {});
+  }
+
+  function initConsultDemoTextButton() {
+    var btn = document.getElementById("consult-btn-demo-text");
+    var hint = document.getElementById("consult-demo-text-hint");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      fetch(apiBaseUrl() + "/api/demo-consult-text")
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (d) {
+          if (!d || !d.text) {
+            alert("Демо-текст недоступен.");
+            return;
+          }
+          if (hint) {
+            hint.hidden = false;
+            hint.textContent =
+              (d.title || "Демо КЗ") +
+              ". Сохраните текст в PDF с текстовым слоем и загрузите выше, либо используйте как эталон для разбора.";
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(d.text).then(
+              function () {
+                alert(
+                  "Демо-текст консультативного заключения скопирован в буфер. Вставьте в Word → сохраните как PDF → загрузите для проверки."
+                );
+              },
+              function () {
+                alert(d.text.slice(0, 1200) + "\n\n[…]");
+              }
+            );
+          } else {
+            alert(d.text.slice(0, 1500));
+          }
+        })
+        .catch(function () {
+          alert("Не удалось загрузить демо-текст.");
+        });
+    });
+  }
+
   var PRESENTATION_SLIDES = [
     {
       title: "Задача системы здравоохранения",
@@ -7667,9 +8081,15 @@
         "<p>Источник — только опубликованные протоколы Минздрава РБ.</p>",
     },
     {
+      title: "KPI пилота (3 месяца)",
+      html:
+        "<ul><li>Доля приёмов с открытым релевантным клиническим протоколом</li><li>Среднее время поиска протокола vs поиск вручную</li><li>Доля КЗ с зоной риска (&lt; 70% по критерию) — ранний сигнал методслужбе</li><li>Оценка заведующих и методсовета</li></ul>" +
+        "<p>Пилот: 2–3 учреждения под методическим сопровождением.</p>",
+    },
+    {
       title: "Демонстрация",
       html:
-        "<p>Ниже — рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии или загрузите обезличенное консультативное заключение на вкладке проверки КЗ.</p>" +
+        "<p>Ниже — рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии, учебные кейсы или загрузите обезличенное консультативное заключение.</p>" +
         "<p>Оценка не является МЭЭ и не заменяет решение врача.</p>",
     },
   ];
@@ -7678,6 +8098,7 @@
     { label: "I10 гипертензия", tab: "search", query: "I10 эссенциальная гипертензия" },
     { label: "J20.9 бронхит", tab: "search", query: "J20.9 острый бронхит" },
     { label: "E11.9 СД 2 типа", tab: "search", query: "E11.9 сахарный диабет 2 типа" },
+    { label: "M32.9 СКВ", tab: "search", query: "M32.9 системная красная волчанка" },
     {
       label: "Жалобы → МКБ",
       tab: "search",
@@ -7701,11 +8122,19 @@
     var ov = document.getElementById("presentation-overlay");
     if (!ov) return;
     var slideBody = document.getElementById("presentation-slide-body");
-    var steps = document.getElementById("presentation-steps");
-    var btnPrev = document.getElementById("presentation-btn-prev");
-    var btnNext = document.getElementById("presentation-btn-next");
-    var btnStart = document.getElementById("presentation-btn-start");
-    var idx = 0;
+      var steps = document.getElementById("presentation-steps");
+      var btnPrev = document.getElementById("presentation-btn-prev");
+      var btnNext = document.getElementById("presentation-btn-next");
+      var btnStart = document.getElementById("presentation-btn-start");
+      var idx = 0;
+    if (steps) {
+      steps.innerHTML = "";
+      var si;
+      for (si = 0; si < PRESENTATION_SLIDES.length; si++) {
+        var sp = document.createElement("span");
+        steps.appendChild(sp);
+      }
+    }
 
     function renderSlide() {
       var s = PRESENTATION_SLIDES[idx];
@@ -9140,6 +9569,7 @@
             body: JSON.stringify({
               query: qSend,
               category_slugs: getSelectedCategorySlugs(),
+              inline_clinical_detail: false,
             }),
             signal: ctrl.signal,
           });
@@ -9218,8 +9648,12 @@
   initMainAppTabsAndConsultReview();
   initPresentationOverlay();
   initDemoCasesBar();
+  initCitationsOnlyToggle();
   loadCorpusStatsPanel();
   loadQualityBenchmarkPanel();
+  loadPilotAnalyticsPanel();
+  loadTrainingCasesChips();
+  initConsultDemoTextButton();
 
   if (isPresentationMode()) {
     var tabList = document.getElementById("app-main-tabs");
