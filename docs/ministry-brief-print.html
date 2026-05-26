@@ -2,44 +2,402 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <title>Навигатор протоколов Минздрава РБ — буклет</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Навигатор клинических протоколов Минздрава РБ — буклет для печати</title>
+  <meta name="description" content="Печатный буклет пилота: два контура сервиса, KPI, ИБ и этап 2 для руководства." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
-    @page { margin: 18mm; }
-    body { font-family: "Segoe UI", system-ui, sans-serif; color: #1a2e2a; max-width: 42rem; margin: 1.5rem auto; line-height: 1.45; font-size: 11pt; }
-    h1 { font-size: 1.35rem; color: #063d35; margin: 0 0 0.5rem; }
-    h2 { font-size: 1rem; color: #0d5c4a; margin: 1.1rem 0 0.4rem; }
-    table { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 0.5rem 0; }
-    th, td { border: 1px solid #ccc; padding: 0.35rem 0.5rem; text-align: left; }
-    .muted { color: #5a6f6a; font-size: 9.5pt; }
-    @media print { .no-print { display: none; } }
+    :root {
+      --green-950: #063d35;
+      --green-700: #126b5c;
+      --green-600: #1a8a72;
+      --green-400: #3cb89a;
+      --green-soft: #e8f5f1;
+      --ocean: #0c6b94;
+      --amber: #b45309;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+    }
+    * { box-sizing: border-box; }
+
+    html {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      margin: 0;
+      font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      font-size: 11pt;
+      line-height: 1.52;
+      background: linear-gradient(180deg, #f7faf8 0%, #e8efe9 60%);
+    }
+
+    .page {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 2.5rem;
+    }
+
+    .no-print-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      box-shadow: 0 6px 20px rgba(6, 61, 53, 0.08);
+    }
+    .no-print-actions span { flex: 1; font-size: 0.82rem; color: var(--muted); min-width: 12rem; }
+    button.print-btn {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.42rem 0.95rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--green-600), var(--green-700));
+      color: #fff;
+    }
+    .no-print-actions a {
+      font-weight: 700;
+      color: var(--green-700);
+      font-size: 0.85rem;
+    }
+
+    /* Обложка / шапка буклета */
+    .booklet-cover {
+      border-radius: 22px;
+      padding: 1.85rem 1.6rem 1.65rem;
+      margin-bottom: 1.65rem;
+      background:
+        radial-gradient(ellipse 85% 70% at 100% 0%, rgba(60, 184, 154, 0.28), transparent 58%),
+        radial-gradient(ellipse 60% 50% at 0% 100%, rgba(12, 107, 148, 0.14), transparent 55%),
+        linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.92) 100%);
+      border: 2px solid rgba(26, 138, 114, 0.42);
+      box-shadow: 0 16px 40px rgba(6, 61, 53, 0.1);
+    }
+    .booklet-cover .eyebrow {
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--green-700);
+      margin: 0 0 0.45rem;
+    }
+    .booklet-cover h1 {
+      margin: 0;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.55rem;
+      color: var(--green-950);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .booklet-cover .subtitle {
+      margin: 0.65rem 0 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .booklet-meta {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .meta-pill {
+      font-family: "Outfit", sans-serif;
+      font-size: 0.71rem;
+      font-weight: 700;
+      padding: 0.32rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(26, 138, 114, 0.16);
+      color: var(--green-950);
+    }
+    .meta-pill--accent { background: rgba(217, 119, 6, 0.16); color: var(--amber); }
+
+    h2 {
+      font-family: "Outfit", sans-serif;
+      font-size: 1.05rem;
+      color: var(--green-950);
+      margin: 1.65rem 0 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 3px solid rgba(26, 138, 114, 0.28);
+    }
+    .section-intro h2:first-of-type {
+      margin-top: 1rem;
+    }
+
+    ul.brief-list {
+      margin: 0.4rem 0 0;
+      padding-left: 1.15rem;
+    }
+    ul.brief-list li { margin: 0.4rem 0; }
+
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.55rem 0;
+      font-size: 9.8pt;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.07);
+    }
+    table.data th,
+    table.data td {
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      padding: 0.45rem 0.55rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.data thead th {
+      background: linear-gradient(180deg, var(--green-600), var(--green-700));
+      color: #fff;
+      font-family: "Outfit", sans-serif;
+      font-weight: 600;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    table.data tbody tr:nth-child(even) {
+      background: rgba(232, 245, 241, 0.5);
+    }
+
+    .aside-box {
+      margin: 1rem 0;
+      padding: 0.95rem 1rem;
+      border-radius: 14px;
+      background: rgba(12, 107, 148, 0.08);
+      border-left: 4px solid var(--ocean);
+      font-size: 0.93rem;
+    }
+    .aside-box strong { color: var(--ocean); }
+
+    .viz-strip {
+      margin: 1rem 0;
+      padding: 0.75rem 0.95rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+    }
+    .viz-strip h3 {
+      margin: 0 0 0.5rem;
+      font-family: "Outfit", sans-serif;
+      font-size: 0.82rem;
+      color: var(--green-950);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .hbar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.28rem 0;
+      font-size: 9pt;
+    }
+    .hbar-label { width: 11.5rem; flex-shrink: 0; color: var(--muted); }
+    .hbar-track {
+      flex: 1;
+      height: 11px;
+      border-radius: 6px;
+      background: rgba(26, 138, 114, 0.1);
+      overflow: hidden;
+    }
+    .hbar-fill { height: 100%; border-radius: 6px; }
+
+    footer.brief-foot {
+      margin-top: 1.85rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.25);
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    footer.brief-foot a { color: var(--green-700); font-weight: 600; }
+
+    .sources {
+      font-size: 9.2pt;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    @media screen and (max-width: 520px) {
+      .booklet-cover h1 { font-size: 1.35rem; }
+      .hbar-label { width: 9rem; font-size: 8.5pt; }
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        margin: 0;
+        padding: 0;
+        font-size: 10.5pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 13mm 15mm;
+      }
+      .page {
+        max-width: 100%;
+        padding: 0;
+      }
+      .no-print-actions { display: none !important; }
+      .booklet-cover {
+        box-shadow: none;
+        margin-bottom: 10mm;
+        page-break-after: avoid;
+      }
+      h2 { page-break-after: avoid; margin-top: 9mm; }
+      table.data, .aside-box, .viz-strip, .brief-foot {
+        break-inside: avoid;
+      }
+      .sources { page-break-before: avoid; }
+    }
+
   </style>
 </head>
 <body>
-  <p class="no-print muted">Печать: Ctrl+P → «Сохранить как PDF»</p>
-  <h1>Навигатор клинических протоколов Минздрава Республики Беларусь</h1>
-  <p class="muted">Пилот: медицинский центр «Кравира» · источник: minzdrav.gov.by</p>
+  <div class="page">
+    <div class="no-print-actions no-print">
+      <button type="button" class="print-btn" onclick="window.print()" title="Сохранить как PDF через диалог печати">Печать / PDF</button>
+      <a href="../index.html#consult-review">Открыть приложение</a>
+      <span>Включите <strong>фоновые рисунки</strong> в настройках печати браузера, чтобы сохранились цвет таблицы и обложки.</span>
+    </div>
 
-  <h2>Задача</h2>
-  <p>Сотни клинических протоколов — врач не успевает держать все редакции в памяти. Разное соблюдение стандартов ведёт к разному качеству помощи и претензиям. Консультативные заключения нужно сверять с протоколом <strong>до</strong> эскалации жалобы.</p>
+    <header class="booklet-cover">
+      <p class="eyebrow">Методический буклет</p>
+      <h1>Навигатор клинических протоколов Минздрава Республики Беларусь</h1>
+      <p class="subtitle">
+        Пилотная площадка и электронное сопровождение сверки консультативных заключений с официальными клиническими протоколами.
+      </p>
+      <div class="booklet-meta">
+        <span class="meta-pill">Пилот: МЦ «Кравира»</span>
+        <span class="meta-pill meta-pill--accent">Источник: minzdrav.gov.by</span>
+      </div>
+    </header>
 
-  <h2>Два контура</h2>
-  <table>
-    <tr><th>Контур</th><th>Назначение</th></tr>
-    <tr><td>Поиск протоколов</td><td>Врач: МКБ-10, выдержки, алгоритмы</td></tr>
-    <tr><td>Проверка КЗ (PDF)</td><td>Методслужба: % соответствия, зоны риска</td></tr>
-  </table>
+    <div class="section-intro">
+      <h2>Проблема</h2>
+      <ul class="brief-list">
+        <li><strong>≈450</strong> действующих клинических протоколов — врач физически не держит все редакции в памяти.</li>
+        <li>Разный уровень соблюдения стандартов ведёт к разному качеству помощи, претензиям пациентов и нагрузке на методслужбу.</li>
+        <li>Консультативные заключения не всегда сверяются с протоколом <strong>до</strong> эскалации жалобы или досудебного спора по документам.</li>
+      </ul>
 
-  <h2>KPI пилота (3 месяца)</h2>
-  <ul>
-    <li>Доля приёмов с открытым релевантным КП</li>
-    <li>Время поиска протокола</li>
-    <li>Доля КЗ с зоной риска (&lt; 70% по критерию)</li>
-    <li>Оценка методслужбы</li>
-  </ul>
+      <h2>Решение — два контура сервиса</h2>
+      <p>
+        Ответы строятся <strong>только по фрагментам официальных PDF</strong>, опубликованных Минздравом Республики Беларусь. Сервис
+        не предназначен для установки диагноза и юридического решения спорных случаев.
+      </p>
+      <table class="data" aria-label="Два контура сервиса">
+        <thead>
+          <tr>
+            <th>Контур</th>
+            <th>Для кого</th>
+            <th>Что делает</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Поиск протоколов</strong></td>
+            <td>Врач на приёме</td>
+            <td>Подбор клинического протокола по МКБ-10 / диагнозу, развёрнутые выдержки (обследования, лечение, алгоритмы), черновик консультативного заключения.</td>
+          </tr>
+          <tr>
+            <td><strong>Проверка КЗ (PDF)</strong></td>
+            <td>Заведующий, методслужба</td>
+            <td>Ориентировочная сверка заключения с выдержками протоколов, таблица критериев соответствия, зоны риска (<strong>&lt; 70%</strong> по критерию), печатный отчёт для протокола комиссии.</td>
+          </tr>
+        </tbody>
+      </table>
 
-  <h2>Ограничения</h2>
-  <p>Не замена очного приёма, МЭЭ и юридической экспертизы. При расхождении с сайтом Минздрава действует официальный PDF.</p>
+      <div class="viz-strip">
+        <h3>Ориентиры пилота (схема, не производственная статистика)</h3>
+        <div class="hbar-row">
+          <span class="hbar-label">Доля приёмов с релевантным КП</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 78%; background: linear-gradient(90deg, #1a8a72, #3cb89a);"></div></div>
+          <span>цель ↑</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Экономия времени поиска</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 65%; background: linear-gradient(90deg, #0c6b94, #1a9bc4);"></div></div>
+          <span>vs ручной PDF</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Раннее выявление «зоны риска» в КЗ</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width: 88%; background: linear-gradient(90deg, #d97706, #eab308);"></div></div>
+          <span>до жалобы</span>
+        </div>
+      </div>
 
-  <p class="muted">Демо: <code>/?presentation=1</code></p>
+      <h2>Пилот (предложение, 3 месяца)</h2>
+      <table class="data" aria-label="Показатели эффективности пилота">
+        <thead>
+          <tr>
+            <th>KPI</th>
+            <th>Как измерять</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Доля приёмов с открытым релевантным клиническим протоколом</td>
+            <td>Логи использования раздела поиска / опрос врачебного состава по выборке пилота</td>
+          </tr>
+          <tr>
+            <td>Среднее время поиска нужного протокола</td>
+            <td>Таймер в интерфейсе vs поиск по PDF вручную на контрольной группе</td>
+          </tr>
+          <tr>
+            <td>Доля КЗ с зоной риска по внутреннему аудиту методслужбы</td>
+            <td>Прогоны модуля проверки заключений, реестр выборочного контроля</td>
+          </tr>
+          <tr>
+            <td>Обратная связь методслужбы</td>
+            <td>Протоколы разборов качества, опрос перед/после внедрения</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sources"><strong>Площадки:</strong> 2–3 учреждения при участии методического совета и согласовании с информационной безопасностью.</p>
+
+      <h2>Информационная безопасность</h2>
+      <ul class="brief-list">
+        <li>Ключ доступа к облачному движку обработки текста находится <strong>только на сервере</strong>, не в браузере пользователя.</li>
+        <li>Консультативные заключения с персональными данными обрабатываются в <strong>защищённом контуре</strong> организации здравоохранения; для публичных демонстраций — обезличенные PDF.</li>
+        <li>При промышленном развёртывании возможна установка решения на площадках в Республике Беларусь (детали — техническое приложение).</li>
+      </ul>
+
+      <div class="aside-box">
+        <strong>Этап 2 (схема, без жёстких сроков).</strong>
+        Интеграция API навигатора с медицинской информационной системой и едиными государственными регистрами — единая точка доступа к актуальным протоколам из рабочего места врача, автоматическая подача текста КЗ на проверку после электронной подписи.
+      </div>
+
+      <h2>Демонстрация и материалы</h2>
+      <ul class="brief-list">
+        <li>Рабочий стенд пилота: <a href="https://protocol.kravira.by/" target="_blank" rel="noopener">protocol.kravira.by</a>.</li>
+        <li>Вводный сценарий в браузере: <code>/?presentation=1</code> или <code>/?demo=1</code> — четыре слайда о задаче, контурах и KPI, затем интерфейс.</li>
+        <li>Основной раздел проверки консультативных заключений: <code>/#consult-review</code>.</li>
+        <li>Расширенная презентация с графиками и дорожной картой: <a href="mvp-presentation.html">mvp-presentation.html</a> (PDF с сохранением фона).</li>
+      </ul>
+
+      <h2>Ограничения</h2>
+      <p>
+        Сервис не заменяет очный приём, медико-экономическую экспертизу (МЭЭ) и юридическую экспертизу. При расхождении между интерпретацией
+        в приложении и опубликованным документом на сайте действует официальный PDF на ресурсе&nbsp;
+        <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">Министерства здравоохранения РБ</a>.
+      </p>
+    </div>
+
+    <footer class="brief-foot">
+      Документ подготовлен для руководителей здравоохранения и организаторов пилотного проекта. Тексты приведены в соответствие с содержанием
+      методического описания (<span class="muted">англ.: brief</span>) по состоянию на дату выпуска буклета.
+    </footer>
+  </div>
 </body>
 </html>
