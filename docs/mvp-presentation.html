@@ -7,7 +7,7 @@
   <title>Презентация MVP — навигатор протоколов и контроль качества КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
@@ -145,7 +145,8 @@
     }
     header.hero h1 {
       margin: 0;
-      font-family: "Fraunces", Georgia, serif;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-weight: 800;
       font-size: clamp(1.45rem, 4.2vw, 2.05rem);
       color: var(--green-950);
       letter-spacing: -0.02em;
@@ -197,7 +198,8 @@
       border-color: rgba(190, 24, 93, 0.2);
     }
     .stat-splash .big {
-      font-family: "Fraunces", Georgia, serif;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-weight: 800;
       font-size: 1.65rem;
       font-weight: 700;
       color: var(--green-600);
@@ -391,7 +393,8 @@
     }
     .kpi-cell strong {
       display: block;
-      font-family: "Fraunces", Georgia, serif;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-weight: 800;
       font-size: 1.55rem;
       color: var(--green-600);
       line-height: 1.1;
@@ -626,6 +629,181 @@
       background: linear-gradient(135deg, #fff 0%, rgba(245, 240, 255, 0.35) 100%);
     }
 
+    /* --- Простые выгоды и наглядность для широкой аудитории --- */
+    .wins-shell {
+      margin-bottom: 1.5rem;
+    }
+    .wins-shell > h2 {
+      margin-top: 0;
+      padding-top: 0.15rem;
+      border-image: linear-gradient(90deg, var(--green-600), var(--ocean), var(--violet)) 1;
+      border-bottom-width: 3px;
+      border-bottom-style: solid;
+    }
+    .lay-lead {
+      font-size: 1.06rem;
+      line-height: 1.62;
+      color: var(--text);
+      padding: 1rem 1.15rem;
+      margin: 0.75rem 0 1rem;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(255, 251, 235, 0.75) 0%, rgba(232, 245, 241, 0.5) 100%);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      max-width: 56em;
+    }
+    .wins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .win-card {
+      border-radius: 16px;
+      padding: 0.95rem 0.95rem 1rem;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.06);
+      border-top: 4px solid var(--green-600);
+    }
+    .win-card--2 { border-top-color: var(--ocean); background: linear-gradient(180deg, rgba(236, 248, 255, 0.35) 0%, #fff 42%); }
+    .win-card--3 { border-top-color: var(--amber); }
+    .win-card--4 { border-top-color: var(--violet); background: linear-gradient(180deg, rgba(245, 240, 255, 0.35) 0%, #fff 42%); }
+    .win-card--5 { border-top-color: var(--pink-accent); }
+    .win-card--6 { border-top-color: var(--cyan); background: linear-gradient(180deg, rgba(236, 254, 255, 0.5) 0%, #fff 45%); }
+    .win-card--7 { border-top-color: var(--indigo); }
+    .win-card--8 { border-top-color: #15803d; }
+    .win-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.97rem;
+      color: var(--green-950);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .win-card .win-ico {
+      width: 1.85rem;
+      height: 1.85rem;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26, 138, 114, 0.12);
+      flex-shrink: 0;
+    }
+    .win-card--2 .win-ico { background: rgba(12, 107, 148, 0.14); }
+    .win-card--3 .win-ico { background: rgba(217, 119, 6, 0.14); }
+    .win-card--4 .win-ico { background: rgba(92, 61, 158, 0.14); }
+    .win-card p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tri-diagram {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin: 1.15rem 0;
+      align-items: stretch;
+    }
+    @media (max-width: 720px) {
+      .tri-diagram { grid-template-columns: 1fr; }
+    }
+    .tri-card {
+      text-align: center;
+      padding: 1rem 0.85rem;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      position: relative;
+    }
+    .tri-card:nth-child(1) {
+      border-color: rgba(190, 24, 93, 0.25);
+      background: linear-gradient(180deg, rgba(253, 242, 248, 0.5), #fff);
+    }
+    .tri-card:nth-child(2) {
+      border-color: rgba(26, 138, 114, 0.32);
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.65), #fff);
+    }
+    .tri-card:nth-child(3) {
+      border-color: rgba(12, 107, 148, 0.28);
+      background: linear-gradient(180deg, rgba(236, 248, 255, 0.55), #fff);
+    }
+    .tri-card .bubble {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      font-size: 0.78rem;
+      margin-bottom: 0.5rem;
+      background: rgba(26, 138, 114, 0.15);
+      color: var(--green-950);
+    }
+    .tri-card:nth-child(1) .bubble { background: rgba(190, 24, 93, 0.15); }
+    .tri-card:nth-child(3) .bubble { background: rgba(12, 107, 148, 0.15); }
+    .tri-card p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .stack-layers {
+      margin: 1.1rem 0;
+      max-width: 520px;
+    }
+    .stack-layers h3 {
+      margin-top: 0;
+      font-size: 0.95rem;
+    }
+    .layer {
+      margin: 0.35rem 0;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      text-align: center;
+      color: var(--green-950);
+    }
+    .layer--l4 { margin-left: 0; background: rgba(217, 119, 6, 0.2); width: 100%; }
+    .layer--l3 { margin-left: 4%; width: 92%; background: rgba(92, 61, 158, 0.15); }
+    .layer--l2 { margin-left: 8%; width: 84%; background: rgba(12, 107, 148, 0.16); }
+    .layer--l1 { margin-left: 12%; width: 76%; background: rgba(26, 138, 114, 0.2); }
+
+    .charts-split {
+      grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.85fr);
+      align-items: start;
+      gap: 1.25rem;
+    }
+    @media (max-width: 800px) {
+      .charts-split { grid-template-columns: 1fr; }
+    }
+    .chart-side {
+      padding: 0.75rem 0.5rem 0;
+    }
+    .chart-side ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .simple-callout {
+      margin: 0.85rem 0;
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      background: rgba(26, 138, 114, 0.08);
+      border-left: 4px solid var(--green-600);
+      font-size: 0.94rem;
+    }
+
+    .charts-row.charts-split {
+      display: grid;
+    }
+
     footer.page-foot {
       margin-top: 2.75rem;
       padding-top: 1.35rem;
@@ -679,6 +857,14 @@
       }
       h3 {
         page-break-after: avoid;
+      }
+      .win-card,
+      .tri-diagram .tri-card,
+      .stack-layers {
+        break-inside: avoid;
+      }
+      .wins-shell h2:first-of-type {
+        margin-top: 0;
       }
       .chart-box,
       .mermaid-wrap,
@@ -737,12 +923,12 @@
     </nav>
 
     <header class="hero">
-      <p class="hero-eyebrow">Цифровой контроль качества документации</p>
-      <h1>Протоколы Минздрава РБ как измеримая основа каждого консультативного заключения</h1>
+      <p class="hero-eyebrow">Сначала — суть, без канцелярита</p>
+      <h1>Официальные медицинские правила всегда под рукой, а понятность и аккуратность заключений — это уже не «обсуждение на словах», а понятная картина для руководства клиники</h1>
       <p class="hero-lead">
-        Веб-сервис связывает опубликованные клинические протоколы, интеллектуальный подбор выдержек и проверку текста заключений.
-        Сегодня это инструмент врача и методслужбы; завтра&nbsp;— встроенная в МИС <strong>оценка соответствия протоколу</strong>,
-        рейтинги подразделений и раннее предупреждение руководству без ожидания жалобы пациента.
+        Государство публикует сотни <strong>клинических протоколов</strong> — по сути, единые стандарты, как вести пациента.
+        Программа <strong>не ставит диагноз и не судит врача</strong>, но показывает, совпадает ли текст выписки с этими официальными текстами PDF.
+        Если что-то сильно не сходится, об этом узнаёт методслужба <strong>сразу</strong>, а не только после звонка или претензии.
       </p>
       <div class="hero-pills">
         <span class="hero-pill hero-pill--g">≈450 КП в корпусе</span>
@@ -753,6 +939,126 @@
         Диаграммы на странице — учебная иллюстрация трендов и KPI; не производственная отчётность.
       </p>
     </header>
+
+    <section class="wins-shell" id="simple-benefits" aria-labelledby="wins-title">
+      <h2 id="wins-title">Главные плюсы — простыми словами и впереди остальных разделов</h2>
+      <p class="lay-lead">
+        Ниже — то, что важнее всего понять любому здравому человеку: родственнику пациента, руководителю центра или работнику страховой,
+        которые не обязаны знать, что такое RAG или REST. Программа нужна затем, чтобы <strong>медицинская документация стала понятнее, ровнее и спокойнее в проверке</strong>.
+      </p>
+      <div class="wins-grid">
+        <article class="win-card win-card--1">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            Меньше «загадочных бумажек»
+          </h3>
+          <p>Заключение легче читать: не приходится искать нужный PDF на сайте вручную — система находит нужные цитаты из официальных правил.</p>
+        </article>
+        <article class="win-card win-card--2">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+            Экономия времени каждому
+          </h3>
+          <p>Врач и методист тратят меньше времени на «открыть десять файлов»: поиск протоколов и первичная сверка делаются в одном окне браузера.</p>
+        </article>
+        <article class="win-card win-card--3">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 9 4-18 3 9h5"/></svg></span>
+            Единые правила игры во всех кабинетах
+          </h3>
+          <p>Все судят качество выписки по одному и тому же корпусу текстов министерства, а не «как каждый редактор привык».</p>
+        </article>
+        <article class="win-card win-card--4">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M8 21h8M6 9h12l-3-6L9 3 6 9z"/></svg></span>
+            Руководство видит не отзывы, а цифры
+          </h3>
+          <p>В перспективе — понятная шкала и рейтинги по отделениям: где всё ок, где нужна методическая поддержка без ожидания скандала.</p>
+        </article>
+        <article class="win-card win-card--5">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+            Сигнал тревоги до жалобы пациента
+          </h3>
+          <p>Если в документе много расхождений с официальной тактикой, об этом сообщают внутрь клиники — пока есть время спокойно разобрать случай.</p>
+        </article>
+        <article class="win-card win-card--6">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+            Данные остаются в контуре
+          </h3>
+          <p>В пилоте ключи искусственного интеллекта живут только на сервере; персональные заключения — по политике учреждения, не через «случайные чаты».</p>
+        </article>
+        <article class="win-card win-card--7">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5l7-7 7 7M4 13V5l7-4 7 4v8"/></svg></span>
+            Проще готовиться к проверкам
+          </h3>
+          <p>Внутренние аудиты, аккредитация и методсовет получают готовые печатные отчёты с таблицей критериев по каждой проверенной выписке.</p>
+        </article>
+        <article class="win-card win-card--8">
+          <h3>
+            <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
+            Готовность к связке с государством
+          </h3>
+          <p>В будущем те же машинные признаки качества смогут идти в обезличенном виде в региональную аналитику — это основа масштабирования после согласований ИБ.</p>
+        </article>
+      </div>
+
+      <p class="simple-callout screen-only">
+        <strong>Одним абзацем:</strong> врачу — быстрые цитаты из правильного протокола; методисту и заведующему — понятная «красная / жёлтая / зона» качества выписки; руководству клиники — тренды и возможность поддержать медиков методикой до того, как новость выйдет в публичное поле.
+      </p>
+    </section>
+
+    <div class="print-only" style="margin: 10px 0 14px; font-size: 9.8pt;">
+      <p style="margin: 0;"><strong>Главные выгоды (кратко для печати):</strong> понятнее заключения для людей без медицины; меньше ручной рутины; единые критерии по всей клинике; управленческая аналитика вместо хаоса жалоб; раннее внутреннее предупреждение; сохранность данных; отчётность для комиссии; техническая дорожная карта к масштабированию по городу.</p>
+    </div>
+
+    <h3 class="screen-only">Кому что даёт одним взглядом</h3>
+    <div class="tri-diagram screen-only" aria-label="Три стороны: пациент, врач, клиника">
+      <div class="tri-card">
+        <span class="bubble">Человек с больничным листом</span>
+        <p>Выше шанс, что заключение написано ровнее и понятнее, потому что врач держался к официальным рекомендациям министерства — не голословно, а с опорой на текст.</p>
+      </div>
+      <div class="tri-card">
+        <span class="bubble">Врач</span>
+        <p>Не нужно искать нужный файл среди десятков PDF: есть подсказки, выдержки и черновики. Меньше риска «что‑то упустили» перед подписью.</p>
+      </div>
+      <div class="tri-card">
+        <span class="bubble">Клиника</span>
+        <p>Видна дисциплина выписки, можно лечить слабое место обучением, а не искать крайних после жалобы или проверки.</p>
+      </div>
+    </div>
+
+    <div class="mermaid-wrap screen-only">
+      <p class="chart-caption screen-only" style="margin-bottom: 0.6rem;"><strong>Схема:</strong> старый путь («узнали когда уже шумят») и новый («проверили сами заранее»).</p>
+      <pre class="mermaid">
+flowchart TB
+    subgraph OLD["Привычно: узнаём постфактум"]
+      A1(["Жалоба или проверка снаружи"]) --> A2["Методист ищет PDF в спешке"]
+      A2 --> A3(["Сложно восстановить объективность"])
+    end
+    subgraph NEW["С цифровой сверкой заключений"]
+      B1(["Выписка / КЗ в системе"]) --> B2["Авто‑сбор цитат из протоколов"]
+      B2 --> B3["Табличный отчёт: где ок, где слабо"]
+      B3 --> D{"Есть ли «красное» поле"}
+      D -->|Да| E["Внутренний сигнал: разбор методистом"]
+      D -->|Нет| F["Спокойная отправка пациенту домой"]
+    end
+      </pre>
+    </div>
+
+    <div class="stack-layers screen-only" aria-label="Уровни контроля">
+      <h3>Четыре «этажа» наблюдаемости — от строки выписки до города</h3>
+      <div class="layer layer--l1">Подписанный документ пациента (КЗ или выписка)</div>
+      <div class="layer layer--l2">Врач, отделение, служба качества центра</div>
+      <div class="layer layer--l3">Сеть центров города или головная организация</div>
+      <div class="layer layer--l4">Региональный и государственный срез качества процесса (после юридического контура ЭП)</div>
+      <p style="margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--muted);">Выше элемент — уже не персональный случай, а свод показателя; так появляется рейтинг «плохо‑средне‑хорошо» без огласки персоналий.</p>
+    </div>
+    <p class="print-only" style="font-size: 9.6pt;">
+      Этапы контроля: документ пациента → клиника → сеть городских учреждений → обезличенный региональный срез.
+    </p>
 
     <section class="stat-splash screen-only" aria-label="Масштаб и охват MVP">
       <div class="cell">
@@ -776,7 +1082,10 @@
       <p style="margin: 0;"><strong>Полоса ключевых цифр:</strong> 450+ протоколов в корпусе · 24 рубрики · 2 контура интерфейса · 5 API для поиска, выдержек, черновика КЗ, матрицы и проверки PDF.</p>
     </div>
 
-    <h2>Сегодня: что уже даёт приложение</h2>
+    <h2>Сегодня: что уже делает программа (технические детали ниже)</h2>
+    <p class="simple-callout screen-only" style="margin-top: 0.35rem">
+      Здесь и далее&nbsp;— уже «для специалистов»: как устроен поиск протоколов и проверка PDF. Если вам достаточно блока «главные плюсы» сверху, этот раздел можно просто пролистать до картинок.
+    </p>
     <div class="kpi-strip screen-only">
       <div class="kpi-cell"><strong>2</strong><span>основных контура в одном интерфейсе</span></div>
       <div class="kpi-cell"><strong>API</strong><span>RAG только по текстам официальных PDF</span></div>
@@ -826,9 +1135,8 @@
     </div>
 
     <p class="pull-quote screen-only">
-      «Там, где требование протокола заранее понятно, спор о документации перестаёт быть шумом между сторонами:
-      методист располагает таблицей критериев и версией официальных выдержек, а значит управление качеством становится воспроизводимым.»
-      <cite>концепция внутреннего аудита методслужбы (целевая архитектура)</cite>
+      Если правила министерства понятно зафиксированы заранее, спор о качестве бумаги превращается из «кто как понял» в табличку баллов и цитаты из официальных текстов&nbsp;— проще родственнику пациента, юристу и заведующему отделением.
+      <cite>принцип методического контроля качества выписки</cite>
     </p>
 
     <h2>Кому и зачем: измеримый контроль</h2>
@@ -1114,6 +1422,44 @@ flowchart LR
       </div>
     </div>
 
+    <div class="charts-row charts-split">
+      <div class="chart-box">
+        <h3 style="margin-top: 0">Шесть сторон понятности одной выписки (демо-баллы 0–100)</h3>
+        <p class="chart-caption" style="margin-top: 0; margin-bottom: 0.5rem">
+          То, что простому человеку сложно оценить «на глаз», система раскладывает на шесть направлений. Красная заливка&nbsp;— условная «выписка без цифровой сверки», зелёная линия&nbsp;— условно «та же работа с подсказкой программы» (цифры учебные).
+        </p>
+        <div class="screen-chart" style="height: 290px; position: relative">
+          <canvas id="chartRadar" aria-label="Радарная диаграмма шести критериев качества текста выписки"></canvas>
+        </div>
+        <div class="print-only print-chart-strip">
+          <p><strong>Печать (шесть направлений):</strong></p>
+          <ul style="margin: 0; padding-left: 1rem; font-size: 9pt">
+            <li>Понятный язык для пациента — <strong>78</strong> vs <strong>52</strong></li>
+            <li>Следование тексту официальных правил — <strong>85</strong> vs <strong>58</strong></li>
+            <li>Обследования отражены в тексте — <strong>80</strong> vs <strong>62</strong></li>
+            <li>Логика выводов последовательна — <strong>83</strong> vs <strong>55</strong></li>
+            <li>Готовность отчёта к комиссии — <strong>88</strong> vs <strong>48</strong></li>
+            <li>Насколько быстро методист может разобрать кейс — <strong>86</strong> vs <strong>41</strong></li>
+          </ul>
+        </div>
+      </div>
+      <aside class="chart-side screen-only">
+        <h3 style="margin-top: 0; font-size: 0.95rem">Как читать шкалу в отчёте</h3>
+        <div style="display: flex; gap: 6px; height: 112px; border-radius: 12px; overflow: hidden; margin-top: 8px">
+          <div style="flex: 1; background: linear-gradient(180deg, #9b1c2e, #d97706)"></div>
+          <div style="flex: 1; background: linear-gradient(180deg, #d97706, #eab308)"></div>
+          <div style="flex: 1; background: linear-gradient(180deg, #1a8a72, #0d5c4a)"></div>
+        </div>
+        <p style="font-size: 0.78rem; color: var(--muted); margin: 0.35rem 0">
+          От красной зоны к зелёной: «сильно расходится с опубликованной тактикой» → «погранично» → «в пределах ожиданий официальных правил».
+        </p>
+        <ul>
+          <li>Можно напечатать и положить в папку дела — спор переходит из эмоций в столбики таблицы.</li>
+          <li>В печатной версии страницы графики заменены списком цифр, чтобы принтер не резал канвасы.</li>
+        </ul>
+      </aside>
+    </div>
+
     <h2>Дорожная карта (этапы)</h2>
     <ol class="timeline">
       <li>
@@ -1157,7 +1503,22 @@ flowchart LR
         <strong>Сопоставимость секторов</strong>&nbsp;— одна методика шкалы для государственных и частных клиник при согласии на обмен агрегированными показателями.
       </div>
       <div class="idea-item">
-        <strong>Прозрачность для пациента (опционально)</strong>&nbsp;— публикация только агрегированных рейтингов процесса (без ПДн) как дополнительный стимул к дисциплине записи при разрешении регулятора.
+        <strong>Прозрачность перед страховщиком или работодателем</strong>&nbsp;— когда спор касается не лечения «в целом», а конкретной формулировки в выписке, есть на чём строить разговор без ухода в общие слова.
+      </div>
+      <div class="idea-item">
+        <strong>Онбординг молодых врачей</strong>&nbsp;— свежий специалист быстрее учится держаться к официальной тактике, если подсказка приходит автоматически, а комиссионный отчёт фиксирует прогресс.
+      </div>
+      <div class="idea-item">
+        <strong>Выравнивание филиальной сети</strong>&nbsp;— главный офис может смотреть на одни и те же показатели по всем точкам, где развёрнут сервис, а не только на случайную выборку бумаги.
+      </div>
+      <div class="idea-item">
+        <strong>Спокойнее юристы клиники</strong>&nbsp;— при методически выверенном и задокументированном подходе к сверке с протоколом проще отвечать на запрос третьих лиц о том, почему был выбран тот или иной стиль выписки.
+      </div>
+      <div class="idea-item">
+        <strong>Меньше «телефонного права»</strong>&nbsp;— дисциплина выписки не зависит от того, помнил ли методист человечески последнюю редакцию протокола: всё уже в машинном контуре.
+      </div>
+      <div class="idea-item">
+        <strong>Открытые сводные рейтинги качества процесса (опционально)</strong>&nbsp;— при разрешении надзора можно публиковать только обезличенную статистику «как работает выписка в городе», не раскрывая персональных данных пациента или фамилии конкретного врача.
       </div>
     </div>
 
@@ -1176,6 +1537,7 @@ flowchart LR
       var chartLineInst = null;
       var chartDonutInst = null;
       var chartHBarInst = null;
+      var chartRadarInst = null;
 
       function renderCharts() {
         if (typeof Chart === "undefined") return;
@@ -1365,12 +1727,73 @@ flowchart LR
             },
           });
         }
+
+        var ctxRadar = document.getElementById("chartRadar");
+        if (ctxRadar) {
+          chartRadarInst = new Chart(ctxRadar, {
+            type: "radar",
+            data: {
+              labels: [
+                "Понятность для пациента",
+                "Близость к официальной тактике",
+                "Обследования в тексте",
+                "Логика выводов",
+                "Готовность к комиссии",
+                "Скорость разбора методистом",
+              ],
+              datasets: [
+                {
+                  label: "С подсказкой платформы (демо)",
+                  data: [78, 85, 80, 83, 88, 86],
+                  fill: true,
+                  backgroundColor: "rgba(26, 138, 114, 0.28)",
+                  borderColor: g,
+                  pointBackgroundColor: g,
+                  borderWidth: 2,
+                },
+                {
+                  label: "Условно «вручную» (демо)",
+                  data: [52, 58, 62, 55, 48, 41],
+                  fill: true,
+                  backgroundColor: "rgba(155, 28, 46, 0.16)",
+                  borderColor: "#9b1c2e",
+                  pointBackgroundColor: "#9b1c2e",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: "bottom", labels: { color: muted, padding: 10 } },
+                tooltip: {
+                  callbacks: {
+                    label: function (c) {
+                      return c.dataset.label + ": " + c.raw + " (демо)";
+                    },
+                  },
+                },
+              },
+              scales: {
+                r: {
+                  min: 0,
+                  max: 100,
+                  ticks: { stepSize: 20, color: muted, backdropColor: "transparent" },
+                  grid: { color: "rgba(26, 138, 114, 0.12)" },
+                  pointLabels: { font: { size: 11 }, color: muted },
+                },
+              },
+            },
+          });
+        }
       }
 
       document.addEventListener("DOMContentLoaded", renderCharts);
 
       function resizeAllCharts() {
-        [chartBarInst, chartLineInst, chartDonutInst, chartHBarInst].forEach(function (c) {
+        [chartBarInst, chartLineInst, chartDonutInst, chartHBarInst, chartRadarInst].forEach(function (c) {
           if (c && typeof c.resize === "function") c.resize();
         });
       }
