@@ -6795,6 +6795,56 @@
     );
   }
 
+  /** Секундомер для загрузки выдержки / практического разбора (корни — id контейнеров с .assist-timer-num). */
+  function startDetailLoadingTimer(opts) {
+    opts = opts || {};
+    var t0 = Date.now();
+    var rootIds = opts.rootIds || [
+      "practical-review-panel",
+      "clinical-detail-slot",
+      "protocol-detail-block",
+    ];
+    var useMobile = opts.useMobile;
+    if (useMobile == null) {
+      useMobile =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia("(max-width: 640px)").matches;
+    }
+    if (useMobile) {
+      showAssistTimerOverlay(
+        opts.overlayTitle || "Загрузка выдержки",
+        opts.overlayHint ||
+          "Идёт формирование развёрнутой выдержки по полному тексту протокола."
+      );
+    }
+    function tickOnce() {
+      var sec = Math.floor((Date.now() - t0) / 1000);
+      var ri;
+      for (ri = 0; ri < rootIds.length; ri++) {
+        var root = document.getElementById(rootIds[ri]);
+        if (!root) continue;
+        var nodes = root.querySelectorAll(".assist-timer-num");
+        var ni;
+        for (ni = 0; ni < nodes.length; ni++) {
+          nodes[ni].textContent = String(sec);
+        }
+      }
+      var ov = document.getElementById("assist-timer-overlay");
+      if (ov && !ov.hidden) {
+        var nv = ov.querySelector(".assist-timer-num");
+        if (nv) nv.textContent = String(sec);
+      }
+    }
+    tickOnce();
+    var tick = setInterval(tickOnce, 250);
+    return {
+      stop: function () {
+        clearInterval(tick);
+        if (useMobile) hideAssistTimerOverlay();
+      },
+    };
+  }
+
   function loadProtocolDetailExpand(offer, queryText) {
     if (!offer || !offer.path) return;
     var baseEl = document.getElementById("rag-base");
@@ -6804,8 +6854,7 @@
     if (baseEl && base !== (baseEl.value || "").trim().replace(/\/$/, "")) {
       baseEl.value = base;
     }
-    var t0 = Date.now();
-    var tick = null;
+    var timerCtl = null;
     var abortTid = null;
     var btn = document.querySelector(".btn-load-protocol-detail");
     if (btn) btn.disabled = true;
@@ -6821,25 +6870,13 @@
         slot.innerHTML = "";
       }
     }
-    if (useMobile) {
-      showAssistTimerOverlay(
-        "Загрузка выдержки",
-        "Идёт формирование развёрнутой выдержки по полному тексту протокола."
-      );
-    }
-    tick = setInterval(function () {
-      var sec = Math.floor((Date.now() - t0) / 1000);
-      var slotEl = document.getElementById("clinical-detail-slot");
-      if (slotEl) {
-        var n = slotEl.querySelector(".assist-timer-num");
-        if (n) n.textContent = String(sec);
-      }
-      var ov = document.getElementById("assist-timer-overlay");
-      if (ov && !ov.hidden) {
-        var nv = ov.querySelector(".assist-timer-num");
-        if (nv) nv.textContent = String(sec);
-      }
-    }, 250);
+    timerCtl = startDetailLoadingTimer({
+      useMobile: useMobile,
+      rootIds: ["clinical-detail-slot", "protocol-detail-block"],
+      overlayTitle: "Загрузка выдержки",
+      overlayHint:
+        "Идёт формирование развёрнутой выдержки по полному тексту протокола.",
+    });
     var ctrl = new AbortController();
     abortTid = setTimeout(function () {
       ctrl.abort();
@@ -6921,9 +6958,8 @@
         } catch (e) {}
       })
       .finally(function () {
-        if (tick) clearInterval(tick);
+        if (timerCtl) timerCtl.stop();
         if (abortTid) clearTimeout(abortTid);
-        if (useMobile) hideAssistTimerOverlay();
       });
   }
 
@@ -7498,6 +7534,12 @@
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
     );
+    var timerCtl = startDetailLoadingTimer({
+      rootIds: ["practical-review-panel"],
+      overlayTitle: "Практический разбор",
+      overlayHint:
+        "Формирование выдержки и матрицы для консультативного заключения.",
+    });
     var ctrl = new AbortController();
     var abortTid = setTimeout(function () {
       ctrl.abort();
@@ -7566,6 +7608,7 @@
       })
       .finally(function () {
         clearTimeout(abortTid);
+        if (timerCtl) timerCtl.stop();
       });
   }
 
@@ -7575,6 +7618,15 @@
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
     );
+    var slot = document.getElementById("practical-kz-slot");
+    if (slot) {
+      slot.innerHTML = getDetailLoadingHtml();
+    }
+    var timerCtl = startDetailLoadingTimer({
+      rootIds: ["practical-kz-slot"],
+      overlayTitle: "Матрица для КЗ",
+      overlayHint: "Формирование структуры пунктов консультативного заключения.",
+    });
     fetch(base + "/api/kz-matrix", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -7593,7 +7645,10 @@
         if (!payload || !payload.kz_matrix) return;
         mountKzMatrixSlot(payload.kz_matrix);
       })
-      .catch(function () {});
+      .catch(function () {})
+      .finally(function () {
+        if (timerCtl) timerCtl.stop();
+      });
   }
 
   function collectKzMatrixSelectedPayload() {
