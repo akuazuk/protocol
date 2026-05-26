@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Презентация MVP: навигатор протоколов, контроль качества КЗ, интеграция с МИС и аналитика для Минздрава РБ." />
-  <title>Презентация MVP — навигатор протоколов и контроль качества КЗ</title>
+  <title>Презентация MVP - навигатор протоколов и контроль качества КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -31,13 +31,19 @@
       --cyan: #0e7490;
       --radius: 18px;
       --shadow: 0 14px 40px rgba(6, 61, 53, 0.09);
+      --shadow-lift: 0 20px 50px rgba(6, 61, 53, 0.12);
+      --ring-glow: 0 0 0 1px rgba(26, 138, 114, 0.12), 0 0 40px rgba(26, 138, 114, 0.08);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "DM Sans", system-ui, sans-serif;
       color: var(--text);
-      background: linear-gradient(180deg, var(--cream) 0%, #eef5f2 55%, #e3efe8 100%);
+      background:
+        radial-gradient(ellipse 100% 80% at 50% -30%, rgba(60, 184, 154, 0.16), transparent 45%),
+        radial-gradient(ellipse 70% 50% at 110% 40%, rgba(12, 107, 148, 0.1), transparent 50%),
+        radial-gradient(ellipse 60% 45% at -10% 70%, rgba(92, 61, 158, 0.08), transparent 50%),
+        linear-gradient(185deg, #fbfffd 0%, #eef6f1 38%, #e2ede6 100%);
       line-height: 1.55;
       font-size: 1rem;
     }
@@ -47,9 +53,10 @@
       pointer-events: none;
       z-index: 0;
       background:
-        radial-gradient(ellipse 55% 45% at 95% -5%, rgba(26, 138, 114, 0.11), transparent 55%),
-        radial-gradient(ellipse 48% 38% at 2% 100%, rgba(12, 107, 148, 0.09), transparent 52%),
-        radial-gradient(ellipse 40% 30% at 70% 90%, rgba(92, 61, 158, 0.06), transparent 45%);
+        radial-gradient(ellipse 55% 45% at 95% -5%, rgba(26, 138, 114, 0.14), transparent 55%),
+        radial-gradient(ellipse 48% 38% at 2% 100%, rgba(12, 107, 148, 0.12), transparent 52%),
+        radial-gradient(ellipse 40% 30% at 70% 90%, rgba(92, 61, 158, 0.08), transparent 45%),
+        radial-gradient(ellipse 35% 28% at 40% 20%, rgba(217, 119, 6, 0.06), transparent 40%);
     }
     .wrap {
       position: relative;
@@ -65,12 +72,12 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      padding: 0.7rem 1rem;
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(26, 138, 114, 0.28);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
+      padding: 0.75rem 1.1rem;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 253, 250, 0.88) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      backdrop-filter: blur(14px) saturate(1.15);
+      box-shadow: var(--shadow), var(--ring-glow);
     }
     .nav-top .nav-actions {
       display: flex;
@@ -89,15 +96,20 @@
       font-family: "Outfit", sans-serif;
       font-weight: 700;
       font-size: 0.85rem;
-      padding: 0.42rem 0.95rem;
+      padding: 0.45rem 1.05rem;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--green-600), var(--green-700));
+      background: linear-gradient(135deg, #22c59a 0%, var(--green-600) 40%, var(--green-700) 100%);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(18, 107, 92, 0.35);
+      box-shadow: 0 4px 18px rgba(18, 107, 92, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
     }
-    .btn-print:hover { filter: brightness(1.06); }
+    .btn-print:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(18, 107, 92, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      filter: brightness(1.05);
+    }
     .nav-hint {
       font-size: 0.74rem;
       color: var(--muted);
@@ -106,15 +118,32 @@
     }
 
     header.hero {
-      padding: 2rem 1.6rem;
+      padding: 2rem 1.75rem;
       border-radius: 28px;
       background:
-        radial-gradient(ellipse 70% 60% at 100% 0%, rgba(60, 184, 154, 0.22), transparent 55%),
-        radial-gradient(ellipse 50% 45% at 0% 100%, rgba(12, 107, 148, 0.12), transparent 50%),
-        linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.88) 100%);
-      border: 1px solid rgba(26, 138, 114, 0.35);
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        radial-gradient(ellipse 85% 70% at 100% -10%, rgba(60, 184, 154, 0.32), transparent 52%),
+        radial-gradient(ellipse 55% 50% at 0% 110%, rgba(12, 107, 148, 0.18), transparent 52%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(190, 24, 93, 0.06), transparent 45%),
+        linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.95) 55%, rgba(220, 240, 232, 0.88) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.95), var(--ring-glow);
       margin-bottom: 1.85rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header.hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(55%, 420px);
+      height: 100%;
+      background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.45) 45%, transparent 70%);
+      pointer-events: none;
+    }
+    header.hero > * {
+      position: relative;
+      z-index: 1;
     }
     .hero-pills {
       display: flex;
@@ -126,9 +155,10 @@
       font-family: "Outfit", sans-serif;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.32rem 0.65rem;
+      padding: 0.35rem 0.72rem;
       border-radius: 999px;
       letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(6, 61, 53, 0.07);
     }
     .hero-pill--g { background: rgba(26, 138, 114, 0.18); color: var(--green-950); }
     .hero-pill--o { background: rgba(217, 119, 6, 0.15); color: #b45309; }
@@ -162,13 +192,14 @@
     .tag-demo {
       display: inline-block;
       margin-top: 1rem;
-      padding: 0.38rem 0.75rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 999px;
       font-size: 0.74rem;
       font-weight: 700;
-      background: rgba(217, 119, 6, 0.14);
-      color: var(--amber);
-      border: 1px dashed rgba(217, 119, 6, 0.5);
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(251, 191, 36, 0.18));
+      color: #a16207;
+      border: 1px solid rgba(217, 119, 6, 0.35);
+      box-shadow: 0 2px 10px rgba(217, 119, 6, 0.12);
     }
 
     .stat-splash {
@@ -179,11 +210,16 @@
     }
     .stat-splash .cell {
       text-align: center;
-      padding: 0.85rem 0.5rem;
-      border-radius: 16px;
+      padding: 0.9rem 0.55rem;
+      border-radius: 18px;
       background: linear-gradient(145deg, #fff 0%, rgba(232, 245, 241, 0.55) 100%);
       border: 1px solid rgba(26, 138, 114, 0.22);
-      box-shadow: 0 6px 20px rgba(6, 61, 53, 0.06);
+      box-shadow: 0 10px 28px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .stat-splash .cell:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(6, 61, 53, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .stat-splash .cell:nth-child(2) {
       background: linear-gradient(145deg, #fff 0%, rgba(236, 248, 255, 0.65) 100%);
@@ -201,7 +237,6 @@
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
       font-weight: 800;
       font-size: 1.65rem;
-      font-weight: 700;
       color: var(--green-600);
       line-height: 1.1;
     }
@@ -218,13 +253,16 @@
 
     .pull-quote {
       margin: 1.25rem 0;
-      padding: 1.1rem 1.2rem;
-      border-radius: var(--radius);
-      background: linear-gradient(120deg, rgba(67, 56, 202, 0.08) 0%, rgba(26, 138, 114, 0.1) 50%, rgba(217, 119, 6, 0.08) 100%);
-      border: 1px solid rgba(67, 56, 202, 0.2);
-      font-size: 1.02rem;
+      padding: 1.2rem 1.3rem;
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse 100% 100% at 0% 50%, rgba(67, 56, 202, 0.07), transparent 52%),
+        linear-gradient(118deg, rgba(67, 56, 202, 0.1) 0%, rgba(26, 138, 114, 0.12) 45%, rgba(217, 119, 6, 0.1) 100%);
+      border: 1px solid rgba(67, 56, 202, 0.22);
+      font-size: 1.03rem;
       font-style: italic;
       color: var(--green-950);
+      box-shadow: 0 12px 36px rgba(67, 56, 202, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
     .pull-quote cite {
       display: block;
@@ -246,14 +284,16 @@
       .compare-wrap { grid-template-columns: 1fr; }
     }
     .compare-col {
-      border-radius: var(--radius);
-      padding: 1rem 1rem 1.05rem;
+      border-radius: 22px;
+      padding: 1.05rem 1.05rem 1.1rem;
       border: 2px solid rgba(155, 28, 46, 0.22);
-      background: linear-gradient(180deg, rgba(254, 242, 242, 0.35) 0%, #fff 55%);
+      background: linear-gradient(180deg, rgba(254, 242, 242, 0.4) 0%, #fff 55%);
+      box-shadow: 0 12px 36px rgba(155, 28, 46, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .compare-col--plus {
-      border-color: rgba(26, 138, 114, 0.35);
-      background: linear-gradient(180deg, rgba(232, 245, 241, 0.55) 0%, #fff 55%);
+      border-color: rgba(26, 138, 114, 0.32);
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.6) 0%, #fff 55%);
+      box-shadow: 0 12px 36px rgba(26, 138, 114, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .compare-col h3 {
       margin-top: 0;
@@ -276,11 +316,12 @@
       margin: 1rem 0 1.25rem;
     }
     .api-chip {
-      padding: 0.65rem 0.75rem;
-      border-radius: 14px;
+      padding: 0.7rem 0.82rem;
+      border-radius: 16px;
       font-size: 0.78rem;
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      background: linear-gradient(135deg, #fff, rgba(232, 245, 241, 0.4));
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      background: linear-gradient(145deg, #fff 0%, rgba(235, 247, 243, 0.75) 55%, rgba(236, 248, 255, 0.35) 100%);
+      box-shadow: 0 6px 18px rgba(6, 61, 53, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .api-chip code {
       display: block;
@@ -298,15 +339,16 @@
     .section-ribbon {
       display: inline-block;
       margin: 0.25rem 0 0.5rem;
-      padding: 0.25rem 0.65rem;
+      padding: 0.3rem 0.75rem;
       border-radius: 999px;
       font-family: "Outfit", sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      background: linear-gradient(90deg, rgba(217, 119, 6, 0.2), rgba(26, 138, 114, 0.18));
+      background: linear-gradient(90deg, rgba(217, 119, 6, 0.25), rgba(26, 138, 114, 0.22), rgba(12, 107, 148, 0.2));
       color: var(--green-950);
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.15);
     }
 
     .badge-icon svg {
@@ -326,8 +368,21 @@
       color: var(--green-950);
       margin: 2.4rem 0 0.85rem;
       letter-spacing: -0.02em;
-      padding-bottom: 0.35rem;
-      border-bottom: 3px solid rgba(26, 138, 114, 0.25);
+      position: relative;
+      padding: 0.42rem 0 0.42rem 1.05rem;
+      background: linear-gradient(90deg, rgba(26, 138, 114, 0.09) 0%, transparent 68%);
+      border-radius: 0 14px 14px 0;
+    }
+    h2::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.22em;
+      bottom: 0.22em;
+      width: 4px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, #3cb89a 0%, #1a8a72 45%, var(--ocean) 78%, var(--violet));
+      box-shadow: 0 0 14px rgba(26, 138, 114, 0.28);
     }
     h3 {
       font-family: "Outfit", sans-serif;
@@ -347,9 +402,14 @@
     }
     .intro-col {
       padding: 1.15rem 1.1rem;
-      border-radius: var(--radius);
-      border: 1px solid rgba(26, 138, 114, 0.22);
-      box-shadow: 0 8px 28px rgba(6, 61, 53, 0.07);
+      border-radius: 22px;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      box-shadow: 0 14px 40px rgba(6, 61, 53, 0.09), inset 0 1px 0 rgba(255, 255, 255, 1);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .intro-col:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 50px rgba(6, 61, 53, 0.11), inset 0 1px 0 #fff;
     }
     .intro-col--search {
       background: linear-gradient(160deg, #fff 0%, rgba(232, 245, 255, 0.65) 100%);
@@ -385,11 +445,11 @@
     }
     .kpi-cell {
       text-align: center;
-      padding: 0.85rem 0.6rem;
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.05);
+      padding: 0.9rem 0.65rem;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff 0%, rgba(246, 251, 249, 1) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      box-shadow: 0 8px 26px rgba(6, 61, 53, 0.07), inset 0 2px 0 rgba(60, 184, 154, 0.2);
     }
     .kpi-cell strong {
       display: block;
@@ -410,9 +470,9 @@
     .card {
       padding: 1.05rem 1rem;
       border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.06);
+      background: linear-gradient(165deg, #fff 0%, rgba(251, 253, 252, 1) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      box-shadow: 0 10px 30px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
       border-left: 4px solid var(--green-600);
     }
     .card--amber { border-left-color: var(--amber); background: linear-gradient(180deg, #fff, rgba(255, 251, 235, 0.5)); }
@@ -466,10 +526,11 @@
     .flow-step {
       flex: 1 1 120px;
       padding: 0.65rem 0.7rem;
-      border-radius: 12px;
+      border-radius: 14px;
       text-align: center;
-      background: #fff;
+      background: linear-gradient(180deg, #fff 0%, rgba(248, 251, 249, 1) 100%);
       border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .flow-step--a { background: rgba(26, 138, 114, 0.1); }
     .flow-step--b { background: rgba(217, 119, 6, 0.12); }
@@ -491,11 +552,11 @@
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     }
     .chart-box {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1rem 1rem 1.15rem;
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      box-shadow: var(--shadow);
+      background: linear-gradient(165deg, #fff 0%, rgba(247, 251, 249, 0.98) 65%, rgba(240, 253, 247, 0.5) 100%);
+      border-radius: 22px;
+      padding: 1.05rem 1.1rem 1.2rem;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      box-shadow: var(--shadow-lift), inset 0 3px 0 0 rgba(60, 184, 154, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .chart-caption {
       font-size: 0.78rem;
@@ -524,12 +585,14 @@
     .print-donut-legend li { margin: 0.2rem 0; }
 
     .mermaid-wrap {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 1rem 1rem 1.25rem;
+      background:
+        radial-gradient(ellipse 90% 80% at 10% 10%, rgba(60, 184, 154, 0.1), transparent 50%),
+        linear-gradient(165deg, #fff 0%, rgba(244, 251, 247, 0.95) 100%);
+      border-radius: 22px;
+      padding: 1.15rem 1.1rem 1.3rem;
       margin: 1rem 0;
-      border: 1px solid rgba(26, 138, 114, 0.25);
-      box-shadow: var(--shadow);
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.92);
       overflow-x: auto;
     }
 
@@ -547,9 +610,10 @@
     .pyramid span {
       text-align: center;
       padding: 0.55rem 0.75rem;
-      border-radius: 10px;
+      border-radius: 12px;
       color: var(--green-950);
-      border: 1px solid rgba(26, 138, 114, 0.28);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
     }
     .pyramid .p1 { width: 96%; margin: 0 auto; background: linear-gradient(90deg, rgba(232, 245, 241, 0.95), #fff); font-size: 0.74rem; }
     .pyramid .p2 { width: 84%; margin: 0 auto; background: rgba(236, 248, 255, 0.85); }
@@ -583,7 +647,7 @@
       width: 1.5rem;
       height: 1.5rem;
       border-radius: 50%;
-      background: var(--green-600);
+      background: linear-gradient(145deg, #3cb89a 0%, var(--green-600) 55%, var(--green-700));
       color: #fff;
       font-size: 0.72rem;
       font-family: "Outfit", sans-serif;
@@ -591,18 +655,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid var(--cream);
+      border: 2px solid #fff;
+      box-shadow: 0 4px 12px rgba(26, 138, 114, 0.3);
     }
 
     .signal-box {
       display: flex;
       gap: 0.85rem;
       align-items: flex-start;
-      padding: 1.05rem 1.15rem;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(253, 236, 239, 0.9) 0%, #fff 55%);
-      border: 2px solid rgba(155, 28, 46, 0.25);
+      padding: 1.1rem 1.2rem;
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse 80% 120% at 0% 0%, rgba(155, 28, 46, 0.12), transparent 55%),
+        linear-gradient(135deg, rgba(253, 236, 239, 0.95) 0%, #fff 58%);
+      border: 2px solid rgba(155, 28, 46, 0.3);
       margin: 1rem 0;
+      box-shadow: 0 12px 32px rgba(155, 28, 46, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
     .signal-box svg { flex-shrink: 0; opacity: 0.9; }
 
@@ -613,12 +681,17 @@
       margin-top: 0.65rem;
     }
     .idea-item {
-      padding: 0.8rem 0.9rem;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(26, 138, 114, 0.18);
+      padding: 0.82rem 0.92rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(26, 138, 114, 0.2);
       font-size: 0.9rem;
-      box-shadow: 0 3px 12px rgba(6, 61, 53, 0.04);
+      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+      transition: transform 0.17s ease, box-shadow 0.17s ease;
+    }
+    .idea-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(6, 61, 53, 0.1), inset 0 1px 0 #fff;
     }
     .idea-item:nth-child(3n + 2) {
       border-color: rgba(12, 107, 148, 0.22);
@@ -631,25 +704,33 @@
 
     /* --- Простые выгоды и наглядность для широкой аудитории --- */
     .wins-shell {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      padding: 1.35rem 1.25rem 1.5rem;
+      border-radius: 26px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 252, 248, 0.55) 50%, rgba(236, 248, 255, 0.38) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      box-shadow: 0 16px 48px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92);
     }
     .wins-shell > h2 {
       margin-top: 0;
-      padding-top: 0.15rem;
-      border-image: linear-gradient(90deg, var(--green-600), var(--ocean), var(--violet)) 1;
-      border-bottom-width: 3px;
-      border-bottom-style: solid;
+      padding-left: 1.05rem;
+      background: linear-gradient(90deg, rgba(12, 107, 148, 0.1), transparent 70%);
+    }
+    .wins-shell > h2::before {
+      background: linear-gradient(180deg, var(--ocean) 0%, var(--green-600) 40%, var(--amber));
     }
     .lay-lead {
       font-size: 1.06rem;
       line-height: 1.62;
       color: var(--text);
-      padding: 1rem 1.15rem;
+      padding: 1.1rem 1.2rem;
       margin: 0.75rem 0 1rem;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, rgba(255, 251, 235, 0.75) 0%, rgba(232, 245, 241, 0.5) 100%);
-      border: 1px solid rgba(217, 119, 6, 0.25);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255, 251, 235, 0.88) 0%, rgba(232, 245, 241, 0.55) 52%, rgba(255, 255, 255, 0.6) 100%);
+      border: 1px solid rgba(217, 119, 6, 0.28);
       max-width: 56em;
+      box-shadow: 0 8px 26px rgba(217, 119, 6, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
     .wins-grid {
       display: grid;
@@ -658,12 +739,17 @@
       margin-top: 0.5rem;
     }
     .win-card {
-      border-radius: 16px;
-      padding: 0.95rem 0.95rem 1rem;
-      background: #fff;
-      border: 1px solid rgba(26, 138, 114, 0.18);
-      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.06);
+      border-radius: 18px;
+      padding: 1rem 0.95rem 1.05rem;
+      background: linear-gradient(180deg, #fff 0%, rgba(250, 253, 252, 0.98) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      box-shadow: 0 12px 32px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
       border-top: 4px solid var(--green-600);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .win-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 44px rgba(6, 61, 53, 0.12), inset 0 1px 0 #fff;
     }
     .win-card--2 { border-top-color: var(--ocean); background: linear-gradient(180deg, rgba(236, 248, 255, 0.35) 0%, #fff 42%); }
     .win-card--3 { border-top-color: var(--amber); }
@@ -712,11 +798,17 @@
     }
     .tri-card {
       text-align: center;
-      padding: 1rem 0.85rem;
-      border-radius: 18px;
+      padding: 1.05rem 0.9rem;
+      border-radius: 20px;
       background: #fff;
-      border: 1px solid rgba(26, 138, 114, 0.2);
+      border: 1px solid rgba(26, 138, 114, 0.18);
       position: relative;
+      box-shadow: 0 12px 32px rgba(6, 61, 53, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tri-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 42px rgba(6, 61, 53, 0.11), inset 0 1px 0 #fff;
     }
     .tri-card:nth-child(1) {
       border-color: rgba(190, 24, 93, 0.25);
@@ -793,15 +885,33 @@
     }
     .simple-callout {
       margin: 0.85rem 0;
-      padding: 0.85rem 1rem;
-      border-radius: 14px;
-      background: rgba(26, 138, 114, 0.08);
+      padding: 0.95rem 1.1rem;
+      border-radius: 16px;
+      background: linear-gradient(90deg, rgba(26, 138, 114, 0.1) 0%, rgba(232, 245, 241, 0.65) 42%, rgba(255, 255, 255, 0.9) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.22);
       border-left: 4px solid var(--green-600);
       font-size: 0.94rem;
+      box-shadow: 0 6px 22px rgba(26, 138, 114, 0.07);
     }
 
     .charts-row.charts-split {
       display: grid;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn-print:hover,
+      .win-card:hover,
+      .idea-item:hover,
+      .stat-splash .cell:hover,
+      .intro-col:hover,
+      .tri-card:hover {
+        transform: none;
+      }
+      .btn-print,
+      .win-card,
+      .idea-item {
+        transition: none;
+      }
     }
 
     footer.page-foot {
@@ -853,7 +963,9 @@
       }
       h2 {
         page-break-after: avoid;
-        border-bottom-width: 2px;
+      }
+      h2::before {
+        box-shadow: none;
       }
       h3 {
         page-break-after: avoid;
@@ -917,16 +1029,16 @@
         <span aria-hidden="true">·</span>
         <a href="ministry-brief-print.html">Буклет (печать)</a>
         <span class="nav-hint">
-          При сохранении в PDF включите фон и графику в настройках печати — цвет сохранится.
+          При сохранении в PDF включите фон и графику в настройках печати - цвет сохранится.
         </span>
       </div>
     </nav>
 
     <header class="hero">
-      <p class="hero-eyebrow">Сначала — суть, без канцелярита</p>
-      <h1>Официальные медицинские правила всегда под рукой, а понятность и аккуратность заключений — это уже не «обсуждение на словах», а понятная картина для руководства клиники</h1>
+      <p class="hero-eyebrow">Сначала - суть, без канцелярита</p>
+      <h1>Официальные медицинские правила всегда под рукой, а понятность и аккуратность заключений - это уже не «обсуждение на словах», а понятная картина для руководства клиники</h1>
       <p class="hero-lead">
-        Государство публикует сотни <strong>клинических протоколов</strong> — по сути, единые стандарты, как вести пациента.
+        Государство публикует сотни <strong>клинических протоколов</strong> - по сути, единые стандарты, как вести пациента.
         Программа <strong>не ставит диагноз и не судит врача</strong>, но показывает, совпадает ли текст выписки с этими официальными текстами PDF.
         Если что-то сильно не сходится, об этом узнаёт методслужба <strong>сразу</strong>, а не только после звонка или претензии.
       </p>
@@ -936,14 +1048,14 @@
         <span class="hero-pill hero-pill--b">Поиск + проверка до 3 PDF КЗ</span>
       </div>
       <p class="tag-demo" style="margin-top: 0.85rem">
-        Диаграммы на странице — учебная иллюстрация трендов и KPI; не производственная отчётность.
+        Диаграммы на странице - учебная иллюстрация трендов и KPI; не производственная отчётность.
       </p>
     </header>
 
     <section class="wins-shell" id="simple-benefits" aria-labelledby="wins-title">
-      <h2 id="wins-title">Главные плюсы — простыми словами и впереди остальных разделов</h2>
+      <h2 id="wins-title">Главные плюсы - простыми словами и впереди остальных разделов</h2>
       <p class="lay-lead">
-        Ниже — то, что важнее всего понять любому здравому человеку: родственнику пациента, руководителю центра или работнику страховой,
+        Ниже - то, что важнее всего понять любому здравому человеку: родственнику пациента, руководителю центра или работнику страховой,
         которые не обязаны знать, что такое RAG или REST. Программа нужна затем, чтобы <strong>медицинская документация стала понятнее, ровнее и спокойнее в проверке</strong>.
       </p>
       <div class="wins-grid">
@@ -952,7 +1064,7 @@
             <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
             Меньше «загадочных бумажек»
           </h3>
-          <p>Заключение легче читать: не приходится искать нужный PDF на сайте вручную — система находит нужные цитаты из официальных правил.</p>
+          <p>Заключение легче читать: не приходится искать нужный PDF на сайте вручную - система находит нужные цитаты из официальных правил.</p>
         </article>
         <article class="win-card win-card--2">
           <h3>
@@ -973,21 +1085,21 @@
             <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M8 21h8M6 9h12l-3-6L9 3 6 9z"/></svg></span>
             Руководство видит не отзывы, а цифры
           </h3>
-          <p>В перспективе — понятная шкала и рейтинги по отделениям: где всё ок, где нужна методическая поддержка без ожидания скандала.</p>
+          <p>В перспективе - понятная шкала и рейтинги по отделениям: где всё ок, где нужна методическая поддержка без ожидания скандала.</p>
         </article>
         <article class="win-card win-card--5">
           <h3>
             <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
             Сигнал тревоги до жалобы пациента
           </h3>
-          <p>Если в документе много расхождений с официальной тактикой, об этом сообщают внутрь клиники — пока есть время спокойно разобрать случай.</p>
+          <p>Если в документе много расхождений с официальной тактикой, об этом сообщают внутрь клиники - пока есть время спокойно разобрать случай.</p>
         </article>
         <article class="win-card win-card--6">
           <h3>
             <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
             Данные остаются в контуре
           </h3>
-          <p>В пилоте ключи искусственного интеллекта живут только на сервере; персональные заключения — по политике учреждения, не через «случайные чаты».</p>
+          <p>В пилоте ключи искусственного интеллекта живут только на сервере; персональные заключения - по политике учреждения, не через «случайные чаты».</p>
         </article>
         <article class="win-card win-card--7">
           <h3>
@@ -1001,12 +1113,12 @@
             <span class="win-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
             Готовность к связке с государством
           </h3>
-          <p>В будущем те же машинные признаки качества смогут идти в обезличенном виде в региональную аналитику — это основа масштабирования после согласований ИБ.</p>
+          <p>В будущем те же машинные признаки качества смогут идти в обезличенном виде в региональную аналитику - это основа масштабирования после согласований ИБ.</p>
         </article>
       </div>
 
       <p class="simple-callout screen-only">
-        <strong>Одним абзацем:</strong> врачу — быстрые цитаты из правильного протокола; методисту и заведующему — понятная «красная / жёлтая / зона» качества выписки; руководству клиники — тренды и возможность поддержать медиков методикой до того, как новость выйдет в публичное поле.
+        <strong>Одним абзацем:</strong> врачу - быстрые цитаты из правильного протокола; методисту и заведующему - понятная «красная / жёлтая / зона» качества выписки; руководству клиники - тренды и возможность поддержать медиков методикой до того, как новость выйдет в публичное поле.
       </p>
     </section>
 
@@ -1018,7 +1130,7 @@
     <div class="tri-diagram screen-only" aria-label="Три стороны: пациент, врач, клиника">
       <div class="tri-card">
         <span class="bubble">Человек с больничным листом</span>
-        <p>Выше шанс, что заключение написано ровнее и понятнее, потому что врач держался к официальным рекомендациям министерства — не голословно, а с опорой на текст.</p>
+        <p>Выше шанс, что заключение написано ровнее и понятнее, потому что врач держался к официальным рекомендациям министерства - не голословно, а с опорой на текст.</p>
       </div>
       <div class="tri-card">
         <span class="bubble">Врач</span>
@@ -1049,12 +1161,12 @@ flowchart TB
     </div>
 
     <div class="stack-layers screen-only" aria-label="Уровни контроля">
-      <h3>Четыре «этажа» наблюдаемости — от строки выписки до города</h3>
+      <h3>Четыре «этажа» наблюдаемости - от строки выписки до города</h3>
       <div class="layer layer--l1">Подписанный документ пациента (КЗ или выписка)</div>
       <div class="layer layer--l2">Врач, отделение, служба качества центра</div>
       <div class="layer layer--l3">Сеть центров города или головная организация</div>
       <div class="layer layer--l4">Региональный и государственный срез качества процесса (после юридического контура ЭП)</div>
-      <p style="margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--muted);">Выше элемент — уже не персональный случай, а свод показателя; так появляется рейтинг «плохо‑средне‑хорошо» без огласки персоналий.</p>
+      <p style="margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--muted);">Выше элемент - уже не персональный случай, а свод показателя; так появляется рейтинг «плохо‑средне‑хорошо» без огласки персоналий.</p>
     </div>
     <p class="print-only" style="font-size: 9.6pt;">
       Этапы контроля: документ пациента → клиника → сеть городских учреждений → обезличенный региональный срез.
@@ -1084,13 +1196,13 @@ flowchart TB
 
     <h2>Сегодня: что уже делает программа (технические детали ниже)</h2>
     <p class="simple-callout screen-only" style="margin-top: 0.35rem">
-      Здесь и далее&nbsp;— уже «для специалистов»: как устроен поиск протоколов и проверка PDF. Если вам достаточно блока «главные плюсы» сверху, этот раздел можно просто пролистать до картинок.
+      Здесь и далее&nbsp;- уже «для специалистов»: как устроен поиск протоколов и проверка PDF. Если вам достаточно блока «главные плюсы» сверху, этот раздел можно просто пролистать до картинок.
     </p>
     <div class="kpi-strip screen-only">
       <div class="kpi-cell"><strong>2</strong><span>основных контура в одном интерфейсе</span></div>
       <div class="kpi-cell"><strong>API</strong><span>RAG только по текстам официальных PDF</span></div>
       <div class="kpi-cell"><strong>&lt;70%</strong><span>подсветка «зоны риска» по критерию проверки КЗ</span></div>
-      <div class="kpi-cell"><strong>1–3</strong><span>консультативных заключения за один прогон</span></div>
+      <div class="kpi-cell"><strong>1-3</strong><span>консультативных заключения за один прогон</span></div>
     </div>
     <!-- Дубль KPI для печати (канвасы скрыты) -->
     <div class="print-only" style="margin: 8px 0 12px;">
@@ -1112,10 +1224,10 @@ flowchart TB
           Поиск протоколов для приёма
         </h3>
         <ul>
-          <li>Запрос по диагнозу, тексту жалоб или <strong>МКБ-10</strong> — гибрид лексики, BM25 и семантики.</li>
+          <li>Запрос по диагнозу, тексту жалоб или <strong>МКБ-10</strong> - гибрид лексики, BM25 и семантики.</li>
           <li>Сужение по <strong>24 рубрикам</strong> официального каталога сайта Минздрава РБ.</li>
           <li>Развёрнутая <strong>выдержка</strong> из протокола: обследования, лечение, алгоритмы (отдельный запрос к API).</li>
-          <li>Черновик <strong>консультативного заключения</strong> и матрица «что должно быть в КЗ» для выбранного протокола — опора перед подписью.</li>
+          <li>Черновик <strong>консультативного заключения</strong> и матрица «что должно быть в КЗ» для выбранного протокола - опора перед подписью.</li>
         </ul>
       </div>
       <div class="intro-col intro-col--kz">
@@ -1129,13 +1241,13 @@ flowchart TB
           <li>До <strong>трёх PDF</strong> в одном окне (несколько приёмов, сравнение редакций).</li>
           <li>Извлечение текста и кода из блока диагноза; отбор релевантных фрагментов протоколов в модели.</li>
           <li><strong>Таблица критериев</strong> с долей соответствия по строкам, сводка и <strong>печатный отчёт</strong> для разбора на методсовете.</li>
-          <li>Практический разбор и матрица по протоколу — наглядное сопоставление «должно по КП / есть в КЗ».</li>
+          <li>Практический разбор и матрица по протоколу - наглядное сопоставление «должно по КП / есть в КЗ».</li>
         </ul>
       </div>
     </div>
 
     <p class="pull-quote screen-only">
-      Если правила министерства понятно зафиксированы заранее, спор о качестве бумаги превращается из «кто как понял» в табличку баллов и цитаты из официальных текстов&nbsp;— проще родственнику пациента, юристу и заведующему отделением.
+      Если правила министерства понятно зафиксированы заранее, спор о качестве бумаги превращается из «кто как понял» в табличку баллов и цитаты из официальных текстов&nbsp;- проще родственнику пациента, юристу и заведующему отделением.
       <cite>принцип методического контроля качества выписки</cite>
     </p>
 
@@ -1162,7 +1274,7 @@ flowchart TB
         <tr>
           <td><strong>Руководство клиники</strong></td>
           <td>Тренд качества документации по подразделениям</td>
-          <td>Сегодня — выборочные прогоны; целевой режим — сквозной учёт в МИС и дашборд</td>
+          <td>Сегодня - выборочные прогоны; целевой режим - сквозной учёт в МИС и дашборд</td>
         </tr>
         <tr>
           <td><strong>Регион / Минздрав</strong></td>
@@ -1178,7 +1290,7 @@ flowchart TB
         <ul>
           <li>Врач теряет время на параллельный поиск в десятках PDF и на сайте.</li>
           <li>Чек‑листы по КЗ чаще неформальны; при претензии сложно доказать, что сверка была системной.</li>
-          <li>Разные авторы понимают «соответствие протоколу» по‑разному — метрики несравнимы.</li>
+          <li>Разные авторы понимают «соответствие протоколу» по‑разному - метрики несравнимы.</li>
           <li>Методист узнаёт о разрыве в документации позже, по жалобе или выборке вручную.</li>
         </ul>
       </div>
@@ -1186,15 +1298,15 @@ flowchart TB
         <h3>С приложением MVP</h3>
         <ul>
           <li>Один интерфейс: подбор КП из корпуса ≈450 протоколов, выдержки и черновик КЗ перед подписью.</li>
-          <li>Сверка 1–3 PDF КЗ с таблицей критериев, подсветка &lt;70%, печатный протокол для комиссии.</li>
-          <li>Ответ модели ограничен фрагментами официальных PDF — понятнее цепочка «цитата протокола → оценка».</li>
+          <li>Сверка 1-3 PDF КЗ с таблицей критериев, подсветка &lt;70%, печатный протокол для комиссии.</li>
+          <li>Ответ модели ограничен фрагментами официальных PDF - понятнее цепочка «цитата протокола → оценка».</li>
           <li>Сквозной учёт результатов можно перенести в МИС и превратить в регулярные рейтинги и триггеры.</li>
         </ul>
       </div>
     </div>
     <div class="print-only" style="font-size: 9.8pt;">
       <p style="margin: 0;"><strong>Сравнение:</strong></p>
-      <p style="margin: 0.3rem 0 0;"><em>Без платформы</em> — разрозненные PDF и субъективные интерпретации. <em>С MVP</em> — единый корпус, формализованные критерии, печатаемые отчёты и дорожная карта до интеграции в МИС.</p>
+      <p style="margin: 0.3rem 0 0;"><em>Без платформы</em> - разрозненные PDF и субъективные интерпретации. <em>С MVP</em> - единый корпус, формализованные критерии, печатаемые отчёты и дорожная карта до интеграции в МИС.</p>
     </div>
 
     <h3>Поток внутреннего контроля (как сейчас в пилоте)</h3>
@@ -1218,7 +1330,7 @@ flowchart TB
     <span class="section-ribbon screen-only">Технический слой MVP</span>
     <h3 class="screen-only" style="margin-top: 0.35rem">API, из которых состоит приложение</h3>
     <p class="screen-only" style="font-size: 0.92rem; max-width: 52em">
-      Все ответы собираются из выбранных моделью фрагментов текстов протоколов на сервере. Ключи к внешнему LLM по политике пилота находятся только в защищённом контуре&nbsp;— браузер пациента и врача их не получает.
+      Все ответы собираются из выбранных моделью фрагментов текстов протоколов на сервере. Ключи к внешнему LLM по политике пилота находятся только в защищённом контуре&nbsp;- браузер пациента и врача их не получает.
     </p>
     <div class="api-grid screen-only" aria-label="Список ключевых REST API">
       <div class="api-chip">
@@ -1231,7 +1343,7 @@ flowchart TB
       </div>
       <div class="api-chip">
         <code>POST /api/kz-matrix</code>
-        <strong>Матрица «ожидаемые пункты КЗ»</strong> относительно выбранного протокола — чек‑лист качества.
+        <strong>Матрица «ожидаемые пункты КЗ»</strong> относительно выбранного протокола - чек‑лист качества.
       </div>
       <div class="api-chip">
         <code>POST /api/consultation-template</code>
@@ -1239,11 +1351,11 @@ flowchart TB
       </div>
       <div class="api-chip">
         <code>POST /api/consult-review</code>
-        <strong>Аудит 1–3 PDF</strong>: критерии, сводка, зоны риска для методсовета.
+        <strong>Аудит 1-3 PDF</strong>: критерии, сводка, зоны риска для методсовета.
       </div>
     </div>
     <div class="print-only" style="font-size: 9.5pt; margin: 6px 0 10px;">
-      <p style="margin: 0;"><strong>API:</strong> <code>/api/assist</code>, <code>/api/protocol-detail</code>, <code>/api/kz-matrix</code>, <code>/api/consultation-template</code>, <code>/api/consult-review</code> — серверный RAG только по опубликованным PDF Минздрава.</p>
+      <p style="margin: 0;"><strong>API:</strong> <code>/api/assist</code>, <code>/api/protocol-detail</code>, <code>/api/kz-matrix</code>, <code>/api/consultation-template</code>, <code>/api/consult-review</code> - серверный RAG только по опубликованным PDF Минздрава.</p>
     </div>
 
     <h2>Эффект на качество оказания услуг</h2>
@@ -1279,7 +1391,7 @@ flowchart TB
       <div>
         <strong style="font-family: Outfit, sans-serif; color: var(--risk)">Сигнал руководству (целевой режим в МИС)</strong>
         <p style="margin: 0.35rem 0 0; font-size: 0.93rem">
-          Если индекс соответствия по КЗ или по критичным блокам (обследование, тактика, динамика) опускается ниже методического порога —
+          Если индекс соответствия по КЗ или по критичным блокам (обследование, тактика, динамика) опускается ниже методического порога -
           триггер в ЛК ответственного за качество и руководителя структурного подразделения:
           случай можно разобрать <strong>проактивно</strong>, зафиксировать обучение и повторный контроль, не ожидая внешней эскалации.
           Пороги и состав уведомлений задаются политикой учреждения и согласуются с правовым отделом.
@@ -1287,7 +1399,7 @@ flowchart TB
       </div>
     </div>
 
-    <h2>От центра до Минздрава — целевая схема</h2>
+    <h2>От центра до Минздрава - целевая схема</h2>
     <div class="mermaid-wrap">
       <pre class="mermaid">
 flowchart TB
@@ -1338,7 +1450,7 @@ flowchart LR
 
     <h3>Пирамида агрегации данных (концепт)</h3>
     <div class="pyramid" aria-label="Пирамида агрегации рейтинга">
-      <span class="p1">Облако Минздрава РБ — методологии сопоставления, KPI отрасли, приоритеты обновлений протоколов</span>
+      <span class="p1">Облако Минздрава РБ - методологии сопоставления, KPI отрасли, приоритеты обновлений протоколов</span>
       <span class="p2">Республика / областной срез качества документации</span>
       <span class="p3">Столица или регион: группы учреждений</span>
       <span class="p4">Клинический центр, поликлиника, филиал</span>
@@ -1357,10 +1469,10 @@ flowchart LR
         <div class="print-only print-chart-strip">
           <p><strong>Тот же показатель (печать):</strong> доля случаев по диапазонам качества.</p>
           <div class="pbar-row"><span>&lt;50%</span><div class="pbar-track"><div class="pbar-fill" style="width: 7%; background: rgba(155,28,46,0.85)"></div></div><span>3%</span></div>
-          <div class="pbar-row"><span>50–69%</span><div class="pbar-track"><div class="pbar-fill" style="width: 20%; background: rgba(217,119,6,0.75)"></div></div><span>8%</span></div>
-          <div class="pbar-row"><span>70–84%</span><div class="pbar-track"><div class="pbar-fill" style="width: 45%; background: rgba(26,138,114,0.55)"></div></div><span>18%</span></div>
-          <div class="pbar-row"><span>85–94%</span><div class="pbar-track"><div class="pbar-fill" style="width: 88%; background: rgba(26,138,114,0.72)"></div></div><span>35%</span></div>
-          <div class="pbar-row"><span>95–100%</span><div class="pbar-track"><div class="pbar-fill" style="width: 90%; background: rgba(13,92,74,0.82)"></div></div><span>36%</span></div>
+          <div class="pbar-row"><span>50-69%</span><div class="pbar-track"><div class="pbar-fill" style="width: 20%; background: rgba(217,119,6,0.75)"></div></div><span>8%</span></div>
+          <div class="pbar-row"><span>70-84%</span><div class="pbar-track"><div class="pbar-fill" style="width: 45%; background: rgba(26,138,114,0.55)"></div></div><span>18%</span></div>
+          <div class="pbar-row"><span>85-94%</span><div class="pbar-track"><div class="pbar-fill" style="width: 88%; background: rgba(26,138,114,0.72)"></div></div><span>35%</span></div>
+          <div class="pbar-row"><span>95-100%</span><div class="pbar-track"><div class="pbar-fill" style="width: 90%; background: rgba(13,92,74,0.82)"></div></div><span>36%</span></div>
         </div>
         <p class="chart-caption">
           По оси условная доля КЗ после того, как методслужба ввела сквозной учёт результатов автоматической сверки.
@@ -1391,12 +1503,12 @@ flowchart LR
           <p><strong>Печать (те же категории):</strong></p>
           <ul class="print-donut-legend">
             <li>Зелёная зона (≥85% по строкам): <strong>52%</strong></li>
-            <li>Средний коридор 70–84%: <strong>31%</strong></li>
+            <li>Средний коридор 70-84%: <strong>31%</strong></li>
             <li>Зона внимания &lt;70%: <strong>17%</strong></li>
           </ul>
         </div>
         <p class="chart-caption">
-          Учебный пример: куда методслужба тратит время при разборе — большинство критериев проходит сразу, меньшинство требует вмешательства.
+          Учебный пример: куда методслужба тратит время при разборе - большинство критериев проходит сразу, меньшинство требует вмешательства.
         </p>
       </div>
     </div>
@@ -1405,7 +1517,7 @@ flowchart LR
       <div class="chart-box">
         <h3 style="margin-top: 0">Оценка усилий методслужбы по этапам (минуты на кейс · демо)</h3>
         <p class="chart-caption" style="margin-top: 0; margin-bottom: 0.65rem">
-          Сопоставление условного времени на ручную сверку нескольких протоколов PDF с прогоном через сервис. Ось X — минуты, меньше значит эффективнее.
+          Сопоставление условного времени на ручную сверку нескольких протоколов PDF с прогоном через сервис. Ось X - минуты, меньше значит эффективнее.
         </p>
         <div class="screen-chart" style="height: 240px; position: relative;">
           <canvas id="chartHBar" aria-label="Горизонтальные столбики сравнения времени методиста"></canvas>
@@ -1424,9 +1536,9 @@ flowchart LR
 
     <div class="charts-row charts-split">
       <div class="chart-box">
-        <h3 style="margin-top: 0">Шесть сторон понятности одной выписки (демо-баллы 0–100)</h3>
+        <h3 style="margin-top: 0">Шесть сторон понятности одной выписки (демо-баллы 0-100)</h3>
         <p class="chart-caption" style="margin-top: 0; margin-bottom: 0.5rem">
-          То, что простому человеку сложно оценить «на глаз», система раскладывает на шесть направлений. Красная заливка&nbsp;— условная «выписка без цифровой сверки», зелёная линия&nbsp;— условно «та же работа с подсказкой программы» (цифры учебные).
+          То, что простому человеку сложно оценить «на глаз», система раскладывает на шесть направлений. Красная заливка&nbsp;- условная «выписка без цифровой сверки», зелёная линия&nbsp;- условно «та же работа с подсказкой программы» (цифры учебные).
         </p>
         <div class="screen-chart" style="height: 290px; position: relative">
           <canvas id="chartRadar" aria-label="Радарная диаграмма шести критериев качества текста выписки"></canvas>
@@ -1434,12 +1546,12 @@ flowchart LR
         <div class="print-only print-chart-strip">
           <p><strong>Печать (шесть направлений):</strong></p>
           <ul style="margin: 0; padding-left: 1rem; font-size: 9pt">
-            <li>Понятный язык для пациента — <strong>78</strong> vs <strong>52</strong></li>
-            <li>Следование тексту официальных правил — <strong>85</strong> vs <strong>58</strong></li>
-            <li>Обследования отражены в тексте — <strong>80</strong> vs <strong>62</strong></li>
-            <li>Логика выводов последовательна — <strong>83</strong> vs <strong>55</strong></li>
-            <li>Готовность отчёта к комиссии — <strong>88</strong> vs <strong>48</strong></li>
-            <li>Насколько быстро методист может разобрать кейс — <strong>86</strong> vs <strong>41</strong></li>
+            <li>Понятный язык для пациента - <strong>78</strong> vs <strong>52</strong></li>
+            <li>Следование тексту официальных правил - <strong>85</strong> vs <strong>58</strong></li>
+            <li>Обследования отражены в тексте - <strong>80</strong> vs <strong>62</strong></li>
+            <li>Логика выводов последовательна - <strong>83</strong> vs <strong>55</strong></li>
+            <li>Готовность отчёта к комиссии - <strong>88</strong> vs <strong>48</strong></li>
+            <li>Насколько быстро методист может разобрать кейс - <strong>86</strong> vs <strong>41</strong></li>
           </ul>
         </div>
       </div>
@@ -1454,7 +1566,7 @@ flowchart LR
           От красной зоны к зелёной: «сильно расходится с опубликованной тактикой» → «погранично» → «в пределах ожиданий официальных правил».
         </p>
         <ul>
-          <li>Можно напечатать и положить в папку дела — спор переходит из эмоций в столбики таблицы.</li>
+          <li>Можно напечатать и положить в папку дела - спор переходит из эмоций в столбики таблицы.</li>
           <li>В печатной версии страницы графики заменены списком цифр, чтобы принтер не резал канвасы.</li>
         </ul>
       </aside>
@@ -1463,68 +1575,68 @@ flowchart LR
     <h2>Дорожная карта (этапы)</h2>
     <ol class="timeline">
       <li>
-        <strong>MVP в браузере</strong>&nbsp;— поиск протоколов, загрузка 1–3 PDF КЗ, отчёт и печать для методслужбы; демо-режим
+        <strong>MVP в браузере</strong>&nbsp;- поиск протоколов, загрузка 1-3 PDF КЗ, отчёт и печать для методслужбы; демо-режим
         <code>?presentation=1</code>.
       </li>
       <li>
-        <strong>Интеграция с МИС</strong>&nbsp;— вызовы API из рабочего места врача; автоматический запуск проверки при подписи КЗ; запись индекса в карте качества.
+        <strong>Интеграция с МИС</strong>&nbsp;- вызовы API из рабочего места врача; автоматический запуск проверки при подписи КЗ; запись индекса в карте качества.
       </li>
       <li>
-        <strong>Городской контур качества</strong>&nbsp;— сводные панели по учреждениям Минска, единые отчёты для комиссий по качеству.
+        <strong>Городской контур качества</strong>&nbsp;- сводные панели по учреждениям Минска, единые отчёты для комиссий по качеству.
       </li>
       <li>
-        <strong>Минздрав</strong>&nbsp;— при наличии правовых и ИБ-согласований: приём после ЭП обезличенных агрегатов, республиканский реестр методических отклонений для мониторинга обновления протоколов.
+        <strong>Минздрав</strong>&nbsp;- при наличии правовых и ИБ-согласований: приём после ЭП обезличенных агрегатов, республиканский реестр методических отклонений для мониторинга обновления протоколов.
       </li>
     </ol>
 
     <h2>Что ещё даёт связка «протокол ↔ КЗ»</h2>
     <div class="ideas-grid">
       <div class="idea-item">
-        <strong>Раннее обучение персонала</strong>&nbsp;— низкая оценка становится триггером памятки или микромодуля по конкретному разделу КП,
+        <strong>Раннее обучение персонала</strong>&nbsp;- низкая оценка становится триггером памятки или микромодуля по конкретному разделу КП,
         без персональных санкций до результатов комиссионного разбора.
       </div>
       <div class="idea-item">
-        <strong>Узкие места отделения</strong>&nbsp;— если многие врачи «проседают» на одном блоке (например, обоснование наблюдения), это повод проверить
+        <strong>Узкие места отделения</strong>&nbsp;- если многие врачи «проседают» на одном блоке (например, обоснование наблюдения), это повод проверить
         загрузку и оснащенность диагностики.
       </div>
       <div class="idea-item">
-        <strong>Связь с исходами</strong>&nbsp;— при соблюдении этики при анализе обезличенных данных качество записи можно сопоставить с долей повторных обращений.
+        <strong>Связь с исходами</strong>&nbsp;- при соблюдении этики при анализе обезличенных данных качество записи можно сопоставить с долей повторных обращений.
       </div>
       <div class="idea-item">
-        <strong>Аккредитация и внутренние аудиты</strong>&nbsp;— готовые выгрузки о доле КЗ без «красной зоны» за отчётный период.
+        <strong>Аккредитация и внутренние аудиты</strong>&nbsp;- готовые выгрузки о доле КЗ без «красной зоны» за отчётный период.
       </div>
       <div class="idea-item">
-        <strong>Формальное снижение нагрузки на МЭЭ</strong>&nbsp;— очевидные формальные несоответствия находятся на этапе выписки, а не задним числом при экспертизе.
+        <strong>Формальное снижение нагрузки на МЭЭ</strong>&nbsp;- очевидные формальные несоответствия находятся на этапе выписки, а не задним числом при экспертизе.
       </div>
       <div class="idea-item">
-        <strong>Мониторинг обновлений КП</strong>&nbsp;— при смене редакции протокола пересчёт выборочных случаев подсказывает, какие темы включить в план методработы учреждений по стране.
+        <strong>Мониторинг обновлений КП</strong>&nbsp;- при смене редакции протокола пересчёт выборочных случаев подсказывает, какие темы включить в план методработы учреждений по стране.
       </div>
       <div class="idea-item">
-        <strong>Сопоставимость секторов</strong>&nbsp;— одна методика шкалы для государственных и частных клиник при согласии на обмен агрегированными показателями.
+        <strong>Сопоставимость секторов</strong>&nbsp;- одна методика шкалы для государственных и частных клиник при согласии на обмен агрегированными показателями.
       </div>
       <div class="idea-item">
-        <strong>Прозрачность перед страховщиком или работодателем</strong>&nbsp;— когда спор касается не лечения «в целом», а конкретной формулировки в выписке, есть на чём строить разговор без ухода в общие слова.
+        <strong>Прозрачность перед страховщиком или работодателем</strong>&nbsp;- когда спор касается не лечения «в целом», а конкретной формулировки в выписке, есть на чём строить разговор без ухода в общие слова.
       </div>
       <div class="idea-item">
-        <strong>Онбординг молодых врачей</strong>&nbsp;— свежий специалист быстрее учится держаться к официальной тактике, если подсказка приходит автоматически, а комиссионный отчёт фиксирует прогресс.
+        <strong>Онбординг молодых врачей</strong>&nbsp;- свежий специалист быстрее учится держаться к официальной тактике, если подсказка приходит автоматически, а комиссионный отчёт фиксирует прогресс.
       </div>
       <div class="idea-item">
-        <strong>Выравнивание филиальной сети</strong>&nbsp;— главный офис может смотреть на одни и те же показатели по всем точкам, где развёрнут сервис, а не только на случайную выборку бумаги.
+        <strong>Выравнивание филиальной сети</strong>&nbsp;- главный офис может смотреть на одни и те же показатели по всем точкам, где развёрнут сервис, а не только на случайную выборку бумаги.
       </div>
       <div class="idea-item">
-        <strong>Спокойнее юристы клиники</strong>&nbsp;— при методически выверенном и задокументированном подходе к сверке с протоколом проще отвечать на запрос третьих лиц о том, почему был выбран тот или иной стиль выписки.
+        <strong>Спокойнее юристы клиники</strong>&nbsp;- при методически выверенном и задокументированном подходе к сверке с протоколом проще отвечать на запрос третьих лиц о том, почему был выбран тот или иной стиль выписки.
       </div>
       <div class="idea-item">
-        <strong>Меньше «телефонного права»</strong>&nbsp;— дисциплина выписки не зависит от того, помнил ли методист человечески последнюю редакцию протокола: всё уже в машинном контуре.
+        <strong>Меньше «телефонного права»</strong>&nbsp;- дисциплина выписки не зависит от того, помнил ли методист человечески последнюю редакцию протокола: всё уже в машинном контуре.
       </div>
       <div class="idea-item">
-        <strong>Открытые сводные рейтинги качества процесса (опционально)</strong>&nbsp;— при разрешении надзора можно публиковать только обезличенную статистику «как работает выписка в городе», не раскрывая персональных данных пациента или фамилии конкретного врача.
+        <strong>Открытые сводные рейтинги качества процесса (опционально)</strong>&nbsp;- при разрешении надзора можно публиковать только обезличенную статистику «как работает выписка в городе», не раскрывая персональных данных пациента или фамилии конкретного врача.
       </div>
     </div>
 
     <footer class="page-foot">
       Документ носит методический и прогностический характер. Форматы обмена данными с Минздравом, применение КЭП/УКЭП, обработка ПДн и хостинг должны быть согласованы по отдельной дорожной карте информационной безопасности и законодательства РБ.
-      Актуальные редакции протоколов — на&nbsp;<a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">сайте Минздрава Республики Беларусь</a>.
+      Актуальные редакции протоколов - на&nbsp;<a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">сайте Минздрава Республики Беларусь</a>.
     </footer>
   </div>
 
@@ -1550,7 +1662,7 @@ flowchart LR
           chartBarInst = new Chart(ctxBar, {
             type: "bar",
             data: {
-              labels: ["&lt; 50%", "50–69%", "70–84%", "85–94%", "95–100%"],
+              labels: ["&lt; 50%", "50-69%", "70-84%", "85-94%", "95-100%"],
               datasets: [
                 {
                   label: "Доля случаев, %",
@@ -1635,7 +1747,7 @@ flowchart LR
           chartDonutInst = new Chart(ctxDonut, {
             type: "doughnut",
             data: {
-              labels: ["Зона ≥85%", "Коридор 70–84%", "&lt; 70% (внимание)"],
+              labels: ["Зона ≥85%", "Коридор 70-84%", "&lt; 70% (внимание)"],
               datasets: [
                 {
                   data: [52, 31, 17],
