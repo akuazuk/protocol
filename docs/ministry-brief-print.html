@@ -31,15 +31,15 @@
       margin: 0;
       font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
       color: var(--text);
-      font-size: 11pt;
-      line-height: 1.52;
+      font-size: 11.2pt;
+      line-height: 1.56;
       background: linear-gradient(180deg, #f7faf8 0%, #e8efe9 60%);
     }
 
     .page {
       max-width: 48rem;
       margin: 0 auto;
-      padding: 1rem 1.25rem 2.5rem;
+      padding: 1rem 1.35rem 2.5rem;
     }
 
     .no-print-actions {
@@ -145,7 +145,7 @@
       width: 100%;
       border-collapse: collapse;
       margin: 0.55rem 0;
-      font-size: 9.8pt;
+      font-size: 10.2pt;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 18px rgba(6, 61, 53, 0.07);
@@ -221,7 +221,7 @@
     footer.brief-foot a { color: var(--green-700); font-weight: 600; }
 
     .sources {
-      font-size: 9.2pt;
+      font-size: 9.6pt;
       color: var(--muted);
       margin-top: 0.35rem;
     }
@@ -236,7 +236,7 @@
         background: #fff !important;
         margin: 0;
         padding: 0;
-        font-size: 10.5pt;
+        font-size: 10.7pt;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -250,13 +250,40 @@
       }
       .no-print-actions { display: none !important; }
       .booklet-cover {
+        background: #fff !important;
         box-shadow: none;
         margin-bottom: 10mm;
+        border-color: #999 !important;
         page-break-after: avoid;
       }
       h2 { page-break-after: avoid; margin-top: 9mm; }
       table.data, .aside-box, .viz-strip, .brief-foot {
         break-inside: avoid;
+      }
+      table.data th,
+      table.data td {
+        border-color: #b5b5b5 !important;
+      }
+      .meta-pill {
+        background: #fff !important;
+        border: 1px solid #999 !important;
+        color: #222 !important;
+      }
+      .viz-strip,
+      .aside-box {
+        background: #fff !important;
+        border-color: #a8a8a8 !important;
+      }
+      .hbar-track {
+        background: #ececec !important;
+      }
+      .hbar-fill {
+        filter: saturate(0.75);
+      }
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 8.5pt;
+        color: #555;
       }
       .sources { page-break-before: avoid; }
     }
@@ -268,7 +295,7 @@
     <div class="no-print-actions no-print">
       <button type="button" class="print-btn" onclick="window.print()" title="Сохранить как PDF через диалог печати">Печать / PDF</button>
       <a href="../index.html#consult-review">Открыть приложение</a>
-      <span>Включите <strong>фоновые рисунки</strong> в настройках печати браузера, чтобы сохранились цвет таблицы и обложки.</span>
+      <span>Версия адаптирована для PDF: структура и таблицы читаются и без фоновых заливок.</span>
     </div>
 
     <header class="booklet-cover">

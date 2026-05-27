@@ -58,8 +58,8 @@
         radial-gradient(ellipse 70% 50% at 110% 40%, rgba(12, 107, 148, 0.1), transparent 50%),
         radial-gradient(ellipse 60% 45% at -10% 70%, rgba(92, 61, 158, 0.08), transparent 50%),
         linear-gradient(185deg, #fbfffd 0%, #eef6f1 38%, #e2ede6 100%);
-      line-height: 1.55;
-      font-size: 1rem;
+      line-height: 1.62;
+      font-size: 1.02rem;
     }
     .bg-soft {
       position: fixed;
@@ -91,7 +91,7 @@
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 253, 250, 0.88) 100%);
       border: 1px solid rgba(26, 138, 114, 0.22);
       backdrop-filter: blur(14px) saturate(1.15);
-      box-shadow: var(--shadow), var(--ring-glow);
+      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.08);
     }
     .nav-top .nav-actions {
       display: flex;
@@ -127,7 +127,7 @@
     .nav-hint {
       font-size: 0.74rem;
       color: var(--muted);
-      max-width: 16rem;
+      max-width: 20rem;
       line-height: 1.35;
     }
 
@@ -140,7 +140,7 @@
         radial-gradient(ellipse 50% 40% at 70% 60%, rgba(190, 24, 93, 0.06), transparent 45%),
         linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.95) 55%, rgba(220, 240, 232, 0.88) 100%);
       border: 1px solid rgba(26, 138, 114, 0.28);
-      box-shadow: var(--shadow-lift), inset 0 1px 0 rgba(255, 255, 255, 0.95), var(--ring-glow);
+      box-shadow: 0 10px 30px rgba(6, 61, 53, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       margin-bottom: 1.85rem;
       position: relative;
       overflow: hidden;
@@ -199,8 +199,8 @@
     }
     .hero-lead {
       margin: 1rem 0 0;
-      font-size: 1.05rem;
-      color: var(--muted);
+      font-size: 1.08rem;
+      color: #3f5450;
       max-width: 44em;
     }
     .tag-demo {
@@ -259,7 +259,7 @@
     .stat-splash .cell:nth-child(4) .big { color: var(--pink-accent); font-size: 1.35rem; }
     .stat-splash .lbl {
       display: block;
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       color: var(--muted);
       margin-top: 0.25rem;
       line-height: 1.3;
@@ -273,7 +273,7 @@
         radial-gradient(ellipse 100% 100% at 0% 50%, rgba(67, 56, 202, 0.07), transparent 52%),
         linear-gradient(118deg, rgba(67, 56, 202, 0.1) 0%, rgba(26, 138, 114, 0.12) 45%, rgba(217, 119, 6, 0.1) 100%);
       border: 1px solid rgba(67, 56, 202, 0.22);
-      font-size: 1.03rem;
+      font-size: 1rem;
       font-style: italic;
       color: var(--green-950);
       box-shadow: 0 12px 36px rgba(67, 56, 202, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.75);
@@ -660,7 +660,7 @@
 
     h2 {
       font-family: "Outfit", sans-serif;
-      font-size: 1.32rem;
+      font-size: 1.36rem;
       color: var(--green-950);
       margin: 2.4rem 0 0.85rem;
       letter-spacing: -0.02em;
@@ -682,7 +682,7 @@
     }
     h3 {
       font-family: "Outfit", sans-serif;
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       color: var(--green-700);
       margin: 1.35rem 0 0.5rem;
     }
@@ -855,9 +855,25 @@
       box-shadow: var(--shadow-lift), inset 0 3px 0 0 rgba(60, 184, 154, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.95);
     }
     .chart-caption {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       color: var(--muted);
       margin: 0.5rem 0 0;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        font-size: 1rem;
+        line-height: 1.58;
+      }
+      .wrap {
+        padding: 1rem 0.95rem 2.2rem;
+      }
+      .nav-top {
+        padding: 0.65rem 0.8rem;
+      }
+      .hero-lead {
+        font-size: 1rem;
+      }
     }
 
     .print-only { display: none; }
@@ -1229,8 +1245,9 @@
       }
       body {
         background: #fff !important;
-        font-size: 10.5pt;
-        line-height: 1.45;
+        color: #111 !important;
+        font-size: 10.6pt;
+        line-height: 1.42;
       }
       .bg-soft,
       .no-print {
@@ -1245,16 +1262,18 @@
         margin: 0;
       }
       .nav-top {
-        box-shadow: none;
-        border: 1px solid #ccc;
+        box-shadow: none !important;
+        background: #fff !important;
+        border: 1px solid #999;
         margin-bottom: 8mm;
       }
       .nav-top span:first-child {
         font-size: 11pt !important;
       }
       header.hero {
-        box-shadow: none;
-        border: 1px solid #bbb;
+        background: #fff !important;
+        box-shadow: none !important;
+        border: 1px solid #999;
         page-break-after: avoid;
       }
       h2 {
@@ -1282,7 +1301,9 @@
       .kpi-strip,
       .control-table {
         break-inside: avoid;
+        background: #fff !important;
         box-shadow: none !important;
+        border-color: #b5b5b5 !important;
       }
       .intro-two,
       .grid-cards,
@@ -1303,6 +1324,37 @@
       }
       .print-chart-strip .pbar-row {
         page-break-inside: avoid;
+      }
+      .print-chart-strip .pbar-track {
+        background: #e8e8e8 !important;
+      }
+      .print-chart-strip .pbar-fill {
+        filter: saturate(0.7);
+      }
+      table {
+        border-collapse: collapse !important;
+      }
+      th,
+      td {
+        border-color: #b7b7b7 !important;
+      }
+      .hero-pill,
+      .section-ribbon,
+      .meta-pill {
+        background: #fff !important;
+        border: 1px solid #9d9d9d !important;
+        box-shadow: none !important;
+        color: #1b1b1b !important;
+      }
+      p,
+      li {
+        orphans: 3;
+        widows: 3;
+      }
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 8.5pt;
+        color: #555;
       }
       footer.page-foot {
         margin-top: 10mm;
@@ -1329,7 +1381,7 @@
         <span aria-hidden="true">·</span>
         <a href="ministry-brief-print.html">Буклет (печать)</a>
         <span class="nav-hint">
-          При сохранении в PDF включите фон и графику в настройках печати - цвет сохранится.
+          Макет печати подготовлен для PDF: даже без фоновых заливок остаются рамки, таблицы и структура разделов.
         </span>
       </div>
     </nav>
