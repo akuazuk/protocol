@@ -119,10 +119,31 @@
       box-shadow: 0 4px 18px rgba(18, 107, 92, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
       transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
     }
+    .btn-print--paper {
+      background: #fff;
+      color: var(--green-800);
+      border: 2px solid rgba(26, 138, 114, 0.45);
+      box-shadow: none;
+    }
     .btn-print:hover {
       transform: translateY(-1px);
       box-shadow: 0 8px 24px rgba(18, 107, 92, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35);
       filter: brightness(1.05);
+    }
+    .btn-print--paper:hover {
+      background: rgba(232, 245, 241, 0.95);
+      filter: none;
+    }
+    .print-pdf-hint {
+      flex: 1 1 100%;
+      margin: 0.35rem 0 0;
+      padding: 0.55rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--green-950);
+      background: rgba(232, 245, 241, 0.95);
+      border: 1px solid rgba(26, 138, 114, 0.35);
     }
     .nav-hint {
       font-size: 0.74rem;
@@ -1249,6 +1270,58 @@
         font-size: 10.6pt;
         line-height: 1.42;
       }
+      .print-block,
+      header.hero,
+      .intro-col,
+      .compare-col,
+      .chart-box,
+      .mermaid-wrap,
+      .signal-box,
+      .pull-quote,
+      .win-card,
+      .idea-item,
+      .ministry-stake,
+      .ministry-talk__goal,
+      .ministry-talk__note,
+      .ministry-risk-list li,
+      .tri-card,
+      .stat-splash .cell,
+      .kpi-cell,
+      .card,
+      .simple-callout,
+      .lay-lead,
+      .api-chip,
+      .flow-step,
+      .stack-layers,
+      .pyramid span,
+      .timeline li,
+      .print-chart-strip,
+      .print-only,
+      footer.page-foot,
+      .booklet-cover {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-column-break-inside: avoid !important;
+      }
+      .ministry-talk,
+      .wins-shell,
+      .intro-two,
+      .compare-wrap,
+      .charts-row,
+      .charts-split,
+      .grid-cards,
+      .ideas-grid,
+      .wins-grid,
+      .ministry-talk__triple,
+      .stat-splash,
+      .kpi-strip,
+      .tri-diagram,
+      .flow-row,
+      .pyramid,
+      .print-section {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+      }
       .bg-soft,
       .no-print {
         display: none !important;
@@ -1274,21 +1347,19 @@
         background: #fff !important;
         box-shadow: none !important;
         border: 1px solid #999;
-        page-break-after: avoid;
       }
-      h2 {
-        page-break-after: avoid;
+      h2,
+      h3,
+      h4,
+      h5 {
+        break-after: avoid !important;
+        page-break-after: avoid !important;
       }
       h2::before {
         box-shadow: none;
       }
-      h3 {
-        page-break-after: avoid;
-      }
-      .win-card,
-      .tri-diagram .tri-card,
-      .stack-layers {
-        break-inside: avoid;
+      .print-section > h2 {
+        margin-top: 0;
       }
       .wins-shell h2:first-of-type {
         margin-top: 0;
@@ -1298,23 +1369,21 @@
       .signal-box,
       .intro-col,
       .card,
-      .kpi-strip,
       .control-table {
-        break-inside: avoid;
         background: #fff !important;
         box-shadow: none !important;
         border-color: #b5b5b5 !important;
       }
-      .intro-two,
-      .grid-cards,
-      .charts-row,
-      .pull-quote,
-      .ministry-talk,
-      .ministry-stake,
-      .ministry-talk__goal,
-      .ministry-risk-list li,
-      .compare-wrap .compare-col {
-        break-inside: avoid;
+      table.control-table {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+      }
+      table.control-table thead {
+        display: table-header-group;
+      }
+      table.control-table tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
       }
       .screen-chart {
         display: none !important;
@@ -1323,7 +1392,8 @@
         display: block !important;
       }
       .print-chart-strip .pbar-row {
-        page-break-inside: avoid;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
       }
       .print-chart-strip .pbar-track {
         background: #e8e8e8 !important;
@@ -1374,15 +1444,21 @@
       <span style="font-family: Outfit, sans-serif; font-weight: 700; color: var(--green-950)"
         >Презентация MVP · контроль качества КЗ</span>
       <div class="nav-actions no-print">
-        <button type="button" class="btn-print" id="btn-print-pres" title="Полная версия для принтера или «Сохранить как PDF»">
-          Распечатать / PDF
+        <button type="button" class="btn-print" id="btn-save-pdf" title="Открыть диалог сохранения в PDF">
+          Сохранить в PDF
+        </button>
+        <button type="button" class="btn-print btn-print--paper" id="btn-print-paper" title="Печать на принтер">
+          Печать
         </button>
         <a href="../index.html#consult-review">К приложению</a>
         <span aria-hidden="true">·</span>
         <a href="ministry-brief-print.html">Буклет (печать)</a>
         <span class="nav-hint">
-          Макет печати подготовлен для PDF: даже без фоновых заливок остаются рамки, таблицы и структура разделов.
+          Блоки не режутся посередине: если не помещаются на странице, переносятся целиком.
         </span>
+        <p class="print-pdf-hint" id="print-pdf-hint" hidden role="status">
+          В открывшемся диалоге выберите «Сохранить как PDF» (или «Microsoft Print to PDF») и нажмите «Сохранить».
+        </p>
       </div>
     </nav>
 
@@ -2345,15 +2421,90 @@ flowchart LR
         requestAnimationFrame(resizeAllCharts);
       });
 
-      window.addEventListener("afterprint", resizeAllCharts);
+      window.addEventListener("afterprint", function () {
+        resizeAllCharts();
+        document.body.classList.remove("print-intent-pdf");
+        var hintEl = document.getElementById("print-pdf-hint");
+        if (hintEl) hintEl.hidden = true;
+      });
 
-      var btnPrint = document.getElementById("btn-print-pres");
-      if (btnPrint) {
-        btnPrint.addEventListener("click", function () {
-          resizeAllCharts();
-          setTimeout(function () {
-            window.print();
-          }, 150);
+      function wrapPrintSections(root) {
+        if (!root || root.dataset.printSections === "1") return;
+        var h2s = root.querySelectorAll(":scope > h2");
+        var i;
+        for (i = 0; i < h2s.length; i++) {
+          var h2 = h2s[i];
+          if (h2.parentElement && h2.parentElement.classList.contains("print-section")) {
+            continue;
+          }
+          var section = document.createElement("div");
+          section.className = "print-section";
+          h2.parentNode.insertBefore(section, h2);
+          section.appendChild(h2);
+          var sib = section.nextElementSibling;
+          while (sib && sib.tagName !== "H2") {
+            var next = sib.nextElementSibling;
+            section.appendChild(sib);
+            sib = next;
+          }
+        }
+        root.dataset.printSections = "1";
+      }
+
+      function markPrintBlocks(root) {
+        if (!root) return;
+        var selectors = [
+          "header.hero",
+          "section.ministry-talk",
+          "section.wins-shell",
+          ".intro-two",
+          ".compare-wrap",
+          ".stat-splash",
+          ".kpi-strip",
+          ".grid-cards",
+          ".ideas-grid",
+          "ol.timeline",
+          "footer.page-foot",
+        ];
+        var si;
+        for (si = 0; si < selectors.length; si++) {
+          var nodes = root.querySelectorAll(selectors[si]);
+          var ni;
+          for (ni = 0; ni < nodes.length; ni++) {
+            nodes[ni].classList.add("print-block-root");
+          }
+        }
+      }
+
+      function preparePrintLayout() {
+        var wrap = document.querySelector(".wrap");
+        markPrintBlocks(wrap);
+        wrapPrintSections(wrap);
+      }
+
+      function openPrintDialog(mode) {
+        preparePrintLayout();
+        resizeAllCharts();
+        var hintEl = document.getElementById("print-pdf-hint");
+        if (hintEl) {
+          hintEl.hidden = mode !== "pdf";
+        }
+        document.body.classList.toggle("print-intent-pdf", mode === "pdf");
+        setTimeout(function () {
+          window.print();
+        }, mode === "pdf" ? 180 : 120);
+      }
+
+      var btnSavePdf = document.getElementById("btn-save-pdf");
+      if (btnSavePdf) {
+        btnSavePdf.addEventListener("click", function () {
+          openPrintDialog("pdf");
+        });
+      }
+      var btnPrintPaper = document.getElementById("btn-print-paper");
+      if (btnPrintPaper) {
+        btnPrintPaper.addEventListener("click", function () {
+          openPrintDialog("paper");
         });
       }
     })();
