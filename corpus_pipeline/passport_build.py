@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 from typing import Any
 
 from .config import SPECIALTY_FROM_FOLDER

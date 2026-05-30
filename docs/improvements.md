@@ -333,7 +333,15 @@
 - 4.1 убрать блокировку event loop в consult-review; 3.5 устранить гонку `_retrieval_embed_meta`; 4.2 retry на 429; 4.3 безопасный `env_int`; 4.5 единые safety-настройки; 8.2 AbortController в consult-review; 8.1 независимый старт UI.
 - Результат: стабильное поведение при нагрузке и сбоях модели.
 
-### Фаза 3 - Качество и CI (защита от регрессий)
+### Фаза 3 - Качество и CI - ВЫПОЛНЕНО
+- GitHub Actions CI (`.github/workflows/ci.yml`): ruff + pytest на push/PR в main, Python 3.11.
+- ruff сконфигурирован (`ruff.toml`, набор F/E9/W6), исправлены найденные F401/F841.
+- `.pre-commit-config.yaml` (ruff + базовые хуки), `ruff`/`pre-commit` добавлены в `requirements-dev.txt`.
+- Тест `/api/assist` с мок-моделью (`tests/test_api_assist.py`): валидация 422, путь без ключа 503, успешная сборка ответа.
+- Унифицирована версия `pymupdf` (`requirements-search.txt` -> >=1.24.0, как в pipeline).
+- Порог качества: агрегаты `summary` в отчёте eval + `eval/quality_gate.py` (gate по `pass_rate`, `QUALITY_MIN_PASS_RATE`).
+
+### Фаза 3 - Качество и CI (исходный план) (защита от регрессий)
 - 9.1 GitHub Actions; 9.3 ruff + pre-commit; 9.2 тест `/api/assist` с моком + unit `icd_mkb`; 6.3 lock-файл и единый pymupdf; 9.4 порог качества на mini.
 - Результат: каждое изменение проверяется автоматически.
 

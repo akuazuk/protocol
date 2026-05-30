@@ -582,9 +582,17 @@ def main() -> int:
         print_case_human(rep)
 
     if args.report_json:
+        total = len(reports)
+        passed = sum(1 for r in reports if r.ok)
         payload = {
             "embed_rerank_env": os.environ.get("RAG_GEMINI_EMBED_RERANK"),
             "api_key_present": api_key_present,
+            "summary": {
+                "total": total,
+                "passed": passed,
+                "failed": total - passed,
+                "pass_rate": round(passed / total, 4) if total else 0.0,
+            },
             "cases": [report_to_dict(r) for r in reports],
         }
         text = json.dumps(payload, ensure_ascii=False, indent=2)

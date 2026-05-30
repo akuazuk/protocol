@@ -100,7 +100,6 @@ def best_snippets(paragraphs: list[str], pattern: re.Pattern, n: int = 2) -> str
 
 def extract_by_headings(text: str) -> tuple[str, str]:
     """Пытается вырезать блоки после заголовков Диагностика / Лечение."""
-    low = text.lower()
     diag = ""
     treat = ""
 

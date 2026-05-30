@@ -1,0 +1,22 @@
+# Конфигурация линтера ruff (см. CI: .github/workflows/ci.yml).
+# Цель - ловить реальные баги (pyflakes F) и грубые ошибки стиля, не ломая существующий код.
+line-length = 100
+target-version = "py311"
+
+extend-exclude = [
+    ".venv",
+    "venv",
+    "node_modules",
+    "output",
+    "minzdrav_protocols",
+    "corpus_chunks_parts",
+]
+
+[lint]
+# F - pyflakes (неопределённые имена, неиспользуемые импорты/переменные);
+# E9 - синтаксис/ошибки выполнения; W6 - устаревшие конструкции.
+select = ["F", "E9", "W6"]
+ignore = []
+
+[lint.per-file-ignores]
+"tests/**" = ["F401", "F811"]

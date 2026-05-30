@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import re
-from typing import Any
 
 # МКБ-10: латинская буква + 2 цифры, опционально .подрубрика
 ICD10_RE = re.compile(
