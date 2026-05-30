@@ -5446,6 +5446,9 @@
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
         Не замена очной консультации.
       </p>
+      <p style="margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); opacity: 0.75">
+        Версия: <span id="build-version-badge">…</span>
+      </p>
     </footer>
   </div>
 
@@ -9210,6 +9213,21 @@
     return normalizeRagBaseForRequest(baseEl && baseEl.value ? baseEl.value : "");
   }
 
+  function loadBuildVersionBadge() {
+    var el = document.getElementById("build-version-badge");
+    if (!el) return;
+    fetch(apiBaseUrl() + "/api/version")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (data) {
+        el.textContent = data && data.version ? data.version : "—";
+      })
+      .catch(function () {
+        el.textContent = "—";
+      });
+  }
+
   function loadCorpusStatsPanel() {
     var body = document.getElementById("corpus-stats-body");
     var note = document.getElementById("corpus-stats-note");
@@ -10641,6 +10659,7 @@
   initDemoCasesBar();
   initCitationsOnlyToggle();
   loadCorpusStatsPanel();
+  loadBuildVersionBadge();
   loadQualityBenchmarkPanel();
   loadPilotAnalyticsPanel();
   loadTrainingCasesChips();

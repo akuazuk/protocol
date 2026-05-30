@@ -5181,9 +5181,13 @@ def _icd_ru_entries_count() -> int:
     return n
 
 
+# Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
+BUILD_VERSION = "2026-05-30-r8-consult-cache-text"
+
+
 def _app_version() -> str:
-    """Версия сборки: APP_VERSION из окружения или 'dev'."""
-    return (os.environ.get("APP_VERSION") or "dev").strip() or "dev"
+    """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
+    return (os.environ.get("APP_VERSION") or BUILD_VERSION).strip() or BUILD_VERSION
 
 
 @app.get("/health")
@@ -5932,7 +5936,7 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 # Кэш результата проверки КЗ по контент-хэшу файлов: один и тот же PDF -> один и тот же результат.
 # Это даёт строгую воспроизводимость даже при остаточной недетерминированности модели.
-_CONSULT_CACHE_VERSION = "2026-05-30.2"
+_CONSULT_CACHE_VERSION = "2026-05-30.3-text"
 _consult_review_cache: dict[str, dict] = {}
 _consult_cache_order: list[str] = []
 _consult_cache_lock = threading.Lock()
@@ -5942,16 +5946,25 @@ def _consult_cache_enabled() -> bool:
     return env_bool("CONSULT_REVIEW_CACHE", True)
 
 
-def _consult_cache_key(file_hashes: list[str], category_slugs: str) -> str:
+def _normalize_for_cache(text: str) -> str:
+    """Нормализация текста для ключа кэша: один и тот же по содержанию PDF -> один ключ,
+    даже если байты PDF отличаются (другой экспорт/пересохранение)."""
+    return re.sub(r"\s+", " ", (text or "")).strip().lower()
+
+
+def _consult_cache_key(content_signature: str, category_slugs: str) -> str:
+    """Ключ по нормализованному содержанию (а не по байтам) + рубрики + модель + настройки."""
     slugs_norm = ",".join(sorted(s.strip() for s in (category_slugs or "").split(",") if s.strip()))
+    content_hash = hashlib.sha256(content_signature.encode("utf-8")).hexdigest()
     parts = [
         _CONSULT_CACHE_VERSION,
-        "|".join(sorted(file_hashes)),
+        content_hash,
         slugs_norm,
         os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
         str(env_float("GEMINI_TEMPERATURE", 0.0)),
         os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower(),
         os.environ.get("GEMINI_EMBEDDING_MODEL", ""),
+        "overall_from_criteria" if env_bool("CONSULT_REVIEW_OVERALL_FROM_CRITERIA", True) else "model_overall",
     ]
     raw = "\n".join(parts)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
@@ -6019,7 +6032,7 @@ def api_consult_review(
     blocks: list[str] = []
     consult_docs_meta: list[dict] = []
     pdf_warnings: list[str] = []
-    file_hashes: list[str] = []
+    doc_texts_for_cache: list[str] = []
 
     for i, uf in enumerate(files):
         raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}.pdf"
@@ -6040,7 +6053,6 @@ def api_consult_review(
                 status_code=400,
                 detail=f"Файл «{raw_fn}» не похож на PDF (неверная сигнатура).",
             )
-        file_hashes.append(hashlib.sha256(data).hexdigest())
         try:
             txt, warns = extract_pdf_text_from_bytes(data)
         except HTTPException:
@@ -6062,6 +6074,7 @@ def api_consult_review(
         for w in warns or []:
             pdf_warnings.append(f"{raw_fn}: {w}")
 
+        doc_texts_for_cache.append(_normalize_for_cache(txt))
         consult_docs_meta.append(
             {"index": i + 1, "filename": raw_fn, "extraction_chars": len(txt)}
         )
@@ -6081,8 +6094,10 @@ def api_consult_review(
             + "\n\n[…тексты объединённых PDF обрезаны для обработки]"
         )
 
-    # Строгая воспроизводимость: одинаковые файлы (тот же контент) -> идентичный результат из кэша.
-    cache_key = _consult_cache_key(file_hashes, category_slugs)
+    # Строгая воспроизводимость: одинаковое содержание PDF -> идентичный результат из кэша
+    # (ключ по нормализованному тексту, поэтому совпадает даже при разных байтах одного и того же документа).
+    content_signature = "\n||\n".join(doc_texts_for_cache)
+    cache_key = _consult_cache_key(content_signature, category_slugs)
     cached = _consult_cache_get(cache_key)
     if cached is not None:
         return cached
@@ -6318,6 +6333,7 @@ def api_consult_review(
 
     result = {
         "ok": True,
+        "server_version": _app_version(),
         "review": review,
         "pdf_warnings": pdf_warnings,
         "consult_documents": consult_docs_meta,

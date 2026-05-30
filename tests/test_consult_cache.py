@@ -19,9 +19,10 @@ def client():
 def test_cache_key_stable_and_sensitive() -> None:
     import rag_server as rs
 
-    k1 = rs._consult_cache_key(["aaa", "bbb"], "pulmonologiya")
-    k2 = rs._consult_cache_key(["bbb", "aaa"], "pulmonologiya")  # порядок файлов не важен
-    k3 = rs._consult_cache_key(["aaa", "ccc"], "pulmonologiya")  # другой файл -> другой ключ
+    # Ключ по нормализованному содержанию: разный регистр/пробелы дают тот же ключ.
+    k1 = rs._consult_cache_key(rs._normalize_for_cache("Текст  Заключения"), "pulmonologiya")
+    k2 = rs._consult_cache_key(rs._normalize_for_cache("текст заключения"), "pulmonologiya")
+    k3 = rs._consult_cache_key(rs._normalize_for_cache("другой текст"), "pulmonologiya")
     assert k1 == k2
     assert k1 != k3
 
