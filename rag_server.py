@@ -9,7 +9,9 @@
 """
 from __future__ import annotations
 
+import copy
 import gc
+import hashlib
 import io
 import json
 import logging
@@ -5897,6 +5899,58 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
     return out
 
 
+# Кэш результата проверки КЗ по контент-хэшу файлов: один и тот же PDF -> один и тот же результат.
+# Это даёт строгую воспроизводимость даже при остаточной недетерминированности модели.
+_CONSULT_CACHE_VERSION = "2026-05-30.1"
+_consult_review_cache: dict[str, dict] = {}
+_consult_cache_order: list[str] = []
+_consult_cache_lock = threading.Lock()
+
+
+def _consult_cache_enabled() -> bool:
+    return env_bool("CONSULT_REVIEW_CACHE", True)
+
+
+def _consult_cache_key(file_hashes: list[str], category_slugs: str) -> str:
+    slugs_norm = ",".join(sorted(s.strip() for s in (category_slugs or "").split(",") if s.strip()))
+    parts = [
+        _CONSULT_CACHE_VERSION,
+        "|".join(sorted(file_hashes)),
+        slugs_norm,
+        os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
+        str(env_float("GEMINI_TEMPERATURE", 0.0)),
+        os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower(),
+        os.environ.get("GEMINI_EMBEDDING_MODEL", ""),
+    ]
+    raw = "\n".join(parts)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
+
+
+def _consult_cache_get(key: str) -> dict | None:
+    if not _consult_cache_enabled():
+        return None
+    with _consult_cache_lock:
+        val = _consult_review_cache.get(key)
+        if val is None:
+            return None
+        result = copy.deepcopy(val)
+    result["cached_result"] = True
+    return result
+
+
+def _consult_cache_put(key: str, value: dict) -> None:
+    if not _consult_cache_enabled():
+        return
+    cap = max(8, env_int("CONSULT_REVIEW_CACHE_MAX", 256))
+    with _consult_cache_lock:
+        if key not in _consult_review_cache:
+            _consult_cache_order.append(key)
+        _consult_review_cache[key] = copy.deepcopy(value)
+        while len(_consult_cache_order) > cap:
+            old = _consult_cache_order.pop(0)
+            _consult_review_cache.pop(old, None)
+
+
 @app.post("/api/consult-review")
 def api_consult_review(
     files: Annotated[
@@ -5934,6 +5988,7 @@ def api_consult_review(
     blocks: list[str] = []
     consult_docs_meta: list[dict] = []
     pdf_warnings: list[str] = []
+    file_hashes: list[str] = []
 
     for i, uf in enumerate(files):
         raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}.pdf"
@@ -5954,6 +6009,7 @@ def api_consult_review(
                 status_code=400,
                 detail=f"Файл «{raw_fn}» не похож на PDF (неверная сигнатура).",
             )
+        file_hashes.append(hashlib.sha256(data).hexdigest())
         try:
             txt, warns = extract_pdf_text_from_bytes(data)
         except HTTPException:
@@ -5993,6 +6049,12 @@ def api_consult_review(
             full_text[:max_store].rstrip()
             + "\n\n[…тексты объединённых PDF обрезаны для обработки]"
         )
+
+    # Строгая воспроизводимость: одинаковые файлы (тот же контент) -> идентичный результат из кэша.
+    cache_key = _consult_cache_key(file_hashes, category_slugs)
+    cached = _consult_cache_get(cache_key)
+    if cached is not None:
+        return cached
 
     model = get_gemini()
 
@@ -6223,7 +6285,7 @@ def api_consult_review(
         extra_context=oncology_extra,
     )
 
-    return {
+    result = {
         "ok": True,
         "review": review,
         "pdf_warnings": pdf_warnings,
@@ -6248,6 +6310,9 @@ def api_consult_review(
         "icd": _icd_client_payload(icd_analysis),
         "demographics_meta": demographics_meta,
     }
+    result["cached_result"] = False
+    _consult_cache_put(cache_key, result)
+    return result
 
 
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
