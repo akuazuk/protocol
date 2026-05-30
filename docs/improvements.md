@@ -361,6 +361,11 @@
 Ключ: SHA-256(файлы + рубрики + модель + temperature + embed-настройки + версия кэша). Управление:
 `CONSULT_REVIEW_CACHE`, `CONSULT_REVIEW_CACHE_MAX`. Тесты: `tests/test_consult_cache.py`.
 
+Дополнительно: `overall_compliance_pct` теперь считается детерминированно как среднее баллов критериев
+(`_stabilize_overall_compliance`, `CONSULT_REVIEW_OVERALL_FROM_CRITERIA`) - итог прозрачен и не зависит
+от отдельного «свободного» числа модели. В ответе добавлены поля `cached_result` и `overall_compliance_method`
+(по ним легко проверить, что на сервере уже работает новый код).
+
 ### Безопасный инкремент фаз 4/6/7 (ВЫПОЛНЕНО, без смены архитектуры)
 По решению - только низкорисковые части (без разбиения файлов и lifespan-миграции, чтобы не ломать живое приложение):
 - 3.4 кэш числа ICD-записей в `/health` (`_icd_ru_entries_count`).

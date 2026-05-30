@@ -36,3 +36,27 @@ def test_retrieve_order_is_stable() -> None:
         for _ in range(3)
     ]
     assert runs[0] == runs[1] == runs[2]
+
+
+def test_overall_compliance_is_mean_of_criteria() -> None:
+    import rag_server as rs
+
+    parsed = {
+        "overall_compliance_pct": 91,  # «свободное» число модели — должно быть пересчитано
+        "criteria": [
+            {"name_ru": "A", "score_pct": 80},
+            {"name_ru": "B", "score_pct": 60},
+            {"name_ru": "C", "score_pct": 70},
+        ],
+    }
+    rs._stabilize_overall_compliance(parsed)
+    assert parsed["overall_compliance_pct"] == 70  # round((80+60+70)/3)
+    assert parsed["overall_compliance_method"] == "mean_of_criteria"
+
+
+def test_overall_compliance_no_criteria_keeps_value() -> None:
+    import rag_server as rs
+
+    parsed = {"overall_compliance_pct": 88, "criteria": []}
+    rs._stabilize_overall_compliance(parsed)
+    assert parsed["overall_compliance_pct"] == 88

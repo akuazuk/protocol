@@ -3679,7 +3679,38 @@ def _consult_review_synthesize(
             status_code=502,
             detail="Модель вернула ответ без корректного JSON. Повторите попытку или сократите объём PDF.",
         )
+    _stabilize_overall_compliance(parsed)
     return parsed
+
+
+def _stabilize_overall_compliance(parsed: dict) -> None:
+    """Итоговый процент — детерминированная функция баллов критериев, а не отдельное число модели.
+
+    Делает «Ориентировочное соответствие» прозрачным и воспроизводимым: при одинаковых критериях
+    итог всегда одинаков. Отключается CONSULT_REVIEW_OVERALL_FROM_CRITERIA=0.
+    """
+    if not isinstance(parsed, dict):
+        return
+    if not env_bool("CONSULT_REVIEW_OVERALL_FROM_CRITERIA", True):
+        return
+    crits = parsed.get("criteria")
+    if not isinstance(crits, list):
+        return
+    scores: list[float] = []
+    for c in crits:
+        if not isinstance(c, dict):
+            continue
+        v = c.get("score_pct")
+        try:
+            fv = float(v)
+        except (TypeError, ValueError):
+            continue
+        if 0.0 <= fv <= 100.0:
+            scores.append(fv)
+    if not scores:
+        return
+    parsed["overall_compliance_pct"] = int(round(sum(scores) / len(scores)))
+    parsed["overall_compliance_method"] = "mean_of_criteria"
 
 
 def _consult_ui_protocol_fragments(
@@ -5901,7 +5932,7 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 # Кэш результата проверки КЗ по контент-хэшу файлов: один и тот же PDF -> один и тот же результат.
 # Это даёт строгую воспроизводимость даже при остаточной недетерминированности модели.
-_CONSULT_CACHE_VERSION = "2026-05-30.1"
+_CONSULT_CACHE_VERSION = "2026-05-30.2"
 _consult_review_cache: dict[str, dict] = {}
 _consult_cache_order: list[str] = []
 _consult_cache_lock = threading.Lock()
