@@ -12,6 +12,7 @@ from __future__ import annotations
 import gc
 import io
 import json
+import logging
 import math
 import os
 import re
@@ -4776,6 +4777,16 @@ if not _CSP_VALUE and env_bool("ENABLE_DEFAULT_CSP", False):
     )
 
 
+_logger = logging.getLogger("protocol.rag")
+if not _logger.handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s"))
+    _logger.addHandler(_h)
+    _logger.setLevel(getattr(logging, (os.environ.get("LOG_LEVEL") or "INFO").upper(), logging.INFO))
+_REQUEST_LOG = env_bool("REQUEST_LOG", True)
+_SLOW_REQUEST_MS = env_int("SLOW_REQUEST_MS", 8000)
+
+
 @app.middleware("http")
 async def _security_and_rate_limit(request: "Request", call_next):
     if _RATE_LIMIT_ENABLED:
@@ -4784,15 +4795,35 @@ async def _security_and_rate_limit(request: "Request", call_next):
         if explicit or (request.method == "POST" and path.startswith("/api/")):
             limit = _RATE_LIMITS.get(path, _RATE_LIMIT_DEFAULT)
             if not _rate_limit_allows(f"{_client_ip(request)}|{path}", limit):
+                if _REQUEST_LOG:
+                    _logger.warning("429 rate-limit %s %s ip=%s", request.method, path, _client_ip(request))
                 return JSONResponse(
                     {"detail": "Слишком много запросов. Подождите минуту и повторите."},
                     status_code=429,
                 )
-    response = await call_next(request)
+    started = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        dur_ms = (time.perf_counter() - started) * 1000.0
+        _logger.exception("500 %s %s after %.0f ms", request.method, request.url.path, dur_ms)
+        raise
+    dur_ms = (time.perf_counter() - started) * 1000.0
     for hk, hv in _SECURITY_HEADERS.items():
         response.headers.setdefault(hk, hv)
     if _CSP_VALUE:
         response.headers.setdefault("Content-Security-Policy", _CSP_VALUE)
+    response.headers.setdefault("X-Process-Time-Ms", str(int(dur_ms)))
+    if _REQUEST_LOG and (request.url.path.startswith("/api/") or response.status_code >= 400):
+        level = logging.WARNING if (response.status_code >= 400 or dur_ms >= _SLOW_REQUEST_MS) else logging.INFO
+        _logger.log(
+            level,
+            "%s %s -> %s %.0f ms",
+            request.method,
+            request.url.path,
+            response.status_code,
+            dur_ms,
+        )
     return response
 
 
@@ -5000,6 +5031,7 @@ def _corpus_stats_from_index_csv() -> dict:
 def api_corpus_stats() -> dict:
     """Состояние корпуса для UI: каталог index.csv + загруженные чанки (если RAG готов)."""
     out = _corpus_stats_from_index_csv()
+    out["version"] = _app_version()
     out["specialties_catalog"] = len(SPECIALTY_LABELS_RU)
     out["rag_ready"] = _chunks_load_done.is_set()
     out["rag_load_error"] = public_error_text(_chunks_load_error)
@@ -5078,20 +5110,39 @@ def api_quality_benchmark() -> dict:
     return data
 
 
-@app.get("/health")
-def health() -> dict:
-    has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
-    icd_ru_n = 0
+_icd_ru_count_cache: int | None = None
+
+
+def _icd_ru_entries_count() -> int:
+    """Число записей русского справочника МКБ — читаем файл один раз и кэшируем."""
+    global _icd_ru_count_cache
+    if _icd_ru_count_cache is not None:
+        return _icd_ru_count_cache
+    n = 0
     try:
-        icd_ru_n = len(
+        n = len(
             json.loads(
                 (ROOT / "data/icd_reference/icd10_ru_mkb10su.json").read_text(encoding="utf-8")
             )
         )
     except (OSError, ValueError, TypeError):
-        icd_ru_n = 0
+        n = 0
+    _icd_ru_count_cache = n
+    return n
+
+
+def _app_version() -> str:
+    """Версия сборки: APP_VERSION из окружения или 'dev'."""
+    return (os.environ.get("APP_VERSION") or "dev").strip() or "dev"
+
+
+@app.get("/health")
+def health() -> dict:
+    has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    icd_ru_n = _icd_ru_entries_count()
     return {
         "ok": True,
+        "version": _app_version(),
         "rag_ready": _chunks_load_done.is_set(),
         "rag_load_error": public_error_text(_chunks_load_error),
         "chunks": len(_chunks),
@@ -5106,6 +5157,15 @@ def health() -> dict:
         "embedding_model": os.environ.get(
             "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
         ),
+    }
+
+
+@app.get("/api/version")
+def api_version() -> dict:
+    """Лёгкий маршрут версии/готовности (для мониторинга и баннеров деплоя)."""
+    return {
+        "version": _app_version(),
+        "rag_ready": _chunks_load_done.is_set(),
     }
 
 
