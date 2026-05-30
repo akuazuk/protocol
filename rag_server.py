@@ -947,7 +947,14 @@ def _gemini_embed_rerank_pool(
         cos = _cosine_vec(q_vec, doc_vecs[i])
         h = alpha * lex_norm[i] + (1.0 - alpha) * cos
         out_rows.append((h, lex, mult, ch))
-    out_rows.sort(key=lambda x: -x[0])
+    # Детерминированный порядок при равных score: стабильный tie-break по пути и индексу чанка.
+    out_rows.sort(
+        key=lambda x: (
+            -x[0],
+            str(x[3].get("path", "")),
+            str(x[3].get("chunk_index", "")),
+        )
+    )
     return out_rows
 
 
@@ -2471,7 +2478,14 @@ def retrieve(
             blend = ln
         final = blend * mult * post
         scored.append((final, lex, bm25_s, mult, ch))
-    scored.sort(key=lambda x: -x[0])
+    # Детерминированный порядок при равных score: стабильный tie-break по пути и индексу чанка.
+    scored.sort(
+        key=lambda x: (
+            -x[0],
+            str(x[4].get("path", "")),
+            str(x[4].get("chunk_index", "")),
+        )
+    )
 
     embed_meta: dict = {"used": False}
 
@@ -2660,6 +2674,35 @@ def _gemini_finish_reason(resp) -> str | None:
     return str(fr)
 
 
+def _make_generation_config(genai, *, max_output_tokens: int, json_mode: bool):
+    """Единый конфиг генерации с детерминированными настройками.
+
+    Воспроизводимость важна для медицинского инструмента: одинаковый вход должен давать одинаковый
+    результат. По умолчанию temperature=0 (жадное декодирование) и candidate_count=1.
+    Переопределяется через GEMINI_TEMPERATURE / GEMINI_TOP_P / GEMINI_TOP_K / GEMINI_SEED.
+    """
+    kw: dict = {
+        "temperature": env_float("GEMINI_TEMPERATURE", 0.0),
+        "max_output_tokens": max_output_tokens,
+        "candidate_count": 1,
+    }
+    if (os.environ.get("GEMINI_TOP_P") or "").strip():
+        kw["top_p"] = env_float("GEMINI_TOP_P", 1.0)
+    if (os.environ.get("GEMINI_TOP_K") or "").strip():
+        kw["top_k"] = env_int("GEMINI_TOP_K", 1)
+    if json_mode:
+        # Снижает обрывы посреди JSON и обрывы «лишнего» текста до/после объекта
+        kw["response_mime_type"] = "application/json"
+    seed_raw = (os.environ.get("GEMINI_SEED") or "").strip()
+    if seed_raw:
+        try:
+            return genai.GenerationConfig(seed=int(seed_raw), **kw)
+        except (TypeError, ValueError):
+            # Старая версия SDK без поддержки seed — детерминизм обеспечивает temperature=0.
+            pass
+    return genai.GenerationConfig(**kw)
+
+
 def _generate_blocking(model, full_prompt: str):
     import google.generativeai as genai
 
@@ -2669,16 +2712,9 @@ def _generate_blocking(model, full_prompt: str):
         "true",
         "yes",
     )
-    cfg_kw: dict = {
-        "temperature": 0.25,
-        "max_output_tokens": max_out,
-    }
-    if use_json:
-        # Снижает обрывы посреди JSON и обрывы «лишнего» текста до/после объекта
-        cfg_kw["response_mime_type"] = "application/json"
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(**cfg_kw),
+        generation_config=_make_generation_config(genai, max_output_tokens=max_out, json_mode=use_json),
     )
 
 
@@ -2694,10 +2730,7 @@ def _generate_blocking_plain(model, full_prompt: str):
     max_out = int(os.environ.get("GEMINI_TEMPLATE_MAX_TOKENS", "8192"))
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(
-            temperature=0.2,
-            max_output_tokens=max_out,
-        ),
+        generation_config=_make_generation_config(genai, max_output_tokens=max_out, json_mode=False),
     )
 
 
@@ -2711,11 +2744,7 @@ def _generate_blocking_spellfix(model, full_prompt: str):
 
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(
-            temperature=0.1,
-            max_output_tokens=1024,
-            response_mime_type="application/json",
-        ),
+        generation_config=_make_generation_config(genai, max_output_tokens=1024, json_mode=True),
     )
 
 
@@ -2734,11 +2763,7 @@ def _generate_blocking_query_refine(model, full_prompt: str):
 
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(
-            temperature=0.15,
-            max_output_tokens=3072,
-            response_mime_type="application/json",
-        ),
+        generation_config=_make_generation_config(genai, max_output_tokens=3072, json_mode=True),
     )
 
 
@@ -2757,11 +2782,7 @@ def _generate_blocking_consult_pdf_digest(model, full_prompt: str):
 
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(
-            temperature=0.18,
-            max_output_tokens=2048,
-            response_mime_type="application/json",
-        ),
+        generation_config=_make_generation_config(genai, max_output_tokens=2048, json_mode=True),
     )
 
 
@@ -2780,11 +2801,7 @@ def _generate_blocking_consult_rag_second_pass(model, full_prompt: str):
 
     return model.generate_content(
         full_prompt,
-        generation_config=genai.GenerationConfig(
-            temperature=0.22,
-            max_output_tokens=1024,
-            response_mime_type="application/json",
-        ),
+        generation_config=_make_generation_config(genai, max_output_tokens=1024, json_mode=True),
     )
 
 
