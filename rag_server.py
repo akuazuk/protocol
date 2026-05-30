@@ -2521,14 +2521,14 @@ def get_gemini():
     if not key:
         raise HTTPException(
             status_code=503,
-            detail="Задайте переменную окружения GOOGLE_API_KEY",
+            detail="На сервере не настроен ключ API для обработки текста.",
         )
     try:
         import google.generativeai as genai
     except ImportError as e:
         raise HTTPException(
             status_code=503,
-            detail="Установите: pip install google-generativeai",
+            detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
     genai.configure(api_key=key)
     name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
@@ -2597,7 +2597,7 @@ def generate_gemini(model, full_prompt: str):
         except FuturesTimeout as e:
             raise HTTPException(
                 status_code=504,
-                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или GEMINI_MODEL.",
+                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или настройки модели на сервере.",
             ) from e
 
 
@@ -4904,7 +4904,7 @@ def verify_key() -> dict:
     if _verify_gemini_key is None:
         raise HTTPException(
             status_code=501,
-            detail="Модуль gemini_verify не найден",
+            detail="Модуль проверки ключа API не найден",
         )
     ok, msg = _verify_gemini_key()
     if not ok:
@@ -5581,9 +5581,9 @@ async def api_consult_review(
         ),
     ),
 ) -> dict:
-    """Загрузка одного или нескольких PDF заключений → отбор фрагментов протоколов → JSON-оценка (LLM).
+    """Загрузка одного или нескольких PDF заключений → отбор фрагментов протоколов → JSON-оценка.
 
-    Не медико-правовая экспертиза; ориентир для методиста при наличии ключа API Gemini.
+    Не медико-правовая экспертиза; ориентир для методиста при настроенном сервере обработки текста.
     """
     _require_rag_loaded()
     if not files:

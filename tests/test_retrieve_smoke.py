@@ -1,4 +1,4 @@
-"""Проверка retrieve() на фикстурном чанке (без вызова Gemini)."""
+"""Проверка retrieve() на фикстурном чанке (без вызова внешней модели)."""
 from __future__ import annotations
 
 import pytest

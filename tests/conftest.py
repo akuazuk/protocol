@@ -15,7 +15,7 @@ if _MINI_JSONL.is_file():
     os.environ.setdefault("RAG_CHUNKS_JSONL", str(_MINI_JSONL))
     os.environ.setdefault("RAG_CHUNKS_SOURCE", "jsonl")
 
-# Без вызова Gemini embedding в retrieve (стабильные юнит-тесты без ключа API)
+# Без семантического embedding в retrieve (стабильные юнит-тесты без ключа API)
 os.environ.setdefault("RAG_GEMINI_EMBED_RERANK", "0")
 
 import pytest

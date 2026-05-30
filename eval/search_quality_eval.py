@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Оценка качества поиска протоколов: полный retrieve() как в проде, включая опциональный
-Gemini embed-rerank (если заданы RAG_GEMINI_EMBED_RERANK=1 и GOOGLE_API_KEY).
+Семантический embed-rerank (если заданы RAG_GEMINI_EMBED_RERANK=1 и ключ API в окружении).
 
 Для каждого кейса:
   — метрики (пустой отбор, совпадение must_substrings, ожидаемые пути);
@@ -12,8 +12,7 @@ Gemini embed-rerank (если заданы RAG_GEMINI_EMBED_RERANK=1 и GOOGLE_A
 
   python3 eval/search_quality_eval.py --mini --golden eval/golden_queries.jsonl
 
-  # как в проде: семантический rerank (нужен ключ в окружении)
-  export GOOGLE_API_KEY=...
+  # как в проде: семантический rerank (нужен ключ API в .env)
   python3 eval/search_quality_eval.py --embed-on --golden eval/golden_queries.jsonl
 
   python3 eval/search_quality_eval.py --query "острый бронхит кашель" --gemini-advice --report-json report.json
@@ -172,7 +171,7 @@ def build_heuristic_plan(
             "Проверить symptom_routing.json и веса lex vs BM25 (RAG_LEX_BM25_ALPHA, RAG_EMBED_POOL)."
         )
         plan.append(
-            "Включить или отладить Gemini embed-rerank (RAG_GEMINI_EMBED_RERANK=1), если ключ есть."
+            "Включить или отладить семантический embed-rerank (RAG_GEMINI_EMBED_RERANK=1), если ключ API есть."
         )
 
     if not embed_requested and api_key_present:
@@ -242,7 +241,7 @@ def gemini_advice_for_case(
     try:
         import google.generativeai as genai
     except ImportError:
-        return None, ["Установите google-generativeai для --gemini-advice"]
+        return None, ["Установите зависимости из requirements-rag.txt для --gemini-advice"]
 
     genai.configure(api_key=key)
     name = (model_name or os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
@@ -267,7 +266,7 @@ def gemini_advice_for_case(
         )
         text = (getattr(resp, "text", None) or "").strip()
     except Exception as e:
-        return None, [f"Gemini: {e!s}"]
+        return None, [f"Модель: {e!s}"]
 
     m = re.search(r"\{[\s\S]*\}", text)
     raw = m.group(0) if m else text
@@ -485,7 +484,7 @@ def print_case_human(r: CaseReport) -> None:
         for x in r.improvement_hints:
             print(f"  · {x}")
     if r.gemini_analysis or r.gemini_plan:
-        print("Анализ Gemini:")
+        print("Анализ модели:")
         if r.gemini_analysis:
             print(f"  {r.gemini_analysis}")
         for i, x in enumerate(r.gemini_plan, 1):
@@ -494,7 +493,7 @@ def print_case_human(r: CaseReport) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="Оценка качества поиска: полный retrieve + диагностика + опционально Gemini"
+        description="Оценка качества поиска: полный retrieve + диагностика + опционально совет модели"
     )
     ap.add_argument("--mini", action="store_true", help="фикстурный мини-корпус tests/fixtures")
     ap.add_argument("--query", "-q", type=str, default="", help="один запрос")
@@ -510,7 +509,7 @@ def main() -> int:
     ap.add_argument(
         "--gemini-advice",
         action="store_true",
-        help="запросить у Gemini краткий анализ и шаги (по каждому кейсу / одному запросу)",
+        help="запросить у модели краткий анализ и шаги (по каждому кейсу / одному запросу)",
     )
     ap.add_argument("--report-json", type=Path, default=None, help="сохранить полный отчёт JSON")
     args = ap.parse_args()

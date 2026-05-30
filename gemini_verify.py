@@ -54,7 +54,7 @@ def verify_gemini_key() -> tuple[bool, str]:
     """
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not key:
-        return False, "Нет GOOGLE_API_KEY (добавьте в .env или export)."
+        return False, "Не задан ключ API на сервере (см. .env.example)."
 
     try:
         with warnings.catch_warnings():
@@ -64,9 +64,9 @@ def verify_gemini_key() -> tuple[bool, str]:
     except ImportError:
         return (
             False,
-            "Нет пакета google-generativeai в ЭТОМ интерпретаторе Python. "
-            "Установите: python3 -m pip install google-generativeai "
-            "или используйте тот же python, куда ставили зависимости (часто python3.11 на Mac).",
+            "Не установлены зависимости сервера для обработки текста. "
+            "Выполните: pip install -r requirements-rag.txt "
+            "(тот же интерпретатор Python, что запускает uvicorn).",
         )
 
     try:
@@ -101,7 +101,7 @@ def verify_gemini_key() -> tuple[bool, str]:
         if "429" in err or "quota" in err.lower() or "RESOURCE_EXHAUSTED" in err:
             return (
                 False,
-                "Лимит запросов к API (429 / quota). Подождите минуту или проверьте квоту и биллинг в Google AI Studio.",
+                "Лимит запросов к API (429 / quota). Подождите минуту или проверьте квоту и биллинг у поставщика API.",
             )
         return False, f"Ошибка API: {e!s}"
 
@@ -112,7 +112,7 @@ def verify_gemini_key() -> tuple[bool, str]:
             False,
             "Пустой ответ модели. "
             + detail
-            + ". Проверьте GEMINI_MODEL (рекомендуется gemini-2.5-flash; gemini-3-flash-preview — по желанию).",
+            + ". Проверьте имя модели в конфигурации сервера (.env).",
         )
 
     return True, text

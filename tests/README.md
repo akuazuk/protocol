@@ -24,7 +24,7 @@ python3 -m pytest tests/ -v
 ./eval/run_all.sh
 ```
 
-Переменные для изолированного корпуса задаёт `tests/conftest.py` (`tests/fixtures/chunks.mini.jsonl`, без Gemini embed rerank). Дополнительные переменные окружения обычно не нужны.
+Переменные для изолированного корпуса задаёт `tests/conftest.py` (`tests/fixtures/chunks.mini.jsonl`, без семантического embed-rerank). Дополнительные переменные окружения обычно не нужны.
 
 ## Содержимое
 
@@ -48,4 +48,4 @@ python3 eval/query_tester.py --mini --golden eval/golden_queries.jsonl
 
 Без `--mini` нужен полный корпус в `RAG_CHUNKS_*` (как у production).
 
-Для **оценки качества с диагностикой и планом** (полный `retrieve`, опционально embed-rerank и совет Gemini) см. `eval/README.md` и скрипт `eval/search_quality_eval.py`.
+Для **оценки качества с диагностикой и планом** (полный `retrieve`, опционально embed-rerank и совет языковой модели) см. `eval/README.md` и скрипт `eval/search_quality_eval.py`.

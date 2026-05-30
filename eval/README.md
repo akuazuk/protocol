@@ -22,14 +22,13 @@ python3 eval/query_tester.py --mini --golden eval/golden_queries.jsonl
 
 ## Точная оценка поиска: `search_quality_eval.py`
 
-Полный `retrieve()` как в приложении, включая **Gemini embed-rerank**, если заданы `RAG_GEMINI_EMBED_RERANK=1` и `GOOGLE_API_KEY`. Для каждого кейса выводит диагностику, **эвристический план** исправлений и при флаге **`--gemini-advice`** — краткий анализ и шаги от модели.
+Полный `retrieve()` как в приложении, включая **семантический embed-rerank**, если заданы `RAG_GEMINI_EMBED_RERANK=1` и ключ API в окружении. Для каждого кейса выводит диагностику, **эвристический план** исправлений и при флаге **`--gemini-advice`** — краткий анализ и шаги от модели.
 
 ```bash
 # мини-корпус, без ключа (rerank отключится сам, в отчёте будет подсказка включить ключ)
 python3 eval/search_quality_eval.py --embed-off --mini --golden eval/golden_queries.jsonl
 
-# как ближе к проду: семантический rerank + при необходимости совет модели
-export GOOGLE_API_KEY=...
+# как ближе к проду: семантический rerank + при необходимости совет модели (ключ API в .env)
 python3 eval/search_quality_eval.py --embed-on --golden eval/golden_queries.jsonl --gemini-advice --report-json eval/last_report.json
 ```
 
