@@ -16,6 +16,7 @@ import math
 import os
 import re
 import threading
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
@@ -49,9 +50,9 @@ load_project_env(ROOT)
 from typing import Annotated, Iterable
 
 try:
-    from fastapi import FastAPI, HTTPException, File, Form, UploadFile
+    from fastapi import FastAPI, HTTPException, File, Form, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse
+    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
     from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
@@ -84,6 +85,43 @@ _retrieval_embed_meta: dict | None = None
 _bm25_index = None
 _chunks_load_done = threading.Event()
 _chunks_load_error: str | None = None
+
+
+def env_int(name: str, default: int) -> int:
+    """int из окружения с безопасным fallback (кривое значение не роняет запрос в 500)."""
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(str(raw).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return float(str(raw).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None or not str(raw).strip():
+        return default
+    return str(raw).strip().lower() in ("1", "true", "yes", "on", "y")
+
+
+def public_error_text(err: str | None) -> str | None:
+    """Не раскрывать внутренние пути/детали в публичных ответах, если не включён DEBUG_ERRORS."""
+    if not err:
+        return err
+    if env_bool("DEBUG_ERRORS", False):
+        return err
+    return "Внутренняя ошибка загрузки данных. Обратитесь к администратору."
 
 PROTOCOL_META_PATH = ROOT / "protocol_meta.json"
 STRUCTURED_INDEX_PATH = ROOT / "structured_index.json"
@@ -4560,12 +4598,156 @@ threading.Thread(
     name="rag-load-chunks",
 ).start()
 app = FastAPI(title="Protocol RAG", version="1")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+
+# --- Безопасность: раздача статики только безопасных файлов ---
+# Фронтенду нужны: index.html, consult_review.html (явные маршруты), docs/*.html, protocols.json,
+# css/js/шрифты/картинки. Всё остальное (код, конфиги, ПДн-PDF, данные) не должно отдаваться по '/'.
+_STATIC_BLOCKED_DIRS = {
+    "data", "clients_consult", "tests", "eval", "scripts", "corpus_pipeline",
+    "output", "corpus_chunks_parts", "minzdrav_protocols", "e2e", "__pycache__",
+    "terminals", "node_modules",
+}
+_STATIC_BLOCKED_EXTS = {
+    ".py", ".pyc", ".pyo", ".env", ".sh", ".toml", ".ini", ".cfg", ".lock",
+    ".csv", ".jsonl", ".txt", ".md", ".mdc", ".yaml", ".yml", ".log",
+}
+_STATIC_BLOCKED_FILES = {
+    "protocol_meta.json", "symptom_routing.json", "structured_index.json",
+    "chunks.json", "corpus.json", "semantic_embeddings.json",
+}
+
+
+def _is_blocked_static_path(path: str) -> bool:
+    norm = (path or "").replace("\\", "/").strip("/")
+    if not norm:
+        return False
+    segments = [s for s in norm.split("/") if s]
+    for seg in segments:
+        low = seg.lower()
+        if low in _STATIC_BLOCKED_DIRS or low.startswith("."):
+            return True
+    base = segments[-1].lower()
+    if base in _STATIC_BLOCKED_FILES:
+        return True
+    ext = ("." + base.rsplit(".", 1)[1]) if "." in base else ""
+    if ext in _STATIC_BLOCKED_EXTS:
+        return True
+    return False
+
+
+class SafeStaticFiles(StaticFiles):
+    """StaticFiles, не отдающий исходники, конфиги, данные и ПДн-PDF из корня репозитория."""
+
+    async def get_response(self, path, scope):  # type: ignore[override]
+        if _is_blocked_static_path(path):
+            return PlainTextResponse("Not found", status_code=404)
+        return await super().get_response(path, scope)
+
+
+# --- Безопасность: CORS из окружения (по умолчанию только same-origin) ---
+def _parse_cors_origins() -> list[str]:
+    raw = (os.environ.get("ALLOWED_ORIGINS") or "").strip()
+    if not raw:
+        return []
+    if raw == "*":
+        return ["*"]
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
+
+_CORS_ORIGINS = _parse_cors_origins()
+if _CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_CORS_ORIGINS,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        allow_credentials=False,
+    )
+
+
+# --- Безопасность: rate-limiting (in-memory, по IP) на дорогие маршруты ---
+_RATE_LIMIT_ENABLED = env_bool("RATE_LIMIT_ENABLED", True)
+_RATE_WINDOW_SEC = 60.0
+_RATE_LIMITS: dict[str, int] = {
+    "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 20),
+    "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 6),
+    "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 15),
+    "/api/protocol-detail": env_int("RATE_LIMIT_DETAIL_PER_MIN", 30),
+    "/api/consultation-template": env_int("RATE_LIMIT_TEMPLATE_PER_MIN", 20),
+    "/api/icd-suggest": env_int("RATE_LIMIT_ICD_PER_MIN", 40),
+    "/api/verify-key": env_int("RATE_LIMIT_VERIFY_PER_MIN", 3),
+}
+_RATE_LIMIT_DEFAULT = env_int("RATE_LIMIT_DEFAULT_PER_MIN", 60)
+_rate_state: dict[str, list[float]] = {}
+_rate_lock = threading.Lock()
+
+
+def _client_ip(request: "Request") -> str:
+    xff = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    if xff:
+        return xff
+    return request.client.host if request.client else "unknown"
+
+
+def _rate_limit_allows(key: str, limit: int) -> bool:
+    if limit <= 0:
+        return True
+    now = time.time()
+    cutoff = now - _RATE_WINDOW_SEC
+    with _rate_lock:
+        bucket = _rate_state.setdefault(key, [])
+        drop = 0
+        for ts in bucket:
+            if ts < cutoff:
+                drop += 1
+            else:
+                break
+        if drop:
+            del bucket[:drop]
+        if len(bucket) >= limit:
+            return False
+        bucket.append(now)
+        return True
+
+
+_SECURITY_HEADERS = {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+}
+_CSP_VALUE = (os.environ.get("CONTENT_SECURITY_POLICY") or "").strip()
+if not _CSP_VALUE and env_bool("ENABLE_DEFAULT_CSP", False):
+    _CSP_VALUE = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com data:; "
+        "img-src 'self' data: https:; "
+        "connect-src 'self' https:; "
+        "frame-ancestors 'self'"
+    )
+
+
+@app.middleware("http")
+async def _security_and_rate_limit(request: "Request", call_next):
+    if _RATE_LIMIT_ENABLED:
+        path = request.url.path
+        explicit = path in _RATE_LIMITS
+        if explicit or (request.method == "POST" and path.startswith("/api/")):
+            limit = _RATE_LIMITS.get(path, _RATE_LIMIT_DEFAULT)
+            if not _rate_limit_allows(f"{_client_ip(request)}|{path}", limit):
+                return JSONResponse(
+                    {"detail": "Слишком много запросов. Подождите минуту и повторите."},
+                    status_code=429,
+                )
+    response = await call_next(request)
+    for hk, hv in _SECURITY_HEADERS.items():
+        response.headers.setdefault(hk, hv)
+    if _CSP_VALUE:
+        response.headers.setdefault("Content-Security-Policy", _CSP_VALUE)
+    return response
 
 
 class AssistIn(BaseModel):
@@ -4774,7 +4956,7 @@ def api_corpus_stats() -> dict:
     out = _corpus_stats_from_index_csv()
     out["specialties_catalog"] = len(SPECIALTY_LABELS_RU)
     out["rag_ready"] = _chunks_load_done.is_set()
-    out["rag_load_error"] = _chunks_load_error
+    out["rag_load_error"] = public_error_text(_chunks_load_error)
     if _chunks_load_done.is_set():
         out["chunks_loaded"] = len(_chunks)
         out["protocols_loaded"] = len(_protocols_by_path)
@@ -4865,7 +5047,7 @@ def health() -> dict:
     return {
         "ok": True,
         "rag_ready": _chunks_load_done.is_set(),
-        "rag_load_error": _chunks_load_error,
+        "rag_load_error": public_error_text(_chunks_load_error),
         "chunks": len(_chunks),
         "protocols": len(_protocols_by_path),
         "protocol_meta": len(_protocol_meta),
@@ -4898,22 +5080,49 @@ except ImportError:
     _verify_gemini_key = None
 
 
+_verify_key_cache: dict = {"ts": 0.0, "ok": None, "msg": "", "model": ""}
+_verify_key_lock = threading.Lock()
+
+
+def _verify_key_admin_guard(request: "Request") -> None:
+    """Если задан API_ADMIN_TOKEN — требовать заголовок X-Admin-Token (по умолчанию открыт)."""
+    expected = (os.environ.get("API_ADMIN_TOKEN") or "").strip()
+    if not expected:
+        return
+    got = (request.headers.get("x-admin-token") or "").strip()
+    if got != expected:
+        raise HTTPException(status_code=401, detail="Требуется корректный X-Admin-Token.")
+
+
 @app.get("/api/verify-key")
-def verify_key() -> dict:
-    """Один тестовый запрос к модели — проверка ключа из .env."""
+def verify_key(request: "Request") -> dict:
+    """Один тестовый запрос к модели — проверка ключа из .env (кэш + опц. admin-токен)."""
+    _verify_key_admin_guard(request)
     if _verify_gemini_key is None:
         raise HTTPException(
             status_code=501,
             detail="Модуль проверки ключа API не найден",
         )
+    ttl = env_int("VERIFY_KEY_CACHE_TTL", 300)
+    now = time.time()
+    with _verify_key_lock:
+        cached_ok = _verify_key_cache["ok"]
+        if cached_ok is not None and (now - _verify_key_cache["ts"]) < ttl:
+            if not cached_ok:
+                raise HTTPException(status_code=502, detail=_verify_key_cache["msg"])
+            return {
+                "ok": True,
+                "reply_preview": _verify_key_cache["msg"],
+                "model": _verify_key_cache["model"],
+                "cached": True,
+            }
     ok, msg = _verify_gemini_key()
+    model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    with _verify_key_lock:
+        _verify_key_cache.update({"ts": now, "ok": ok, "msg": msg, "model": model})
     if not ok:
         raise HTTPException(status_code=502, detail=msg)
-    return {
-        "ok": True,
-        "reply_preview": msg,
-        "model": os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
-    }
+    return {"ok": True, "reply_preview": msg, "model": model, "cached": False}
 
 
 def _infer_icd_pipeline_from_full_query(
@@ -5941,7 +6150,7 @@ if (ROOT / "index.html").is_file():
 
     app.mount(
         "/",
-        StaticFiles(directory=str(ROOT), html=True),
+        SafeStaticFiles(directory=str(ROOT), html=True),
         name="site",
     )
 else:
