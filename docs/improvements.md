@@ -319,7 +319,17 @@
 - 1.8 security-заголовки (HSTS, X-Frame-Options, nosniff, Referrer-Policy), опциональный CSP, чистка текста внутренних ошибок в публичных ответах (`public_error_text`, `DEBUG_ERRORS`) - сделано.
 - Результат: закрыт публичный доступ к файлам репозитория и ПДн-PDF, ограничена нагрузка на дорогие ручки, безопасные заголовки на всех ответах.
 
-### Фаза 2 - Устойчивость в проде
+### Фаза 2 - Устойчивость - ВЫПОЛНЕНО
+- 4.1 `/api/consult-review` переведён на синхронный обработчик (FastAPI выполнит его в threadpool, не блокируя event loop), файлы читаются синхронно (`uf.file.read()`).
+- 3.5 устранена гонка `_retrieval_embed_meta` - переведено на `threading.local()` (`_set/_get_retrieval_embed_meta`).
+- 4.2 retry при 429/quota с backoff (`_run_model_with_retry`, `GEMINI_QUOTA_RETRY*`), применён к `generate_gemini` и `generate_gemini_plain`.
+- 4.5 единые safety-настройки модели в `get_gemini()`.
+- 4.3 безопасное чтение env (`env_int`/`env_float`) в горячих путях retrieve и consult-review.
+- 1.7 проверка magic bytes PDF и лимит страниц (`CONSULT_REVIEW_MAX_PAGES`).
+- 8.2 `AbortController` + таймаут на consult-review (фронтенд) с понятным сообщением.
+- 8.1 независимый старт UI - критичная инициализация вынесена из промиса `protocols.json` (главная вкладка и поиск работают, даже если файл не загрузился).
+
+### Фаза 2 - Устойчивость (исходный план) в проде
 - 4.1 убрать блокировку event loop в consult-review; 3.5 устранить гонку `_retrieval_embed_meta`; 4.2 retry на 429; 4.3 безопасный `env_int`; 4.5 единые safety-настройки; 8.2 AbortController в consult-review; 8.1 независимый старт UI.
 - Результат: стабильное поведение при нагрузке и сбоях модели.
 

@@ -9916,7 +9916,17 @@
       }
       fd.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
 
-      fetch(base + "/api/consult-review", { method: "POST", body: fd })
+      var consultTimeoutMs = 300000;
+      var consultCtrl = new AbortController();
+      var consultAbortTid = window.setTimeout(function () {
+        consultCtrl.abort();
+      }, consultTimeoutMs);
+
+      fetch(base + "/api/consult-review", { method: "POST", body: fd, signal: consultCtrl.signal })
+        .then(function (r) {
+          window.clearTimeout(consultAbortTid);
+          return r;
+        })
         .then(function (r) {
           return r.text().then(function (text) {
             var j = null;
@@ -9980,6 +9990,7 @@
           if (res) res.hidden = false;
         })
         .catch(function (e) {
+          window.clearTimeout(consultAbortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
@@ -9987,10 +9998,14 @@
           var analyzeBan3 = document.getElementById("consult-analyze-banner");
           if (analyzeBan3) analyzeBan3.hidden = true;
           if (st) st.textContent = "";
-          errEl.textContent = "Ошибка: " + (e.message || e);
+          var msg = e && e.name === "AbortError"
+            ? "Превышено время ожидания разбора (" + Math.round(consultTimeoutMs / 1000) + " с). Попробуйте меньший PDF или повторите позже."
+            : "Ошибка: " + (e.message || e);
+          errEl.textContent = msg;
           errEl.hidden = false;
         })
         .finally(function () {
+          window.clearTimeout(consultAbortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
@@ -10630,6 +10645,45 @@
     }
   }
 
+  // Критичная инициализация UI не должна зависеть от protocols.json:
+  // главная вкладка (Проверка КЗ) и форма поиска работают через API, не через этот файл.
+  loadCtxFromStorage();
+  bindCtxPersist();
+  initSpecialtiesFromServer();
+  bindSpecialtyPanel();
+  bindConsultSpecialtyToolbar();
+  bindVoiceInput();
+  bindPageNav();
+
+  var btnNewSearch = document.getElementById("btn-new-search-full");
+  if (btnNewSearch) {
+    btnNewSearch.addEventListener("click", function () {
+      resetAllForNewProtocolSearch();
+    });
+  }
+
+  function doAssist() {
+    runAssist().catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    doAssist();
+  });
+  var btnIcdPf = document.getElementById("btn-icd-preflight");
+  if (btnIcdPf) {
+    btnIcdPf.addEventListener("click", function () {
+      runIcdPreflight();
+    });
+  }
+  var params = new URLSearchParams(window.location.search).get("q");
+  if (params) {
+    input.value = params;
+  }
+
+  // protocols.json нужен только для счётчика протоколов в бейдже — необязателен для работы.
   fetch("protocols.json")
     .then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
@@ -10652,52 +10706,11 @@
         var bn = badge.querySelector(".badge-num");
         if (bn) bn.textContent = String(uniq);
       }
-
-      loadCtxFromStorage();
-      bindCtxPersist();
-      initRagBaseInput();
-      initSpecialtiesFromServer();
-      bindSpecialtyPanel();
-      bindConsultSpecialtyToolbar();
-      bindVoiceInput();
-      bindPageNav();
-
-      var btnNewSearch = document.getElementById("btn-new-search-full");
-      if (btnNewSearch) {
-        btnNewSearch.addEventListener("click", function () {
-          resetAllForNewProtocolSearch();
-        });
-      }
-
-      function doAssist() {
-        runAssist().catch(function (err) {
-          console.error(err);
-        });
-      }
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        doAssist();
-      });
-      var btnIcdPf = document.getElementById("btn-icd-preflight");
-      if (btnIcdPf) {
-        btnIcdPf.addEventListener("click", function () {
-          runIcdPreflight();
-        });
-      }
-      var params = new URLSearchParams(window.location.search).get("q");
-      if (params) {
-        input.value = params;
-      }
     })
     .catch(function (err) {
-      var hint = document.getElementById("hint");
-      if (hint) {
-        hint.textContent = isLocalHostPage()
-          ? "Не удалось загрузить protocols.json. Запустите локальный сервер (не file://). " +
-              String(err)
-          : "Не удалось загрузить protocols.json с этого сайта. Проверьте деплой и логи Render. " +
-              String(err);
+      // Не блокируем интерфейс: показываем мягкую подсказку только в области счётчика.
+      if (window.console && console.warn) {
+        console.warn("protocols.json не загружен (счётчик протоколов недоступен):", String(err));
       }
     });
   initConsultationTemplateDelegation();

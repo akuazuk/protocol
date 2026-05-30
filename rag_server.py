@@ -81,8 +81,17 @@ _protocol_meta: dict[str, dict] = {}
 _structured_by_path: dict[str, dict] = {}
 _routing: dict = {}
 _model = None
-_retrieval_embed_meta: dict | None = None
+# Метаданные embed-rerank - per-thread, чтобы параллельные запросы не перетирали значения друг друга.
+_retrieval_meta_tls = threading.local()
 _bm25_index = None
+
+
+def _set_retrieval_embed_meta(value: dict | None) -> None:
+    _retrieval_meta_tls.value = value
+
+
+def _get_retrieval_embed_meta() -> dict | None:
+    return getattr(_retrieval_meta_tls, "value", None)
 _chunks_load_done = threading.Event()
 _chunks_load_error: str | None = None
 
@@ -2463,8 +2472,7 @@ def retrieve(
         scored.append((final, lex, bm25_s, mult, ch))
     scored.sort(key=lambda x: -x[0])
 
-    global _retrieval_embed_meta
-    _retrieval_embed_meta = {"used": False}
+    embed_meta: dict = {"used": False}
 
     embed_on = os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower() in (
         "1",
@@ -2472,8 +2480,8 @@ def retrieve(
         "yes",
     )
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    pool_n = int(os.environ.get("RAG_EMBED_POOL", "44"))
-    alpha = float(os.environ.get("RAG_HYBRID_ALPHA", "0.46"))
+    pool_n = env_int("RAG_EMBED_POOL", 44)
+    alpha = env_float("RAG_HYBRID_ALPHA", 0.46)
     emb_model = os.environ.get(
         "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
     ).strip()
@@ -2490,7 +2498,7 @@ def retrieve(
         pool_rows = _merge_embed_pool_rows(scored, pool_n, pool_merge)
         try:
             work_rows = _gemini_embed_rerank_pool(q_embed, pool_rows, alpha, emb_model)
-            _retrieval_embed_meta = {
+            embed_meta = {
                 "used": True,
                 "model": emb_model,
                 "alpha": alpha,
@@ -2498,11 +2506,12 @@ def retrieve(
             }
         except Exception as e:
             work_rows = scored
-            _retrieval_embed_meta = {"used": False, "error": str(e)[:240]}
+            embed_meta = {"used": False, "error": str(e)[:240]}
 
+    _set_retrieval_embed_meta(embed_meta)
     per_path: dict[str, int] = {}
     out: list[dict] = []
-    rerank_used = bool(_retrieval_embed_meta and _retrieval_embed_meta.get("used"))
+    rerank_used = bool(embed_meta.get("used"))
     for row in work_rows:
         if len(row) >= 5:
             final, lex, _bm25_s, mult, ch = (
@@ -2563,6 +2572,7 @@ def get_gemini():
         )
     try:
         import google.generativeai as genai
+        from google.generativeai.types import HarmBlockThreshold, HarmCategory
     except ImportError as e:
         raise HTTPException(
             status_code=503,
@@ -2570,8 +2580,53 @@ def get_gemini():
         ) from e
     genai.configure(api_key=key)
     name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-    _model = genai.GenerativeModel(name)
+    # Единые safety-настройки (как в gemini_verify) — иначе медицинский текст чаще даёт пустой ответ.
+    safety = [
+        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+    ]
+    _model = genai.GenerativeModel(name, safety_settings=safety)
     return _model
+
+
+def _is_quota_error(e: Exception) -> bool:
+    s = str(e).lower()
+    return (
+        "429" in s
+        or "quota" in s
+        or "resource_exhausted" in s
+        or "rate limit" in s
+        or "ratelimit" in s
+    )
+
+
+def _run_model_with_retry(fn, model, full_prompt: str, timeout: float):
+    """Вызов модели в отдельном потоке с таймаутом и retry при 429/quota (экспоненциальный backoff)."""
+    attempts = max(0, env_int("GEMINI_QUOTA_RETRY", 2))
+    base_delay = env_float("GEMINI_QUOTA_RETRY_DELAY", 2.0)
+    last_quota_err: Exception | None = None
+    for i in range(attempts + 1):
+        with ThreadPoolExecutor(max_workers=1) as ex:
+            fut = ex.submit(fn, model, full_prompt)
+            try:
+                return fut.result(timeout=timeout)
+            except FuturesTimeout as e:
+                raise HTTPException(
+                    status_code=504,
+                    detail=f"Таймаут вызова модели ({int(timeout)} с). Проверьте сеть или настройки модели на сервере.",
+                ) from e
+            except Exception as e:
+                if _is_quota_error(e) and i < attempts:
+                    last_quota_err = e
+                    time.sleep(base_delay * (i + 1))
+                    continue
+                raise
+    raise HTTPException(
+        status_code=503,
+        detail="Лимит запросов к модели (quota). Повторите попытку через минуту.",
+    ) from last_quota_err
 
 
 def _extract_gemini_text(resp) -> str:
@@ -2627,16 +2682,8 @@ def _generate_blocking(model, full_prompt: str):
 
 
 def generate_gemini(model, full_prompt: str):
-    """Один поток + таймаут — иначе вызов к API может «висеть» без ответа."""
-    with ThreadPoolExecutor(max_workers=1) as ex:
-        fut = ex.submit(_generate_blocking, model, full_prompt)
-        try:
-            return fut.result(timeout=GEMINI_CALL_TIMEOUT)
-        except FuturesTimeout as e:
-            raise HTTPException(
-                status_code=504,
-                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с). Проверьте сеть или настройки модели на сервере.",
-            ) from e
+    """Один поток + таймаут + retry при 429/quota — иначе вызов к API может «висеть» или падать по лимиту."""
+    return _run_model_with_retry(_generate_blocking, model, full_prompt, GEMINI_CALL_TIMEOUT)
 
 
 def _generate_blocking_plain(model, full_prompt: str):
@@ -2654,15 +2701,7 @@ def _generate_blocking_plain(model, full_prompt: str):
 
 
 def generate_gemini_plain(model, full_prompt: str):
-    with ThreadPoolExecutor(max_workers=1) as ex:
-        fut = ex.submit(_generate_blocking_plain, model, full_prompt)
-        try:
-            return fut.result(timeout=GEMINI_CALL_TIMEOUT)
-        except FuturesTimeout as e:
-            raise HTTPException(
-                status_code=504,
-                detail=f"Таймаут вызова модели ({int(GEMINI_CALL_TIMEOUT)} с).",
-            ) from e
+    return _run_model_with_retry(_generate_blocking_plain, model, full_prompt, GEMINI_CALL_TIMEOUT)
 
 
 def _generate_blocking_spellfix(model, full_prompt: str):
@@ -3532,7 +3571,14 @@ def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
                 detail="PDF защищён паролем — загрузите незашифрованную копию",
             )
     parts: list[str] = []
-    for i, page in enumerate(reader.pages or []):
+    max_pages = env_int("CONSULT_REVIEW_MAX_PAGES", 200)
+    pages = list(reader.pages or [])
+    if max_pages > 0 and len(pages) > max_pages:
+        warnings.append(
+            f"Обработаны только первые {max_pages} стр. из {len(pages)} (лимит CONSULT_REVIEW_MAX_PAGES)."
+        )
+        pages = pages[:max_pages]
+    for i, page in enumerate(pages):
         try:
             t = page.extract_text() or ""
         except Exception as e:
@@ -5505,9 +5551,7 @@ def api_assist(body: AssistIn) -> dict:
         "clinical_detail_offer": clinical_detail_offer,
         "query_spelling_correction": query_spelling_correction,
         "query_clinical_refinement": query_clinical_refinement,
-        "retrieval_embedding": dict(_retrieval_embed_meta)
-        if _retrieval_embed_meta
-        else {"used": False},
+        "retrieval_embedding": dict(_get_retrieval_embed_meta() or {"used": False}),
         "red_flags": red_flags,
         "protocol_icd_mentions": protocol_icd_mentions,
         "routing_version": int(_routing.get("version", 1)) if _routing else 1,
@@ -5777,7 +5821,7 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 
 @app.post("/api/consult-review")
-async def api_consult_review(
+def api_consult_review(
     files: Annotated[
         list[UploadFile],
         File(description="1–3 PDF консультативных заключения (можно с разных приёмов)"),
@@ -5800,14 +5844,14 @@ async def api_consult_review(
             status_code=400,
             detail="Не переданы файлы: загрузите хотя бы один PDF.",
         )
-    max_n = max(1, min(25, int(os.environ.get("CONSULT_REVIEW_MAX_FILES", "3"))))
+    max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 3)))
     if len(files) > max_n:
         raise HTTPException(
             status_code=400,
             detail=f"Можно не более {max_n} PDF за один запрос.",
         )
 
-    max_mb = float(os.environ.get("CONSULT_REVIEW_MAX_MB", "15"))
+    max_mb = env_float("CONSULT_REVIEW_MAX_MB", 15.0)
     lim_b = int(max_mb * 1024 * 1024)
 
     blocks: list[str] = []
@@ -5822,11 +5866,16 @@ async def api_consult_review(
                 status_code=400,
                 detail=f"Файл «{raw_fn}»: ожидается расширение .pdf",
             )
-        data = await uf.read()
+        data = uf.file.read()
         if len(data) > lim_b:
             raise HTTPException(
                 status_code=400,
                 detail=f"Файл «{raw_fn}» превышает {max_mb} МБ",
+            )
+        if not data[:5].startswith(b"%PDF-"):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл «{raw_fn}» не похож на PDF (неверная сигнатура).",
             )
         try:
             txt, warns = extract_pdf_text_from_bytes(data)
