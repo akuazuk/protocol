@@ -388,6 +388,45 @@
 - 7.1 единый контур корпуса; 7.3 подключение `icd_mkb`; 7.4 resume + манифест + валидация; 7.5 таблицы/OCR/нормализация; 7.6 манифест версии корпуса.
 - Результат: воспроизводимый корпус и качество извлечения.
 
+### Точность анализа КЗ: разметка корпуса + использование структуры в рантайме (ВЫПОЛНЕНО)
+Главная проблема была в том, что богатая разметка корпуса (`section_path`, `page_*`, `point_numbers`, `icd10_codes`)
+**не доходила** до рантайма и до промпта модели. Сделано двунаправленно:
+
+Разметка корпуса (`corpus_pipeline/`):
+- `section_detect.py`: распознавание номера раздела (`section_number`), читаемого `section_title` и
+  **иерархического** `section_path` по числовой вложенности (`2` -> `2.1`).
+- `tables_extract.py`: реальный `merge_multipage_tables` (склейка таблиц с тем же заголовком через границу
+  страниц, расширение `page_from..page_to`) вместо заглушки; `chunk_build.py` пишет `table_title` и диапазон страниц.
+- `entities_extract.py`: валидация `icd10_codes` по справочнику ВОЗ (`data/icd_reference`, корни 3 символа),
+  отключаемо `CORPUS_ICD_VALIDATE=0`.
+- `chunk_build.py`: чанки несут `section_title`/`section_number`; `embedding_ready_text` строится по `section_title`.
+
+Рантайм (`rag_server.py`), всё за обратимыми флагами:
+- `_load_chunks_from_jsonl`: сохраняет `section_path`/`section_title`/`point_numbers`/`icd10_codes`/`page_*`
+  (`RAG_KEEP_STRUCT=1` по умолчанию; `0` — прежнее поведение).
+- `retrieve()`: в результат добавлены `section_title`/`page_from`/`page_to`/`point_numbers` (скоринг не изменён).
+- `_build_review_chunks_context` + `SYSTEM_CONSULT_REVIEW_JSON`: в выдержки протоколов добавляются
+  `section=`/`pages=`/`пункты=`, модель просят перенести их в `protocol_section`/`protocol_page`
+  (`CONSULT_REVIEW_RICH_CONTEXT=1` по умолчанию; `0` — старый формат для сравнения/отката).
+- UI: `consult_protocol_fragments` несут `section`/`pages`; `index.html` показывает «Раздел: …, стр. N».
+
+Скачивание (`download_minzdrav_protocols.py`): манифест `minzdrav_protocols/_manifest.jsonl`
+(`url`, `sha256`, `bytes`, `downloaded_utc`, `http_status`, `action`), флаг `--refresh` (перекачать и сравнить sha256),
+журнал ошибок `_download_errors.json`.
+
+Версия: `BUILD_VERSION` бампнута; `/api/version` теперь отдаёт `corpus_chunks`, `corpus_structured_chunks`,
+`keep_struct`, `consult_rich_context` — по ним видно, что корпус структурирован и какой код/настройки на сервере.
+
+Тесты: `tests/test_corpus_structure.py`, `tests/test_runtime_struct.py`, `tests/test_download_manifest.py`.
+
+Пересборка корпуса (запускать на машине с PDF, сетью и `pymupdf`/`pdfplumber`):
+```
+python3 download_minzdrav_protocols.py --refresh
+python3 build_index.py && python3 build_protocol_meta.py
+python3 -m corpus_pipeline.run_pipeline
+python3 split_chunks_jsonl.py
+```
+
 ### Фаза 6 - Производительность и доступность
 - 3.1 inverted index; 3.3 офлайн-эмбеддинги; 3.4 кэш `/health`; 8.4 a11y (tabs, focus-trap); 8.7 фронтенд-перф.
 - Результат: быстрее ответы, доступный интерфейс.

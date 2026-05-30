@@ -61,6 +61,8 @@ def build_chunks_for_section(
     sec_id = section.get("section_id", "s0")
     sec_path = section.get("section_path") or []
     label = section.get("label") or ""
+    section_title = section.get("section_title") or label
+    section_number = section.get("section_number") or ""
 
     subpieces = split_subpoints(stext)
     if len(subpieces) == 1 and len(stext) > 3500:
@@ -112,6 +114,8 @@ def build_chunks_for_section(
                 "doc_id": doc_id,
                 "section_id": sec_id,
                 "section_path": sec_path,
+                "section_title": section_title,
+                "section_number": section_number,
                 "chunk_type": ctype,
                 "text": piece,
                 "page_from": pf,
@@ -126,7 +130,7 @@ def build_chunks_for_section(
                 "keywords": kws,
                 "durations": durs,
                 "embedding_ready_text": build_embedding_ready_text(
-                    label, piece, icd, pops
+                    section_title, piece, icd, pops
                 ),
             }
         )
@@ -180,18 +184,22 @@ def build_table_chunks_for_document(
     out: list[dict[str, Any]] = []
     for tb in tables:
         page = int(tb.get("page") or tb.get("page_from") or 1)
+        page_to_tb = int(tb.get("page_to") or page)
         idx_on_page = int(tb.get("table_index_on_page", 0))
         header = list(tb.get("columns") or [])
         rows = list(tb.get("rows") or [])
         raw_fallback = (tb.get("raw_markdown") or "").strip()
 
+        if page_to_tb > page:
+            page_label = f"стр. {page}-{page_to_tb}"
+        else:
+            page_label = f"стр. {page}"
+
         parts_md: list[tuple[str, str]] = []
         if not rows:
             if len(raw_fallback) < 40:
                 continue
-            title = (
-                f"Таблица (извлечена из PDF, стр. {page}, блок {idx_on_page + 1})"
-            )
+            title = f"Таблица (извлечена из PDF, {page_label}, блок {idx_on_page + 1})"
             parts_md.append((title, raw_fallback))
         else:
             if not header:
@@ -205,9 +213,7 @@ def build_table_chunks_for_document(
                 body_md = table_to_markdown(header, batch)
                 if len(body_md.strip()) < 25:
                     continue
-                title = (
-                    f"Таблица (извлечена из PDF, стр. {page}, блок {idx_on_page + 1})"
-                )
+                title = f"Таблица (извлечена из PDF, {page_label}, блок {idx_on_page + 1})"
                 if n_parts > 1:
                     title += f", часть {part_i + 1} из {n_parts}"
                 parts_md.append((title, body_md))
@@ -240,10 +246,13 @@ def build_table_chunks_for_document(
                     "doc_id": full_doc_id,
                     "section_id": sec_id,
                     "section_path": ["Таблицы"],
+                    "section_title": "Таблицы",
+                    "section_number": "",
                     "chunk_type": "table_block",
+                    "table_title": title,
                     "text": piece,
                     "page_from": page,
-                    "page_to": page,
+                    "page_to": page_to_tb,
                     "point_numbers": [],
                     "icd10_codes": icd,
                     "population": pops,

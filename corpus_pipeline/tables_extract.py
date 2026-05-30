@@ -87,12 +87,66 @@ def extract_tables_from_pdf(pdf_path: Path) -> list[dict[str, Any]]:
     return out
 
 
+def _columns_signature(columns: list[str]) -> tuple[str, ...]:
+    """Нормализованная подпись заголовка для сравнения таблиц между страницами."""
+    return tuple((c or "").strip().lower() for c in columns)
+
+
+def _is_synthetic_header(columns: list[str]) -> bool:
+    return all((c or "").strip().lower().startswith("столбец") for c in columns) if columns else True
+
+
 def merge_multipage_tables(tables: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Заглушка объединения; полная эвристика — в следующих версиях."""
-    for t in tables:
-        t.setdefault("page_from", t.get("page"))
-        t.setdefault("page_to", t.get("page"))
-    return tables
+    """Склеивает таблицы, продолжающиеся через границу страниц.
+
+    Эвристика: таблица на следующей странице (или той же при последовательных блоках)
+    объединяется с предыдущей, если совпадает заголовок столбцов либо у продолжения
+    синтетический заголовок и совпадает число столбцов. Объединённая таблица сохраняет
+    исходный заголовок и расширяет диапазон page_from..page_to.
+    """
+    if not tables:
+        return tables
+
+    ordered = sorted(
+        tables,
+        key=lambda t: (int(t.get("page") or 1), int(t.get("table_index_on_page") or 0)),
+    )
+
+    merged: list[dict[str, Any]] = []
+    for t in ordered:
+        page = int(t.get("page") or 1)
+        cols = list(t.get("columns") or [])
+        rows = list(t.get("rows") or [])
+        width = len(cols)
+        t.setdefault("page_from", page)
+        t.setdefault("page_to", page)
+
+        if merged:
+            prev = merged[-1]
+            prev_cols = list(prev.get("columns") or [])
+            same_header = _columns_signature(prev_cols) == _columns_signature(cols)
+            continuation = (
+                len(prev_cols) == width
+                and width > 0
+                and (same_header or _is_synthetic_header(cols))
+            )
+            page_adjacent = page <= int(prev.get("page_to") or prev.get("page") or page) + 1
+            if continuation and page_adjacent:
+                prev_rows = list(prev.get("rows") or [])
+                # При совпадении заголовка строки продолжения — это данные, не повтор шапки.
+                prev_rows.extend(rows)
+                prev["rows"] = prev_rows
+                prev["page_to"] = max(int(prev.get("page_to") or page), page)
+                prev["raw_markdown"] = table_to_markdown(prev_cols, prev_rows)
+                prev["normalized"] = {
+                    "columns": prev_cols,
+                    "row_count": len(prev_rows),
+                }
+                continue
+
+        merged.append(t)
+
+    return merged
 
 
 # Обратная совместимость

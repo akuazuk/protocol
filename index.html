@@ -9584,6 +9584,20 @@
         a.textContent = ttl;
 
         li.appendChild(a);
+        try {
+          var locParts = [];
+          if (row.section) locParts.push(row.section);
+          if (row.pages) locParts.push("стр. " + row.pages);
+          if (locParts.length) {
+            var loc = document.createElement("small");
+            loc.className = "consult-proto-li__loc";
+            loc.style.display = "block";
+            loc.style.marginTop = "0.2rem";
+            loc.style.opacity = "0.82";
+            loc.textContent = "Раздел: " + locParts.join(", ");
+            li.appendChild(loc);
+          }
+        } catch (_eLoc) {}
         var codesLine = "";
         try {
           if (Array.isArray(row.matched_icd_codes) && row.matched_icd_codes.length) {
@@ -9609,10 +9623,22 @@
 
     function assembleRowsFromPaths(pathsArr, fragsListByPath) {
       var titlesByPath = {};
+      var locByPath = {};
       if (fragsListByPath && fragsListByPath.length) {
         fragsListByPath.forEach(function (row) {
-          if (row && row.path && !(row.path in titlesByPath))
+          if (!row || !row.path) return;
+          if (!(row.path in titlesByPath))
             titlesByPath[row.path] = row.title || titlesByPath[row.path];
+          if (!(row.path in locByPath) && Array.isArray(row.fragments)) {
+            var fr = null;
+            for (var i = 0; i < row.fragments.length; i++) {
+              if (row.fragments[i] && (row.fragments[i].section || row.fragments[i].pages)) {
+                fr = row.fragments[i];
+                break;
+              }
+            }
+            if (fr) locByPath[row.path] = { section: fr.section || "", pages: fr.pages || "" };
+          }
         });
       }
       var seen = {};
@@ -9621,10 +9647,13 @@
         var key = String(pth || "");
         if (!key || seen[key]) return;
         seen[key] = 1;
+        var loc = locByPath[key] || {};
         out.push({
           path: key,
           title:
             titlesByPath[key] || formatDisplayTitle(key.split("/").pop() || key),
+          section: loc.section || "",
+          pages: loc.pages || "",
         });
       });
       return out;

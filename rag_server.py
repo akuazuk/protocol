@@ -487,11 +487,12 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
 - Не придумывай цитаты: conclusion_excerpt и protocol_excerpt должны быть буквальными короткими вырезками из соответствующих текстов ниже (или пустая строка если невозможно).
 - Все пояснения на русском.
 - Подсказка path протоколов в преамбуле ниже упорядочена автоматически: первыми идут выдержки, где в тексте фрагмента встречаются коды МКБ из диагностического блока консультативного заключения (если такие коды извлечены).
+- Если у выдержки протокола указаны метаданные section= (раздел) и pages= (страницы) — перенеси их дословно в protocol_section и protocol_page соответствующего критерия (для точной ссылки). Если их нет — оставь пустыми строками. Не выдумывай раздел/страницу.
 
 Верни ОДИН JSON-объект (без markdown, без текста до/после) строго следуя схеме:
 {"overall_compliance_pct": <целое 0-100>,
  "summary_ru": "<2-4 предложения>",
- "criteria": [{"name_ru": "<например Обследование>", "score_pct": <0-100>, "comment_ru": "<...>", "conclusion_excerpt": "<...>", "protocol_excerpt": "<...>"}],
+ "criteria": [{"name_ru": "<например Обследование>", "score_pct": <0-100>, "comment_ru": "<...>", "conclusion_excerpt": "<...>", "protocol_excerpt": "<...>", "protocol_section": "<раздел из section= или пусто>", "protocol_page": "<страницы из pages= или пусто>"}],
  "limitations_ru": "<что не удалось проверить>",
  "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
  "protocol_paths_used": [<строки путей протоколов из выдержек, если удалось из текста>]}
@@ -564,6 +565,7 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
     нужные поля (экономия RAM). lex_text хранится только если отличается от text.
     """
     memory_saver = _memory_saver_enabled()
+    keep_struct = env_bool("RAG_KEEP_STRUCT", True)
     lex_cap = int(os.environ.get("RAG_LEXICAL_MAX_CHARS", "0") or "0")
     by_path: dict[str, list[dict]] = {}
     for pp in part_paths:
@@ -589,6 +591,21 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                     "text": text,
                     "chunk_type": (row.get("chunk_type") or "body").strip() or "body",
                 }
+                if keep_struct:
+                    sec_path = row.get("section_path")
+                    if isinstance(sec_path, list) and sec_path:
+                        slim["section_path"] = [str(x) for x in sec_path][:6]
+                    sec_title = (row.get("section_title") or "").strip()
+                    if not sec_title and isinstance(sec_path, list) and sec_path:
+                        sec_title = str(sec_path[-1]).strip()
+                    if sec_title:
+                        slim["section_title"] = sec_title[:160]
+                    pts = row.get("point_numbers")
+                    if isinstance(pts, list) and pts:
+                        slim["point_numbers"] = [str(x) for x in pts][:12]
+                    icd = row.get("icd10_codes")
+                    if isinstance(icd, list) and icd:
+                        slim["icd10_codes"] = [str(x).upper() for x in icd][:16]
                 if not memory_saver:
                     ert = (row.get("embedding_ready_text") or "").strip()
                     if ert and ert != text:
@@ -621,6 +638,13 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
             }
             if "lex_text" in row:
                 rec["lex_text"] = row["lex_text"]
+            for fld in ("section_path", "section_title", "point_numbers", "icd10_codes"):
+                if fld in row:
+                    rec[fld] = row[fld]
+            if row.get("page_from"):
+                rec["page_from"] = row["page_from"]
+            if row.get("page_to"):
+                rec["page_to"] = row["page_to"]
             out.append(rec)
     return out
 
@@ -2557,6 +2581,22 @@ def retrieve(
         }
         if cat_out:
             row_out["category"] = cat_out
+        # Структурная привязка (если корпус её содержит и RAG_KEEP_STRUCT включён).
+        sec_title = (ch.get("section_title") or "").strip()
+        if not sec_title:
+            sp = ch.get("section_path")
+            if isinstance(sp, list) and sp:
+                sec_title = str(sp[-1]).strip()
+        if sec_title:
+            row_out["section_title"] = sec_title
+        pf = int(ch.get("page_from") or 0)
+        pt = int(ch.get("page_to") or 0)
+        if pf:
+            row_out["page_from"] = pf
+            row_out["page_to"] = pt or pf
+        pts = ch.get("point_numbers")
+        if isinstance(pts, list) and pts:
+            row_out["point_numbers"] = pts[:12]
         if rerank_used:
             row_out["embedding_rerank"] = True
         out.append(row_out)
@@ -3629,6 +3669,7 @@ def _build_review_chunks_context(
     retrieved: list[dict], max_chars: int
 ) -> tuple[str, list[str]]:
     """Склеивает топ-чанки retrieve() для промпта сравнения."""
+    rich = env_bool("CONSULT_REVIEW_RICH_CONTEXT", True)
     lines: list[str] = []
     paths_order: list[str] = []
     seen: set[str] = set()
@@ -3642,7 +3683,19 @@ def _build_review_chunks_context(
         if not txt:
             continue
         kind = (r.get("kind") or "").strip()
-        block = f"path={p}\ntype={kind}\n{txt}\n"
+        header = f"path={p}\ntype={kind}"
+        if rich:
+            sec = (r.get("section_title") or "").strip()
+            if sec:
+                header += f"\nsection={sec}"
+            pf = int(r.get("page_from") or 0)
+            if pf:
+                pt = int(r.get("page_to") or 0) or pf
+                header += f"\npages={pf}" + (f"-{pt}" if pt != pf else "")
+            pts = r.get("point_numbers")
+            if isinstance(pts, list) and pts:
+                header += "\nпункты=" + ", ".join(str(x) for x in pts[:8])
+        block = f"{header}\n{txt}\n"
         if n + len(block) > max_chars:
             rest = max_chars - n
             if rest > 120:
@@ -3723,7 +3776,7 @@ def _consult_ui_protocol_fragments(
     counts: dict[str, int] = {}
     buckets: dict[str, list[dict[str, str]]] = {}
 
-    def add_frag(pth: str, kind: str, text: str) -> None:
+    def add_frag(pth: str, kind: str, text: str, section: str, pages: str) -> None:
         if pth not in allow:
             return
         n = counts.get(pth, 0)
@@ -3734,10 +3787,23 @@ def _consult_ui_protocol_fragments(
             return
         if len(t) > max_frag_chars:
             t = t[: max_frag_chars - 1].rstrip() + "…"
-        buckets.setdefault(pth, []).append(
-            {"kind": kind.strip() if kind.strip() else "fragment", "text": t}
-        )
+        frag: dict[str, str] = {
+            "kind": kind.strip() if kind.strip() else "fragment",
+            "text": t,
+        }
+        if section:
+            frag["section"] = section
+        if pages:
+            frag["pages"] = pages
+        buckets.setdefault(pth, []).append(frag)
         counts[pth] = n + 1
+
+    def _pages_label(row: dict) -> str:
+        pf = int(row.get("page_from") or 0)
+        if not pf:
+            return ""
+        pt = int(row.get("page_to") or 0) or pf
+        return str(pf) if pt == pf else f"{pf}-{pt}"
 
     for row in retrieved:
         pth = str(row.get("path") or "").strip()
@@ -3748,7 +3814,8 @@ def _consult_ui_protocol_fragments(
             continue
         kd = row.get("kind")
         kind = kd.strip() if isinstance(kd, str) else "fragment"
-        add_frag(pth, kind, txt)
+        section = str(row.get("section_title") or "").strip()
+        add_frag(pth, kind, txt, section, _pages_label(row))
 
     out: list[dict] = []
     for pth in paths_used:
@@ -5182,7 +5249,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-30-r8-consult-cache-text"
+BUILD_VERSION = "2026-05-30-r9-corpus-structure"
 
 
 def _app_version() -> str:
@@ -5217,9 +5284,22 @@ def health() -> dict:
 @app.get("/api/version")
 def api_version() -> dict:
     """Лёгкий маршрут версии/готовности (для мониторинга и баннеров деплоя)."""
+    chunks_total = 0
+    structured = 0
+    try:
+        chunks_total = len(_chunks)
+        for ch in _chunks:
+            if ch.get("section_title") or ch.get("section_path"):
+                structured += 1
+    except Exception:
+        pass
     return {
         "version": _app_version(),
         "rag_ready": _chunks_load_done.is_set(),
+        "corpus_chunks": chunks_total,
+        "corpus_structured_chunks": structured,
+        "keep_struct": env_bool("RAG_KEEP_STRUCT", True),
+        "consult_rich_context": env_bool("CONSULT_REVIEW_RICH_CONTEXT", True),
     }
 
 

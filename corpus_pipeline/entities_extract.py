@@ -1,13 +1,52 @@
 """Извлечение сущностей из текста: МКБ-10, группы населения, ЛС, сроки."""
 from __future__ import annotations
 
+import json
+import os
 import re
+from functools import lru_cache
+from pathlib import Path
 
 # МКБ-10: латинская буква + 2 цифры, опционально .подрубрика
 ICD10_RE = re.compile(
     r"\b([A-Z]\d{2}(?:\.\d{1,4})?)\b",
     re.I,
 )
+
+_ICD_REF_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "data"
+    / "icd_reference"
+    / "icd10_who_2016_terminal_codes.json"
+)
+
+
+@lru_cache(maxsize=1)
+def _valid_icd_roots() -> frozenset[str]:
+    """Множество допустимых 3-символьных корней МКБ-10 (например 'J20') из справочника ВОЗ.
+
+    Если справочник недоступен или отключён (CORPUS_ICD_VALIDATE=0) — возвращает пустое
+    множество, и тогда валидация не применяется (коды принимаются как есть).
+    """
+    if os.environ.get("CORPUS_ICD_VALIDATE", "1").strip().lower() in ("0", "false", "no"):
+        return frozenset()
+    try:
+        data = json.loads(_ICD_REF_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return frozenset()
+    roots: set[str] = set()
+    for row in data if isinstance(data, list) else []:
+        code = str(row.get("code") or "").strip().upper()
+        if len(code) >= 3 and code[0].isalpha() and code[1:3].isdigit():
+            roots.add(code[:3])
+    return frozenset(roots)
+
+
+def _is_valid_icd(code: str) -> bool:
+    roots = _valid_icd_roots()
+    if not roots:  # справочник недоступен/выключен — не фильтруем
+        return True
+    return code[:3] in roots
 
 POPULATION_MARKERS = [
     ("новорожд", "новорождённые"),
@@ -47,13 +86,17 @@ DURATION_RE = re.compile(
 
 
 def extract_icd10(text: str) -> list[str]:
+    """Извлекает и нормализует коды МКБ-10, отсеивая невалидные по справочнику ВОЗ корни."""
     seen: set[str] = set()
     out: list[str] = []
     for m in ICD10_RE.finditer(text or ""):
         code = m.group(1).upper().replace(" ", "")
-        if code not in seen:
-            seen.add(code)
-            out.append(code)
+        if code in seen:
+            continue
+        if not _is_valid_icd(code):
+            continue
+        seen.add(code)
+        out.append(code)
     return out
 
 
