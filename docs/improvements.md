@@ -363,8 +363,11 @@
 - 3.1 inverted index; 3.3 офлайн-эмбеддинги; 3.4 кэш `/health`; 8.4 a11y (tabs, focus-trap); 8.7 фронтенд-перф.
 - Результат: быстрее ответы, доступный интерфейс.
 
-### Фаза 7 - Полировка
-- 5.x API-дизайн (v1, response_model, нормализация path); 8.8 SEO/мета; 10 observability; 6.1 чистка `.env.example`.
+### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)
+- 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).
+- 6.1 чистка `.env.example` - сделано: убраны дубли (`RAG_EMBED_POOL`, `RAG_EXTRACT_FULL_MATCH_MAX_CHARS`), висячий комментарий; добавлены новые переменные (retry, лимит страниц PDF, observability, версия).
+- 10 observability - сделано в безопасном инкременте (см. выше).
+- 5.x API-дизайн (v1, response_model, нормализация path) - отложено (риск для совместимости с фронтендом).
 
 ---
 
