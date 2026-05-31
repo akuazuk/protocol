@@ -79,6 +79,8 @@ def match_protocol_cards(
             score += 30
         if "acute_pancreatitis" in hints and "панкреат" in blob:
             score += 28
+        if "acute_appendicitis" in hints and "аппендицит" in blob:
+            score += 28
 
         if (card.get("status") or "active") != "active":
             score -= 20

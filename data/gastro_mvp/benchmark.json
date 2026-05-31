@@ -1,11 +1,11 @@
 {
   "title": "Эталон проверки КЗ по правилам (гастро MVP)",
   "scope": "data/gastro_mvp/consult_gold.jsonl",
-  "cases_total": 7,
-  "cases_passed": 7,
+  "cases_total": 9,
+  "cases_passed": 9,
   "pass_rate_pct": 100.0,
-  "conditions_loaded": 7,
-  "rules_loaded": 21,
+  "conditions_loaded": 9,
+  "rules_loaded": 27,
   "updated": "2026-05-31",
   "cases": [
     {
@@ -65,6 +65,26 @@
     {
       "consultation_id": "gold_uc_partial_01",
       "target_condition": "ulcerative_colitis",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true,
+        "has_condition_hint": true
+      },
+      "rules_compliance_pct": 0.0
+    },
+    {
+      "consultation_id": "gold_crohn_full_01",
+      "target_condition": "crohn",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true,
+        "has_condition_hint": true
+      },
+      "rules_compliance_pct": 100.0
+    },
+    {
+      "consultation_id": "gold_pancreatitis_partial_01",
+      "target_condition": "acute_pancreatitis",
       "ok": true,
       "checks": {
         "diagnosis_formula_pass": true,

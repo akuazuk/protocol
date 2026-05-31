@@ -26,6 +26,7 @@ CROHN_MARKERS = ("крон", "болезн крона", "k50")
 UC_MARKERS = ("язвенн", "колит", " k51", "k51")
 CELIAC_MARKERS = ("целиак", "k90.0", "k90")
 PANCREATITIS_MARKERS = ("панкреат", "k85")
+APPENDICITIS_MARKERS = ("аппендицит", "k35", "k37")
 
 
 def _norm(s: str) -> str:
@@ -98,6 +99,8 @@ def extract_consult_facts_heuristic(
         conditions_hint.append("celiac")
     if any(x in low for x in PANCREATITIS_MARKERS) or any(c.startswith("K85") for c in icd):
         conditions_hint.append("acute_pancreatitis")
+    if any(x in low for x in APPENDICITIS_MARKERS) or any(c.startswith("K35") or c.startswith("K37") for c in icd):
+        conditions_hint.append("acute_appendicitis")
 
     return {
         "patient_context": {

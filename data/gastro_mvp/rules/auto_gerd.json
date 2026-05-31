@@ -2,6 +2,29 @@
   "condition_id": "gerd",
   "rules": [
     {
+      "rule_id": "cc00ad04_auto_gerd_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "клиническая форма",
+        "степень тяжести"
+      ],
+      "severity": "warning",
+      "description_ru": "Автоизвлечение: полнота формулировки диагноза (gerd).",
+      "source": {
+        "protocol_id": "gastro_cc00ad04",
+        "source_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf",
+        "doc_id": "cc00ad043142b32ef39a953c_L5",
+        "page_from": 8,
+        "page_to": 8,
+        "section": "наличие в анамнезе хирургического лечения ГЭРБ.",
+        "section_path": [
+          "наличие в анамнезе хирургического лечения ГЭРБ."
+        ],
+        "quote_chars": 250
+      },
+      "auto_extracted": true
+    },
+    {
       "rule_id": "90af2882_auto_gerd_diagnosis_formula",
       "rule_type": "diagnosis_formula",
       "required_components": [
