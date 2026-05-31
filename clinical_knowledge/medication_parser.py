@@ -30,6 +30,10 @@ RE_ROUTE = re.compile(
     re.I,
 )
 RE_SCHEDULE_PREFIX = re.compile(r"^\s*с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*[-–—:]\s*(.+)$", re.I)
+RE_SCHEDULE_SUFFIX = re.compile(
+    r"^(.+?)\s+с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*$",
+    re.I,
+)
 _DOSE_LEADIN = re.compile(r"\b(по|на)\b", re.I)
 
 _mid = 0
@@ -89,6 +93,26 @@ def _parse_one(raw: str, *, source_section: str | None = None) -> MedicationItem
     )
 
 
+def _schedule_step_suffix(raw: str) -> tuple[MedicationScheduleStep, str] | None:
+    """Строка «препарат … с DD.MM.YY» в конце."""
+    m = RE_SCHEDULE_SUFFIX.match(raw.strip())
+    if not m:
+        return None
+    rest, date_raw = m.group(1).strip(), m.group(2)
+    start = parse_date(date_raw)
+    mdose = RE_DOSE.search(rest)
+    dose_text = rest[mdose.start():].strip() if mdose else rest
+    mf = RE_FREQ.search(rest)
+    freq_text = mf.group(1).strip() if mf else None
+    drug = _extract_drug_name(rest) or ""
+    return (
+        MedicationScheduleStep(
+            start_date=start, dose_text=dose_text or rest, frequency_text=freq_text,
+        ),
+        drug.lower(),
+    )
+
+
 def _schedule_step(raw: str) -> tuple[MedicationScheduleStep, str] | None:
     """Если строка вида «С DD.MM.YY - <назначение>», вернуть (шаг, имя_препарата)."""
     m = RE_SCHEDULE_PREFIX.match(raw)
@@ -125,27 +149,35 @@ def parse_medications(text: str, *, source_section: str | None = None) -> list[M
     schedule_acc: dict[str, MedicationItem] = {}
 
     for raw_line in re.split(r"[\n]+", text):
-        line = raw_line.strip(" -—\t•")
-        if len(line) < 3:
-            continue
-        step = _schedule_step(line)
-        if step is not None:
-            sched_step, drug_key = step
-            if drug_key and drug_key in schedule_acc:
-                schedule_acc[drug_key].schedule.append(sched_step)
+        for segment in re.split(r"\s*;\s*", raw_line):
+            line = segment.strip(" -—\t•")
+            if len(line) < 3:
                 continue
-            base = _parse_one(line, source_section=source_section)
-            if base is None:
+            step = _schedule_step(line) or _schedule_step_suffix(line)
+            if step is not None:
+                sched_step, drug_key = step
+                if not drug_key and len(schedule_acc) == 1:
+                    drug_key = next(iter(schedule_acc.keys()))
+                if drug_key and drug_key in schedule_acc:
+                    schedule_acc[drug_key].schedule.append(sched_step)
+                    continue
+                m_prefix = RE_SCHEDULE_PREFIX.match(line)
+                rest = m_prefix.group(2).strip() if m_prefix else line
+                base = _parse_one(rest, source_section=source_section)
+                if base is None:
+                    continue
+                if drug_key and not base.drug_name:
+                    base.drug_name = drug_key.capitalize()
+                base.raw_text = line
+                base.schedule.append(sched_step)
+                items.append(base)
+                if drug_key:
+                    schedule_acc[drug_key] = base
                 continue
-            base.schedule.append(sched_step)
-            items.append(base)
-            if drug_key:
-                schedule_acc[drug_key] = base
-            continue
-        item = _parse_one(line, source_section=source_section)
-        if item is None:
-            continue
-        items.append(item)
-        if item.drug_name:
-            schedule_acc[item.drug_name.lower()] = item
+            item = _parse_one(line, source_section=source_section)
+            if item is None:
+                continue
+            items.append(item)
+            if item.drug_name:
+                schedule_acc[item.drug_name.lower()] = item
     return items

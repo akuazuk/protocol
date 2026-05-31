@@ -283,6 +283,17 @@ def report_to_json(
         "limitations": list(report.limitations),
         "source_refs": [r.model_dump(mode="json") for r in report.source_refs],
         "explanation": report.explanation,
+        "analysis_mode": report.analysis_mode,
+        "protocol_summary_used": report.protocol_summary_used,
+        "protocol_summary_status": report.protocol_summary_status,
+        "fallback_to_legacy": report.fallback_to_legacy,
+        "legacy_result_available": report.legacy_result_available,
+        "summary_result_available": report.summary_result_available,
+        "method_comparison": report.method_comparison,
+        "summary_source_refs": [r.model_dump(mode="json") for r in report.summary_source_refs],
+        "legacy_source_refs": [r.model_dump(mode="json") for r in report.legacy_source_refs],
+        "summary_diagnostics": report.summary_diagnostics,
+        "rules_count_by_source": report.rules_count_by_source,
     }
 
 
@@ -604,14 +615,32 @@ def report_to_markdown(
 
     L.append("# Оценка консультативного заключения")
     L.append("")
-    if report.analysis_mode and report.analysis_mode != "legacy":
-        L.append(f"- **Режим анализа:** {report.analysis_mode}")
-        L.append(f"- **Protocol Summary:** {'да' if report.protocol_summary_used else 'нет'}")
-        if report.protocol_summary_status:
-            L.append(f"- **Статус карточки:** {report.protocol_summary_status}")
-        if report.fallback_to_legacy:
-            L.append("- **Fallback на legacy:** да")
-        L.append("")
+    mode_label = report.analysis_mode or "legacy"
+    L.append(f"- **Режим анализа:** {mode_label}")
+    L.append(f"- **Protocol Summary Cards:** {'да' if report.protocol_summary_used else 'нет'}")
+    if report.protocol_summary_status:
+        L.append(f"- **Статус карточки:** {report.protocol_summary_status}")
+    if report.fallback_to_legacy:
+        L.append("- **Fallback на legacy:** да")
+    elif mode_label in ("summary", "hybrid") and not report.protocol_summary_used:
+        L.append("- **Fallback на legacy:** нет (summary не найден — см. diagnostics)")
+    if report.rules_count_by_source:
+        L.append(
+            f"- **Правила по источнику:** summary={report.rules_count_by_source.get('summary', 0)}, "
+            f"legacy={report.rules_count_by_source.get('legacy', 0)}"
+        )
+    if report.summary_diagnostics:
+        L.append("- **Diagnostics summary:**")
+        for d in report.summary_diagnostics[:5]:
+            reasons = ", ".join(d.get("match_reasons") or [])
+            L.append(f"  - {d.get('protocol_id') or '—'}: {reasons}")
+    if report.method_comparison:
+        mc = report.method_comparison
+        L.append(
+            f"- **Сравнение с legacy:** Δscore={mc.get('score_delta')}, "
+            f"summary evidence={mc.get('summary_rules_in_evidence')}"
+        )
+    L.append("")
     # 1. Резюме
     L.append("## 1. Краткое резюме")
     if report.source_file:

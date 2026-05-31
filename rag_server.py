@@ -563,6 +563,40 @@ def _jsonl_chunk_files() -> list[Path]:
     return sorted(base.glob(CORPUS_CHUNKS_PARTS_GLOB))
 
 
+def _load_summary_rag_chunks() -> list[dict]:
+    """Подмешивает summary_chunks.jsonl в RAG-индекс (Protocol Summary Cards)."""
+    if os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE", "1").strip().lower() in ("0", "false", "no"):
+        return []
+    raw_path = (os.environ.get("PROTOCOL_SUMMARY_RAG_JSONL") or "").strip()
+    path = Path(raw_path) if raw_path else ROOT / "data" / "protocol_summaries" / "summary_chunks.jsonl"
+    if not path.is_file():
+        return []
+    out: list[dict] = []
+    try:
+        with path.open(encoding="utf-8") as f:
+            for idx, line in enumerate(f):
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                if not isinstance(row, dict):
+                    continue
+                ch = dict(row)
+                pid = ch.get("protocol_id") or "summary"
+                cid = ch.get("chunk_id") or ch.get("section_type") or "chunk"
+                ch["path"] = f"summary://{pid}/{cid}"
+                ch["lex_text"] = ch.get("text") or ""
+                ch["title"] = ch.get("condition_name") or ch.get("section_type") or ""
+                ch["category"] = ch.get("rubric_slug") or ""
+                ch["chunk_source"] = "summary_chunks"
+                ch["generated_from_summary"] = True
+                ch["chunk_index"] = idx
+                out.append(ch)
+    except Exception:
+        return []
+    return out
+
+
 def _memory_saver_enabled() -> bool:
     """По умолчанию — полный lex (embedding_ready_text при отличии от text).
 
@@ -733,6 +767,9 @@ def load_data() -> None:
         _chunks = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
 
     _enrich_chunks_from_index()
+    summary_rows = _load_summary_rag_chunks()
+    if summary_rows:
+        _chunks.extend(summary_rows)
     _chunks_by_path = {}
     for ch in _chunks:
         p = ch.get("path") or ""
@@ -2604,6 +2641,12 @@ def retrieve(
                 or "сут" in ql
             ):
                 post *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
+        if ch.get("generated_from_summary") or ch.get("chunk_source") == "summary_chunks":
+            ps_mode = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "legacy").strip().lower()
+            if ps_mode == "hybrid":
+                post *= float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.55"))
+            elif ps_mode == "summary":
+                post *= float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.75"))
         raw_rows.append((lex, bm25_s, mult, ch, post))
     if not raw_rows:
         return []
@@ -5713,7 +5756,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r53-protocol-summary-cards"
+BUILD_VERSION = "2026-05-31-r54-summary-integration-fix"
 
 
 def _app_version() -> str:

@@ -529,6 +529,18 @@ def build_compliance_report(
     draft.legacy_result_available = sm.get("legacy_result_available", True)
     draft.summary_result_available = bool(sm.get("summary_result_available"))
     draft.method_comparison = sm.get("method_comparison")
+    if sm.get("summary_source_refs"):
+        draft.summary_source_refs = [
+            SourceRef.model_validate(x) if isinstance(x, dict) else x
+            for x in sm["summary_source_refs"]
+        ]
+    if sm.get("legacy_source_refs"):
+        draft.legacy_source_refs = [
+            SourceRef.model_validate(x) if isinstance(x, dict) else x
+            for x in sm["legacy_source_refs"]
+        ]
+    draft.summary_diagnostics = list(sm.get("summary_diagnostics") or [])
+    draft.rules_count_by_source = sm.get("rules_count_by_source")
     if sm.get("limitations"):
         draft.limitations = list(dict.fromkeys(list(draft.limitations) + list(sm["limitations"])))
     if draft.protocol_summary_used and draft.fallback_to_legacy:

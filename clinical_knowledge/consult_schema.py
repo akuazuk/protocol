@@ -355,6 +355,8 @@ class ProtocolAssessment(_Base):
 class EvidenceMapItem(_Base):
     rule_id: str
     rule_source: Literal["summary", "legacy", "table", "manual", "llm_draft"] = "legacy"
+    protocol_id: str | None = None
+    condition_id: str | None = None
     title_ru: str = ""
     rule_type: str = ""
     rule_type_ru: str = ""
@@ -451,6 +453,8 @@ class ComplianceReport(_Base):
     method_comparison: dict[str, Any] | None = None
     summary_source_refs: list[SourceRef] = Field(default_factory=list)
     legacy_source_refs: list[SourceRef] = Field(default_factory=list)
+    summary_diagnostics: list[dict[str, Any]] = Field(default_factory=list)
+    rules_count_by_source: dict[str, int] | None = None
 
 
 # Alias для совместимости с ТЗ §7.9

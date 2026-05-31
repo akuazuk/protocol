@@ -68,6 +68,8 @@ def _exam_status(doc: ConsultationDocument, item: str) -> tuple[bool, str, list[
 def _relevant_rule(raw: dict[str, Any], hints: set[str]) -> bool:
     if raw.get("skipped"):
         return False
+    if raw.get("rule_source") == "summary":
+        return True
     rid = str(raw.get("rule_id") or "")
     cid = extract_condition_id(rid)
     if not cid:
@@ -99,6 +101,8 @@ def _make_item(
     return EvidenceMapItem(
         rule_id=rule.rule_id,
         rule_source=str(raw.get("rule_source") or rule.rule_source or "legacy"),  # type: ignore[arg-type]
+        protocol_id=rule.protocol_id or (rule.source.protocol_id if rule.source else None),
+        condition_id=rule.condition_id or extract_condition_id(rule.rule_id),
         title_ru=rule_title_ru(rule.rule_id, raw),
         rule_type=rule.rule_type,
         rule_type_ru=rule_type_ru(rule.rule_type),

@@ -132,6 +132,9 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
         "message_ru": "",
         "missing": [],
         "source": rule.get("source"),
+        "rule_source": rule.get("rule_source"),
+        "generated_from_summary": rule.get("generated_from_summary"),
+        "condition_id": rule.get("condition_id"),
     }
 
     if rule_type == "population_mismatch":
@@ -327,16 +330,48 @@ def _resolve_target_conditions(
     return list(dict.fromkeys(base))
 
 
+def collect_catalog_rules(
+    consult_facts: dict[str, Any],
+    *,
+    condition_ids: list[str] | None = None,
+    matched_protocols: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Список legacy-правил каталога для matched conditions (без прогона)."""
+    conditions = load_conditions()
+    rules_map = _augment_rules_map(load_rules_by_condition(), matched_protocols)
+    target = _resolve_target_conditions(
+        consult_facts,
+        condition_ids=condition_ids,
+        matched_protocols=matched_protocols,
+        conditions=conditions,
+        rules_map=rules_map,
+    )
+    out: list[dict[str, Any]] = []
+    for cid in target:
+        for rule in filter_rules_for_matched_protocols(rules_map.get(cid) or [], matched_protocols):
+            r = dict(rule)
+            r.setdefault("rule_source", "legacy")
+            out.append(r)
+    return out
+
+
 def run_rule_checker(
     consult_facts: dict[str, Any],
     *,
     condition_ids: list[str] | None = None,
     matched_protocols: list[dict[str, Any]] | None = None,
     extra_rules: list[dict[str, Any]] | None = None,
+    include_catalog: bool = True,
+    skip_rule_ids: set[str] | frozenset[str] | None = None,
 ) -> dict[str, Any]:
     """Проверка КЗ по правилам каталога; возвращает findings и сводку."""
     conditions = load_conditions()
-    rules_map = _augment_rules_map(load_rules_by_condition(), matched_protocols)
+    rules_map = (
+        _augment_rules_map(load_rules_by_condition(), matched_protocols)
+        if include_catalog
+        else {}
+    )
+    skip_rule_ids = frozenset(skip_rule_ids or ())
     if extra_rules:
         for er in extra_rules:
             cid = str(er.get("condition_id") or er.get("summary_condition_id") or "_summary")
@@ -376,6 +411,8 @@ def run_rule_checker(
                     }
                 )
         for rule in filter_rules_for_matched_protocols(rules, matched_protocols):
+            if str(rule.get("rule_id") or "") in skip_rule_ids:
+                continue
             proto = legacy_rule_to_protocol_rule(rule)
             if not rule_applicable_to_patient(proto, ctx):
                 all_findings.append(

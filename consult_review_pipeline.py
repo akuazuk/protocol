@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Iterator
 from typing import Any
 
@@ -429,6 +430,11 @@ def iter_consult_review_pipeline(
                 demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
                 specialty_slug=doctor_rubric,
                 with_markdown=True,
+                analysis_mode=(
+                    os.environ.get("PROTOCOL_SUMMARY_MODE")
+                    if rs.env_bool("PROTOCOL_SUMMARY_ENABLED", False)
+                    else "legacy"
+                ),
             )
             structured_analysis = {
                 "document": sa.get("document"),

@@ -17,6 +17,7 @@ if _MINI_JSONL.is_file():
 
 # Без семантического embedding в retrieve (стабильные юнит-тесты без ключа API)
 os.environ.setdefault("RAG_GEMINI_EMBED_RERANK", "0")
+os.environ.setdefault("PROTOCOL_SUMMARY_RAG_MERGE", "0")
 
 import pytest
 
