@@ -1,4 +1,4 @@
-"""Правила из кэша LLM-enrichment (data/gastro_mvp/enrichment/*.json)."""
+"""Правила из кэша LLM-enrichment (gastro + catalog enrichment/*.json)."""
 from __future__ import annotations
 
 import json
@@ -6,7 +6,11 @@ import re
 from pathlib import Path
 from typing import Any
 
-ENRICH_DIR = Path(__file__).resolve().parent.parent / "data" / "gastro_mvp" / "enrichment"
+ROOT = Path(__file__).resolve().parent.parent
+ENRICH_DIRS = (
+    ROOT / "data" / "gastro_mvp" / "enrichment",
+    ROOT / "data" / "catalog" / "enrichment",
+)
 
 
 def _slug(s: str) -> str:
@@ -64,22 +68,23 @@ def enrichment_payload_to_rules(payload: dict[str, Any]) -> list[dict[str, Any]]
 def load_enrichment_rules() -> dict[str, list[dict[str, Any]]]:
     """Все правила из кэша enrichment/."""
     out: dict[str, list[dict[str, Any]]] = {}
-    if not ENRICH_DIR.is_dir():
-        return out
-    for p in sorted(ENRICH_DIR.glob("*.json")):
-        try:
-            payload = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
+    for enrich_dir in ENRICH_DIRS:
+        if not enrich_dir.is_dir():
             continue
-        if not isinstance(payload, dict):
-            continue
-        cid = str(payload.get("condition_id") or "")
-        if not cid:
-            continue
-        for rule in enrichment_payload_to_rules(payload):
-            bucket = out.setdefault(cid, [])
-            rid = rule.get("rule_id")
-            if rid and any(r.get("rule_id") == rid for r in bucket):
+        for p in sorted(enrich_dir.glob("*.json")):
+            try:
+                payload = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
                 continue
-            bucket.append(rule)
+            if not isinstance(payload, dict):
+                continue
+            cid = str(payload.get("condition_id") or "")
+            if not cid:
+                continue
+            for rule in enrichment_payload_to_rules(payload):
+                bucket = out.setdefault(cid, [])
+                rid = rule.get("rule_id")
+                if rid and any(r.get("rule_id") == rid for r in bucket):
+                    continue
+                bucket.append(rule)
     return out

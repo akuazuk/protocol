@@ -39,8 +39,8 @@ def test_enrichment_to_rules(tmp_path, monkeypatch):
         json.dumps(payload, ensure_ascii=False), encoding="utf-8"
     )
     monkeypatch.setattr(
-        "clinical_knowledge.rules_from_enrichment.ENRICH_DIR",
-        enrich_dir,
+        "clinical_knowledge.rules_from_enrichment.ENRICH_DIRS",
+        (enrich_dir,),
     )
     rules = enrichment_payload_to_rules(payload)
     assert any(r["rule_type"] == "diagnosis_formula" for r in rules)

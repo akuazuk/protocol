@@ -5590,7 +5590,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r24-catalog-coverage-report-fix"
+BUILD_VERSION = "2026-05-31-r25-catalog-full-gastro-structure"
 
 
 def _app_version() -> str:
@@ -5674,13 +5674,24 @@ def api_clinical_knowledge_benchmark() -> dict:
 
 @app.get("/api/clinical-knowledge/status")
 def api_clinical_knowledge_status() -> dict:
-    """Статус MVP базы правил (гастро) и реестра карточек протоколов."""
+    """Статус базы правил и структуризации каталога (все рубрики)."""
     try:
         from clinical_knowledge import clinical_knowledge_status
 
         return {"ok": True, **clinical_knowledge_status()}
     except Exception as e:
         return {"ok": False, "enabled": False, "error": str(e)[:200]}
+
+
+@app.get("/api/clinical-knowledge/build-status")
+def api_clinical_knowledge_build_status() -> dict:
+    """Прогресс полной структуризации каталога (% PDF, conditions, rules)."""
+    try:
+        from clinical_knowledge.catalog_full_build import build_status_payload
+
+        return {"ok": True, **build_status_payload()}
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:200]}
 
 
 @app.get("/api/specialties")

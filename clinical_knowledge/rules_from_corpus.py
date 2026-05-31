@@ -81,6 +81,17 @@ RE_NUMBERED_DIAG_ITEM = re.compile(
     r"(?:^|\s)(\d+\.\d+)\.\s*([^:\n]{4,120}):",
     re.M,
 )
+RE_GENERIC_DIAG_FORMULA = re.compile(
+    r"формулировк[аи]\s+(?:основного\s+)?диагноз",
+    re.I,
+)
+
+
+def _rubric_condition_id(source_path: str) -> str:
+    parts = (source_path or "").replace("\\", "/").split("/")
+    if len(parts) > 1 and parts[0] == "minzdrav_protocols":
+        return f"rubric_{parts[1].replace('-', '_')}"
+    return "general_protocol"
 
 
 def _collapse_ws(text: str) -> str:
@@ -274,6 +285,40 @@ def extract_rules_from_chunks(
             "extraction_method": "numbered_sections",
         }
         _add_rule(cid, rule)
+
+    if source_path and not by_condition:
+        from .rules_from_path import infer_path_condition
+
+        inferred = infer_path_condition(source_path)
+        cid = inferred[0] if inferred else _rubric_condition_id(source_path)
+        default_components = list(inferred[1]) if inferred else []
+        for chunk in chunks:
+            text_norm = _collapse_ws(chunk.get("text") or "")
+            if len(text_norm) < 40 or not RE_GENERIC_DIAG_FORMULA.search(text_norm):
+                continue
+            m = RE_GENERIC_DIAG_FORMULA.search(text_norm)
+            if not m:
+                continue
+            tail = text_norm[m.start() : m.start() + 2500]
+            inc = RE_INCLUDES_BULLETS.search(tail)
+            block = inc.group(1) if inc else tail[m.end() - m.start() : m.end() - m.start() + 800]
+            components = _parse_required_components(block) or default_components
+            if not components:
+                components = ["нозология", "клиническая форма", "степень тяжести", "осложнения"]
+            src = _rule_source(chunk, protocol_id)
+            src["source_path"] = source_path.replace("\\", "/")
+            rule = {
+                "rule_id": f"{prefix}auto_{cid}_generic_diagnosis_formula",
+                "rule_type": "diagnosis_formula",
+                "required_components": components[:10],
+                "severity": "warning",
+                "description_ru": f"Автоизвлечение: формулировка диагноза ({cid}).",
+                "source": src,
+                "auto_extracted": True,
+                "extraction_method": "corpus_generic",
+            }
+            _add_rule(cid, rule)
+            break
 
     return by_condition
 

@@ -71,17 +71,29 @@ def _merge_rules_from_dir(rules_dir: Path, out: dict[str, list[dict[str, Any]]])
 
 @lru_cache(maxsize=1)
 def load_conditions() -> dict[str, dict[str, Any]]:
-    cond_dir = GASTRO_MVP / "conditions"
     out: dict[str, dict[str, Any]] = {}
-    if not cond_dir.is_dir():
-        return out
-    for p in sorted(cond_dir.glob("*.json")):
-        try:
-            data = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        cid = str(data.get("condition_id") or p.stem)
-        out[cid] = data
+
+    def _load_dir(cond_dir: Path) -> None:
+        if not cond_dir.is_dir():
+            return
+        for p in sorted(cond_dir.glob("*.json")):
+            try:
+                data = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            cid = str(data.get("condition_id") or p.stem)
+            if cid in out:
+                try:
+                    from .condition_builder import merge_condition_records
+
+                    out[cid] = merge_condition_records(out[cid], data)
+                except Exception:
+                    out[cid] = data
+            else:
+                out[cid] = data
+
+    _load_dir(GASTRO_MVP / "conditions")
+    _load_dir(CATALOG_DIR / "conditions")
     return out
 
 
@@ -121,8 +133,16 @@ def clinical_knowledge_status() -> dict[str, Any]:
     conditions = load_conditions()
     rules = load_rules_by_condition()
     rule_count = sum(len(v) for v in rules.values())
-    enrichment_dir = GASTRO_MVP / "enrichment"
-    enrichment_files = len(list(enrichment_dir.glob("*.json"))) if enrichment_dir.is_dir() else 0
+    enrichment_dirs = [GASTRO_MVP / "enrichment", CATALOG_DIR / "enrichment"]
+    enrichment_files = sum(
+        len(list(d.glob("*.json"))) for d in enrichment_dirs if d.is_dir()
+    )
+    try:
+        from .catalog_full_build import build_status_payload
+
+        catalog_build = build_status_payload()
+    except Exception:
+        catalog_build = {}
     coverage = coverage_status_payload()
     return {
         "enabled": rule_count > 0,
@@ -132,5 +152,6 @@ def clinical_knowledge_status() -> dict[str, Any]:
         "condition_ids_with_rules": len(rules),
         "mvp_scope": "all_catalog",
         "rules_coverage": coverage,
+        "catalog_build": catalog_build,
         "llm_enrichment_cached": enrichment_files,
     }

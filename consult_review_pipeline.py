@@ -119,6 +119,12 @@ def iter_consult_review_pipeline(
     )
 
     yield emit("rules", 45, "Проверка по правилам протоколов…")
+    try:
+        from clinical_knowledge.catalog_full_build import build_status_payload
+
+        catalog_build = build_status_payload()
+    except Exception:
+        catalog_build = {}
     clinical_rules = rs._consult_clinical_rules_pipeline(
         full_text,
         demographics_meta if isinstance(demographics_meta, dict) else {},
@@ -131,7 +137,13 @@ def iter_consult_review_pipeline(
             sp = (mp or {}).get("source_path")
             if sp and sp not in matched_path_boost:
                 matched_path_boost.append(sp)
-        yield emit("rules_done", 52, "Правила протоколов применены", {"clinical_rules": clinical_rules})
+        rules_partial: dict[str, Any] = {"clinical_rules": clinical_rules, "catalog_build": catalog_build}
+        rc = (clinical_rules.get("rules_check") or {}) if isinstance(clinical_rules.get("rules_check"), dict) else {}
+        if rc.get("rules_compliance_pct") is not None:
+            rules_partial["rules_compliance_pct"] = rc.get("rules_compliance_pct")
+        if catalog_build.get("build_pct") is not None:
+            rules_partial["catalog_build_pct"] = catalog_build.get("build_pct")
+        yield emit("rules_done", 52, "Правила протоколов применены", rules_partial)
 
     max_chunks_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
     max_per_path_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))

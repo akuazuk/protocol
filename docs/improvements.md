@@ -436,6 +436,7 @@ python3 split_chunks_jsonl.py
 - **3.3 офлайн-эмбеддинги (инкремент)** — `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query).
 - **Каталог нозологий** — `clinical_knowledge/condition_registry.py`; скрипты `scripts/catalog_rules_coverage_report.py`, `scripts/build_catalog_llm_enrichment.py`.
 - **Правила по всему каталогу (r23)** — `clinical_knowledge/catalog_build.py`, `scripts/build_catalog_rules.py` → `data/catalog/rules/` + `rules_coverage_report.json` (478 PDF, 24 рубрики); loader мержит gastro + catalog; rule_checker v3 с runtime path-правилами и `condition_registry`; consult pipeline без жёсткой привязки к одной рубрике (scope `all_catalog`).
+- **Полная структуризация как gastro (r25)** — `catalog_full_build.py`, `condition_builder.py`, `scripts/build_catalog_full.py` → `data/catalog/conditions/` (JSON нозологий), прогресс % в CLI/SSE; `/api/clinical-knowledge/build-status`; generic corpus «формулировка диагноза» + path-шаблоны всех рубрик.
 - 3.3 полный offline corpus embed (build_semantic_embeddings) — отложено.
 
 ### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)

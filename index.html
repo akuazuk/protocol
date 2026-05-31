@@ -9556,7 +9556,18 @@
         parts.push("<span><strong>" + (data.condition_ids_with_rules || data.rules || 0) + "</strong> нозологий с правилами</span>");
         parts.push("<span><strong>" + (data.rules || 0) + "</strong> правил</span>");
         var cov = data.rules_coverage || {};
-        if (cov.pdfs_total) {
+        var build = data.catalog_build || {};
+        if (build.build_pct != null) {
+          parts.push(
+            "<span><strong>" +
+              build.build_pct +
+              "%</strong> каталог структурирован (" +
+              (build.pdfs_structured || 0) +
+              "/" +
+              (build.pdfs_total || cov.pdfs_total || 0) +
+              " PDF)</span>"
+          );
+        } else if (cov.pdfs_total) {
           parts.push(
             "<span><strong>" +
               (cov.coverage_pct != null ? cov.coverage_pct : "—") +
@@ -10132,9 +10143,19 @@
     if (stage === "icd_done" && partial.icd && partial.icd.codes && partial.icd.codes.length) {
       return "МКБ: " + partial.icd.codes.slice(0, 6).join(", ");
     }
-    if (stage === "rules_done" && partial.clinical_rules) {
+    if stage === "rules_done" && partial.clinical_rules) {
       var mp = partial.clinical_rules.matched_protocols || [];
-      if (mp.length) return "Сопоставлено протоколов по правилам: " + mp.length;
+      var bits = [];
+      if (mp.length) bits.push("Сопоставлено протоколов: " + mp.length);
+      if (typeof partial.rules_compliance_pct === "number") {
+        bits.push("Соответствие правилам: " + partial.rules_compliance_pct + "%");
+      }
+      if (typeof partial.catalog_build_pct === "number") {
+        bits.push("Каталог структурирован: " + partial.catalog_build_pct + "%");
+      } else if (partial.catalog_build && partial.catalog_build.build_pct != null) {
+        bits.push("Каталог структурирован: " + partial.catalog_build.build_pct + "%");
+      }
+      if (bits.length) return bits.join(" · ");
     }
     if (stage === "protocols" && partial.retrieval_paths) {
       return "Фрагменты из " + partial.retrieval_paths.length + " PDF протоколов";
