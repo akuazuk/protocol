@@ -58,29 +58,47 @@ def load_conditions() -> dict[str, dict[str, Any]]:
 def load_rules_by_condition() -> dict[str, list[dict[str, Any]]]:
     rules_dir = GASTRO_MVP / "rules"
     out: dict[str, list[dict[str, Any]]] = {}
-    if not rules_dir.is_dir():
-        return out
-    for p in sorted(rules_dir.glob("*.json")):
-        try:
-            data = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        cid = str(data.get("condition_id") or "")
-        if not cid:
-            stem = p.stem.replace("_rules", "").replace("auto_", "")
-            cid = stem
-        rules = list(data.get("rules") or [])
-        if not rules:
-            continue
-        bucket = out.setdefault(cid, [])
-        seen = {r.get("rule_id") for r in bucket}
-        for r in rules:
-            rid = r.get("rule_id")
-            if rid and rid in seen:
+    if rules_dir.is_dir():
+        for p in sorted(rules_dir.glob("*.json")):
+            try:
+                data = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
                 continue
-            bucket.append(r)
-            if rid:
-                seen.add(rid)
+            cid = str(data.get("condition_id") or "")
+            if not cid:
+                stem = p.stem.replace("_rules", "")
+                for prefix in ("auto_", "path_", "enriched_"):
+                    if stem.startswith(prefix):
+                        stem = stem[len(prefix) :]
+                        break
+                cid = stem
+            rules = list(data.get("rules") or [])
+            if not rules:
+                continue
+            bucket = out.setdefault(cid, [])
+            seen = {r.get("rule_id") for r in bucket}
+            for r in rules:
+                rid = r.get("rule_id")
+                if rid and rid in seen:
+                    continue
+                bucket.append(r)
+                if rid:
+                    seen.add(rid)
+    try:
+        from .rules_from_enrichment import load_enrichment_rules
+
+        for cid, rules in load_enrichment_rules().items():
+            bucket = out.setdefault(cid, [])
+            seen = {r.get("rule_id") for r in bucket}
+            for r in rules:
+                rid = r.get("rule_id")
+                if rid and rid in seen:
+                    continue
+                bucket.append(r)
+                if rid:
+                    seen.add(rid)
+    except Exception:
+        pass
     return out
 
 
@@ -91,14 +109,21 @@ def clear_clinical_knowledge_cache() -> None:
 
 
 def clinical_knowledge_status() -> dict[str, Any]:
+    from .coverage import coverage_status_payload
+
     cards = load_protocol_cards_registry()
     conditions = load_conditions()
     rules = load_rules_by_condition()
     rule_count = sum(len(v) for v in rules.values())
+    enrichment_dir = GASTRO_MVP / "enrichment"
+    enrichment_files = len(list(enrichment_dir.glob("*.json"))) if enrichment_dir.is_dir() else 0
+    coverage = coverage_status_payload()
     return {
         "enabled": bool(conditions and rules),
         "protocol_cards": len(cards),
         "conditions": len(conditions),
         "rules": rule_count,
         "mvp_scope": "gastroenterologiya",
+        "rules_coverage": coverage,
+        "llm_enrichment_cached": enrichment_files,
     }

@@ -5068,6 +5068,13 @@
         </div>
         <p class="info-panel-note" id="quality-benchmark-note"></p>
       </section>
+      <section class="info-panel" id="clinical-knowledge-panel" aria-labelledby="clinical-knowledge-title">
+        <h3 id="clinical-knowledge-title">Правила КЗ (гастро MVP)</h3>
+        <div class="info-panel-stats" id="clinical-knowledge-body">
+          <span>Загрузка…</span>
+        </div>
+        <p class="info-panel-note" id="clinical-knowledge-note"></p>
+      </section>
     </div>
 
     <section class="hero" aria-labelledby="search-title">
@@ -9356,6 +9363,68 @@
       });
   }
 
+  function loadClinicalKnowledgePanel() {
+    var body = document.getElementById("clinical-knowledge-body");
+    var note = document.getElementById("clinical-knowledge-note");
+    if (!body) return;
+    var base = apiBaseUrl();
+    fetch(base + "/api/clinical-knowledge/status")
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (data) {
+        if (!data || !data.ok) {
+          body.innerHTML = "<span>MVP правил не загружен</span>";
+          return;
+        }
+        var parts = [];
+        parts.push("<span><strong>" + (data.conditions || 0) + "</strong> нозологий</span>");
+        parts.push("<span><strong>" + (data.rules || 0) + "</strong> правил</span>");
+        var cov = data.rules_coverage || {};
+        if (cov.pdfs_total) {
+          parts.push(
+            "<span><strong>" +
+              (cov.coverage_pct != null ? cov.coverage_pct : "—") +
+              "%</strong> PDF с правилами (" +
+              (cov.pdfs_with_rules || 0) +
+              "/" +
+              cov.pdfs_total +
+              ")</span>"
+          );
+        }
+        if (data.llm_enrichment_cached) {
+          parts.push(
+            "<span><strong>" +
+              data.llm_enrichment_cached +
+              "</strong> LLM-enrich кэш</span>"
+          );
+        }
+        body.innerHTML = parts.join("") || "<span>Нет данных</span>";
+        if (note) {
+          fetch(base + "/api/clinical-knowledge/benchmark")
+            .then(function (r) {
+              return r.ok ? r.json() : null;
+            })
+            .then(function (b) {
+              if (b && typeof b.pass_rate_pct === "number") {
+                note.textContent =
+                  "Gold-set rule checker: " +
+                  b.cases_passed +
+                  "/" +
+                  b.cases_total +
+                  " (" +
+                  b.pass_rate_pct +
+                  "%)";
+              }
+            })
+            .catch(function () {});
+        }
+      })
+      .catch(function () {
+        body.innerHTML = "<span>/api/clinical-knowledge/status недоступен</span>";
+      });
+  }
+
   function renderConsultMethodologyPanel(rev) {
     var panel = document.getElementById("consult-methodology-panel");
     var sumEl = document.getElementById("consult-methodology-summary");
@@ -10816,6 +10885,7 @@
   loadCorpusStatsPanel();
   loadBuildVersionBadge();
   loadQualityBenchmarkPanel();
+  loadClinicalKnowledgePanel();
   loadPilotAnalyticsPanel();
   loadTrainingCasesChips();
   initConsultDemoTextButton();

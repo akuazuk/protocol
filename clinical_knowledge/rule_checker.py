@@ -35,7 +35,9 @@ def _check_diagnosis_components(
         "форма": ("форма", "лёгк", "легк", "умерен", "тяжел", "тяжёл", "катаральн", "флегмон", "гангрен"),
         "степень тяжести": ("степен", "лёгк", "легк", "средн", "тяжел", "тяжёл"),
         "фаза": ("фаз", "обострен", "ремисс", "хроническ", "остр"),
-        "осложнения": ("осложнен", "кровотеч", "стеноз", "перфора", "без ослож"),
+        "осложнения": ("осложнен", "кровотеч", "стеноз", "перфора", "без ослож", "перитонит", "абсцесс"),
+        "источник": ("источник", "язв", "варикоз", "эроз", "диvert", "диверт"),
+        "механизм": ("механизм", "удар", "паден", "дтп", "нож", "огнестр"),
         "локализация": ("локал", "антрал", "луковиц", "желудк", "двенадцат", "l1", "l2", "l3", "l4", "илеальн", "толстокиш"),
         "h.pylori": ("нр", "hp", "helicobacter", "хеликобактер"),
         "этиологический фактор": ("этиолог", "нр", "нпвп", "стресс"),
@@ -140,6 +142,11 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
 
     if rule_type == "diagnostic_criterion":
         logic = (rule.get("logic") or "any_of").lower()
+        if logic == "reference_only":
+            finding["passed"] = True
+            finding["severity"] = "info"
+            finding["message_ru"] = rule.get("description_ru") or ""
+            return finding
         criteria = list(rule.get("criteria") or [])
         hits = [c for c in criteria if _check_symptom_duration_frequency(text + " " + diagnosis, c)]
         if logic == "any_of":

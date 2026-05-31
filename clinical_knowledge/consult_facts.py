@@ -27,6 +27,14 @@ UC_MARKERS = ("язвенн", "колит", " k51", "k51")
 CELIAC_MARKERS = ("целиак", "k90.0", "k90")
 PANCREATITIS_MARKERS = ("панкреат", "k85")
 APPENDICITIS_MARKERS = ("аппендицит", "k35", "k37")
+CHOLECYSTITIS_MARKERS = ("холецист", "k81")
+OBSTRUCTION_MARKERS = ("непроходим", "k56")
+INTUSSUSCEPTION_MARKERS = ("инвагинац", "k56.1")
+HERNIA_MARKERS = ("грыж", "ущемл", "k40")
+FOREIGN_BODY_MARKERS = ("инородн", "t18")
+GI_BLEEDING_MARKERS = ("кровотеч", "k92")
+PERFORATION_MARKERS = ("перфора", "k26.1", "k25.1")
+ABDOMINAL_TRAUMA_MARKERS = ("травм", "живот", "s36")
 
 
 def _norm(s: str) -> str:
@@ -101,6 +109,22 @@ def extract_consult_facts_heuristic(
         conditions_hint.append("acute_pancreatitis")
     if any(x in low for x in APPENDICITIS_MARKERS) or any(c.startswith("K35") or c.startswith("K37") for c in icd):
         conditions_hint.append("acute_appendicitis")
+    if any(x in low for x in CHOLECYSTITIS_MARKERS) or any(c.startswith("K81") for c in icd):
+        conditions_hint.append("acute_cholecystitis")
+    if any(x in low for x in OBSTRUCTION_MARKERS) or any(c.startswith("K56") for c in icd):
+        conditions_hint.append("intestinal_obstruction")
+    if any(x in low for x in INTUSSUSCEPTION_MARKERS):
+        conditions_hint.append("intussusception")
+    if any(x in low for x in HERNIA_MARKERS) or any(c.startswith("K40") for c in icd):
+        conditions_hint.append("incarcerated_hernia")
+    if any(x in low for x in FOREIGN_BODY_MARKERS) or any(c.startswith("T18") for c in icd):
+        conditions_hint.append("foreign_body_gi")
+    if any(x in low for x in GI_BLEEDING_MARKERS) or any(c.startswith("K92") for c in icd):
+        conditions_hint.append("gi_bleeding")
+    if any(x in low for x in PERFORATION_MARKERS):
+        conditions_hint.append("perforated_peptic_ulcer")
+    if any(x in low for x in ABDOMINAL_TRAUMA_MARKERS) or any(c.startswith("S36") for c in icd):
+        conditions_hint.append("abdominal_trauma")
 
     return {
         "patient_context": {

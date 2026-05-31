@@ -400,10 +400,23 @@ def extract_rules_all_gastro_pdfs(
             source_path=sp,
         )
         n_rules = sum(len(v) for v in extracted.values())
+        extraction_method = None
+        if n_rules == 0:
+            from .rules_from_path import extract_path_rules
+
+            path_rules = extract_path_rules(
+                sp, protocol_id=protocol_id, rule_id_prefix=pdf_hash
+            )
+            for cid, rules in path_rules.items():
+                extracted.setdefault(cid, []).extend(rules)
+            n_rules = sum(len(v) for v in extracted.values())
+            if n_rules:
+                extraction_method = "path_template"
         per_pdf[sp] = {
             "chunks": len(doc_chunks),
             "rules": n_rules,
             "doc_id": doc_chunks[0].get("doc_id") if doc_chunks else None,
+            "extraction_method": extraction_method,
         }
         for cid, rules in extracted.items():
             merged[cid].extend(rules)
@@ -414,21 +427,40 @@ def merge_rules_into_gastro_mvp(
     extracted: dict[str, list[dict[str, Any]]],
     out_dir: Path,
 ) -> dict[str, int]:
-    """Записать data/gastro_mvp/rules/auto_<condition>.json (только авто-правила)."""
+    """Записать data/gastro_mvp/rules/auto_<condition>.json и path_<condition>.json."""
     out_dir.mkdir(parents=True, exist_ok=True)
     counts: dict[str, int] = {}
+    auto_by_cid: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    path_by_cid: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for cid, rules in extracted.items():
-        path = out_dir / f"auto_{cid}.json"
-        seen: set[str] = set()
-        deduped: list[dict[str, Any]] = []
         for r in rules:
-            rid = str(r.get("rule_id") or "")
-            if rid and rid in seen:
+            if r.get("extraction_method") == "path_template":
+                path_by_cid[cid].append(r)
+            else:
+                auto_by_cid[cid].append(r)
+
+    def _write_bucket(prefix: str, bucket: dict[str, list[dict[str, Any]]]) -> None:
+        for cid, rules in bucket.items():
+            path = out_dir / f"{prefix}_{cid}.json"
+            seen: set[str] = set()
+            deduped: list[dict[str, Any]] = []
+            for r in rules:
+                rid = str(r.get("rule_id") or "")
+                if rid and rid in seen:
+                    continue
+                if rid:
+                    seen.add(rid)
+                deduped.append(r)
+            if not deduped:
                 continue
-            if rid:
-                seen.add(rid)
-            deduped.append(r)
-        payload = {"condition_id": cid, "rules": deduped, "auto_only": True}
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        counts[cid] = len(deduped)
+            payload = {
+                "condition_id": cid,
+                "rules": deduped,
+                f"{prefix}_only": True,
+            }
+            path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+            counts[cid] = counts.get(cid, 0) + len(deduped)
+
+    _write_bucket("auto", auto_by_cid)
+    _write_bucket("path", path_by_cid)
     return counts

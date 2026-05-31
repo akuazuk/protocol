@@ -24,7 +24,55 @@ CONDITION_PDF_HINTS: dict[str, list[str]] = {
     "functional_dyspepsia": ["пищевода_желудка", "диспепс"],
     "acute_pancreatitis": ["панкреат"],
     "acute_appendicitis": ["аппендицит"],
+    "acute_cholecystitis": ["холецист"],
+    "intestinal_obstruction": ["непроходимост"],
+    "intussusception": ["инвагинац"],
+    "incarcerated_hernia": ["грыж"],
+    "foreign_body_gi": ["инородн"],
+    "gi_bleeding": ["кровотеч"],
+    "perforated_peptic_ulcer": ["перфоратив"],
+    "abdominal_trauma": ["травм", "живот"],
 }
+
+
+def sample_text_for_pdf(
+    source_path: str,
+    chunks_path: Path,
+    *,
+    max_chars: int = 10_000,
+) -> str:
+    """Текстовый сэмпл из PDF для LLM-enrich (приоритет — блоки диагноза/классификации)."""
+    from .rules_from_corpus import _collapse_ws, load_chunks_exact, pick_best_logical_chunks
+
+    chunks = pick_best_logical_chunks(load_chunks_exact(chunks_path, source_path))
+    if not chunks:
+        return ""
+    scored: list[tuple[int, str]] = []
+    for c in chunks:
+        t = c.get("text") or ""
+        if len(t) < 60:
+            continue
+        low = t.lower()
+        score = sum(
+            1
+            for kw in (
+                "диагноз",
+                "классиф",
+                "критери",
+                "формулиров",
+                "диагностик",
+                "лечени",
+            )
+            if kw in low
+        )
+        if score:
+            scored.append((score, t[:3000]))
+    scored.sort(key=lambda x: -x[0])
+    parts = [t for _, t in scored[:6]]
+    if not parts:
+        blob = _collapse_ws(" ".join(c.get("text") or "" for c in chunks))
+        return blob[:max_chars]
+    return "\n\n".join(parts)[:max_chars]
 
 
 def sample_text_for_condition(

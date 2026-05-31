@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LLM-обогащение нозологий гастро (CORPUS_LLM_ENRICH=1, нужен GEMINI_API_KEY)."""
+"""LLM-enrich для непокрытых гастро-PDF (CORPUS_LLM_ENRICH=1, GEMINI_API_KEY)."""
 from __future__ import annotations
 
 import json
@@ -15,9 +15,11 @@ os.environ.setdefault("CORPUS_LLM_ENRICH", "1")
 
 
 def main() -> int:
-    from clinical_knowledge.enrichment_samples import sample_text_for_condition
+    from clinical_knowledge.coverage import load_rules_coverage_report
+    from clinical_knowledge.enrichment_samples import sample_text_for_condition, sample_text_for_pdf
     from clinical_knowledge.llm_enrich import enrich_condition_text
     from clinical_knowledge.loader import load_conditions
+    from clinical_knowledge.rules_from_path import infer_path_condition
 
     chunks = ROOT / "output" / "chunks" / "chunks.jsonl"
     if not chunks.is_file():
@@ -33,10 +35,11 @@ def main() -> int:
         return 0
 
     results: dict[str, str] = {}
+
     for cid in sorted(load_conditions().keys()):
         sample = sample_text_for_condition(cid, chunks)
         if not sample:
-            results[cid] = "no_sample"
+            results[f"condition:{cid}"] = "no_sample"
             continue
         out = enrich_condition_text(
             cid,
@@ -45,11 +48,34 @@ def main() -> int:
             generate_fn=generate_gemini,
             extract_text_fn=_extract_gemini_text,
         )
-        results[cid] = "ok" if out else "failed"
+        results[f"condition:{cid}"] = "ok" if out else "failed"
+
+    coverage = load_rules_coverage_report()
+    without = list(coverage.get("without_rules") or [])
+    for sp in without:
+        inferred = infer_path_condition(sp)
+        cid = inferred[0] if inferred else f"pdf_{Path(sp).stem[:24]}"
+        sample = sample_text_for_pdf(sp, chunks)
+        if not sample:
+            results[f"pdf:{sp.split('/')[-1][:40]}"] = "no_sample"
+            continue
+        out = enrich_condition_text(
+            cid,
+            sample,
+            model=model,
+            generate_fn=generate_gemini,
+            extract_text_fn=_extract_gemini_text,
+        )
+        if out and isinstance(out, dict):
+            out["source_path"] = sp.replace("\\", "/")
+            cache_path = ROOT / "data" / "gastro_mvp" / "enrichment" / f"{cid}_{out.get('text_hash', 'x')}.json"
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            cache_path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        results[f"pdf:{Path(sp).name[:50]}"] = "ok" if out else "failed"
 
     summary_path = ROOT / "data" / "gastro_mvp" / "enrichment_summary.json"
     summary_path.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps(results, ensure_ascii=False, indent=2))
+    print(json.dumps({"processed": len(results), "ok": sum(1 for v in results.values() if v == "ok")}, indent=2))
     return 0
 
 
