@@ -64,7 +64,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
         }
     ]
 
-    monkeypatch.setattr(rs, "extract_pdf_text_from_bytes", lambda data: ("текст заключения пациента", []))
+    monkeypatch.setattr(rs, "extract_consult_text_from_bytes", lambda data, filename="": ("текст заключения пациента", []))
     monkeypatch.setattr(rs, "get_gemini", lambda: object())
     monkeypatch.setattr(rs, "_build_consult_review_pipeline_query", lambda model, t: ("=== Жалобы ===\n\nтекст", {"focus_source": "test"}))
     monkeypatch.setattr(rs, "_infer_icd_pipeline_from_full_query", lambda q, model: (icd_analysis, "q", "q_rag", None, None))

@@ -24,6 +24,9 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
 import csv
+import zipfile
+import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote
@@ -3651,6 +3654,216 @@ def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
     return full, warnings
 
 
+# Расширения файлов КЗ для consult-review (текстовые и PDF).
+_CONSULT_PDF_EXTENSIONS = frozenset({".pdf"})
+_CONSULT_PLAIN_EXTENSIONS = frozenset(
+    {".txt", ".text", ".md", ".markdown", ".log", ".csv", ".json", ".xml"}
+)
+_CONSULT_HTML_EXTENSIONS = frozenset({".html", ".htm"})
+_CONSULT_RTF_EXTENSIONS = frozenset({".rtf"})
+_CONSULT_DOCX_EXTENSIONS = frozenset({".docx"})
+_CONSULT_ODT_EXTENSIONS = frozenset({".odt"})
+
+CONSULT_REVIEW_ALLOWED_EXTENSIONS = frozenset(
+    _CONSULT_PDF_EXTENSIONS
+    | _CONSULT_PLAIN_EXTENSIONS
+    | _CONSULT_HTML_EXTENSIONS
+    | _CONSULT_RTF_EXTENSIONS
+    | _CONSULT_DOCX_EXTENSIONS
+    | _CONSULT_ODT_EXTENSIONS
+)
+
+
+def consult_review_allowed_extensions() -> tuple[str, ...]:
+    """Отсортированный список допустимых расширений для загрузки КЗ."""
+    return tuple(sorted(CONSULT_REVIEW_ALLOWED_EXTENSIONS))
+
+
+def _consult_extension(filename: str) -> str:
+    name = (filename or "").strip().lower()
+    dot = name.rfind(".")
+    if dot < 0:
+        return ""
+    return name[dot:]
+
+
+def _decode_text_bytes(data: bytes) -> tuple[str, list[str]]:
+    warnings: list[str] = []
+    if not data:
+        return "", warnings
+    for enc in ("utf-8-sig", "utf-16", "cp1251", "latin-1"):
+        try:
+            return data.decode(enc).strip(), warnings
+        except UnicodeDecodeError:
+            continue
+    warnings.append("Кодировка не определена - использованы замены символов (UTF-8).")
+    return data.decode("utf-8", errors="replace").strip(), warnings
+
+
+class _HTMLTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self._parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        chunk = (data or "").strip()
+        if chunk:
+            self._parts.append(chunk)
+
+    def text(self) -> str:
+        return "\n".join(self._parts).strip()
+
+
+def _extract_html_text(data: bytes) -> tuple[str, list[str]]:
+    raw, warns = _decode_text_bytes(data)
+    parser = _HTMLTextExtractor()
+    try:
+        parser.feed(raw)
+        parser.close()
+    except Exception as e:
+        warns.append(f"HTML: упрощённое извлечение ({e!s})")
+        return raw, warns
+    txt = parser.text()
+    if not txt:
+        return raw, warns
+    return txt, warns
+
+
+def _extract_rtf_text(data: bytes) -> tuple[str, list[str]]:
+    raw, warns = _decode_text_bytes(data)
+    if not raw.lstrip().startswith("{\\rtf"):
+        warns.append("Файл не начинается с {\\rtf - попытка извлечь как текст.")
+    text = raw
+    text = re.sub(r"\\par[d]?\b", "\n", text, flags=re.I)
+    text = re.sub(r"\\line\b", "\n", text, flags=re.I)
+    text = re.sub(r"\\tab\b", "\t", text, flags=re.I)
+    text = re.sub(r"\\'[0-9a-fA-F]{2}", " ", text)
+    text = re.sub(r"\\[a-z]+-?\d*\s?", "", text, flags=re.I)
+    text = text.replace("{", "").replace("}", "")
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip(), warns
+
+
+def _extract_docx_text(data: bytes) -> tuple[str, list[str]]:
+    warnings: list[str] = []
+    w_ns = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as zf:
+            if "word/document.xml" not in zf.namelist():
+                raise ValueError("нет word/document.xml")
+            xml = zf.read("word/document.xml")
+    except zipfile.BadZipFile as e:
+        raise HTTPException(status_code=400, detail=f"DOCX не читается как ZIP: {e!s}") from e
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"DOCX: {e!s}") from e
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as e:
+        raise HTTPException(status_code=400, detail=f"DOCX: повреждён XML ({e!s})") from e
+    paras: list[str] = []
+    for p in root.iter(f"{w_ns}p"):
+        parts = [(n.text or "") for n in p.iter(f"{w_ns}t")]
+        line = "".join(parts).strip()
+        if line:
+            paras.append(line)
+    full = "\n\n".join(paras).strip()
+    if not full:
+        warnings.append("DOCX: текст не найден в word/document.xml")
+    return full, warnings
+
+
+def _extract_odt_text(data: bytes) -> tuple[str, list[str]]:
+    warnings: list[str] = []
+    text_ns = "{urn:oasis:names:tc:opendocument:xmlns:text:1.0}"
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as zf:
+            if "content.xml" not in zf.namelist():
+                raise ValueError("нет content.xml")
+            xml = zf.read("content.xml")
+    except zipfile.BadZipFile as e:
+        raise HTTPException(status_code=400, detail=f"ODT не читается как ZIP: {e!s}") from e
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"ODT: {e!s}") from e
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as e:
+        raise HTTPException(status_code=400, detail=f"ODT: повреждён XML ({e!s})") from e
+    paras: list[str] = []
+    for p in root.iter(f"{text_ns}p"):
+        parts = [(n.text or "") for n in p.iter(f"{text_ns}span")]
+        if not parts:
+            parts = [(n.text or "") for n in p.iter()]
+        line = "".join(parts).strip()
+        if line:
+            paras.append(line)
+    full = "\n\n".join(paras).strip()
+    if not full:
+        warnings.append("ODT: текст не найден в content.xml")
+    return full, warnings
+
+
+def _sniff_consult_format(data: bytes, ext: str) -> str:
+    if ext in _CONSULT_PDF_EXTENSIONS or data[:5].startswith(b"%PDF-"):
+        return "pdf"
+    head = data[:8]
+    if head[:2] == b"PK":
+        if ext in _CONSULT_ODT_EXTENSIONS:
+            return "odt"
+        return "docx"
+    if ext in _CONSULT_HTML_EXTENSIONS:
+        return "html"
+    low = data[:256].lstrip().lower()
+    if low.startswith(b"{\\rtf") or ext in _CONSULT_RTF_EXTENSIONS:
+        return "rtf"
+    if ext in _CONSULT_ODT_EXTENSIONS:
+        return "odt"
+    if ext in _CONSULT_DOCX_EXTENSIONS:
+        return "docx"
+    return "plain"
+
+
+def extract_consult_text_from_bytes(data: bytes, filename: str = "") -> tuple[str, list[str]]:
+    """Извлечь текст консультативного заключения из PDF или текстового файла."""
+    ext = _consult_extension(filename)
+    if ext and ext not in CONSULT_REVIEW_ALLOWED_EXTENSIONS:
+        allowed = ", ".join(consult_review_allowed_extensions())
+        raise HTTPException(
+            status_code=400,
+            detail=f"Файл «{filename}»: формат «{ext}» не поддерживается. Допустимо: {allowed}.",
+        )
+    if not ext:
+        fmt = _sniff_consult_format(data, "")
+        if fmt == "pdf":
+            ext = ".pdf"
+        elif fmt == "docx":
+            ext = ".docx"
+        elif fmt == "odt":
+            ext = ".odt"
+        elif fmt == "rtf":
+            ext = ".rtf"
+        else:
+            ext = ".txt"
+
+    fmt = _sniff_consult_format(data, ext)
+    if fmt == "pdf":
+        if not data[:5].startswith(b"%PDF-"):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Файл «{filename}»: не похож на PDF (неверная сигнатура).",
+            )
+        return extract_pdf_text_from_bytes(data)
+    if fmt == "docx":
+        return _extract_docx_text(data)
+    if fmt == "odt":
+        return _extract_odt_text(data)
+    if fmt == "rtf":
+        return _extract_rtf_text(data)
+    if fmt == "html":
+        return _extract_html_text(data)
+    return _decode_text_bytes(data)
+
+
 
 def _retrieval_fragment_body(row: dict) -> str:
     """Видимый текст фрагмента из результата retrieve(): в ответах API поле excerpt, не text."""
@@ -5258,7 +5471,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r11-live-stats-charts"
+BUILD_VERSION = "2026-05-31-r12-consult-text-formats"
 
 
 def _app_version() -> str:
@@ -6088,7 +6301,7 @@ def _consult_cache_put(key: str, value: dict) -> None:
 def api_consult_review(
     files: Annotated[
         list[UploadFile],
-        File(description="1–3 PDF консультативных заключения (можно с разных приёмов)"),
+        File(description="1–3 файла консультативных заключений (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
     ],
     category_slugs: str = Form(
         "",
@@ -6098,7 +6311,7 @@ def api_consult_review(
         ),
     ),
 ) -> dict:
-    """Загрузка одного или нескольких PDF заключений → отбор фрагментов протоколов → JSON-оценка.
+    """Загрузка одного или нескольких файлов заключений → отбор фрагментов протоколов → JSON-оценка.
 
     Не медико-правовая экспертиза; ориентир для методиста при настроенном сервере обработки текста.
     """
@@ -6106,13 +6319,13 @@ def api_consult_review(
     if not files:
         raise HTTPException(
             status_code=400,
-            detail="Не переданы файлы: загрузите хотя бы один PDF.",
+            detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
         )
     max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 3)))
     if len(files) > max_n:
         raise HTTPException(
             status_code=400,
-            detail=f"Можно не более {max_n} PDF за один запрос.",
+            detail=f"Можно не более {max_n} файлов за один запрос.",
         )
 
     max_mb = env_float("CONSULT_REVIEW_MAX_MB", 15.0)
@@ -6122,42 +6335,32 @@ def api_consult_review(
     consult_docs_meta: list[dict] = []
     pdf_warnings: list[str] = []
     doc_texts_for_cache: list[str] = []
+    default_ext = ".txt"
 
     for i, uf in enumerate(files):
-        raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}.pdf"
-        low = raw_fn.lower()
-        if not low.endswith(".pdf"):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Файл «{raw_fn}»: ожидается расширение .pdf",
-            )
+        raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}{default_ext}"
         data = uf.file.read()
         if len(data) > lim_b:
             raise HTTPException(
                 status_code=400,
                 detail=f"Файл «{raw_fn}» превышает {max_mb} МБ",
             )
-        if not data[:5].startswith(b"%PDF-"):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Файл «{raw_fn}» не похож на PDF (неверная сигнатура).",
-            )
         try:
-            txt, warns = extract_pdf_text_from_bytes(data)
+            txt, warns = extract_consult_text_from_bytes(data, raw_fn)
         except HTTPException:
             raise
         except Exception as e:
             raise HTTPException(
                 status_code=400,
-                detail=f"Ошибка чтения PDF «{raw_fn}»: {e!s}",
+                detail=f"Ошибка чтения «{raw_fn}»: {e!s}",
             ) from e
         txt = txt.strip()
         if not txt:
             raise HTTPException(
                 status_code=400,
                 detail=(
-                    f"Не удалось извлечь текст из «{raw_fn}» (часто скан без текстового слоя). "
-                    "Нужен текстовый PDF или OCR."
+                    f"Не удалось извлечь текст из «{raw_fn}». "
+                    "Для PDF нужен текстовый слой (не только скан); для DOCX/TXT - непустой файл."
                 ),
             )
         for w in warns or []:
@@ -6165,14 +6368,19 @@ def api_consult_review(
 
         doc_texts_for_cache.append(_normalize_for_cache(txt))
         consult_docs_meta.append(
-            {"index": i + 1, "filename": raw_fn, "extraction_chars": len(txt)}
+            {
+                "index": i + 1,
+                "filename": raw_fn,
+                "extraction_chars": len(txt),
+                "format": _consult_extension(raw_fn) or _sniff_consult_format(data, ""),
+            }
         )
 
         shown_name = raw_fn.replace("\r", "").replace("\n", " ").strip()
         if len(shown_name) > 220:
             shown_name = shown_name[:217].rstrip() + "…"
         blocks.append(
-            f"=== ЗАКЛЮЧЕНИЕ {i + 1} ИЗ PDF: {shown_name} ===\n\n" + txt
+            f"=== ЗАКЛЮЧЕНИЕ {i + 1} ({shown_name}) ===\n\n" + txt
         )
 
     full_text = "\n\n".join(blocks).strip()
@@ -6180,7 +6388,7 @@ def api_consult_review(
     if len(full_text) > max_store:
         full_text = (
             full_text[:max_store].rstrip()
-            + "\n\n[…тексты объединённых PDF обрезаны для обработки]"
+            + "\n\n[…тексты объединённых файлов обрезаны для обработки]"
         )
 
     # Строгая воспроизводимость: одинаковое содержание PDF -> идентичный результат из кэша

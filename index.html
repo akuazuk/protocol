@@ -4926,7 +4926,7 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Проверка КЗ (PDF)</span>
+          <span class="app-main-tab-title">Проверка КЗ</span>
           <span class="app-main-tab-sub">методический контроль документации по протоколам</span>
         </span>
       </button>
@@ -5288,7 +5288,7 @@
             <div>
               <h2>Проверка консультативного заключения</h2>
               <p class="consult-hint-small" style="margin: 0.35rem 0 0; color: var(--green-800); font-weight: 600">
-                PDF с текстовым слоем → сверка с фрагментами клинических протоколов Минздрава РБ
+                PDF, TXT, DOCX, RTF, ODT, HTML → сверка с фрагментами клинических протоколов Минздрава РБ
               </p>
               <p class="consult-hint-small consult-intro-hide-print" style="margin: 0.5rem 0 0">
                 <a href="docs/mvp-presentation.html" target="_blank" rel="noopener">Презентация MVP для руководства</a>
@@ -5297,10 +5297,10 @@
             </div>
           </div>
           <p class="consult-hint-small">
-            Выберите <strong>сразу до трёх</strong> PDF консультативных заключений в одном окне (несколько приёмов: удерживайте
-            <strong>Ctrl</strong> или <strong>⌘</strong> и отметьте нужные файлы). Нужны PDF с текстовым слоем, не только сканы.
-            Сервис объединит тексты, отберёт подходящие фрагменты клинических протоколов Минздрава РБ в модели и даст
-            <strong>ориентировочную</strong> оценку соответствия (не МЭЭ и не юридическая экспертиза).
+            Выберите <strong>сразу до трёх</strong> файлов заключения в одном окне (PDF, TXT, DOCX, RTF, ODT, HTML и др.;
+            несколько приёмов: удерживайте <strong>Ctrl</strong> или <strong>⌘</strong>).
+            Для PDF нужен текстовый слой, не только скан. Сервис объединит тексты, отберёт фрагменты протоколов и даст
+            <strong>ориентировочную</strong> оценку (не МЭЭ и не юридическая экспертиза).
           </p>
           <p class="consult-hint-small" style="margin-top: 0.55rem">
             <strong>Жалобы и претензии.</strong> Расхождение между текстом заключения и протоколом часто становится предметом
@@ -5315,13 +5315,13 @@
 
         <div class="consult-upload-card consult-hide-print">
           <div class="consult-file-row">
-            <span class="consult-label" id="consult-pdf-label">Файлы PDF</span>
+            <span class="consult-label" id="consult-pdf-label">Файлы заключения</span>
             <div class="consult-file-controls">
               <input
                 type="file"
                 id="consult-pdf-file"
                 class="consult-file-native"
-                accept=".pdf,application/pdf"
+                accept=".pdf,.txt,.text,.md,.markdown,.docx,.rtf,.odt,.html,.htm,.csv,.json,.xml,.log,application/pdf,text/plain,text/html,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 multiple
                 aria-labelledby="consult-pdf-label"
               />
@@ -5337,7 +5337,7 @@
             </div>
           </div>
           <p class="consult-hint-small" style="margin-top: 0.5rem; margin-bottom: 0">
-            <strong>Три КЗ за раз:</strong> в диалоге «Выбрать» отметьте до трёх PDF одновременно (Ctrl/⌘ + щелчок).
+            <strong>Три КЗ за раз:</strong> в диалоге «Выбрать» отметьте до трёх файлов (Ctrl/⌘ + щелчок). Форматы: PDF, TXT, DOCX, RTF, ODT, HTML.
           </p>
 
           <details class="specialty-panel consult-slugs-panel" id="consult-rubrics-details">
@@ -9729,7 +9729,7 @@
       var w = document.createElement("p");
       w.className = "consult-hint-small";
       w.style.marginTop = "0.75rem";
-      w.textContent = "Предупреждения PDF: " + data.pdf_warnings.join("; ");
+      w.textContent = "Предупреждения при извлечении текста: " + data.pdf_warnings.join("; ");
       pw.appendChild(w);
     }
   }
@@ -9797,6 +9797,20 @@
     window.addEventListener("hashchange", applyMainTabFromHash);
     applyMainTabFromHash();
 
+    var CONSULT_FILE_EXTENSIONS = [
+      ".pdf", ".txt", ".text", ".md", ".markdown", ".docx", ".rtf", ".odt",
+      ".html", ".htm", ".csv", ".json", ".xml", ".log",
+    ];
+    function consultFileExtension(name) {
+      var low = String(name || "").trim().toLowerCase();
+      var dot = low.lastIndexOf(".");
+      return dot >= 0 ? low.slice(dot) : "";
+    }
+    function consultFileAllowed(name) {
+      var ext = consultFileExtension(name);
+      return ext && CONSULT_FILE_EXTENSIONS.indexOf(ext) >= 0;
+    }
+
     var pickBtn = document.getElementById("consult-btn-pick-file");
     var pdfInPick = document.getElementById("consult-pdf-file");
     var fnLbl = document.getElementById("consult-file-name");
@@ -9810,7 +9824,7 @@
       }
       fnLbl.classList.remove("consult-file-name--empty");
       if (nf === 1) {
-        fnLbl.textContent = pdfInPick.files[0].name + " (всего 1 PDF)";
+        fnLbl.textContent = pdfInPick.files[0].name + " (1 файл)";
         return;
       }
       var names = [];
@@ -9821,7 +9835,7 @@
         names.push(pdfInPick.files[k].name);
       }
       var tail = nf > maxList ? " и ещё " + (nf - maxList) : "";
-      fnLbl.textContent = nf + " PDF: " + names.join(", ") + tail;
+      fnLbl.textContent = nf + " файла: " + names.join(", ") + tail;
     }
     if (pickBtn && pdfInPick) {
       pickBtn.addEventListener("click", function () {
@@ -9929,21 +9943,22 @@
       var list = inpF && inpF.files ? inpF.files : null;
       var nPdf = list ? list.length : 0;
       if (!nPdf) {
-        errEl.textContent = "Выберите один или несколько PDF (до трёх файлов за раз).";
+        errEl.textContent = "Выберите один или несколько файлов заключения (до трёх за раз).";
         errEl.hidden = false;
         return;
       }
       if (nPdf > 3) {
-        errEl.textContent = "За один раз можно не более трёх PDF. Уберите лишние файлы или запустите анализ несколько раз.";
+        errEl.textContent = "За один раз можно не более трёх файлов. Уберите лишние или запустите анализ несколько раз.";
         errEl.hidden = false;
         return;
       }
       var qi;
       for (qi = 0; qi < nPdf; qi++) {
-        var fnm = String(list[qi].name || "").trim().toLowerCase();
-        if (!fnm.endsWith(".pdf")) {
+        if (!consultFileAllowed(list[qi].name)) {
           errEl.textContent =
-            "Поддерживаются только PDF — проверьте файл «" + (list[qi].name || "") + "».";
+            "Формат не поддерживается - проверьте файл «" +
+            (list[qi].name || "") +
+            "». Допустимо: PDF, TXT, DOCX, RTF, ODT, HTML и др.";
           errEl.hidden = false;
           return;
         }
