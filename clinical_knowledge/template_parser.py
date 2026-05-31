@@ -52,9 +52,10 @@ def parse_template_blocks(text: str) -> list[TemplateBlock]:
     cur_icd: str | None = None
     cur_label: str | None = None
     cur_items: list[str] = []
+    cur_source_lines: list[str] = []
 
     def _flush():
-        nonlocal cur_label, cur_items
+        nonlocal cur_label, cur_items, cur_source_lines
         if cur_diag is not None and cur_label is not None:
             blocks.append(
                 TemplateBlock(
@@ -62,10 +63,12 @@ def parse_template_blocks(text: str) -> list[TemplateBlock]:
                     icd10_code=cur_icd,
                     block_type=_block_type(cur_label),
                     items=[it for it in cur_items if it],
+                    source_text="\n".join(cur_source_lines)[:800],
                 )
             )
         cur_label = None
         cur_items = []
+        cur_source_lines = []
 
     for line in lines:
         mdiag = RE_DIAG_HEADER.match(line)
@@ -79,8 +82,10 @@ def parse_template_blocks(text: str) -> list[TemplateBlock]:
         if mblk and cur_diag is not None:
             _flush()
             cur_label = mblk.group(1).strip()
+            cur_source_lines = [line]
             continue
         if cur_label is not None:
+            cur_source_lines.append(line)
             item = line.strip(" -—\t•*")
             if item:
                 cur_items.append(item)

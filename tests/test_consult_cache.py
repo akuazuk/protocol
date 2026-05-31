@@ -51,6 +51,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     rs._consult_cache_order.clear()
     monkeypatch.setenv("CONSULT_REVIEW_CACHE", "1")
     monkeypatch.setenv("CONSULT_REVIEW_RAG_SECOND_PASS", "0")
+    monkeypatch.setenv("CONSULT_REVIEW_STRICT_PROTOCOLS", "0")
 
     icd_analysis = {"codes_for_retrieval": [], "detected": [], "suggested": []}
     fake_rows = [

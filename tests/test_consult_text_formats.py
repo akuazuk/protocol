@@ -78,6 +78,7 @@ def test_consult_review_accepts_txt(client, monkeypatch) -> None:
     rs._consult_review_cache.clear()
     rs._consult_cache_order.clear()
     monkeypatch.setenv("CONSULT_REVIEW_CACHE", "0")
+    monkeypatch.setenv("CONSULT_REVIEW_STRICT_PROTOCOLS", "0")
 
     called = {"n": 0}
 

@@ -12,7 +12,7 @@ from .condition_registry import infer_conditions_hints
 from .consult_parser import parse_consultation
 from .consult_report import report_to_html, report_to_json, report_to_markdown
 from .consult_schema import ConsultationDocument
-from .protocol_match import annotate_applicability, match_protocol_cards
+from .protocol_match import annotate_applicability, match_protocol_cards, match_protocol_cards_for_diagnoses
 from .rubric_extractors import (
     extract_rubric_specifics,
     normalize_rubric_slug,
@@ -90,12 +90,37 @@ def analyze_consultation_text(
     effective_slug = specialty_slug or doctor_rubric or icd_rubric
 
     try:
-        matches = match_protocol_cards(facts, specialty_slug=effective_slug, limit=match_limit)
-        # Если жёсткое ограничение по рубрике ничего не дало — мягкий фолбэк без фильтра.
+        dx_payload = [
+            {
+                "diagnosis_id": d.diagnosis_id or f"dx{i}",
+                "icd10_code": d.icd10_code,
+                "raw_text": d.raw_text,
+                "certainty": d.certainty,
+            }
+            for i, d in enumerate(doc.diagnoses)
+        ]
+        applicable, not_applicable = match_protocol_cards_for_diagnoses(
+            facts,
+            dx_payload,
+            specialty_slug=effective_slug,
+            limit_per_dx=3,
+            limit_total=match_limit,
+        )
+        matches = applicable
         if not matches and effective_slug:
-            matches = match_protocol_cards(facts, specialty_slug=None, limit=match_limit)
+            applicable, not_applicable = match_protocol_cards_for_diagnoses(
+                facts, dx_payload, specialty_slug=None, limit_per_dx=3, limit_total=match_limit,
+            )
+            matches = applicable
     except Exception:
         matches = []
+        not_applicable = []
+        try:
+            matches = match_protocol_cards(facts, specialty_slug=effective_slug, limit=match_limit)
+            if not matches and effective_slug:
+                matches = match_protocol_cards(facts, specialty_slug=None, limit=match_limit)
+        except Exception:
+            matches = []
     matches = annotate_applicability(matches, _patient_dict(doc))
 
     try:
@@ -103,7 +128,9 @@ def analyze_consultation_text(
     except Exception:
         rules_check = {}
 
-    report = build_compliance_report(doc, matches=matches, rules_check=rules_check)
+    report = build_compliance_report(
+        doc, matches=matches, rules_check=rules_check, not_applicable_matches=not_applicable,
+    )
 
     try:
         # Якорь рубрики — специальность врача/глава МКБ; иначе топ рубрик подбора.

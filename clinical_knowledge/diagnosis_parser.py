@@ -100,7 +100,12 @@ def parse_diagnoses(
                 icd = codes[0]
         certainty = _certainty(low)
         role = _role(low, i)
-        if certainty == "suspected" and role not in ("primary", "secondary"):
+        safety_flags: list[str] = []
+        if any(mk in low for mk in MALIGNANCY_MARKERS):
+            safety_flags.append("possible_malignancy")
+            if role not in ("primary", "secondary"):
+                role = "red_flag_finding"
+        if certainty == "suspected" and role not in ("primary", "secondary", "red_flag_finding"):
             role = "suspected"
         out.append(
             ConsultationDiagnosis(
@@ -111,7 +116,9 @@ def parse_diagnoses(
                 diagnosis_role=role,
                 certainty=certainty,
                 is_protocol_relevant=certainty != "excluded",
+                safety_flags=safety_flags,
                 source_section=source_section,
+                source_text=line[:300],
             )
         )
     return out

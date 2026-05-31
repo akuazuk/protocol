@@ -20,20 +20,28 @@ class BatchRow:
     consultation_id: str
     overall_status: str | None = None
     overall_score: float | None = None
+    confidence_score: float | None = None
     critical_count: int = 0
+    major_count: int = 0
     warnings_count: int = 0
     missing_required_count: int = 0
+    safety_cap_applied: bool = False
+    protocols_matched: int = 0
     error: str | None = None
 
-    def to_csv_dict(self) -> dict[str, str | int | float | None]:
+    def to_csv_dict(self) -> dict[str, str | int | float | bool | None]:
         return {
             "file": self.file,
             "consultation_id": self.consultation_id,
             "overall_status": self.overall_status or "",
             "overall_score": self.overall_score if self.overall_score is not None else "",
+            "confidence_score": self.confidence_score if self.confidence_score is not None else "",
             "critical_count": self.critical_count,
+            "major_count": self.major_count,
             "warnings_count": self.warnings_count,
             "missing_required_count": self.missing_required_count,
+            "safety_cap_applied": self.safety_cap_applied,
+            "protocols_matched": self.protocols_matched,
             "error": self.error or "",
         }
 
@@ -92,9 +100,14 @@ def run_batch(
             row.overall_status = comp.get("overall_status")
             bd = comp.get("score_breakdown") or {}
             row.overall_score = bd.get("overall_score")
+            row.confidence_score = comp.get("confidence_score")
             row.critical_count = len(comp.get("critical_issues") or [])
+            row.major_count = len(comp.get("major_issues") or [])
             row.warnings_count = len(comp.get("warnings") or [])
             row.missing_required_count = len(comp.get("missing_required_items") or [])
+            cap = comp.get("safety_cap") or {}
+            row.safety_cap_applied = bool(cap.get("applied"))
+            row.protocols_matched = len(comp.get("matched_protocols") or [])
         except Exception as exc:  # noqa: BLE001 — batch не падает на одном файле
             row.error = str(exc)[:300]
         rows.append(row)
@@ -127,15 +140,18 @@ def _write_batch_md(path: Path, rows: list[BatchRow], *, folder: Path) -> None:
         f"Папка: `{folder}`",
         f"Файлов: {len(rows)}",
         "",
-        "| Файл | Статус | Оценка | Критич. | Предупр. | Пропуски | Ошибка |",
-        "| --- | --- | ---: | ---: | ---: | ---: | --- |",
+        "| Файл | Статус | Оценка | Confidence | Критич. | Major | Предупр. | Пропуски | Cap | Проток. | Ошибка |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
     ]
     for r in rows:
         score = f"{r.overall_score:.0f}" if isinstance(r.overall_score, (int, float)) else "—"
-        err = (r.error or "")[:80].replace("|", "/")
+        conf = f"{r.confidence_score:.0f}" if isinstance(r.confidence_score, (int, float)) else "—"
+        err = (r.error or "")[:60].replace("|", "/")
+        cap = "да" if r.safety_cap_applied else "—"
         lines.append(
-            f"| {r.file} | {r.overall_status or '—'} | {score} | "
-            f"{r.critical_count} | {r.warnings_count} | {r.missing_required_count} | {err or '—'} |"
+            f"| {r.file} | {r.overall_status or '—'} | {score} | {conf} | "
+            f"{r.critical_count} | {r.major_count} | {r.warnings_count} | "
+            f"{r.missing_required_count} | {cap} | {r.protocols_matched} | {err or '—'} |"
         )
     lines.append("")
     path.write_text("\n".join(lines), encoding="utf-8")

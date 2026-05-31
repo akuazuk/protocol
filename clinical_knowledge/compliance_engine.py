@@ -26,10 +26,12 @@ from .consult_schema import (
     StructuralAssessment,
     TreatmentAssessment,
 )
+from .confidence_scoring import apply_confidence_status, compute_confidence_score
+from .evidence_map import build_evidence_map
 from .protocol_compliance_checker import run_protocol_compliance_check
 from .requirement_checker import run_requirement_check
-from .safety_checker import has_unhandled_critical, run_safety_checks
-from .scoring import compute_overall
+from .safety_checker import apply_safety_cap_to_score, has_unhandled_critical, run_safety_checks
+from .scoring import compute_overall, sync_score_aliases
 
 _ROUTING_MARKERS = (
     "консультац", "направлен", "госпитализац", "маршрут", "дообследован",
@@ -52,8 +54,10 @@ def _protocol_matches(matches: list[dict[str, Any]]) -> list[ProtocolMatchResult
         out.append(
             ProtocolMatchResult(
                 protocol_id=str(m.get("protocol_id") or ""),
+                diagnosis_id=m.get("diagnosis_id"),
                 document_title=m.get("title"),
                 source_path=m.get("source_path"),
+                rubric_name=m.get("specialty_slug"),
                 matched_condition=m.get("matched_condition") or m.get("title"),
                 match_score=float(m.get("match_score") or 0.0),
                 match_reasons=list(m.get("match_reasons") or []),
@@ -349,6 +353,8 @@ def build_compliance_report(
     doc: ConsultationDocument,
     matches: list[dict[str, Any]] | None = None,
     rules_check: dict[str, Any] | None = None,
+    *,
+    not_applicable_matches: list[dict[str, Any]] | None = None,
 ) -> ComplianceReport:
     """Собрать ComplianceReport из разобранного КЗ, матчей и результата проверки правил."""
     matches = matches or []
@@ -386,8 +392,10 @@ def build_compliance_report(
         pm_score = None
 
     breakdown = ScoreBreakdown(
+        documentation_score=structural.structural_score,
         structural_score=structural.structural_score,
         patient_data_score=structural.patient_data_score,
+        protocol_applicability_score=pm_score,
         protocol_match_score=pm_score,
         diagnosis_score=diag_score,
         required_exams_score=exams_score,
@@ -396,28 +404,82 @@ def build_compliance_report(
         follow_up_score=follow_score,
         documentation_quality_score=doc_score,
     )
+    has_protocol = bool(_applicable_matches(matches))
     force_manual = has_unhandled_critical(safety)
-    overall, status = compute_overall(breakdown, force_manual_review=force_manual)
+    overall, status = compute_overall(
+        breakdown, force_manual_review=force_manual, has_protocol_data=has_protocol,
+    )
+    breakdown = sync_score_aliases(breakdown)
     breakdown.overall_score = overall
 
+    evidence_map = build_evidence_map(
+        doc, rules_check,
+        patient={
+            "age_years": doc.patient.age_years,
+            "sex": doc.patient.sex,
+            "pregnancy": doc.patient.pregnancy,
+            "adult_or_child": doc.patient.adult_or_child,
+        },
+    )
+
+    draft = ComplianceReport(
+        consultation_id=doc.consultation_id,
+        source_file=doc.source_file,
+        overall_score=overall,
+        overall_status=status,  # type: ignore[arg-type]
+        score_breakdown=breakdown,
+        protocol_matches=_protocol_matches(matches),
+        not_applicable_protocols=_protocol_matches(not_applicable_matches or []),
+        evidence_map=evidence_map,
+    )
+    confidence = compute_confidence_score(doc, draft, rules_check=rules_check)
+    breakdown.confidence_score = confidence
+    draft.confidence_score = confidence
+    draft.score_breakdown = breakdown
+    status = apply_confidence_status(status, confidence)
+    draft.overall_status = status  # type: ignore[assignment]
+
+    capped_score, cap_info = apply_safety_cap_to_score(draft.overall_score, safety)
+    if cap_info.applied and capped_score is not None:
+        draft.overall_score = capped_score
+        draft.score_breakdown.overall_score = capped_score
+    draft.safety_cap = cap_info
+
+    limitations: list[str] = []
+    if not has_protocol:
+        limitations.append("Не найден применимый протокол — клиническая оценка ограничена.")
+    if confidence < 55:
+        limitations.append("Низкая уверенность разбора — рекомендуется ручная проверка.")
+    draft.limitations = limitations
+
     missing_items: list[ComplianceIssue] = []
+    major_items: list[ComplianceIssue] = []
     warnings: list[ComplianceIssue] = []
     critical: list[ComplianceIssue] = []
     for iss in req_issues:
         if iss.issue_type in structural.missing_required:
             missing_items.append(iss)
-        elif iss.severity in ("critical", "high"):
-            if iss.issue_type in ("diagnosis", "recommendations", "routing_red_flag"):
-                critical.append(iss)
-            else:
-                warnings.append(iss)
+        elif iss.severity == "critical":
+            critical.append(iss)
+        elif iss.severity == "high":
+            major_items.append(iss)
         else:
             warnings.append(iss)
     for iss in proto_issues:
-        (critical if iss.severity in ("critical", "high") else warnings).append(iss)
+        if iss.severity == "critical":
+            critical.append(iss)
+        elif iss.severity == "high":
+            major_items.append(iss)
+        else:
+            warnings.append(iss)
     for a in diag_assess:
         for iss in a.issues:
-            (critical if iss.severity in ("critical", "high") else warnings).append(iss)
+            if iss.severity == "critical":
+                critical.append(iss)
+            elif iss.severity == "high":
+                major_items.append(iss)
+            else:
+                warnings.append(iss)
     for ex in exam_assess:
         if ex.status == "missing_required":
             missing_items.append(
@@ -440,26 +502,20 @@ def build_compliance_report(
         if m.get("source_path"):
             refs.append(SourceRef(local_path=m.get("source_path"), protocol_id=str(m.get("protocol_id") or "") or None))
 
-    return ComplianceReport(
-        consultation_id=doc.consultation_id,
-        source_file=doc.source_file,
-        overall_score=overall,
-        overall_status=status,  # type: ignore[arg-type]
-        score_breakdown=breakdown,
-        protocol_matches=_protocol_matches(matches),
-        diagnosis_assessments=diag_assess,
-        section_quality=section_q,
-        structural_assessment=structural,
-        protocol_assessment=proto_assess,
-        exam_assessments=exam_assess,
-        treatment_assessments=treat_assess,
-        safety_assessments=safety,
-        missing_required_items=missing_items,
-        warnings=warnings,
-        critical_issues=critical,
-        explanation=(
-            f"Детерминированная оценка по {sum(1 for v in [pm_score, diag_score, exams_score, treat_score, safety_score, doc_score] if v is not None)} "
-            f"блокам; статус: {status}."
-        ),
-        source_refs=refs,
+    draft.diagnosis_assessments = diag_assess
+    draft.section_quality = section_q
+    draft.structural_assessment = structural
+    draft.protocol_assessment = proto_assess
+    draft.exam_assessments = exam_assess
+    draft.treatment_assessments = treat_assess
+    draft.safety_assessments = safety
+    draft.missing_required_items = missing_items
+    draft.major_issues = major_items
+    draft.warnings = warnings
+    draft.critical_issues = critical
+    draft.explanation = (
+        f"Детерминированная оценка (score_source=deterministic); "
+        f"confidence={confidence}%; статус: {draft.overall_status}."
     )
+    draft.source_refs = refs
+    return draft

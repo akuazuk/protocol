@@ -18,6 +18,8 @@ _OVERALL_RU = {
     "partially_compliant": "частично соответствует",
     "non_compliant": "не соответствует",
     "insufficient_data": "недостаточно данных",
+    "insufficient_protocol_data": "нет данных протокола",
+    "low_confidence": "низкая уверенность",
     "manual_review_required": "нужен ручной разбор",
 }
 _DIAG_RU = {
@@ -151,6 +153,7 @@ def report_to_json(
 
     all_issues = (
         list(report.critical_issues)
+        + list(report.major_issues)
         + list(report.missing_required_items)
         + list(report.warnings)
     )
@@ -162,13 +165,18 @@ def report_to_json(
         "doctor_specialty": doctor_specialty,
         "consultation_date": consultation_date,
         "matched_protocols": [m.model_dump(mode="json") for m in report.protocol_matches],
+        "not_applicable_protocols": [m.model_dump(mode="json") for m in report.not_applicable_protocols],
         "diagnoses": [d.model_dump(mode="json") for d in (doc.diagnoses if doc else [])],
         "overall_score": report.overall_score,
+        "confidence_score": report.confidence_score,
+        "score_source": report.score_source,
+        "llm_score_ignored": report.llm_score_ignored,
         "score_breakdown": report.score_breakdown.model_dump(mode="json"),
         "overall_status": report.overall_status,
         "structural_assessment": report.structural_assessment.model_dump(mode="json"),
         "protocol_assessment": report.protocol_assessment.model_dump(mode="json"),
         "critical_issues": [i.model_dump(mode="json") for i in report.critical_issues],
+        "major_issues": [i.model_dump(mode="json") for i in report.major_issues],
         "warnings": [i.model_dump(mode="json") for i in report.warnings],
         "missing_required_items": [i.model_dump(mode="json") for i in report.missing_required_items],
         "issues": [i.model_dump(mode="json") for i in all_issues],
@@ -176,6 +184,9 @@ def report_to_json(
         "exam_assessments": [a.model_dump(mode="json") for a in report.exam_assessments],
         "treatment_assessments": [a.model_dump(mode="json") for a in report.treatment_assessments],
         "safety_assessments": [a.model_dump(mode="json") for a in report.safety_assessments],
+        "evidence_map": [e.model_dump(mode="json") for e in report.evidence_map],
+        "safety_cap": report.safety_cap.model_dump(mode="json"),
+        "limitations": list(report.limitations),
         "source_refs": [r.model_dump(mode="json") for r in report.source_refs],
         "explanation": report.explanation,
     }
@@ -454,6 +465,16 @@ def report_to_markdown(
         f"- Общая оценка: {_fmt_pct(report.overall_score)} — статус "
         f"**{_OVERALL_RU.get(report.overall_status, report.overall_status)}**"
     )
+    if report.confidence_score is not None:
+        L.append(f"- Уверенность разбора (confidence): {_fmt_pct(report.confidence_score)}")
+    if report.score_source:
+        L.append(f"- Источник оценки: {report.score_source}" + (" (LLM-score не используется)" if report.llm_score_ignored else ""))
+    if report.safety_cap.applied:
+        L.append(f"- ⚠️ Safety cap: {report.safety_cap.reason or 'применён'} (лимит {_fmt_pct(report.safety_cap.cap_value)})")
+    if report.limitations:
+        L.append("- Ограничения:")
+        for lim in report.limitations:
+            L.append(f"  - {lim}")
     L.append("")
 
     # 2. Структура КЗ (requirement checker)
@@ -536,6 +557,12 @@ def report_to_markdown(
                 L.append(f"  - − {r}")
     else:
         L.append("- Подходящие протоколы не подобраны.")
+    if report.not_applicable_protocols:
+        L.append("- **Не применимы (возраст/пол/аудитория):**")
+        for m in report.not_applicable_protocols[:5]:
+            L.append(f"  - {m.document_title or m.protocol_id} — {m.applicability}")
+            for r in m.mismatch_reasons[:2]:
+                L.append(f"    - {r}")
     L.append("")
 
     # 6. Обследования
@@ -594,8 +621,24 @@ def report_to_markdown(
             L.append("- Дата или срок повторной явки не указаны.")
     L.append("")
 
+    # 9a. Evidence map
+    if report.evidence_map:
+        L.append("## 9a. Карта доказательств (evidence map)")
+        for ev in report.evidence_map[:20]:
+            L.append(f"- **{ev.rule_id}** ({ev.rule_type}): {ev.decision} — {ev.explanation or '—'}")
+            if ev.consultation_evidence:
+                L.append(f"  - КЗ: {ev.consultation_evidence[0][:120]}")
+            if ev.protocol_evidence:
+                L.append(f"  - протокол: {ev.protocol_evidence[0][:120]}")
+        L.append("")
+
     # 10. Все замечания
-    all_issues = list(report.critical_issues) + list(report.missing_required_items) + list(report.warnings)
+    all_issues = (
+        list(report.critical_issues)
+        + list(report.major_issues)
+        + list(report.missing_required_items)
+        + list(report.warnings)
+    )
     L.append("## 10. Все замечания")
     if all_issues:
         for sev_label, sevs in (

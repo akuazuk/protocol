@@ -119,11 +119,13 @@ class ConsultationDiagnosis(_Base):
     diagnosis_name: str | None = None
     diagnosis_role: Literal[
         "primary", "secondary", "comorbidity", "symptom",
-        "suspected", "finding", "unknown",
+        "suspected", "finding", "red_flag_finding", "unknown",
     ] = "unknown"
     certainty: Literal["confirmed", "suspected", "excluded", "unclear"] = "unclear"
     is_protocol_relevant: bool = True
+    safety_flags: list[str] = Field(default_factory=list)
     source_section: str | None = None
+    source_text: str | None = None
 
 
 class ExamItem(_Base):
@@ -184,6 +186,7 @@ class TemplateBlock(_Base):
         "follow_up", "treatment", "care", "unknown",
     ] = "unknown"
     items: list[str] = Field(default_factory=list)
+    source_text: str = ""
 
 
 class ExtractionQuality(_Base):
@@ -232,6 +235,7 @@ class ConsultationDocument(_Base):
 # --------------------------------------------------------------------------- #
 class ProtocolMatchResult(_Base):
     protocol_id: str
+    diagnosis_id: str | None = None
     rubric_name: str | None = None
     document_title: str | None = None
     source_path: str | None = None
@@ -242,6 +246,9 @@ class ProtocolMatchResult(_Base):
     applicability: Literal[
         "applicable", "possibly_applicable", "not_applicable", "unknown",
     ] = "unknown"
+    age_applicability: str | None = None
+    sex_applicability: str | None = None
+    pregnancy_applicability: str | None = None
     source_refs: list[SourceRef] = Field(default_factory=list)
 
 
@@ -270,7 +277,7 @@ class ExamAssessment(_Base):
     exam_type: str = "unknown"
     status: Literal[
         "present_performed", "present_recommended", "missing_required",
-        "missing_conditional", "not_applicable", "extra_not_assessed",
+        "missing_conditional", "not_applicable", "extra_not_assessed", "unknown",
     ] = "not_applicable"
     reason: str = ""
     consultation_evidence: list[str] = Field(default_factory=list)
@@ -345,22 +352,54 @@ class ProtocolAssessment(_Base):
     summary_ru: str = ""
 
 
+class EvidenceMapItem(_Base):
+    rule_id: str
+    rule_type: str
+    required_item: str | None = None
+    found_in_consultation: bool = False
+    found_status: Literal[
+        "performed", "recommended", "mentioned",
+        "not_found", "not_applicable", "unknown",
+    ] = "unknown"
+    consultation_evidence: list[str] = Field(default_factory=list)
+    protocol_evidence: list[str] = Field(default_factory=list)
+    decision: Literal[
+        "satisfied", "satisfied_by_recommendation", "missing",
+        "not_applicable", "manual_review", "unknown",
+    ] = "unknown"
+    explanation: str = ""
+    source_refs: list[SourceRef] = Field(default_factory=list)
+
+
+class SafetyCapInfo(_Base):
+    applied: bool = False
+    reason: str | None = None
+    cap_value: float | None = None
+
+
 class ScoreBreakdown(_Base):
-    structural_score: float | None = None
+    # v2 names (ТЗ improve_kz §4)
+    documentation_score: float | None = None
     patient_data_score: float | None = None
-    protocol_match_score: float | None = None
+    protocol_applicability_score: float | None = None
     diagnosis_score: float | None = None
+    diagnostic_criteria_score: float | None = None
     required_exams_score: float | None = None
     treatment_score: float | None = None
     safety_score: float | None = None
     follow_up_score: float | None = None
+    confidence_score: float | None = None
+    # legacy aliases (backward compat)
+    structural_score: float | None = None
+    protocol_match_score: float | None = None
     documentation_quality_score: float | None = None
     overall_score: float | None = None
 
 
 OverallStatus = Literal[
     "compliant", "mostly_compliant", "partially_compliant",
-    "non_compliant", "insufficient_data", "manual_review_required",
+    "non_compliant", "insufficient_data", "insufficient_protocol_data",
+    "low_confidence", "manual_review_required",
 ]
 
 
@@ -368,10 +407,17 @@ class ComplianceReport(_Base):
     consultation_id: str
     source_file: str = ""
     overall_score: float | None = None
+    confidence_score: float | None = None
     overall_status: OverallStatus = "insufficient_data"
+    score_source: str = "deterministic"
+    llm_score_ignored: bool = True
+    llm_used_for: list[str] = Field(default_factory=lambda: [
+        "query_focus", "evidence_summarization", "expert_explanation",
+    ])
 
     score_breakdown: ScoreBreakdown = Field(default_factory=ScoreBreakdown)
     protocol_matches: list[ProtocolMatchResult] = Field(default_factory=list)
+    not_applicable_protocols: list[ProtocolMatchResult] = Field(default_factory=list)
     diagnosis_assessments: list[DiagnosisAssessment] = Field(default_factory=list)
     section_quality: SectionQualityAssessment = Field(default_factory=SectionQualityAssessment)
     structural_assessment: StructuralAssessment = Field(default_factory=StructuralAssessment)
@@ -379,11 +425,15 @@ class ComplianceReport(_Base):
     exam_assessments: list[ExamAssessment] = Field(default_factory=list)
     treatment_assessments: list[TreatmentAssessment] = Field(default_factory=list)
     safety_assessments: list[SafetyAssessment] = Field(default_factory=list)
+    evidence_map: list[EvidenceMapItem] = Field(default_factory=list)
 
     missing_required_items: list[ComplianceIssue] = Field(default_factory=list)
+    major_issues: list[ComplianceIssue] = Field(default_factory=list)
     warnings: list[ComplianceIssue] = Field(default_factory=list)
     critical_issues: list[ComplianceIssue] = Field(default_factory=list)
 
+    safety_cap: SafetyCapInfo = Field(default_factory=SafetyCapInfo)
+    limitations: list[str] = Field(default_factory=list)
     explanation: str = ""
     source_refs: list[SourceRef] = Field(default_factory=list)
 

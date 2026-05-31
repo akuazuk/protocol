@@ -8,6 +8,7 @@ from typing import Any
 from .condition_registry import CONDITION_BY_ID, infer_conditions_hints
 from .loader import load_conditions, load_rules_by_condition
 from .rule_filter import filter_rules_for_matched_protocols, matched_source_paths
+from .rule_model import legacy_rule_to_protocol_rule, rule_applicable_to_patient
 
 
 def _norm(s: str) -> str:
@@ -337,15 +338,31 @@ def run_rule_checker(
                     }
                 )
         for rule in filter_rules_for_matched_protocols(rules, matched_protocols):
+            proto = legacy_rule_to_protocol_rule(rule)
+            if not rule_applicable_to_patient(proto, ctx):
+                all_findings.append(
+                    {
+                        "rule_id": rule.get("rule_id"),
+                        "rule_type": rule.get("rule_type"),
+                        "severity": "info",
+                        "passed": True,
+                        "skipped": True,
+                        "not_applicable": True,
+                        "message_ru": "Правило неприменимо по возрасту/полу/беременности — не учитывается в score.",
+                        "source": rule.get("source"),
+                    }
+                )
+                continue
             all_findings.append(_run_rule(rule, consult_facts))
 
-    failed = [f for f in all_findings if not f.get("passed")]
+    failed = [f for f in all_findings if not f.get("passed") and not f.get("skipped")]
     critical = [f for f in failed if f.get("severity") == "critical"]
 
     compliance_pct = None
     if all_findings:
-        passed_n = sum(1 for f in all_findings if f.get("passed"))
-        compliance_pct = round(100.0 * passed_n / len(all_findings), 1)
+        scored = [f for f in all_findings if not f.get("skipped")]
+        passed_n = sum(1 for f in scored if f.get("passed"))
+        compliance_pct = round(100.0 * passed_n / len(scored), 1) if scored else None
 
     return {
         "checked_conditions": checked_conditions,

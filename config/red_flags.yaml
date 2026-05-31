@@ -10,6 +10,7 @@ red_flags:
       - образование кишки
       - новообразование
     severity: critical
+    cap_if_unhandled: 45
     expected_actions:
       - дообследование
       - консультация профильного специалиста
@@ -23,6 +24,7 @@ red_flags:
       - тгв
       - тромбофлебит
     severity: high
+    cap_if_unhandled: 55
     expected_actions:
       - антикоагулянтная терапия
       - контроль узи
@@ -35,6 +37,7 @@ red_flags:
       - ana
       - anti-dna
     severity: medium
+    cap_if_unhandled: 65
     expected_actions:
       - лабораторное обследование
       - консультация ревматолога по показаниям
@@ -48,6 +51,7 @@ red_flags:
       - фебрильн
       - гнойн
     severity: high
+    cap_if_unhandled: 55
     expected_actions:
       - антибактериальная терапия
       - госпитализация по показаниям
@@ -61,7 +65,21 @@ red_flags:
       - мелена
       - кровотечени
     severity: high
+    cap_if_unhandled: 50
     expected_actions:
       - дообследование
       - консультация профильного специалиста
       - контроль анализов
+
+  drug_safety:
+    keywords:
+      - преднизолон
+      - гидроксихлорохин
+      - ривароксабан
+      - ривороксабан
+    severity: medium
+    cap_if_unhandled: 60
+    expected_actions:
+      - длительность
+      - контроль безопасности
+      - повторная явка
