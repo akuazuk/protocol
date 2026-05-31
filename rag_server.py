@@ -5713,7 +5713,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r51-consult-report-visual"
+BUILD_VERSION = "2026-05-31-r52-evidence-map-ru"
 
 
 def _app_version() -> str:

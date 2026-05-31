@@ -10,6 +10,7 @@ from typing import Any
 from .consult_schema import ComplianceReport, ConsultationDocument, SourceRef
 from .privacy import name_to_initials
 from .protocol_links import protocol_display_name, protocol_pdf_api_path, protocol_rubric_label
+from .rule_labels_ru import decision_ru, rule_title_ru, rule_type_ru
 
 # Русские подписи статусов/значений для человекочитаемого отчёта.
 _OVERALL_RU = {
@@ -531,6 +532,8 @@ def report_to_html(
         )
         for ev in report.evidence_map[:16]:
             dec = ev.decision or "unknown"
+            dec_label = ev.decision_ru or decision_ru(dec)
+            title = ev.title_ru or rule_title_ru(ev.rule_id, {})
             dec_color = {
                 "satisfied": "#0d7a4a",
                 "satisfied_by_recommendation": "#1a7f5a",
@@ -538,10 +541,12 @@ def report_to_html(
                 "not_applicable": "#64748b",
                 "manual_review": "#9333ea",
             }.get(dec, "#475569")
+            type_label = ev.rule_type_ru or rule_type_ru(ev.rule_type)
             parts.append(
                 f'<div class="cr-evidence-card" style="border-left-color:{dec_color}">'
-                f'<div class="cr-evidence-card__id">{_e(ev.rule_id)}</div>'
-                f'<div class="cr-evidence-card__dec">{_e(dec)}</div>'
+                f'<div class="cr-evidence-card__id">{_e(title)}</div>'
+                f'<div class="cr-evidence-card__dec">{_e(dec_label)}'
+                f' · <span class="cr-evidence-card__type">{_e(type_label)}</span></div>'
                 f'<div class="cr-evidence-card__txt">{_e(ev.explanation or ev.required_item or "")}</div>'
                 f"</div>"
             )
@@ -784,7 +789,9 @@ def report_to_markdown(
     if report.evidence_map:
         L.append("## 9a. Карта доказательств (evidence map)")
         for ev in report.evidence_map[:20]:
-            L.append(f"- **{ev.rule_id}** ({ev.rule_type}): {ev.decision} — {ev.explanation or '—'}")
+            title = ev.title_ru or rule_title_ru(ev.rule_id, {})
+            dec_label = ev.decision_ru or decision_ru(ev.decision)
+            L.append(f"- **{title}** ({dec_label}): {ev.explanation or '—'}")
             if ev.consultation_evidence:
                 L.append(f"  - КЗ: {ev.consultation_evidence[0][:120]}")
             if ev.protocol_evidence:

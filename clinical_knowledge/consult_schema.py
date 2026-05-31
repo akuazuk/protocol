@@ -354,19 +354,23 @@ class ProtocolAssessment(_Base):
 
 class EvidenceMapItem(_Base):
     rule_id: str
-    rule_type: str
+    title_ru: str = ""
+    rule_type: str = ""
+    rule_type_ru: str = ""
     required_item: str | None = None
     found_in_consultation: bool = False
     found_status: Literal[
         "performed", "recommended", "mentioned",
         "not_found", "not_applicable", "unknown",
     ] = "unknown"
+    found_status_ru: str = ""
     consultation_evidence: list[str] = Field(default_factory=list)
     protocol_evidence: list[str] = Field(default_factory=list)
     decision: Literal[
         "satisfied", "satisfied_by_recommendation", "missing",
         "not_applicable", "manual_review", "unknown",
     ] = "unknown"
+    decision_ru: str = ""
     explanation: str = ""
     source_refs: list[SourceRef] = Field(default_factory=list)
 

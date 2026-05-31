@@ -6,6 +6,7 @@ from hashlib import sha256
 from typing import Any
 
 from .condition_registry import CONDITION_BY_ID, infer_conditions_hints
+from .rule_labels_ru import localize_message_ru, population_ru, rule_title_ru
 from .loader import load_conditions, load_rules_by_condition
 from .rule_filter import filter_rules_for_matched_protocols, matched_source_paths
 from .rule_model import legacy_rule_to_protocol_rule, rule_applicable_to_patient
@@ -140,7 +141,8 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
             finding["passed"] = False
             finding["severity"] = "critical"
             finding["message_ru"] = (
-                f"Протокол для {expected}, в КЗ указана аудитория {actual}."
+                f"Протокол рассчитан на пациентов ({population_ru(expected)}), "
+                f"в КЗ указана аудитория: {population_ru(actual)}."
             )
         return finding
 
@@ -169,9 +171,9 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
         if logic == "any_of":
             finding["passed"] = bool(hits)
             if not hits:
-                finding["message_ru"] = (
+                finding["message_ru"] = localize_message_ru(
                     "Не найдено достаточных диагностических критериев в тексте КЗ "
-                    f"({rule.get('description_ru') or rule.get('rule_id')})."
+                    f"({rule.get('description_ru') or rule_title_ru(str(rule.get('rule_id') or ''), rule)})."
                 )
         else:
             finding["passed"] = len(hits) == len(criteria) and bool(criteria)
@@ -330,9 +332,9 @@ def run_rule_checker(
                         "rule_type": "population_mismatch",
                         "severity": "critical",
                         "passed": False,
-                        "message_ru": (
+                        "message_ru": localize_message_ru(
                             f"Нозология «{cond.get('condition')}» — протокол для "
-                            f"{pop}, в КЗ аудитория {ctx.get('adult_or_child')}."
+                            f"{population_ru(str(pop))}, в КЗ аудитория {population_ru(str(ctx.get('adult_or_child') or ''))}."
                         ),
                         "source": cond.get("protocol_reference"),
                     }

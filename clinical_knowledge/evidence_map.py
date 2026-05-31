@@ -4,7 +4,16 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .condition_registry import infer_conditions_hints
 from .consult_schema import ConsultationDocument, EvidenceMapItem, SourceRef
+from .rule_labels_ru import (
+    decision_ru,
+    extract_condition_id,
+    found_status_ru,
+    localize_message_ru,
+    rule_title_ru,
+    rule_type_ru,
+)
 from .rule_model import ProtocolRule, legacy_rule_to_protocol_rule, rule_applicable_to_patient
 
 _EXAM_BLOB_MARKERS = re.compile(
@@ -56,6 +65,55 @@ def _exam_status(doc: ConsultationDocument, item: str) -> tuple[bool, str, list[
     return False, "not_found", []
 
 
+def _relevant_rule(raw: dict[str, Any], hints: set[str]) -> bool:
+    if raw.get("skipped"):
+        return False
+    rid = str(raw.get("rule_id") or "")
+    cid = extract_condition_id(rid)
+    if not cid:
+        return True
+    if cid in hints:
+        return True
+    rt = str(raw.get("rule_type") or "")
+    if rt in ("population_mismatch",) or rid.endswith("_population_guard"):
+        return False
+    # Авто-правила чужих нозологий не показываем в карте доказательств.
+    if rid.startswith(("llm_", "tbl_")) or "_auto_" in rid or re.match(r"^[a-f0-9]{8}_auto_", rid):
+        return False
+    return bool(raw.get("passed"))
+
+
+def _make_item(
+    *,
+    rule: ProtocolRule,
+    raw: dict[str, Any],
+    decision: str,
+    expl: str,
+    found: bool,
+    fstatus: str,
+    ev: list[str],
+    required_item: str | None,
+    proto_ev: list[str],
+) -> EvidenceMapItem:
+    expl_ru = localize_message_ru(expl)
+    return EvidenceMapItem(
+        rule_id=rule.rule_id,
+        title_ru=rule_title_ru(rule.rule_id, raw),
+        rule_type=rule.rule_type,
+        rule_type_ru=rule_type_ru(rule.rule_type),
+        required_item=required_item,
+        found_in_consultation=found,
+        found_status=fstatus,  # type: ignore[arg-type]
+        found_status_ru=found_status_ru(fstatus),
+        consultation_evidence=ev,
+        protocol_evidence=proto_ev[:3],
+        decision=decision,  # type: ignore[arg-type]
+        decision_ru=decision_ru(decision),
+        explanation=expl_ru,
+        source_refs=[rule.source] if rule.source.local_path else [],
+    )
+
+
 def build_evidence_map(
     doc: ConsultationDocument,
     rules_check: dict[str, Any] | None,
@@ -73,23 +131,20 @@ def build_evidence_map(
     if doc.diagnoses:
         certainty = doc.diagnoses[0].certainty or "unclear"
 
+    icd = [d.icd10_code for d in doc.diagnoses if d.icd10_code]
+    hints = set(
+        infer_conditions_hints((doc.raw_text or "").lower(), icd)
+    )
+
     items: list[EvidenceMapItem] = []
     for raw in (rules_check or {}).get("findings") or []:
         if not isinstance(raw, dict):
             continue
+        if not _relevant_rule(raw, hints):
+            continue
+
         rule = legacy_rule_to_protocol_rule(raw)
         if not rule_applicable_to_patient(rule, patient, diagnosis_certainty=certainty):
-            items.append(
-                EvidenceMapItem(
-                    rule_id=rule.rule_id,
-                    rule_type=rule.rule_type,
-                    found_in_consultation=False,
-                    found_status="not_applicable",
-                    decision="not_applicable",
-                    explanation="Правило неприменимо по возрасту/полу/беременности/статусу диагноза.",
-                    protocol_evidence=rule.expected_items,
-                )
-            )
             continue
 
         rt = rule.rule_type
@@ -116,17 +171,10 @@ def build_evidence_map(
                 expl = raw.get("message_ru") or f"Отсутствует: {exam_name}."
                 fstatus = "not_found"
             items.append(
-                EvidenceMapItem(
-                    rule_id=rule.rule_id,
-                    rule_type=rt,
-                    required_item=exam_name,
-                    found_in_consultation=found,
-                    found_status=fstatus,  # type: ignore[arg-type]
-                    consultation_evidence=ev,
-                    protocol_evidence=proto_ev[:3],
-                    decision=decision,  # type: ignore[arg-type]
-                    explanation=expl,
-                    source_refs=[rule.source] if rule.source.local_path else [],
+                _make_item(
+                    rule=rule, raw=raw, decision=decision, expl=expl,
+                    found=found, fstatus=fstatus, ev=ev,
+                    required_item=exam_name, proto_ev=proto_ev,
                 )
             )
             continue
@@ -136,7 +184,7 @@ def build_evidence_map(
         consultation_ev = [ev_text[:200]] if ev_text.strip() else []
         if passed:
             decision = "satisfied"
-            expl = "Требование протокола подтверждено текстом КЗ."
+            expl = raw.get("message_ru") or "Требование протокола подтверждено текстом КЗ."
             fstatus = "mentioned"
         elif rule.confidence < 0.5:
             decision = "manual_review"
@@ -148,17 +196,10 @@ def build_evidence_map(
             fstatus = "not_found"
 
         items.append(
-            EvidenceMapItem(
-                rule_id=rule.rule_id,
-                rule_type=rt,
-                required_item=required_item,
-                found_in_consultation=passed,
-                found_status=fstatus,  # type: ignore[arg-type]
-                consultation_evidence=consultation_ev,
-                protocol_evidence=proto_ev[:3],
-                decision=decision,  # type: ignore[arg-type]
-                explanation=expl,
-                source_refs=[rule.source] if rule.source.local_path else [],
+            _make_item(
+                rule=rule, raw=raw, decision=decision, expl=expl,
+                found=passed, fstatus=fstatus, ev=consultation_ev,
+                required_item=required_item, proto_ev=proto_ev,
             )
         )
     return items
