@@ -104,3 +104,27 @@ def test_review_context_plain_when_disabled(monkeypatch) -> None:
     ctx, _ = rs._build_review_chunks_context(rows, 5000)
     assert "section=" not in ctx
     assert "pages=" not in ctx
+
+
+def test_consult_rag_second_pass_default_off_on_render(monkeypatch) -> None:
+    import rag_server as rs
+
+    monkeypatch.delenv("CONSULT_REVIEW_RAG_SECOND_PASS", raising=False)
+    monkeypatch.setenv("RENDER", "true")
+    assert rs._consult_rag_second_pass_enabled() is False
+
+
+def test_consult_rag_second_pass_default_on_locally(monkeypatch) -> None:
+    import rag_server as rs
+
+    monkeypatch.delenv("CONSULT_REVIEW_RAG_SECOND_PASS", raising=False)
+    monkeypatch.delenv("RENDER", raising=False)
+    assert rs._consult_rag_second_pass_enabled() is True
+
+
+def test_consult_rag_second_pass_env_overrides_render(monkeypatch) -> None:
+    import rag_server as rs
+
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("CONSULT_REVIEW_RAG_SECOND_PASS", "1")
+    assert rs._consult_rag_second_pass_enabled() is True

@@ -20,5 +20,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.8"
+      # Второй RAG-pass + несколько вызовов Gemini часто превышают таймаут прокси Render (~100 с).
+      - key: CONSULT_REVIEW_RAG_SECOND_PASS
+        value: "0"
       # - key: RAG_CHUNKS_DIR
       #   value: /var/data

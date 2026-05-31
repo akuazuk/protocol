@@ -8833,6 +8833,27 @@
     }
   }
 
+  function formatFetchError(status, text) {
+    var body = text == null ? "" : String(text);
+    if (/^\s*<!DOCTYPE/i.test(body) || /^\s*<html/i.test(body)) {
+      if (status === 502 || status === 504) {
+        return (
+          "Сервис на Render временно недоступен (HTTP " +
+          status +
+          "). Обычно это таймаут прокси или перезапуск — подождите 1–2 минуты и повторите. " +
+          "Если не помогает, проверьте логи сервиса и готовность индекса RAG (/health)."
+        );
+      }
+      return (
+        "Сервер вернул HTML вместо JSON (HTTP " +
+        status +
+        "). Сервис может быть перезапущен или недоступен."
+      );
+    }
+    if (body.length > 800) body = body.slice(0, 800) + "…";
+    return body || "HTTP " + status;
+  }
+
   function isLocalHostPage() {
     var h = window.location.hostname;
     return h === "localhost" || h === "127.0.0.1";
@@ -10173,7 +10194,26 @@
         consultCtrl.abort();
       }, consultTimeoutMs);
 
-      fetch(base + "/api/consult-review", { method: "POST", body: fd, signal: consultCtrl.signal })
+      fetch(base + "/health")
+        .then(function (h) {
+          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+          return h.json();
+        })
+        .then(function (health) {
+          if (!health.rag_ready) {
+            throw new Error(
+              "Индекс протоколов на сервере ещё загружается. Подождите 1–2 минуты и обновите страницу."
+            );
+          }
+          if (!health.gemini_configured) {
+            throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
+          }
+          return fetch(base + "/api/consult-review", {
+            method: "POST",
+            body: fd,
+            signal: consultCtrl.signal,
+          });
+        })
         .then(function (r) {
           window.clearTimeout(consultAbortTid);
           return r;
@@ -10189,7 +10229,7 @@
             if (!r.ok) {
               var d = j && j.detail;
               if (Array.isArray(d)) d = d.map(function (x) { return x.msg || JSON.stringify(x); }).join("; ");
-              throw new Error(d || text || r.statusText);
+              throw new Error(d || formatFetchError(r.status, text) || r.statusText);
             }
             return j;
           });

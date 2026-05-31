@@ -130,6 +130,16 @@ def env_bool(name: str, default: bool) -> bool:
     return str(raw).strip().lower() in ("1", "true", "yes", "on", "y")
 
 
+def _consult_rag_second_pass_enabled() -> bool:
+    """Второй RAG-pass: по умолчанию выкл на Render (лимит прокси ~100 с), вкл локально."""
+    raw = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS")
+    if raw is not None and str(raw).strip():
+        return env_bool("CONSULT_REVIEW_RAG_SECOND_PASS", True)
+    if env_bool("RENDER", False):
+        return False
+    return True
+
+
 def public_error_text(err: str | None) -> str | None:
     """Не раскрывать внутренние пути/детали в публичных ответах, если не включён DEBUG_ERRORS."""
     if not err:
@@ -3545,12 +3555,7 @@ def _consult_should_second_pass(metrics: dict) -> tuple[bool, str]:
     """Низкая «уверенность» по скорингам первого батча — повод запустить второй retrieve."""
     if not metrics:
         return False, "no_metrics"
-    on = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
-    if not on:
+    if not _consult_rag_second_pass_enabled():
         return False, "disabled_env"
 
     max_sc = float(metrics.get("max_score") or 0)
@@ -5485,7 +5490,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r18-gastro-path-llm-coverage"
+BUILD_VERSION = "2026-05-31-r19-render-consult-timeout"
 
 
 def _app_version() -> str:
@@ -5514,6 +5519,7 @@ def health() -> dict:
         "embedding_model": os.environ.get(
             "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
         ),
+        "consult_rag_second_pass": _consult_rag_second_pass_enabled(),
     }
 
 
@@ -6379,8 +6385,16 @@ def _consult_clinical_rules_pipeline(
     if not specialty and cons.get("conditions_hint"):
         specialty = "gastroenterologiya"
 
-    matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
-    rules = run_rule_checker(facts, matched_protocols=matched)
+    try:
+        matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
+        rules = run_rule_checker(facts, matched_protocols=matched)
+    except Exception as exc:
+        return {
+            "consult_facts": facts,
+            "matched_protocols": [],
+            "rules_check": {"error": str(exc)[:240], "rules": []},
+            "specialty_scope": specialty,
+        }
 
     return {
         "consult_facts": facts,
@@ -6600,11 +6614,7 @@ def api_consult_review(
             detail="Не удалось подобрать фрагменты протоколов по тексту PDF — попробуйте другой файл или явно опишите диагноз/МКБ в документе.",
         )
 
-    second_pass_on = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
+    second_pass_on = _consult_rag_second_pass_enabled()
     second_pass_diag: dict = {
         "enabled": second_pass_on,
         "applied": False,
