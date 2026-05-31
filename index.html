@@ -5140,7 +5140,7 @@
         <p class="info-panel-note" id="quality-benchmark-note"></p>
       </section>
       <section class="info-panel" id="clinical-knowledge-panel" aria-labelledby="clinical-knowledge-title">
-        <h3 id="clinical-knowledge-title">Правила КЗ (гастро MVP)</h3>
+        <h3 id="clinical-knowledge-title">Правила КЗ (весь каталог)</h3>
         <div class="info-panel-stats" id="clinical-knowledge-body">
           <span>Загрузка…</span>
         </div>
@@ -9552,7 +9552,8 @@
           return;
         }
         var parts = [];
-        parts.push("<span><strong>" + (data.conditions || 0) + "</strong> нозологий</span>");
+        parts.push("<span><strong>" + (data.conditions || 0) + "</strong> нозологий (MVP JSON)</span>");
+        parts.push("<span><strong>" + (data.condition_ids_with_rules || data.rules || 0) + "</strong> нозологий с правилами</span>");
         parts.push("<span><strong>" + (data.rules || 0) + "</strong> правил</span>");
         var cov = data.rules_coverage || {};
         if (cov.pdfs_total) {
@@ -9565,6 +9566,15 @@
               cov.pdfs_total +
               ")</span>"
           );
+        }
+        var byRubric = cov.by_rubric || {};
+        var rubricKeys = Object.keys(byRubric);
+        if (rubricKeys.length) {
+          var rubricBits = rubricKeys.slice(0, 6).map(function (slug) {
+            var row = byRubric[slug] || {};
+            return slug.replace(/-/g, " ").slice(0, 18) + " " + (row.coverage_pct != null ? row.coverage_pct : "—") + "%";
+          });
+          parts.push("<span class=\"info-panel-note\">Рубрики: " + rubricBits.join(" · ") + (rubricKeys.length > 6 ? " …" : "") + "</span>");
         }
         if (data.llm_enrichment_cached) {
           parts.push(

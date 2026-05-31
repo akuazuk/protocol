@@ -5590,7 +5590,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r22-all-catalog-conditions"
+BUILD_VERSION = "2026-05-31-r23-catalog-rules-all-rubrics"
 
 
 def _app_version() -> str:
@@ -6480,27 +6480,26 @@ def _consult_clinical_rules_pipeline(
 
     specialty = (os.environ.get("CONSULT_RULE_CHECK_SPECIALTY") or "").strip() or None
     if not specialty and category_slugs:
-        for sl in category_slugs:
-            if sl in ALLOWED_SPECIALTY_SLUGS:
-                specialty = sl
-                break
+        allowed = [sl for sl in category_slugs if sl in ALLOWED_SPECIALTY_SLUGS]
+        if len(allowed) == 1:
+            specialty = allowed[0]
 
     try:
-        matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
+        matched = match_protocol_cards(facts, specialty_slug=specialty, limit=8)
         rules = run_rule_checker(facts, matched_protocols=matched)
     except Exception as exc:
         return {
             "consult_facts": facts,
             "matched_protocols": [],
             "rules_check": {"error": str(exc)[:240], "rules": []},
-            "specialty_scope": specialty,
+            "specialty_scope": specialty or "all_catalog",
         }
 
     return {
         "consult_facts": facts,
         "matched_protocols": matched,
         "rules_check": rules,
-        "specialty_scope": specialty,
+        "specialty_scope": specialty or "all_catalog",
     }
 
 

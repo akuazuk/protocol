@@ -8,6 +8,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 GASTRO_MVP = ROOT / "data" / "gastro_mvp"
+CATALOG_DIR = ROOT / "data" / "catalog"
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -28,14 +29,44 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
 @lru_cache(maxsize=1)
 def load_protocol_cards_registry() -> list[dict[str, Any]]:
     paths = [
-        GASTRO_MVP / "protocol_registry.jsonl",
         ROOT / "output" / "registry" / "protocol_cards.jsonl",
+        GASTRO_MVP / "protocol_registry.jsonl",
     ]
     for p in paths:
         rows = _read_jsonl(p)
         if rows:
             return rows
     return []
+
+
+def _merge_rules_from_dir(rules_dir: Path, out: dict[str, list[dict[str, Any]]]) -> None:
+    if not rules_dir.is_dir():
+        return
+    for p in sorted(rules_dir.glob("*.json")):
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        cid = str(data.get("condition_id") or "")
+        if not cid:
+            stem = p.stem.replace("_rules", "")
+            for prefix in ("auto_", "path_", "enriched_"):
+                if stem.startswith(prefix):
+                    stem = stem[len(prefix) :]
+                    break
+            cid = stem
+        rules = list(data.get("rules") or [])
+        if not rules:
+            continue
+        bucket = out.setdefault(cid, [])
+        seen = {r.get("rule_id") for r in bucket}
+        for r in rules:
+            rid = r.get("rule_id")
+            if rid and rid in seen:
+                continue
+            bucket.append(r)
+            if rid:
+                seen.add(rid)
 
 
 @lru_cache(maxsize=1)
@@ -56,34 +87,9 @@ def load_conditions() -> dict[str, dict[str, Any]]:
 
 @lru_cache(maxsize=1)
 def load_rules_by_condition() -> dict[str, list[dict[str, Any]]]:
-    rules_dir = GASTRO_MVP / "rules"
     out: dict[str, list[dict[str, Any]]] = {}
-    if rules_dir.is_dir():
-        for p in sorted(rules_dir.glob("*.json")):
-            try:
-                data = json.loads(p.read_text(encoding="utf-8"))
-            except Exception:
-                continue
-            cid = str(data.get("condition_id") or "")
-            if not cid:
-                stem = p.stem.replace("_rules", "")
-                for prefix in ("auto_", "path_", "enriched_"):
-                    if stem.startswith(prefix):
-                        stem = stem[len(prefix) :]
-                        break
-                cid = stem
-            rules = list(data.get("rules") or [])
-            if not rules:
-                continue
-            bucket = out.setdefault(cid, [])
-            seen = {r.get("rule_id") for r in bucket}
-            for r in rules:
-                rid = r.get("rule_id")
-                if rid and rid in seen:
-                    continue
-                bucket.append(r)
-                if rid:
-                    seen.add(rid)
+    _merge_rules_from_dir(GASTRO_MVP / "rules", out)
+    _merge_rules_from_dir(CATALOG_DIR / "rules", out)
     try:
         from .rules_from_enrichment import load_enrichment_rules
 
@@ -119,10 +125,11 @@ def clinical_knowledge_status() -> dict[str, Any]:
     enrichment_files = len(list(enrichment_dir.glob("*.json"))) if enrichment_dir.is_dir() else 0
     coverage = coverage_status_payload()
     return {
-        "enabled": bool(conditions and rules),
+        "enabled": rule_count > 0,
         "protocol_cards": len(cards),
         "conditions": len(conditions),
         "rules": rule_count,
+        "condition_ids_with_rules": len(rules),
         "mvp_scope": "all_catalog",
         "rules_coverage": coverage,
         "llm_enrichment_cached": enrichment_files,

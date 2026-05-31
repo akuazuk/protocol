@@ -1,9 +1,11 @@
-"""Детерминированная проверка КЗ по правилам нозологий (MVP гастро)."""
+"""Детерминированная проверка КЗ по правилам нозологий (весь каталог)."""
 from __future__ import annotations
 
 import re
+from hashlib import sha256
 from typing import Any
 
+from .condition_registry import CONDITION_BY_ID, infer_conditions_hints
 from .loader import load_conditions, load_rules_by_condition
 from .rule_filter import filter_rules_for_matched_protocols, matched_source_paths
 
@@ -30,7 +32,7 @@ def _check_diagnosis_components(
     present: list[str] = []
     missing: list[str] = []
     markers = {
-        "нозология": ("гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс", "колит", "крон", "целиак", "k50", "k51", "k90", "k85", "k35", "панкреат", "аппендицит"),
+        "нозология": ("гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс", "колит", "крон", "целиак", "k50", "k51", "k90", "k85", "k35", "панкреат", "аппендицит", "пневмон", "бронхит", "астм", "диабет", "гипертон", "инфаркт", "инсульт", "артрит", "анем"),
         "клиническая форма": ("форма", "неэрозив", "эрозив", "атроф", "поверхност", "катаральн", "флегмон"),
         "форма": ("форма", "лёгк", "легк", "умерен", "тяжел", "тяжёл", "катаральн", "флегмон", "гангрен"),
         "степень тяжести": ("степен", "лёгк", "легк", "средн", "тяжел", "тяжёл"),
@@ -38,7 +40,7 @@ def _check_diagnosis_components(
         "осложнения": ("осложнен", "кровотеч", "стеноз", "перфора", "без ослож", "перитонит", "абсцесс"),
         "источник": ("источник", "язв", "варикоз", "эроз", "диvert", "диверт"),
         "механизм": ("механизм", "удар", "паден", "дтп", "нож", "огнестр"),
-        "локализация": ("локал", "антрал", "луковиц", "желудк", "двенадцат", "l1", "l2", "l3", "l4", "илеальн", "толстокиш"),
+        "локализация": ("локал", "антрал", "луковиц", "желудк", "двенадцат", "l1", "l2", "l3", "l4", "илеальн", "толстокиш", "долев", "сегмент"),
         "h.pylori": ("нр", "hp", "helicobacter", "хеликобактер"),
         "этиологический фактор": ("этиолог", "нр", "нпвп", "стресс"),
         "активность": ("активност", "hp 3", "воспален", "обострен", "ремисс"),
@@ -55,6 +57,20 @@ def _check_diagnosis_components(
         "вариант течения": ("вариант", "течени", "рекуррент"),
         "период": ("период", "ремисс", "обострен"),
         "гистологическая стадия": ("гистолог", "стади", "marsh"),
+        "стадия": ("стади", "tnm", "стад ", "iia", "iiia", "iv "),
+        "тип": ("тип", "1 тип", "2 тип", "инсулин", "сахарн"),
+        "компенсация": ("компенсац", " hba1c", "гликир", "сахар"),
+        "контроль": ("контрол", "обострен", "ремисс", "стабильн"),
+        "риск": ("риск", "фактор", "осложнен"),
+        "функциональный класс": ("функциональн", "класс", "фк ", "nyha"),
+        "гистология": ("гистолог", "диффузн", "фолликуляр", "ходжкин"),
+        "срок": ("срок", "недел", "триместр", "гестаци"),
+        "возрастная группа": ("возраст", "дет", "подрост", "новорожд"),
+        "бактериовыделение": ("бактериовыдел", "микобакт", "бацилл"),
+        "эпизод": ("эпизод", "депрессив", "маниакальн", "рекуррент"),
+        "функция": ("функци", "гипотиреоз", "гипертиреоз", "ттг"),
+        "степень": ("степен", "i ст", "ii ст", "iii ст", "лёгк", "легк", "умерен", "тяжел"),
+        "частота": ("частот", "приступ", "эпизод", "раз в"),
     }
     for comp in required:
         key = comp.lower()
@@ -180,30 +196,125 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
     return finding
 
 
+def _condition_meta(cid: str, conditions: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    cond = conditions.get(cid)
+    if cond:
+        return cond
+    cdef = CONDITION_BY_ID.get(cid)
+    if not cdef:
+        return None
+    return {
+        "condition_id": cid,
+        "condition": cid.replace("_", " "),
+        "population": "any",
+    }
+
+
+def _conditions_from_matched(matched_protocols: list[dict[str, Any]] | None) -> list[str]:
+    from .rules_from_path import infer_path_condition
+
+    out: list[str] = []
+    for sp in matched_source_paths(matched_protocols):
+        hit = infer_path_condition(sp)
+        if hit:
+            out.append(hit[0])
+    return list(dict.fromkeys(out))
+
+
+def _augment_rules_map(
+    rules_map: dict[str, list[dict[str, Any]]],
+    matched_protocols: list[dict[str, Any]] | None,
+) -> dict[str, list[dict[str, Any]]]:
+    """Runtime path-правила для matched PDF без статического файла."""
+    paths = matched_source_paths(matched_protocols)
+    if not paths:
+        return rules_map
+
+    covered_paths: set[str] = set()
+    for rules in rules_map.values():
+        for rule in rules:
+            src = rule.get("source") or {}
+            sp = (src.get("source_path") or "").replace("\\", "/").strip()
+            if sp:
+                covered_paths.add(sp)
+
+    from .rules_from_path import extract_path_rules
+
+    augmented = {cid: list(rules) for cid, rules in rules_map.items()}
+    for sp in paths:
+        if sp in covered_paths:
+            continue
+        pdf_hash = sha256(sp.encode()).hexdigest()[:8]
+        protocol_id = f"proto_{pdf_hash}"
+        for cid, rules in extract_path_rules(
+            sp, protocol_id=protocol_id, rule_id_prefix=pdf_hash
+        ).items():
+            bucket = augmented.setdefault(cid, [])
+            seen = {r.get("rule_id") for r in bucket}
+            for rule in rules:
+                rid = rule.get("rule_id")
+                if rid and rid in seen:
+                    continue
+                bucket.append(rule)
+                if rid:
+                    seen.add(rid)
+    return augmented
+
+
+def _resolve_target_conditions(
+    consult_facts: dict[str, Any],
+    *,
+    condition_ids: list[str] | None,
+    matched_protocols: list[dict[str, Any]] | None,
+    conditions: dict[str, dict[str, Any]],
+    rules_map: dict[str, list[dict[str, Any]]],
+) -> list[str]:
+    cons = consult_facts.get("consultation") or {}
+    hints = list(cons.get("conditions_hint") or [])
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or [])]
+
+    if condition_ids:
+        base = list(condition_ids)
+    elif hints:
+        base = hints
+    else:
+        base = infer_conditions_hints(_text_blob(consult_facts), icd_list)
+
+    for cid in _conditions_from_matched(matched_protocols):
+        if cid not in base:
+            base.append(cid)
+
+    if not base and matched_protocols:
+        base = [cid for cid in rules_map if rules_map.get(cid)]
+
+    if not base:
+        base = list(conditions.keys()) or list(rules_map.keys())
+
+    return list(dict.fromkeys(base))
+
+
 def run_rule_checker(
     consult_facts: dict[str, Any],
     *,
     condition_ids: list[str] | None = None,
     matched_protocols: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Проверка КЗ по правилам MVP; возвращает findings и сводку."""
+    """Проверка КЗ по правилам каталога; возвращает findings и сводку."""
     conditions = load_conditions()
-    rules_map = load_rules_by_condition()
-    cons = consult_facts.get("consultation") or {}
-    hints = list(cons.get("conditions_hint") or [])
-
-    if condition_ids:
-        target = condition_ids
-    elif hints:
-        target = hints
-    else:
-        target = list(conditions.keys())
+    rules_map = _augment_rules_map(load_rules_by_condition(), matched_protocols)
+    target = _resolve_target_conditions(
+        consult_facts,
+        condition_ids=condition_ids,
+        matched_protocols=matched_protocols,
+        conditions=conditions,
+        rules_map=rules_map,
+    )
 
     all_findings: list[dict[str, Any]] = []
     checked_conditions: list[str] = []
 
     for cid in target:
-        cond = conditions.get(cid)
+        cond = _condition_meta(cid, conditions)
         rules = rules_map.get(cid) or []
         if not cond and not rules:
             continue
@@ -211,7 +322,7 @@ def run_rule_checker(
         ctx = consult_facts.get("patient_context") or {}
         if cond:
             pop = cond.get("population")
-            if pop and ctx.get("adult_or_child") and pop != ctx.get("adult_or_child"):
+            if pop and pop != "any" and ctx.get("adult_or_child") and pop != ctx.get("adult_or_child"):
                 all_findings.append(
                     {
                         "rule_id": f"{cid}_population_guard",
@@ -243,7 +354,7 @@ def run_rule_checker(
         "critical_count": len(critical),
         "missing_required_items": [f.get("message_ru") for f in failed if f.get("message_ru")],
         "rules_compliance_pct": compliance_pct,
-        "method": "deterministic_rules_v2",
+        "method": "deterministic_rules_v3_all_catalog",
         "matched_source_paths": sorted(matched_source_paths(matched_protocols)),
         "rules_filtered_by_protocol": bool(matched_protocols),
     }

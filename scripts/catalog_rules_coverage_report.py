@@ -10,56 +10,69 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-OUT = ROOT / "data" / "gastro_mvp" / "rules_coverage_report.json"
+OUT = ROOT / "data" / "catalog" / "rules_coverage_report.json"
 
 
 def main() -> int:
-    from clinical_knowledge.coverage import _load_protocol_paths
-    from clinical_knowledge.rules_from_corpus import infer_condition_ids_from_source_path
-    from clinical_knowledge.rules_from_path import infer_path_condition
+    from clinical_knowledge.coverage import load_rules_coverage_report
 
-    paths = _load_protocol_paths()
-    if not paths:
-        print("WARN: нет protocol_cards — соберите output/registry/protocol_cards.jsonl")
-        return 1
+    report = load_rules_coverage_report()
+    if not report.get("pdfs_total"):
+        from clinical_knowledge.coverage import _load_protocol_paths
+        from clinical_knowledge.rules_from_corpus import infer_condition_ids_from_source_path
+        from clinical_knowledge.rules_from_path import infer_path_condition
 
-    with_rules: list[str] = []
-    without_rules: list[str] = []
-    per_pdf: dict[str, dict] = {}
+        paths = _load_protocol_paths()
+        if not paths:
+            print("WARN: нет protocol_cards — соберите output/registry/protocol_cards.jsonl")
+            return 1
 
-    for sp in paths:
-        norm = sp.replace("\\", "/")
-        path_hit = infer_path_condition(norm)
-        corpus_ids = infer_condition_ids_from_source_path(norm)
-        has = bool(path_hit or corpus_ids)
-        per_pdf[norm] = {
-            "path_condition": path_hit[0] if path_hit else None,
-            "corpus_conditions": corpus_ids,
-            "rules": 1 if has else 0,
+        with_rules: list[str] = []
+        without_rules: list[str] = []
+        by_rubric: dict[str, dict[str, int]] = {}
+        for sp in paths:
+            norm = sp.replace("\\", "/")
+            rubric = norm.split("/")[1] if "/" in norm else "unknown"
+            by_rubric.setdefault(rubric, {"pdfs": 0, "with_rules": 0})
+            by_rubric[rubric]["pdfs"] += 1
+            has = bool(infer_path_condition(norm) or infer_condition_ids_from_source_path(norm))
+            if has:
+                with_rules.append(norm)
+                by_rubric[rubric]["with_rules"] += 1
+            else:
+                without_rules.append(norm)
+
+        report = {
+            "pdfs_total": len(paths),
+            "pdfs_with_rules": len(with_rules),
+            "pdfs_without_rules": len(without_rules),
+            "scope": "all_catalog_path_heuristics",
+            "with_rules": with_rules,
+            "without_rules": without_rules,
+            "by_rubric": {
+                slug: {
+                    "pdfs_total": v["pdfs"],
+                    "pdfs_with_rules": v["with_rules"],
+                    "coverage_pct": round(100.0 * v["with_rules"] / v["pdfs"], 1) if v["pdfs"] else 0.0,
+                }
+                for slug, v in sorted(by_rubric.items())
+            },
         }
-        if has:
-            with_rules.append(norm)
-        else:
-            without_rules.append(norm)
+        OUT.parent.mkdir(parents=True, exist_ok=True)
+        OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    report = {
-        "pdfs_total": len(paths),
-        "pdfs_with_rules": len(with_rules),
-        "pdfs_without_rules": len(without_rules),
-        "scope": "all_catalog",
-        "with_rules": with_rules,
-        "without_rules": without_rules,
-        "per_pdf": per_pdf,
-    }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         json.dumps(
             {
-                "pdfs_total": report["pdfs_total"],
-                "pdfs_with_rules": report["pdfs_with_rules"],
-                "pdfs_without_rules": report["pdfs_without_rules"],
-                "coverage_pct": round(100.0 * len(with_rules) / len(paths), 1),
+                "pdfs_total": report.get("pdfs_total"),
+                "pdfs_with_rules": report.get("pdfs_with_rules"),
+                "pdfs_without_rules": report.get("pdfs_without_rules"),
+                "coverage_pct": round(
+                    100.0 * int(report.get("pdfs_with_rules") or 0) / max(1, int(report.get("pdfs_total") or 1)),
+                    1,
+                ),
+                "rubrics": len(report.get("by_rubric") or {}),
+                "report_path": str(OUT.relative_to(ROOT)),
             },
             ensure_ascii=False,
             indent=2,

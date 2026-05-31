@@ -6,68 +6,61 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
-COVERAGE_PATH = ROOT / "data" / "gastro_mvp" / "rules_coverage_report.json"
+CATALOG_COVERAGE = ROOT / "data" / "catalog" / "rules_coverage_report.json"
+GASTRO_COVERAGE = ROOT / "data" / "gastro_mvp" / "rules_coverage_report.json"
 SUMMARY_PATH = ROOT / "data" / "gastro_mvp" / "rules_extraction_summary.json"
 
 
 def _load_protocol_paths() -> list[str]:
-    from .loader import load_protocol_cards_registry
+    from .catalog_build import catalog_source_paths
 
-    cards = load_protocol_cards_registry()
-    paths: list[str] = []
-    seen: set[str] = set()
-    for c in cards:
-        sp = str(c.get("source_path") or "").strip()
-        if sp and sp not in seen:
-            seen.add(sp)
-            paths.append(sp)
-    if paths:
-        return paths
-    reg = ROOT / "output" / "registry" / "protocol_cards.jsonl"
-    if reg.is_file():
-        for line in reg.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                row = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            sp = str(row.get("source_path") or "").strip()
-            if sp and sp not in seen:
-                seen.add(sp)
-                paths.append(sp)
-    return paths
+    return catalog_source_paths()
 
 
 def load_rules_coverage_report() -> dict[str, Any]:
-    if COVERAGE_PATH.is_file():
-        try:
-            data = json.loads(COVERAGE_PATH.read_text(encoding="utf-8"))
-            return data if isinstance(data, dict) else {}
-        except Exception:
-            pass
+    for path in (CATALOG_COVERAGE, GASTRO_COVERAGE):
+        if path.is_file():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(data, dict) and data.get("pdfs_total"):
+                    return data
+            except Exception:
+                pass
     paths = _load_protocol_paths()
     if paths:
         try:
-            from .rules_from_path import infer_path_condition
             from .rules_from_corpus import infer_condition_ids_from_source_path
+            from .rules_from_path import infer_path_condition
 
             with_rules_list: list[str] = []
             without_rules_list: list[str] = []
+            by_rubric: dict[str, dict[str, int]] = {}
             for sp in paths:
+                rubric = sp.replace("\\", "/").split("/")[1] if "/" in sp else "unknown"
+                by_rubric.setdefault(rubric, {"pdfs": 0, "with_rules": 0})
+                by_rubric[rubric]["pdfs"] += 1
                 has = bool(infer_path_condition(sp) or infer_condition_ids_from_source_path(sp))
                 if has:
                     with_rules_list.append(sp)
+                    by_rubric[rubric]["with_rules"] += 1
                 else:
                     without_rules_list.append(sp)
             total = len(paths)
+            rubric_summary = {
+                slug: {
+                    "pdfs_total": v["pdfs"],
+                    "pdfs_with_rules": v["with_rules"],
+                    "coverage_pct": round(100.0 * v["with_rules"] / v["pdfs"], 1) if v["pdfs"] else 0.0,
+                }
+                for slug, v in sorted(by_rubric.items())
+            }
             return {
                 "pdfs_total": total,
                 "pdfs_with_rules": len(with_rules_list),
                 "pdfs_without_rules": len(without_rules_list),
                 "with_rules": with_rules_list,
                 "without_rules": without_rules_list,
+                "by_rubric": rubric_summary,
                 "scope": "all_catalog_path_heuristics",
             }
         except Exception:
@@ -101,6 +94,7 @@ def coverage_status_payload() -> dict[str, Any]:
         "coverage_pct": pct,
         "total_auto_rules": int(rep.get("total_rules") or 0),
         "rules_by_condition": rep.get("rules_by_condition") or {},
-        "scope": rep.get("scope") or "gastro_mvp",
-        "report_path": "data/gastro_mvp/rules_coverage_report.json",
+        "by_rubric": rep.get("by_rubric") or {},
+        "scope": rep.get("scope") or "all_catalog",
+        "report_path": "data/catalog/rules_coverage_report.json",
     }
