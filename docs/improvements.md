@@ -427,9 +427,13 @@ python3 -m corpus_pipeline.run_pipeline
 python3 split_chunks_jsonl.py
 ```
 
-### Фаза 6 - Производительность и доступность
-- 3.1 inverted index; 3.3 офлайн-эмбеддинги; 3.4 кэш `/health`; 8.4 a11y (tabs, focus-trap); 8.7 фронтенд-перф.
-- Результат: быстрее ответы, доступный интерфейс.
+### Фаза 6 - Производительность и доступность (частично ВЫПОЛНЕНО)
+- **3.1 inverted index** — `RAG_LEX_INVERTED_INDEX=1` (по умолчанию): токен→чанки при загрузке корпуса, retrieve без полного прохода.
+- **3.4 кэш `/health`** — было ранее (ICD count).
+- **8.4 a11y** — инкремент в фазе 7 (skip-link, tabs, focus-trap).
+- **8.7 фронтенд-перф** — инкремент в фазе 7.
+- **Consult SSE** — `POST /api/consult-review/stream`: прогресс в % и partial results (протоколы, правила, МКБ до финальной модели).
+- 3.3 офлайн-эмбеддинги — отложено.
 
 ### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)
 - 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).

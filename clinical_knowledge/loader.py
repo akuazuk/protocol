@@ -123,7 +123,7 @@ def clinical_knowledge_status() -> dict[str, Any]:
         "protocol_cards": len(cards),
         "conditions": len(conditions),
         "rules": rule_count,
-        "mvp_scope": "gastroenterologiya",
+        "mvp_scope": "all_catalog",
         "rules_coverage": coverage,
         "llm_enrichment_cached": enrichment_files,
     }

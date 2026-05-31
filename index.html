@@ -663,6 +663,43 @@
       max-width: 36rem;
     }
 
+    .consult-progress-wrap {
+      margin-top: 0.55rem;
+      width: 100%;
+      max-width: 28rem;
+    }
+
+    .consult-progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      overflow: hidden;
+    }
+
+    .consult-progress-bar__fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--green-600), var(--green-400));
+      transition: width 0.35s ease;
+    }
+
+    .consult-progress-label {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--green-900);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .consult-progress-partial {
+      margin: 0.35rem 0 0;
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
     .consult-results-card {
       border-radius: 18px;
       border: 1px solid rgba(26, 138, 114, 0.32);
@@ -5448,6 +5485,13 @@
               <span class="consult-analyze-banner__unit">сек</span>
             </div>
             <p id="consult-wait-tip" class="consult-analyze-tip"></p>
+            <div class="consult-progress-wrap consult-hide-print" id="consult-progress-wrap">
+              <div class="consult-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="consult-progress-bar">
+                <div class="consult-progress-bar__fill" id="consult-progress-fill"></div>
+              </div>
+              <p class="consult-progress-label" id="consult-progress-label">0% — подготовка…</p>
+              <p class="consult-progress-partial" id="consult-progress-partial" hidden></p>
+            </div>
             <p class="consult-analyze-banner__note">
               Ответ может занять несколько минут: извлекается текст, подбираются протоколы, затем модель формирует оценку.
             </p>
@@ -10043,6 +10087,196 @@
     }
   }
 
+  function updateConsultProgressUI(pct, labelRu, partialNote) {
+    var fill = document.getElementById("consult-progress-fill");
+    var bar = document.getElementById("consult-progress-bar");
+    var lbl = document.getElementById("consult-progress-label");
+    var part = document.getElementById("consult-progress-partial");
+    var p = Math.max(0, Math.min(100, Number(pct) || 0));
+    if (fill) fill.style.width = String(p) + "%";
+    if (bar) bar.setAttribute("aria-valuenow", String(p));
+    if (lbl) lbl.textContent = String(p) + "% — " + (labelRu || "обработка…");
+    if (part) {
+      if (partialNote) {
+        part.textContent = partialNote;
+        part.hidden = false;
+      } else {
+        part.hidden = true;
+        part.textContent = "";
+      }
+    }
+  }
+
+  function applyConsultPartialPayload(acc, partial) {
+    if (!partial || typeof partial !== "object") return acc;
+    acc = acc || {};
+    var k;
+    for (k in partial) {
+      if (Object.prototype.hasOwnProperty.call(partial, k)) acc[k] = partial[k];
+    }
+    return acc;
+  }
+
+  function consultPartialNoteFromPayload(partial, stage) {
+    partial = partial || {};
+    if (stage === "icd_done" && partial.icd && partial.icd.codes && partial.icd.codes.length) {
+      return "МКБ: " + partial.icd.codes.slice(0, 6).join(", ");
+    }
+    if (stage === "rules_done" && partial.clinical_rules) {
+      var mp = partial.clinical_rules.matched_protocols || [];
+      if (mp.length) return "Сопоставлено протоколов по правилам: " + mp.length;
+    }
+    if (stage === "protocols" && partial.retrieval_paths) {
+      return "Фрагменты из " + partial.retrieval_paths.length + " PDF протоколов";
+    }
+    if (partial.extraction_chars) {
+      return "Извлечено символов: " + partial.extraction_chars;
+    }
+    return "";
+  }
+
+  function renderConsultReviewResult(data, res, st) {
+    window.__consultReviewLastPayload = data;
+    if (st) st.textContent = "Готово.";
+    var rev = (data && data.review) || {};
+    document.getElementById("consult-out-pct").textContent =
+      typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : "—";
+    var docN = Number((data && data.documents_count) || 1);
+    var sumPref = docN > 1 ? "Объединённый разбор " + docN + " загруженных заключений. " : "";
+    document.getElementById("consult-out-summary").textContent = sumPref + (rev.summary_ru || "");
+    document.getElementById("consult-out-limit").textContent = rev.limitations_ru
+      ? "Ограничения: " + rev.limitations_ru
+      : "";
+    document.getElementById("consult-out-disclaimer").textContent = rev.disclaimer_ru || "";
+
+    renderConsultOncologyBanner(data.consult_oncology_flags);
+    renderConsultClinicalRulesPanel(data);
+    renderConsultProtocolsSection(data, rev);
+    renderConsultMethodologyPanel(rev);
+
+    var tb = document.querySelector("#consult-out-table tbody");
+    if (tb) {
+      tb.innerHTML = "";
+      (rev.criteria || []).forEach(function (c) {
+        function td(x) {
+          var d = document.createElement("td");
+          d.textContent = x == null ? "" : String(x);
+          return d;
+        }
+        var tr = document.createElement("tr");
+        tr.appendChild(td(c.name_ru || c.name || ""));
+        tr.appendChild(td(c.score_pct != null ? c.score_pct : ""));
+        tr.appendChild(td(c.comment_ru || c.comment || ""));
+        tr.appendChild(td(c.conclusion_excerpt || ""));
+        tr.appendChild(td(c.protocol_excerpt || ""));
+        tb.appendChild(tr);
+      });
+    }
+
+    if (res) res.hidden = false;
+  }
+
+  function renderConsultPartialUI(acc) {
+    if (!acc) return;
+    var res = document.getElementById("consult-results-wrap");
+    if (res && acc.retrieval_paths && acc.retrieval_paths.length) {
+      res.hidden = false;
+      renderConsultOncologyBanner(acc.consult_oncology_flags || { any: false });
+      renderConsultClinicalRulesPanel(acc);
+      renderConsultProtocolsSection(acc, (acc.review) || {});
+      var pctEl = document.getElementById("consult-out-pct");
+      if (pctEl && !acc.review) pctEl.textContent = "…";
+      var sumEl = document.getElementById("consult-out-summary");
+      if (sumEl && !acc.review) {
+        sumEl.textContent = "Промежуточно: подобраны протоколы, ожидается итоговая оценка модели…";
+      }
+    }
+    if (acc.clinical_rules && !(acc.retrieval_paths && acc.retrieval_paths.length)) {
+      if (res) res.hidden = false;
+      renderConsultClinicalRulesPanel(acc);
+    }
+  }
+
+  function fetchConsultReviewStream(base, fd, consultCtrl) {
+    return fetch(base + "/health")
+      .then(function (h) {
+        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+        return h.json();
+      })
+      .then(function (health) {
+        if (!health.rag_ready) {
+          throw new Error(
+            "Индекс протоколов на сервере ещё загружается. Подождите 1–2 минуты и обновите страницу."
+          );
+        }
+        if (!health.gemini_configured) {
+          throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
+        }
+        return fetch(base + "/api/consult-review/stream", {
+          method: "POST",
+          body: fd,
+          signal: consultCtrl.signal,
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (text) {
+            var j = null;
+            try {
+              j = text ? JSON.parse(text) : null;
+            } catch (e) {
+              j = null;
+            }
+            var d = j && j.detail;
+            if (Array.isArray(d)) d = d.map(function (x) { return x.msg || JSON.stringify(x); }).join("; ");
+            throw new Error(d || formatFetchError(r.status, text) || r.statusText);
+          });
+        }
+        if (!r.body || !r.body.getReader) {
+          throw new Error("Браузер не поддерживает потоковый ответ — обновите браузер.");
+        }
+        var reader = r.body.getReader();
+        var decoder = new TextDecoder();
+        var buf = "";
+        var acc = {};
+        var finalResult = null;
+
+        function pump() {
+          return reader.read().then(function (chunk) {
+            if (chunk.done) {
+              if (finalResult) return finalResult;
+              throw new Error("Поток завершился без результата");
+            }
+            buf += decoder.decode(chunk.value, { stream: true });
+            var blocks = buf.split("\n\n");
+            buf = blocks.pop() || "";
+            blocks.forEach(function (block) {
+              block.split("\n").forEach(function (line) {
+                if (line.indexOf("data: ") !== 0) return;
+                var ev;
+                try {
+                  ev = JSON.parse(line.slice(6));
+                } catch (e) {
+                  return;
+                }
+                if (ev.type === "progress") {
+                  updateConsultProgressUI(ev.pct, ev.label_ru, consultPartialNoteFromPayload(ev.partial, ev.stage));
+                  acc = applyConsultPartialPayload(acc, ev.partial);
+                  renderConsultPartialUI(acc);
+                } else if (ev.type === "done") {
+                  finalResult = ev.result;
+                } else if (ev.type === "error") {
+                  throw new Error(ev.detail || "Ошибка сервера");
+                }
+              });
+            });
+            return pump();
+          });
+        }
+        return pump();
+      });
+  }
+
   function resetConsultReviewSection() {
     renderConsultOncologyBanner({ any: false });
     var analyzeBan = document.getElementById("consult-analyze-banner");
@@ -10051,6 +10285,7 @@
     if (analyzeNum) analyzeNum.textContent = "0";
     var waitTip = document.getElementById("consult-wait-tip");
     if (waitTip) waitTip.textContent = "";
+    updateConsultProgressUI(0, "подготовка…", "");
     var inp = document.getElementById("consult-pdf-file");
     if (inp) inp.value = "";
     var fn = document.getElementById("consult-file-name");
@@ -10299,6 +10534,7 @@
       if (analyzeBan) analyzeBan.hidden = false;
       if (analyzeNum) analyzeNum.textContent = "0";
       if (waitTip) waitTip.textContent = consultWaitingTip(0);
+      updateConsultProgressUI(0, "извлечение текста…", "");
       if (st) st.textContent = "";
       elapsedTid = window.setInterval(function () {
         var sec = Math.floor((Date.now() - t0Analyze) / 1000);
@@ -10320,92 +10556,20 @@
         consultCtrl.abort();
       }, consultTimeoutMs);
 
-      fetch(base + "/health")
-        .then(function (h) {
-          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-          return h.json();
-        })
-        .then(function (health) {
-          if (!health.rag_ready) {
-            throw new Error(
-              "Индекс протоколов на сервере ещё загружается. Подождите 1–2 минуты и обновите страницу."
-            );
-          }
-          if (!health.gemini_configured) {
-            throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
-          }
-          return fetch(base + "/api/consult-review", {
-            method: "POST",
-            body: fd,
-            signal: consultCtrl.signal,
-          });
-        })
+      fetchConsultReviewStream(base, fd, consultCtrl)
         .then(function (r) {
           window.clearTimeout(consultAbortTid);
           return r;
-        })
-        .then(function (r) {
-          return r.text().then(function (text) {
-            var j = null;
-            try {
-              j = text ? JSON.parse(text) : null;
-            } catch (e) {
-              j = null;
-            }
-            if (!r.ok) {
-              var d = j && j.detail;
-              if (Array.isArray(d)) d = d.map(function (x) { return x.msg || JSON.stringify(x); }).join("; ");
-              throw new Error(d || formatFetchError(r.status, text) || r.statusText);
-            }
-            return j;
-          });
         })
         .then(function (data) {
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
           }
+          updateConsultProgressUI(100, "готово", "");
           var analyzeBan2 = document.getElementById("consult-analyze-banner");
           if (analyzeBan2) analyzeBan2.hidden = true;
-
-          window.__consultReviewLastPayload = data;
-          if (st) st.textContent = "Готово.";
-          var rev = (data && data.review) || {};
-          document.getElementById("consult-out-pct").textContent =
-            typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : "—";
-          var docN = Number((data && data.documents_count) || 1);
-          var sumPref = docN > 1 ? "Объединённый разбор " + docN + " загруженных заключений. " : "";
-          document.getElementById("consult-out-summary").textContent = sumPref + (rev.summary_ru || "");
-          document.getElementById("consult-out-limit").textContent = rev.limitations_ru
-            ? "Ограничения: " + rev.limitations_ru
-            : "";
-          document.getElementById("consult-out-disclaimer").textContent = rev.disclaimer_ru || "";
-
-          renderConsultOncologyBanner(data.consult_oncology_flags);
-          renderConsultClinicalRulesPanel(data);
-          renderConsultProtocolsSection(data, rev);
-          renderConsultMethodologyPanel(rev);
-
-          var tb = document.querySelector("#consult-out-table tbody");
-          if (tb) {
-            tb.innerHTML = "";
-            (rev.criteria || []).forEach(function (c) {
-              function td(x) {
-                var d = document.createElement("td");
-                d.textContent = x == null ? "" : String(x);
-                return d;
-              }
-              var tr = document.createElement("tr");
-              tr.appendChild(td(c.name_ru || c.name || ""));
-              tr.appendChild(td(c.score_pct != null ? c.score_pct : ""));
-              tr.appendChild(td(c.comment_ru || c.comment || ""));
-              tr.appendChild(td(c.conclusion_excerpt || ""));
-              tr.appendChild(td(c.protocol_excerpt || ""));
-              tb.appendChild(tr);
-            });
-          }
-
-          if (res) res.hidden = false;
+          renderConsultReviewResult(data, res, st);
         })
         .catch(function (e) {
           window.clearTimeout(consultAbortTid);

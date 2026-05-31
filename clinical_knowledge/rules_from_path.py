@@ -79,6 +79,54 @@ PATH_CONDITION_TEMPLATES: list[dict[str, Any]] = [
         "required_components": ["нозология", "локализация", "стадия"],
         "match_all": True,
     },
+    {"needles": ("бронхит",), "condition_id": "acute_bronchitis", "required_components": ["нозология", "форма", "тяжесть"]},
+    {"needles": ("пневмон",), "condition_id": "pneumonia", "required_components": ["нозология", "локализация", "тяжесть"]},
+    {"needles": ("астм",), "condition_id": "bronchial_asthma", "required_components": ["нозология", "тяжесть", "контроль"]},
+    {"needles": ("хобл",), "condition_id": "copd", "required_components": ["нозология", "стадия", "тяжесть"]},
+    {"needles": ("туберкул",), "condition_id": "tuberculosis", "required_components": ["нозология", "локализация", "бактериовыделение"]},
+    {"needles": ("инфаркт",), "condition_id": "myocardial_infarction", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("стенокард",), "condition_id": "angina_pectoris", "required_components": ["нозология", "функциональный класс", "стадия"]},
+    {"needles": ("аритми",), "condition_id": "cardiac_arrhythmia", "required_components": ["нозология", "форма", "тяжесть"]},
+    {"needles": ("сердечн", "недостаточ"), "condition_id": "heart_failure", "required_components": ["нозология", "стадия", "функциональный класс"], "match_all": True},
+    {"needles": ("гипертон",), "condition_id": "hypertension", "required_components": ["нозология", "стадия", "риск"]},
+    {"needles": ("инсульт",), "condition_id": "stroke", "required_components": ["нозология", "локализация", "период"]},
+    {"needles": ("эпилепс",), "condition_id": "epilepsy", "required_components": ["нозология", "форма", "контроль"]},
+    {"needles": ("рассеян", "склероз"), "condition_id": "multiple_sclerosis", "required_components": ["нозология", "форма", "активность"], "match_all": True},
+    {"needles": ("мигрен",), "condition_id": "migraine", "required_components": ["нозология", "частота", "тяжесть"]},
+    {"needles": ("карцином",), "condition_id": "carcinoma", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("опухол",), "condition_id": "neoplasm", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("лимфом",), "condition_id": "lymphoma", "required_components": ["нозология", "стадия", "гистология"]},
+    {"needles": ("лейкоз",), "condition_id": "leukemia", "required_components": ["нозология", "форма", "стадия"]},
+    {"needles": ("диабет",), "condition_id": "diabetes_mellitus", "required_components": ["нозология", "тип", "компенсация"]},
+    {"needles": ("сахарн",), "condition_id": "diabetes_mellitus", "required_components": ["нозология", "тип", "компенсация"]},
+    {"needles": ("щитовид",), "condition_id": "thyroid_disease", "required_components": ["нозология", "форма", "функция"]},
+    {"needles": ("ожирен",), "condition_id": "obesity", "required_components": ["нозология", "степень", "осложнения"]},
+    {"needles": ("почечн", "недостат"), "condition_id": "renal_failure", "required_components": ["нозология", "стадия", "тяжесть"], "match_all": True},
+    {"needles": ("мочекамен",), "condition_id": "urolithiasis", "required_components": ["нозология", "локализация", "осложнения"]},
+    {"needles": ("простат",), "condition_id": "prostate_disease", "required_components": ["нозология", "форма", "стадия"]},
+    {"needles": ("артрит",), "condition_id": "arthritis", "required_components": ["нозология", "локализация", "активность"]},
+    {"needles": ("остеоартроз",), "condition_id": "osteoarthritis", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("подагр",), "condition_id": "gout", "required_components": ["нозология", "форма", "тяжесть"]},
+    {"needles": ("перелом",), "condition_id": "fracture", "required_components": ["нозология", "локализация", "тип"]},
+    {"needles": ("псориаз",), "condition_id": "psoriasis", "required_components": ["нозология", "форма", "тяжесть"]},
+    {"needles": ("дерматит",), "condition_id": "dermatitis", "required_components": ["нозология", "форма", "локализация"]},
+    {"needles": ("грипп",), "condition_id": "influenza", "required_components": ["нозология", "тяжесть", "осложнения"]},
+    {"needles": ("covid",), "condition_id": "covid19", "required_components": ["нозология", "тяжесть", "осложнения"]},
+    {"needles": ("катаракт",), "condition_id": "cataract", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("глауком",), "condition_id": "glaucoma", "required_components": ["нозология", "стадия", "риск"]},
+    {"needles": ("депресс",), "condition_id": "depression", "required_components": ["нозология", "тяжесть", "эпизод"]},
+    {"needles": ("шизофрен",), "condition_id": "schizophrenia", "required_components": ["нозология", "форма", "стадия"]},
+    {"needles": ("кариес",), "condition_id": "dental_caries", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("пульпит",), "condition_id": "pulpitis", "required_components": ["нозология", "локализация", "форма"]},
+    {"needles": ("анем",), "condition_id": "anemia", "required_components": ["нозология", "тяжесть", "форма"]},
+    {"needles": ("беремен",), "condition_id": "pregnancy", "required_components": ["нозология", "срок", "осложнения"]},
+    {"needles": ("pulmonolog",), "condition_id": "pulmonology_protocol", "required_components": ["нозология", "форма"]},
+    {"needles": ("kardiolog",), "condition_id": "cardiology_protocol", "required_components": ["нозология", "форма", "стадия"]},
+    {"needles": ("nevrolog",), "condition_id": "neurology_protocol", "required_components": ["нозология", "форма"]},
+    {"needles": ("novoobraz",), "condition_id": "oncology_protocol", "required_components": ["нозология", "локализация", "стадия"]},
+    {"needles": ("endokrinolog",), "condition_id": "endocrinology_protocol", "required_components": ["нозология", "форма"]},
+    {"needles": ("stomatolog",), "condition_id": "dentistry_protocol", "required_components": ["нозология", "локализация"]},
+    {"needles": ("pediatr",), "condition_id": "pediatrics_protocol", "required_components": ["нозология", "форма", "возрастная группа"]},
 ]
 
 
@@ -132,7 +180,7 @@ def path_rules_for_uncovered(
     seen: set[str] = set()
     for sp in source_paths:
         pdf_hash = sha256(sp.encode()).hexdigest()[:8]
-        protocol_id = f"gastro_{pdf_hash}"
+        protocol_id = f"proto_{pdf_hash}"
         for cid, rules in extract_path_rules(
             sp, protocol_id=protocol_id, rule_id_prefix=pdf_hash
         ).items():

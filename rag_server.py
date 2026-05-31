@@ -58,7 +58,7 @@ from typing import Annotated, Iterable
 try:
     from fastapi import FastAPI, HTTPException, File, Form, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
+    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
     from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
@@ -90,6 +90,7 @@ _model = None
 # Метаданные embed-rerank - per-thread, чтобы параллельные запросы не перетирали значения друг друга.
 _retrieval_meta_tls = threading.local()
 _bm25_index = None
+_lex_inverted_index: dict[str, frozenset[int]] = {}
 
 
 def _set_retrieval_embed_meta(value: dict | None) -> None:
@@ -754,6 +755,9 @@ def load_data() -> None:
     else:
         _bm25_index = None
 
+    global _lex_inverted_index
+    _lex_inverted_index = _build_lex_inverted_index(_chunks)
+
 
 def _run_load_data_background() -> None:
     """Тяжёлый корпус грузится в фоне — uvicorn успевает открыть порт (Render health check)."""
@@ -791,6 +795,23 @@ def _require_rag_loaded() -> None:
 def tokenize_ru(s: str) -> list[str]:
     s = s.lower().replace("ё", "е")
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
+
+
+def _build_lex_inverted_index(chunks: list[dict]) -> dict[str, frozenset[int]]:
+    """Токен → индексы чанков (фаза 6: ускорение retrieve без полного прохода)."""
+    raw: dict[str, set[int]] = {}
+    for i, ch in enumerate(chunks):
+        lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (ch.get("title") or "")
+        if not lex_src.strip():
+            continue
+        tokens = set(tokenize_ru(lex_src))
+        for code in extract_icd_codes_raw(lex_src):
+            tokens.update(icd_tokens_for_lex([code]))
+        for t in tokens:
+            if len(t) < 2:
+                continue
+            raw.setdefault(t, set()).add(i)
+    return {k: frozenset(v) for k, v in raw.items()}
 
 
 # Слабые модификаторы без смысла диагноза: совпадение только по ним не должно тянуть чужие протоколы.
@@ -2446,7 +2467,24 @@ def retrieve(
         "yes",
     )
     raw_rows: list[tuple[float, float, float, dict, float]] = []
-    for ch in _chunks:
+    use_inverted = os.environ.get("RAG_LEX_INVERTED_INDEX", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    candidate_indices: set[int] | None = None
+    if use_inverted and _lex_inverted_index:
+        cand: set[int] = set()
+        for t in qtok:
+            cand |= set(_lex_inverted_index.get(t, ()))
+        if cand:
+            candidate_indices = cand
+    chunk_source = (
+        (_chunks[i] for i in sorted(candidate_indices))
+        if candidate_indices is not None
+        else iter(_chunks)
+    )
+    for ch in chunk_source:
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
             ch.get("title") or ""
         )
@@ -5490,7 +5528,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r20-phase7-polish"
+BUILD_VERSION = "2026-05-31-r21-consult-stream-phase6"
 
 
 def _app_version() -> str:
@@ -6380,10 +6418,10 @@ def _consult_clinical_rules_pipeline(
 
     specialty = (os.environ.get("CONSULT_RULE_CHECK_SPECIALTY") or "").strip() or None
     if not specialty and category_slugs:
-        if "gastroenterologiya" in category_slugs:
-            specialty = "gastroenterologiya"
-    if not specialty and cons.get("conditions_hint"):
-        specialty = "gastroenterologiya"
+        for sl in category_slugs:
+            if sl in ALLOWED_SPECIALTY_SLUGS:
+                specialty = sl
+                break
 
     try:
         matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
@@ -6404,40 +6442,18 @@ def _consult_clinical_rules_pipeline(
     }
 
 
-@app.post("/api/consult-review")
-def api_consult_review(
-    files: Annotated[
-        list[UploadFile],
-        File(description="1–3 файла консультативных заключений (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
-    ],
-    category_slugs: str = Form(
-        "",
-        description=(
-            "Необязательно: через запятую идентификаторы рубрик каталога (тот же slug, что в адресе раздела сайта Минздрава "
-            'РБ, например pulmonologiya-ftiziatriya)'
-        ),
-    ),
-) -> dict:
-    """Загрузка одного или нескольких файлов заключений → отбор фрагментов протоколов → JSON-оценка.
-
-    Не медико-правовая экспертиза; ориентир для методиста при настроенном сервере обработки текста.
-    """
-    _require_rag_loaded()
-    if not files:
-        raise HTTPException(
-            status_code=400,
-            detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
-        )
+def _parse_consult_review_uploads(
+    files: list[UploadFile],
+) -> tuple[str, list[dict], list[str], list[str]]:
+    """Извлечь текст из загруженных файлов КЗ. Возвращает full_text, meta, warnings, doc_texts_for_cache, category placeholder."""
     max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 3)))
     if len(files) > max_n:
         raise HTTPException(
             status_code=400,
             detail=f"Можно не более {max_n} файлов за один запрос.",
         )
-
     max_mb = env_float("CONSULT_REVIEW_MAX_MB", 15.0)
     lim_b = int(max_mb * 1024 * 1024)
-
     blocks: list[str] = []
     consult_docs_meta: list[dict] = []
     pdf_warnings: list[str] = []
@@ -6486,9 +6502,7 @@ def api_consult_review(
         shown_name = raw_fn.replace("\r", "").replace("\n", " ").strip()
         if len(shown_name) > 220:
             shown_name = shown_name[:217].rstrip() + "…"
-        blocks.append(
-            f"=== ЗАКЛЮЧЕНИЕ {i + 1} ({shown_name}) ===\n\n" + txt
-        )
+        blocks.append(f"=== ЗАКЛЮЧЕНИЕ {i + 1} ({shown_name}) ===\n\n" + txt)
 
     full_text = "\n\n".join(blocks).strip()
     max_store = int(os.environ.get("CONSULT_REVIEW_MAX_TEXT_CHARS", "120000"))
@@ -6497,295 +6511,134 @@ def api_consult_review(
             full_text[:max_store].rstrip()
             + "\n\n[…тексты объединённых файлов обрезаны для обработки]"
         )
+    return full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache
 
-    # Строгая воспроизводимость: одинаковое содержание PDF -> идентичный результат из кэша
-    # (ключ по нормализованному тексту, поэтому совпадает даже при разных байтах одного и того же документа).
+
+def _consult_review_from_uploads(
+    files: list[UploadFile],
+    category_slugs: str,
+    on_progress=None,
+) -> dict:
+    from consult_review_pipeline import run_consult_review_pipeline
+
+    full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = _parse_consult_review_uploads(
+        files
+    )
     content_signature = "\n||\n".join(doc_texts_for_cache)
-    cache_key = _consult_cache_key(content_signature, category_slugs)
-    cached = _consult_cache_get(cache_key)
-    if cached is not None:
-        return cached
-
-    model = get_gemini()
-
-    synthetic, retrieval_focus_meta = _build_consult_review_pipeline_query(
-        model, full_text
+    return run_consult_review_pipeline(
+        full_text=full_text,
+        n_files=len(files),
+        consult_docs_meta=consult_docs_meta,
+        pdf_warnings=pdf_warnings,
+        content_signature=content_signature,
+        category_slugs=category_slugs,
+        on_progress=on_progress,
     )
 
-    icd_analysis, q, q_rag, _, icd_err = _infer_icd_pipeline_from_full_query(
-        synthetic, model
-    )
-    q_slice_fb = int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
-    fallback_synthetic_legacy = (
-        "=== Жалобы и вопрос ===\n\n" + full_text[: min(len(full_text), q_slice_fb)]
-    )
-    if icd_err or not (q_rag or "").strip():
-        icd_analysis_fb, q_fb, q_rag_fb, _, icd_err_fb = (
-            _infer_icd_pipeline_from_full_query(fallback_synthetic_legacy, model)
-        )
-        if not icd_err_fb and (q_rag_fb or "").strip():
-            icd_analysis, q, q_rag = icd_analysis_fb, q_fb, q_rag_fb
-        else:
-            q = synthetic.strip()
-            q_rag = clinical_query_for_rag(synthetic) or full_text[:7000]
-            icd_analysis = analyze_query_for_icd(q, q_rag)
 
-    assert icd_analysis is not None
-    merged_icd, icd_merge_meta = _merge_icd_codes_for_consult_retrieval(
-        icd_analysis, full_text
-    )
-    icd_codes_for_lex = merged_icd or (icd_analysis.get("codes_for_retrieval") or None)
-    diag_codes_list = (
-        icd_merge_meta.get("diag_block_icd_codes")
-        if isinstance(icd_merge_meta.get("diag_block_icd_codes"), list)
-        else []
-    )
+@app.post("/api/consult-review")
+def api_consult_review(
+    files: Annotated[
+        list[UploadFile],
+        File(description="1–3 файла консультативных заключений (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
+    ],
+    category_slugs: str = Form(
+        "",
+        description=(
+            "Необязательно: через запятую идентификаторы рубрик каталога (тот же slug, что в адресе раздела сайта Минздрава "
+            'РБ, например pulmonologiya-ftiziatriya)'
+        ),
+    ),
+) -> dict:
+    """Загрузка одного или нескольких файлов заключений → отбор фрагментов протоколов → JSON-оценка.
 
-    user_slugs = [
-        s.strip()
-        for s in (category_slugs or "").split(",")
-        if s.strip() in ALLOWED_SPECIALTY_SLUGS
-    ]
-
-    query_specialties: list[str] = []
-    try:
-        query_specialties = infer_specialties_gemini(q, model) if q_rag.strip() else []
-    except HTTPException:
-        query_specialties = []
-    boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
-
-    rq = q
-
-    prefix_parts: list[str] = []
-    demographics_banner, demographics_meta = consult_demographics_banner_from_kz(full_text)
-    if demographics_banner.strip():
-        prefix_parts.append(demographics_banner.strip())
-    icd_banner = _consult_icd_banner_for_retrieval(list(diag_codes_list), merged_icd)
-    if icd_banner.strip():
-        prefix_parts.append(icd_banner.strip())
-    if prefix_parts:
-        head = "\n\n".join(prefix_parts) + "\n\n"
-        q = head + q.lstrip()
-        rq = head + rq.lstrip()
-        qr_lim = max(900, int(os.environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000")))
-        q_rag = (head.strip() + "\n\n" + q_rag.strip()).strip()[:qr_lim]
-
-    max_chunks_r = int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
-    max_per_path_r = int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
-
-    clinical_rules = _consult_clinical_rules_pipeline(
-        full_text,
-        demographics_meta if isinstance(demographics_meta, dict) else {},
-        list(merged_icd or []),
-        user_slugs,
-    )
-    matched_path_boost: list[str] = []
-    if isinstance(clinical_rules, dict):
-        for mp in clinical_rules.get("matched_protocols") or []:
-            sp = (mp or {}).get("source_path")
-            if sp and sp not in matched_path_boost:
-                matched_path_boost.append(sp)
-
-    retrieved = retrieve(
-        q_rag,
-        routing_query=rq,
-        category_boost=boost_merged or None,
-        user_category_slugs=user_slugs or None,
-        icd_codes_for_lex=icd_codes_for_lex,
-        path_boost=matched_path_boost or None,
-        max_chunks=max_chunks_r,
-        max_per_path=max_per_path_r,
-    )
-    if not retrieved:
-        fallback_q = full_text[: min(5500, len(full_text))]
-        retrieved = retrieve(
-            fallback_q,
-            routing_query=full_text[: min(9500, len(full_text))],
-            category_boost=boost_merged or None,
-            user_category_slugs=user_slugs or None,
-            icd_codes_for_lex=(merged_icd or None),
-            path_boost=matched_path_boost or None,
-            max_chunks=max(14, max_chunks_r + 2),
-            max_per_path=max_per_path_r,
-        )
-    if not retrieved:
+    Не медико-правовая экспертиза; ориентир для методиста при настроенном сервере обработки текста.
+    """
+    _require_rag_loaded()
+    if not files:
         raise HTTPException(
             status_code=400,
-            detail="Не удалось подобрать фрагменты протоколов по тексту PDF — попробуйте другой файл или явно опишите диагноз/МКБ в документе.",
+            detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
         )
+    return _consult_review_from_uploads(files, category_slugs)
 
-    second_pass_on = _consult_rag_second_pass_enabled()
-    second_pass_diag: dict = {
-        "enabled": second_pass_on,
-        "applied": False,
-        "reason": "",
-        "trigger_eval": False,
-    }
 
-    if retrieved:
-        m1 = _consult_retrieval_quality_metrics(retrieved)
-        second_pass_diag["first_pass_metrics"] = {
-            "max_score": round(float(m1["max_score"]), 4),
-            "top3_lex_avg": round(float(m1["top3_lex_avg"]), 4),
-            "n_chunks": int(m1["n_chunks"]),
-            "uniq_paths": int(m1["uniq_paths"]),
-        }
-        need2 = False
-        why = ""
-        if second_pass_on:
-            need2, why = _consult_should_second_pass(m1)
-        second_pass_diag["trigger_eval"] = bool(need2)
-        second_pass_diag["trigger_reason_code"] = why if second_pass_on else "second_pass_disabled"
-        if second_pass_on and need2:
-            try:
-                q2, aug_meta = _consult_second_pass_build_query(
-                    model,
-                    q_rag,
-                    rq,
-                    retrieval_focus_meta if isinstance(retrieval_focus_meta, dict) else {},
-                    retrieved,
-                )
-                second_pass_diag["augment"] = aug_meta
-                second_pass_diag["augment_query_preview"] = (
-                    (q2[:480] + "…") if len(q2) > 480 else q2
-                )
-                bump = max(0, int(os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS_EXTRA_CHUNKS", "4")))
-                r2 = retrieve(
-                    q2.strip(),
-                    routing_query=rq,
-                    category_boost=boost_merged or None,
-                    user_category_slugs=user_slugs or None,
-                    icd_codes_for_lex=icd_codes_for_lex,
-                    path_boost=matched_path_boost or None,
-                    max_chunks=max_chunks_r + bump,
-                    max_per_path=max_per_path_r,
-                )
-                if r2:
-                    merge_max = max_chunks_r + bump
-                    retrieved = _merge_chunk_retrieval_lists(
-                        [retrieved, r2],
-                        max_chunks=merge_max,
-                        max_per_path=max_per_path_r,
-                    )
-                    second_pass_diag["applied"] = True
-                    second_pass_diag["reason"] = why
-                    second_pass_diag["second_retrieve_rows"] = len(r2)
-                    second_pass_diag["merged_rows"] = len(retrieved)
-                else:
-                    second_pass_diag["reason"] = (
-                        why + ";second_retrieve_empty"
-                        if why
-                        else "second_retrieve_empty"
-                    )
-            except Exception as e:
-                second_pass_diag["reason"] = (why + ";exception") if why else "exception"
-                second_pass_diag["error"] = str(e)[:240]
-        elif not second_pass_on:
-            second_pass_diag["reason"] = "feature_disabled_env"
-        else:
-            second_pass_diag["reason"] = "first_pass_ok"
-
-    retrieved, audience_hint, audience_fb = filter_retrieval_by_audience(
-        retrieved, rq, _routing
-    )
-    icd_frag_needles = _consult_needles_icd_fragments_consult_review(
-        list(diag_codes_list),
-        merged_icd,
-    )
-    retrieved = _consult_sort_retrieval_by_icd_fragments_first(
-        retrieved, icd_frag_needles
-    )
-    precise_links, precise_note_ru = _consult_precise_links_for_icd_in_fragments(
-        retrieved,
-        diag_block_icd=list(diag_codes_list),
-        merged_icd=merged_icd,
+@app.post("/api/consult-review/stream")
+def api_consult_review_stream(
+    files: Annotated[
+        list[UploadFile],
+        File(description="1–3 файла консультативных заключений"),
+    ],
+    category_slugs: str = Form(""),
+):
+    """SSE-поток прогресса проверки КЗ: события progress (pct, partial) и done (result)."""
+    from consult_review_pipeline import (
+        iter_consult_review_pipeline,
+        sse_encode_done,
+        sse_encode_error,
+        sse_encode_progress,
     )
 
-    proto_max = int(os.environ.get("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", "16500"))
-    protocol_ctx, paths_used = _build_review_chunks_context(retrieved, proto_max)
-    paths_hint_for_llm = _consult_review_paths_hint(
-        paths_used,
-        retrieved=retrieved,
-        icd_needles=icd_frag_needles,
-    )
-
-    consult_max = int(os.environ.get("CONSULT_REVIEW_CONSULT_CHARS", "20000"))
-    multi_intro = (
-        ""
-        if len(files) <= 1
-        else (
-            "Несколько документов: блоки ниже — в порядке загрузки; при оценке учитывай "
-            "согласованность между приёмами, хронологию формулировок и возможные противоречия между частями.\n\n"
-        )
-    )
-    reserve_for_suffix = 100
-    room = max(400, consult_max - len(multi_intro) - reserve_for_suffix)
-    consult_body = full_text[:room].strip()
-    suffix = ""
-    if len(full_text) > len(consult_body):
-        suffix += "\n\n[…остаток заключений не передан в модель из-за лимита]"
-    consult_excerpt = multi_intro + consult_body + suffix
-
-    ui_frags = _consult_ui_protocol_fragments(retrieved, paths_used)
-    oncology = _consult_oncology_flags(ui_frags, full_text)
-
-    oncology_extra = ""
-    if oncology.get("any"):
-        oncology_extra = (
-            "\n\nВАЖНО ДЛЯ ОЦЕНКИ ЭТОГО КОНСУЛЬТАТИВНОГО ЗАКЛЮЧЕНИЯ:\n"
-            + str(oncology.get("instruction_ru") or "").strip()
-            + "\nЕсли текст заключения связан с онкологическим риском или опухолевой патологией, отдельно оцените клиническую "
-            "безопасность формулировок применительно к переданным фрагментам протоколов; при недостаточном покрытии протоколами усильте ограничения "
-            "(limitations_ru) и понизьте баллы по затронутым критериям.\n"
-        )
+    _require_rag_loaded()
+    if not files:
+        raise HTTPException(status_code=400, detail="Не переданы файлы.")
 
     try:
-        from clinical_knowledge.llm_context import format_clinical_rules_for_llm
+        full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
+            _parse_consult_review_uploads(files)
+        )
+    except HTTPException as e:
+        detail = e.detail if isinstance(e.detail, str) else str(e.detail)
 
-        rules_ctx = format_clinical_rules_for_llm(clinical_rules)
-    except ImportError:
-        rules_ctx = ""
+        def err_gen():
+            yield sse_encode_error(detail, e.status_code)
 
-    review = _consult_review_synthesize(
-        model,
-        consult_excerpt,
-        protocol_ctx,
-        paths_hint_for_llm,
-        extra_context=oncology_extra,
-        clinical_rules_context=rules_ctx,
+        return StreamingResponse(err_gen(), media_type="text/event-stream")
+
+    content_signature = "\n||\n".join(doc_texts_for_cache)
+
+    def event_gen():
+        yield sse_encode_progress(
+            "extract",
+            12,
+            f"Текст извлечён ({len(full_text)} симв., {len(files)} файл.)",
+            {
+                "consult_documents": consult_docs_meta,
+                "extraction_chars": len(full_text),
+                "documents_count": len(files),
+            },
+        )
+        try:
+            for kind, payload in iter_consult_review_pipeline(
+                full_text=full_text,
+                n_files=len(files),
+                consult_docs_meta=consult_docs_meta,
+                pdf_warnings=pdf_warnings,
+                content_signature=content_signature,
+                category_slugs=category_slugs,
+            ):
+                if kind == "progress":
+                    p = payload
+                    yield sse_encode_progress(
+                        p["stage"],
+                        p["pct"],
+                        p["label_ru"],
+                        p.get("partial"),
+                    )
+                elif kind == "done":
+                    yield sse_encode_done(payload)
+                    return
+        except HTTPException as e:
+            detail = e.detail if isinstance(e.detail, str) else str(e.detail)
+            yield sse_encode_error(detail, e.status_code)
+        except Exception as e:
+            yield sse_encode_error(str(e)[:400], 500)
+
+    return StreamingResponse(
+        event_gen(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
-
-    result = {
-        "ok": True,
-        "server_version": _app_version(),
-        "review": review,
-        "pdf_warnings": pdf_warnings,
-        "consult_documents": consult_docs_meta,
-        "documents_count": len(consult_docs_meta),
-        "extraction_chars": len(full_text),
-        "retrieval_paths": paths_used,
-        "consult_protocol_fragments": ui_frags,
-        "consult_oncology_flags": oncology,
-        "consult_icd_precise_links": precise_links,
-        "consult_icd_precise_note_ru": precise_note_ru,
-        "audience_filter": audience_hint,
-        "audience_fallback": audience_fb,
-        "consult_retrieval": {
-            "focus": retrieval_focus_meta,
-            "icd_codes_lex_merged": merged_icd,
-            "diag_block_icd_codes": diag_codes_list,
-            "icd_merge_meta": icd_merge_meta,
-            "fragments_icd_needles": icd_frag_needles,
-            "second_pass": second_pass_diag,
-        },
-        "icd": _icd_client_payload(icd_analysis),
-        "demographics_meta": demographics_meta,
-    }
-    if clinical_rules is not None:
-        result["clinical_rules"] = clinical_rules
-    result["cached_result"] = False
-    _consult_cache_put(cache_key, result)
-    return result
 
 
 # Статика (index.html, protocols.json, PDF) — регистрировать после API-маршрутов.
