@@ -80,7 +80,9 @@ def consult_target_protocol_paths(
     slugs = set(specialty_slugs or [])
 
     if primary_icd:
-        scored: list[tuple[float, str]] = []
+        # Лучший балл на КАЖДЫЙ PDF (а не на каждую секцию), иначе PDF с многими
+        # секциями вытесняет другие релевантные протоколы из топа.
+        best_by_path: dict[str, float] = {}
         for card in load_protocol_cards_registry():
             sp = _path_norm(str(card.get("source_path") or ""))
             if not sp:
@@ -92,11 +94,14 @@ def consult_target_protocol_paths(
                 continue
             if slugs and card.get("specialty_slug") in slugs:
                 sc += 12.0
-            scored.append((sc, sp))
-        scored.sort(key=lambda x: (-x[0], x[1]))
-        for sc, sp in scored[: limit + 4]:
+            if sc > best_by_path.get(sp, 0.0):
+                best_by_path[sp] = sc
+        scored = sorted(best_by_path.items(), key=lambda x: (-x[1], x[0]))
+        for sp, sc in scored:
             if sc >= 18.0:
                 add(sp, "icd_registry_match")
+            if len(paths) >= limit:
+                break
 
     meta: dict[str, Any] = {
         "primary_icd": primary_icd[:12],

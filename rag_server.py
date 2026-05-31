@@ -5699,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r40-consult-diagnosis-icd-specialty-retrieval"
+BUILD_VERSION = "2026-05-31-r41-commit-full-icd-enriched-registry"
 
 
 def _app_version() -> str:
