@@ -40,6 +40,9 @@ def test_json_report_shape():
         "non_compliant", "insufficient_data", "manual_review_required",
     )
     assert isinstance(j["matched_protocols"], list)
+    assert "structural_assessment" in j
+    assert "protocol_assessment" in j
+    assert "doctor_summary" in j
 
 
 def test_markdown_report_sections():
@@ -48,13 +51,16 @@ def test_markdown_report_sections():
     for header in [
         "# Оценка консультативного заключения",
         "## 1. Краткое резюме",
-        "## 2. Применимость протокола",
-        "## 3. Оценка диагноза",
-        "## 4. Оценка обследований",
-        "## 5. Оценка лечения",
-        "## 6. Красные флаги и безопасность",
-        "## 7. Качество оформления КЗ",
-        "## 8. Ссылки на источники",
+        "## 2. Проверка структуры КЗ",
+        "## 3. Данные пациента",
+        "## 4. Проверка диагноза",
+        "## 5. Применимость протоколов",
+        "## 6. Проверка обследований",
+        "## 7. Проверка лечения",
+        "## 8. Красные флаги и безопасность",
+        "## 9. Повторная явка и контроль",
+        "## 10. Все замечания",
+        "## 11. Источники",
     ]:
         assert header in md
     assert "gastro/g.pdf" in md

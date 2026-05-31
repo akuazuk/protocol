@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """CLI: структурный анализ консультативного заключения (ТЗ раздел 5).
 
-Примеры:
+Примеры (эквивалент check-kz из ТЗ):
     python -m scripts.analyze_consultation --file path/to/kz.pdf
     python -m scripts.analyze_consultation --file kz.txt --markdown out.md
-    python -m scripts.analyze_consultation --folder data/examples/consultations --output reports/
+    python -m scripts.analyze_consultation --folder data/examples/consultations --output data/reports/kz_checks
 
 Извлечение текста: TXT — как есть; PDF — через pypdf (текстовый слой, без OCR).
 """
@@ -19,54 +19,25 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.consult_analysis import analyze_consultation_text  # noqa: E402
-
-
-def _extract_text(path: Path) -> str:
-    suffix = path.suffix.lower()
-    if suffix in (".txt", ".md", ".json"):
-        return path.read_text(encoding="utf-8", errors="replace")
-    if suffix == ".pdf":
-        try:
-            from pypdf import PdfReader
-        except ImportError:
-            print("pypdf не установлен — не могу прочитать PDF.", file=sys.stderr)
-            return ""
-        try:
-            reader = PdfReader(str(path))
-            return "\n".join((page.extract_text() or "") for page in reader.pages)
-        except Exception as exc:  # noqa: BLE001
-            print(f"Ошибка чтения PDF {path.name}: {exc}", file=sys.stderr)
-            return ""
-    print(f"Неподдерживаемый тип файла: {path.name}", file=sys.stderr)
-    return ""
-
-
-def _analyze_file(path: Path, *, markdown_out: Path | None, out_dir: Path | None) -> dict:
-    text = _extract_text(path)
-    res = analyze_consultation_text(
-        text, consultation_id=path.stem, source_file=path.name,
-        source_file_type=path.suffix.lstrip("."), with_markdown=True,
-    )
-    md = res.pop("report_markdown", "")
-    if out_dir:
-        out_dir.mkdir(parents=True, exist_ok=True)
-        (out_dir / f"{path.stem}.report.json").write_text(
-            json.dumps(res["compliance"], ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        (out_dir / f"{path.stem}.report.md").write_text(md, encoding="utf-8")
-    if markdown_out:
-        markdown_out.write_text(md, encoding="utf-8")
-    return res
+from clinical_knowledge.batch_runner import (  # noqa: E402
+    DEFAULT_OUTPUT_DIR,
+    analyze_file,
+    run_batch,
+)
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Структурный анализ КЗ по клиническим протоколам")
+    ap = argparse.ArgumentParser(
+        description="Проверка КЗ на соответствие требованиям РБ и клиническим протоколам (check-kz)",
+    )
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--file", type=str, help="путь к одному КЗ (PDF/TXT/JSON)")
     g.add_argument("--folder", type=str, help="папка с КЗ для batch-анализа")
     ap.add_argument("--markdown", type=str, default=None, help="куда сохранить MD-отчёт (для --file)")
-    ap.add_argument("--output", type=str, default=None, help="папка для JSON/MD отчётов")
+    ap.add_argument(
+        "--output", type=str, default=None,
+        help=f"папка для JSON/MD отчётов (по умолчанию для batch: {DEFAULT_OUTPUT_DIR})",
+    )
     ap.add_argument("--quiet", action="store_true", help="не печатать JSON в stdout")
     args = ap.parse_args()
 
@@ -77,9 +48,10 @@ def main() -> int:
         if not path.exists():
             print(f"Файл не найден: {path}", file=sys.stderr)
             return 2
-        res = _analyze_file(
-            path, markdown_out=Path(args.markdown) if args.markdown else None, out_dir=out_dir
-        )
+        res = analyze_file(path, out_dir=out_dir)
+        md = res.pop("report_markdown", "")
+        if args.markdown:
+            Path(args.markdown).write_text(md, encoding="utf-8")
         if not args.quiet:
             print(json.dumps(res["compliance"], ensure_ascii=False, indent=2))
         return 0
@@ -88,24 +60,10 @@ def main() -> int:
     if not folder.is_dir():
         print(f"Папка не найдена: {folder}", file=sys.stderr)
         return 2
-    files = sorted(
-        p for p in folder.iterdir()
-        if p.suffix.lower() in (".pdf", ".txt", ".json", ".md")
-    )
-    summary = []
-    for p in files:
-        try:
-            res = _analyze_file(p, markdown_out=None, out_dir=out_dir)
-            comp = res["compliance"]
-            summary.append({
-                "file": p.name,
-                "overall_status": comp.get("overall_status"),
-                "overall_score": comp.get("score_breakdown", {}).get("overall_score"),
-            })
-        except Exception as exc:  # batch не должен падать на одном файле (ТЗ 4.6)
-            summary.append({"file": p.name, "error": str(exc)[:200]})
+    batch_out = out_dir or DEFAULT_OUTPUT_DIR
+    summary = run_batch(folder, out_dir=batch_out)
     if not args.quiet:
-        print(json.dumps({"analyzed": len(summary), "results": summary}, ensure_ascii=False, indent=2))
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0
 
 

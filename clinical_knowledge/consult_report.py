@@ -131,33 +131,53 @@ def report_to_json(
     patient_summary: dict[str, Any] = {}
     doctor_specialty = None
     consultation_date = None
+    doctor_summary: dict[str, Any] = {}
     if doc is not None:
         patient_summary = {
+            "full_name_initials": doc.patient.full_name,
             "age_years": doc.patient.age_years,
+            "birth_date": doc.patient.birth_date.isoformat() if doc.patient.birth_date else None,
             "sex": doc.patient.sex,
             "adult_or_child": doc.patient.adult_or_child,
             "pregnancy": doc.patient.pregnancy,
         }
         doctor_specialty = doc.doctor_specialty
+        doctor_summary = {
+            "specialty": doc.doctor_specialty,
+            "name": doc.doctor_name,
+            "category": doc.doctor_category,
+        }
         consultation_date = doc.consultation_date.isoformat() if doc.consultation_date else None
 
+    all_issues = (
+        list(report.critical_issues)
+        + list(report.missing_required_items)
+        + list(report.warnings)
+    )
     return {
         "consultation_id": report.consultation_id,
+        "source_file": report.source_file,
         "patient_summary": patient_summary,
+        "doctor_summary": doctor_summary,
         "doctor_specialty": doctor_specialty,
         "consultation_date": consultation_date,
         "matched_protocols": [m.model_dump(mode="json") for m in report.protocol_matches],
+        "diagnoses": [d.model_dump(mode="json") for d in (doc.diagnoses if doc else [])],
         "overall_score": report.overall_score,
         "score_breakdown": report.score_breakdown.model_dump(mode="json"),
         "overall_status": report.overall_status,
+        "structural_assessment": report.structural_assessment.model_dump(mode="json"),
+        "protocol_assessment": report.protocol_assessment.model_dump(mode="json"),
         "critical_issues": [i.model_dump(mode="json") for i in report.critical_issues],
         "warnings": [i.model_dump(mode="json") for i in report.warnings],
         "missing_required_items": [i.model_dump(mode="json") for i in report.missing_required_items],
+        "issues": [i.model_dump(mode="json") for i in all_issues],
         "diagnosis_assessments": [a.model_dump(mode="json") for a in report.diagnosis_assessments],
         "exam_assessments": [a.model_dump(mode="json") for a in report.exam_assessments],
         "treatment_assessments": [a.model_dump(mode="json") for a in report.treatment_assessments],
         "safety_assessments": [a.model_dump(mode="json") for a in report.safety_assessments],
         "source_refs": [r.model_dump(mode="json") for r in report.source_refs],
+        "explanation": report.explanation,
     }
 
 
@@ -403,7 +423,7 @@ def report_to_markdown(
     doc: ConsultationDocument | None = None,
     rubric_specifics: dict | None = None,
 ) -> str:
-    """Markdown-отчёт по структуре ТЗ раздел 20 (8 разделов)."""
+    """Markdown-отчёт по структуре ТЗ §15 (11 разделов)."""
     L: list[str] = []
     bd = report.score_breakdown
 
@@ -411,6 +431,8 @@ def report_to_markdown(
     L.append("")
     # 1. Резюме
     L.append("## 1. Краткое резюме")
+    if report.source_file:
+        L.append(f"- Файл: {report.source_file}")
     if doc is not None:
         p = doc.patient
         L.append(f"- Пациент: {name_to_initials(p.full_name)}")
@@ -434,21 +456,60 @@ def report_to_markdown(
     )
     L.append("")
 
-    # 2. Применимость протокола
-    L.append("## 2. Применимость протокола")
-    if report.protocol_matches:
-        for m in report.protocol_matches[:5]:
-            L.append(f"- **{m.document_title or m.protocol_id}** — {m.applicability}")
-            for r in m.match_reasons:
-                L.append(f"  - + {r}")
-            for r in m.mismatch_reasons:
-                L.append(f"  - − {r}")
-    else:
-        L.append("- Подходящие протоколы не подобраны.")
+    # 2. Структура КЗ (requirement checker)
+    sa = report.structural_assessment
+    L.append("## 2. Проверка структуры КЗ")
+    L.append(f"_Балл: {_fmt_pct(sa.structural_score)}; данные пациента: {_fmt_pct(sa.patient_data_score)}_")
+    if sa.filled_sections:
+        L.append(f"- Заполнено: {', '.join(sa.filled_sections[:12])}")
+    if sa.missing_required:
+        L.append(f"- **Отсутствует (обязательное):** {', '.join(sa.missing_required)}")
+    if sa.missing_conditional:
+        L.append(f"- Отсутствует (условное): {', '.join(sa.missing_conditional)}")
+    if sa.missing_recommended:
+        L.append(f"- Рекомендуется добавить: {', '.join(sa.missing_recommended)}")
+    sq = report.section_quality
+    if sq.missing_sections or sq.suspicious_placeholders:
+        L.append("- **Качество оформления:**")
+        if sq.missing_sections:
+            L.append(f"  - пропущенные разделы: {', '.join(sq.missing_sections)}")
+        if sq.suspicious_placeholders:
+            L.append(f"  - placeholder: {', '.join(sq.suspicious_placeholders)}")
     L.append("")
 
-    # 3. Диагноз
-    L.append("## 3. Оценка диагноза")
+    # 3. Данные пациента
+    L.append("## 3. Данные пациента")
+    if doc is not None:
+        p = doc.patient
+        L.append(f"- Дата рождения: {p.birth_date.isoformat() if p.birth_date else '—'}")
+        L.append(f"- Возраст на дату консультации: {p.age_years if p.age_years is not None else '—'}")
+        L.append(f"- Пол: {_SEX_RU.get(p.sex, p.sex)}")
+        if p.pregnancy is not None:
+            L.append(f"- Беременность: {'да' if p.pregnancy else 'нет'}")
+        if p.comorbidities:
+            L.append(f"- Сопутствующие заболевания: {', '.join(p.comorbidities[:5])}")
+        if p.allergies:
+            L.append(f"- Аллергии: {', '.join(p.allergies[:5])}")
+        if p.current_medications:
+            L.append(f"- Текущие препараты: {', '.join(p.current_medications[:5])}")
+    else:
+        L.append("- Данные пациента не распознаны.")
+    L.append("")
+
+    # 4. Диагноз
+    L.append("## 4. Проверка диагноза")
+    if doc is not None and doc.diagnoses:
+        primary = [d for d in doc.diagnoses if d.diagnosis_role == "primary"] or doc.diagnoses[:1]
+        secondary = [d for d in doc.diagnoses if d.diagnosis_role != "primary" and d.certainty != "suspected"]
+        suspected = [d for d in doc.diagnoses if d.certainty == "suspected"]
+        if primary:
+            L.append("- **Основной:** " + "; ".join(
+                f"{d.icd10_code or '—'} {d.diagnosis_name or d.raw_text}" for d in primary
+            ))
+        if secondary:
+            L.append("- Сопутствующие: " + "; ".join(d.raw_text[:80] for d in secondary[:3]))
+        if suspected:
+            L.append("- Подозрительные: " + "; ".join(d.raw_text[:80] for d in suspected[:3]))
     L.append(f"_Балл блока: {_fmt_pct(bd.diagnosis_score)}_")
     for a in report.diagnosis_assessments:
         L.append(f"- {a.icd10_code or ''} {a.diagnosis_text} — **{_DIAG_RU.get(a.status, a.status)}**")
@@ -458,9 +519,33 @@ def report_to_markdown(
             L.append(f"  - не хватает: {e}")
     L.append("")
 
-    # 4. Обследования
-    L.append("## 4. Оценка обследований")
+    # 5. Применимость протоколов
+    pa = report.protocol_assessment
+    L.append("## 5. Применимость протоколов")
+    if pa.summary_ru:
+        L.append(f"- {pa.summary_ru}")
+    L.append(f"- Подобрано: {pa.matched_count}; применимо: {pa.applicable_count}")
+    if report.protocol_matches:
+        for m in report.protocol_matches[:5]:
+            L.append(f"- **{m.document_title or m.protocol_id}** — {m.applicability}")
+            if m.matched_condition:
+                L.append(f"  - нозология: {m.matched_condition}")
+            for r in m.match_reasons[:3]:
+                L.append(f"  - + {r}")
+            for r in m.mismatch_reasons[:3]:
+                L.append(f"  - − {r}")
+    else:
+        L.append("- Подходящие протоколы не подобраны.")
+    L.append("")
+
+    # 6. Обследования
+    L.append("## 6. Проверка обследований")
     L.append(f"_Балл блока: {_fmt_pct(bd.required_exams_score)}_")
+    if doc is not None:
+        if doc.performed_exams:
+            L.append("- **Выполненные:** " + ", ".join(e.exam_name for e in doc.performed_exams[:8]))
+        if doc.planned_exams:
+            L.append("- **Рекомендованные:** " + ", ".join(e.exam_name for e in doc.planned_exams[:8]))
     if report.exam_assessments:
         for e in report.exam_assessments:
             L.append(f"- {e.exam_name} — **{_EXAM_RU.get(e.status, e.status)}**" + (f" ({e.reason})" if e.reason else ""))
@@ -468,20 +553,22 @@ def report_to_markdown(
         L.append("- Детерминированные правила по обследованиям не сработали (нет данных).")
     L.append("")
 
-    # 5. Лечение
-    L.append("## 5. Оценка лечения")
+    # 7. Лечение
+    L.append("## 7. Проверка лечения")
     L.append(f"_Балл блока: {_fmt_pct(bd.treatment_score)}_")
     if report.treatment_assessments:
         for t in report.treatment_assessments:
             L.append(f"- {t.treatment_text} — **{_TREAT_RU.get(t.status, t.status)}**")
             for iss in t.issues:
                 L.append(f"  - {iss.message_ru}")
+            if t.consultation_evidence:
+                L.append(f"  - фрагмент КЗ: {t.consultation_evidence[0][:120]}")
     else:
         L.append("- Назначения не распознаны.")
     L.append("")
 
-    # 6. Red flags
-    L.append("## 6. Красные флаги и безопасность")
+    # 8. Red flags
+    L.append("## 8. Красные флаги и безопасность")
     L.append(f"_Балл блока: {_fmt_pct(bd.safety_score)}_")
     if report.safety_assessments:
         for s in report.safety_assessments:
@@ -494,19 +581,40 @@ def report_to_markdown(
         L.append("- ⚠️ Требуется ручное рассмотрение (критический red flag без маршрутизации).")
     L.append("")
 
-    # 7. Качество КЗ
-    L.append("## 7. Качество оформления КЗ")
-    L.append(f"_Балл блока: {_fmt_pct(bd.documentation_quality_score)}_")
-    sq = report.section_quality
-    if sq.missing_sections:
-        L.append(f"- Пропущенные разделы: {', '.join(sq.missing_sections)}")
-    if sq.suspicious_placeholders:
-        L.append(f"- Placeholder-значения: {', '.join(sq.suspicious_placeholders)}")
-    if sq.extraction_warnings:
-        for w in sq.extraction_warnings:
-            L.append(f"- ⚠ {w}")
-    if not (sq.missing_sections or sq.suspicious_placeholders or sq.extraction_warnings):
-        L.append("- Замечаний по оформлению нет.")
+    # 9. Повторная явка и контроль
+    L.append("## 9. Повторная явка и контроль")
+    L.append(f"_Балл блока: {_fmt_pct(bd.follow_up_score)}_")
+    if doc is not None:
+        if doc.follow_up:
+            for fu in doc.follow_up[:3]:
+                L.append(f"- Повторная явка: {fu.date.isoformat() if fu.date else fu.raw_text or '—'}")
+        elif doc.sections.follow_up_text:
+            L.append(f"- {doc.sections.follow_up_text[:200]}")
+        else:
+            L.append("- Дата или срок повторной явки не указаны.")
+    L.append("")
+
+    # 10. Все замечания
+    all_issues = list(report.critical_issues) + list(report.missing_required_items) + list(report.warnings)
+    L.append("## 10. Все замечания")
+    if all_issues:
+        for sev_label, sevs in (
+            ("Critical", ("critical",)),
+            ("Major", ("high", "warning")),
+            ("Minor", ("medium", "low")),
+            ("Info", ("info",)),
+        ):
+            bucket = [i for i in all_issues if i.severity in sevs]
+            if bucket:
+                L.append(f"### {sev_label}")
+                for iss in bucket[:15]:
+                    ev = iss.consultation_evidence[0][:80] if iss.consultation_evidence else ""
+                    line = f"- {iss.message_ru}"
+                    if ev:
+                        line += f" _(КЗ: {ev}…)_"
+                    L.append(line)
+    else:
+        L.append("- Замечаний нет.")
     L.append("")
 
     # 7.1 Профильные показатели рубрики (ТЗ раздел 22)
@@ -514,7 +622,7 @@ def report_to_markdown(
         by_rubric = rubric_specifics.get("by_rubric") or {}
         measurements = rubric_specifics.get("measurements") or {}
         if by_rubric or measurements:
-            L.append("## 7.1 Профильные показатели рубрики")
+            L.append("## 10.1 Профильные показатели рубрики")
             for slug, info in by_rubric.items():
                 title = (info or {}).get("title", slug)
                 matched = (info or {}).get("matched_terms") or []
@@ -533,13 +641,19 @@ def report_to_markdown(
                     L.append(f"  - {name}: {val} {unit}".rstrip())
             L.append("")
 
-    # 8. Источники
-    L.append("## 8. Ссылки на источники")
+    # 11. Источники
+    L.append("## 11. Источники")
+    if doc is not None and doc.raw_text:
+        L.append("- **Фрагменты КЗ:**")
+        for chunk in doc.raw_text.strip().split("\n\n")[:4]:
+            if chunk.strip():
+                L.append(f"  - «{chunk.strip()[:180]}…»")
     refs = report.source_refs or []
     if refs:
+        L.append("- **Протоколы:**")
         for r in refs:
-            L.append(f"- {_src_line(r)}")
-    else:
+            L.append(f"  - {_src_line(r)}")
+    elif not (doc and doc.raw_text):
         L.append("- Источники не указаны.")
     L.append("")
 

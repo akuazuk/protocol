@@ -18,12 +18,16 @@ from .consult_schema import (
     ConsultationDocument,
     DiagnosisAssessment,
     ExamAssessment,
+    ProtocolAssessment,
     ProtocolMatchResult,
     ScoreBreakdown,
     SectionQualityAssessment,
     SourceRef,
+    StructuralAssessment,
     TreatmentAssessment,
 )
+from .protocol_compliance_checker import run_protocol_compliance_check
+from .requirement_checker import run_requirement_check
 from .safety_checker import has_unhandled_critical, run_safety_checks
 from .scoring import compute_overall
 
@@ -50,6 +54,7 @@ def _protocol_matches(matches: list[dict[str, Any]]) -> list[ProtocolMatchResult
                 protocol_id=str(m.get("protocol_id") or ""),
                 document_title=m.get("title"),
                 source_path=m.get("source_path"),
+                matched_condition=m.get("matched_condition") or m.get("title"),
                 match_score=float(m.get("match_score") or 0.0),
                 match_reasons=list(m.get("match_reasons") or []),
                 mismatch_reasons=list(m.get("mismatch_reasons") or []),
@@ -152,21 +157,32 @@ def _diagnosis_assessments(
 
 def _exam_assessments(
     rules_check: dict[str, Any],
+    doc: ConsultationDocument,
 ) -> tuple[list[ExamAssessment], float | None]:
     findings = (rules_check or {}).get("findings") or []
     exam_findings = [f for f in findings if (f.get("rule_type") == "required_exam")]
+    performed_names = {
+        (e.exam_name or "").lower().strip()
+        for e in (doc.performed_exams or [])
+        if e.exam_name
+    }
     if not exam_findings:
         return [], None
     out: list[ExamAssessment] = []
     passed = 0
     for f in exam_findings:
+        exam_label = str(f.get("exam") or f.get("message_ru") or "обследование")[:200]
         ok = bool(f.get("passed"))
+        if not ok and performed_names:
+            low = exam_label.lower()
+            if any(p in low or low in p for p in performed_names if len(p) > 3):
+                ok = True
         passed += 1 if ok else 0
         src = f.get("source") or {}
         out.append(
             ExamAssessment(
                 protocol_rule_id=f.get("rule_id"),
-                exam_name=str(f.get("exam") or f.get("message_ru") or "обследование")[:200],
+                exam_name=exam_label,
                 status="present_performed" if ok else "missing_required",
                 reason=str(f.get("message_ru") or ""),
                 source_refs=[SourceRef(local_path=src.get("source_path"), protocol_id=src.get("protocol_id"))]
@@ -180,28 +196,89 @@ def _exam_assessments(
 def _treatment_assessments(
     doc: ConsultationDocument,
 ) -> tuple[list[TreatmentAssessment], float | None]:
-    # Без протокольных правил по препаратам не оцениваем дозы детерминированно:
-    # фиксируем назначения как insufficient_data (не занижаем общий балл).
     out: list[TreatmentAssessment] = []
+    if not doc.medications:
+        return out, None
+    scores: list[float] = []
     for m in doc.medications:
         issues: list[ComplianceIssue] = []
+        penalty = 0
         if m.dose_value is None:
             issues.append(
                 ComplianceIssue(
                     issue_type="missing_dose", severity="warning",
+                    category="data_quality",
                     message_ru="Назначение без распознанной дозы.", field_target="treatment",
+                    consultation_evidence=[m.raw_text[:200]] if m.raw_text else [],
                 )
             )
+            penalty += 25
+        if not m.frequency:
+            issues.append(
+                ComplianceIssue(
+                    issue_type="missing_frequency", severity="warning",
+                    category="data_quality",
+                    message_ru="Назначение без распознанной кратности.", field_target="treatment",
+                    consultation_evidence=[m.raw_text[:200]] if m.raw_text else [],
+                )
+            )
+            penalty += 20
+        if not m.duration and not m.schedule:
+            issues.append(
+                ComplianceIssue(
+                    issue_type="missing_duration", severity="warning",
+                    category="data_quality",
+                    message_ru="Назначение без распознанной длительности.", field_target="treatment",
+                    consultation_evidence=[m.raw_text[:200]] if m.raw_text else [],
+                )
+            )
+            penalty += 15
+        item_score = max(0.0, 100.0 - penalty)
+        scores.append(item_score)
+        status = "partially_matches_protocol" if issues else "insufficient_data"
         out.append(
             TreatmentAssessment(
                 medication_id=m.medication_id,
                 treatment_text=m.raw_text,
-                status="insufficient_data",
+                status=status,  # type: ignore[arg-type]
                 issues=issues,
                 consultation_evidence=[m.raw_text],
             )
         )
-    return out, None
+    treat_score = round(sum(scores) / len(scores), 1) if scores else None
+    return out, treat_score
+
+
+def _follow_up_score(doc: ConsultationDocument, structural: StructuralAssessment) -> float | None:
+    if doc.follow_up or doc.sections.follow_up_text:
+        return 90.0
+    if "follow_up_scheduled" in structural.missing_conditional:
+        return 40.0
+    if doc.sections.recommendations_treatment or doc.medications:
+        return 55.0
+    return None
+
+
+def _protocol_assessment(
+    matches: list[dict[str, Any]], rules_check: dict[str, Any],
+) -> ProtocolAssessment:
+    appl = [m for m in matches if m.get("applicability") in ("applicable", "possibly_applicable")]
+    top = max(appl, key=lambda m: float(m.get("match_score") or 0), default=None) if appl else None
+    rc = (rules_check or {}).get("rules_compliance_pct")
+    pct = float(rc) if isinstance(rc, (int, float)) else None
+    summary = ""
+    if top:
+        summary = f"Топ протокол: {top.get('title') or top.get('protocol_id') or '—'}"
+        if pct is not None:
+            summary += f"; соответствие правилам: {pct:.0f}%"
+    return ProtocolAssessment(
+        matched_count=len(matches),
+        applicable_count=len(appl),
+        top_protocol_id=str(top.get("protocol_id") or "") if top else None,
+        top_protocol_title=str(top.get("title") or "") if top else None,
+        rules_compliance_pct=pct,
+        summary_ru=summary,
+    )
 
 
 def _section_quality(doc: ConsultationDocument) -> tuple[SectionQualityAssessment, float]:
@@ -284,22 +361,39 @@ def build_compliance_report(
     )
 
     safety = run_safety_checks(doc)
+    structural, req_issues = run_requirement_check(doc)
     diag_assess, diag_score = _diagnosis_assessments(doc, matches)
-    exam_assess, exams_score = _exam_assessments(rules_check)
-    treat_assess, treat_score = _treatment_assessments(doc)
+    exam_assess, exams_score = _exam_assessments(rules_check, doc)
+    treat_base, treat_score_base = _treatment_assessments(doc)
+    proto_issues, treat_assess, treat_score = run_protocol_compliance_check(
+        doc, rules_check, treat_base,
+    )
+    if treat_score is None:
+        treat_score = treat_score_base
     section_q, doc_score = _section_quality(doc)
     safety_score = _safety_score(safety, has_content=has_content)
     pm_score = _protocol_match_score(matches)
+    follow_score = _follow_up_score(doc, structural)
+    proto_assess = _protocol_assessment(matches, rules_check)
     if not has_content:
-        # пустой/нечитаемый документ: документ-оценка не должна давать ложный балл
         doc_score = None  # type: ignore[assignment]
+        structural.structural_score = None
+        structural.patient_data_score = None
+        treat_score = None
+        diag_score = None
+        exams_score = None
+        follow_score = None
+        pm_score = None
 
     breakdown = ScoreBreakdown(
+        structural_score=structural.structural_score,
+        patient_data_score=structural.patient_data_score,
         protocol_match_score=pm_score,
         diagnosis_score=diag_score,
         required_exams_score=exams_score,
         treatment_score=treat_score,
         safety_score=safety_score,
+        follow_up_score=follow_score,
         documentation_quality_score=doc_score,
     )
     force_manual = has_unhandled_critical(safety)
@@ -309,6 +403,18 @@ def build_compliance_report(
     missing_items: list[ComplianceIssue] = []
     warnings: list[ComplianceIssue] = []
     critical: list[ComplianceIssue] = []
+    for iss in req_issues:
+        if iss.issue_type in structural.missing_required:
+            missing_items.append(iss)
+        elif iss.severity in ("critical", "high"):
+            if iss.issue_type in ("diagnosis", "recommendations", "routing_red_flag"):
+                critical.append(iss)
+            else:
+                warnings.append(iss)
+        else:
+            warnings.append(iss)
+    for iss in proto_issues:
+        (critical if iss.severity in ("critical", "high") else warnings).append(iss)
     for a in diag_assess:
         for iss in a.issues:
             (critical if iss.severity in ("critical", "high") else warnings).append(iss)
@@ -336,12 +442,15 @@ def build_compliance_report(
 
     return ComplianceReport(
         consultation_id=doc.consultation_id,
+        source_file=doc.source_file,
         overall_score=overall,
         overall_status=status,  # type: ignore[arg-type]
         score_breakdown=breakdown,
         protocol_matches=_protocol_matches(matches),
         diagnosis_assessments=diag_assess,
         section_quality=section_q,
+        structural_assessment=structural,
+        protocol_assessment=proto_assess,
         exam_assessments=exam_assess,
         treatment_assessments=treat_assess,
         safety_assessments=safety,

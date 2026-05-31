@@ -42,10 +42,12 @@ class SourceRef(_Base):
 class ComplianceIssue(_Base):
     issue_type: str
     severity: Literal["info", "low", "medium", "high", "critical", "warning"] = "info"
+    category: str | None = None
     message_ru: str
     field_target: str | None = None
     expected: str | None = None
     actual: str | None = None
+    consultation_evidence: list[str] = Field(default_factory=list)
     source_refs: list[SourceRef] = Field(default_factory=list)
 
 
@@ -88,8 +90,12 @@ class PatientContext(_Base):
 
 
 class ConsultationSections(_Base):
+    header: str | None = None
+    consent_text: str | None = None
+    consultation_purpose: str | None = None
     complaints: str | None = None
     anamnesis: str | None = None
+    life_history: str | None = None
     allergy_history: str | None = None
     medication_history: str | None = None
     surgical_history: str | None = None
@@ -99,8 +105,11 @@ class ConsultationSections(_Base):
     diagnosis_text: str | None = None
     recommendations_exams: str | None = None
     recommendations_treatment: str | None = None
+    non_drug_recommendations: str | None = None
     general_recommendations: str | None = None
+    routing: str | None = None
     follow_up_text: str | None = None
+    doctor_signature: str | None = None
 
 
 class ConsultationDiagnosis(_Base):
@@ -316,12 +325,35 @@ class SectionQualityAssessment(_Base):
     extraction_warnings: list[str] = Field(default_factory=list)
 
 
+class StructuralAssessment(_Base):
+    """Проверка обязательных/условных рубрик КЗ (ТЗ §9)."""
+    filled_sections: list[str] = Field(default_factory=list)
+    missing_required: list[str] = Field(default_factory=list)
+    missing_conditional: list[str] = Field(default_factory=list)
+    missing_recommended: list[str] = Field(default_factory=list)
+    structural_score: float | None = None
+    patient_data_score: float | None = None
+
+
+class ProtocolAssessment(_Base):
+    """Сводка применимости подобранных протоколов (ТЗ §11–12)."""
+    matched_count: int = 0
+    applicable_count: int = 0
+    top_protocol_id: str | None = None
+    top_protocol_title: str | None = None
+    rules_compliance_pct: float | None = None
+    summary_ru: str = ""
+
+
 class ScoreBreakdown(_Base):
+    structural_score: float | None = None
+    patient_data_score: float | None = None
     protocol_match_score: float | None = None
     diagnosis_score: float | None = None
     required_exams_score: float | None = None
     treatment_score: float | None = None
     safety_score: float | None = None
+    follow_up_score: float | None = None
     documentation_quality_score: float | None = None
     overall_score: float | None = None
 
@@ -334,6 +366,7 @@ OverallStatus = Literal[
 
 class ComplianceReport(_Base):
     consultation_id: str
+    source_file: str = ""
     overall_score: float | None = None
     overall_status: OverallStatus = "insufficient_data"
 
@@ -341,6 +374,8 @@ class ComplianceReport(_Base):
     protocol_matches: list[ProtocolMatchResult] = Field(default_factory=list)
     diagnosis_assessments: list[DiagnosisAssessment] = Field(default_factory=list)
     section_quality: SectionQualityAssessment = Field(default_factory=SectionQualityAssessment)
+    structural_assessment: StructuralAssessment = Field(default_factory=StructuralAssessment)
+    protocol_assessment: ProtocolAssessment = Field(default_factory=ProtocolAssessment)
     exam_assessments: list[ExamAssessment] = Field(default_factory=list)
     treatment_assessments: list[TreatmentAssessment] = Field(default_factory=list)
     safety_assessments: list[SafetyAssessment] = Field(default_factory=list)
@@ -351,3 +386,7 @@ class ComplianceReport(_Base):
 
     explanation: str = ""
     source_refs: list[SourceRef] = Field(default_factory=list)
+
+
+# Alias для совместимости с ТЗ §7.9
+KzComplianceReport = ComplianceReport

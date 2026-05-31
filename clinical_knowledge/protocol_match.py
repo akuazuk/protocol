@@ -96,6 +96,7 @@ def match_protocol_cards(
                 "icd10_primary": card.get("icd10_primary"),
                 "match_score": round(sc, 2),
                 "approval": card.get("approval"),
+                "matched_condition": card.get("condition_label") or card.get("title"),
             }
         )
         if len(out) >= limit:

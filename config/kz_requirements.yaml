@@ -1,0 +1,148 @@
+# Обязательные и условные рубрики КЗ (ТЗ kz_compliance_checker §3.1, §9).
+required:
+  - id: consultation_date
+    field: consultation_date
+    title_ru: Дата консультации
+    severity: major
+  - id: doctor_specialty
+    field: doctor_specialty
+    title_ru: Специальность врача
+    severity: major
+  - id: patient_identity
+    field: patient.full_name
+    title_ru: Данные пациента (ФИО)
+    severity: major
+  - id: patient_age
+    field: patient.age_years
+    alt_field: patient.birth_date
+    title_ru: Возраст или дата рождения
+    severity: major
+  - id: diagnosis
+    field: sections.diagnosis_text
+    alt_field: diagnoses
+    title_ru: Диагноз
+    severity: critical
+  - id: objective_status
+    field: sections.objective_status
+    title_ru: Объективный статус
+    severity: major
+  - id: recommendations
+    field: sections.recommendations_treatment
+    alt_field: sections.general_recommendations
+    title_ru: Рекомендации
+    severity: critical
+  - id: doctor_identification
+    field: doctor_name
+    alt_field: sections.doctor_signature
+    title_ru: ФИО или подпись врача
+    severity: major
+
+conditional:
+  - id: complaints_primary
+    field: sections.complaints
+    title_ru: Жалобы
+    severity: major
+    when: primary_visit
+  - id: anamnesis_primary
+    field: sections.anamnesis
+    title_ru: Анамнез заболевания
+    severity: major
+    when: primary_visit
+  - id: local_status_profile
+    field: sections.local_status
+    title_ru: Локальный статус
+    severity: major
+    when: profile_specialty
+  - id: icd10_coding
+    field: diagnoses.icd10
+    title_ru: Код МКБ-10
+    severity: major
+    when: icd_expected
+  - id: exam_results_confirmed
+    field: sections.exam_results
+    alt_field: performed_exams
+    title_ru: Данные выполненных обследований
+    severity: major
+    when: exam_supported_diagnosis
+  - id: recommendations_exams_suspected
+    field: sections.recommendations_exams
+    title_ru: Рекомендации по обследованию
+    severity: major
+    when: suspected_diagnosis
+  - id: follow_up_scheduled
+    field: follow_up
+    alt_field: sections.follow_up_text
+    title_ru: Дата или срок повторной явки
+    severity: major
+    when: follow_up_mentioned
+  - id: routing_red_flag
+    field: sections.routing
+    title_ru: Маршрутизация при красном флаге
+    severity: critical
+    when: unhandled_red_flag
+  - id: transportability
+    field: sections.routing
+    title_ru: Транспортабельность при переводе
+    severity: major
+    when: transfer_mentioned
+
+recommended:
+  - id: clinic_header
+    field: clinic_name
+    title_ru: Медицинская организация / шапка
+  - id: consultation_time
+    field: consultation_time
+    title_ru: Время консультации
+  - id: consultation_purpose
+    field: sections.consultation_purpose
+    title_ru: Цель консультации
+  - id: life_history
+    field: sections.life_history
+    title_ru: Анамнез жизни и факторы риска
+  - id: allergy_history
+    field: sections.allergy_history
+    title_ru: Аллергоанамнез
+  - id: medication_history
+    field: sections.medication_history
+    title_ru: Лекарственный анамнез
+  - id: exam_results
+    field: sections.exam_results
+    title_ru: Данные обследований
+  - id: clinical_justification
+    field: sections.diagnosis_text
+    title_ru: Клиническое обоснование диагноза
+  - id: non_drug_recommendations
+    field: sections.non_drug_recommendations
+    title_ru: Немедикаментозные рекомендации
+  - id: routing
+    field: sections.routing
+    title_ru: Маршрутизация
+  - id: consent_text
+    field: sections.consent_text
+    title_ru: Информированное согласие
+  - id: patient_height
+    field: patient.height_cm
+    title_ru: Рост
+  - id: patient_weight
+    field: patient.weight_kg
+    title_ru: Вес
+  - id: patient_bmi
+    field: patient.bmi
+    title_ru: ИМТ
+  - id: comorbidities
+    field: patient.comorbidities
+    title_ru: Сопутствующие заболевания
+  - id: current_medications
+    field: patient.current_medications
+    title_ru: Текущие препараты
+
+profile_specialties:
+  - dermatolog
+  - дерматolog
+  - хирург
+  - травматолог
+  - флеболог
+  - офтальмолог
+  - оториноларинголог
+  - лор
+  - стоматолог

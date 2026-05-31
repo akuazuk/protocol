@@ -14,6 +14,16 @@ CONFIG_DIR = ROOT / "config"
 
 _DEFAULT_WEIGHTS: dict[str, Any] = {
     "weights": {
+        "structural_score": 0.15,
+        "patient_data_score": 0.10,
+        "protocol_match_score": 0.15,
+        "diagnosis_score": 0.20,
+        "required_exams_score": 0.15,
+        "treatment_score": 0.15,
+        "safety_score": 0.05,
+        "follow_up_score": 0.05,
+    },
+    "legacy_weights": {
         "protocol_match_score": 0.15,
         "diagnosis_score": 0.20,
         "required_exams_score": 0.20,

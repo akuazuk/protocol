@@ -32,6 +32,12 @@ from .template_parser import parse_template_blocks
 # Заголовок секции -> поле ConsultationSections. Порядок важен (более специфичные выше).
 _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"аллерг(?:оанамнез|ия\s+на\s+лс|ологическ\w*\s+анамнез)", "allergy_history"),
+    (r"цель\s+консультац\w*|повод\s+обращен\w*", "consultation_purpose"),
+    (r"анамнез\s+жизни|фактор\w*\s+риска", "life_history"),
+    (r"маршрутизац\w*|направлен\w*\s+на\s+консультац\w*", "routing"),
+    (r"информированн\w*\s+соглас\w*|отказ\s+от\s+лечен\w*", "consent_text"),
+    (r"немедикаментозн\w*\s+рекоменд\w*", "non_drug_recommendations"),
+    (r"подпис\w*\s+врач\w*|врач\s*[:\-]|зав\.?\s*отделен\w*", "doctor_signature"),
     (r"лекарственн\w*\s+анамнез", "medication_history"),
     (r"хирургическ\w*\s+анамнез|оперативн\w*\s+анамнез", "surgical_history"),
     (r"объективн\w*\s+статус|объективно|status\s+praesens", "objective_status"),
