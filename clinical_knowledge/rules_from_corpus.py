@@ -93,6 +93,21 @@ def infer_condition_ids_from_source_path(source_path: str) -> list[str]:
     for cid, needles in SOURCE_PATH_CONDITION_HINTS:
         if any(n in low for n in needles):
             out.append(cid)
+    try:
+        from .condition_registry import CONDITIONS
+
+        for c in CONDITIONS:
+            if c.condition_id in out:
+                continue
+            if any(h in low for h in c.path_hints):
+                out.append(c.condition_id)
+        from .rules_from_path import infer_path_condition
+
+        inferred = infer_path_condition(source_path)
+        if inferred and inferred[0] not in out:
+            out.append(inferred[0])
+    except ImportError:
+        pass
     return out
 
 

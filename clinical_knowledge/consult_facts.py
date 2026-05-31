@@ -6,6 +6,8 @@ from typing import Any
 
 from corpus_pipeline.entities_extract import extract_icd10
 
+from .condition_registry import infer_conditions_hints
+
 RE_DIAG_BLOCK = re.compile(
     r"(?:диагноз|заключительный\s+диагноз|клинический\s+диагноз)\s*[:\-—]?\s*([^\n]{5,400})",
     re.I,
@@ -17,24 +19,6 @@ RE_COMPLAINT = re.compile(
 RE_SEX_F = re.compile(r"\b(женский|жен\.?\s*пол|пол\s*[:\-]?\s*ж)\b", re.I)
 RE_SEX_M = re.compile(r"\b(мужской|муж\.?\s*пол|пол\s*[:\-]?\s*м)\b", re.I)
 RE_PREG = re.compile(r"\b(беременн|гестаци)\w*", re.I)
-
-GERD_MARKERS = ("гэрб", "gerd", "рефлюкс", "изжог", "k21")
-GASTRITIS_MARKERS = ("гастрит", "k29")
-ULCER_MARKERS = ("язв", "k25", "k26", "k27", "k28")
-DYSPEPSIA_MARKERS = ("диспепс", "k30")
-CROHN_MARKERS = ("крон", "болезн крона", "k50")
-UC_MARKERS = ("язвенн", "колит", " k51", "k51")
-CELIAC_MARKERS = ("целиак", "k90.0", "k90")
-PANCREATITIS_MARKERS = ("панкреат", "k85")
-APPENDICITIS_MARKERS = ("аппендицит", "k35", "k37")
-CHOLECYSTITIS_MARKERS = ("холецист", "k81")
-OBSTRUCTION_MARKERS = ("непроходим", "k56")
-INTUSSUSCEPTION_MARKERS = ("инвагинац", "k56.1")
-HERNIA_MARKERS = ("грыж", "ущемл", "k40")
-FOREIGN_BODY_MARKERS = ("инородн", "t18")
-GI_BLEEDING_MARKERS = ("кровотеч", "k92")
-PERFORATION_MARKERS = ("перфора", "k26.1", "k25.1")
-ABDOMINAL_TRAUMA_MARKERS = ("травм", "живот", "s36")
 
 
 def _norm(s: str) -> str:
@@ -90,41 +74,7 @@ def extract_consult_facts_heuristic(
         except (TypeError, ValueError):
             pass
 
-    conditions_hint: list[str] = []
-    if any(x in low for x in GERD_MARKERS) or any(c.startswith("K21") for c in icd):
-        conditions_hint.append("gerd")
-    if any(x in low for x in GASTRITIS_MARKERS) or any(c.startswith("K29") for c in icd):
-        conditions_hint.append("gastritis")
-    if any(x in low for x in ULCER_MARKERS) or any(c.startswith("K25") or c.startswith("K26") for c in icd):
-        conditions_hint.append("peptic_ulcer")
-    if any(x in low for x in DYSPEPSIA_MARKERS) or any(c.startswith("K30") for c in icd):
-        conditions_hint.append("functional_dyspepsia")
-    if any(x in low for x in CROHN_MARKERS) or any(c.startswith("K50") for c in icd):
-        conditions_hint.append("crohn")
-    if any(x in low for x in UC_MARKERS) or any(c.startswith("K51") for c in icd):
-        conditions_hint.append("ulcerative_colitis")
-    if any(x in low for x in CELIAC_MARKERS) or any(c.startswith("K90") for c in icd):
-        conditions_hint.append("celiac")
-    if any(x in low for x in PANCREATITIS_MARKERS) or any(c.startswith("K85") for c in icd):
-        conditions_hint.append("acute_pancreatitis")
-    if any(x in low for x in APPENDICITIS_MARKERS) or any(c.startswith("K35") or c.startswith("K37") for c in icd):
-        conditions_hint.append("acute_appendicitis")
-    if any(x in low for x in CHOLECYSTITIS_MARKERS) or any(c.startswith("K81") for c in icd):
-        conditions_hint.append("acute_cholecystitis")
-    if any(x in low for x in OBSTRUCTION_MARKERS) or any(c.startswith("K56") for c in icd):
-        conditions_hint.append("intestinal_obstruction")
-    if any(x in low for x in INTUSSUSCEPTION_MARKERS):
-        conditions_hint.append("intussusception")
-    if any(x in low for x in HERNIA_MARKERS) or any(c.startswith("K40") for c in icd):
-        conditions_hint.append("incarcerated_hernia")
-    if any(x in low for x in FOREIGN_BODY_MARKERS) or any(c.startswith("T18") for c in icd):
-        conditions_hint.append("foreign_body_gi")
-    if any(x in low for x in GI_BLEEDING_MARKERS) or any(c.startswith("K92") for c in icd):
-        conditions_hint.append("gi_bleeding")
-    if any(x in low for x in PERFORATION_MARKERS):
-        conditions_hint.append("perforated_peptic_ulcer")
-    if any(x in low for x in ABDOMINAL_TRAUMA_MARKERS) or any(c.startswith("S36") for c in icd):
-        conditions_hint.append("abdominal_trauma")
+    conditions_hint = infer_conditions_hints(low, icd)
 
     return {
         "patient_context": {

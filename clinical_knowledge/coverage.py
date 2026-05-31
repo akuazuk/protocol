@@ -53,15 +53,21 @@ def load_rules_coverage_report() -> dict[str, Any]:
             from .rules_from_path import infer_path_condition
             from .rules_from_corpus import infer_condition_ids_from_source_path
 
-            with_rules = 0
+            with_rules_list: list[str] = []
+            without_rules_list: list[str] = []
             for sp in paths:
-                if infer_path_condition(sp) or infer_condition_ids_from_source_path(sp):
-                    with_rules += 1
+                has = bool(infer_path_condition(sp) or infer_condition_ids_from_source_path(sp))
+                if has:
+                    with_rules_list.append(sp)
+                else:
+                    without_rules_list.append(sp)
             total = len(paths)
             return {
                 "pdfs_total": total,
-                "pdfs_with_rules": with_rules,
-                "pdfs_without_rules": max(0, total - with_rules),
+                "pdfs_with_rules": len(with_rules_list),
+                "pdfs_without_rules": len(without_rules_list),
+                "with_rules": with_rules_list,
+                "without_rules": without_rules_list,
                 "scope": "all_catalog_path_heuristics",
             }
         except Exception:

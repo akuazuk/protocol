@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .condition_registry import CONDITION_BY_ID
 from .rules_from_corpus import (
     CONDITION_DIAG_PATTERNS,
     IBD_NUMBERED_DIAG_SECTIONS,
@@ -15,23 +16,9 @@ from .rules_from_corpus import (
 ROOT = Path(__file__).resolve().parent.parent
 
 CONDITION_PDF_HINTS: dict[str, list[str]] = {
-    "gerd": ["пищевода_желудка_двенадцатиперстной", "пищевода_желудка"],
-    "gastritis": ["гастрит"],
-    "peptic_ulcer": ["пищевода_желудка"],
-    "ulcerative_colitis": ["язвенным_колитом", "кишечника"],
-    "crohn": ["болезнью_крона", "крона"],
-    "celiac": ["целиак"],
-    "functional_dyspepsia": ["пищевода_желудка", "диспепс"],
-    "acute_pancreatitis": ["панкреат"],
-    "acute_appendicitis": ["аппендицит"],
-    "acute_cholecystitis": ["холецист"],
-    "intestinal_obstruction": ["непроходимост"],
-    "intussusception": ["инвагинац"],
-    "incarcerated_hernia": ["грыж"],
-    "foreign_body_gi": ["инородн"],
-    "gi_bleeding": ["кровотеч"],
-    "perforated_peptic_ulcer": ["перфоратив"],
-    "abdominal_trauma": ["травм", "живот"],
+    cid: list(c.path_hints or c.card_keywords[:2])
+    for cid, c in CONDITION_BY_ID.items()
+    if c.path_hints or c.card_keywords
 }
 
 

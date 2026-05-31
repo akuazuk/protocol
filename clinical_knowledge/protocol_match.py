@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .condition_registry import score_card_for_hint
 from .loader import load_protocol_cards_registry
 
 
@@ -64,31 +65,11 @@ def match_protocol_cards(
         title_low = (card.get("title") or "").lower()
         path_low = (card.get("source_path") or "").lower()
         blob = title_low + " " + path_low
-        if "gerd" in hints or any(c.startswith("K21") for c in icd_list):
+        for hint in hints:
+            score += score_card_for_hint(str(hint), blob, icd_list)
+        if "gerd" not in hints and any(c.startswith("K21") for c in icd_list):
             if any(x in blob for x in ("гэрб", "рефлюкс", "пищевод", "желудк", "двенадцат")):
                 score += 35
-        if "gastritis" in hints and "гастрит" in blob:
-            score += 25
-        if "peptic_ulcer" in hints and "язв" in blob:
-            score += 25
-        if "crohn" in hints and ("крон" in blob or "k50" in blob):
-            score += 30
-        if "ulcerative_colitis" in hints and ("колит" in blob or "k51" in blob):
-            score += 30
-        if "celiac" in hints and "целиак" in blob:
-            score += 30
-        if "acute_pancreatitis" in hints and "панкреат" in blob:
-            score += 28
-        if "acute_appendicitis" in hints and "аппендицит" in blob:
-            score += 28
-        if "acute_cholecystitis" in hints and "холецист" in blob:
-            score += 28
-        if "intestinal_obstruction" in hints and "непроходим" in blob:
-            score += 26
-        if "gi_bleeding" in hints and "кровотеч" in blob:
-            score += 26
-        if "incarcerated_hernia" in hints and "грыж" in blob:
-            score += 24
 
         if (card.get("status") or "active") != "active":
             score -= 20

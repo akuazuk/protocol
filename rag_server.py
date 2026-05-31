@@ -955,6 +955,55 @@ def _gemini_embed_one(
     raise RuntimeError("unexpected embedding response")
 
 
+def _chunk_has_precomputed_embedding(ch: dict) -> bool:
+    emb = ch.get("embedding")
+    return isinstance(emb, list) and len(emb) >= 8 and isinstance(emb[0], (int, float))
+
+
+def _precomputed_chunk_embed_rerank_pool(
+    query: str,
+    pool_rows: list[tuple],
+    alpha: float,
+    emb_model: str,
+) -> list[tuple[float, float, float, dict]] | None:
+    """Rerank по embedding в JSONL чанка (один вызов API — только query). RAG_PRECOMPUTED_CHUNK_EMBED=1."""
+    if os.environ.get("RAG_PRECOMPUTED_CHUNK_EMBED", "0").strip().lower() not in (
+        "1",
+        "true",
+        "yes",
+    ):
+        return None
+    if not pool_rows:
+        return None
+    doc_chunks: list[dict] = []
+    for row in pool_rows:
+        ch = row[4] if len(row) >= 5 else row[3]
+        if not _chunk_has_precomputed_embedding(ch):
+            return None
+        doc_chunks.append(ch)
+    q_vec = _gemini_embed_one(emb_model, (query or "").strip()[:8000], "retrieval_query")
+    finals = [float(r[0]) for r in pool_rows]
+    lex_norm = _norm_minmax(finals)
+    out_rows: list[tuple[float, float, float, dict]] = []
+    for i, row in enumerate(pool_rows):
+        if len(row) >= 5:
+            final, lex, mult, ch = row[0], row[1], row[3], row[4]
+        else:
+            final, lex, mult, ch = row[0], row[1], row[2], row[3]
+        doc_vec = [float(x) for x in ch["embedding"]]
+        cos = _cosine_vec(q_vec, doc_vec)
+        h = alpha * lex_norm[i] + (1.0 - alpha) * cos
+        out_rows.append((h, lex, mult, ch))
+    out_rows.sort(
+        key=lambda x: (
+            -x[0],
+            str(x[3].get("path", "")),
+            str(x[3].get("chunk_index", "")),
+        )
+    )
+    return out_rows
+
+
 def _gemini_embed_rerank_pool(
     query: str,
     pool_rows: list[tuple[float, float, float, dict]],
@@ -2598,13 +2647,26 @@ def retrieve(
         pool_n = min(pool_n, len(scored))
         pool_rows = _merge_embed_pool_rows(scored, pool_n, pool_merge)
         try:
-            work_rows = _gemini_embed_rerank_pool(q_embed, pool_rows, alpha, emb_model)
-            embed_meta = {
-                "used": True,
-                "model": emb_model,
-                "alpha": alpha,
-                "pool": len(pool_rows),
-            }
+            precomputed = _precomputed_chunk_embed_rerank_pool(
+                q_embed, pool_rows, alpha, emb_model
+            )
+            if precomputed is not None:
+                work_rows = precomputed
+                embed_meta = {
+                    "used": True,
+                    "model": emb_model,
+                    "alpha": alpha,
+                    "pool": len(pool_rows),
+                    "precomputed_docs": True,
+                }
+            else:
+                work_rows = _gemini_embed_rerank_pool(q_embed, pool_rows, alpha, emb_model)
+                embed_meta = {
+                    "used": True,
+                    "model": emb_model,
+                    "alpha": alpha,
+                    "pool": len(pool_rows),
+                }
         except Exception as e:
             work_rows = scored
             embed_meta = {"used": False, "error": str(e)[:240]}
@@ -5528,7 +5590,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r21-consult-stream-phase6"
+BUILD_VERSION = "2026-05-31-r22-all-catalog-conditions"
 
 
 def _app_version() -> str:

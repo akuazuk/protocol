@@ -433,7 +433,9 @@ python3 split_chunks_jsonl.py
 - **8.4 a11y** — инкремент в фазе 7 (skip-link, tabs, focus-trap).
 - **8.7 фронтенд-перф** — инкремент в фазе 7.
 - **Consult SSE** — `POST /api/consult-review/stream`: прогресс в % и partial results (протоколы, правила, МКБ до финальной модели).
-- 3.3 офлайн-эмбеддинги — отложено.
+- **3.3 офлайн-эмбеддинги (инкремент)** — `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query).
+- **Каталог нозологий** — `clinical_knowledge/condition_registry.py`; скрипты `scripts/catalog_rules_coverage_report.py`, `scripts/build_catalog_llm_enrichment.py`.
+- 3.3 полный offline corpus embed (build_semantic_embeddings) — отложено.
 
 ### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)
 - 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).
