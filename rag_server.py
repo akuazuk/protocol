@@ -56,7 +56,7 @@ load_project_env(ROOT)
 from typing import Annotated, Iterable
 
 try:
-    from fastapi import FastAPI, HTTPException, File, Form, Request, UploadFile
+    from fastapi import FastAPI, HTTPException, File, Form, Query, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
     from fastapi.staticfiles import StaticFiles
@@ -5699,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r43-html-report-archive-snapshots"
+BUILD_VERSION = "2026-05-31-r44-auto-export-active-protocol-links"
 
 
 def _app_version() -> str:
@@ -6283,6 +6283,81 @@ def api_protocol_detail(body: ProtocolDetailIn) -> dict:
         client_rag_support=body.client_rag_support,
     )
     return {"clinical_detail": clinical_detail}
+
+
+@app.get("/api/protocol-pdf")
+def api_protocol_pdf(path: str = Query(..., min_length=8, max_length=512)) -> FileResponse:
+    """Отдаёт PDF протокола из minzdrav_protocols/ (каталог закрыт от StaticFiles)."""
+    p = path.strip().replace("\\", "/").lstrip("/")
+    if ".." in p or not p.lower().startswith("minzdrav_protocols/"):
+        raise HTTPException(status_code=404, detail="Протокол не найден")
+    if not p.lower().endswith(".pdf"):
+        raise HTTPException(status_code=404, detail="Допустимы только PDF")
+    full = (ROOT / p).resolve()
+    try:
+        full.relative_to((ROOT / "minzdrav_protocols").resolve())
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail="Протокол не найден") from exc
+    if not full.is_file():
+        raise HTTPException(status_code=404, detail="Файл протокола отсутствует на сервере")
+    return FileResponse(
+        full,
+        media_type="application/pdf",
+        filename=full.name,
+        headers={"Content-Disposition": f'inline; filename="{full.name}"'},
+    )
+
+
+@app.get("/api/consult-archive/export/latest")
+def api_consult_archive_export_latest() -> FileResponse:
+    """Последний автоэкспорт обезличенных снимков (JSONL для Cursor/replay)."""
+    from clinical_knowledge.analysis_archive import export_latest_path
+
+    p = export_latest_path()
+    if not p.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail="Автоэкспорт ещё не выполнен. Дождитесь N анализов (CONSULT_ARCHIVE_EXPORT_EVERY).",
+        )
+    return FileResponse(
+        p,
+        media_type="application/x-ndjson",
+        filename="consult_replay_latest.jsonl",
+    )
+
+
+@app.get("/api/consult-archive/export/readme")
+def api_consult_archive_export_readme() -> FileResponse:
+    from clinical_knowledge.analysis_archive import export_readme_path
+
+    p = export_readme_path()
+    if not p.is_file():
+        raise HTTPException(status_code=404, detail="README экспорта ещё не создан")
+    return FileResponse(p, media_type="text/plain; charset=utf-8", filename="CURSOR_README.txt")
+
+
+@app.get("/api/consult-archive/status")
+def api_consult_archive_status() -> dict:
+    from clinical_knowledge.analysis_archive import (
+        archive_enabled,
+        export_every_n,
+        get_last_export_meta,
+        manifest_count,
+    )
+
+    meta = get_last_export_meta()
+    total = manifest_count()
+    every = export_every_n()
+    next_at = ((total // every) + 1) * every if total else every
+    return {
+        "enabled": archive_enabled(),
+        "total_snapshots": total,
+        "export_every": every,
+        "next_export_at": next_at,
+        "analyses_until_export": max(0, next_at - total),
+        "last_export": meta or None,
+        "download_api": "/api/consult-archive/export/latest",
+    }
 
 
 @app.post("/api/kz-matrix")

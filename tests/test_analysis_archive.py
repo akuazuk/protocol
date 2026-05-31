@@ -35,10 +35,12 @@ def test_build_snapshot_anonymized(tmp_path, monkeypatch):
     assert "full_name" not in json.dumps(snap)
     assert snap["source_basename"] == "pl_1_f.pdf"
 
-    from clinical_knowledge.analysis_archive import save_snapshot
+    from clinical_knowledge.analysis_archive import save_snapshot_with_export
 
-    path = save_snapshot(snap)
-    assert path is not None
+    path = save_snapshot_with_export(snap, build_version="test")
+    assert path.get("saved") is True
     loaded = load_snapshots()
     assert len(loaded) == 1
     assert loaded[0]["text_hash"] == snap["text_hash"]
+    assert path.get("enabled") is True
+    assert "status_ru" in path

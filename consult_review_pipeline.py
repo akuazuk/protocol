@@ -480,7 +480,7 @@ def iter_consult_review_pipeline(
 
     # Обезличенный архив для регрессий и улучшения системы.
     try:
-        from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot
+        from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot_with_export
 
         src_name = ""
         if consult_docs_meta and isinstance(consult_docs_meta[0], dict):
@@ -494,9 +494,9 @@ def iter_consult_review_pipeline(
             retrieval_paths=paths_used,
             icd_codes=merged_icd,
         )
-        archive_path = save_snapshot(snap)
-        if archive_path:
-            result["analysis_archive_saved"] = str(archive_path)
+        result["analysis_archive"] = save_snapshot_with_export(
+            snap, build_version=rs._app_version()
+        )
     except Exception:
         pass
 

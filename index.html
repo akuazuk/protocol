@@ -678,6 +678,58 @@
       border-radius: 8px;
       border-left: 3px solid #94a3b8;
     }
+    .consult-report-html .cr-src-link {
+      color: #0d6e58;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .consult-report-html .cr-src-link:hover {
+      color: #0a5544;
+    }
+    .consult-report-html .cr-muted-li {
+      list-style: none;
+      margin-left: 0.5rem;
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+    .cr-archive-banner {
+      margin-top: 0.65rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid #cfe0db;
+      background: #f8fbfa;
+      font-size: 0.82rem;
+      color: #334155;
+    }
+    .cr-archive-banner--ok {
+      border-color: #6ee7b7;
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+    }
+    .cr-archive-banner__title {
+      font-weight: 650;
+      color: #0f3d36;
+      margin-bottom: 0.25rem;
+    }
+    .cr-archive-banner__links {
+      margin-top: 0.35rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+    }
+    .cr-archive-banner__links a {
+      color: #0d6e58;
+      font-weight: 600;
+    }
+    .cr-improve-hint {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+    .cr-improve-hint ol {
+      margin: 0.35rem 0 0;
+      padding-left: 1.2rem;
+    }
     .cr-report-wrap {
       max-height: 28rem;
       overflow: auto;
@@ -9052,7 +9104,63 @@
     if (/^https?:\/\//i.test(p)) return encodeURI(p);
     if (/^[a-z][a-z0-9+.-]*:/i.test(p)) return "#";
     if (p.indexOf("..") >= 0) return "#";
+    var norm = p.replace(/\\/g, "/").replace(/^\/+/, "");
+    if (/^minzdrav_protocols\/.+\.pdf$/i.test(norm)) {
+      var baseEl = document.getElementById("rag-base");
+      var base = normalizeRagBaseForRequest(
+        baseEl && baseEl.value ? baseEl.value : ""
+      );
+      return base + "/api/protocol-pdf?path=" + encodeURIComponent(norm);
+    }
     return encodeURI(p);
+  }
+
+  function consultApiBase() {
+    var baseEl = document.getElementById("rag-base");
+    return normalizeRagBaseForRequest(baseEl && baseEl.value ? baseEl.value : "");
+  }
+
+  function buildAnalysisArchiveBanner(data) {
+    var ar = data && data.analysis_archive;
+    if (!ar || ar.enabled === false) return "";
+    var base = consultApiBase();
+    var just = !!ar.just_exported;
+    var cls = just ? "cr-archive-banner cr-archive-banner--ok" : "cr-archive-banner";
+    var status = ar.status_ru || ar.message_ru || "Снимок анализа сохранён (обезличенно).";
+    var total = ar.total_snapshots != null ? ar.total_snapshots : "—";
+    var html =
+      '<div class="' + cls + '" role="status" aria-live="polite">' +
+      '<div class="cr-archive-banner__title">' +
+      (just ? "✓ Автоэкспорт для улучшения системы" : "Архив анализов") +
+      "</div>" +
+      "<p style=\"margin:0\">" + escapeHtml(status) + "</p>" +
+      "<p style=\"margin:0.25rem 0 0;font-size:0.78rem;color:#64748b\">" +
+      "Всего снимков: " + escapeHtml(String(total)) +
+      (ar.next_export_at && !just
+        ? " · автоэкспорт на #" + escapeHtml(String(ar.next_export_at))
+        : "") +
+      "</p>";
+    if (just || ar.download_api) {
+      html +=
+        '<div class="cr-archive-banner__links">' +
+        '<a href="' + escapeHtml(base + (ar.download_api || "/api/consult-archive/export/latest")) +
+        '" target="_blank" rel="noopener noreferrer">Скачать latest.jsonl</a>' +
+        '<a href="' + escapeHtml(base + "/api/consult-archive/export/readme") +
+        '" target="_blank" rel="noopener noreferrer">Инструкция для Cursor</a>' +
+        "</div>";
+    }
+    html +=
+      '<details class="cr-improve-hint" style="margin-top:0.45rem">' +
+      '<summary style="cursor:pointer;color:#0f3d36">Как это улучшает систему (не LLM-дообучение)</summary>' +
+      "<ol>" +
+      "<li>Каждый анализ сохраняет обезличенные метрики (МКБ, баллы, протоколы).</li>" +
+      "<li>Каждые " + escapeHtml(String(ar.export_every || 5)) +
+      " анализов — автоэкспорт latest.jsonl.</li>" +
+      "<li>Скачайте файл → положите в tests/fixtures/consult_replay.jsonl.</li>" +
+      "<li>Запустите: python scripts/replay_consult_archive.py --fixtures …</li>" +
+      "<li>В Cursor: опишите расхождения → правка парсера/матчера + тест.</li>" +
+      "</ol></details></div>";
+    return html;
   }
 
   /** Focus-trap и Esc для модальных оверлеев (a11y). */
@@ -10461,7 +10569,10 @@
         "</details>";
     }
 
+    var archiveBanner = buildAnalysisArchiveBanner(data);
+
     panel.innerHTML =
+      archiveBanner +
       "<h3 style=\"margin:0 0 0.4rem;font-size:1rem\">Структурный разбор (детерминированный)</h3>" +
       "<p style=\"margin:0 0 0.5rem;color:#33524c\">Статус: <strong>" + escapeHtml(statusRu) +
       "</strong>" + (comp.overall_score != null ? " · " + Math.round(comp.overall_score) + "%" : "") +

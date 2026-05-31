@@ -9,6 +9,7 @@ from typing import Any
 
 from .consult_schema import ComplianceReport, ConsultationDocument, SourceRef
 from .privacy import name_to_initials
+from .protocol_links import protocol_display_name, protocol_pdf_api_path
 
 # Русские подписи статусов/значений для человекочитаемого отчёта.
 _OVERALL_RU = {
@@ -94,6 +95,32 @@ def _src_line(ref: SourceRef) -> str:
     if ref.quote:
         parts.append(f"«{ref.quote[:160]}»")
     return " — ".join(parts) if parts else (ref.protocol_id or "источник не указан")
+
+
+def _src_line_html(ref: SourceRef) -> str:
+    parts: list[str] = []
+    if ref.local_path:
+        url = protocol_pdf_api_path(ref.local_path)
+        name = _e(protocol_display_name(ref.local_path, ref.protocol_id or ""))
+        if url:
+            parts.append(
+                f'<a class="cr-src-link" href="{url}" target="_blank" '
+                f'rel="noopener noreferrer">{name}</a>'
+            )
+        else:
+            parts.append(_e(ref.local_path))
+    elif ref.protocol_id:
+        parts.append(_e(ref.protocol_id))
+    if ref.section_title:
+        parts.append(f"раздел: {_e(ref.section_title)}")
+    if ref.page_start:
+        pg = f"с. {ref.page_start}"
+        if ref.page_end and ref.page_end != ref.page_start:
+            pg += f"-{ref.page_end}"
+        parts.append(_e(pg))
+    if ref.quote:
+        parts.append(f"«{_e(ref.quote[:160])}»")
+    return " — ".join(parts) if parts else "источник не указан"
 
 
 def report_to_json(
@@ -214,12 +241,41 @@ def report_to_html(
             for d in doc.diagnoses
         ) or "—"
         parts.append(f"<li><strong>Диагнозы:</strong> {diags}</li>")
-    protos = ", ".join(
-        _e(m.document_title or m.protocol_id)
-        for m in report.protocol_matches[:5]
-    ) or "—"
-    parts.append(f"<li><strong>Протоколы:</strong> {protos}</li>")
+    protos_html: list[str] = []
+    for m in report.protocol_matches[:8]:
+        title = _e(m.document_title or m.protocol_id or "протокол")
+        url = protocol_pdf_api_path(m.source_path)
+        if url:
+            protos_html.append(
+                f'<a class="cr-src-link" href="{url}" target="_blank" '
+                f'rel="noopener noreferrer">{title}</a>'
+            )
+        else:
+            protos_html.append(title)
+    parts.append(
+        f"<li><strong>Протоколы:</strong> {', '.join(protos_html) if protos_html else '—'}</li>"
+    )
     parts.append("</ul></section>")
+
+    if report.protocol_matches:
+        parts.append(
+            '<section class="cr-section cr-section--protocols">'
+            '<h3 class="cr-section-title">Подобранные протоколы (PDF)</h3><ul class="cr-list cr-list--sources">'
+        )
+        for m in report.protocol_matches[:8]:
+            title = _e(m.document_title or m.protocol_id or "протокол")
+            url = protocol_pdf_api_path(m.source_path)
+            if url:
+                parts.append(
+                    f'<li><a class="cr-src-link" href="{url}" target="_blank" '
+                    f'rel="noopener noreferrer">{title}</a>'
+                )
+            else:
+                parts.append(f"<li>{title}</li>")
+            if m.match_reasons:
+                for r in m.match_reasons[:2]:
+                    parts.append(f"<li class='cr-muted-li'>+ {_e(r)}</li>")
+        parts.append("</ul></section>")
 
     # Баллы
     parts.append(
@@ -306,7 +362,7 @@ def report_to_html(
     if report.source_refs:
         parts.append("<ul class='cr-list cr-list--sources'>")
         for r in report.source_refs:
-            parts.append(f"<li>{_e(_src_line(r))}</li>")
+            parts.append(f"<li>{_src_line_html(r)}</li>")
         parts.append("</ul>")
     else:
         parts.append("<p class='cr-muted'>Источники не указаны.</p>")
