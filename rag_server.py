@@ -2375,6 +2375,7 @@ def retrieve(
     category_boost: list[str] | None = None,
     user_category_slugs: list[str] | None = None,
     icd_codes_for_lex: list[str] | None = None,
+    path_boost: list[str] | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
@@ -2383,6 +2384,7 @@ def retrieve(
     category_boost — slug рубрик из опционального LLM-классификатора запроса.
     user_category_slugs — рубрики, выбранные пользователем в форме: усиление совпадений и штраф нерелевантных чанков.
     icd_codes_for_lex — нормализованные коды МКБ-10: дополнительные лексические токены и усиление чанков, где встречается код.
+    path_boost — пути PDF протоколов (source_path): усиление чанков из matched protocol cards.
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -2421,6 +2423,10 @@ def retrieve(
         for c in (icd_codes_for_lex or [])
         if isinstance(c, str) and len(c.strip()) >= 3
     ]
+    path_boost_set = frozenset(
+        p.strip() for p in (path_boost or []) if isinstance(p, str) and p.strip()
+    )
+    path_boost_factor = float(os.environ.get("RAG_MATCHED_PROTOCOL_PATH_BOOST", "1.85"))
     bm25_alpha = float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55"))
     use_bm25_blend = _bm25_index is not None and bm25_alpha < 0.999
     pool_merge = os.environ.get("RAG_EMBED_POOL_MERGE", "1").strip().lower() in (
@@ -2465,6 +2471,8 @@ def retrieve(
                     os.environ.get("RAG_ICD_QUERY_MISS_CHUNK_MULT", "0.62")
                 )
         pth = ch.get("path") or ""
+        if path_boost_set and pth in path_boost_set:
+            post *= path_boost_factor
         post *= _protocol_meta_icd_boost(pth, icd_norms)
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
@@ -5471,7 +5479,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r13-clinical-rules-mvp"
+BUILD_VERSION = "2026-05-31-r14-gastro-rules-corpus"
 
 
 def _app_version() -> str:
@@ -6525,12 +6533,26 @@ def api_consult_review(
     max_chunks_r = int(os.environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
     max_per_path_r = int(os.environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
 
+    clinical_rules = _consult_clinical_rules_pipeline(
+        full_text,
+        demographics_meta if isinstance(demographics_meta, dict) else {},
+        list(merged_icd or []),
+        user_slugs,
+    )
+    matched_path_boost: list[str] = []
+    if isinstance(clinical_rules, dict):
+        for mp in clinical_rules.get("matched_protocols") or []:
+            sp = (mp or {}).get("source_path")
+            if sp and sp not in matched_path_boost:
+                matched_path_boost.append(sp)
+
     retrieved = retrieve(
         q_rag,
         routing_query=rq,
         category_boost=boost_merged or None,
         user_category_slugs=user_slugs or None,
         icd_codes_for_lex=icd_codes_for_lex,
+        path_boost=matched_path_boost or None,
         max_chunks=max_chunks_r,
         max_per_path=max_per_path_r,
     )
@@ -6542,6 +6564,7 @@ def api_consult_review(
             category_boost=boost_merged or None,
             user_category_slugs=user_slugs or None,
             icd_codes_for_lex=(merged_icd or None),
+            path_boost=matched_path_boost or None,
             max_chunks=max(14, max_chunks_r + 2),
             max_per_path=max_per_path_r,
         )
@@ -6597,6 +6620,7 @@ def api_consult_review(
                     category_boost=boost_merged or None,
                     user_category_slugs=user_slugs or None,
                     icd_codes_for_lex=icd_codes_for_lex,
+                    path_boost=matched_path_boost or None,
                     max_chunks=max_chunks_r + bump,
                     max_per_path=max_per_path_r,
                 )
@@ -6685,13 +6709,6 @@ def api_consult_review(
         protocol_ctx,
         paths_hint_for_llm,
         extra_context=oncology_extra,
-    )
-
-    clinical_rules = _consult_clinical_rules_pipeline(
-        full_text,
-        demographics_meta if isinstance(demographics_meta, dict) else {},
-        list(merged_icd or []),
-        user_slugs,
     )
 
     result = {

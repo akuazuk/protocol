@@ -21,6 +21,7 @@ RE_PREG = re.compile(r"\b(беременн|гестаци)\w*", re.I)
 GERD_MARKERS = ("гэрб", "gerd", "рефлюкс", "изжог", "k21")
 GASTRITIS_MARKERS = ("гастрит", "k29")
 ULCER_MARKERS = ("язв", "k25", "k26", "k27", "k28")
+DYSPEPSIA_MARKERS = ("диспепс", "k30")
 
 
 def _norm(s: str) -> str:
@@ -83,6 +84,8 @@ def extract_consult_facts_heuristic(
         conditions_hint.append("gastritis")
     if any(x in low for x in ULCER_MARKERS) or any(c.startswith("K25") or c.startswith("K26") for c in icd):
         conditions_hint.append("peptic_ulcer")
+    if any(x in low for x in DYSPEPSIA_MARKERS) or any(c.startswith("K30") for c in icd):
+        conditions_hint.append("functional_dyspepsia")
 
     return {
         "patient_context": {

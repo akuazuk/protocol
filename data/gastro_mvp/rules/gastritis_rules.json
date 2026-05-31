@@ -1,0 +1,26 @@
+{
+  "condition_id": "gastritis",
+  "rules": [
+    {
+      "rule_id": "gastritis_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "нозология",
+        "этиологический фактор",
+        "активность",
+        "атрофия"
+      ],
+      "severity": "warning",
+      "description_ru": "Полнота формулировки диагноза при хроническом гастрите (КП №185).",
+      "source": {"protocol_id": "gastro_esophagus_stomach_adult_2025_185", "section": "Хронический гастрит"}
+    },
+    {
+      "rule_id": "gastritis_histo_criterion",
+      "rule_type": "keyword_presence",
+      "keyword": "гистолог",
+      "severity": "info",
+      "message_ru": "При хроническом гастрите в КЗ желательно отразить гистологическую характеристику (если проводилась биопсия).",
+      "source": {"protocol_id": "gastro_esophagus_stomach_adult_2025_185"}
+    }
+  ]
+}

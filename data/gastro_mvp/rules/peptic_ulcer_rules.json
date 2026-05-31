@@ -1,0 +1,30 @@
+{
+  "condition_id": "peptic_ulcer",
+  "rules": [
+    {
+      "rule_id": "peptic_ulcer_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "локализация",
+        "фаза",
+        "H.pylori",
+        "осложнения"
+      ],
+      "severity": "warning",
+      "description_ru": "Полнота формулировки диагноза при гастродуоденальной язве (КП №185).",
+      "source": {"protocol_id": "gastro_esophagus_stomach_adult_2025_185", "section": "Гастродуоденальная язва"}
+    },
+    {
+      "rule_id": "peptic_ulcer_egds_criterion",
+      "rule_type": "diagnostic_criterion",
+      "logic": "any_of",
+      "criteria": [
+        {"finding": "язва", "method": "эндоскоп"},
+        {"finding": "эрозия", "method": "эндоскоп"}
+      ],
+      "severity": "warning",
+      "description_ru": "Диагностические критерии ГДЯ — язва/эрозия при ЭГДС.",
+      "source": {"protocol_id": "gastro_esophagus_stomach_adult_2025_185"}
+    }
+  ]
+}

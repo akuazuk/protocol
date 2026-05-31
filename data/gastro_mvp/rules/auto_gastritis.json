@@ -1,0 +1,56 @@
+{
+  "condition_id": "gastritis",
+  "rules": [
+    {
+      "rule_id": "gastritis_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "нозология",
+        "этиологический фактор",
+        "активность",
+        "атрофия"
+      ],
+      "severity": "warning",
+      "description_ru": "Полнота формулировки диагноза при хроническом гастрите (КП №185).",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "section": "Хронический гастрит"
+      }
+    },
+    {
+      "rule_id": "gastritis_histo_criterion",
+      "rule_type": "keyword_presence",
+      "keyword": "гистолог",
+      "severity": "info",
+      "message_ru": "При хроническом гастрите в КЗ желательно отразить гистологическую характеристику (если проводилась биопсия).",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185"
+      }
+    },
+    {
+      "rule_id": "auto_gastritis_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "нозология",
+        "степень тяжести",
+        "H.pylori",
+        "этиология"
+      ],
+      "severity": "warning",
+      "description_ru": "Автоизвлечение: полнота формулировки диагноза (gastritis).",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "doc_id": "90af2882546aefb0b20a4980_L8",
+        "page_from": 16,
+        "page_to": 17,
+        "section": "наличию амфофильности (базофильности) цитоплазмы с вовлечением поверхностного",
+        "section_path": [
+          "наличию амфофильности (базофильности) цитоплазмы с вовлечением поверхностного"
+        ],
+        "quote_chars": 400
+      },
+      "auto_extracted": true
+    }
+  ],
+  "auto_merged": true
+}

@@ -65,8 +65,22 @@ def load_rules_by_condition() -> dict[str, list[dict[str, Any]]]:
             data = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
             continue
-        cid = str(data.get("condition_id") or p.stem.replace("_rules", ""))
-        out[cid] = list(data.get("rules") or [])
+        cid = str(data.get("condition_id") or "")
+        if not cid:
+            stem = p.stem.replace("_rules", "").replace("auto_", "")
+            cid = stem
+        rules = list(data.get("rules") or [])
+        if not rules:
+            continue
+        bucket = out.setdefault(cid, [])
+        seen = {r.get("rule_id") for r in bucket}
+        for r in rules:
+            rid = r.get("rule_id")
+            if rid and rid in seen:
+                continue
+            bucket.append(r)
+            if rid:
+                seen.add(rid)
     return out
 
 

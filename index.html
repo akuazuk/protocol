@@ -208,6 +208,34 @@
         0 4px 20px rgba(6, 61, 53, 0.05);
     }
 
+    #panel-consult-review .consult-clinical-rules-panel {
+      margin-top: 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(22, 101, 52, 0.18);
+      background: linear-gradient(135deg, rgba(240, 253, 244, 0.95), rgba(236, 253, 245, 0.6));
+    }
+
+    #panel-consult-review .consult-rules-findings {
+      margin: 0.5rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    #panel-consult-review .consult-rules-findings li {
+      margin: 0.35rem 0;
+    }
+
+    #panel-consult-review .consult-rules-findings li.is-fail {
+      color: var(--red-700);
+      font-weight: 600;
+    }
+
+    #panel-consult-review .consult-rules-findings li.is-ok {
+      color: var(--green-800);
+    }
+
     #panel-consult-review .specialty-chip {
       padding: 0.52rem 0.62rem;
       border-radius: 12px;
@@ -5399,6 +5427,15 @@
           <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
           <p class="consult-hint-small" style="margin: 0.45rem 0 0; font-style: italic" id="consult-out-disclaimer"></p>
 
+          <div id="consult-clinical-rules-panel" class="consult-clinical-rules-panel" hidden>
+            <h3 style="font-family: Outfit, DM Sans, system-ui, sans-serif; font-size: 1.02rem; margin: 1rem 0 0.45rem; color: var(--green-950)">
+              Проверка по правилам протокола (MVP)
+            </h3>
+            <p class="consult-hint-small" id="consult-rules-pct" style="font-weight: 700; color: var(--green-800)"></p>
+            <p class="consult-hint-small" id="consult-rules-matched"></p>
+            <ul class="consult-rules-findings" id="consult-rules-findings"></ul>
+          </div>
+
           <div id="consult-methodology-panel" class="consult-methodology-panel consult-hide-print" hidden>
             <h3>Сводка для методслужбы</h3>
             <p class="consult-methodology-summary" id="consult-methodology-summary"></p>
@@ -9547,6 +9584,63 @@
     el.innerHTML = parts.join("");
   }
 
+  function renderConsultClinicalRulesPanel(data) {
+    var panel = document.getElementById("consult-clinical-rules-panel");
+    var pctEl = document.getElementById("consult-rules-pct");
+    var matchedEl = document.getElementById("consult-rules-matched");
+    var listEl = document.getElementById("consult-rules-findings");
+    if (!panel || !pctEl || !matchedEl || !listEl) return;
+
+    var cr = data && data.clinical_rules;
+    if (!cr || !cr.rules_check) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+
+    var rc = cr.rules_check;
+    var pct = rc.rules_compliance_pct;
+    pctEl.textContent =
+      typeof pct === "number"
+        ? "Соответствие правилам (детерминированная проверка): " + pct + "%"
+        : "";
+
+    var matched = cr.matched_protocols || [];
+    if (matched.length) {
+      matchedEl.textContent =
+        "Подобранные протоколы: " +
+        matched
+          .slice(0, 3)
+          .map(function (m) {
+            return (m.title || m.protocol_id || "").slice(0, 80);
+          })
+          .join("; ");
+    } else {
+      matchedEl.textContent = "Подобранные протоколы: не найдены (MVP — гастроэнтерология).";
+    }
+
+    listEl.innerHTML = "";
+    var findings = rc.findings || [];
+    var show = findings.filter(function (f) {
+      return f && (f.message_ru || !f.passed);
+    });
+    if (!show.length) {
+      var li0 = document.createElement("li");
+      li0.className = "is-ok";
+      li0.textContent = "Явных нарушений по загруженным правилам не обнаружено.";
+      listEl.appendChild(li0);
+      return;
+    }
+    show.slice(0, 12).forEach(function (f) {
+      var li = document.createElement("li");
+      li.className = f.passed ? "is-ok" : "is-fail";
+      var msg = f.message_ru || f.rule_id || "";
+      if (f.passed && !msg) msg = (f.rule_type || "правило") + ": OK";
+      li.textContent = (f.passed ? "✓ " : "• ") + msg;
+      listEl.appendChild(li);
+    });
+  }
+
   function renderConsultProtocolsSection(data, rev) {
     var pw = document.getElementById("consult-out-paths");
     if (!pw) return;
@@ -10037,6 +10131,7 @@
           document.getElementById("consult-out-disclaimer").textContent = rev.disclaimer_ru || "";
 
           renderConsultOncologyBanner(data.consult_oncology_flags);
+          renderConsultClinicalRulesPanel(data);
           renderConsultProtocolsSection(data, rev);
           renderConsultMethodologyPanel(rev);
 
