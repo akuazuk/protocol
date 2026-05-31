@@ -5699,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r37-rubric-specific-extractors"
+BUILD_VERSION = "2026-05-31-r38-consult-network-resilient-fallback"
 
 
 def _app_version() -> str:

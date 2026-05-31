@@ -10446,16 +10446,53 @@
         return pump();
       })
       .catch(function (err) {
-        var msg = err && err.message ? String(err.message) : "";
-        if (
-          msg.indexOf("Поток завершился без результата") >= 0 ||
-          msg.indexOf("Сессия прервана") >= 0
-        ) {
+        if (isConsultAbort(err, consultCtrl)) throw err;
+        if (isConsultRetriable(err)) {
           updateConsultProgressUI(90, "повтор без потока…", "надёжный режим");
-          return fetchConsultReviewSync(base, fd, consultCtrl);
+          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 3);
         }
         throw err;
       });
+  }
+
+  function isConsultAbort(err, consultCtrl) {
+    if (err && (err.name === "AbortError" || err.code === 20)) return true;
+    if (consultCtrl && consultCtrl.signal && consultCtrl.signal.aborted) return true;
+    return false;
+  }
+
+  // Сетевые/деплой-разрывы, на которых имеет смысл повторить без SSE-потока.
+  function isConsultRetriable(err) {
+    var msg = (err && err.message ? String(err.message) : "").toLowerCase();
+    if (!msg) return true;
+    return (
+      msg.indexOf("поток завершился без результата") >= 0 ||
+      msg.indexOf("сессия прервана") >= 0 ||
+      msg.indexOf("failed to fetch") >= 0 ||
+      msg.indexOf("network error") >= 0 ||
+      msg.indexOf("networkerror") >= 0 ||
+      msg.indexOf("load failed") >= 0 ||
+      msg.indexOf("terminated") >= 0 ||
+      msg.indexOf("сервис недоступен") >= 0 ||
+      msg.indexOf("connection") >= 0 ||
+      msg.indexOf("the network connection was lost") >= 0
+    );
+  }
+
+  // Синхронный фолбэк с повторами: переживает окно перезапуска сервера при деплое.
+  function fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft) {
+    return fetchConsultReviewSync(base, fd, consultCtrl).catch(function (err) {
+      if (isConsultAbort(err, consultCtrl)) throw err;
+      if (attemptsLeft > 0 && isConsultRetriable(err)) {
+        updateConsultProgressUI(90, "сервер перезапускается, повтор…", "надёжный режим");
+        return new Promise(function (resolve) {
+          setTimeout(resolve, 4000);
+        }).then(function () {
+          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft - 1);
+        });
+      }
+      throw err;
+    });
   }
 
   function resetConsultReviewSection() {
