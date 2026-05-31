@@ -388,6 +388,7 @@ def iter_consult_review_pipeline(
                 "document": sa.get("document"),
                 "matches": sa.get("matches"),
                 "compliance": sa.get("compliance"),
+                "rubric_specifics": sa.get("rubric_specifics"),
             }
             report_markdown = sa.get("report_markdown")
         except Exception:

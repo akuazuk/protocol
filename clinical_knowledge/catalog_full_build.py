@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import time
-from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
 from typing import Any, Callable
@@ -204,7 +203,7 @@ def build_catalog_full(
 
     _emit(on_progress, stage="extract", pct=5, label_ru="Извлечение правил по PDF…")
     extracted, meta = extract_rules_all_catalog_pdfs(cp, reg, chunks_index=index)
-    rule_counts = merge_rules_into_catalog(extracted)
+    merge_rules_into_catalog(extracted)
     report = write_coverage_report(meta, extracted)
 
     conditions: dict[str, dict[str, Any]] = {}

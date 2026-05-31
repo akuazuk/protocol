@@ -10271,6 +10271,26 @@
       .map(function (i) { return "<li>" + escapeHtml(i.message_ru || "") + "</li>"; })
       .join("");
 
+    var rs = sa.rubric_specifics || {};
+    var byRubric = rs.by_rubric || {};
+    var meas = rs.measurements || {};
+    var rubricBlocks = Object.keys(byRubric).map(function (slug) {
+      var info = byRubric[slug] || {};
+      var matched = (info.matched_terms || []).join(", ");
+      return "<li><strong>" + escapeHtml(info.title || slug) + "</strong> — " +
+        (info.term_coverage_pct != null ? info.term_coverage_pct + "%" : "—") +
+        (matched ? " <span style=\"color:#33524c\">(" + escapeHtml(matched) + ")</span>" : "") +
+        "</li>";
+    }).join("");
+    var measBlocks = Object.keys(meas).map(function (k) {
+      var m = meas[k] || {};
+      return "<li>" + escapeHtml(k) + ": <strong>" + escapeHtml(String(m.value || "")) +
+        "</strong> " + escapeHtml(m.unit || "") + "</li>";
+    }).join("");
+    var rubricHtml =
+      (rubricBlocks ? "<div><strong>Профильные понятия рубрики:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + rubricBlocks + "</ul></div>" : "") +
+      (measBlocks ? "<div><strong>Профильные показатели:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + measBlocks + "</ul></div>" : "");
+
     var md = data.report_markdown || "";
 
     panel.innerHTML =
@@ -10294,6 +10314,7 @@
       (safetyHtml ? "<div><strong>Красные флаги:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + safetyHtml + "</ul></div>" : "") +
       (missingHtml ? "<div><strong>Отсутствуют обязательные обследования:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + missingHtml + "</ul></div>" : "") +
       (medHtml ? "<div><strong>Назначения:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + medHtml + "</ul></div>" : "") +
+      rubricHtml +
       "</div></div>" +
       (md ? "<details style=\"margin-top:0.6rem\"><summary style=\"cursor:pointer\">Полный отчёт (Markdown)</summary>" +
         "<pre style=\"white-space:pre-wrap;font-size:0.8rem;background:#fff;border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:24rem;overflow:auto\">" +

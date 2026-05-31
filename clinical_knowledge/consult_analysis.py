@@ -13,6 +13,7 @@ from .consult_parser import parse_consultation
 from .consult_report import report_to_json, report_to_markdown
 from .consult_schema import ConsultationDocument
 from .protocol_match import annotate_applicability, match_protocol_cards
+from .rubric_extractors import extract_rubric_specifics, normalize_rubric_slug, rubric_slugs_from_matches
 from .rule_checker import run_rule_checker
 
 
@@ -90,12 +91,22 @@ def analyze_consultation_text(
 
     report = build_compliance_report(doc, matches=matches, rules_check=rules_check)
 
+    try:
+        rubric_slugs = rubric_slugs_from_matches(matches)
+        spec_slug = normalize_rubric_slug(specialty_slug) or normalize_rubric_slug(doc.doctor_specialty)
+        if spec_slug and spec_slug not in rubric_slugs:
+            rubric_slugs = [spec_slug, *rubric_slugs]
+        rubric_specifics = extract_rubric_specifics(doc.raw_text or raw_text, rubric_slugs)
+    except Exception:
+        rubric_specifics = {"rubrics": [], "by_rubric": {}, "measurements": {}}
+
     out: dict[str, Any] = {
         "document": doc.model_dump(mode="json"),
         "matches": matches,
         "rules_check": rules_check,
         "compliance": report_to_json(report, doc),
+        "rubric_specifics": rubric_specifics,
     }
     if with_markdown:
-        out["report_markdown"] = report_to_markdown(report, doc)
+        out["report_markdown"] = report_to_markdown(report, doc, rubric_specifics=rubric_specifics)
     return out

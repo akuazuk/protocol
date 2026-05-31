@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 
 from .condition_registry import CONDITION_BY_ID
 from .rules_from_corpus import (

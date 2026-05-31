@@ -69,6 +69,7 @@ def _fmt_pct(v: float | None) -> str:
 def report_to_markdown(
     report: ComplianceReport,
     doc: ConsultationDocument | None = None,
+    rubric_specifics: dict | None = None,
 ) -> str:
     """Markdown-отчёт по структуре ТЗ раздел 20 (8 разделов)."""
     L: list[str] = []
@@ -172,6 +173,30 @@ def report_to_markdown(
     if not (sq.missing_sections or sq.suspicious_placeholders or sq.extraction_warnings):
         L.append("- Замечаний по оформлению нет.")
     L.append("")
+
+    # 7.1 Профильные показатели рубрики (ТЗ раздел 22)
+    if rubric_specifics:
+        by_rubric = rubric_specifics.get("by_rubric") or {}
+        measurements = rubric_specifics.get("measurements") or {}
+        if by_rubric or measurements:
+            L.append("## 7.1 Профильные показатели рубрики")
+            for slug, info in by_rubric.items():
+                title = (info or {}).get("title", slug)
+                matched = (info or {}).get("matched_terms") or []
+                missing = (info or {}).get("missing_terms") or []
+                cov = (info or {}).get("term_coverage_pct", 0)
+                L.append(f"- **{title}** — покрытие профильных понятий {cov}%")
+                if matched:
+                    L.append(f"  - найдено: {', '.join(matched)}")
+                if missing:
+                    L.append(f"  - не отражено: {', '.join(missing)}")
+            if measurements:
+                L.append("- Числовые показатели:")
+                for name, m in measurements.items():
+                    unit = (m or {}).get("unit") or ""
+                    val = (m or {}).get("value") or ""
+                    L.append(f"  - {name}: {val} {unit}".rstrip())
+            L.append("")
 
     # 8. Источники
     L.append("## 8. Ссылки на источники")
