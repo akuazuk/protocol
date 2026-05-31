@@ -10,7 +10,7 @@ from typing import Any
 from .compliance_engine import build_compliance_report
 from .condition_registry import infer_conditions_hints
 from .consult_parser import parse_consultation
-from .consult_report import report_to_json, report_to_markdown
+from .consult_report import report_to_html, report_to_json, report_to_markdown
 from .consult_schema import ConsultationDocument
 from .protocol_match import annotate_applicability, match_protocol_cards
 from .rubric_extractors import (
@@ -131,4 +131,5 @@ def analyze_consultation_text(
     }
     if with_markdown:
         out["report_markdown"] = report_to_markdown(report, doc, rubric_specifics=rubric_specifics)
+        out["report_html"] = report_to_html(report, doc, rubric_specifics=rubric_specifics)
     return out

@@ -593,6 +593,116 @@
       min-height: 1.35em;
     }
 
+    /* Полный HTML-отчёт структурного разбора КЗ */
+    .consult-report-html {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #1e293b;
+    }
+    .consult-report-html .cr-section {
+      margin-bottom: 0.85rem;
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+      border: 1px solid #e2ebe8;
+      border-radius: 10px;
+    }
+    .consult-report-html .cr-section--safety {
+      border-color: #fecaca;
+      background: linear-gradient(180deg, #fffbfb, #fff);
+    }
+    .consult-report-html .cr-section-title {
+      margin: 0 0 0.45rem;
+      font-size: 0.92rem;
+      font-weight: 650;
+      color: #0f3d36;
+    }
+    .consult-report-html .cr-kv,
+    .consult-report-html .cr-list {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+    .consult-report-html .cr-kv li,
+    .consult-report-html .cr-list li {
+      margin-bottom: 0.25rem;
+    }
+    .consult-report-html .cr-muted {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.84rem;
+    }
+    .consult-report-html .cr-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .consult-report-html .cr-bar-row {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr 2.5rem;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+    .consult-report-html .cr-bar-label {
+      font-size: 0.8rem;
+      color: #475569;
+    }
+    .consult-report-html .cr-bar-track {
+      height: 8px;
+      background: #eef2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .consult-report-html .cr-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .consult-report-html .cr-bar-val {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .consult-report-html .cr-sev--high { color: #b91c1c; font-weight: 600; }
+    .consult-report-html .cr-sev--critical { color: #7f1d1d; font-weight: 700; }
+    .consult-report-html .cr-sev--medium { color: #b45309; }
+    .consult-report-html .cr-disclaimer {
+      margin-top: 0.6rem;
+      padding: 0.55rem 0.65rem;
+      font-size: 0.78rem;
+      color: #64748b;
+      background: #f8fafc;
+      border-radius: 8px;
+      border-left: 3px solid #94a3b8;
+    }
+    .cr-report-wrap {
+      max-height: 28rem;
+      overflow: auto;
+      margin-top: 0.5rem;
+      padding: 0.15rem;
+    }
+    .cr-report-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.35rem;
+    }
+    .cr-report-actions button {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 6px;
+      border: 1px solid #cfe0db;
+      background: #fff;
+      cursor: pointer;
+      color: #0f3d36;
+    }
+    .cr-report-actions button:hover {
+      background: #f0f9f6;
+    }
+
     .consult-analyze-banner {
       margin-top: 0.75rem;
       padding: 0.65rem 0.75rem;
@@ -10328,6 +10438,28 @@
       (measBlocks ? "<div><strong>Профильные показатели:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + measBlocks + "</ul></div>" : "");
 
     var md = data.report_markdown || "";
+    var htmlReport = data.report_html || "";
+
+    var fullReportBlock = "";
+    if (htmlReport || md) {
+      fullReportBlock =
+        "<details open style=\"margin-top:0.75rem\">" +
+        "<summary style=\"cursor:pointer;font-weight:600;color:#0f3d36\">Полный отчёт</summary>" +
+        (htmlReport
+          ? "<div class=\"cr-report-wrap\">" + htmlReport + "</div>"
+          : "") +
+        (md
+          ? "<div class=\"cr-report-actions\">" +
+            "<button type=\"button\" data-copy-md=\"1\">Скопировать Markdown</button>" +
+            "</div>" +
+            "<details style=\"margin-top:0.35rem\">" +
+            "<summary style=\"cursor:pointer;font-size:0.82rem;color:#64748b\">Текст Markdown</summary>" +
+            "<pre class=\"cr-md-pre\" style=\"white-space:pre-wrap;font-size:0.78rem;background:#fff;" +
+            "border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:16rem;overflow:auto\">" +
+            escapeHtml(md) + "</pre></details>"
+          : "") +
+        "</details>";
+    }
 
     panel.innerHTML =
       "<h3 style=\"margin:0 0 0.4rem;font-size:1rem\">Структурный разбор (детерминированный)</h3>" +
@@ -10352,9 +10484,19 @@
       (medHtml ? "<div><strong>Назначения:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + medHtml + "</ul></div>" : "") +
       rubricHtml +
       "</div></div>" +
-      (md ? "<details style=\"margin-top:0.6rem\"><summary style=\"cursor:pointer\">Полный отчёт (Markdown)</summary>" +
-        "<pre style=\"white-space:pre-wrap;font-size:0.8rem;background:#fff;border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:24rem;overflow:auto\">" +
-        escapeHtml(md) + "</pre></details>" : "");
+      fullReportBlock;
+
+    var copyBtn = panel.querySelector("[data-copy-md]");
+    if (copyBtn && md) {
+      copyBtn.addEventListener("click", function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(md).then(function () {
+            copyBtn.textContent = "Скопировано";
+            setTimeout(function () { copyBtn.textContent = "Скопировать Markdown"; }, 1800);
+          });
+        }
+      });
+    }
   }
 
   function renderConsultPartialUI(acc) {

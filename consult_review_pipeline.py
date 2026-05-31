@@ -417,6 +417,7 @@ def iter_consult_review_pipeline(
     # --- Структурный детерминированный разбор КЗ (аддитивно, за флагом) ---
     structured_analysis = None
     report_markdown = None
+    report_html = None
     if rs.env_bool("CONSULT_STRUCTURED_ANALYSIS", True):
         try:
             from clinical_knowledge.consult_analysis import analyze_consultation_text
@@ -436,6 +437,7 @@ def iter_consult_review_pipeline(
                 "rubric_specifics": sa.get("rubric_specifics"),
             }
             report_markdown = sa.get("report_markdown")
+            report_html = sa.get("report_html")
         except Exception:
             structured_analysis = None
 
@@ -473,6 +475,31 @@ def iter_consult_review_pipeline(
         result["structured_analysis"] = structured_analysis
     if report_markdown:
         result["report_markdown"] = report_markdown
+    if report_html:
+        result["report_html"] = report_html
+
+    # Обезличенный архив для регрессий и улучшения системы.
+    try:
+        from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot
+
+        src_name = ""
+        if consult_docs_meta and isinstance(consult_docs_meta[0], dict):
+            src_name = str(consult_docs_meta[0].get("filename") or "")
+        snap = build_snapshot(
+            full_text=full_text,
+            source_file=src_name,
+            build_version=rs._app_version(),
+            structured_analysis=structured_analysis,
+            review=review if isinstance(review, dict) else None,
+            retrieval_paths=paths_used,
+            icd_codes=merged_icd,
+        )
+        archive_path = save_snapshot(snap)
+        if archive_path:
+            result["analysis_archive_saved"] = str(archive_path)
+    except Exception:
+        pass
+
     result["cached_result"] = False
     rs._consult_cache_put(cache_key, result)
     yield ("done", result)

@@ -5699,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r42-ru-labels-rubric-anchor-diag-split"
+BUILD_VERSION = "2026-05-31-r43-html-report-archive-snapshots"
 
 
 def _app_version() -> str:

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from clinical_knowledge.compliance_engine import build_compliance_report
 from clinical_knowledge.consult_parser import parse_consultation
-from clinical_knowledge.consult_report import report_to_json, report_to_markdown
+from clinical_knowledge.consult_report import report_to_html, report_to_json, report_to_markdown
 
 KZ = """\
 Врач: гастроэнтеролог
@@ -58,3 +58,15 @@ def test_markdown_report_sections():
     ]:
         assert header in md
     assert "gastro/g.pdf" in md
+    # ФИО не попадает в отчёт — только инициалы или прочерк.
+    assert "Пациент:" in md
+
+
+def test_html_report_has_structure():
+    doc, rep = _report()
+    html = report_to_html(rep, doc)
+    assert "consult-report-html" in html
+    assert "cr-bar-fill" in html
+    assert "cr-badge" in html
+    assert "<script" not in html.lower()
+
