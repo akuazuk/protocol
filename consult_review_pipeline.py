@@ -75,6 +75,32 @@ def iter_consult_review_pipeline(
         else []
     )
 
+    # --- Якорь по диагнозу/специальности КЗ (точный подбор протоколов) ---
+    from clinical_knowledge.consult_parser import _detect_specialty
+    from clinical_knowledge.diagnosis_icd import lookup_disease_icd, prioritize_codes
+    from clinical_knowledge.rubric_extractors import specialty_to_rubric
+
+    # Код болезни из словаря нозологий (по блоку «Диагноз», иначе по всему тексту),
+    # чтобы симптом-код (R21.9 «сыпь») не уводил подбор КП в чужую рубрику.
+    import re as _re
+
+    _mdiag = _re.search(
+        r"диагноз[^:\n]*[:\-]\s*(.+?)(?:\n\s*\n|рекомендац|обследован|лечени|назначен|$)",
+        full_text,
+        _re.I | _re.S,
+    )
+    diag_block_text = (_mdiag.group(1) if _mdiag else "") or full_text
+    lex_codes = lookup_disease_icd(diag_block_text)
+    if lex_codes:
+        diag_codes_list = prioritize_codes(list(diag_codes_list) + lex_codes)
+        merged_icd = prioritize_codes(list(merged_icd or []) + lex_codes)
+
+    # Специальность врача из шапки КЗ — авторитетный якорь рубрики.
+    doctor_specialty_kz = _detect_specialty(full_text[:1500]) or _detect_specialty(full_text)
+    doctor_rubric = specialty_to_rubric(doctor_specialty_kz)
+    if doctor_rubric not in rs.ALLOWED_SPECIALTY_SLUGS:
+        doctor_rubric = None
+
     user_slugs = [
         s.strip()
         for s in (category_slugs or "").split(",")
@@ -86,7 +112,19 @@ def iter_consult_review_pipeline(
         query_specialties = rs.infer_specialties_gemini(q, model) if q_rag.strip() else []
     except Exception:
         query_specialties = []
-    boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
+    # Рубрика врача КЗ — впереди (приоритетный якорь), затем угаданные/выбранные.
+    boost_merged = list(
+        dict.fromkeys(
+            ([doctor_rubric] if doctor_rubric else [])
+            + (query_specialties or [])
+            + user_slugs
+        )
+    )
+    # Для ретривала: штраф чанкам вне рубрики врача КЗ (мягкий фильтр), чтобы
+    # глобальный фолбэк не уходил в чужую специальность.
+    retrieval_category_slugs = list(
+        dict.fromkeys((user_slugs or []) + ([doctor_rubric] if doctor_rubric else []))
+    )
 
     rq = q
     demographics_banner, demographics_meta = rs.consult_demographics_banner_from_kz(full_text)
@@ -127,11 +165,18 @@ def iter_consult_review_pipeline(
     )
 
     strict_proto = rs.env_bool("CONSULT_REVIEW_STRICT_PROTOCOLS", True)
+    # Скоуп кандидатов. Специальность врача КЗ авторитетна: если она распознана,
+    # ограничиваем рубрику ею (+ явно выбранными пользователем), не доверяя
+    # «угадыванию» рубрики по шумному запросу (источник ложного гастро-подбора).
+    if doctor_rubric:
+        target_slugs = list(dict.fromkeys([doctor_rubric, *(user_slugs or [])]))
+    else:
+        target_slugs = list(dict.fromkeys((boost_merged or []) + (user_slugs or [])))
     allowed_paths, path_pick_meta = consult_target_protocol_paths(
         merged_icd=list(merged_icd or []),
         diag_icd=list(diag_codes_list or []),
         clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
-        specialty_slugs=boost_merged or user_slugs or None,
+        specialty_slugs=target_slugs or None,
     )
     matched_path_boost = list(allowed_paths)
     if not matched_path_boost and isinstance(clinical_rules, dict):
@@ -165,7 +210,7 @@ def iter_consult_review_pipeline(
         q_rag,
         routing_query=rq,
         category_boost=boost_merged or None,
-        user_category_slugs=user_slugs or None,
+        user_category_slugs=retrieval_category_slugs or None,
         icd_codes_for_lex=icd_for_retrieval or None,
         path_boost=matched_path_boost or None,
         path_allowlist=path_allow,
@@ -177,7 +222,7 @@ def iter_consult_review_pipeline(
             q_rag,
             routing_query=rq,
             category_boost=boost_merged or None,
-            user_category_slugs=user_slugs or None,
+            user_category_slugs=retrieval_category_slugs or None,
             icd_codes_for_lex=icd_for_retrieval or None,
             path_boost=matched_path_boost or None,
             path_allowlist=None,
@@ -189,7 +234,7 @@ def iter_consult_review_pipeline(
             " ".join(icd_for_retrieval[:6]),
             routing_query=rq,
             category_boost=boost_merged or None,
-            user_category_slugs=user_slugs or None,
+            user_category_slugs=retrieval_category_slugs or None,
             icd_codes_for_lex=icd_for_retrieval,
             path_boost=matched_path_boost or None,
             path_allowlist=path_allow,
@@ -254,7 +299,7 @@ def iter_consult_review_pipeline(
                     q2.strip(),
                     routing_query=rq,
                     category_boost=boost_merged or None,
-                    user_category_slugs=user_slugs or None,
+                    user_category_slugs=retrieval_category_slugs or None,
                     icd_codes_for_lex=icd_for_retrieval,
                     path_boost=matched_path_boost or None,
                     path_allowlist=path_allow,
@@ -381,7 +426,7 @@ def iter_consult_review_pipeline(
                 full_text,
                 consultation_id=(content_signature or "consult")[:16] or "consult",
                 demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
-                specialty_slug=None,
+                specialty_slug=doctor_rubric,
                 with_markdown=True,
             )
             structured_analysis = {

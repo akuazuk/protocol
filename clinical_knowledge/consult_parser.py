@@ -227,9 +227,21 @@ def parse_consultation(
     # --- диагнозы ---
     diag_block = sections.diagnosis_text or ""
     diagnoses = parse_diagnoses(diag_block) if diag_block else []
+    # Подставляем код болезни из словаря, если в тексте диагноза кода нет
+    # (иначе эвристика может дать симптом-код вроде R21.9 и увести подбор КП).
+    from .diagnosis_icd import lookup_disease_icd
+
+    for d in diagnoses:
+        if not d.icd10_code:
+            lex = lookup_disease_icd(d.diagnosis_name or d.raw_text)
+            if lex:
+                d.icd10_code = lex[0]
     if not diagnoses:
-        # fallback: ICD из всего текста как минимум
-        codes = extract_icd10(text[:120_000])
+        # fallback: словарь нозологий по всему тексту, затем ICD из текста.
+        # Приоритет — коды болезней, симптом-коды (R..) уходят в конец.
+        from .diagnosis_icd import prioritize_codes
+
+        codes = prioritize_codes(lookup_disease_icd(text[:120_000]) + extract_icd10(text[:120_000]))
         if codes:
             from .consult_schema import ConsultationDiagnosis
 
