@@ -30,6 +30,6 @@ def test_format_clinical_rules_for_llm_includes_missing():
 
 def test_gastro_gold_benchmark_pass_rate():
     rep = run_gastro_gold_benchmark()
-    assert rep["cases_total"] >= 5
-    assert rep["cases_passed"] >= 4
-    assert rep["pass_rate_pct"] >= 80
+    assert rep["cases_total"] >= 7
+    assert rep["cases_passed"] >= 6
+    assert rep["pass_rate_pct"] >= 85

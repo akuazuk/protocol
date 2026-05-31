@@ -1,11 +1,11 @@
 {
   "title": "Эталон проверки КЗ по правилам (гастро MVP)",
   "scope": "data/gastro_mvp/consult_gold.jsonl",
-  "cases_total": 5,
-  "cases_passed": 5,
+  "cases_total": 7,
+  "cases_passed": 7,
   "pass_rate_pct": 100.0,
-  "conditions_loaded": 4,
-  "rules_loaded": 15,
+  "conditions_loaded": 7,
+  "rules_loaded": 21,
   "updated": "2026-05-31",
   "cases": [
     {
@@ -24,7 +24,7 @@
       "checks": {
         "diagnosis_formula_pass": true
       },
-      "rules_compliance_pct": 16.7
+      "rules_compliance_pct": 25.0
     },
     {
       "consultation_id": "gold_gerd_child_mismatch_01",
@@ -42,13 +42,32 @@
       "checks": {
         "has_condition_hint": true
       },
-      "rules_compliance_pct": 25.0
+      "rules_compliance_pct": 50.0
     },
     {
       "consultation_id": "gold_gastritis_01",
       "target_condition": "gastritis",
       "ok": true,
       "checks": {
+        "has_condition_hint": true
+      },
+      "rules_compliance_pct": 0.0
+    },
+    {
+      "consultation_id": "gold_celiac_full_01",
+      "target_condition": "celiac",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true
+      },
+      "rules_compliance_pct": 100.0
+    },
+    {
+      "consultation_id": "gold_uc_partial_01",
+      "target_condition": "ulcerative_colitis",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true,
         "has_condition_hint": true
       },
       "rules_compliance_pct": 0.0

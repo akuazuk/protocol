@@ -22,6 +22,10 @@ GERD_MARKERS = ("гэрб", "gerd", "рефлюкс", "изжог", "k21")
 GASTRITIS_MARKERS = ("гастрит", "k29")
 ULCER_MARKERS = ("язв", "k25", "k26", "k27", "k28")
 DYSPEPSIA_MARKERS = ("диспепс", "k30")
+CROHN_MARKERS = ("крон", "болезн крона", "k50")
+UC_MARKERS = ("язвенн", "колит", " k51", "k51")
+CELIAC_MARKERS = ("целиак", "k90.0", "k90")
+PANCREATITIS_MARKERS = ("панкреат", "k85")
 
 
 def _norm(s: str) -> str:
@@ -86,6 +90,14 @@ def extract_consult_facts_heuristic(
         conditions_hint.append("peptic_ulcer")
     if any(x in low for x in DYSPEPSIA_MARKERS) or any(c.startswith("K30") for c in icd):
         conditions_hint.append("functional_dyspepsia")
+    if any(x in low for x in CROHN_MARKERS) or any(c.startswith("K50") for c in icd):
+        conditions_hint.append("crohn")
+    if any(x in low for x in UC_MARKERS) or any(c.startswith("K51") for c in icd):
+        conditions_hint.append("ulcerative_colitis")
+    if any(x in low for x in CELIAC_MARKERS) or any(c.startswith("K90") for c in icd):
+        conditions_hint.append("celiac")
+    if any(x in low for x in PANCREATITIS_MARKERS) or any(c.startswith("K85") for c in icd):
+        conditions_hint.append("acute_pancreatitis")
 
     return {
         "patient_context": {

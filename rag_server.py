@@ -5485,7 +5485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r15-gastro-benchmark-llm"
+BUILD_VERSION = "2026-05-31-r16-gastro-ibd-filter"
 
 
 def _app_version() -> str:
@@ -6380,7 +6380,7 @@ def _consult_clinical_rules_pipeline(
         specialty = "gastroenterologiya"
 
     matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
-    rules = run_rule_checker(facts)
+    rules = run_rule_checker(facts, matched_protocols=matched)
 
     return {
         "consult_facts": facts,

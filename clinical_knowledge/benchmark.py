@@ -8,6 +8,7 @@ from typing import Any
 
 from .consult_facts import extract_consult_facts_heuristic
 from .loader import load_conditions, load_rules_by_condition
+from .protocol_match import match_protocol_cards
 from .rule_checker import run_rule_checker
 
 GOLD_PATH = Path(__file__).resolve().parent.parent / "data" / "gastro_mvp" / "consult_gold.jsonl"
@@ -33,7 +34,12 @@ def _eval_case(case: dict[str, Any]) -> dict[str, Any]:
         str(case.get("text") or ""),
         demographics_meta=case.get("patient_context") or {},
     )
-    result = run_rule_checker(facts, condition_ids=[cid] if cid else None)
+    matched = match_protocol_cards(facts, specialty_slug="gastroenterologiya", limit=4)
+    result = run_rule_checker(
+        facts,
+        condition_ids=[cid] if cid else None,
+        matched_protocols=matched,
+    )
     findings = result.get("findings") or []
     checks: dict[str, bool] = {}
     ok = True

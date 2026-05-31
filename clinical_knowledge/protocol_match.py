@@ -71,6 +71,14 @@ def match_protocol_cards(
             score += 25
         if "peptic_ulcer" in hints and "язв" in blob:
             score += 25
+        if "crohn" in hints and ("крон" in blob or "k50" in blob):
+            score += 30
+        if "ulcerative_colitis" in hints and ("колит" in blob or "k51" in blob):
+            score += 30
+        if "celiac" in hints and "целиак" in blob:
+            score += 30
+        if "acute_pancreatitis" in hints and "панкреат" in blob:
+            score += 28
 
         if (card.get("status") or "active") != "active":
             score -= 20

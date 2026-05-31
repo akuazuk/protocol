@@ -16,12 +16,20 @@ CONDITION_DIAG_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("peptic_ulcer", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+гастродуоденальн", re.I)),
     ("gastritis", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+хроническ", re.I)),
     ("functional_dyspepsia", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+функциональн", re.I)),
+    ("ulcerative_colitis", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+як\b", re.I)),
+    ("ulcerative_colitis", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+.*язвенн.*колит", re.I)),
+    ("crohn", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+.*(?:крон|болезн[иь]\s+крона)", re.I)),
+    ("celiac", re.compile(r"формулировк[аи]\s+диагноз[а]?\s+.*целиак", re.I)),
+    ("celiac", re.compile(r"при\s+формулировк[аи]\s+диагноз[а]?\s+.*целиак", re.I)),
 ]
 
 CONDITION_CRIT_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("gerd", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+гэрб", re.I)),
     ("peptic_ulcer", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+гастродуоденальн", re.I)),
     ("gastritis", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+хроническ", re.I)),
+    ("ulcerative_colitis", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+як\b", re.I)),
+    ("crohn", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+.*крон", re.I)),
+    ("celiac", re.compile(r"диагностическ(?:им|ими)\s+критери(?:ем|ями)\s+.*целиак", re.I)),
 ]
 
 RE_INCLUDES_BULLETS = re.compile(
@@ -64,6 +72,7 @@ def _parse_required_components(block: str) -> list[str]:
 def _rule_source(chunk: dict[str, Any], protocol_id: str) -> dict[str, Any]:
     return {
         "protocol_id": protocol_id,
+        "source_path": chunk.get("source_path"),
         "doc_id": chunk.get("doc_id"),
         "page_from": chunk.get("page_from"),
         "page_to": chunk.get("page_to"),

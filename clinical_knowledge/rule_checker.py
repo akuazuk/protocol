@@ -5,6 +5,7 @@ import re
 from typing import Any
 
 from .loader import load_conditions, load_rules_by_condition
+from .rule_filter import filter_rules_for_matched_protocols, matched_source_paths
 
 
 def _norm(s: str) -> str:
@@ -29,7 +30,7 @@ def _check_diagnosis_components(
     present: list[str] = []
     missing: list[str] = []
     markers = {
-        "нозология": ("гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс"),
+        "нозология": ("гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс", "колит", "крон", "целиак", "k50", "k51", "k90"),
         "клиническая форма": ("форма", "неэрозив", "эрозив", "атроф", "поверхност"),
         "степень тяжести": ("степен", "лёгк", "легк", "средн", "тяжел", "тяжёл"),
         "фаза": ("фаз", "обострен", "ремисс", "хроническ", "остр"),
@@ -37,11 +38,15 @@ def _check_diagnosis_components(
         "локализация": ("локал", "антрал", "луковиц", "желудк", "двенадцат"),
         "h.pylori": ("нр", "hp", "helicobacter", "хеликобактер"),
         "этиологический фактор": ("этиолог", "нр", "нпвп", "стресс"),
-        "активность": ("активност", "hp 3", "воспален"),
+        "активность": ("активност", "hp 3", "воспален", "обострен", "ремисс"),
         "атрофия": ("атроф", "olga"),
         "метаплазия": ("метаплаз", "olgim"),
         "острый или хронический характер": ("остр", "хроническ"),
         "тяжесть": ("тяжел", "тяжёл", "среднетяж"),
+        "протяженность": ("протяжен", "дистальн", "тотальн", "леоколит"),
+        "вариант течения": ("вариант", "течени", "рекуррент"),
+        "период": ("период", "ремисс", "обострен"),
+        "гистологическая стадия": ("гистолог", "стади", "marsh"),
     }
     for comp in required:
         key = comp.lower()
@@ -166,6 +171,7 @@ def run_rule_checker(
     consult_facts: dict[str, Any],
     *,
     condition_ids: list[str] | None = None,
+    matched_protocols: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Проверка КЗ по правилам MVP; возвращает findings и сводку."""
     conditions = load_conditions()
@@ -206,7 +212,7 @@ def run_rule_checker(
                         "source": cond.get("protocol_reference"),
                     }
                 )
-        for rule in rules:
+        for rule in filter_rules_for_matched_protocols(rules, matched_protocols):
             all_findings.append(_run_rule(rule, consult_facts))
 
     failed = [f for f in all_findings if not f.get("passed")]
@@ -224,5 +230,7 @@ def run_rule_checker(
         "critical_count": len(critical),
         "missing_required_items": [f.get("message_ru") for f in failed if f.get("message_ru")],
         "rules_compliance_pct": compliance_pct,
-        "method": "deterministic_rules_v1",
+        "method": "deterministic_rules_v2",
+        "matched_source_paths": sorted(matched_source_paths(matched_protocols)),
+        "rules_filtered_by_protocol": bool(matched_protocols),
     }

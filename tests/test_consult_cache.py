@@ -85,7 +85,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
 
     calls = {"n": 0}
 
-    def fake_synth(model, consult_excerpt, protocol_ctx, paths_hint, extra_context=""):
+    def fake_synth(model, consult_excerpt, protocol_ctx, paths_hint, extra_context="", **kwargs):
         calls["n"] += 1
         # имитируем недетерминированную модель: каждый вызов даёт разный %
         return {"overall_compliance_pct": 50 + calls["n"], "criteria": [], "summary_ru": "x"}

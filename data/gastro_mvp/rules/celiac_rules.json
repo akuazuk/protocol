@@ -1,0 +1,21 @@
+{
+  "condition_id": "celiac",
+  "rules": [
+    {
+      "rule_id": "celiac_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": ["нозология", "клиническая форма", "период"],
+      "severity": "warning",
+      "description_ru": "Полнота формулировки диагноза при целиакии (КП №38).",
+      "source": {"approval_number": "38"}
+    },
+    {
+      "rule_id": "celiac_gfd_mention",
+      "rule_type": "keyword_presence",
+      "keyword": "глютен",
+      "severity": "info",
+      "message_ru": "При целиакии в КЗ желательно отразить безглютеновую диету или её обсуждение.",
+      "source": {"approval_number": "38"}
+    }
+  ]
+}
