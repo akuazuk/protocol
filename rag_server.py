@@ -491,6 +491,7 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже —
 - Все пояснения на русском.
 - Подсказка path протоколов в преамбуле ниже упорядочена автоматически: первыми идут выдержки, где в тексте фрагмента встречаются коды МКБ из диагностического блока консультативного заключения (если такие коды извлечены).
 - Если у выдержки протокола указаны метаданные section= (раздел) и pages= (страницы) — перенеси их дословно в protocol_section и protocol_page соответствующего критерия (для точной ссылки). Если их нет — оставь пустыми строками. Не выдумывай раздел/страницу.
+- Если ниже передан блок «ДЕТЕРМИНИРОВАННАЯ ПРОВЕРКА ПО ПРАВИЛАМ ПРОТОКОЛА» — учти его при criteria и limitations_ru; не игнорируй явные пробелы из этого блока.
 
 Верни ОДИН JSON-объект (без markdown, без текста до/после) строго следуя схеме:
 {"overall_compliance_pct": <целое 0-100>,
@@ -3933,12 +3934,17 @@ def _consult_review_synthesize(
     protocol_excerpt: str,
     paths_hint: list[str],
     extra_context: str = "",
+    clinical_rules_context: str = "",
 ) -> dict:
     paths_line = ", ".join(paths_hint[:12]) if paths_hint else "(не определены)"
+    rules_block = ""
+    if clinical_rules_context and clinical_rules_context.strip():
+        rules_block = "\n\n--- " + clinical_rules_context.strip() + "\n"
     full_prompt = (
         SYSTEM_CONSULT_REVIEW_JSON
         + "\n\nОжидаемые path протоколов (подсказка): "
         + paths_line
+        + rules_block
         + "\n\n--- ТЕКСТ ЗАКЛЮЧЕНИЯ (фрагмент из PDF) ---\n\n"
         + consultation_excerpt
         + "\n\n--- ВЫДЕРЖКИ ПРОТОКОЛОВ (RAG) ---\n\n"
@@ -5479,7 +5485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r14-gastro-rules-corpus"
+BUILD_VERSION = "2026-05-31-r15-gastro-benchmark-llm"
 
 
 def _app_version() -> str:
@@ -5538,6 +5544,26 @@ def api_version() -> dict:
     except Exception:
         payload["clinical_knowledge"] = {"enabled": False}
     return payload
+
+
+@app.get("/api/clinical-knowledge/benchmark")
+def api_clinical_knowledge_benchmark() -> dict:
+    """Эталонные метрики rule checker на consult_gold.jsonl (гастро MVP)."""
+    bench_path = ROOT / "data" / "gastro_mvp" / "benchmark.json"
+    if not bench_path.is_file():
+        try:
+            from clinical_knowledge.benchmark import run_gastro_gold_benchmark
+
+            return {"ok": True, **run_gastro_gold_benchmark()}
+        except Exception as e:
+            return {"ok": False, "error": str(e)[:200]}
+    try:
+        data = json.loads(bench_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise HTTPException(status_code=500, detail=str(e)[:200]) from e
+    if not isinstance(data, dict):
+        raise HTTPException(status_code=500, detail="benchmark.json: ожидается объект")
+    return {"ok": True, **data}
 
 
 @app.get("/api/clinical-knowledge/status")
@@ -6703,12 +6729,20 @@ def api_consult_review(
             "(limitations_ru) и понизьте баллы по затронутым критериям.\n"
         )
 
+    try:
+        from clinical_knowledge.llm_context import format_clinical_rules_for_llm
+
+        rules_ctx = format_clinical_rules_for_llm(clinical_rules)
+    except ImportError:
+        rules_ctx = ""
+
     review = _consult_review_synthesize(
         model,
         consult_excerpt,
         protocol_ctx,
         paths_hint_for_llm,
         extra_context=oncology_extra,
+        clinical_rules_context=rules_ctx,
     )
 
     result = {

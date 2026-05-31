@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Извлечь правила гастро из chunks.jsonl (КП №185 пищевод/желудок/ДПК) и записать в data/gastro_mvp/rules/."""
+"""Извлечь правила из всех гастро-PDF в chunks.jsonl → data/gastro_mvp/rules/auto_*.json."""
 from __future__ import annotations
 
 import json
@@ -11,39 +11,36 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.rules_from_corpus import (
-    extract_rules_from_chunks,
-    load_chunks_for_source,
+    extract_rules_all_gastro_pdfs,
     merge_rules_into_gastro_mvp,
 )
 
-KP185_SUBSTR = "пищевода_желудка_двенадцатиперстной"
-LOGICAL_DOC = "_L8"
+REGISTRY = ROOT / "data" / "gastro_mvp" / "protocol_registry.jsonl"
+CHUNKS = ROOT / "output" / "chunks" / "chunks.jsonl"
 
 
 def main() -> None:
-    chunks_path = ROOT / "output" / "chunks" / "chunks.jsonl"
-    chunks = load_chunks_for_source(chunks_path, KP185_SUBSTR, logical_suffix=LOGICAL_DOC)
-    if not chunks:
-        print(f"WARN: нет чанков для {KP185_SUBSTR}{LOGICAL_DOC}")
+    if not CHUNKS.is_file():
+        print(f"WARN: нет {CHUNKS} — сначала run_pipeline")
+        sys.exit(1)
+    if not REGISTRY.is_file():
+        print(f"WARN: нет {REGISTRY} — сначала build_protocol_cards.py")
         sys.exit(1)
 
-    extracted = extract_rules_from_chunks(
-        chunks,
-        protocol_id="gastro_esophagus_stomach_adult_2025_185",
-    )
-    out_dir = ROOT / "data" / "gastro_mvp" / "rules"
-    counts = merge_rules_into_gastro_mvp(extracted, out_dir)
+    extracted, meta = extract_rules_all_gastro_pdfs(CHUNKS, REGISTRY)
+    counts = merge_rules_into_gastro_mvp(extracted, ROOT / "data" / "gastro_mvp" / "rules")
 
-    summary = {
-        "source_pdf_substr": KP185_SUBSTR,
-        "logical_doc": LOGICAL_DOC,
-        "chunks_scanned": len(chunks),
-        "rules_extracted": counts,
-    }
-    (ROOT / "data" / "gastro_mvp" / "rules_extraction_summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2),
-        encoding="utf-8",
+    pdfs_with_rules = sum(
+        1 for v in meta.get("pdfs", {}).values() if isinstance(v, dict) and v.get("rules", 0) > 0
     )
+    summary = {
+        "pdfs_total": meta.get("pdfs_total"),
+        "pdfs_with_rules": pdfs_with_rules,
+        "rules_by_condition": counts,
+        "total_rules": sum(counts.values()),
+    }
+    out = ROOT / "data" / "gastro_mvp" / "rules_extraction_summary.json"
+    out.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

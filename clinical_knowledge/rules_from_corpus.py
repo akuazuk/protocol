@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import json
 import re
+from collections import defaultdict
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
@@ -75,9 +77,19 @@ def extract_rules_from_chunks(
     chunks: list[dict[str, Any]],
     *,
     protocol_id: str = "gastro_kp185",
+    rule_id_prefix: str = "",
 ) -> dict[str, list[dict[str, Any]]]:
     """Вернуть {condition_id: [rules]} из списка чанков одного логического КП."""
+    prefix = (rule_id_prefix + "_") if rule_id_prefix else ""
     by_condition: dict[str, list[dict[str, Any]]] = {}
+    seen_rule_keys: set[str] = set()
+
+    def _add_rule(cid: str, rule: dict[str, Any]) -> None:
+        key = f"{cid}:{rule.get('rule_type')}:{rule.get('rule_id')}"
+        if key in seen_rule_keys:
+            return
+        seen_rule_keys.add(key)
+        by_condition.setdefault(cid, []).append(rule)
 
     for chunk in chunks:
         text = chunk.get("text") or ""
@@ -95,7 +107,7 @@ def extract_rules_from_chunks(
             if not components:
                 continue
             rule = {
-                "rule_id": f"auto_{cid}_diagnosis_formula",
+                "rule_id": f"{prefix}auto_{cid}_diagnosis_formula",
                 "rule_type": "diagnosis_formula",
                 "required_components": components,
                 "severity": "warning",
@@ -103,7 +115,7 @@ def extract_rules_from_chunks(
                 "source": _rule_source(chunk, protocol_id),
                 "auto_extracted": True,
             }
-            by_condition.setdefault(cid, []).append(rule)
+            _add_rule(cid, rule)
 
         for cid, pat in CONDITION_CRIT_PATTERNS:
             if not pat.search(text):
@@ -129,7 +141,7 @@ def extract_rules_from_chunks(
             if not criteria:
                 continue
             rule = {
-                "rule_id": f"auto_{cid}_diagnostic_criteria",
+                "rule_id": f"{prefix}auto_{cid}_diagnostic_criteria",
                 "rule_type": "diagnostic_criterion",
                 "logic": "any_of",
                 "criteria": criteria,
@@ -138,7 +150,7 @@ def extract_rules_from_chunks(
                 "source": _rule_source(chunk, protocol_id),
                 "auto_extracted": True,
             }
-            by_condition.setdefault(cid, []).append(rule)
+            _add_rule(cid, rule)
 
     return by_condition
 
@@ -170,29 +182,142 @@ def load_chunks_for_source(
     return out
 
 
+def load_chunks_exact(chunks_path: Path, source_path: str) -> list[dict[str, Any]]:
+    """Все чанки одного PDF (точное совпадение source_path)."""
+    want = source_path.replace("\\", "/")
+    out: list[dict[str, Any]] = []
+    if not chunks_path.is_file():
+        return out
+    with chunks_path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                c = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            sp = (c.get("source_path") or "").replace("\\", "/")
+            if sp == want:
+                out.append(c)
+    return out
+
+
+def _score_logical_doc(chunks: list[dict[str, Any]]) -> int:
+    blob = " ".join((c.get("text") or "") for c in chunks)
+    score = 0
+    for _, pat in CONDITION_DIAG_PATTERNS:
+        if pat.search(blob):
+            score += 3
+    for _, pat in CONDITION_CRIT_PATTERNS:
+        if pat.search(blob):
+            score += 2
+    if "формулировк" in blob.lower():
+        score += 1
+    return score
+
+
+def pick_best_logical_chunks(all_pdf_chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Выбрать логический документ внутри PDF с наибольшей клинической разметкой."""
+    by_doc: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for c in all_pdf_chunks:
+        by_doc[str(c.get("doc_id") or "")].append(c)
+    if not by_doc:
+        return []
+    ranked = sorted(
+        by_doc.items(),
+        key=lambda kv: (_score_logical_doc(kv[1]), len(kv[1])),
+        reverse=True,
+    )
+    best_score = _score_logical_doc(ranked[0][1])
+    if best_score <= 0:
+        ranked = sorted(by_doc.items(), key=lambda kv: len(kv[1]), reverse=True)
+    return ranked[0][1]
+
+
+def gastro_source_paths(registry_jsonl: Path) -> list[str]:
+    paths: set[str] = set()
+    if not registry_jsonl.is_file():
+        return []
+    for line in registry_jsonl.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row.get("specialty_slug") != "gastroenterologiya":
+            continue
+        sp = (row.get("source_path") or "").replace("\\", "/")
+        if sp:
+            paths.add(sp)
+    return sorted(paths)
+
+
+def _unique_pdf_paths_from_registry(registry_jsonl: Path) -> list[str]:
+    """Один путь на PDF (без дублей логических частей)."""
+    seen_pdf: set[str] = set()
+    out: list[str] = []
+    for sp in gastro_source_paths(registry_jsonl):
+        if sp in seen_pdf:
+            continue
+        seen_pdf.add(sp)
+        out.append(sp)
+    return out
+
+
+def extract_rules_all_gastro_pdfs(
+    chunks_path: Path,
+    registry_jsonl: Path,
+) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    """Извлечь правила по всем уникальным гастро-PDF."""
+    merged: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    per_pdf: dict[str, Any] = {}
+    pdfs = _unique_pdf_paths_from_registry(registry_jsonl)
+    for sp in pdfs:
+        all_ch = load_chunks_exact(chunks_path, sp)
+        if not all_ch:
+            per_pdf[sp] = {"chunks": 0, "rules": 0, "skipped": "no_chunks"}
+            continue
+        doc_chunks = pick_best_logical_chunks(all_ch)
+        pdf_hash = sha256(sp.encode()).hexdigest()[:8]
+        protocol_id = f"gastro_{pdf_hash}"
+        extracted = extract_rules_from_chunks(
+            doc_chunks,
+            protocol_id=protocol_id,
+            rule_id_prefix=pdf_hash,
+        )
+        n_rules = sum(len(v) for v in extracted.values())
+        per_pdf[sp] = {
+            "chunks": len(doc_chunks),
+            "rules": n_rules,
+            "doc_id": doc_chunks[0].get("doc_id") if doc_chunks else None,
+        }
+        for cid, rules in extracted.items():
+            merged[cid].extend(rules)
+    return dict(merged), {"pdfs_total": len(pdfs), "pdfs": per_pdf}
+
+
 def merge_rules_into_gastro_mvp(
     extracted: dict[str, list[dict[str, Any]]],
     out_dir: Path,
 ) -> dict[str, int]:
-    """Записать/обновить data/gastro_mvp/rules/auto_<condition>.json."""
+    """Записать data/gastro_mvp/rules/auto_<condition>.json (только авто-правила)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     counts: dict[str, int] = {}
     for cid, rules in extracted.items():
         path = out_dir / f"auto_{cid}.json"
-        manual_path = out_dir / f"{cid}_rules.json"
-        manual_rules: list[dict] = []
-        if manual_path.is_file():
-            try:
-                manual_rules = list(json.loads(manual_path.read_text(encoding="utf-8")).get("rules") or [])
-            except Exception:
-                manual_rules = []
-        seen_ids = {r.get("rule_id") for r in manual_rules}
-        merged = list(manual_rules)
+        seen: set[str] = set()
+        deduped: list[dict[str, Any]] = []
         for r in rules:
-            if r.get("rule_id") not in seen_ids:
-                merged.append(r)
-                seen_ids.add(r.get("rule_id"))
-        payload = {"condition_id": cid, "rules": merged, "auto_merged": True}
+            rid = str(r.get("rule_id") or "")
+            if rid and rid in seen:
+                continue
+            if rid:
+                seen.add(rid)
+            deduped.append(r)
+        payload = {"condition_id": cid, "rules": deduped, "auto_only": True}
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        counts[cid] = len(rules)
+        counts[cid] = len(deduped)
     return counts

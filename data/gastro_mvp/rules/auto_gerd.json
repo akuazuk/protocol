@@ -2,84 +2,7 @@
   "condition_id": "gerd",
   "rules": [
     {
-      "rule_id": "gerd_population_adult",
-      "rule_type": "population_mismatch",
-      "expected_population": "adult",
-      "severity": "critical",
-      "description_ru": "Протокол КП №185 — для взрослого населения.",
-      "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
-        "page": 1,
-        "section": "Общие положения"
-      }
-    },
-    {
-      "rule_id": "gerd_diagnosis_formula",
-      "rule_type": "diagnosis_formula",
-      "required_components": [
-        "нозология",
-        "клиническая форма",
-        "степень тяжести",
-        "фаза",
-        "осложнения"
-      ],
-      "severity": "warning",
-      "description_ru": "Полнота формулировки диагноза при ГЭРБ.",
-      "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
-        "page": 3,
-        "section": "ГЭРБ — формулировка диагноза"
-      }
-    },
-    {
-      "rule_id": "gerd_diagnostic_criteria_typical",
-      "rule_type": "diagnostic_criterion",
-      "logic": "any_of",
-      "description_ru": "Достаточность клинико-диагностических оснований для ГЭРБ.",
-      "criteria": [
-        {
-          "symptom": "изжога или кислая регургитация",
-          "duration": ">= 6 месяцев",
-          "frequency": ">= 2 раза в неделю"
-        },
-        {
-          "finding": "рефлюкс-эзофагит",
-          "method": "эндоскоп"
-        },
-        {
-          "finding": "эзофагит",
-          "method": "эндоскоп"
-        },
-        {
-          "finding": "рН-метр",
-          "method": "рН"
-        },
-        {
-          "finding": "импеданс",
-          "method": "импеданс"
-        }
-      ],
-      "severity": "warning",
-      "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
-        "page": 3,
-        "paragraph": 9,
-        "section": "ГЭРБ — диагностические критерии"
-      }
-    },
-    {
-      "rule_id": "gerd_endoscopy_mention",
-      "rule_type": "keyword_presence",
-      "keyword": "эндоскоп",
-      "severity": "info",
-      "message_ru": "При подозрении на ГЭРБ в КЗ желательно отразить данные/план эндоскопического обследования (ЭГДС).",
-      "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
-        "section": "Диагностика ГЭРБ"
-      }
-    },
-    {
-      "rule_id": "auto_gerd_diagnosis_formula",
+      "rule_id": "90af2882_auto_gerd_diagnosis_formula",
       "rule_type": "diagnosis_formula",
       "required_components": [
         "нозология",
@@ -91,7 +14,7 @@
       "severity": "warning",
       "description_ru": "Автоизвлечение: полнота формулировки диагноза (gerd).",
       "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "protocol_id": "gastro_90af2882",
         "doc_id": "90af2882546aefb0b20a4980_L8",
         "page_from": 3,
         "page_to": 3,
@@ -105,7 +28,7 @@
       "auto_extracted": true
     },
     {
-      "rule_id": "auto_gerd_diagnostic_criteria",
+      "rule_id": "90af2882_auto_gerd_diagnostic_criteria",
       "rule_type": "diagnostic_criterion",
       "logic": "any_of",
       "criteria": [
@@ -126,7 +49,7 @@
       "severity": "warning",
       "description_ru": "Автоизвлечение: диагностические критерии (gerd).",
       "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "protocol_id": "gastro_90af2882",
         "doc_id": "90af2882546aefb0b20a4980_L8",
         "page_from": 3,
         "page_to": 4,
@@ -140,5 +63,5 @@
       "auto_extracted": true
     }
   ],
-  "auto_merged": true
+  "auto_only": true
 }

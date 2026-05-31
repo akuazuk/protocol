@@ -2,43 +2,32 @@
   "condition_id": "peptic_ulcer",
   "rules": [
     {
-      "rule_id": "peptic_ulcer_diagnosis_formula",
+      "rule_id": "cd7e4e85_auto_peptic_ulcer_diagnosis_formula",
       "rule_type": "diagnosis_formula",
       "required_components": [
-        "локализация",
         "фаза",
-        "H.pylori",
-        "осложнения"
+        "осложнения",
+        "локализация",
+        "этиология"
       ],
       "severity": "warning",
-      "description_ru": "Полнота формулировки диагноза при гастродуоденальной язве (КП №185).",
+      "description_ru": "Автоизвлечение: полнота формулировки диагноза (peptic_ulcer).",
       "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
-        "section": "Гастродуоденальная язва"
-      }
+        "protocol_id": "gastro_cd7e4e85",
+        "doc_id": "cd7e4e850a5c83fb977208bc_L6",
+        "page_from": 5,
+        "page_to": 5,
+        "section": "13.5. по эндоскопической стадии язвенного дефекта:",
+        "section_path": [
+          "13",
+          "13.5. по эндоскопической стадии язвенного дефекта:"
+        ],
+        "quote_chars": 400
+      },
+      "auto_extracted": true
     },
     {
-      "rule_id": "peptic_ulcer_egds_criterion",
-      "rule_type": "diagnostic_criterion",
-      "logic": "any_of",
-      "criteria": [
-        {
-          "finding": "язва",
-          "method": "эндоскоп"
-        },
-        {
-          "finding": "эрозия",
-          "method": "эндоскоп"
-        }
-      ],
-      "severity": "warning",
-      "description_ru": "Диагностические критерии ГДЯ — язва/эрозия при ЭГДС.",
-      "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185"
-      }
-    },
-    {
-      "rule_id": "auto_peptic_ulcer_diagnosis_formula",
+      "rule_id": "90af2882_auto_peptic_ulcer_diagnosis_formula",
       "rule_type": "diagnosis_formula",
       "required_components": [
         "фаза",
@@ -50,7 +39,7 @@
       "severity": "warning",
       "description_ru": "Автоизвлечение: полнота формулировки диагноза (peptic_ulcer).",
       "source": {
-        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "protocol_id": "gastro_90af2882",
         "doc_id": "90af2882546aefb0b20a4980_L8",
         "page_from": 11,
         "page_to": 11,
@@ -63,5 +52,5 @@
       "auto_extracted": true
     }
   ],
-  "auto_merged": true
+  "auto_only": true
 }

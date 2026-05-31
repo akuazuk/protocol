@@ -50,6 +50,14 @@ def test_quality_benchmark_ok(client: TestClient) -> None:
     assert int(data.get("queries_total") or 0) >= 1
 
 
+def test_clinical_knowledge_benchmark_ok(client: TestClient) -> None:
+    r = client.get("/api/clinical-knowledge/benchmark")
+    assert r.status_code == 200
+    data = r.json()
+    assert data.get("ok") is True
+    assert int(data.get("cases_total") or 0) >= 1
+
+
 def test_normalize_differential_field_module() -> None:
     from rag_server import normalize_differential_field
 

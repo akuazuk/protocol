@@ -1,0 +1,58 @@
+{
+  "title": "Эталон проверки КЗ по правилам (гастро MVP)",
+  "scope": "data/gastro_mvp/consult_gold.jsonl",
+  "cases_total": 5,
+  "cases_passed": 5,
+  "pass_rate_pct": 100.0,
+  "conditions_loaded": 4,
+  "rules_loaded": 15,
+  "updated": "2026-05-31",
+  "cases": [
+    {
+      "consultation_id": "gold_gerd_full_01",
+      "target_condition": "gerd",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true
+      },
+      "rules_compliance_pct": 50.0
+    },
+    {
+      "consultation_id": "gold_gerd_incomplete_01",
+      "target_condition": "gerd",
+      "ok": true,
+      "checks": {
+        "diagnosis_formula_pass": true
+      },
+      "rules_compliance_pct": 16.7
+    },
+    {
+      "consultation_id": "gold_gerd_child_mismatch_01",
+      "target_condition": "gerd",
+      "ok": true,
+      "checks": {
+        "population_mismatch": true
+      },
+      "rules_compliance_pct": 0.0
+    },
+    {
+      "consultation_id": "gold_ulcer_partial_01",
+      "target_condition": "peptic_ulcer",
+      "ok": true,
+      "checks": {
+        "has_condition_hint": true
+      },
+      "rules_compliance_pct": 25.0
+    },
+    {
+      "consultation_id": "gold_gastritis_01",
+      "target_condition": "gastritis",
+      "ok": true,
+      "checks": {
+        "has_condition_hint": true
+      },
+      "rules_compliance_pct": 0.0
+    }
+  ],
+  "methodology_ru": "Детерминированный rule_checker на размеченных синтетических КЗ; пересчёт: python3 scripts/update_gastro_rules_benchmark.py"
+}

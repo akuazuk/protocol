@@ -84,6 +84,12 @@ def load_rules_by_condition() -> dict[str, list[dict[str, Any]]]:
     return out
 
 
+def clear_clinical_knowledge_cache() -> None:
+    load_protocol_cards_registry.cache_clear()
+    load_conditions.cache_clear()
+    load_rules_by_condition.cache_clear()
+
+
 def clinical_knowledge_status() -> dict[str, Any]:
     cards = load_protocol_cards_registry()
     conditions = load_conditions()

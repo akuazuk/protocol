@@ -5434,6 +5434,7 @@
             <p class="consult-hint-small" id="consult-rules-pct" style="font-weight: 700; color: var(--green-800)"></p>
             <p class="consult-hint-small" id="consult-rules-matched"></p>
             <ul class="consult-rules-findings" id="consult-rules-findings"></ul>
+            <p class="consult-hint-small" id="consult-rules-bench-note" style="margin: 0.45rem 0 0; opacity: 0.85"></p>
           </div>
 
           <div id="consult-methodology-panel" class="consult-methodology-panel consult-hide-print" hidden>
@@ -9639,6 +9640,21 @@
       li.textContent = (f.passed ? "✓ " : "• ") + msg;
       listEl.appendChild(li);
     });
+
+    var benchNote = document.getElementById("consult-rules-bench-note");
+    if (benchNote) {
+      benchNote.textContent = "";
+      fetch((window.__API_BASE || "") + "/api/clinical-knowledge/benchmark")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (b) {
+          if (b && typeof b.pass_rate_pct === "number") {
+            benchNote.textContent =
+              "Эталон rule checker (gold-set): " + b.cases_passed + "/" + b.cases_total +
+              " (" + b.pass_rate_pct + "%)";
+          }
+        })
+        .catch(function () {});
+    }
   }
 
   function renderConsultProtocolsSection(data, rev) {
