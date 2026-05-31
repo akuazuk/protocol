@@ -1,7 +1,6 @@
 """Детерминированные правила по пути PDF (острые/хирургические КП без блока «формулировка диагноза»)."""
 from __future__ import annotations
 
-import re
 from hashlib import sha256
 from typing import Any
 
@@ -173,7 +172,6 @@ def extract_path_rules(
         return {}
     cid, components = inferred
     prefix = (rule_id_prefix + "_") if rule_id_prefix else ""
-    pdf_hash = sha256(source_path.encode()).hexdigest()[:8]
     rule = {
         "rule_id": f"{prefix}path_{cid}_diagnosis_formula",
         "rule_type": "diagnosis_formula",
