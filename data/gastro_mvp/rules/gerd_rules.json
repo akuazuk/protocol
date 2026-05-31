@@ -1,0 +1,82 @@
+{
+  "condition_id": "gerd",
+  "rules": [
+    {
+      "rule_id": "gerd_population_adult",
+      "rule_type": "population_mismatch",
+      "expected_population": "adult",
+      "severity": "critical",
+      "description_ru": "Протокол КП №185 — для взрослого населения.",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "page": 1,
+        "section": "Общие положения"
+      }
+    },
+    {
+      "rule_id": "gerd_diagnosis_formula",
+      "rule_type": "diagnosis_formula",
+      "required_components": [
+        "нозология",
+        "клиническая форма",
+        "степень тяжести",
+        "фаза",
+        "осложнения"
+      ],
+      "severity": "warning",
+      "description_ru": "Полнота формулировки диагноза при ГЭРБ.",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "page": 3,
+        "section": "ГЭРБ — формулировка диагноза"
+      }
+    },
+    {
+      "rule_id": "gerd_diagnostic_criteria_typical",
+      "rule_type": "diagnostic_criterion",
+      "logic": "any_of",
+      "description_ru": "Достаточность клинико-диагностических оснований для ГЭРБ.",
+      "criteria": [
+        {
+          "symptom": "изжога или кислая регургитация",
+          "duration": ">= 6 месяцев",
+          "frequency": ">= 2 раза в неделю"
+        },
+        {
+          "finding": "рефлюкс-эзофагит",
+          "method": "эндоскоп"
+        },
+        {
+          "finding": "эзофагит",
+          "method": "эндоскоп"
+        },
+        {
+          "finding": "рН-метр",
+          "method": "рН"
+        },
+        {
+          "finding": "импеданс",
+          "method": "импеданс"
+        }
+      ],
+      "severity": "warning",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "page": 3,
+        "paragraph": 9,
+        "section": "ГЭРБ — диагностические критерии"
+      }
+    },
+    {
+      "rule_id": "gerd_endoscopy_mention",
+      "rule_type": "keyword_presence",
+      "keyword": "эндоскоп",
+      "severity": "info",
+      "message_ru": "При подозрении на ГЭРБ в КЗ желательно отразить данные/план эндоскопического обследования (ЭГДС).",
+      "source": {
+        "protocol_id": "gastro_esophagus_stomach_adult_2025_185",
+        "section": "Диагностика ГЭРБ"
+      }
+    }
+  ]
+}

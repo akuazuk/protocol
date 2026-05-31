@@ -5471,7 +5471,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r12-consult-text-formats"
+BUILD_VERSION = "2026-05-31-r13-clinical-rules-mvp"
 
 
 def _app_version() -> str:
@@ -5515,7 +5515,7 @@ def api_version() -> dict:
                 structured += 1
     except Exception:
         pass
-    return {
+    payload = {
         "version": _app_version(),
         "rag_ready": _chunks_load_done.is_set(),
         "corpus_chunks": chunks_total,
@@ -5523,6 +5523,24 @@ def api_version() -> dict:
         "keep_struct": env_bool("RAG_KEEP_STRUCT", True),
         "consult_rich_context": env_bool("CONSULT_REVIEW_RICH_CONTEXT", True),
     }
+    try:
+        from clinical_knowledge import clinical_knowledge_status
+
+        payload["clinical_knowledge"] = clinical_knowledge_status()
+    except Exception:
+        payload["clinical_knowledge"] = {"enabled": False}
+    return payload
+
+
+@app.get("/api/clinical-knowledge/status")
+def api_clinical_knowledge_status() -> dict:
+    """Статус MVP базы правил (гастро) и реестра карточек протоколов."""
+    try:
+        from clinical_knowledge import clinical_knowledge_status
+
+        return {"ok": True, **clinical_knowledge_status()}
+    except Exception as e:
+        return {"ok": False, "enabled": False, "error": str(e)[:200]}
 
 
 @app.get("/api/specialties")
@@ -6297,6 +6315,47 @@ def _consult_cache_put(key: str, value: dict) -> None:
             _consult_review_cache.pop(old, None)
 
 
+def _consult_clinical_rules_pipeline(
+    full_text: str,
+    demographics_meta: dict,
+    merged_icd: list[str] | None,
+    category_slugs: list[str],
+) -> dict | None:
+    """MVP: извлечение фактов КЗ, подбор карточек протоколов, детерминированные правила."""
+    if not env_bool("CONSULT_RULE_CHECK", True):
+        return None
+    try:
+        from clinical_knowledge import (
+            extract_consult_facts_heuristic,
+            match_protocol_cards,
+            run_rule_checker,
+        )
+    except ImportError:
+        return None
+
+    facts = extract_consult_facts_heuristic(full_text, demographics_meta=demographics_meta)
+    cons = facts.setdefault("consultation", {})
+    icd_merged = [str(c).upper() for c in (merged_icd or []) if c]
+    cons["icd10"] = list(dict.fromkeys((cons.get("icd10") or []) + icd_merged))
+
+    specialty = (os.environ.get("CONSULT_RULE_CHECK_SPECIALTY") or "").strip() or None
+    if not specialty and category_slugs:
+        if "gastroenterologiya" in category_slugs:
+            specialty = "gastroenterologiya"
+    if not specialty and cons.get("conditions_hint"):
+        specialty = "gastroenterologiya"
+
+    matched = match_protocol_cards(facts, specialty_slug=specialty, limit=6)
+    rules = run_rule_checker(facts)
+
+    return {
+        "consult_facts": facts,
+        "matched_protocols": matched,
+        "rules_check": rules,
+        "specialty_scope": specialty,
+    }
+
+
 @app.post("/api/consult-review")
 def api_consult_review(
     files: Annotated[
@@ -6628,6 +6687,13 @@ def api_consult_review(
         extra_context=oncology_extra,
     )
 
+    clinical_rules = _consult_clinical_rules_pipeline(
+        full_text,
+        demographics_meta if isinstance(demographics_meta, dict) else {},
+        list(merged_icd or []),
+        user_slugs,
+    )
+
     result = {
         "ok": True,
         "server_version": _app_version(),
@@ -6654,6 +6720,8 @@ def api_consult_review(
         "icd": _icd_client_payload(icd_analysis),
         "demographics_meta": demographics_meta,
     }
+    if clinical_rules is not None:
+        result["clinical_rules"] = clinical_rules
     result["cached_result"] = False
     _consult_cache_put(cache_key, result)
     return result

@@ -258,6 +258,20 @@ def main() -> None:
         f"таблиц: {len(all_tables_flat)} → {OUTPUT_ROOT}"
     )
 
+    try:
+        from corpus_pipeline.protocol_cards import build_all_protocol_cards, write_protocol_cards_jsonl
+
+        cards = build_all_protocol_cards(ROOT)
+        cards_path = OUT_REGISTRY / "protocol_cards.jsonl"
+        write_protocol_cards_jsonl(cards, cards_path)
+        gastro = [c for c in cards if c.get("specialty_slug") == "gastroenterologiya"]
+        gastro_dir = ROOT / "data" / "gastro_mvp"
+        gastro_dir.mkdir(parents=True, exist_ok=True)
+        write_protocol_cards_jsonl(gastro, gastro_dir / "protocol_registry.jsonl")
+        print(f"Карточки протоколов: {len(cards)} → {cards_path} (гастро: {len(gastro)})")
+    except Exception as e:
+        print(f"WARN: protocol_cards не собраны: {e}")
+
 
 if __name__ == "__main__":
     main()
