@@ -478,9 +478,9 @@ def iter_consult_review_pipeline(
     if report_html:
         result["report_html"] = report_html
 
-    # Обезличенный архив для регрессий и улучшения системы.
+    # Опционально: тихо дописать снимок в manifest на диске (CONSULT_ARCHIVE_ANALYSES=1).
     try:
-        from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot_with_export
+        from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot
 
         src_name = ""
         if consult_docs_meta and isinstance(consult_docs_meta[0], dict):
@@ -494,9 +494,7 @@ def iter_consult_review_pipeline(
             retrieval_paths=paths_used,
             icd_codes=merged_icd,
         )
-        result["analysis_archive"] = save_snapshot_with_export(
-            snap, build_version=rs._app_version()
-        )
+        save_snapshot(snap)
     except Exception:
         pass
 

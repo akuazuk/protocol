@@ -5699,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r45-replay-script-venv-fixtures"
+BUILD_VERSION = "2026-05-31-r46-simplify-archive-git-workflow"
 
 
 def _app_version() -> str:
@@ -6306,58 +6306,6 @@ def api_protocol_pdf(path: str = Query(..., min_length=8, max_length=512)) -> Fi
         filename=full.name,
         headers={"Content-Disposition": f'inline; filename="{full.name}"'},
     )
-
-
-@app.get("/api/consult-archive/export/latest")
-def api_consult_archive_export_latest() -> FileResponse:
-    """Последний автоэкспорт обезличенных снимков (JSONL для Cursor/replay)."""
-    from clinical_knowledge.analysis_archive import export_latest_path
-
-    p = export_latest_path()
-    if not p.is_file():
-        raise HTTPException(
-            status_code=404,
-            detail="Автоэкспорт ещё не выполнен. Дождитесь N анализов (CONSULT_ARCHIVE_EXPORT_EVERY).",
-        )
-    return FileResponse(
-        p,
-        media_type="application/x-ndjson",
-        filename="consult_replay_latest.jsonl",
-    )
-
-
-@app.get("/api/consult-archive/export/readme")
-def api_consult_archive_export_readme() -> FileResponse:
-    from clinical_knowledge.analysis_archive import export_readme_path
-
-    p = export_readme_path()
-    if not p.is_file():
-        raise HTTPException(status_code=404, detail="README экспорта ещё не создан")
-    return FileResponse(p, media_type="text/plain; charset=utf-8", filename="CURSOR_README.txt")
-
-
-@app.get("/api/consult-archive/status")
-def api_consult_archive_status() -> dict:
-    from clinical_knowledge.analysis_archive import (
-        archive_enabled,
-        export_every_n,
-        get_last_export_meta,
-        manifest_count,
-    )
-
-    meta = get_last_export_meta()
-    total = manifest_count()
-    every = export_every_n()
-    next_at = ((total // every) + 1) * every if total else every
-    return {
-        "enabled": archive_enabled(),
-        "total_snapshots": total,
-        "export_every": every,
-        "next_export_at": next_at,
-        "analyses_until_export": max(0, next_at - total),
-        "last_export": meta or None,
-        "download_api": "/api/consult-archive/export/latest",
-    }
 
 
 @app.post("/api/kz-matrix")
