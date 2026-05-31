@@ -9,6 +9,7 @@ from typing import Any
 from .loader import (
     find_conditions_by_icd,
     find_conditions_by_text,
+    find_summary_for_condition,
     load_protocol_summaries,
     load_summary_by_protocol_id,
 )
@@ -39,17 +40,6 @@ def _title_sim(a: str, b: str) -> float:
     if not a or not b:
         return 0.0
     return SequenceMatcher(None, a[:120], b[:120]).ratio()
-
-
-def _summary_for_condition(
-    condition: ConditionSummary,
-    *,
-    usable_only: bool,
-) -> ProtocolSummary | None:
-    for summary in load_protocol_summaries(usable_only=usable_only):
-        if any(c.condition_id == condition.condition_id for c in summary.conditions):
-            return summary
-    return None
 
 
 def _add_summary(
@@ -128,6 +118,7 @@ def discover_protocol_summaries(
         for summary in load_protocol_summaries(usable_only=usable_only):
             if summary.protocol_id in found:
                 continue
+            # legacy match по path/sha/title/rubric
             reasons: list[str] = []
             score = 0.0
             if _path_match(summary.source.local_path, m_path):
@@ -161,7 +152,7 @@ def discover_protocol_summaries(
             continue
         for cond in find_conditions_by_icd(code):
             condition_ids.append(cond.condition_id)
-            summary = _usable(_summary_for_condition(cond, usable_only=usable_only))
+            summary = _usable(find_summary_for_condition(cond, usable_only=usable_only))
             if summary:
                 _add_summary(
                     found, diagnostics, summary,
@@ -177,7 +168,7 @@ def discover_protocol_summaries(
         q = re.sub(r"^[A-Z]\d{2}(?:\.\d+)?\s*", "", text, flags=re.I).strip() or text
         for cond in find_conditions_by_text(q, limit=8):
             condition_ids.append(cond.condition_id)
-            summary = _usable(_summary_for_condition(cond, usable_only=usable_only))
+            summary = _usable(find_summary_for_condition(cond, usable_only=usable_only))
             if summary:
                 _add_summary(
                     found, diagnostics, summary,

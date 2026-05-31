@@ -133,12 +133,57 @@ def env_bool(name: str, default: bool) -> bool:
 
 def _consult_rag_second_pass_enabled() -> bool:
     """Второй RAG-pass: по умолчанию выкл на Render (лимит прокси ~100 с), вкл локально."""
+    if _consult_review_fast_mode():
+        return False
     raw = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS")
     if raw is not None and str(raw).strip():
         return env_bool("CONSULT_REVIEW_RAG_SECOND_PASS", True)
     if env_bool("RENDER", False):
         return False
     return True
+
+
+def _consult_review_fast_mode() -> bool:
+    """Быстрый разбор КЗ: меньше вызовов Gemini, без embed-rerank, компактнее контекст."""
+    raw = os.environ.get("CONSULT_REVIEW_FAST")
+    if raw is not None and str(raw).strip():
+        return env_bool("CONSULT_REVIEW_FAST", False)
+    profile = (os.environ.get("CONSULT_REVIEW_PROFILE") or "").strip().lower()
+    if profile == "fast":
+        return True
+    if profile == "full":
+        return False
+    if env_bool("RENDER", False):
+        return True
+    return False
+
+
+def _consult_retrieve_embed_rerank() -> bool:
+    raw = os.environ.get("CONSULT_REVIEW_EMBED_RERANK")
+    if raw is not None and str(raw).strip():
+        return env_bool("CONSULT_REVIEW_EMBED_RERANK", True)
+    return not _consult_review_fast_mode()
+
+
+def _consult_heuristic_digest_first(min_focus: int, heuristic: str) -> bool:
+    """Пропустить Gemini-digest, если эвристика уже вытащила клиническое ядро из КЗ."""
+    if _consult_review_fast_mode():
+        return True
+    if not env_bool("CONSULT_REVIEW_HEURISTIC_DIGEST_FIRST", True):
+        return False
+    return len((heuristic or "").strip()) >= min_focus
+
+
+def _consult_env_int(name: str, default_full: int, *, default_fast: int | None = None) -> int:
+    raw = os.environ.get(name)
+    if raw is not None and str(raw).strip():
+        try:
+            return int(raw)
+        except ValueError:
+            return default_full
+    if _consult_review_fast_mode() and default_fast is not None:
+        return default_fast
+    return default_full
 
 
 def public_error_text(err: str | None) -> str | None:
@@ -2495,6 +2540,7 @@ def retrieve(
     icd_codes_for_lex: list[str] | None = None,
     path_boost: list[str] | None = None,
     path_allowlist: list[str] | None = None,
+    embed_rerank: bool | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
@@ -2677,10 +2723,11 @@ def retrieve(
 
     embed_meta: dict = {"used": False}
 
-    embed_on = os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
+    embed_on = (
+        embed_rerank
+        if embed_rerank is not None
+        else os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower()
+        in ("1", "true", "yes")
     )
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     pool_n = env_int("RAG_EMBED_POOL", 44)
@@ -3836,7 +3883,12 @@ def _build_consult_review_pipeline_query(model, full_text: str) -> tuple[str, di
     excerpt = full_text[: min(len(full_text), dig_in_lim)]
 
     heuristic = _consult_heuristic_focus_text(excerpt)
-    gemini_focus, gmeta = _consult_gemini_clinical_focus_text(model, excerpt)
+    gemini_focus = None
+    gmeta: dict = {"ok": False}
+    if not _consult_heuristic_digest_first(min_focus, heuristic):
+        gemini_focus, gmeta = _consult_gemini_clinical_focus_text(model, excerpt)
+    else:
+        gmeta["reason"] = "fast_mode" if _consult_review_fast_mode() else "heuristic_sufficient"
     meta["gemini_digest"] = gmeta
 
     focus_plain = ""
@@ -4208,7 +4260,11 @@ def _consult_review_synthesize(
     parsed = _try_parse_json(txt)
 
     # Если ответ обрезан по лимиту токенов или JSON не распарсился — повтор с большим лимитом.
-    if (parsed is None or _finish_hits_max(resp)) and env_bool("CONSULT_REVIEW_SYNTH_RETRY", True):
+    if (
+        (parsed is None or _finish_hits_max(resp))
+        and env_bool("CONSULT_REVIEW_SYNTH_RETRY", True)
+        and not _consult_review_fast_mode()
+    ):
         retry_tokens = min(32768, base_tokens * 2)
         try:
             resp2 = generate_gemini_consult_review_synthesize(
@@ -5756,7 +5812,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r54-summary-integration-fix"
+BUILD_VERSION = "2026-05-31-r56-consult-fast-path"
 
 
 def _app_version() -> str:
@@ -5786,6 +5842,16 @@ def health() -> dict:
             "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
         ),
         "consult_rag_second_pass": _consult_rag_second_pass_enabled(),
+        "consult_review_fast": _consult_review_fast_mode(),
+        "consult_review_profile": (
+            "fast"
+            if _consult_review_fast_mode()
+            else (os.environ.get("CONSULT_REVIEW_PROFILE") or "full").strip().lower() or "full"
+        ),
+        "consult_review_timeout_sec": max(
+            120,
+            int(os.environ.get("CONSULT_REVIEW_CLIENT_TIMEOUT_SEC", "600") or "600"),
+        ),
     }
 
 
@@ -5925,6 +5991,9 @@ def verify_key(request: "Request") -> dict:
 def _infer_icd_pipeline_from_full_query(
     full_query: str,
     model,
+    *,
+    skip_query_refine: bool = False,
+    skip_icd_gemini: bool = False,
 ) -> tuple[dict | None, str, str, dict | None, str | None]:
     """Та же цепочка МКБ, что в начале api_assist (до retrieve).
 
@@ -5942,10 +6011,13 @@ def _infer_icd_pipeline_from_full_query(
             "Пустой текст жалобы — заполните блок «Жалобы и вопрос»",
         )
     query_clinical_refinement: dict | None = None
-    if os.environ.get("RAG_GEMINI_QUERY_REFINE", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
+    if (
+        not skip_query_refine
+        and os.environ.get("RAG_GEMINI_QUERY_REFINE", "1").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        )
     ):
         q_rag_new, rmeta = refine_clinical_query_gemini(q_rag, q, model)
         if rmeta is not None:
@@ -5959,7 +6031,8 @@ def _infer_icd_pipeline_from_full_query(
         "yes",
     )
     if (
-        pre_icd_infer_on
+        not skip_icd_gemini
+        and pre_icd_infer_on
         and not icd_analysis.get("explicit_icd_in_query")
         and not (icd_analysis.get("detected") or [])
     ):

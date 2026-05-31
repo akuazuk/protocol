@@ -10788,13 +10788,24 @@
     });
   }
 
-  function fetchConsultReviewStream(base, fd, consultCtrl) {
+  function fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef) {
+    timeoutRef = timeoutRef || { ms: 600000 };
     return fetch(base + "/health")
       .then(function (h) {
         if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
         return h.json();
       })
       .then(function (health) {
+        var sec = Number(health.consult_review_timeout_sec);
+        if (!isNaN(sec) && sec >= 120) {
+          timeoutRef.ms = sec * 1000;
+        }
+        if (timeoutRef.abortTid) {
+          window.clearTimeout(timeoutRef.abortTid);
+        }
+        timeoutRef.abortTid = window.setTimeout(function () {
+          consultCtrl.abort();
+        }, timeoutRef.ms);
         if (!health.rag_ready) {
           throw new Error(
             "Индекс протоколов на сервере ещё загружается. Подождите 1–2 минуты и обновите страницу."
@@ -11191,15 +11202,12 @@
       }
       fd.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
 
-      var consultTimeoutMs = 300000;
+      var consultTimeoutRef = { ms: 600000, abortTid: null };
       var consultCtrl = new AbortController();
-      var consultAbortTid = window.setTimeout(function () {
-        consultCtrl.abort();
-      }, consultTimeoutMs);
 
-      fetchConsultReviewStream(base, fd, consultCtrl)
+      fetchConsultReviewStream(base, fd, consultCtrl, consultTimeoutRef)
         .then(function (r) {
-          window.clearTimeout(consultAbortTid);
+          if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           return r;
         })
         .then(function (data) {
@@ -11213,7 +11221,7 @@
           renderConsultReviewResult(data, res, st);
         })
         .catch(function (e) {
-          window.clearTimeout(consultAbortTid);
+          if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
@@ -11222,13 +11230,13 @@
           if (analyzeBan3) analyzeBan3.hidden = true;
           if (st) st.textContent = "";
           var msg = e && e.name === "AbortError"
-            ? "Превышено время ожидания разбора (" + Math.round(consultTimeoutMs / 1000) + " с). Попробуйте меньший PDF или повторите позже."
+            ? "Превышено время ожидания разбора (" + Math.round(consultTimeoutRef.ms / 1000) + " с). Попробуйте меньший PDF или повторите позже."
             : "Ошибка: " + (e.message || e);
           errEl.textContent = msg;
           errEl.hidden = false;
         })
         .finally(function () {
-          window.clearTimeout(consultAbortTid);
+          if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;

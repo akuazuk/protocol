@@ -242,70 +242,82 @@ def analyze_consultation_text(
         else:
             enabled = cfg.enabled
 
-        matched_pids = [
-            str(m.get("protocol_id") or m.get("card_id") or "")
-            for m in matches
-            if m.get("protocol_id") or m.get("card_id")
-        ]
+        summary_active = enabled or analysis_mode in ("summary", "hybrid")
+        if not summary_active:
+            summary_meta.update({
+                "analysis_mode": "legacy",
+                "protocol_summary_used": False,
+                "fallback_to_legacy": False,
+                "legacy_result_available": True,
+                "summary_result_available": False,
+                "summary_diagnostics": [],
+                "summary_protocol_ids": [],
+            })
+        else:
+            matched_pids = [
+                str(m.get("protocol_id") or m.get("card_id") or "")
+                for m in matches
+                if m.get("protocol_id") or m.get("card_id")
+            ]
 
-        discovered, diagnostics, summary_condition_ids = discover_protocol_summaries(
-            icd_codes=icd_codes,
-            diagnosis_texts=diagnosis_texts,
-            matched_protocols=matches,
-            specialty_slug=effective_slug,
-        )
+            discovered, diagnostics, summary_condition_ids = discover_protocol_summaries(
+                icd_codes=icd_codes,
+                diagnosis_texts=diagnosis_texts,
+                matched_protocols=matches,
+                specialty_slug=effective_slug,
+            )
 
-        plan = resolve_analysis_plan(
-            mode=analysis_mode,
-            matched_protocol_ids=matched_pids,
-            discovered_summaries=discovered,
-            summary_diagnostics=diagnostics,
-            enabled=enabled,
-        )
-        effective_mode = plan.mode
-        summaries = list(plan.usable_summaries)
+            plan = resolve_analysis_plan(
+                mode=analysis_mode,
+                matched_protocol_ids=matched_pids,
+                discovered_summaries=discovered,
+                summary_diagnostics=diagnostics,
+                enabled=enabled,
+            )
+            effective_mode = plan.mode
+            summaries = list(plan.usable_summaries)
 
-        summary_rules_dicts: list[dict[str, Any]] = []
-        if plan.use_summary and summaries:
-            for s in summaries:
-                for pr in summary_to_protocol_rules(s):
-                    summary_rules_dicts.append(protocol_rule_to_legacy_dict(pr))
-                    if pr.condition_id:
-                        summary_condition_ids.append(pr.condition_id)
-            summary_condition_ids = list(dict.fromkeys(summary_condition_ids))
+            summary_rules_dicts: list[dict[str, Any]] = []
+            if plan.use_summary and summaries:
+                for s in summaries:
+                    for pr in summary_to_protocol_rules(s):
+                        summary_rules_dicts.append(protocol_rule_to_legacy_dict(pr))
+                        if pr.condition_id:
+                            summary_condition_ids.append(pr.condition_id)
+                summary_condition_ids = list(dict.fromkeys(summary_condition_ids))
 
-        legacy_catalog = collect_catalog_rules(
-            facts,
-            matched_protocols=matches,
-            condition_ids=summary_condition_ids or None,
-        )
+            legacy_catalog = collect_catalog_rules(
+                facts,
+                matched_protocols=matches,
+                condition_ids=summary_condition_ids or None,
+            )
 
-        merged_rules, merge_meta = merge_rules_for_plan(
-            plan, legacy_catalog, summary_rules_dicts,
-        )
+            merged_rules, merge_meta = merge_rules_for_plan(
+                plan, legacy_catalog, summary_rules_dicts,
+            )
 
-        summary_meta = {
-            "analysis_mode": plan.mode,
-            "protocol_summary_used": bool(plan.use_summary and summary_rules_dicts),
-            "protocol_summary_status": summaries[0].review_status if summaries else None,
-            "fallback_to_legacy": (
-                (plan.primary_source == "legacy" and plan.mode != "legacy")
-                or (plan.use_summary and not summary_rules_dicts and plan.fallback_to_legacy)
-            ),
-            "legacy_result_available": plan.use_legacy or plan.mode == "legacy",
-            "summary_result_available": bool(summary_rules_dicts),
-            "summary_diagnostics": diagnostics,
-            "summary_protocol_ids": [s.protocol_id for s in summaries],
-            "rules_count_by_source": merge_meta.get("rules_count_by_source"),
-            "rule_conflicts": merge_meta.get("rule_conflicts"),
-        }
-        if plan.notes:
-            summary_meta["limitations"] = plan.notes
-        if not summary_rules_dicts and plan.mode in ("summary", "hybrid"):
-            summary_meta["limitations"] = list(dict.fromkeys(
-                list(summary_meta.get("limitations") or [])
-                + [n for n in plan.notes if "not found" in n or "fallback" in n or "legacy only" in n]
-            ))
+            summary_meta = {
+                "analysis_mode": plan.mode,
+                "protocol_summary_used": bool(plan.use_summary and summary_rules_dicts),
+                "protocol_summary_status": summaries[0].review_status if summaries else None,
+                "fallback_to_legacy": (
+                    (plan.primary_source == "legacy" and plan.mode != "legacy")
+                    or (plan.use_summary and not summary_rules_dicts and plan.fallback_to_legacy)
+                ),
+                "legacy_result_available": plan.use_legacy or plan.mode == "legacy",
+                "summary_result_available": bool(summary_rules_dicts),
+                "summary_diagnostics": diagnostics,
+                "summary_protocol_ids": [s.protocol_id for s in summaries],
+                "rules_count_by_source": merge_meta.get("rules_count_by_source"),
+                "rule_conflicts": merge_meta.get("rule_conflicts"),
+            }
+            if plan.notes:
+                summary_meta["limitations"] = plan.notes
+            if not summary_rules_dicts and plan.mode in ("summary", "hybrid"):
+                summary_meta["limitations"] = list(dict.fromkeys(
+                    list(summary_meta.get("limitations") or [])
+                    + [n for n in plan.notes if "not found" in n or "fallback" in n or "legacy only" in n]
+                ))
     except Exception as exc:
         merged_rules = []
         summary_meta["summary_resolution_error"] = str(exc)[:200]

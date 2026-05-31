@@ -52,22 +52,35 @@ def iter_consult_review_pipeline(
     model = rs.get_gemini()
     synthetic, retrieval_focus_meta = rs._build_consult_review_pipeline_query(model, full_text)
 
+    fast = rs._consult_review_fast_mode()
+    icd_from_kz = bool(rs.extract_icd_codes_diagnosis_focused(full_text))
+
     yield emit("icd", 28, "Подбор кодов МКБ-10 и клинического контекста…")
-    icd_analysis, q, q_rag, _, icd_err = rs._infer_icd_pipeline_from_full_query(synthetic, model)
+    icd_analysis, q, q_rag, _, icd_err = rs._infer_icd_pipeline_from_full_query(
+        synthetic,
+        model,
+        skip_query_refine=fast,
+        skip_icd_gemini=fast or icd_from_kz,
+    )
     q_slice_fb = int(__import__("os").environ.get("CONSULT_REVIEW_RAG_QUERY_CHARS", "9000"))
     fallback_synthetic_legacy = (
         "=== Жалобы и вопрос ===\n\n" + full_text[: min(len(full_text), q_slice_fb)]
     )
     if icd_err or not (q_rag or "").strip():
-        icd_analysis_fb, q_fb, q_rag_fb, _, icd_err_fb = rs._infer_icd_pipeline_from_full_query(
-            fallback_synthetic_legacy, model
-        )
-        if not icd_err_fb and (q_rag_fb or "").strip():
-            icd_analysis, q, q_rag = icd_analysis_fb, q_fb, q_rag_fb
-        else:
+        if fast:
             q = synthetic.strip()
             q_rag = rs.clinical_query_for_rag(synthetic) or full_text[:7000]
             icd_analysis = rs.analyze_query_for_icd(q, q_rag)
+        else:
+            icd_analysis_fb, q_fb, q_rag_fb, _, icd_err_fb = rs._infer_icd_pipeline_from_full_query(
+                fallback_synthetic_legacy, model
+            )
+            if not icd_err_fb and (q_rag_fb or "").strip():
+                icd_analysis, q, q_rag = icd_analysis_fb, q_fb, q_rag_fb
+            else:
+                q = synthetic.strip()
+                q_rag = rs.clinical_query_for_rag(synthetic) or full_text[:7000]
+                icd_analysis = rs.analyze_query_for_icd(q, q_rag)
 
     merged_icd, icd_merge_meta = rs._merge_icd_codes_for_consult_retrieval(icd_analysis, full_text)
     diag_codes_list = (
@@ -196,8 +209,9 @@ def iter_consult_review_pipeline(
             rules_partial["rules_compliance_pct"] = rc.get("rules_compliance_pct")
     yield emit("rules_done", 52, "Правила и протоколы определены", rules_partial)
 
-    max_chunks_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_CHUNKS", "12"))
-    max_per_path_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
+    max_chunks_r = rs._consult_env_int("CONSULT_REVIEW_MAX_CHUNKS", 12, default_fast=8)
+    max_per_path_r = rs._consult_env_int("CONSULT_REVIEW_MAX_PER_PATH", 3, default_fast=2)
+    embed_rerank = rs._consult_retrieve_embed_rerank()
     path_allow = matched_path_boost if strict_proto and matched_path_boost else None
     icd_for_retrieval = list(diag_codes_list or merged_icd or [])
 
@@ -217,6 +231,7 @@ def iter_consult_review_pipeline(
         path_allowlist=path_allow,
         max_chunks=max_chunks_r,
         max_per_path=max_per_path_r,
+        embed_rerank=embed_rerank,
     )
     if not retrieved and path_allow:
         retrieved = rs.retrieve(
@@ -229,6 +244,7 @@ def iter_consult_review_pipeline(
             path_allowlist=None,
             max_chunks=max_chunks_r,
             max_per_path=max_per_path_r,
+            embed_rerank=embed_rerank,
         )
     if not retrieved and icd_for_retrieval:
         retrieved = rs.retrieve(
@@ -241,6 +257,7 @@ def iter_consult_review_pipeline(
             path_allowlist=path_allow,
             max_chunks=max_chunks_r,
             max_per_path=max_per_path_r,
+            embed_rerank=embed_rerank,
         )
     if not retrieved:
         from fastapi import HTTPException
@@ -306,6 +323,7 @@ def iter_consult_review_pipeline(
                     path_allowlist=path_allow,
                     max_chunks=max_chunks_r + bump,
                     max_per_path=max_per_path_r,
+                    embed_rerank=embed_rerank,
                 )
                 if r2:
                     merge_max = max_chunks_r + bump
@@ -340,7 +358,7 @@ def iter_consult_review_pipeline(
         merged_icd=merged_icd,
     )
 
-    proto_max = int(__import__("os").environ.get("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", "16500"))
+    proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=11000)
     protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
     paths_hint_for_llm = rs._consult_review_paths_hint(
         paths_used,
@@ -361,7 +379,7 @@ def iter_consult_review_pipeline(
         },
     )
 
-    consult_max = int(__import__("os").environ.get("CONSULT_REVIEW_CONSULT_CHARS", "20000"))
+    consult_max = rs._consult_env_int("CONSULT_REVIEW_CONSULT_CHARS", 20000, default_fast=14000)
     multi_intro = (
         ""
         if n_files <= 1
@@ -486,6 +504,11 @@ def iter_consult_review_pipeline(
         },
         "icd": rs._icd_client_payload(icd_analysis),
         "demographics_meta": demographics_meta,
+        "consult_performance": {
+            "fast_mode": fast,
+            "embed_rerank": embed_rerank,
+            "icd_from_kz_text": icd_from_kz,
+        },
     }
     if clinical_rules is not None:
         result["clinical_rules"] = clinical_rules
