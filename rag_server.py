@@ -2991,20 +2991,29 @@ def generate_gemini_consult_rag_second_pass(model, full_prompt: str):
             return None
 
 
-def _generate_blocking_consult_review_synth(model, full_prompt: str):
-    import google.generativeai as genai
-
-    max_out = int(os.environ.get("GEMINI_CONSULT_REVIEW_MAX_TOKENS", "8192"))
-    return model.generate_content(
-        full_prompt,
-        generation_config=_make_generation_config(genai, max_output_tokens=max_out, json_mode=True),
-    )
+def _consult_review_synth_max_tokens() -> int:
+    return int(os.environ.get("GEMINI_CONSULT_REVIEW_MAX_TOKENS", "16384"))
 
 
-def generate_gemini_consult_review_synthesize(model, full_prompt: str):
+def _make_blocking_consult_review_synth(max_out: int):
+    def _fn(model, full_prompt: str):
+        import google.generativeai as genai
+
+        return model.generate_content(
+            full_prompt,
+            generation_config=_make_generation_config(
+                genai, max_output_tokens=max_out, json_mode=True
+            ),
+        )
+
+    return _fn
+
+
+def generate_gemini_consult_review_synthesize(model, full_prompt: str, *, max_out: int | None = None):
     """Финальная оценка КЗ — отдельный таймаут для надёжности SSE."""
+    mo = max_out or _consult_review_synth_max_tokens()
     return _run_model_with_retry(
-        _generate_blocking_consult_review_synth,
+        _make_blocking_consult_review_synth(mo),
         model,
         full_prompt,
         GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT,
@@ -3096,6 +3105,53 @@ def fix_query_spelling_medical(short_query: str, model) -> tuple[str, bool]:
         return short_query, False
 
 
+def _repair_truncated_json(s: str) -> dict | None:
+    """Попытка восстановить усечённый JSON-объект (обрыв по лимиту токенов).
+
+    Закрывает незавершённую строку, убирает «висящую» запятую/двоеточие и достраивает
+    недостающие закрывающие скобки. Возвращает dict или None.
+    """
+    if not s:
+        return None
+    start = s.find("{")
+    if start < 0:
+        return None
+    s = s[start:]
+    stack: list[str] = []
+    in_str = False
+    esc = False
+    for ch in s:
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+        elif ch == "{":
+            stack.append("}")
+        elif ch == "[":
+            stack.append("]")
+        elif ch in "}]":
+            if stack:
+                stack.pop()
+    repaired = s
+    if in_str:
+        repaired += '"'
+    repaired = repaired.rstrip()
+    # убрать висящие разделители в конце усечённого фрагмента
+    repaired = re.sub(r"[:,]\s*$", "", repaired)
+    repaired += "".join(reversed(stack))
+    try:
+        out = json.loads(repaired)
+        return out if isinstance(out, dict) else None
+    except json.JSONDecodeError:
+        return None
+
+
 def _try_parse_json(t: str) -> dict | None:
     if not t:
         return None
@@ -3107,7 +3163,7 @@ def _try_parse_json(t: str) -> dict | None:
         out = json.loads(s)
         return out if isinstance(out, dict) else None
     except json.JSONDecodeError:
-        return None
+        return _repair_truncated_json(s)
 
 
 _DIAG_LINE_HINTS_RU: tuple[str, ...] = (
@@ -4089,13 +4145,33 @@ def _consult_review_synthesize(
         + protocol_excerpt
         + (extra_context.strip() + "\n" if extra_context and extra_context.strip() else "")
     )
-    resp = generate_gemini_consult_review_synthesize(model, full_prompt)
+    base_tokens = _consult_review_synth_max_tokens()
+    resp = generate_gemini_consult_review_synthesize(model, full_prompt, max_out=base_tokens)
     txt = _extract_gemini_text(resp)
     parsed = _try_parse_json(txt)
+
+    # Если ответ обрезан по лимиту токенов или JSON не распарсился — повтор с большим лимитом.
+    if (parsed is None or _finish_hits_max(resp)) and env_bool("CONSULT_REVIEW_SYNTH_RETRY", True):
+        retry_tokens = min(32768, base_tokens * 2)
+        try:
+            resp2 = generate_gemini_consult_review_synthesize(
+                model, full_prompt, max_out=retry_tokens
+            )
+            txt2 = _extract_gemini_text(resp2)
+            parsed2 = _try_parse_json(txt2)
+            if parsed2 is not None:
+                parsed = parsed2
+        except HTTPException:
+            if parsed is None:
+                raise
+
     if not parsed:
         raise HTTPException(
             status_code=502,
-            detail="Модель вернула ответ без корректного JSON. Повторите попытку или сократите объём PDF.",
+            detail=(
+                "Модель не вернула корректный JSON (возможно, объём заключения слишком большой). "
+                "Повторите попытку или сократите PDF."
+            ),
         )
     _stabilize_overall_compliance(parsed)
     return parsed
@@ -5623,7 +5699,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r27-consult-strict-reliable"
+BUILD_VERSION = "2026-05-31-r28-consult-json-truncation-fix"
 
 
 def _app_version() -> str:
