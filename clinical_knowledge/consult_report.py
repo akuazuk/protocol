@@ -9,7 +9,7 @@ from typing import Any
 
 from .consult_schema import ComplianceReport, ConsultationDocument, SourceRef
 from .privacy import name_to_initials
-from .protocol_links import protocol_display_name, protocol_pdf_api_path
+from .protocol_links import protocol_display_name, protocol_pdf_api_path, protocol_rubric_label
 
 # Русские подписи статусов/значений для человекочитаемого отчёта.
 _OVERALL_RU = {
@@ -147,6 +147,7 @@ def report_to_json(
         "doctor_specialty": doctor_specialty,
         "consultation_date": consultation_date,
         "matched_protocols": [m.model_dump(mode="json") for m in report.protocol_matches],
+        "overall_score": report.overall_score,
         "score_breakdown": report.score_breakdown.model_dump(mode="json"),
         "overall_status": report.overall_status,
         "critical_issues": [i.model_dump(mode="json") for i in report.critical_issues],
@@ -242,14 +243,25 @@ def report_to_html(
         ) or "—"
         parts.append(f"<li><strong>Диагнозы:</strong> {diags}</li>")
     protos_html: list[str] = []
+    seen_proto: set[str] = set()
     for m in report.protocol_matches[:8]:
-        title = _e(m.document_title or m.protocol_id or "протокол")
-        url = protocol_pdf_api_path(m.source_path)
+        sp = m.source_path or ""
+        if sp in seen_proto:
+            continue
+        seen_proto.add(sp)
+        title = _e(
+            protocol_display_name(sp, m.protocol_id or "", registry_title=m.document_title)
+        )
+        url = protocol_pdf_api_path(sp)
+        rub = protocol_rubric_label(sp)
         if url:
-            protos_html.append(
+            inner = (
                 f'<a class="cr-src-link" href="{url}" target="_blank" '
                 f'rel="noopener noreferrer">{title}</a>'
             )
+            if rub:
+                inner += f' <span class="cr-proto-rubric">{_e(rub)}</span>'
+            protos_html.append(inner)
         else:
             protos_html.append(title)
     parts.append(
@@ -260,21 +272,31 @@ def report_to_html(
     if report.protocol_matches:
         parts.append(
             '<section class="cr-section cr-section--protocols">'
-            '<h3 class="cr-section-title">Подобранные протоколы (PDF)</h3><ul class="cr-list cr-list--sources">'
+            '<h3 class="cr-section-title">Подобранные протоколы</h3>'
+            '<ul class="cr-list cr-list--sources cr-proto-cards">'
         )
+        seen_proto = set()
         for m in report.protocol_matches[:8]:
-            title = _e(m.document_title or m.protocol_id or "протокол")
-            url = protocol_pdf_api_path(m.source_path)
+            sp = m.source_path or ""
+            if not sp or sp in seen_proto:
+                continue
+            seen_proto.add(sp)
+            title = _e(
+                protocol_display_name(sp, m.protocol_id or "", registry_title=m.document_title)
+            )
+            url = protocol_pdf_api_path(sp)
+            rub = protocol_rubric_label(sp)
+            parts.append('<li class="cr-proto-card">')
             if url:
                 parts.append(
-                    f'<li><a class="cr-src-link" href="{url}" target="_blank" '
+                    f'<a class="cr-src-link cr-proto-card__link" href="{url}" target="_blank" '
                     f'rel="noopener noreferrer">{title}</a>'
                 )
             else:
-                parts.append(f"<li>{title}</li>")
-            if m.match_reasons:
-                for r in m.match_reasons[:2]:
-                    parts.append(f"<li class='cr-muted-li'>+ {_e(r)}</li>")
+                parts.append(f'<span class="cr-proto-card__link">{title}</span>')
+            if rub:
+                parts.append(f'<span class="cr-proto-rubric">{_e(rub)}</span>')
+            parts.append("</li>")
         parts.append("</ul></section>")
 
     # Баллы

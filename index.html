@@ -918,6 +918,122 @@
       color: var(--green-950);
     }
 
+    .consult-proto-chips {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .consult-proto-chip {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.62rem 0.78rem;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      border-radius: 11px;
+      background: linear-gradient(135deg, rgba(248, 252, 251, 0.98), rgba(241, 249, 246, 0.96));
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+    }
+
+    .consult-proto-chip--onco {
+      border-color: rgba(196, 30, 58, 0.28);
+      background: linear-gradient(135deg, rgba(255, 251, 251, 0.98), rgba(255, 246, 248, 0.96));
+    }
+
+    .consult-proto-chip__icon {
+      flex: 0 0 auto;
+      width: 1.65rem;
+      height: 1.65rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--green-800);
+      background: rgba(26, 138, 114, 0.12);
+    }
+
+    .consult-proto-chip__body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .consult-proto-chip__link {
+      display: inline;
+      font-size: 0.9rem;
+      font-weight: 650;
+      color: var(--green-900, #0a5544);
+      text-decoration: none;
+      line-height: 1.38;
+      word-break: break-word;
+    }
+
+    .consult-proto-chip__link:hover {
+      color: var(--green-950);
+      text-decoration: underline;
+      text-underline-offset: 0.14em;
+    }
+
+    .consult-proto-chip__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.55rem;
+      margin-top: 0.28rem;
+      font-size: 0.76rem;
+      color: rgba(15, 61, 54, 0.78);
+    }
+
+    .consult-proto-chip__badge {
+      display: inline-block;
+      padding: 0.08rem 0.42rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      background: rgba(26, 138, 114, 0.14);
+      color: var(--green-800);
+    }
+
+    .consult-proto-chip__badge--icd {
+      background: rgba(13, 110, 88, 0.16);
+      color: #0d6e58;
+    }
+
+    .consult-report-html .cr-proto-rubric {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.06rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 650;
+      color: #475569;
+      background: rgba(148, 163, 184, 0.16);
+    }
+
+    .consult-report-html .cr-proto-cards {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .consult-report-html .cr-proto-card {
+      padding: 0.55rem 0.65rem;
+      border: 1px solid rgba(207, 224, 219, 0.9);
+      border-radius: 10px;
+      background: #f8fcfb;
+    }
+
+    .consult-report-html .cr-proto-card__link {
+      font-weight: 650;
+    }
+
     #consult-oncology-banner.consult-onco-alert {
       margin-bottom: 1rem;
       padding: 1rem 1.05rem 1.08rem;
@@ -5634,6 +5750,7 @@
               Ориентировочное соответствие
             </p>
             <p class="consult-pct" id="consult-out-pct">—</p>
+            <p class="consult-hint-small" style="margin: 0.3rem 0 0; opacity: 0.88" id="consult-out-pct-method" hidden></p>
           </div>
           <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-out-summary"></p>
           <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
@@ -9059,23 +9176,82 @@
     return body || "HTTP " + status;
   }
 
+  /** Нормализация пути PDF протокола для ссылки API. */
+  function normalizeProtocolPathForLink(raw) {
+    var s = String(raw || "").trim();
+    if (!s) return "";
+    try {
+      if (/%[0-9A-Fa-f]{2}/.test(s)) s = decodeURIComponent(s);
+    } catch (e) {}
+    s = s.replace(/\\/g, "/").replace(/\/{2,}/g, "/").replace(/^\/+/, "");
+    if (s.indexOf("..") >= 0) return "";
+    if (!/^minzdrav_protocols\//i.test(s) && /\.pdf$/i.test(s) && s.indexOf("/") >= 0) {
+      s = "minzdrav_protocols/" + s.replace(/^\/+/, "");
+    }
+    return s;
+  }
+
+  function formatProtocolDisplayTitle(path, registryTitle) {
+    if (registryTitle && String(registryTitle).trim().length >= 8) {
+      return formatDisplayTitle(registryTitle);
+    }
+    var base = String(path || "").split("/").pop() || "";
+    if (/\.pdf$/i.test(base)) base = base.slice(0, -4);
+    base = formatDisplayTitle(base);
+    base = base
+      .replace(/^(?:КП[\s_]*\d*[._\s-]*|кп[\s_]*\d*[._\s-]*)/i, "")
+      .replace(/(?:_оф\.?\s*опубл\.?|_офиц\.?|оф\.?\s*опубл\.?).*$/i, "")
+      .trim();
+    return base || formatDisplayTitle(path.split("/").pop() || "Протокол");
+  }
+
+  function protocolRubricLabelFromPath(path) {
+    var norm = normalizeProtocolPathForLink(path);
+    if (!norm) return "";
+    var parts = norm.split("/");
+    if (parts.length < 3) return "";
+    var slug = parts[1];
+    var i;
+    for (i = 0; i < FALLBACK_SPECIALTIES.length; i++) {
+      if (FALLBACK_SPECIALTIES[i].slug === slug) return FALLBACK_SPECIALTIES[i].label;
+    }
+    return formatDisplayTitle(slug.replace(/-/g, " "));
+  }
+
   /** Безопасный href для PDF/файлов протоколов (блок javascript:/data:). */
   function safeResourceHref(raw) {
     var p = String(raw || "").trim();
     if (!p || p === "#") return "#";
     if (/^(javascript|data|vbscript):/i.test(p)) return "#";
     if (/^https?:\/\//i.test(p)) return encodeURI(p);
+    if (/^\/api\/protocol-pdf/i.test(p)) {
+      var base = apiBaseUrl();
+      return p.indexOf("http") === 0 ? p : base + p;
+    }
     if (/^[a-z][a-z0-9+.-]*:/i.test(p)) return "#";
     if (p.indexOf("..") >= 0) return "#";
-    var norm = p.replace(/\\/g, "/").replace(/^\/+/, "");
+    var norm = normalizeProtocolPathForLink(p);
     if (/^minzdrav_protocols\/.+\.pdf$/i.test(norm)) {
-      var baseEl = document.getElementById("rag-base");
-      var base = normalizeRagBaseForRequest(
-        baseEl && baseEl.value ? baseEl.value : ""
-      );
-      return base + "/api/protocol-pdf?path=" + encodeURIComponent(norm);
+      return apiBaseUrl() + "/api/protocol-pdf?path=" + encodeURIComponent(norm);
     }
     return encodeURI(p);
+  }
+
+  /** Починить ссылки на PDF внутри вставленного HTML-отчёта. */
+  function fixProtocolLinksInContainer(container) {
+    if (!container) return;
+    var links = container.querySelectorAll("a[href]");
+    links.forEach(function (a) {
+      var href = a.getAttribute("href") || "";
+      if (/^\/api\/protocol-pdf/i.test(href) || /minzdrav_protocols\/.+\.pdf/i.test(href)) {
+        var fixed = safeResourceHref(href.indexOf("path=") >= 0 ? href : href);
+        if (fixed && fixed !== "#") a.setAttribute("href", fixed);
+        if (!a.getAttribute("target")) {
+          a.setAttribute("target", "_blank");
+          a.setAttribute("rel", "noopener noreferrer");
+        }
+      }
+    });
   }
 
   /** Focus-trap и Esc для модальных оверлеев (a11y). */
@@ -10060,6 +10236,7 @@
     var pw = document.getElementById("consult-out-paths");
     if (!pw) return;
     pw.innerHTML = "";
+
     var oncByPath = {};
     var oflags = data && data.consult_oncology_flags;
     if (oflags && oflags.protocol_items) {
@@ -10068,121 +10245,174 @@
       });
     }
 
-    function buildProtoLinkList(pathsRows, oncMap) {
+    function mergeProtocolRow(byPath, row, opts) {
+      opts = opts || {};
+      var key = normalizeProtocolPathForLink(row.path || "");
+      if (!key) return;
+      var prev = byPath[key];
+      var title =
+        row.title ||
+        (prev && prev.title) ||
+        formatProtocolDisplayTitle(key, row.registry_title || "");
+      var merged = {
+        path: key,
+        title: title,
+        section: row.section || (prev && prev.section) || "",
+        pages: row.pages || (prev && prev.pages) || "",
+        matched_icd_codes:
+          row.matched_icd_codes ||
+          (prev && prev.matched_icd_codes) ||
+          [],
+        icd_verified: !!(opts.icd_verified || (prev && prev.icd_verified)),
+        pdf_url: row.pdf_url || safeResourceHref(key),
+      };
+      if (row.matched_icd_codes && row.matched_icd_codes.length) {
+        merged.icd_verified = true;
+        merged.matched_icd_codes = row.matched_icd_codes;
+      }
+      byPath[key] = merged;
+    }
+
+    function collectLocFromFrags(fragsListByPath) {
+      var locByPath = {};
+      (fragsListByPath || []).forEach(function (row) {
+        if (!row || !row.path) return;
+        if (locByPath[row.path]) return;
+        var frags = row.fragments || [];
+        for (var i = 0; i < frags.length; i++) {
+          if (frags[i] && (frags[i].section || frags[i].pages)) {
+            locByPath[row.path] = {
+              section: frags[i].section || "",
+              pages: frags[i].pages || "",
+              title: row.title || "",
+            };
+            break;
+          }
+        }
+        if (!locByPath[row.path] && row.title) {
+          locByPath[row.path] = { section: "", pages: "", title: row.title };
+        }
+      });
+      return locByPath;
+    }
+
+    function buildUnifiedProtocolMap(data, rev) {
+      var byPath = {};
+      var fragsListAll = (data && data.consult_protocol_fragments) || [];
+      var locByPath = collectLocFromFrags(fragsListAll);
+      var preciseLinks = (data && data.consult_icd_precise_links) || [];
+      var allPaths =
+        (data && data.retrieval_paths) || (rev && rev.protocol_paths_used) || [];
+
+      preciseLinks.forEach(function (row) {
+        mergeProtocolRow(byPath, row, { icd_verified: true });
+      });
+      allPaths.forEach(function (pth) {
+        var key = normalizeProtocolPathForLink(pth);
+        if (!key) return;
+        var loc = locByPath[key] || locByPath[pth] || {};
+        mergeProtocolRow(byPath, {
+          path: key,
+          title: loc.title || "",
+          section: loc.section || "",
+          pages: loc.pages || "",
+        });
+      });
+      return byPath;
+    }
+
+    function renderProtocolChipList(rows, oncMap) {
       var ulEl = document.createElement("ul");
-      ulEl.className = "consult-proto-links";
-      if (!pathsRows || !pathsRows.length) {
+      ulEl.className = "consult-proto-chips";
+      if (!rows || !rows.length) {
         var emp = document.createElement("li");
         emp.className = "consult-hint-small";
-        emp.textContent = "Список пуст.";
+        emp.textContent = "Протоколы не подобраны.";
         ulEl.appendChild(emp);
         return ulEl;
       }
-      pathsRows.forEach(function (row) {
+      rows.forEach(function (row) {
         var pth = row.path;
-        var ttl = row.title || formatDisplayTitle((pth || "").split("/").pop() || pth || "");
         var li = document.createElement("li");
-        li.className = "consult-proto-li";
-        if (oncMap && oncMap[pth]) li.classList.add("consult-proto-li--onco");
+        li.className = "consult-proto-chip";
+        if (oncMap && oncMap[pth]) li.classList.add("consult-proto-chip--onco");
+
+        var icon = document.createElement("span");
+        icon.className = "consult-proto-chip__icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = "PDF";
+
+        var body = document.createElement("div");
+        body.className = "consult-proto-chip__body";
 
         var a = document.createElement("a");
-        a.href = safeResourceHref(pth || "#");
+        a.href = row.pdf_url || safeResourceHref(pth || "#");
         a.target = "_blank";
         a.rel = "noopener noreferrer";
-        a.className = "consult-proto-footer__link";
-        a.textContent = ttl;
+        a.className = "consult-proto-chip__link";
+        a.textContent = row.title || formatProtocolDisplayTitle(pth);
 
-        li.appendChild(a);
-        try {
-          var locParts = [];
-          if (row.section) locParts.push(row.section);
-          if (row.pages) locParts.push("стр. " + row.pages);
-          if (locParts.length) {
-            var loc = document.createElement("small");
-            loc.className = "consult-proto-li__loc";
-            loc.style.display = "block";
-            loc.style.marginTop = "0.2rem";
-            loc.style.opacity = "0.82";
-            loc.textContent = "Раздел: " + locParts.join(", ");
-            li.appendChild(loc);
-          }
-        } catch (_eLoc) {}
-        var codesLine = "";
-        try {
-          if (Array.isArray(row.matched_icd_codes) && row.matched_icd_codes.length) {
-            codesLine =
-              "\nПодтверждение выдержкой: упомянутые в фрагменте коды МКБ — " +
-              row.matched_icd_codes.join(", ") +
-              ".";
-          }
-        } catch (_e2) {}
-        if (codesLine) {
-          var sm = document.createElement("small");
-          sm.className = "consult-proto-li__codes";
-          sm.style.display = "block";
-          sm.style.marginTop = "0.28rem";
-          sm.style.opacity = "0.88";
-          sm.textContent = codesLine.trim();
-          li.appendChild(sm);
+        var meta = document.createElement("div");
+        meta.className = "consult-proto-chip__meta";
+
+        var rubric = protocolRubricLabelFromPath(pth);
+        if (rubric) {
+          var rub = document.createElement("span");
+          rub.textContent = rubric;
+          meta.appendChild(rub);
         }
+        if (row.section || row.pages) {
+          var loc = document.createElement("span");
+          loc.textContent =
+            (row.section ? "Раздел: " + row.section : "") +
+            (row.pages ? (row.section ? ", " : "") + "стр. " + row.pages : "");
+          meta.appendChild(loc);
+        }
+        if (row.icd_verified) {
+          var icdBadge = document.createElement("span");
+          icdBadge.className = "consult-proto-chip__badge consult-proto-chip__badge--icd";
+          icdBadge.textContent = "МКБ в выдержке";
+          meta.appendChild(icdBadge);
+        }
+        if (row.matched_icd_codes && row.matched_icd_codes.length) {
+          var codes = document.createElement("span");
+          codes.textContent = "Коды: " + row.matched_icd_codes.join(", ");
+          meta.appendChild(codes);
+        }
+
+        body.appendChild(a);
+        if (meta.childNodes.length) body.appendChild(meta);
+        li.appendChild(icon);
+        li.appendChild(body);
         ulEl.appendChild(li);
       });
       return ulEl;
     }
 
-    function assembleRowsFromPaths(pathsArr, fragsListByPath) {
-      var titlesByPath = {};
-      var locByPath = {};
-      if (fragsListByPath && fragsListByPath.length) {
-        fragsListByPath.forEach(function (row) {
-          if (!row || !row.path) return;
-          if (!(row.path in titlesByPath))
-            titlesByPath[row.path] = row.title || titlesByPath[row.path];
-          if (!(row.path in locByPath) && Array.isArray(row.fragments)) {
-            var fr = null;
-            for (var i = 0; i < row.fragments.length; i++) {
-              if (row.fragments[i] && (row.fragments[i].section || row.fragments[i].pages)) {
-                fr = row.fragments[i];
-                break;
-              }
-            }
-            if (fr) locByPath[row.path] = { section: fr.section || "", pages: fr.pages || "" };
-          }
-        });
-      }
-      var seen = {};
-      var out = [];
-      (pathsArr || []).forEach(function (pth) {
-        var key = String(pth || "");
-        if (!key || seen[key]) return;
-        seen[key] = 1;
-        var loc = locByPath[key] || {};
-        out.push({
-          path: key,
-          title:
-            titlesByPath[key] || formatDisplayTitle(key.split("/").pop() || key),
-          section: loc.section || "",
-          pages: loc.pages || "",
-        });
-      });
-      return out;
-    }
+    var unified = buildUnifiedProtocolMap(data, rev);
+    var rows = Object.keys(unified).map(function (k) {
+      return unified[k];
+    });
+    rows.sort(function (a, b) {
+      var av = a.icd_verified ? 1 : 0;
+      var bv = b.icd_verified ? 1 : 0;
+      if (av !== bv) return bv - av;
+      return String(a.title || "").localeCompare(String(b.title || ""), "ru");
+    });
 
-    var preciseLinks = (data && data.consult_icd_precise_links) || [];
+    var hh = document.createElement("div");
+    hh.className = "consult-protocols-heading";
+    hh.textContent = "Протоколы по тексту заключения";
+    pw.appendChild(hh);
+
+    var ht = document.createElement("p");
+    ht.className = "consult-hint-small";
+    ht.style.margin = "0 0 0.55rem";
+    ht.textContent =
+      "Уникальные PDF из автоматического отбора. Сначала — с подтверждением кодов МКБ в переданной выдержке; ссылки открывают документ на сервере.";
+    pw.appendChild(ht);
+
     var preciseNote = (data && data.consult_icd_precise_note_ru) || "";
-
-    var hhPrec = document.createElement("div");
-    hhPrec.className = "consult-protocols-heading consult-protocols-heading--precise";
-    hhPrec.textContent = "Ссылки на протоколы из отбора (проверены по кодам МКБ из блока диагноза КЗ)";
-    pw.appendChild(hhPrec);
-
-    var htPrec = document.createElement("p");
-    htPrec.className = "consult-hint-small";
-    htPrec.style.margin = "0 0 0.55rem";
-    htPrec.textContent =
-      "Отображаются только те источники, в переданном системой фрагменте которых нашлось совпадение с кодами из блока диагнозов заключения (если блок без формальных кодов — объединённые коды МКБ документа). Это технический фильтр: при отсутствии ссылок подходят тематические протоколы без перечисления МКБ в выдержке.";
-    pw.appendChild(htPrec);
-
     if (preciseNote) {
       var pn = document.createElement("p");
       pn.className = "consult-hint-small";
@@ -10192,47 +10422,7 @@
       pw.appendChild(pn);
     }
 
-    pw.appendChild(buildProtoLinkList(preciseLinks, oncByPath));
-
-    var fragsListAll = data && data.consult_protocol_fragments;
-
-    var details = document.createElement("details");
-    details.className = "consult-proto-retrieval-expander consult-hide-print";
-    details.style.marginTop = "0.85rem";
-
-    var sum = document.createElement("summary");
-    sum.style.cursor = "pointer";
-    sum.textContent =
-      "Развернуть: полный список источников из автоматического отбора (по смежным терминам, не только МКБ в выдержке)";
-    details.appendChild(sum);
-
-    var innerHint = document.createElement("p");
-    innerHint.className = "consult-hint-small";
-    innerHint.style.margin = "0.45rem 0 0.5rem";
-    innerHint.textContent =
-      "Список ниже соответствует широкому отбору RAG без обязательного совпадения кода диагноза в тексте переданной выдержки.";
-    details.appendChild(innerHint);
-
-    var hhFull = document.createElement("div");
-    hhFull.className = "consult-protocols-heading consult-protocols-heading--muted";
-    hhFull.style.fontSize = "0.95rem";
-    hhFull.textContent = "Полный результат отбора";
-    details.appendChild(hhFull);
-
-    var hintFull = document.createElement("p");
-    hintFull.className = "consult-hint-small";
-    hintFull.style.margin = "0 0 0.55rem";
-    hintFull.textContent =
-      "Откройте PDF по полной ссылке — подбор по смыслу не заменяет чтение исходного документа.";
-    details.appendChild(hintFull);
-
-    var ultra = (data && data.retrieval_paths) || (rev && rev.protocol_paths_used) || [];
-
-    details.appendChild(
-      buildProtoLinkList(assembleRowsFromPaths(ultra, fragsListAll || []), oncByPath)
-    );
-
-    pw.appendChild(details);
+    pw.appendChild(renderProtocolChipList(rows, oncByPath));
 
     if (data && data.pdf_warnings && data.pdf_warnings.length) {
       var w = document.createElement("p");
@@ -10299,6 +10489,24 @@
     var rev = (data && data.review) || {};
     document.getElementById("consult-out-pct").textContent =
       typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : "—";
+    var methodEl = document.getElementById("consult-out-pct-method");
+    if (methodEl) {
+      var m = rev.overall_compliance_method || "";
+      var comp = rev.overall_compliance_components || {};
+      if (m.indexOf("hybrid") === 0) {
+        var parts = [];
+        if (typeof comp.structured === "number") parts.push("структурный разбор " + comp.structured + "%");
+        if (typeof comp.rules === "number") parts.push("правила протокола " + comp.rules + "%");
+        methodEl.textContent =
+          "Расчёт: детерминированный гибрид" +
+          (parts.length ? " (" + parts.join(", ") + ")" : "") +
+          ". Повторная загрузка того же КЗ даёт тот же процент.";
+        methodEl.hidden = false;
+      } else {
+        methodEl.hidden = true;
+        methodEl.textContent = "";
+      }
+    }
     var docN = Number((data && data.documents_count) || 1);
     var sumPref = docN > 1 ? "Объединённый разбор " + docN + " загруженных заключений. " : "";
     document.getElementById("consult-out-summary").textContent = sumPref + (rev.summary_ru || "");
@@ -10508,6 +10716,8 @@
       rubricHtml +
       "</div></div>" +
       fullReportBlock;
+
+    fixProtocolLinksInContainer(panel);
 
     var copyBtn = panel.querySelector("[data-copy-md]");
     if (copyBtn && md) {

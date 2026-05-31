@@ -3461,7 +3461,21 @@ def _consult_precise_links_for_icd_in_fragments(
             )
         )
     rows_list.sort(key=lambda x: x[0])
-    slim = [r[1] for r in rows_list]
+    from clinical_knowledge.protocol_links import protocol_link_payload
+
+    slim: list[dict] = []
+    for r in rows_list:
+        row = r[1]
+        payload = protocol_link_payload(
+            row.get("path"),
+            title=row.get("title"),
+            matched_icd_codes=row.get("matched_icd_codes"),
+            icd_verified=True,
+        )
+        if payload:
+            slim.append(payload)
+        else:
+            slim.append(row)
     if slim:
         return slim, ""
 
@@ -5699,7 +5713,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r46-simplify-archive-git-workflow"
+BUILD_VERSION = "2026-05-31-r48-fix-protocol-pdf-links"
 
 
 def _app_version() -> str:
@@ -6288,11 +6302,11 @@ def api_protocol_detail(body: ProtocolDetailIn) -> dict:
 @app.get("/api/protocol-pdf")
 def api_protocol_pdf(path: str = Query(..., min_length=8, max_length=512)) -> FileResponse:
     """Отдаёт PDF протокола из minzdrav_protocols/ (каталог закрыт от StaticFiles)."""
-    p = path.strip().replace("\\", "/").lstrip("/")
-    if ".." in p or not p.lower().startswith("minzdrav_protocols/"):
+    from clinical_knowledge.protocol_links import content_disposition_inline, normalize_protocol_path
+
+    p = normalize_protocol_path(path)
+    if not p:
         raise HTTPException(status_code=404, detail="Протокол не найден")
-    if not p.lower().endswith(".pdf"):
-        raise HTTPException(status_code=404, detail="Допустимы только PDF")
     full = (ROOT / p).resolve()
     try:
         full.relative_to((ROOT / "minzdrav_protocols").resolve())
@@ -6303,8 +6317,7 @@ def api_protocol_pdf(path: str = Query(..., min_length=8, max_length=512)) -> Fi
     return FileResponse(
         full,
         media_type="application/pdf",
-        filename=full.name,
-        headers={"Content-Disposition": f'inline; filename="{full.name}"'},
+        headers={"Content-Disposition": content_disposition_inline(full.name)},
     )
 
 
@@ -6539,7 +6552,7 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 # Кэш результата проверки КЗ по контент-хэшу файлов: один и тот же PDF -> один и тот же результат.
 # Это даёт строгую воспроизводимость даже при остаточной недетерминированности модели.
-_CONSULT_CACHE_VERSION = "2026-05-30.3-text"
+_CONSULT_CACHE_VERSION = "2026-05-31.1-hybrid-overall"
 _consult_review_cache: dict[str, dict] = {}
 _consult_cache_order: list[str] = []
 _consult_cache_lock = threading.Lock()
@@ -6568,6 +6581,7 @@ def _consult_cache_key(content_signature: str, category_slugs: str) -> str:
         os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower(),
         os.environ.get("GEMINI_EMBEDDING_MODEL", ""),
         "overall_from_criteria" if env_bool("CONSULT_REVIEW_OVERALL_FROM_CRITERIA", True) else "model_overall",
+        "hybrid_overall" if env_bool("CONSULT_OVERALL_HYBRID", True) else "llm_overall",
     ]
     raw = "\n".join(parts)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()

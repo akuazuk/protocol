@@ -441,6 +441,18 @@ def iter_consult_review_pipeline(
         except Exception:
             structured_analysis = None
 
+    if isinstance(review, dict):
+        try:
+            from clinical_knowledge.consult_overall_score import apply_hybrid_overall_compliance
+
+            apply_hybrid_overall_compliance(
+                review,
+                structured_analysis=structured_analysis,
+                clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
+            )
+        except Exception:
+            pass
+
     result = {
         "ok": True,
         "server_version": rs._app_version(),
