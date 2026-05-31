@@ -5133,6 +5133,14 @@ def _corpus_stats_from_index_csv() -> dict:
         if cat:
             categories[cat] += 1
     mtime = datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc)
+    categories_top = [
+        {
+            "slug": cat,
+            "label": SPECIALTY_LABELS_RU.get(cat, cat.replace("-", " ").title()),
+            "count": c,
+        }
+        for cat, c in categories.most_common(12)
+    ]
     return {
         "index_csv_available": True,
         "protocols_in_index": len(rows),
@@ -5140,6 +5148,7 @@ def _corpus_stats_from_index_csv() -> dict:
         "rubrics_in_index": len(categories),
         "index_csv_updated_utc": mtime.isoformat(),
         "years_top": [{"year": y, "count": c} for y, c in years.most_common(8)],
+        "categories_top": categories_top,
         "source_url": MINZDRAV_PROTOCOLS_INDEX_URL,
     }
 
@@ -5249,7 +5258,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r10-presentation-show"
+BUILD_VERSION = "2026-05-31-r11-live-stats-charts"
 
 
 def _app_version() -> str:

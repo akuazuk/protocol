@@ -36,6 +36,10 @@ def test_corpus_stats_ok(client: TestClient) -> None:
     assert data.get("specialties_catalog") == 24
     if data.get("index_csv_available"):
         assert int(data.get("protocols_in_index") or 0) >= 1
+        cats = data.get("categories_top")
+        assert isinstance(cats, list)
+        if cats:
+            assert "slug" in cats[0] and "count" in cats[0]
 
 
 def test_quality_benchmark_ok(client: TestClient) -> None:
