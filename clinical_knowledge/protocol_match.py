@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .applicability import assess_card_applicability
 from .condition_registry import score_card_for_hint
 from .loader import load_protocol_cards_registry
 
@@ -77,7 +78,7 @@ def match_protocol_cards(
         if score > 0:
             scored.append((score, card))
 
-    scored.sort(key=lambda x: (-x[0], x[1].get("protocol_id") or ""))
+        scored.sort(key=lambda x: (-x[0], x[1].get("protocol_id") or ""))
     out: list[dict[str, Any]] = []
     for sc, card in scored[:limit]:
         out.append(
@@ -91,4 +92,23 @@ def match_protocol_cards(
                 "approval": card.get("approval"),
             }
         )
+    return out
+
+
+def annotate_applicability(
+    matches: list[dict[str, Any]],
+    patient: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    """Аддитивно добавляет к каждому матчу applicability/match_reasons/mismatch_reasons.
+
+    Не меняет существующие поля; исходный список не мутируется (возвращается копия).
+    """
+    out: list[dict[str, Any]] = []
+    for m in matches:
+        appl, mr, mmr = assess_card_applicability(m, patient)
+        enriched = dict(m)
+        enriched["applicability"] = appl
+        enriched["match_reasons"] = mr
+        enriched["mismatch_reasons"] = mmr
+        out.append(enriched)
     return out
