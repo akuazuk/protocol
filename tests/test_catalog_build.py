@@ -36,7 +36,12 @@ def test_extract_rules_sample_pdf():
     assert isinstance(meta.get("by_rubric"), dict)
 
 
-def test_merge_rules_and_coverage_report(tmp_path: Path):
+def test_merge_rules_and_coverage_report(tmp_path: Path, monkeypatch):
+    import clinical_knowledge.catalog_build as cb
+
+    monkeypatch.setattr(cb, "CATALOG_DIR", tmp_path)
+    monkeypatch.setattr(cb, "COVERAGE_PATH", tmp_path / "rules_coverage_report.json")
+
     extracted = {
         "acute_appendicitis": [
             {
@@ -61,6 +66,7 @@ def test_merge_rules_and_coverage_report(tmp_path: Path):
     report = write_coverage_report(meta, extracted)
     assert report["pdfs_with_rules"] == 1
     assert report["by_rubric"]["khirurgiya"]["coverage_pct"] == 100.0
+    assert (tmp_path / "rules_coverage_report.json").is_file()
 
 
 def test_loader_merges_catalog_rules(tmp_path: Path, monkeypatch):
