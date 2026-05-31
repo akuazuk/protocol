@@ -71,6 +71,21 @@ RE_CONSULT_DATE = re.compile(
     r"(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
     re.I,
 )
+# Простой вариант «Дата: 14.07.2024 …» в шапке КЗ (не «Дата рождения» и не «повторной явки»).
+RE_CONSULT_DATE_SIMPLE = re.compile(
+    r"(?im)^[ \t]*дата\s*[:\-]?\s*(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
+)
+# Дата рождения на строке ФИО: «Ф.И.О: Иванов Иван Иванович, 12.07.1976».
+RE_FIO_DOB = re.compile(
+    r"(?:ф\.?\s*и\.?\s*о\.?|фио|пациент\w*)\s*[:\-]?[^\n]*?(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{4})",
+    re.I,
+)
+# ФИО пациента: «Ф.И.О: Кузавка Павел Леонидович».
+RE_FIO_NAME = re.compile(
+    r"(?:ф\.?\s*и\.?\s*о\.?|фио)\s*[:\-]?\s*"
+    r"([А-ЯЁ][а-яё]+(?:\s+[А-ЯЁ][а-яё]+){1,2})",
+    re.I,
+)
 
 
 def _split_sections(text: str) -> dict[str, str]:
@@ -150,6 +165,15 @@ def parse_consultation(
     mcd = RE_CONSULT_DATE.search(text)
     if mcd:
         consult_date = parse_date(mcd.group(1))
+    if consult_date is None:
+        for ms in RE_CONSULT_DATE_SIMPLE.finditer(text[:1200]):
+            line_start = text.rfind("\n", 0, ms.start()) + 1
+            line = text[line_start:ms.end()].lower()
+            if "рожд" in line or "явк" in line or "повтор" in line:
+                continue
+            consult_date = parse_date(ms.group(1))
+            if consult_date is not None:
+                break
     if consult_date is None and demo.get("consultation_date"):
         consult_date = demo.get("consultation_date")
     consult_dt = None
@@ -165,15 +189,32 @@ def parse_consultation(
 
     # --- демография ---
     birth_date = demo.get("birth_date") or asr.parse_birth_date(text)
+    if birth_date is None:
+        mfio = RE_FIO_DOB.search(text)
+        if mfio:
+            cand = parse_date(mfio.group(1))
+            # ДР должна быть в прошлом относительно консультации (или просто исторической).
+            if cand is not None and (consult_date is None or cand < consult_date):
+                birth_date = cand
     age_info = asr.resolve_age(
         text, birth_date=birth_date, consultation_date=consult_date,
     )
     warnings.extend(age_info["warnings"])
-    sex = demo.get("sex") or asr.detect_sex(text)
+    full_name = demo.get("full_name")
+    if not full_name:
+        mfn0 = RE_FIO_NAME.search(text)
+        if mfn0:
+            full_name = mfn0.group(1).strip()
+    # Приоритет: явные данные → явный маркер пола в тексте → отчество пациента.
+    sex = demo.get("sex")
+    if sex not in ("male", "female"):
+        sex = asr.detect_sex(text)
+    if sex not in ("male", "female"):
+        sex = asr.detect_sex_from_name(full_name)
     pregnancy = asr.detect_pregnancy(text)
 
     patient = PatientContext(
-        full_name=demo.get("full_name"),
+        full_name=full_name,
         birth_date=birth_date,
         age_years=age_info["age_years"],
         age_months=age_info["age_months"],

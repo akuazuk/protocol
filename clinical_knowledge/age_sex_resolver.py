@@ -12,10 +12,23 @@ RE_SEX_F = re.compile(r"\b(женский|жен\.?\s*пол|пол\s*[:\-]?\s*�
 RE_SEX_M = re.compile(r"\b(мужской|муж\.?\s*пол|пол\s*[:\-]?\s*м(?:уж)?)\b", re.I)
 RE_PREG = re.compile(r"\b(беременн|гестац|беременность\s+\d+)\w*", re.I)
 
+# Пол по отчеству (надёжный признак в русскоязычных КЗ).
+RE_PATRONYMIC_M = re.compile(r"\b[А-ЯЁ][а-яё]+(?:ович|евич|ьич)\b")
+RE_PATRONYMIC_F = re.compile(r"\b[А-ЯЁ][а-яё]+(?:овна|евна|инична|ична)\b")
+# Гендерные клинические маркеры (только специфичные; «пациент» слишком общий).
+RE_SEX_F_WORDS = re.compile(r"\b(беременн\w*|рожен\w*|пациентк\w*)", re.I)
+
 # «Возраст: 48 лет», «48 л.», «3 года», «6 мес»
 RE_AGE_YEARS = re.compile(r"\bвозраст\s*[:\-]?\s*(\d{1,3})\s*(?:лет|года?|л\.)\b", re.I)
 RE_AGE_INLINE_YEARS = re.compile(r"\b(\d{1,3})\s*(?:лет|года?)\b", re.I)
 RE_AGE_MONTHS = re.compile(r"\b(\d{1,2})\s*(?:мес(?:яц)?[а-я]*)\b", re.I)
+# Контексты, в которых число лет — это НЕ возраст (длительность болезни/стаж и т.п.).
+RE_DURATION_CTX = re.compile(
+    r"(?:болеет|болезн\w*|заболел\w*|в\s+течени\w*|около|примерно|более|менее|"
+    r"на\s+протяжени\w*|стаж\w*|давност\w*|беспоко\w*|анамнез\w*|длительн\w*|"
+    r"в\s+возрасте\s+до|с\s+\d{4}|последн\w*)\s*$",
+    re.I,
+)
 RE_DOB = re.compile(
     r"(?:дата\s+рождения|д\.?\s*р\.?|г\.?\s*р\.?|род(?:илс[яа]|\.)?)\s*[:\-]?\s*"
     r"(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
@@ -23,11 +36,32 @@ RE_DOB = re.compile(
 )
 
 
-def detect_sex(text: str) -> str:
-    if RE_SEX_F.search(text or ""):
+def detect_sex_from_name(name: str | None) -> str:
+    """Пол по ФИО пациента (отчество). Возвращает male/female/unknown.
+
+    Применять ТОЛЬКО к имени пациента, не ко всему тексту: в КЗ встречаются
+    и ФИО врача (другого пола), что искажает определение.
+    """
+    n = name or ""
+    if not n.strip():
+        return "unknown"
+    if RE_PATRONYMIC_F.search(n):
         return "female"
-    if RE_SEX_M.search(text or ""):
+    if RE_PATRONYMIC_M.search(n):
         return "male"
+    return "unknown"
+
+
+def detect_sex(text: str) -> str:
+    t = text or ""
+    # 1. Явное указание пола.
+    if RE_SEX_F.search(t):
+        return "female"
+    if RE_SEX_M.search(t):
+        return "male"
+    # 2. Специфичные женские клинические маркеры (мужских надёжных слов-маркеров нет).
+    if RE_SEX_F_WORDS.search(t):
+        return "female"
     return "unknown"
 
 
@@ -105,18 +139,34 @@ def resolve_age(
             )
         age_years, age_months = age_at(birth_date, on_date)
     else:
-        m = RE_AGE_YEARS.search(text or "") or RE_AGE_INLINE_YEARS.search(text or "")
+        txt = text or ""
+        # Сначала явное «возраст: N лет» — самый надёжный inline-признак.
+        m = RE_AGE_YEARS.search(txt)
         if m:
             try:
                 age_years = int(m.group(1))
             except (TypeError, ValueError):
                 age_years = None
-        mm = RE_AGE_MONTHS.search(text or "")
+        # Иначе ищем «N лет/года», но пропускаем контексты длительности болезни/стажа
+        # («болеет около 1 года», «в течение 5 лет» и т.п.).
+        if age_years is None:
+            for im in RE_AGE_INLINE_YEARS.finditer(txt):
+                prefix = txt[max(0, im.start() - 24):im.start()]
+                if RE_DURATION_CTX.search(prefix):
+                    continue
+                try:
+                    age_years = int(im.group(1))
+                except (TypeError, ValueError):
+                    age_years = None
+                break
+        mm = RE_AGE_MONTHS.search(txt)
         if mm and age_years is None:
-            try:
-                age_months = int(mm.group(1))
-            except (TypeError, ValueError):
-                age_months = None
+            prefix = txt[max(0, mm.start() - 24):mm.start()]
+            if not RE_DURATION_CTX.search(prefix):
+                try:
+                    age_months = int(mm.group(1))
+                except (TypeError, ValueError):
+                    age_months = None
 
     grp = age_group(age_years, age_months)
     return {

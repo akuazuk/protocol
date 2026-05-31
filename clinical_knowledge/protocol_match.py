@@ -78,9 +78,15 @@ def match_protocol_cards(
         if score > 0:
             scored.append((score, card))
 
-        scored.sort(key=lambda x: (-x[0], x[1].get("protocol_id") or ""))
+    scored.sort(key=lambda x: (-x[0], x[1].get("protocol_id") or ""))
     out: list[dict[str, Any]] = []
-    for sc, card in scored[:limit]:
+    seen_keys: set[str] = set()
+    for sc, card in scored:
+        # Дедуп: один протокол (по source_path/protocol_id) — одна строка с лучшим score.
+        key = str(card.get("source_path") or card.get("protocol_id") or id(card))
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
         out.append(
             {
                 "protocol_id": card.get("protocol_id"),
@@ -92,6 +98,8 @@ def match_protocol_cards(
                 "approval": card.get("approval"),
             }
         )
+        if len(out) >= limit:
+            break
     return out
 
 

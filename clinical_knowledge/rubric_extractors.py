@@ -197,6 +197,59 @@ def extract_measurements(text: str) -> dict[str, dict[str, str]]:
     return out
 
 
+# Кириллический стем специальности врача -> slug рубрики каталога.
+# Порядок важен: более специфичные стемы выше.
+_SPECIALTY_STEM_TO_RUBRIC: list[tuple[str, str]] = [
+    ("дерматовенеролог", "dermatovenerologiya"),
+    ("дерматолог", "dermatovenerologiya"),
+    ("венеролог", "dermatovenerologiya"),
+    ("гастроэнтеролог", "gastroenterologiya"),
+    ("кардиолог", "bolezni-sistemy-krovoobrashcheniya"),
+    ("нейрохирург", "nevrologiya-neyrokhirurgiya"),
+    ("невролог", "nevrologiya-neyrokhirurgiya"),
+    ("эндокринолог", "endokrinologiya-narusheniya-obmena-veshchestv"),
+    ("фтизиатр", "pulmonologiya-ftiziatriya"),
+    ("пульмонолог", "pulmonologiya-ftiziatriya"),
+    ("ревматолог", "revmatologiya"),
+    ("нефролог", "nefrologiya"),
+    ("уролог", "urologiya"),
+    ("гематолог", "gematologiya"),
+    ("онколог", "novoobrazovaniya"),
+    ("травматолог", "travmatologiya-ortopediya"),
+    ("ортопед", "travmatologiya-ortopediya"),
+    ("офтальмолог", "oftalmologiya"),
+    ("оториноларинголог", "otorinolaringologiya"),
+    ("лор", "otorinolaringologiya"),
+    ("психиатр", "psikhiatriya-narkologiya"),
+    ("нарколог", "psikhiatriya-narkologiya"),
+    ("акушер", "akusherstvo-ginekologiya"),
+    ("гинеколог", "akusherstvo-ginekologiya"),
+    ("аллерголог", "allergologiya-immunologiya"),
+    ("иммунолог", "allergologiya-immunologiya"),
+    ("инфекционист", "infektsionnye-zabolevaniya"),
+    ("стоматолог", "stomatologiya"),
+    ("неонатолог", "zabolevaniya-perinatalnogo-perioda"),
+    ("анестезиолог", "anesteziologiya-reanimatologiya"),
+    ("реаниматолог", "anesteziologiya-reanimatologiya"),
+    ("трансплант", "transplantatsiya-organov-i-tkaney"),
+    ("хирург", "khirurgiya"),
+]
+
+
+def specialty_to_rubric(doctor_specialty: str | None) -> str | None:
+    """Маппит кириллическую специальность врача из КЗ в slug рубрики.
+
+    Терапевт/педиатр/семейный врач не имеют отдельной рубрики -> None.
+    """
+    low = (doctor_specialty or "").lower()
+    if not low.strip():
+        return None
+    for stem, slug in _SPECIALTY_STEM_TO_RUBRIC:
+        if stem in low:
+            return slug
+    return None
+
+
 def normalize_rubric_slug(value: str | None) -> str | None:
     """Приводит произвольный slug/путь к каноническому slug рубрики."""
     if not value:

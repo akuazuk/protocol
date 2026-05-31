@@ -13,7 +13,12 @@ from .consult_parser import parse_consultation
 from .consult_report import report_to_json, report_to_markdown
 from .consult_schema import ConsultationDocument
 from .protocol_match import annotate_applicability, match_protocol_cards
-from .rubric_extractors import extract_rubric_specifics, normalize_rubric_slug, rubric_slugs_from_matches
+from .rubric_extractors import (
+    extract_rubric_specifics,
+    normalize_rubric_slug,
+    rubric_slugs_from_matches,
+    specialty_to_rubric,
+)
 from .rule_checker import run_rule_checker
 
 
@@ -78,8 +83,15 @@ def analyze_consultation_text(
     )
     facts = facts_from_document(doc)
 
+    # Специальность КЗ — приоритетный якорь рубрики (если не задана явно извне).
+    doctor_rubric = specialty_to_rubric(doc.doctor_specialty)
+    effective_slug = specialty_slug or doctor_rubric
+
     try:
-        matches = match_protocol_cards(facts, specialty_slug=specialty_slug, limit=match_limit)
+        matches = match_protocol_cards(facts, specialty_slug=effective_slug, limit=match_limit)
+        # Если жёсткое ограничение по рубрике ничего не дало — мягкий фолбэк без фильтра.
+        if not matches and effective_slug:
+            matches = match_protocol_cards(facts, specialty_slug=None, limit=match_limit)
     except Exception:
         matches = []
     matches = annotate_applicability(matches, _patient_dict(doc))
@@ -92,10 +104,15 @@ def analyze_consultation_text(
     report = build_compliance_report(doc, matches=matches, rules_check=rules_check)
 
     try:
-        rubric_slugs = rubric_slugs_from_matches(matches)
-        spec_slug = normalize_rubric_slug(specialty_slug) or normalize_rubric_slug(doc.doctor_specialty)
-        if spec_slug and spec_slug not in rubric_slugs:
-            rubric_slugs = [spec_slug, *rubric_slugs]
+        # Якорь рубрики — специальность врача КЗ; затем рубрики подобранных протоколов.
+        anchor = effective_slug or normalize_rubric_slug(doc.doctor_specialty)
+        match_rubrics = rubric_slugs_from_matches(matches)
+        rubric_slugs: list[str] = []
+        if anchor:
+            rubric_slugs.append(anchor)
+        for s in match_rubrics:
+            if s not in rubric_slugs:
+                rubric_slugs.append(s)
         rubric_specifics = extract_rubric_specifics(doc.raw_text or raw_text, rubric_slugs)
     except Exception:
         rubric_specifics = {"rubrics": [], "by_rubric": {}, "measurements": {}}
