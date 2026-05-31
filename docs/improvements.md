@@ -435,6 +435,12 @@ python3 split_chunks_jsonl.py
 - 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).
 - 6.1 чистка `.env.example` - сделано: убраны дубли (`RAG_EMBED_POOL`, `RAG_EXTRACT_FULL_MATCH_MAX_CHARS`), висячий комментарий; добавлены новые переменные (retry, лимит страниц PDF, observability, версия).
 - 10 observability - сделано в безопасном инкременте (см. выше).
+- **Render 502 consult-review** - сделано: второй RAG-pass выкл на Render по умолчанию, preflight `/health`, понятные ошибки HTML 502/504 (`rag_server.py`, `index.html`, `render.yaml`).
+- **8.4 a11y (инкремент)** - skip-link, клавиатура вкладок (Arrow/Home/End), focus-trap + Esc для presentation-overlay, focus-trap для assist-timer-overlay, `prefers-reduced-motion`.
+- **8.6 XSS (инкремент)** - `safeResourceHref()` для ссылок на PDF протоколов.
+- **8.7 фронтенд-перф (инкремент)** - fallback логотипа при ошибке загрузки; реже тики таймеров (500/700 ms).
+- **9.3** - `pyproject.toml` (pytest + метаданные проекта; ruff остаётся в `ruff.toml`).
+- **9.4** - `test_retrieve_smoke.py`: жёсткий fail вместо skip при пустой выдаче.
 - 5.x API-дизайн (v1, response_model, нормализация path) - отложено (риск для совместимости с фронтендом).
 
 ---

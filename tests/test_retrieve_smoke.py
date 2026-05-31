@@ -14,6 +14,10 @@ def retrieve_fn():
 def test_retrieve_returns_something(retrieve_fn) -> None:
     out = retrieve_fn("кашель бронхит J20", max_chunks=3, max_per_path=2)
     assert isinstance(out, list)
-    # при минимальном корпусе допустим пустой отбор при слишком жёсткой лексике — см. eval/golden_queries.jsonl
-    if len(out) == 0:
-        pytest.skip("Лексический отбор пуст — расширьте chunks.mini.jsonl или ослабьте запрос")
+    assert len(out) >= 1, (
+        "Лексический отбор пуст — расширьте tests/fixtures/chunks.mini.jsonl или ослабьте запрос"
+    )
+    paths = {str(row.get("path") or "") for row in out}
+    assert any("_smoke" in p or "bronch" in p.lower() or "бронх" in p.lower() for p in paths), (
+        f"Ожидался чанк из mini-fixture, получено: {paths}"
+    )

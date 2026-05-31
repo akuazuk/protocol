@@ -66,6 +66,38 @@
       border: 0;
     }
 
+    .skip-link {
+      position: absolute;
+      left: 0.75rem;
+      top: 0.75rem;
+      z-index: 10000;
+      padding: 0.5rem 0.85rem;
+      background: var(--green-800);
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transform: translateY(-160%);
+      transition: transform 0.15s ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+      outline: 2px solid var(--amber-400);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     body {
       margin: 0;
       font-family: "DM Sans", system-ui, sans-serif;
@@ -4931,6 +4963,7 @@
   </style>
 </head>
 <body>
+  <a href="#app-main-tabs" class="skip-link">Перейти к содержимому</a>
   <div id="presentation-overlay" class="presentation-overlay" hidden aria-hidden="true">
     <div class="presentation-card" role="dialog" aria-labelledby="presentation-title" aria-modal="true">
       <div class="presentation-steps" id="presentation-steps" aria-hidden="true"></div>
@@ -4986,6 +5019,7 @@
             width="128"
             height="128"
             alt="Логотип медицинского центра"
+            onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src=&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='24' fill='%230d5c4a'/%3E%3Cpath d='M58 28h12v32h32v12H70v32H58V72H26V60h32z' fill='%23fff'/%3E%3C/svg%3E&quot;;}"
           />
         </div>
         <div class="brand">
@@ -7033,7 +7067,7 @@
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
     var protocolIcdMentions = opts.protocolIcdMentions || {};
-    var href = encodeURI(pr.path || "");
+    var href = safeResourceHref(pr.path || "");
     var title = formatDisplayTitle(pr.title || pr.path || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
@@ -7181,7 +7215,7 @@
       }
     }
     tickOnce();
-    var tick = setInterval(tickOnce, 250);
+    var tick = setInterval(tickOnce, 500);
     return {
       stop: function () {
         clearInterval(tick);
@@ -8854,6 +8888,74 @@
     return body || "HTTP " + status;
   }
 
+  /** Безопасный href для PDF/файлов протоколов (блок javascript:/data:). */
+  function safeResourceHref(raw) {
+    var p = String(raw || "").trim();
+    if (!p || p === "#") return "#";
+    if (/^(javascript|data|vbscript):/i.test(p)) return "#";
+    if (/^https?:\/\//i.test(p)) return encodeURI(p);
+    if (/^[a-z][a-z0-9+.-]*:/i.test(p)) return "#";
+    if (p.indexOf("..") >= 0) return "#";
+    return encodeURI(p);
+  }
+
+  /** Focus-trap и Esc для модальных оверлеев (a11y). */
+  function bindModalFocusTrap(container, options) {
+    options = options || {};
+    var savedFocus = null;
+    var keyHandler = null;
+
+    function focusableEls() {
+      if (!container) return [];
+      return Array.prototype.slice.call(
+        container.querySelectorAll(
+          'button:not([hidden]):not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    }
+
+    function activate() {
+      savedFocus = document.activeElement;
+      var els = focusableEls();
+      if (els.length) els[0].focus();
+      keyHandler = function (e) {
+        if (e.key === "Escape" && options.onEscape) {
+          e.preventDefault();
+          options.onEscape();
+          return;
+        }
+        if (e.key !== "Tab") return;
+        var list = focusableEls();
+        if (!list.length) return;
+        var first = list[0];
+        var last = list[list.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      };
+      document.addEventListener("keydown", keyHandler);
+    }
+
+    function deactivate() {
+      if (keyHandler) document.removeEventListener("keydown", keyHandler);
+      keyHandler = null;
+      if (savedFocus && savedFocus.focus) {
+        try {
+          savedFocus.focus();
+        } catch (e) {}
+      }
+      savedFocus = null;
+    }
+
+    return { activate: activate, deactivate: deactivate };
+  }
+
+  var assistTimerFocusTrap = null;
+
   function isLocalHostPage() {
     var h = window.location.hostname;
     return h === "localhost" || h === "127.0.0.1";
@@ -9169,6 +9271,11 @@
       var btnNext = document.getElementById("presentation-btn-next");
       var btnStart = document.getElementById("presentation-btn-start");
       var idx = 0;
+    var presentationFocusTrap = bindModalFocusTrap(ov, {
+      onEscape: function () {
+        closeOverlay();
+      },
+    });
     if (steps) {
       steps.innerHTML = "";
       var si;
@@ -9196,6 +9303,7 @@
     }
 
     function closeOverlay() {
+      if (presentationFocusTrap) presentationFocusTrap.deactivate();
       ov.hidden = true;
       ov.setAttribute("aria-hidden", "true");
       var bar = document.getElementById("demo-cases-bar");
@@ -9208,6 +9316,7 @@
     ov.hidden = false;
     ov.setAttribute("aria-hidden", "false");
     renderSlide();
+    if (presentationFocusTrap) presentationFocusTrap.activate();
 
     if (btnPrev) {
       btnPrev.addEventListener("click", function () {
@@ -9777,7 +9886,7 @@
         if (oncMap && oncMap[pth]) li.classList.add("consult-proto-li--onco");
 
         var a = document.createElement("a");
-        a.href = encodeURI(pth || "#");
+        a.href = safeResourceHref(pth || "#");
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.className = "consult-proto-footer__link";
@@ -9976,6 +10085,7 @@
   function initMainAppTabsAndConsultReview() {
     var ts = document.getElementById("tab-main-search");
     var tc = document.getElementById("tab-consult-review");
+    var tablist = document.getElementById("app-main-tabs");
     if (!ts || !tc) return;
 
     ts.addEventListener("click", function () {
@@ -9984,6 +10094,22 @@
     tc.addEventListener("click", function () {
       switchMainAppTab(MAIN_TAB_CONSULT);
     });
+
+    if (tablist) {
+      tablist.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft" && e.key !== "Home" && e.key !== "End") {
+          return;
+        }
+        e.preventDefault();
+        if (e.key === "Home" || e.key === "ArrowLeft") {
+          ts.focus();
+          switchMainAppTab(MAIN_TAB_SEARCH);
+        } else if (e.key === "End" || e.key === "ArrowRight") {
+          tc.focus();
+          switchMainAppTab(MAIN_TAB_CONSULT);
+        }
+      });
+    }
 
     function applyMainTabFromHash() {
       var h = window.location.hash || "";
@@ -10178,7 +10304,7 @@
         var sec = Math.floor((Date.now() - t0Analyze) / 1000);
         if (analyzeNum) analyzeNum.textContent = String(sec);
         if (waitTip) waitTip.textContent = consultWaitingTip(sec);
-      }, 450);
+      }, 700);
       btnRun.disabled = true;
 
       var fd = new FormData();
@@ -10582,6 +10708,10 @@
     }
     ov.hidden = false;
     ov.setAttribute("aria-hidden", "false");
+    if (!assistTimerFocusTrap) {
+      assistTimerFocusTrap = bindModalFocusTrap(ov, {});
+    }
+    assistTimerFocusTrap.activate();
     var n = ov.querySelector(".assist-timer-num");
     if (n) n.textContent = "0";
     try {
@@ -10592,6 +10722,7 @@
   function hideAssistTimerOverlay() {
     var ov = document.getElementById("assist-timer-overlay");
     if (!ov) return;
+    if (assistTimerFocusTrap) assistTimerFocusTrap.deactivate();
     var titleEl = document.getElementById("assist-timer-overlay-title");
     var hintEl = document.getElementById("assist-timer-overlay-hint");
     if (titleEl) titleEl.textContent = "Подбор протоколов";
@@ -10812,7 +10943,7 @@
           var nv = ov.querySelector(".assist-timer-num");
           if (nv) nv.textContent = String(sec);
         }
-      }, 250);
+      }, 500);
 
       fetch(base + "/health")
         .then(function (h) {
