@@ -10143,7 +10143,7 @@
     if (stage === "icd_done" && partial.icd && partial.icd.codes && partial.icd.codes.length) {
       return "МКБ: " + partial.icd.codes.slice(0, 6).join(", ");
     }
-    if stage === "rules_done" && partial.clinical_rules) {
+    if (stage === "rules_done" && partial.clinical_rules) {
       var mp = partial.clinical_rules.matched_protocols || [];
       var bits = [];
       if (mp.length) bits.push("Сопоставлено протоколов: " + mp.length);
