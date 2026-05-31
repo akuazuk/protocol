@@ -1,0 +1,56 @@
+# Validation: infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:05.040664+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[b24_клинический_протокол_профилактика_передачи_вич].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[r75_клинический_протокол_профилактика_передачи_вич].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[z11_4_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[z11_4_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[z11_4_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[z11_4_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[z11_4_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[z21_клинический_протокол_профилактика_передачи_вич].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[z32_1_клинический_протокол_профилактика_передачи_вич].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[z39_клинический_протокол_профилактика_передачи_вич].treatment.drugs[5]: Дублирующийся препарат

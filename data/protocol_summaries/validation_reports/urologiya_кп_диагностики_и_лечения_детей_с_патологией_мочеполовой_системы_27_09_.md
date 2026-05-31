@@ -1,0 +1,46 @@
+# Validation: urologiya_кп_диагностики_и_лечения_детей_с_патологией_мочеполовой_системы_27_09_
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:14.731855+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[n13_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[n13_6_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_6_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_6_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_детей_с_патологией_мочепо].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[n28_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n28_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n28_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n28_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_кп_диагностики_и_лечения_детей_с_патологией_мочеполо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_кп_диагностики_и_лечения_детей_с_патологией_мочеполо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_кп_диагностики_и_лечения_детей_с_патологией_мочеполо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_кп_диагностики_и_лечения_детей_с_патологией_мочеполо].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n31_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n31_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n31_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q62_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q62_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[q62_0_кп_диагностики_и_лечения_детей_с_патологией_мочепо].treatment.drugs[1]: Дублирующийся препарат
+- `required_exam_level` conditions[q62_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q62_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[q62_2_кп_диагностики_и_лечения_детей_с_патологией_мочепо].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q62_3_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_3_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q62_7_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_7_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q62_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q62_8_кп_диагностики_и_лечения_детей_с_патологией_мочепо].required_exams[0]: Дублирующееся обследование

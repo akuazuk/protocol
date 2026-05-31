@@ -1,0 +1,50 @@
+# Validation: psikhiatriya_narkologiya_кп_диагностика_лечение_пациентов_с_психическими_и_повед
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:12.124853+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f01_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[11]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f02_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[11]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f03_клинический_протокол_определяет_минимальный_объем_ме].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[f10_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[f10_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[f19_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f19_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f19_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f19_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование

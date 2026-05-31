@@ -355,6 +355,8 @@ def build_compliance_report(
     rules_check: dict[str, Any] | None = None,
     *,
     not_applicable_matches: list[dict[str, Any]] | None = None,
+    analysis_mode: str = "legacy",
+    summary_meta: dict[str, Any] | None = None,
 ) -> ComplianceReport:
     """Собрать ComplianceReport из разобранного КЗ, матчей и результата проверки правил."""
     matches = matches or []
@@ -518,4 +520,17 @@ def build_compliance_report(
         f"confidence={confidence}%; статус: {draft.overall_status}."
     )
     draft.source_refs = refs
+    sm = summary_meta or {}
+    mode = sm.get("analysis_mode") or analysis_mode or "legacy"
+    draft.analysis_mode = mode  # type: ignore[assignment]
+    draft.protocol_summary_used = bool(sm.get("protocol_summary_used"))
+    draft.protocol_summary_status = sm.get("protocol_summary_status")
+    draft.fallback_to_legacy = bool(sm.get("fallback_to_legacy"))
+    draft.legacy_result_available = sm.get("legacy_result_available", True)
+    draft.summary_result_available = bool(sm.get("summary_result_available"))
+    draft.method_comparison = sm.get("method_comparison")
+    if sm.get("limitations"):
+        draft.limitations = list(dict.fromkeys(list(draft.limitations) + list(sm["limitations"])))
+    if draft.protocol_summary_used and draft.fallback_to_legacy:
+        draft.limitations.append("Часть правил взята из legacy fallback — summary-карточка неполная.")
     return draft

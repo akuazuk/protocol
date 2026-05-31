@@ -1,0 +1,46 @@
+# Validation: khirurgiya_04кп_диагностика_лечение_пациентов_взр_нас_с_заболеваниями_позвоночни
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:06.064467+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[g95_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[g95_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[m43_1_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m43_1_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m43_1_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m43_1_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m43_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m43_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m43_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m43_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_5_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_5_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m48_5_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m48_5_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[m49_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m49_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[m49_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[m49_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q75_8_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q75_8_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q75_8_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q75_8_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование

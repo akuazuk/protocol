@@ -1,0 +1,44 @@
+protocol_id: test_phleb_i801
+summary_version: "1.0"
+extraction_status: draft
+review_status: not_reviewed
+source:
+  title: "Тест — флеботромбоз"
+  local_path: "minzdrav_protocols/test/phleb.pdf"
+rubric:
+  name: "Хирургия"
+  slug: khirurgiya
+applicability:
+  population:
+    - adult
+conditions:
+  - condition_id: i80_phlebothrombosis
+    name: "Флеботромбоз поверхностных вен"
+    icd10_codes:
+      - I80.1
+    treatment:
+      drugs:
+        - drug_name: "ривароксабан"
+          dose_text: "20 мг 1 раз в день"
+          source_ref:
+            protocol_id: test_phleb_i801
+            page_start: 12
+            quote: "ривароксабан 20 мг 1 раз в день"
+    red_flags:
+      - text: "флеботромбоз"
+        red_flag_type: thrombosis
+        severity: high
+        expected_actions:
+          - "антикоагулянтная терапия"
+        source_ref:
+          protocol_id: test_phleb_i801
+          page_start: 8
+          quote: "флеботромбоз поверхностных вен"
+    follow_up:
+      - text: "контрольное УЗИ вен через 3 месяца"
+        source_ref:
+          protocol_id: test_phleb_i801
+          page_start: 15
+          quote: "контроль УЗИ через 3 месяца"
+extraction_metadata:
+  extractor: test_fixture

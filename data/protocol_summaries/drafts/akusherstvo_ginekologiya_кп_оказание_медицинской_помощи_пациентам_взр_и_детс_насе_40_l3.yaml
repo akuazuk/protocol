@@ -1,0 +1,92 @@
+protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_насе_40_l3
+summary_version: '1.0'
+extraction_status: auto_extracted
+review_status: not_reviewed
+source:
+  title: КЛИНИЧЕСКИЙ ПРОТОКОЛ
+  url: null
+  local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_пациентам_взр_и_детс_население_с_антифосфолипидным_синдромом_пост_МЗ_09.03.2023_40.pdf
+  document_sha256: null
+  approval_date: null
+  approval_number: null
+  valid_from: null
+  valid_to: null
+  document_year: null
+  pages_total: null
+rubric:
+  name: akusherstvo-ginekologiya
+  slug: akusherstvo-ginekologiya
+  specialty_slugs:
+  - akusherstvo-ginekologiya
+applicability:
+  population:
+  - adult
+  - child
+  age_min_years: null
+  age_max_years: null
+  sex: unknown
+  pregnancy: unknown
+  care_setting: []
+conditions:
+- condition_id: клинический_протокол
+  name: КЛИНИЧЕСКИЙ ПРОТОКОЛ
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria:
+    required:
+    - text: соответствие нозологии «КЛИНИЧЕСКИЙ ПРОТОКОЛ»
+      logic_group: null
+      operator: present
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets:
+      - diagnosis
+      - complaints
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_пациентам_взр_и_детс_насе_40_l3
+        document_url: null
+        local_path: null
+        page_start: 1
+        page_end: null
+        section_title: Нозология
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: КЛИНИЧЕСКИЙ ПРОТОКОЛ
+    optional: []
+    exclusion: []
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+global_red_flags: []
+global_contraindications: []
+global_notes: []
+extraction_metadata:
+  extracted_at: '2026-05-31T18:26:02.297203+00:00'
+  extractor: builder.heuristic
+  extractor_version: '1.0'
+  source_document_sha256: null
+  notes:
+  - draft from protocol_cards registry
+validation:
+  status: needs_human_review
+  errors: []
+  warnings:
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[клинический_протокол]
+  validated_at: '2026-05-31T18:26:02.297220+00:00'

@@ -1,0 +1,63 @@
+# Validation: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:05.431323+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[b20_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[b20_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[b20_клинический_протокол_устанавливает_общие_требования_].required_exams[2]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[b20_клинический_протокол_устанавливает_общие_требования_].required_exams[3]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_6_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[6]: Дублирующийся препарат
+- `required_exam_level` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[3]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].required_exams[3]: Дублирующееся обследование
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[b20_8_клинический_протокол_оказание_медицинской_помощи_п].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[j10_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[4]: Дублирующийся препарат
+- `required_exam_level` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[j11_клинический_протокол_оказание_медицинской_помощи_пац].treatment.drugs[4]: Дублирующийся препарат
+- `required_exam_level` conditions[r73_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[r73_клинический_протокол_оказание_медицинской_помощи_пац].required_exams[0]: Дублирующееся обследование

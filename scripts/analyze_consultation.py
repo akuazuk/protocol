@@ -39,7 +39,18 @@ def main() -> int:
         help=f"папка для JSON/MD отчётов (по умолчанию для batch: {DEFAULT_OUTPUT_DIR})",
     )
     ap.add_argument("--quiet", action="store_true", help="не печатать JSON в stdout")
+    ap.add_argument(
+        "--mode",
+        choices=("legacy", "summary", "hybrid"),
+        default=None,
+        help="режим Protocol Summary (по умолчанию: env PROTOCOL_SUMMARY_MODE или legacy)",
+    )
     args = ap.parse_args()
+
+    if args.mode:
+        import os
+        os.environ["PROTOCOL_SUMMARY_ENABLED"] = "1" if args.mode != "legacy" else "0"
+        os.environ["PROTOCOL_SUMMARY_MODE"] = args.mode
 
     out_dir = Path(args.output) if args.output else None
 
@@ -48,7 +59,7 @@ def main() -> int:
         if not path.exists():
             print(f"Файл не найден: {path}", file=sys.stderr)
             return 2
-        res = analyze_file(path, out_dir=out_dir)
+        res = analyze_file(path, out_dir=out_dir, analysis_mode=args.mode)
         md = res.pop("report_markdown", "")
         if args.markdown:
             Path(args.markdown).write_text(md, encoding="utf-8")

@@ -1,0 +1,107 @@
+# Validation: nevrologiya_neyrokhirurgiya_кп_диагностика_и_лечение_пациентов_детское_с_заболев
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:07.997158+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[g06_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[g06_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[g06_клинический_протокол_устанавливает_общие_требования_].required_exams[2]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[g06_клинический_протокол_устанавливает_общие_требования_].required_exams[3]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[3]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[3]: Дублирующееся обследование
+- `duplicate_drug` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[g06_0_клинический_протокол_диагностика_и_лечение_пациент].treatment.drugs[1]: Дублирующийся препарат
+- `required_exam_level` conditions[g21_3_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g21_3_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g21_3_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g21_3_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[g24_1_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g24_1_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g24_1_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g24_1_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[g24_1_кп_диагностика_и_лечение_пациентов_детское_с_забол].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[g24_2_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g24_2_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g24_2_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g24_2_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[g24_2_кп_диагностика_и_лечение_пациентов_детское_с_забол].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[g25_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g25_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g25_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g25_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[g25_кп_диагностика_и_лечение_пациентов_детское_с_заболев].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[g25_0_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g25_0_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g25_0_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g25_0_кп_диагностика_и_лечение_пациентов_детское_с_забол].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[g25_0_кп_диагностика_и_лечение_пациентов_детское_с_забол].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[g80_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g80_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g80_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g80_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[g96_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g96_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g96_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g96_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[g96_0_клинический_протокол_диагностика_и_лечение_пациент].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[p52_клинический_протокол_устанавливает_общие_требования_].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[q03_кп_диагностика_и_лечение_пациентов_детское_с_заболев].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[q05_клинический_протокол_диагностика_и_лечение_пациентов].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q06_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q06_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q06_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q06_кп_диагностика_и_лечение_пациентов_детское_с_заболев].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q07_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q07_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q76_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q76_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q76_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q76_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[q76_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q76_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[q76_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q76_0_клинический_протокол_диагностика_и_лечение_пациент].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s44_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s44_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s44_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s44_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s54_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s54_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s54_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s54_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s64_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s64_клинический_протокол_устанавливает_общие_требования_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s64_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s64_клинический_протокол_устанавливает_общие_требования_].required_exams[1]: Дублирующееся обследование

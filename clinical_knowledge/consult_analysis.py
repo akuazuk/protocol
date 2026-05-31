@@ -69,6 +69,7 @@ def analyze_consultation_text(
     specialty_slug: str | None = None,
     match_limit: int = 8,
     with_markdown: bool = True,
+    analysis_mode: str | None = None,
 ) -> dict[str, Any]:
     """Полный структурный разбор + оценка соответствия для одного КЗ.
 
@@ -123,13 +124,84 @@ def analyze_consultation_text(
             matches = []
     matches = annotate_applicability(matches, _patient_dict(doc))
 
+    extra_rules: list[dict[str, Any]] | None = None
+    summary_condition_ids: list[str] = []
+    summary_meta: dict[str, Any] = {"analysis_mode": analysis_mode or "legacy"}
+    effective_mode = analysis_mode or "legacy"
+
     try:
-        rules_check = run_rule_checker(facts, matched_protocols=matches)
+        from .protocol_summary.loader import find_conditions_by_icd
+        from .protocol_summary.method_selector import resolve_analysis_plan
+        from .protocol_summary.summary_to_rules import (
+            protocol_rule_to_legacy_dict,
+            summary_to_protocol_rules,
+        )
+
+        matched_pids = [
+            str(m.get("protocol_id") or m.get("card_id") or "")
+            for m in matches
+            if m.get("protocol_id") or m.get("card_id")
+        ]
+        plan = resolve_analysis_plan(mode=analysis_mode, matched_protocol_ids=matched_pids)
+        effective_mode = plan.mode
+        summaries = list(plan.usable_summaries)
+        if plan.use_summary and not summaries:
+            seen_pids: set[str] = set()
+            from .protocol_summary.loader import load_protocol_summaries as _load_all
+
+            for code in facts.get("consultation", {}).get("icd10") or []:
+                for cond in find_conditions_by_icd(str(code)):
+                    summary_condition_ids.append(cond.condition_id)
+                    for cand in _load_all(usable_only=True):
+                        if any(c.condition_id == cond.condition_id for c in cand.conditions):
+                            if cand.protocol_id not in seen_pids:
+                                summaries.append(cand)
+                                seen_pids.add(cand.protocol_id)
+                            break
+        if plan.use_summary and summaries:
+            extra_rules = []
+            for s in summaries:
+                for pr in summary_to_protocol_rules(s):
+                    extra_rules.append(protocol_rule_to_legacy_dict(pr))
+                    if pr.condition_id:
+                        summary_condition_ids.append(pr.condition_id)
+            summary_condition_ids = list(dict.fromkeys(summary_condition_ids))
+        summary_meta = {
+            "analysis_mode": plan.mode,
+            "protocol_summary_used": plan.use_summary and bool(extra_rules),
+            "protocol_summary_status": summaries[0].review_status if summaries else None,
+            "fallback_to_legacy": plan.primary_source == "legacy" and plan.mode != "legacy",
+            "legacy_result_available": plan.use_legacy or plan.mode == "legacy",
+            "summary_result_available": bool(extra_rules),
+        }
+        if plan.notes:
+            summary_meta["limitations"] = plan.notes
+    except Exception:
+        extra_rules = None
+        summary_condition_ids = []
+
+    try:
+        if extra_rules and effective_mode != "legacy":
+            rules_check = run_rule_checker(
+                facts,
+                matched_protocols=matches,
+                extra_rules=extra_rules,
+                condition_ids=summary_condition_ids or None,
+            )
+            rules_check["analysis_mode"] = effective_mode
+            rules_check["summary_rules_count"] = len(extra_rules)
+        else:
+            rules_check = run_rule_checker(facts, matched_protocols=matches)
     except Exception:
         rules_check = {}
 
     report = build_compliance_report(
-        doc, matches=matches, rules_check=rules_check, not_applicable_matches=not_applicable,
+        doc,
+        matches=matches,
+        rules_check=rules_check,
+        not_applicable_matches=not_applicable,
+        analysis_mode=effective_mode,
+        summary_meta=summary_meta,
     )
 
     try:

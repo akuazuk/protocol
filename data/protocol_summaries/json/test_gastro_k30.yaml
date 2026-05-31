@@ -1,0 +1,64 @@
+protocol_id: test_gastro_k30
+summary_version: "1.0"
+extraction_status: draft
+review_status: not_reviewed
+source:
+  title: "Тест — функциональная диспепсия"
+  local_path: "minzdrav_protocols/gastroenterologiya/test.pdf"
+  document_year: 2025
+rubric:
+  name: "Гастроэнтерология"
+  slug: gastroenterologiya
+  specialty_slugs:
+    - gastroenterology
+applicability:
+  population:
+    - adult
+  sex: any
+  pregnancy: any
+  care_setting:
+    - outpatient
+conditions:
+  - condition_id: k30_functional_dyspepsia
+    name: "Функциональная диспепсия"
+    synonyms:
+      - "диспепсия"
+    icd10_codes:
+      - K30
+    required_exams:
+      - name: "ЭГДС"
+        aliases:
+          - "ФГДС"
+        exam_type: instrumental
+        requirement_level: required
+        source_ref:
+          protocol_id: test_gastro_k30
+          page_start: 14
+          section_title: "Диагностика"
+          quote: "ЭГДС показана при диспепсических жалобах"
+    red_flags:
+      - text: "опухолевое образование"
+        aliases:
+          - "нельзя исключить инвазию"
+        red_flag_type: possible_malignancy
+        severity: critical
+        expected_actions:
+          - "дообследование"
+          - "маршрутизация"
+        cap_if_unhandled: 45
+        source_ref:
+          protocol_id: test_gastro_k30
+          page_start: 30
+          section_title: "Красные флаги"
+          quote: "подозрение на опухолевое образование"
+    follow_up:
+      - text: "повторная консультация после дообследования"
+        expected_actions:
+          - "оценить результаты"
+        source_ref:
+          protocol_id: test_gastro_k30
+          page_start: 24
+          quote: "контроль после обследования"
+extraction_metadata:
+  extractor: test_fixture
+  extracted_at: "2026-05-31T00:00:00Z"

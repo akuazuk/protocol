@@ -604,6 +604,14 @@ def report_to_markdown(
 
     L.append("# Оценка консультативного заключения")
     L.append("")
+    if report.analysis_mode and report.analysis_mode != "legacy":
+        L.append(f"- **Режим анализа:** {report.analysis_mode}")
+        L.append(f"- **Protocol Summary:** {'да' if report.protocol_summary_used else 'нет'}")
+        if report.protocol_summary_status:
+            L.append(f"- **Статус карточки:** {report.protocol_summary_status}")
+        if report.fallback_to_legacy:
+            L.append("- **Fallback на legacy:** да")
+        L.append("")
     # 1. Резюме
     L.append("## 1. Краткое резюме")
     if report.source_file:

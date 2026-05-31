@@ -1,0 +1,139 @@
+# Validation: akusherstvo_ginekologiya_кп_медицинское_наблюдение_и_оказание_медицинской_помощи
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:29:59.916924+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[d06_протокол_но_которыми_располагает_данная_организация_].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_drug` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[3]: Дублирующийся препарат
+- `required_exam_level` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `required_exam_level` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `required_exam_level` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `required_exam_level` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d07_3_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d25_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_0_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[3]: Дублирующийся препарат
+- `required_exam_level` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `required_exam_level` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d26_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[1]: Дублирующийся препарат
+- `required_exam_level` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d27_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_протокол_но_которыми_располагает_данная_организация_].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d28_протокол_но_которыми_располагает_данная_организация_].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d28_1_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d28_2_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d28_7_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d28_9_кп_медицинское_наблюдение_и_оказание_медицинской_п].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d65_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d65_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d69_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d69_кп_медицинское_наблюдение_и_оказание_медицинской_пом].treatment.drugs[1]: Дублирующийся препарат

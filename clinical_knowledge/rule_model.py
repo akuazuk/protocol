@@ -40,6 +40,8 @@ RuleSeverity = Literal[
     "required", "conditional", "recommended", "warning", "forbidden", "informational",
 ]
 
+RuleSource = Literal["legacy", "summary", "manual", "table", "llm_draft"]
+
 
 class RuleApplicability(_Base):
     age_groups: list[str] = []
@@ -54,11 +56,16 @@ class RuleApplicability(_Base):
 class ProtocolRule(_Base):
     rule_id: str
     protocol_id: str = ""
+    condition_id: str | None = None
     condition_name: str | None = None
     icd10_codes: list[str] = []
 
     rule_type: RuleType = "informational_rule"
     severity: RuleSeverity = "recommended"
+    rule_source: RuleSource = "legacy"
+    generated_from_summary: bool = False
+    summary_id: str | None = None
+    summary_version: str | None = None
 
     applicability: RuleApplicability = RuleApplicability()
     evidence_targets: list[str] = []
@@ -124,6 +131,7 @@ def legacy_rule_to_protocol_rule(rule: dict[str, Any]) -> ProtocolRule:
     return ProtocolRule(
         rule_id=str(rule.get("rule_id") or ""),
         protocol_id=str(src.get("protocol_id") or ""),
+        condition_id=str(rule.get("condition_id") or "") or None,
         rule_type=mapped,  # type: ignore[arg-type]
         severity=sev_norm,  # type: ignore[arg-type]
         evidence_targets=targets,
@@ -131,6 +139,7 @@ def legacy_rule_to_protocol_rule(rule: dict[str, Any]) -> ProtocolRule:
         criteria=criteria,
         source=source,
         confidence=0.85 if rt != "keyword_presence" else 0.6,
+        rule_source=str(rule.get("rule_source") or "legacy"),  # type: ignore[arg-type]
     )
 
 

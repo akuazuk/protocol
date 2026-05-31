@@ -1,0 +1,44 @@
+# Validation: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:06.617416+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[d20_протоколов_диагностики_и_лечения].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d20_протоколов_диагностики_и_лечения].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d73_4_протоколов_диагностики_и_лечения].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d73_4_протоколов_диагностики_и_лечения].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[d73_4_протоколов_диагностики_и_лечения].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[j86_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[p75_протоколов_диагностики_и_лечения].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[p75_протоколов_диагностики_и_лечения].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[p75_протоколов_диагностики_и_лечения].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q39_0_протоколов_диагностики_и_лечения].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q39_2_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q40_0_протоколов_диагностики_и_лечения].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q40_0_протоколов_диагностики_и_лечения].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[q40_0_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q40_0_протоколов_диагностики_и_лечения].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q41_0_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q41_1_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q41_2_протоколов_диагностики_и_лечения].treatment.drugs[0]: Дублирующийся препарат
+- `required_exam_level` conditions[q42_кп_диагностики_и_лечения_детей_общехирургического_пр].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q42_кп_диагностики_и_лечения_детей_общехирургического_пр].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[q42_кп_диагностики_и_лечения_детей_общехирургического_пр].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_0_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_0_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_0_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_1_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_1_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_1_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_2_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_2_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_2_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_3_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_3_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[q42_3_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[2]: Дублирующийся препарат
+- `required_exam_level` conditions[q44_2_кп_диагностики_и_лечения_детей_общехирургического_].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[q44_2_кп_диагностики_и_лечения_детей_общехирургического_].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[q79_0_кп_диагностики_и_лечения_детей_общехирургического_].treatment.drugs[0]: Дублирующийся препарат

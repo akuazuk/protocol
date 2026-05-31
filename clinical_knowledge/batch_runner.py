@@ -55,6 +55,7 @@ def analyze_file(
     *,
     out_dir: Path | None = None,
     text_extractor: Callable[[Path], str] | None = None,
+    analysis_mode: str | None = None,
 ) -> dict[str, Any]:
     """Анализ одного КЗ; опционально сохраняет JSON/MD в out_dir."""
     extract = text_extractor or _default_extract_text
@@ -65,6 +66,7 @@ def analyze_file(
         source_file=path.name,
         source_file_type=path.suffix.lstrip("."),
         with_markdown=True,
+        analysis_mode=analysis_mode,
     )
     if out_dir:
         out_dir.mkdir(parents=True, exist_ok=True)

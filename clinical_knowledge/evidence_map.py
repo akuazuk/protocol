@@ -98,6 +98,7 @@ def _make_item(
     expl_ru = localize_message_ru(expl)
     return EvidenceMapItem(
         rule_id=rule.rule_id,
+        rule_source=str(raw.get("rule_source") or rule.rule_source or "legacy"),  # type: ignore[arg-type]
         title_ru=rule_title_ru(rule.rule_id, raw),
         rule_type=rule.rule_type,
         rule_type_ru=rule_type_ru(rule.rule_type),

@@ -196,6 +196,32 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
             finding["message_ru"] = rule.get("message_ru") or f"Ожидалось упоминание: {rule.get('keyword')}."
         return finding
 
+    if rule_type == "red_flag_rule":
+        keywords = list(rule.get("keywords") or [])
+        if rule.get("keyword"):
+            keywords.append(str(rule.get("keyword")))
+        low = _norm(text + " " + diagnosis)
+        hit = any(_norm(k) in low for k in keywords if k)
+        finding["passed"] = hit
+        if not hit:
+            finding["severity"] = rule.get("severity") or "critical"
+            finding["passed"] = False
+            finding["message_ru"] = (
+                rule.get("message_ru")
+                or "Красный флаг протокола не отражён в КЗ: " + (keywords[0] if keywords else "")
+            )
+        return finding
+
+    if rule_type in ("diagnosis_structure_rule",):
+        required = list(rule.get("required_components") or rule.get("expected_items") or [])
+        present, missing = _check_diagnosis_components(diagnosis, required)
+        finding["present"] = present
+        finding["missing"] = missing
+        if missing:
+            finding["passed"] = False
+            finding["message_ru"] = "В формулировке диагноза не хватает компонентов: " + ", ".join(missing)
+        return finding
+
     return finding
 
 
@@ -293,6 +319,11 @@ def _resolve_target_conditions(
     if not base:
         base = list(conditions.keys()) or list(rules_map.keys())
 
+    if extra_summary := [cid for cid, rs in rules_map.items() if any(r.get("rule_source") == "summary" for r in rs)]:
+        for cid in extra_summary:
+            if cid not in base:
+                base.append(cid)
+
     return list(dict.fromkeys(base))
 
 
@@ -301,10 +332,15 @@ def run_rule_checker(
     *,
     condition_ids: list[str] | None = None,
     matched_protocols: list[dict[str, Any]] | None = None,
+    extra_rules: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Проверка КЗ по правилам каталога; возвращает findings и сводку."""
     conditions = load_conditions()
     rules_map = _augment_rules_map(load_rules_by_condition(), matched_protocols)
+    if extra_rules:
+        for er in extra_rules:
+            cid = str(er.get("condition_id") or er.get("summary_condition_id") or "_summary")
+            rules_map.setdefault(cid, []).append(er)
     target = _resolve_target_conditions(
         consult_facts,
         condition_ids=condition_ids,

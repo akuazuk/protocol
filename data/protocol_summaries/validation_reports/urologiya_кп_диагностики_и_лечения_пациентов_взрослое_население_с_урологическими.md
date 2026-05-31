@@ -1,0 +1,341 @@
+# Validation: urologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_урологическими
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:14.890599+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[d29_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d29_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d29_протокол_диагностики_и].required_exams[2]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[d30_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d30_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[d30_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d30_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[d30_протокол_диагностики_и].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[d30_протокол_диагностики_и].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[d30_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[f52_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f52_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[f52_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[4]: Дублирующийся препарат
+- `required_exam_level` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_2_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_3_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f52_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[f98_0_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f98_0_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[f98_0_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[f98_0_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[f98_0_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[g83_4_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g83_4_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[g83_4_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g83_4_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[g83_4_протокол_диагностики_и].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[g83_4_протокол_диагностики_и].required_exams[2]: Дублирующееся обследование
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[g83_4_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[i86_1_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[i86_1_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[i86_1_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[i86_1_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[i86_1_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n10_кп_диагностики_и_лечения_пациентов_взрослое_населени].treatment.drugs[4]: Дублирующийся препарат
+- `required_exam_level` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `required_exam_level` conditions[n11_1_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n11_1_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n11_1_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n11_1_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n11_1_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_0_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_0_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_0_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_0_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_0_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_1_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_1_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_1_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_1_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_1_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_2_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_2_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_2_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_2_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_2_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_3_протокол_диагностики_и].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_3_протокол_диагностики_и].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_3_протокол_диагностики_и].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_3_протокол_диагностики_и].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_3_протокол_диагностики_и].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_4_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_5_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_6_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n13_7_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `required_exam_level` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n15_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n20_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_0_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат
+- `required_exam_level` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].required_exams[1]: Дублирующееся обследование
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[9]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[n21_1_кп_диагностики_и_лечения_пациентов_взрослое_населе].treatment.drugs[11]: Дублирующийся препарат

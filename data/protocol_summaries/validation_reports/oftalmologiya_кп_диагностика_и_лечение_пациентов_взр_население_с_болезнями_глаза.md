@@ -1,0 +1,95 @@
+# Validation: oftalmologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_болезнями_глаза
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:10.882991+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[h00_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[h01_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h01_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h01_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h01_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h01_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[h02_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_0_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_1_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_3_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_4_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_6_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_8_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_8_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_9_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h04_9_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h10_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h10_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h10_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[2]: Дублирующийся препарат
+- `duplicate_drug` conditions[h10_5_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[3]: Дублирующийся препарат
+- `duplicate_drug` conditions[h11_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h11_2_кп_диагностика_и_лечение_пациентов_взр_население_с].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_drug` conditions[h13_1_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[0]: Дублирующийся препарат
+- `duplicate_drug` conditions[h13_1_клинический_протокол_устанавливает_общие_требовани].treatment.drugs[1]: Дублирующийся препарат

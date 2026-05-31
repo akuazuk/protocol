@@ -1,0 +1,117 @@
+# Validation: khirurgiya_02кп_диагностика_лечение_пациентов_взр_нас_травмами_опорно_двигательн
+
+- **status:** needs_human_review
+- **validated_at:** 2026-05-31T18:30:05.943930+00:00
+- **review_status:** not_reviewed
+- **extraction_status:** auto_extracted
+
+## Warnings
+- `required_exam_level` conditions[s32_1_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[s32_1_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[s32_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_5_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_5_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_5_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_5_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_7_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_7_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s32_7_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s32_7_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_2_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_2_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_2_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_2_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_4_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_4_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_6_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_6_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s33_6_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s33_6_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_0_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_0_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_1_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_1_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_1_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_1_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_2_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_2_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_2_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_2_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_3_клинический_протокол_устанавливает_общие_требовани].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_3_клинический_протокол_устанавливает_общие_требовани].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s42_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s42_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s43_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s43_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s46_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s46_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s46_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `required_exam_level` conditions[s46_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s46_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s46_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_0_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_1_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_2_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_3_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_4_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[0]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[1]: Дублирующееся обследование
+- `required_exam_level` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: required_exams содержит элемент не с level=required
+- `duplicate_exam` conditions[s52_6_02кп_диагностика_лечение_пациентов_взр_нас_травмам].required_exams[2]: Дублирующееся обследование
