@@ -59,6 +59,24 @@ python3 scripts/update_quality_benchmark.py --mini # smoke
 | GET | `/api/demo-consult-text` | Текст демо-КЗ (СКВ) |
 | GET | `/health` | Готовность RAG и конфигурация |
 
+## Анализ консультативных заключений (КЗ)
+
+Структурный детерминированный разбор КЗ (диагнозы/МКБ, обследования, лекарства с дозами,
+красные флаги, применимость протоколов по возрасту/полу/беременности, балл по 6 блокам)
+встроен в проверку КЗ и доступен отдельной командой:
+
+```bash
+# один файл (PDF/TXT/JSON)
+python -m scripts.analyze_consultation --file path/to/kz.pdf --markdown report.md
+
+# папка целиком (batch; ошибка одного файла не останавливает остальные)
+python -m scripts.analyze_consultation --folder data/examples/consultations --output reports/
+```
+
+В ответе `/api/consult-review` появляется поле `structured_analysis` (документ + оценка
+соответствия) и `report_markdown`. Отключается флагом `CONSULT_STRUCTURED_ANALYSIS=0`.
+Подробности: `docs/current_project_audit.md`, `docs/implementation_plan.md`.
+
 ## Корпус и актуальность
 
 - Каталог PDF: `download_minzdrav_protocols.py` → `minzdrav_protocols/`.

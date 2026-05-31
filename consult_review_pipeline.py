@@ -69,7 +69,6 @@ def iter_consult_review_pipeline(
             icd_analysis = rs.analyze_query_for_icd(q, q_rag)
 
     merged_icd, icd_merge_meta = rs._merge_icd_codes_for_consult_retrieval(icd_analysis, full_text)
-    icd_codes_for_lex = merged_icd or (icd_analysis.get("codes_for_retrieval") or None)
     diag_codes_list = (
         icd_merge_meta.get("diag_block_icd_codes")
         if isinstance(icd_merge_meta.get("diag_block_icd_codes"), list)
@@ -370,6 +369,30 @@ def iter_consult_review_pipeline(
             detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
         ) from exc
 
+    # --- Структурный детерминированный разбор КЗ (аддитивно, за флагом) ---
+    structured_analysis = None
+    report_markdown = None
+    if rs.env_bool("CONSULT_STRUCTURED_ANALYSIS", True):
+        try:
+            from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+            yield emit("structured", 92, "Структурный разбор заключения…")
+            sa = analyze_consultation_text(
+                full_text,
+                consultation_id=(content_signature or "consult")[:16] or "consult",
+                demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
+                specialty_slug=None,
+                with_markdown=True,
+            )
+            structured_analysis = {
+                "document": sa.get("document"),
+                "matches": sa.get("matches"),
+                "compliance": sa.get("compliance"),
+            }
+            report_markdown = sa.get("report_markdown")
+        except Exception:
+            structured_analysis = None
+
     result = {
         "ok": True,
         "server_version": rs._app_version(),
@@ -400,6 +423,10 @@ def iter_consult_review_pipeline(
     }
     if clinical_rules is not None:
         result["clinical_rules"] = clinical_rules
+    if structured_analysis is not None:
+        result["structured_analysis"] = structured_analysis
+    if report_markdown:
+        result["report_markdown"] = report_markdown
     result["cached_result"] = False
     rs._consult_cache_put(cache_key, result)
     yield ("done", result)
