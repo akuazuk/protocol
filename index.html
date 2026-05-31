@@ -687,17 +687,19 @@
 
     .consult-progress-label {
       margin: 0.35rem 0 0;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: var(--green-900);
       font-variant-numeric: tabular-nums;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     .consult-progress-partial {
-      margin: 0.35rem 0 0;
-      font-size: 0.76rem;
-      color: var(--muted);
-      line-height: 1.4;
+      display: none;
     }
 
     .consult-results-card {
@@ -10112,19 +10114,14 @@
     var fill = document.getElementById("consult-progress-fill");
     var bar = document.getElementById("consult-progress-bar");
     var lbl = document.getElementById("consult-progress-label");
-    var part = document.getElementById("consult-progress-partial");
     var p = Math.max(0, Math.min(100, Number(pct) || 0));
     if (fill) fill.style.width = String(p) + "%";
     if (bar) bar.setAttribute("aria-valuenow", String(p));
-    if (lbl) lbl.textContent = String(p) + "% — " + (labelRu || "обработка…");
-    if (part) {
-      if (partialNote) {
-        part.textContent = partialNote;
-        part.hidden = false;
-      } else {
-        part.hidden = true;
-        part.textContent = "";
-      }
+    if (lbl) {
+      var line = String(p) + "% — " + (labelRu || "обработка…");
+      if (partialNote) line += " · " + partialNote;
+      lbl.textContent = line;
+      lbl.title = line;
     }
   }
 
@@ -10140,28 +10137,25 @@
 
   function consultPartialNoteFromPayload(partial, stage) {
     partial = partial || {};
-    if (stage === "icd_done" && partial.icd && partial.icd.codes && partial.icd.codes.length) {
-      return "МКБ: " + partial.icd.codes.slice(0, 6).join(", ");
+    if (stage === "icd_done" && partial.icd_codes && partial.icd_codes.length) {
+      return "МКБ " + partial.icd_codes.slice(0, 5).join(", ");
     }
-    if (stage === "rules_done" && partial.clinical_rules) {
-      var mp = partial.clinical_rules.matched_protocols || [];
+    if (stage === "rules_done") {
       var bits = [];
-      if (mp.length) bits.push("Сопоставлено протоколов: " + mp.length);
+      if (partial.matched_protocols_count) bits.push("протоколов " + partial.matched_protocols_count);
       if (typeof partial.rules_compliance_pct === "number") {
-        bits.push("Соответствие правилам: " + partial.rules_compliance_pct + "%");
+        bits.push("правила " + partial.rules_compliance_pct + "%");
       }
-      if (typeof partial.catalog_build_pct === "number") {
-        bits.push("Каталог структурирован: " + partial.catalog_build_pct + "%");
-      } else if (partial.catalog_build && partial.catalog_build.build_pct != null) {
-        bits.push("Каталог структурирован: " + partial.catalog_build.build_pct + "%");
+      if (partial.icd_codes && partial.icd_codes.length) {
+        bits.push("МКБ " + partial.icd_codes.slice(0, 4).join(", "));
       }
-      if (bits.length) return bits.join(" · ");
+      return bits.join(" · ");
     }
-    if (stage === "protocols" && partial.retrieval_paths) {
-      return "Фрагменты из " + partial.retrieval_paths.length + " PDF протоколов";
+    if (stage === "protocols" && partial.retrieval_paths_count) {
+      return partial.retrieval_paths_count + " PDF";
     }
-    if (partial.extraction_chars) {
-      return "Извлечено символов: " + partial.extraction_chars;
+    if (stage === "retrieve" && partial.protocol_paths_target && partial.protocol_paths_target.length) {
+      return partial.protocol_paths_target.length + " целевых PDF";
     }
     return "";
   }
@@ -10228,6 +10222,29 @@
     }
   }
 
+  function fetchConsultReviewSync(base, fd, consultCtrl) {
+    return fetch(base + "/api/consult-review", {
+      method: "POST",
+      body: fd,
+      signal: consultCtrl.signal,
+    }).then(function (r) {
+      if (!r.ok) {
+        return r.text().then(function (text) {
+          var j = null;
+          try {
+            j = text ? JSON.parse(text) : null;
+          } catch (e) {
+            j = null;
+          }
+          var d = j && j.detail;
+          if (Array.isArray(d)) d = d.map(function (x) { return x.msg || JSON.stringify(x); }).join("; ");
+          throw new Error(d || formatFetchError(r.status, text) || r.statusText);
+        });
+      }
+      return r.json();
+    });
+  }
+
   function fetchConsultReviewStream(base, fd, consultCtrl) {
     return fetch(base + "/health")
       .then(function (h) {
@@ -10291,9 +10308,11 @@
                   return;
                 }
                 if (ev.type === "progress") {
-                  updateConsultProgressUI(ev.pct, ev.label_ru, consultPartialNoteFromPayload(ev.partial, ev.stage));
-                  acc = applyConsultPartialPayload(acc, ev.partial);
-                  renderConsultPartialUI(acc);
+                  updateConsultProgressUI(
+                    ev.pct,
+                    ev.label_ru,
+                    consultPartialNoteFromPayload(ev.partial, ev.stage)
+                  );
                 } else if (ev.type === "done") {
                   finalResult = ev.result;
                 } else if (ev.type === "error") {
@@ -10305,6 +10324,17 @@
           });
         }
         return pump();
+      })
+      .catch(function (err) {
+        var msg = err && err.message ? String(err.message) : "";
+        if (
+          msg.indexOf("Поток завершился без результата") >= 0 ||
+          msg.indexOf("Сессия прервана") >= 0
+        ) {
+          updateConsultProgressUI(90, "повтор без потока…", "надёжный режим");
+          return fetchConsultReviewSync(base, fd, consultCtrl);
+        }
+        throw err;
       });
   }
 

@@ -109,66 +109,92 @@ def iter_consult_review_pipeline(
         38,
         "МКБ и демография готовы",
         {
-            "icd": rs._icd_client_payload(icd_analysis),
-            "demographics_meta": demographics_meta,
-            "consult_retrieval": {
-                "icd_codes_lex_merged": merged_icd,
-                "diag_block_icd_codes": diag_codes_list,
-            },
+            "icd_codes": (merged_icd or [])[:8],
+            "icd_count": len(merged_icd or []),
         },
     )
 
     yield emit("rules", 45, "Проверка по правилам протоколов…")
-    try:
-        from clinical_knowledge.catalog_full_build import build_status_payload
-
-        catalog_build = build_status_payload()
-    except Exception:
-        catalog_build = {}
     clinical_rules = rs._consult_clinical_rules_pipeline(
         full_text,
         demographics_meta if isinstance(demographics_meta, dict) else {},
         list(merged_icd or []),
         user_slugs,
     )
-    matched_path_boost: list[str] = []
-    if isinstance(clinical_rules, dict):
+
+    from clinical_knowledge.consult_retrieval import (
+        consult_target_protocol_paths,
+        filter_retrieval_rows_by_paths,
+    )
+
+    strict_proto = rs.env_bool("CONSULT_REVIEW_STRICT_PROTOCOLS", True)
+    allowed_paths, path_pick_meta = consult_target_protocol_paths(
+        merged_icd=list(merged_icd or []),
+        diag_icd=list(diag_codes_list or []),
+        clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
+        specialty_slugs=boost_merged or user_slugs or None,
+    )
+    matched_path_boost = list(allowed_paths)
+    if not matched_path_boost and isinstance(clinical_rules, dict):
         for mp in clinical_rules.get("matched_protocols") or []:
             sp = (mp or {}).get("source_path")
             if sp and sp not in matched_path_boost:
                 matched_path_boost.append(sp)
-        rules_partial: dict[str, Any] = {"clinical_rules": clinical_rules, "catalog_build": catalog_build}
-        rc = (clinical_rules.get("rules_check") or {}) if isinstance(clinical_rules.get("rules_check"), dict) else {}
-        if rc.get("rules_compliance_pct") is not None:
+
+    rules_partial: dict[str, Any] = {
+        "matched_protocols_count": len(matched_path_boost),
+        "icd_codes": (merged_icd or [])[:6],
+    }
+    if isinstance(clinical_rules, dict):
+        rc = clinical_rules.get("rules_check") or {}
+        if isinstance(rc, dict) and rc.get("rules_compliance_pct") is not None:
             rules_partial["rules_compliance_pct"] = rc.get("rules_compliance_pct")
-        if catalog_build.get("build_pct") is not None:
-            rules_partial["catalog_build_pct"] = catalog_build.get("build_pct")
-        yield emit("rules_done", 52, "Правила протоколов применены", rules_partial)
+    yield emit("rules_done", 52, "Правила и протоколы определены", rules_partial)
 
-    max_chunks_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_CHUNKS", "14"))
+    max_chunks_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_CHUNKS", "12"))
     max_per_path_r = int(__import__("os").environ.get("CONSULT_REVIEW_MAX_PER_PATH", "3"))
+    path_allow = matched_path_boost if strict_proto and matched_path_boost else None
+    icd_for_retrieval = list(diag_codes_list or merged_icd or [])
 
-    yield emit("retrieve", 58, "Поиск фрагментов клинических протоколов…")
+    yield emit(
+        "retrieve",
+        58,
+        f"Поиск по {len(path_allow or matched_path_boost or []) or 'релевантным'} протоколам…",
+        {"protocol_paths_target": (path_allow or matched_path_boost)[:6]},
+    )
     retrieved = rs.retrieve(
         q_rag,
         routing_query=rq,
         category_boost=boost_merged or None,
         user_category_slugs=user_slugs or None,
-        icd_codes_for_lex=icd_codes_for_lex,
+        icd_codes_for_lex=icd_for_retrieval or None,
         path_boost=matched_path_boost or None,
+        path_allowlist=path_allow,
         max_chunks=max_chunks_r,
         max_per_path=max_per_path_r,
     )
-    if not retrieved:
-        fallback_q = full_text[: min(5500, len(full_text))]
+    if not retrieved and path_allow:
         retrieved = rs.retrieve(
-            fallback_q,
-            routing_query=full_text[: min(9500, len(full_text))],
+            q_rag,
+            routing_query=rq,
             category_boost=boost_merged or None,
             user_category_slugs=user_slugs or None,
-            icd_codes_for_lex=(merged_icd or None),
+            icd_codes_for_lex=icd_for_retrieval or None,
             path_boost=matched_path_boost or None,
-            max_chunks=max(14, max_chunks_r + 2),
+            path_allowlist=None,
+            max_chunks=max_chunks_r,
+            max_per_path=max_per_path_r,
+        )
+    if not retrieved and icd_for_retrieval:
+        retrieved = rs.retrieve(
+            " ".join(icd_for_retrieval[:6]),
+            routing_query=rq,
+            category_boost=boost_merged or None,
+            user_category_slugs=user_slugs or None,
+            icd_codes_for_lex=icd_for_retrieval,
+            path_boost=matched_path_boost or None,
+            path_allowlist=path_allow,
+            max_chunks=max_chunks_r,
             max_per_path=max_per_path_r,
         )
     if not retrieved:
@@ -176,10 +202,22 @@ def iter_consult_review_pipeline(
 
         raise HTTPException(
             status_code=400,
-            detail="Не удалось подобрать фрагменты протоколов по тексту PDF — попробуйте другой файл или явно опишите диагноз/МКБ в документе.",
+            detail=(
+                "Не удалось подобрать фрагменты протоколов по МКБ и диагнозу из КЗ. "
+                "Укажите коды МКБ-10 в документе или выберите рубрику протокола."
+            ),
         )
 
-    second_pass_on = rs._consult_rag_second_pass_enabled()
+    retrieved = filter_retrieval_rows_by_paths(retrieved, path_allow)
+    if path_allow and not retrieved:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=400,
+            detail="По выбранным протоколам и кодам МКБ не найдено релевантных фрагментов. Проверьте коды МКБ в КЗ.",
+        )
+
+    second_pass_on = rs._consult_rag_second_pass_enabled() and not (strict_proto and path_allow)
     second_pass_diag: dict = {
         "enabled": second_pass_on,
         "applied": False,
@@ -218,8 +256,9 @@ def iter_consult_review_pipeline(
                     routing_query=rq,
                     category_boost=boost_merged or None,
                     user_category_slugs=user_slugs or None,
-                    icd_codes_for_lex=icd_codes_for_lex,
+                    icd_codes_for_lex=icd_for_retrieval,
                     path_boost=matched_path_boost or None,
+                    path_allowlist=path_allow,
                     max_chunks=max_chunks_r + bump,
                     max_per_path=max_per_path_r,
                 )
@@ -230,6 +269,7 @@ def iter_consult_review_pipeline(
                         max_chunks=merge_max,
                         max_per_path=max_per_path_r,
                     )
+                    retrieved = filter_retrieval_rows_by_paths(retrieved, path_allow)
                     second_pass_diag["applied"] = True
                     second_pass_diag["reason"] = why
                     second_pass_diag["second_retrieve_rows"] = len(r2)
@@ -271,15 +311,8 @@ def iter_consult_review_pipeline(
         72,
         f"Подобрано протоколов: {len(paths_used)}",
         {
-            "retrieval_paths": paths_used,
-            "consult_protocol_fragments": ui_frags,
-            "consult_oncology_flags": oncology,
-            "consult_icd_precise_links": precise_links,
-            "consult_icd_precise_note_ru": precise_note_ru,
-            "consult_retrieval": {
-                "focus": retrieval_focus_meta,
-                "second_pass": second_pass_diag,
-            },
+            "retrieval_paths_count": len(paths_used),
+            "protocol_paths_used": paths_used[:8],
         },
     )
 
@@ -317,15 +350,25 @@ def iter_consult_review_pipeline(
     except ImportError:
         rules_ctx = ""
 
-    yield emit("synthesize", 85, "Формирование оценки и критериев (модель)…")
-    review = rs._consult_review_synthesize(
-        model,
-        consult_excerpt,
-        protocol_ctx,
-        paths_hint_for_llm,
-        extra_context=oncology_extra,
-        clinical_rules_context=rules_ctx,
-    )
+    yield emit("synthesize", 85, "Формирование оценки (модель)…")
+    try:
+        review = rs._consult_review_synthesize(
+            model,
+            consult_excerpt,
+            protocol_ctx,
+            paths_hint_for_llm,
+            extra_context=oncology_extra,
+            clinical_rules_context=rules_ctx,
+        )
+    except Exception as exc:
+        from fastapi import HTTPException
+
+        if isinstance(exc, HTTPException):
+            raise
+        raise HTTPException(
+            status_code=502,
+            detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
+        ) from exc
 
     result = {
         "ok": True,
@@ -349,6 +392,8 @@ def iter_consult_review_pipeline(
             "icd_merge_meta": icd_merge_meta,
             "fragments_icd_needles": icd_frag_needles,
             "second_pass": second_pass_diag,
+            "strict_protocol_paths": path_allow or matched_path_boost,
+            "path_pick_meta": path_pick_meta,
         },
         "icd": rs._icd_client_payload(icd_analysis),
         "demographics_meta": demographics_meta,
@@ -357,7 +402,6 @@ def iter_consult_review_pipeline(
         result["clinical_rules"] = clinical_rules
     result["cached_result"] = False
     rs._consult_cache_put(cache_key, result)
-    yield emit("done", 100, "Готово", {"review": review})
     yield ("done", result)
 
 

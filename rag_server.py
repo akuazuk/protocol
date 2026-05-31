@@ -2457,6 +2457,7 @@ def retrieve(
     user_category_slugs: list[str] | None = None,
     icd_codes_for_lex: list[str] | None = None,
     path_boost: list[str] | None = None,
+    path_allowlist: list[str] | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
@@ -2466,6 +2467,7 @@ def retrieve(
     user_category_slugs — рубрики, выбранные пользователем в форме: усиление совпадений и штраф нерелевантных чанков.
     icd_codes_for_lex — нормализованные коды МКБ-10: дополнительные лексические токены и усиление чанков, где встречается код.
     path_boost — пути PDF протоколов (source_path): усиление чанков из matched protocol cards.
+    path_allowlist — если задан, учитываются только чанки с path из этого списка (строгий режим КЗ).
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -2507,6 +2509,11 @@ def retrieve(
     path_boost_set = frozenset(
         p.strip() for p in (path_boost or []) if isinstance(p, str) and p.strip()
     )
+    path_allowlist_set = frozenset(
+        p.replace("\\", "/").strip()
+        for p in (path_allowlist or [])
+        if isinstance(p, str) and p.strip()
+    )
     path_boost_factor = float(os.environ.get("RAG_MATCHED_PROTOCOL_PATH_BOOST", "1.85"))
     bm25_alpha = float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55"))
     use_bm25_blend = _bm25_index is not None and bm25_alpha < 0.999
@@ -2534,6 +2541,9 @@ def retrieve(
         else iter(_chunks)
     )
     for ch in chunk_source:
+        pth = ch.get("path") or ""
+        if path_allowlist_set and pth.replace("\\", "/") not in path_allowlist_set:
+            continue
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
             ch.get("title") or ""
         )
@@ -2736,6 +2746,9 @@ GEMINI_CONSULT_DIGEST_TIMEOUT = float(
 )
 GEMINI_CONSULT_RAG_REFINE_TIMEOUT = float(
     os.environ.get("GEMINI_CONSULT_RAG_REFINE_TIMEOUT", "42")
+)
+GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT = float(
+    os.environ.get("GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT", "120")
 )
 
 
@@ -2976,6 +2989,26 @@ def generate_gemini_consult_rag_second_pass(model, full_prompt: str):
             return fut.result(timeout=GEMINI_CONSULT_RAG_REFINE_TIMEOUT)
         except FuturesTimeout:
             return None
+
+
+def _generate_blocking_consult_review_synth(model, full_prompt: str):
+    import google.generativeai as genai
+
+    max_out = int(os.environ.get("GEMINI_CONSULT_REVIEW_MAX_TOKENS", "8192"))
+    return model.generate_content(
+        full_prompt,
+        generation_config=_make_generation_config(genai, max_output_tokens=max_out, json_mode=True),
+    )
+
+
+def generate_gemini_consult_review_synthesize(model, full_prompt: str):
+    """Финальная оценка КЗ — отдельный таймаут для надёжности SSE."""
+    return _run_model_with_retry(
+        _generate_blocking_consult_review_synth,
+        model,
+        full_prompt,
+        GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT,
+    )
 
 
 def refine_clinical_query_gemini(
@@ -4056,7 +4089,7 @@ def _consult_review_synthesize(
         + protocol_excerpt
         + (extra_context.strip() + "\n" if extra_context and extra_context.strip() else "")
     )
-    resp = generate_gemini(model, full_prompt)
+    resp = generate_gemini_consult_review_synthesize(model, full_prompt)
     txt = _extract_gemini_text(resp)
     parsed = _try_parse_json(txt)
     if not parsed:
@@ -5590,7 +5623,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r26-fix-consult-js-syntax"
+BUILD_VERSION = "2026-05-31-r27-consult-strict-reliable"
 
 
 def _app_version() -> str:
@@ -6670,6 +6703,7 @@ def api_consult_review_stream(
     content_signature = "\n||\n".join(doc_texts_for_cache)
 
     def event_gen():
+        sent_done = False
         yield sse_encode_progress(
             "extract",
             12,
@@ -6699,12 +6733,21 @@ def api_consult_review_stream(
                     )
                 elif kind == "done":
                     yield sse_encode_done(payload)
+                    sent_done = True
                     return
         except HTTPException as e:
             detail = e.detail if isinstance(e.detail, str) else str(e.detail)
             yield sse_encode_error(detail, e.status_code)
+            sent_done = True
         except Exception as e:
             yield sse_encode_error(str(e)[:400], 500)
+            sent_done = True
+        finally:
+            if not sent_done:
+                yield sse_encode_error(
+                    "Сессия прервана до завершения анализа. Повторите запрос — будет попытка без потока.",
+                    500,
+                )
 
     return StreamingResponse(
         event_gen(),
