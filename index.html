@@ -240,34 +240,6 @@
         0 4px 20px rgba(6, 61, 53, 0.05);
     }
 
-    #panel-consult-review .consult-clinical-rules-panel {
-      margin-top: 0.85rem;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(22, 101, 52, 0.18);
-      background: linear-gradient(135deg, rgba(240, 253, 244, 0.95), rgba(236, 253, 245, 0.6));
-    }
-
-    #panel-consult-review .consult-rules-findings {
-      margin: 0.5rem 0 0;
-      padding-left: 1.15rem;
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-
-    #panel-consult-review .consult-rules-findings li {
-      margin: 0.35rem 0;
-    }
-
-    #panel-consult-review .consult-rules-findings li.is-fail {
-      color: var(--red-700);
-      font-weight: 600;
-    }
-
-    #panel-consult-review .consult-rules-findings li.is-ok {
-      color: var(--green-800);
-    }
-
     #panel-consult-review .specialty-chip {
       padding: 0.52rem 0.62rem;
       border-radius: 12px;
@@ -599,6 +571,150 @@
       line-height: 1.45;
       color: #1e293b;
     }
+    .consult-report-html .cr-header--hero {
+      background: linear-gradient(135deg, #f0f9f6 0%, #e8f4fc 55%, #faf5ff 100%);
+      border: 1px solid #cfe0db;
+      border-radius: 14px;
+      padding: 1rem 1.15rem 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .consult-report-html .cr-hero-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .consult-report-html .cr-hero-text {
+      flex: 1;
+      min-width: 14rem;
+    }
+    .consult-report-html .cr-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.12rem;
+      color: #0f3d36;
+      font-family: Outfit, DM Sans, system-ui, sans-serif;
+    }
+    .consult-report-html .cr-header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .consult-report-html .cr-hero-charts {
+      display: flex;
+      gap: 0.65rem;
+      flex-shrink: 0;
+    }
+    .consult-report-html .cr-donut-wrap {
+      margin: 0;
+    }
+    .consult-report-html .cr-donut {
+      filter: drop-shadow(0 4px 10px rgba(15, 61, 54, 0.08));
+    }
+    .consult-report-html .cr-limitations {
+      margin: 0.55rem 0 0;
+      padding-left: 1rem;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .consult-report-html .cr-issue-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.85rem;
+    }
+    .consult-report-html .cr-issue-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .consult-report-html .cr-issue-chip--ok {
+      color: #0d7a4a;
+      background: #e6f7ef;
+      border-color: #0d7a4a33;
+    }
+    .consult-report-html .cr-layer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+      gap: 0.55rem;
+      margin-top: 0.85rem;
+    }
+    .consult-report-html .cr-layer-card {
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(15, 61, 54, 0.1);
+      box-shadow: 0 2px 8px rgba(15, 61, 54, 0.04);
+    }
+    .consult-report-html .cr-layer-card__title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--layer-color, #475569);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .consult-report-html .cr-layer-card__pct {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--layer-color, #0f3d36);
+      line-height: 1.1;
+      margin: 0.15rem 0 0.35rem;
+    }
+    .consult-report-html .cr-layer-card__track {
+      height: 5px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .consult-report-html .cr-layer-card__fill {
+      height: 100%;
+      background: var(--layer-color, #0d9488);
+      border-radius: 999px;
+    }
+    .consult-report-html .cr-section--scores {
+      background: linear-gradient(180deg, #fff, #f8fafc);
+    }
+    .consult-report-html .cr-section--evidence {
+      background: linear-gradient(180deg, #fafafa, #fff);
+    }
+    .consult-report-html .cr-evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+      gap: 0.45rem;
+    }
+    .consult-report-html .cr-evidence-card {
+      padding: 0.45rem 0.55rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left-width: 3px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+    .consult-report-html .cr-evidence-card__id {
+      font-weight: 700;
+      color: #0f3d36;
+      font-size: 0.72rem;
+    }
+    .consult-report-html .cr-evidence-card__dec {
+      color: #64748b;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .consult-report-html .cr-evidence-card__txt {
+      margin-top: 0.2rem;
+      color: #334155;
+    }
+    .consult-report-html .cr-section--muted {
+      opacity: 0.92;
+      background: #f8fafc;
+    }
     .consult-report-html .cr-section {
       margin-bottom: 0.85rem;
       padding: 0.75rem 0.85rem;
@@ -694,10 +810,31 @@
       color: #64748b;
     }
     .cr-report-wrap {
-      max-height: 28rem;
-      overflow: auto;
-      margin-top: 0.5rem;
+      margin-top: 0.65rem;
       padding: 0.15rem;
+    }
+    .cr-report-wrap--full {
+      max-height: none;
+    }
+    #consult-structured-panel {
+      margin-top: 1rem;
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+    #consult-structured-panel .consult-structured-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    #consult-structured-panel .consult-structured-head h3 {
+      margin: 0;
+      font-family: Outfit, DM Sans, system-ui, sans-serif;
+      font-size: 1.05rem;
+      color: var(--green-950);
     }
     .cr-report-actions {
       display: flex;
@@ -5756,16 +5893,6 @@
           <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
           <p class="consult-hint-small" style="margin: 0.45rem 0 0; font-style: italic" id="consult-out-disclaimer"></p>
 
-          <div id="consult-clinical-rules-panel" class="consult-clinical-rules-panel" hidden>
-            <h3 style="font-family: Outfit, DM Sans, system-ui, sans-serif; font-size: 1.02rem; margin: 1rem 0 0.45rem; color: var(--green-950)">
-              Проверка по правилам протокола (MVP)
-            </h3>
-            <p class="consult-hint-small" id="consult-rules-pct" style="font-weight: 700; color: var(--green-800)"></p>
-            <p class="consult-hint-small" id="consult-rules-matched"></p>
-            <ul class="consult-rules-findings" id="consult-rules-findings"></ul>
-            <p class="consult-hint-small" id="consult-rules-bench-note" style="margin: 0.45rem 0 0; opacity: 0.85"></p>
-          </div>
-
           <div id="consult-methodology-panel" class="consult-methodology-panel consult-hide-print" hidden>
             <h3>Сводка для методслужбы</h3>
             <p class="consult-methodology-summary" id="consult-methodology-summary"></p>
@@ -5773,8 +5900,10 @@
             <ul class="consult-risk-list" id="consult-risk-list" hidden></ul>
           </div>
 
+          <section id="consult-structured-panel" hidden aria-label="Детерминированный разбор КЗ"></section>
+
           <h3 style="font-family: Outfit, DM Sans, system-ui, sans-serif; font-size: 1.02rem; margin: 1.05rem 0 0.45rem; color: var(--green-950)">
-            Критерии
+            Критерии модели
           </h3>
           <div style="overflow-x: auto">
             <table class="consult-crit-table" id="consult-out-table">
@@ -10160,76 +10289,8 @@
     el.innerHTML = parts.join("");
   }
 
-  function renderConsultClinicalRulesPanel(data) {
-    var panel = document.getElementById("consult-clinical-rules-panel");
-    var pctEl = document.getElementById("consult-rules-pct");
-    var matchedEl = document.getElementById("consult-rules-matched");
-    var listEl = document.getElementById("consult-rules-findings");
-    if (!panel || !pctEl || !matchedEl || !listEl) return;
-
-    var cr = data && data.clinical_rules;
-    if (!cr || !cr.rules_check) {
-      panel.hidden = true;
-      return;
-    }
-    panel.hidden = false;
-
-    var rc = cr.rules_check;
-    var pct = rc.rules_compliance_pct;
-    pctEl.textContent =
-      typeof pct === "number"
-        ? "Соответствие правилам (детерминированная проверка): " + pct + "%"
-        : "";
-
-    var matched = cr.matched_protocols || [];
-    if (matched.length) {
-      matchedEl.textContent =
-        "Подобранные протоколы: " +
-        matched
-          .slice(0, 3)
-          .map(function (m) {
-            return (m.title || m.protocol_id || "").slice(0, 80);
-          })
-          .join("; ");
-    } else {
-      matchedEl.textContent = "Подобранные протоколы: не найдены (MVP — гастроэнтерология).";
-    }
-
-    listEl.innerHTML = "";
-    var findings = rc.findings || [];
-    var show = findings.filter(function (f) {
-      return f && (f.message_ru || !f.passed);
-    });
-    if (!show.length) {
-      var li0 = document.createElement("li");
-      li0.className = "is-ok";
-      li0.textContent = "Явных нарушений по загруженным правилам не обнаружено.";
-      listEl.appendChild(li0);
-      return;
-    }
-    show.slice(0, 12).forEach(function (f) {
-      var li = document.createElement("li");
-      li.className = f.passed ? "is-ok" : "is-fail";
-      var msg = f.message_ru || f.rule_id || "";
-      if (f.passed && !msg) msg = (f.rule_type || "правило") + ": OK";
-      li.textContent = (f.passed ? "✓ " : "• ") + msg;
-      listEl.appendChild(li);
-    });
-
-    var benchNote = document.getElementById("consult-rules-bench-note");
-    if (benchNote) {
-      benchNote.textContent = "";
-      fetch((window.__API_BASE || "") + "/api/clinical-knowledge/benchmark")
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (b) {
-          if (b && typeof b.pass_rate_pct === "number") {
-            benchNote.textContent =
-              "Эталон rule checker (gold-set): " + b.cases_passed + "/" + b.cases_total +
-              " (" + b.pass_rate_pct + "%)";
-          }
-        })
-        .catch(function () {});
-    }
+  function renderConsultClinicalRulesPanel(_data) {
+    /* Панель MVP снята — детерминированный разбор в consult-structured-panel / report_html */
   }
 
   function renderConsultProtocolsSection(data, rev) {
@@ -10549,6 +10610,8 @@
     partially_compliant: "частично соответствует",
     non_compliant: "не соответствует",
     insufficient_data: "недостаточно данных",
+    insufficient_protocol_data: "нет данных протокола",
+    low_confidence: "низкая уверенность",
     manual_review_required: "нужен ручной разбор"
   };
 
@@ -10581,7 +10644,7 @@
     unknown: "не определён"
   };
 
-  /** Аддитивная панель детерминированного структурного разбора КЗ. */
+  /** Панель детерминированного структурного разбора КЗ (цветной HTML-отчёт). */
   function renderConsultStructuredAnalysis(data) {
     var sa = data && data.structured_analysis;
     var host = document.getElementById("consult-results-wrap");
@@ -10593,130 +10656,74 @@
     if (!panel) {
       panel = document.createElement("section");
       panel.id = "consult-structured-panel";
-      panel.style.cssText =
-        "margin-top:1rem;padding:0.9rem 1rem;border:1px solid #cfe0db;border-radius:0.6rem;background:#f7fbfa";
-      host.appendChild(panel);
+      panel.setAttribute("aria-label", "Детерминированный разбор КЗ");
+      var critHeading = host.querySelector("h3");
+      if (critHeading && critHeading.textContent.indexOf("Критерии") >= 0) {
+        host.insertBefore(panel, critHeading);
+      } else {
+        host.appendChild(panel);
+      }
     }
     panel.hidden = false;
 
-    var doc = sa.document || {};
     var comp = sa.compliance || {};
-    var bd = comp.score_breakdown || {};
-    var pt = doc.patient || {};
+    var htmlReport = data.report_html || "";
+    var md = data.report_markdown || "";
     var status = comp.overall_status || "insufficient_data";
     var statusRu = CONSULT_STATUS_RU[status] || status;
+    var conf =
+      typeof comp.confidence_score === "number"
+        ? " · уверенность " + Math.round(comp.confidence_score) + "%"
+        : "";
 
-    function blockRow(label, v) {
-      return (
-        "<tr><td style=\"padding:2px 8px 2px 0\">" + escapeHtml(label) + "</td>" +
-        "<td style=\"padding:2px 0;font-variant-numeric:tabular-nums\">" +
-        (v == null ? "—" : Math.round(v) + "%") + "</td></tr>"
-      );
+    var head =
+      '<div class="consult-structured-head">' +
+      '<h3>Детерминированный разбор КЗ</h3>' +
+      '<span class="consult-hint-small" style="margin:0;font-weight:600;color:var(--green-800)">' +
+      escapeHtml(statusRu) +
+      (comp.overall_score != null ? " · " + Math.round(comp.overall_score) + "%" : "") +
+      conf +
+      "</span></div>";
+
+    var body = "";
+    if (htmlReport) {
+      body =
+        '<div class="cr-report-wrap cr-report-wrap--full">' + htmlReport + "</div>";
+    } else {
+      var bd = comp.score_breakdown || {};
+      body =
+        '<p class="consult-hint-small">Полный HTML-отчёт недоступен — краткая сводка.</p>' +
+        '<table style="font-size:0.85rem;margin-top:0.5rem"><tbody>' +
+        ["documentation_score", "protocol_applicability_score", "diagnosis_score", "safety_score"]
+          .map(function (k) {
+            var v = bd[k];
+            return v == null
+              ? ""
+              : "<tr><td style=\"padding:2px 8px 2px 0\">" +
+                  escapeHtml(k) +
+                  "</td><td>" +
+                  Math.round(v) +
+                  "%</td></tr>";
+          })
+          .join("") +
+        "</tbody></table>";
     }
 
-    var diagHtml = (comp.diagnosis_assessments || [])
-      .map(function (d) {
-        var txt = d.diagnosis_text || "";
-        var code = d.icd10_code || "";
-        // Не дублируем код, если текст уже начинается с него.
-        var label = (code && txt.toUpperCase().indexOf(code.toUpperCase()) !== 0)
-          ? code + " " + txt : (txt || code);
-        var st = CONSULT_DIAG_STATUS_RU[d.status] || d.status || "";
-        return "<li>" + escapeHtml(label) + " — <strong>" + escapeHtml(st) +
-          "</strong></li>";
-      }).join("");
-
-    var medHtml = (doc.medications || [])
-      .map(function (m) {
-        var parts = [m.drug_name || m.raw_text];
-        if (m.dose_value != null) parts.push(m.dose_value + (m.dose_unit || ""));
-        if (m.frequency) parts.push(m.frequency);
-        if (m.duration) parts.push(m.duration);
-        return "<li>" + escapeHtml(parts.filter(Boolean).join(", ")) + "</li>";
-      }).join("");
-
-    var safetyHtml = (comp.safety_assessments || [])
-      .map(function (s) {
-        var sev = CONSULT_SEVERITY_RU[s.severity] || s.severity || "";
-        var st = CONSULT_SAFETY_STATUS_RU[s.status] || s.status || "";
-        return "<li>[" + escapeHtml(sev) + "] " +
-          escapeHtml(s.finding_text || "") + " — <strong>" + escapeHtml(st) +
-          "</strong></li>";
-      }).join("");
-
-    var missingHtml = (comp.missing_required_items || [])
-      .map(function (i) { return "<li>" + escapeHtml(i.message_ru || "") + "</li>"; })
-      .join("");
-
-    var rs = sa.rubric_specifics || {};
-    var byRubric = rs.by_rubric || {};
-    var meas = rs.measurements || {};
-    var rubricBlocks = Object.keys(byRubric).map(function (slug) {
-      var info = byRubric[slug] || {};
-      var matched = (info.matched_terms || []).join(", ");
-      return "<li><strong>" + escapeHtml(info.title || slug) + "</strong> — " +
-        (info.term_coverage_pct != null ? info.term_coverage_pct + "%" : "—") +
-        (matched ? " <span style=\"color:#33524c\">(" + escapeHtml(matched) + ")</span>" : "") +
-        "</li>";
-    }).join("");
-    var measBlocks = Object.keys(meas).map(function (k) {
-      var m = meas[k] || {};
-      return "<li>" + escapeHtml(k) + ": <strong>" + escapeHtml(String(m.value || "")) +
-        "</strong> " + escapeHtml(m.unit || "") + "</li>";
-    }).join("");
-    var rubricHtml =
-      (rubricBlocks ? "<div><strong>Профильные понятия рубрики:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + rubricBlocks + "</ul></div>" : "") +
-      (measBlocks ? "<div><strong>Профильные показатели:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + measBlocks + "</ul></div>" : "");
-
-    var md = data.report_markdown || "";
-    var htmlReport = data.report_html || "";
-
-    var fullReportBlock = "";
-    if (htmlReport || md) {
-      fullReportBlock =
-        "<details open style=\"margin-top:0.75rem\">" +
-        "<summary style=\"cursor:pointer;font-weight:600;color:#0f3d36\">Полный отчёт</summary>" +
-        (htmlReport
-          ? "<div class=\"cr-report-wrap\">" + htmlReport + "</div>"
-          : "") +
-        (md
-          ? "<div class=\"cr-report-actions\">" +
-            "<button type=\"button\" data-copy-md=\"1\">Скопировать Markdown</button>" +
-            "</div>" +
-            "<details style=\"margin-top:0.35rem\">" +
-            "<summary style=\"cursor:pointer;font-size:0.82rem;color:#64748b\">Текст Markdown</summary>" +
-            "<pre class=\"cr-md-pre\" style=\"white-space:pre-wrap;font-size:0.78rem;background:#fff;" +
-            "border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:16rem;overflow:auto\">" +
-            escapeHtml(md) + "</pre></details>"
-          : "") +
-        "</details>";
+    var mdBlock = "";
+    if (md) {
+      mdBlock =
+        '<details style="margin-top:0.65rem" class="consult-hide-print">' +
+        '<summary style="cursor:pointer;font-size:0.82rem;color:#64748b;font-weight:600">Markdown / экспорт</summary>' +
+        '<div class="cr-report-actions">' +
+        '<button type="button" data-copy-md="1">Скопировать Markdown</button>' +
+        "</div>" +
+        '<pre class="cr-md-pre" style="white-space:pre-wrap;font-size:0.78rem;background:#fff;' +
+        'border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:14rem;overflow:auto">' +
+        escapeHtml(md) +
+        "</pre></details>";
     }
 
-    panel.innerHTML =
-      "<h3 style=\"margin:0 0 0.4rem;font-size:1rem\">Структурный разбор (детерминированный)</h3>" +
-      "<p style=\"margin:0 0 0.5rem;color:#33524c\">Статус: <strong>" + escapeHtml(statusRu) +
-      "</strong>" + (comp.overall_score != null ? " · " + Math.round(comp.overall_score) + "%" : "") +
-      " · возраст: " + (pt.age_years != null ? pt.age_years : "—") +
-      " · пол: " + escapeHtml(CONSULT_SEX_RU[pt.sex] || pt.sex || "—") +
-      (doc.doctor_specialty ? " · " + escapeHtml(doc.doctor_specialty) : "") + "</p>" +
-      "<div style=\"display:flex;flex-wrap:wrap;gap:1.2rem\">" +
-      "<table style=\"font-size:0.85rem\"><tbody>" +
-      blockRow("Подбор протокола", bd.protocol_match_score) +
-      blockRow("Диагноз", bd.diagnosis_score) +
-      blockRow("Обследования", bd.required_exams_score) +
-      blockRow("Лечение", bd.treatment_score) +
-      blockRow("Безопасность", bd.safety_score) +
-      blockRow("Оформление", bd.documentation_quality_score) +
-      "</tbody></table>" +
-      "<div style=\"flex:1;min-width:16rem\">" +
-      (diagHtml ? "<div><strong>Диагнозы:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + diagHtml + "</ul></div>" : "") +
-      (safetyHtml ? "<div><strong>Красные флаги:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + safetyHtml + "</ul></div>" : "") +
-      (missingHtml ? "<div><strong>Отсутствуют обязательные обследования:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + missingHtml + "</ul></div>" : "") +
-      (medHtml ? "<div><strong>Назначения:</strong><ul style=\"margin:0.2rem 0 0.5rem;padding-left:1.1rem\">" + medHtml + "</ul></div>" : "") +
-      rubricHtml +
-      "</div></div>" +
-      fullReportBlock;
-
+    panel.innerHTML = head + body + mdBlock;
     fixProtocolLinksInContainer(panel);
 
     var copyBtn = panel.querySelector("[data-copy-md]");

@@ -71,16 +71,109 @@ _STATUS_COLOR = {
     "partially_compliant": ("#b45309", "#fef3c7"),
     "non_compliant": ("#b91c1c", "#fee2e2"),
     "insufficient_data": ("#64748b", "#f1f5f9"),
+    "insufficient_protocol_data": ("#475569", "#f1f5f9"),
+    "low_confidence": ("#7c3aed", "#f3e8ff"),
     "manual_review_required": ("#9333ea", "#f3e8ff"),
 }
 _SCORE_KEYS = (
-    ("protocol_match_score", "Подбор протокола", "#2563eb"),
-    ("diagnosis_score", "Диагноз", "#0d9488"),
-    ("required_exams_score", "Обследования", "#7c3aed"),
-    ("treatment_score", "Лечение", "#db2777"),
-    ("safety_score", "Безопасность", "#dc2626"),
-    ("documentation_quality_score", "Оформление", "#64748b"),
+    ("documentation_score", "Оформление КЗ", "#64748b", ("structural_score", "documentation_quality_score")),
+    ("patient_data_score", "Данные пациента", "#0891b2", ()),
+    ("protocol_applicability_score", "Применимость протокола", "#2563eb", ("protocol_match_score",)),
+    ("diagnosis_score", "Диагноз", "#0d9488", ()),
+    ("required_exams_score", "Обследования", "#7c3aed", ()),
+    ("treatment_score", "Лечение", "#db2777", ()),
+    ("safety_score", "Безопасность", "#dc2626", ()),
+    ("follow_up_score", "Контроль", "#ea580c", ()),
 )
+_LAYER_KEYS = (
+    ("documentation_score", "structural_score", "A. Оформление КЗ", "#64748b"),
+    ("protocol_applicability_score", "protocol_match_score", "B. Протокол", "#2563eb"),
+    ("diagnosis_score", None, "C. Клиника", "#0d9488"),
+)
+
+
+def _score_val(bd: Any, *keys: str) -> float | None:
+    for k in keys:
+        if not k:
+            continue
+        val = getattr(bd, k, None) if bd is not None else None
+        if val is None and isinstance(bd, dict):
+            val = bd.get(k)
+        if isinstance(val, (int, float)):
+            return float(val)
+    return None
+
+
+def _svg_donut(
+    score: float | None,
+    *,
+    color: str,
+    caption: str,
+    size: int = 108,
+) -> str:
+    pct = max(0.0, min(100.0, float(score))) if isinstance(score, (int, float)) else 0.0
+    r = 38
+    c_len = 2 * 3.14159 * r
+    dash = c_len * pct / 100.0
+    display = _fmt_pct(score) if isinstance(score, (int, float)) else "—"
+    return (
+        f'<figure class="cr-donut-wrap" aria-label="{_e(caption)}: {display}">'
+        f'<svg class="cr-donut" width="{size}" height="{size}" viewBox="0 0 88 88" role="img">'
+        f'<circle cx="44" cy="44" r="{r}" fill="none" stroke="#e2e8f0" stroke-width="9"/>'
+        f'<circle cx="44" cy="44" r="{r}" fill="none" stroke="{color}" stroke-width="9" '
+        f'stroke-dasharray="{dash:.2f} {c_len:.2f}" stroke-linecap="round" '
+        f'transform="rotate(-90 44 44)"/>'
+        f'<text x="44" y="42" text-anchor="middle" font-size="17" font-weight="700" fill="{color}">'
+        f'{display if display != "—" else "—"}</text>'
+        f'<text x="44" y="56" text-anchor="middle" font-size="9" fill="#64748b">{_e(caption)}</text>'
+        f"</svg></figure>"
+    )
+
+
+def _issue_chips_html(report: ComplianceReport) -> str:
+    chips = [
+        (len(report.critical_issues), "Критич.", "#b91c1c", "#fee2e2"),
+        (len(report.major_issues), "Существен.", "#b45309", "#fef3c7"),
+        (len(report.missing_required_items), "Пропуски", "#7c3aed", "#ede9fe"),
+        (len(report.warnings), "Предупр.", "#0369a1", "#e0f2fe"),
+    ]
+    parts = ['<div class="cr-issue-chips">']
+    for n, label, fg, bg in chips:
+        if n <= 0:
+            continue
+        parts.append(
+            f'<span class="cr-issue-chip" style="color:{fg};background:{bg};border-color:{fg}33">'
+            f"<strong>{n}</strong> {_e(label)}</span>"
+        )
+    if len(parts) == 1:
+        parts.append('<span class="cr-issue-chip cr-issue-chip--ok">Замечаний нет</span>')
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def _layer_cards_html(bd: Any) -> str:
+    cards: list[str] = []
+    for primary, fallback, title, color in _LAYER_KEYS:
+        val = _score_val(bd, primary, fallback or "")
+        if val is None and primary == "diagnosis_score":
+            exams = _score_val(bd, "required_exams_score")
+            treat = _score_val(bd, "treatment_score")
+            if exams is not None or treat is not None:
+                parts = [x for x in (exams, treat) if x is not None]
+                val = sum(parts) / len(parts) if parts else None
+        if val is None:
+            continue
+        w = max(0, min(100, val))
+        cards.append(
+            f'<div class="cr-layer-card" style="--layer-color:{color}">'
+            f'<div class="cr-layer-card__title">{_e(title)}</div>'
+            f'<div class="cr-layer-card__pct">{_fmt_pct(val)}</div>'
+            f'<div class="cr-layer-card__track"><div class="cr-layer-card__fill" '
+            f'style="width:{w:.0f}%"></div></div></div>'
+        )
+    if not cards:
+        return ""
+    return '<div class="cr-layer-grid">' + "".join(cards) + "</div>"
 
 
 def _src_line(ref: SourceRef) -> str:
@@ -211,11 +304,25 @@ def _status_badge_html(status: str, label: str | None = None) -> str:
 
 def _score_bars_html(bd: Any) -> str:
     rows: list[str] = []
-    for key, title, color in _SCORE_KEYS:
-        val = getattr(bd, key, None) if bd is not None else None
-        if val is None and isinstance(bd, dict):
-            val = bd.get(key)
-        pct = float(val) if isinstance(val, (int, float)) else 0.0
+    seen: set[str] = set()
+    for key, title, color, fallbacks in _SCORE_KEYS:
+        val = _score_val(bd, key, *fallbacks)
+        if val is None:
+            continue
+        dedupe = key.replace("documentation_score", "doc").replace("protocol_applicability_score", "proto")
+        if dedupe in seen:
+            continue
+        if key in ("documentation_score", "structural_score", "documentation_quality_score"):
+            if "doc" in seen:
+                continue
+            seen.add("doc")
+        elif key in ("protocol_applicability_score", "protocol_match_score"):
+            if "proto" in seen:
+                continue
+            seen.add("proto")
+        else:
+            seen.add(key)
+        pct = float(val)
         width = max(0, min(100, pct))
         display = _fmt_pct(val)
         rows.append(
@@ -237,22 +344,37 @@ def report_to_html(
     status = report.overall_status
     status_ru = _OVERALL_RU.get(status, status)
     fg, bg = _STATUS_COLOR.get(status, ("#334155", "#f8fafc"))
+    conf_color = "#7c3aed" if (report.confidence_score or 100) < 55 else "#0d9488"
 
     parts: list[str] = [
         '<article class="consult-report-html">',
-        '<header class="cr-header" style="background:linear-gradient(135deg,#f0f9f6,#e8f4fc);'
-        'border:1px solid #cfe0db;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem">',
-        '<h2 class="cr-title" style="margin:0 0 0.5rem;font-size:1.15rem;color:#0f3d36">'
-        "Оценка консультативного заключения</h2>",
-        '<div class="cr-header-meta" style="display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center">',
+        '<header class="cr-header cr-header--hero">',
+        '<div class="cr-hero-grid">',
+        '<div class="cr-hero-text">',
+        '<h2 class="cr-title">Оценка консультативного заключения</h2>',
+        '<div class="cr-header-meta">',
         _status_badge_html(status, status_ru),
     ]
-    if report.overall_score is not None:
+    if report.safety_cap.applied:
         parts.append(
-            f'<span class="cr-overall-pct" style="font-size:1.4rem;font-weight:700;color:{fg}">'
-            f"{_fmt_pct(report.overall_score)}</span>"
+            f'<span class="cr-badge" style="color:#b91c1c;background:#fee2e2;border:1px solid #b91c1c44">'
+            f"⚠ Safety cap {_fmt_pct(report.safety_cap.cap_value)}</span>"
         )
-    parts.append("</div></header>")
+    parts.append("</div>")
+    if report.limitations:
+        parts.append('<ul class="cr-limitations">')
+        for lim in report.limitations[:4]:
+            parts.append(f"<li>{_e(lim)}</li>")
+        parts.append("</ul>")
+    parts.append("</div>")
+    parts.append('<div class="cr-hero-charts">')
+    parts.append(_svg_donut(report.overall_score, color=fg, caption="Соответствие"))
+    if report.confidence_score is not None:
+        parts.append(_svg_donut(report.confidence_score, color=conf_color, caption="Уверенность"))
+    parts.append("</div></div>")
+    parts.append(_issue_chips_html(report))
+    parts.append(_layer_cards_html(bd))
+    parts.append("</header>")
 
     # Резюме
     parts.append('<section class="cr-section"><h3 class="cr-section-title">Краткое резюме</h3><ul class="cr-kv">')
@@ -331,10 +453,13 @@ def report_to_html(
         parts.append("</ul></section>")
 
     # Баллы
-    parts.append(
-        '<section class="cr-section"><h3 class="cr-section-title">Баллы по блокам</h3>'
-        f'<div class="cr-bars">{_score_bars_html(bd)}</div></section>'
-    )
+    bars = _score_bars_html(bd)
+    if bars:
+        parts.append(
+            '<section class="cr-section cr-section--scores">'
+            '<h3 class="cr-section-title">Детализация по блокам</h3>'
+            f'<div class="cr-bars">{bars}</div></section>'
+        )
 
     # Диагнозы
     if report.diagnosis_assessments:
@@ -387,6 +512,40 @@ def report_to_html(
     else:
         parts.append("<p class='cr-muted'>Красные флаги не обнаружены.</p>")
     parts.append("</section>")
+
+    if report.not_applicable_protocols:
+        parts.append(
+            '<section class="cr-section cr-section--muted">'
+            '<h3 class="cr-section-title">Протоколы не применимы</h3><ul class="cr-list">'
+        )
+        for m in report.not_applicable_protocols[:6]:
+            title = _e(m.document_title or m.protocol_id or "—")
+            parts.append(f"<li>{title} — <em>{_e(m.applicability)}</em></li>")
+        parts.append("</ul></section>")
+
+    if report.evidence_map:
+        parts.append(
+            '<section class="cr-section cr-section--evidence">'
+            '<h3 class="cr-section-title">Карта доказательств</h3>'
+            '<div class="cr-evidence-grid">'
+        )
+        for ev in report.evidence_map[:16]:
+            dec = ev.decision or "unknown"
+            dec_color = {
+                "satisfied": "#0d7a4a",
+                "satisfied_by_recommendation": "#1a7f5a",
+                "missing": "#b91c1c",
+                "not_applicable": "#64748b",
+                "manual_review": "#9333ea",
+            }.get(dec, "#475569")
+            parts.append(
+                f'<div class="cr-evidence-card" style="border-left-color:{dec_color}">'
+                f'<div class="cr-evidence-card__id">{_e(ev.rule_id)}</div>'
+                f'<div class="cr-evidence-card__dec">{_e(dec)}</div>'
+                f'<div class="cr-evidence-card__txt">{_e(ev.explanation or ev.required_item or "")}</div>'
+                f"</div>"
+            )
+        parts.append("</div></section>")
 
     # Рубрика
     if rubric_specifics:
