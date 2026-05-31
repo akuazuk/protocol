@@ -18,6 +18,15 @@ _ISSUE_TYPE_MAP = {
     "gi_bleeding_anemia": "red_flag",
 }
 
+# Человекочитаемые названия категорий красных флагов (для отчёта/UI).
+_CATEGORY_RU = {
+    "possible_malignancy": "подозрение на онкологию",
+    "thrombosis": "тромбоз/тромбофлебит",
+    "systemic_autoimmune": "системное аутоиммунное",
+    "severe_infection": "тяжёлая инфекция",
+    "gi_bleeding_anemia": "ЖКТ-кровотечение/анемия",
+}
+
 # Маркеры «обработки» флага (маршрутизация / дообследование / повторная явка / контроль)
 _HANDLING_MARKERS = (
     "консультац", "направлен", "госпитализац", "маршрут", "дообследован",
@@ -66,7 +75,7 @@ def run_safety_checks(doc: ConsultationDocument) -> list[SafetyAssessment]:
             SafetyAssessment(
                 issue_type=_ISSUE_TYPE_MAP.get(flag_id, "red_flag"),  # type: ignore[arg-type]
                 severity=severity if severity in ("low", "medium", "high", "critical") else "medium",  # type: ignore[arg-type]
-                finding_text=f"Найден признак: «{hit}» (категория: {flag_id}).",
+                finding_text=f"Найден признак: «{hit}» (категория: {_CATEGORY_RU.get(flag_id, flag_id)}).",
                 expected_action=expected or None,
                 actual_action=None if not handled else "В рекомендациях есть маршрутизация/дообследование/контроль.",
                 status=status,  # type: ignore[arg-type]

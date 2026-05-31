@@ -16,6 +16,7 @@ from .protocol_match import annotate_applicability, match_protocol_cards
 from .rubric_extractors import (
     extract_rubric_specifics,
     normalize_rubric_slug,
+    rubric_from_icd,
     rubric_slugs_from_matches,
     specialty_to_rubric,
 )
@@ -83,9 +84,10 @@ def analyze_consultation_text(
     )
     facts = facts_from_document(doc)
 
-    # Специальность КЗ — приоритетный якорь рубрики (если не задана явно извне).
+    # Якорь рубрики: специальность врача -> глава МКБ диагноза -> явный slug.
     doctor_rubric = specialty_to_rubric(doc.doctor_specialty)
-    effective_slug = specialty_slug or doctor_rubric
+    icd_rubric = rubric_from_icd([d.icd10_code for d in doc.diagnoses if d.icd10_code])
+    effective_slug = specialty_slug or doctor_rubric or icd_rubric
 
     try:
         matches = match_protocol_cards(facts, specialty_slug=effective_slug, limit=match_limit)
@@ -104,15 +106,18 @@ def analyze_consultation_text(
     report = build_compliance_report(doc, matches=matches, rules_check=rules_check)
 
     try:
-        # Якорь рубрики — специальность врача КЗ; затем рубрики подобранных протоколов.
+        # Якорь рубрики — специальность врача/глава МКБ; иначе топ рубрик подбора.
         anchor = effective_slug or normalize_rubric_slug(doc.doctor_specialty)
-        match_rubrics = rubric_slugs_from_matches(matches)
         rubric_slugs: list[str] = []
         if anchor:
+            # Есть надёжный якорь — показываем только его (+ рубрику МКБ, если иная),
+            # чтобы не зашумлять отчёт нерелевантными 0%-рубриками из подбора.
             rubric_slugs.append(anchor)
-        for s in match_rubrics:
-            if s not in rubric_slugs:
-                rubric_slugs.append(s)
+            if icd_rubric and icd_rubric not in rubric_slugs:
+                rubric_slugs.append(icd_rubric)
+        else:
+            # Якоря нет — берём максимум 2 наиболее релевантные рубрики из подбора.
+            rubric_slugs = rubric_slugs_from_matches(matches)[:2]
         rubric_specifics = extract_rubric_specifics(doc.raw_text or raw_text, rubric_slugs)
     except Exception:
         rubric_specifics = {"rubrics": [], "by_rubric": {}, "measurements": {}}

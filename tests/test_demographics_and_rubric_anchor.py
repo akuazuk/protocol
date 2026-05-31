@@ -9,7 +9,8 @@ from __future__ import annotations
 from clinical_knowledge.age_sex_resolver import detect_sex, detect_sex_from_name, resolve_age
 from clinical_knowledge.consult_analysis import analyze_consultation_text
 from clinical_knowledge.consult_parser import parse_consultation
-from clinical_knowledge.rubric_extractors import specialty_to_rubric
+from clinical_knowledge.diagnosis_parser import parse_diagnoses
+from clinical_knowledge.rubric_extractors import rubric_from_icd, specialty_to_rubric
 
 SAMPLE = """Дерматолог
 Дата: 14.07.2024 15:30
@@ -85,3 +86,39 @@ def test_matches_scoped_to_dermatology():
     assert all("dermatovenerologiya" in p for p in paths)
     # Дедуп: один и тот же протокол не повторяется.
     assert len(paths) == len(set(paths))
+
+
+# --- Регресс по флебологическому кейсу (pl_1_f.pdf) ---
+
+def test_diagnosis_not_oversplit_by_wrapped_date():
+    # Диагноз с переносом строки и датой не должен рассыпаться на 3 «диагноза».
+    block = (
+        "I80.1. Флебит и тромбофлебит бедренной вены;\n"
+        "Флеботромбоз бедренно-подколенно-берцового сегмента правой нижней конечности от\n"
+        "11.09.2024 в стадии реканализации."
+    )
+    diags = parse_diagnoses(block)
+    assert len(diags) == 2
+    assert diags[0].icd10_code == "I80.1"
+    # Дата-фрагмент приклеен к предыдущему диагнозу, а не отдельной строкой.
+    assert "11.09.2024" in diags[1].raw_text
+    assert "реканализации" in diags[1].raw_text
+
+
+def test_diagnosis_name_without_leading_code():
+    diags = parse_diagnoses("I80.1. Флебит и тромбофлебит бедренной вены")
+    # diagnosis_name не должен содержать код (иначе в UI дублируется «I80.1 I80.1»).
+    assert not diags[0].diagnosis_name.upper().startswith("I80.1")
+
+
+def test_phlebologist_maps_to_circulatory():
+    assert specialty_to_rubric("Флеболог") == "bolezni-sistemy-krovoobrashcheniya"
+    assert specialty_to_rubric("сосудистый хирург") == "bolezni-sistemy-krovoobrashcheniya"
+
+
+def test_rubric_from_icd_chapter():
+    assert rubric_from_icd(["I80.1"]) == "bolezni-sistemy-krovoobrashcheniya"
+    assert rubric_from_icd(["L93.0"]) == "dermatovenerologiya"
+    assert rubric_from_icd(["C18"]) == "novoobrazovaniya"
+    # Симптомные/неоднозначные главы пропускаются.
+    assert rubric_from_icd(["R10"]) is None

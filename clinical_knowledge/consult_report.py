@@ -8,6 +8,57 @@ from typing import Any
 
 from .consult_schema import ComplianceReport, ConsultationDocument, SourceRef
 
+# Русские подписи статусов/значений для человекочитаемого отчёта.
+_OVERALL_RU = {
+    "compliant": "соответствует",
+    "mostly_compliant": "в основном соответствует",
+    "partially_compliant": "частично соответствует",
+    "non_compliant": "не соответствует",
+    "insufficient_data": "недостаточно данных",
+    "manual_review_required": "нужен ручной разбор",
+}
+_DIAG_RU = {
+    "supported": "подтверждён протоколом",
+    "partially_supported": "частично подтверждён",
+    "not_supported": "не подтверждён протоколом",
+    "suspected_needs_confirmation": "предварительный, нужно подтверждение",
+    "insufficient_data": "недостаточно данных",
+    "not_assessed": "не оценивался",
+}
+_EXAM_RU = {
+    "present_performed": "выполнено",
+    "present_recommended": "рекомендовано",
+    "missing_required": "пропущено обязательное",
+    "missing_conditional": "пропущено по условию",
+    "not_applicable": "не применимо",
+    "extra_not_assessed": "дополнительно, не оценивалось",
+}
+_TREAT_RU = {
+    "matches_protocol": "соответствует протоколу",
+    "partially_matches_protocol": "частично соответствует протоколу",
+    "not_in_protocol": "нет в протоколе",
+    "dose_mismatch": "несовпадение дозы",
+    "duration_mismatch": "несовпадение длительности",
+    "frequency_mismatch": "несовпадение кратности",
+    "age_contraindication": "противопоказано по возрасту",
+    "contraindication_warning": "предупреждение о противопоказании",
+    "insufficient_data": "недостаточно данных",
+    "not_assessed": "не оценивалось",
+}
+_SAFETY_RU = {
+    "handled": "учтён в рекомендациях",
+    "partially_handled": "частично учтён",
+    "not_handled": "не учтён",
+    "not_assessed": "не оценивался",
+}
+_SEVERITY_RU = {
+    "low": "низкая",
+    "medium": "средняя",
+    "high": "высокая",
+    "critical": "критическая",
+}
+_SEX_RU = {"male": "мужской", "female": "женский", "unknown": "не определён"}
+
 
 def _src_line(ref: SourceRef) -> str:
     parts: list[str] = []
@@ -83,7 +134,7 @@ def report_to_markdown(
         p = doc.patient
         L.append(f"- Пациент: {doc.patient.full_name or '—'}")
         L.append(f"- Возраст: {p.age_years if p.age_years is not None else '—'} ({p.age_group})")
-        L.append(f"- Пол: {p.sex}")
+        L.append(f"- Пол: {_SEX_RU.get(p.sex, p.sex)}")
         L.append(f"- Дата консультации: {doc.consultation_date.isoformat() if doc.consultation_date else '—'}")
         L.append(f"- Специальность врача: {doc.doctor_specialty or '—'}")
         diags = ", ".join(
@@ -96,7 +147,10 @@ def report_to_markdown(
         for m in report.protocol_matches[:5]
     ) or "—"
     L.append(f"- Подобранные протоколы: {protos}")
-    L.append(f"- Общая оценка: {_fmt_pct(report.overall_score)} — статус **{report.overall_status}**")
+    L.append(
+        f"- Общая оценка: {_fmt_pct(report.overall_score)} — статус "
+        f"**{_OVERALL_RU.get(report.overall_status, report.overall_status)}**"
+    )
     L.append("")
 
     # 2. Применимость протокола
@@ -116,7 +170,7 @@ def report_to_markdown(
     L.append("## 3. Оценка диагноза")
     L.append(f"_Балл блока: {_fmt_pct(bd.diagnosis_score)}_")
     for a in report.diagnosis_assessments:
-        L.append(f"- {a.icd10_code or ''} {a.diagnosis_text} — **{a.status}**")
+        L.append(f"- {a.icd10_code or ''} {a.diagnosis_text} — **{_DIAG_RU.get(a.status, a.status)}**")
         for e in a.evidence_found:
             L.append(f"  - подтверждено: {e}")
         for e in a.evidence_missing:
@@ -128,7 +182,7 @@ def report_to_markdown(
     L.append(f"_Балл блока: {_fmt_pct(bd.required_exams_score)}_")
     if report.exam_assessments:
         for e in report.exam_assessments:
-            L.append(f"- {e.exam_name} — **{e.status}**" + (f" ({e.reason})" if e.reason else ""))
+            L.append(f"- {e.exam_name} — **{_EXAM_RU.get(e.status, e.status)}**" + (f" ({e.reason})" if e.reason else ""))
     else:
         L.append("- Детерминированные правила по обследованиям не сработали (нет данных).")
     L.append("")
@@ -138,7 +192,7 @@ def report_to_markdown(
     L.append(f"_Балл блока: {_fmt_pct(bd.treatment_score)}_")
     if report.treatment_assessments:
         for t in report.treatment_assessments:
-            L.append(f"- {t.treatment_text} — **{t.status}**")
+            L.append(f"- {t.treatment_text} — **{_TREAT_RU.get(t.status, t.status)}**")
             for iss in t.issues:
                 L.append(f"  - {iss.message_ru}")
     else:
@@ -150,7 +204,7 @@ def report_to_markdown(
     L.append(f"_Балл блока: {_fmt_pct(bd.safety_score)}_")
     if report.safety_assessments:
         for s in report.safety_assessments:
-            L.append(f"- [{s.severity}] {s.finding_text} — **{s.status}**")
+            L.append(f"- [{_SEVERITY_RU.get(s.severity, s.severity)}] {s.finding_text} — **{_SAFETY_RU.get(s.status, s.status)}**")
             if s.expected_action:
                 L.append(f"  - ожидаемые действия: {s.expected_action}")
     else:

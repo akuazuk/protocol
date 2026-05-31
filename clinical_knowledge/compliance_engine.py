@@ -136,7 +136,7 @@ def _diagnosis_assessments(
         out.append(
             DiagnosisAssessment(
                 diagnosis_id=d.diagnosis_id,
-                diagnosis_text=d.raw_text,
+                diagnosis_text=d.diagnosis_name or d.raw_text,
                 icd10_code=d.icd10_code,
                 status=status,  # type: ignore[arg-type]
                 issues=issues,
@@ -243,9 +243,11 @@ def _section_quality(doc: ConsultationDocument) -> tuple[SectionQualityAssessmen
     return sq, round(score, 1)
 
 
-def _safety_score(safety) -> float | None:
+def _safety_score(safety, *, has_content: bool = True) -> float | None:
     if not safety:
-        return 100.0
+        # «нет red flags» — это кредит только при наличии содержательного КЗ;
+        # для пустого/нечитаемого документа это не оценка, а отсутствие данных.
+        return 100.0 if has_content else None
     if any(s.severity == "critical" and s.status != "handled" for s in safety):
         return 0.0
     unhandled = [s for s in safety if s.status != "handled"]
@@ -275,13 +277,22 @@ def build_compliance_report(
     matches = matches or []
     rules_check = rules_check or {}
 
+    has_content = bool(
+        doc.diagnoses
+        or doc.extraction_quality.parsed_sections_count > 0
+        or len((doc.raw_text or "").strip()) >= 40
+    )
+
     safety = run_safety_checks(doc)
     diag_assess, diag_score = _diagnosis_assessments(doc, matches)
     exam_assess, exams_score = _exam_assessments(rules_check)
     treat_assess, treat_score = _treatment_assessments(doc)
     section_q, doc_score = _section_quality(doc)
-    safety_score = _safety_score(safety)
+    safety_score = _safety_score(safety, has_content=has_content)
     pm_score = _protocol_match_score(matches)
+    if not has_content:
+        # пустой/нечитаемый документ: документ-оценка не должна давать ложный балл
+        doc_score = None  # type: ignore[assignment]
 
     breakdown = ScoreBreakdown(
         protocol_match_score=pm_score,

@@ -10211,6 +10211,35 @@
     manual_review_required: "нужен ручной разбор"
   };
 
+  var CONSULT_DIAG_STATUS_RU = {
+    supported: "подтверждён протоколом",
+    partially_supported: "частично подтверждён",
+    not_supported: "не подтверждён протоколом",
+    suspected_needs_confirmation: "предварительный, нужно подтверждение",
+    insufficient_data: "недостаточно данных",
+    not_assessed: "не оценивался"
+  };
+
+  var CONSULT_SAFETY_STATUS_RU = {
+    handled: "учтён в рекомендациях",
+    partially_handled: "частично учтён",
+    not_handled: "не учтён",
+    not_assessed: "не оценивался"
+  };
+
+  var CONSULT_SEVERITY_RU = {
+    low: "низкая",
+    medium: "средняя",
+    high: "высокая",
+    critical: "критическая"
+  };
+
+  var CONSULT_SEX_RU = {
+    male: "мужской",
+    female: "женский",
+    unknown: "не определён"
+  };
+
   /** Аддитивная панель детерминированного структурного разбора КЗ. */
   function renderConsultStructuredAnalysis(data) {
     var sa = data && data.structured_analysis;
@@ -10246,8 +10275,13 @@
 
     var diagHtml = (comp.diagnosis_assessments || [])
       .map(function (d) {
-        return "<li>" + escapeHtml((d.icd10_code ? d.icd10_code + " " : "") +
-          (d.diagnosis_text || "")) + " — <strong>" + escapeHtml(d.status || "") +
+        var txt = d.diagnosis_text || "";
+        var code = d.icd10_code || "";
+        // Не дублируем код, если текст уже начинается с него.
+        var label = (code && txt.toUpperCase().indexOf(code.toUpperCase()) !== 0)
+          ? code + " " + txt : (txt || code);
+        var st = CONSULT_DIAG_STATUS_RU[d.status] || d.status || "";
+        return "<li>" + escapeHtml(label) + " — <strong>" + escapeHtml(st) +
           "</strong></li>";
       }).join("");
 
@@ -10262,8 +10296,10 @@
 
     var safetyHtml = (comp.safety_assessments || [])
       .map(function (s) {
-        return "<li>[" + escapeHtml(s.severity || "") + "] " +
-          escapeHtml(s.finding_text || "") + " — <strong>" + escapeHtml(s.status || "") +
+        var sev = CONSULT_SEVERITY_RU[s.severity] || s.severity || "";
+        var st = CONSULT_SAFETY_STATUS_RU[s.status] || s.status || "";
+        return "<li>[" + escapeHtml(sev) + "] " +
+          escapeHtml(s.finding_text || "") + " — <strong>" + escapeHtml(st) +
           "</strong></li>";
       }).join("");
 
@@ -10298,7 +10334,7 @@
       "<p style=\"margin:0 0 0.5rem;color:#33524c\">Статус: <strong>" + escapeHtml(statusRu) +
       "</strong>" + (comp.overall_score != null ? " · " + Math.round(comp.overall_score) + "%" : "") +
       " · возраст: " + (pt.age_years != null ? pt.age_years : "—") +
-      " · пол: " + escapeHtml(pt.sex || "—") +
+      " · пол: " + escapeHtml(CONSULT_SEX_RU[pt.sex] || pt.sex || "—") +
       (doc.doctor_specialty ? " · " + escapeHtml(doc.doctor_specialty) : "") + "</p>" +
       "<div style=\"display:flex;flex-wrap:wrap;gap:1.2rem\">" +
       "<table style=\"font-size:0.85rem\"><tbody>" +

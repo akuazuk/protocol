@@ -205,6 +205,10 @@ _SPECIALTY_STEM_TO_RUBRIC: list[tuple[str, str]] = [
     ("венеролог", "dermatovenerologiya"),
     ("гастроэнтеролог", "gastroenterologiya"),
     ("кардиолог", "bolezni-sistemy-krovoobrashcheniya"),
+    ("флеболог", "bolezni-sistemy-krovoobrashcheniya"),
+    ("ангиолог", "bolezni-sistemy-krovoobrashcheniya"),
+    ("сосудист", "bolezni-sistemy-krovoobrashcheniya"),
+    ("аритмолог", "bolezni-sistemy-krovoobrashcheniya"),
     ("нейрохирург", "nevrologiya-neyrokhirurgiya"),
     ("невролог", "nevrologiya-neyrokhirurgiya"),
     ("эндокринолог", "endokrinologiya-narusheniya-obmena-veshchestv"),
@@ -247,6 +251,45 @@ def specialty_to_rubric(doctor_specialty: str | None) -> str | None:
     for stem, slug in _SPECIALTY_STEM_TO_RUBRIC:
         if stem in low:
             return slug
+    return None
+
+
+# Глава МКБ-10 (первая буква + при необходимости первая цифра) -> slug рубрики.
+# Только однозначные соответствия; неоднозначные (M, N, H) разрешаем точечно.
+_ICD_CHAPTER_TO_RUBRIC: list[tuple[str, str]] = [
+    ("I", "bolezni-sistemy-krovoobrashcheniya"),
+    ("C", "novoobrazovaniya"),
+    ("K", "gastroenterologiya"),
+    ("L", "dermatovenerologiya"),
+    ("E", "endokrinologiya-narusheniya-obmena-veshchestv"),
+    ("J", "pulmonologiya-ftiziatriya"),
+    ("G", "nevrologiya-neyrokhirurgiya"),
+    ("F", "psikhiatriya-narkologiya"),
+    ("O", "akusherstvo-ginekologiya"),
+    ("A", "infektsionnye-zabolevaniya"),
+    ("B", "infektsionnye-zabolevaniya"),
+    ("S", "travmatologiya-ortopediya"),
+    ("T", "travmatologiya-ortopediya"),
+]
+
+
+def rubric_from_icd(codes: list[str] | None) -> str | None:
+    """Определяет slug рубрики по главе первого «болезненного» кода МКБ-10.
+
+    Симптомные главы (R, Z) и неоднозначные (M, N, H, D, P, Q) пропускаются —
+    для них рубрика определяется специальностью врача или подбором протоколов.
+    """
+    for code in codes or []:
+        c = (code or "").strip().upper()
+        if not c:
+            continue
+        head = c[0]
+        # D0-D4 — новообразования; остальной D неоднозначен -> пропуск.
+        if head == "D" and len(c) >= 2 and c[1] in "01234":
+            return "novoobrazovaniya"
+        for letter, slug in _ICD_CHAPTER_TO_RUBRIC:
+            if head == letter:
+                return slug
     return None
 
 

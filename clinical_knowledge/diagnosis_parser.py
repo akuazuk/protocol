@@ -42,13 +42,38 @@ def _role(raw_low: str, idx: int) -> str:
     return "primary" if idx == 0 else "secondary"
 
 
+def _starts_new_diagnosis(s: str) -> bool:
+    """Строка начинает НОВЫЙ диагноз (код МКБ в начале или прописная без переноса)."""
+    m = RE_LEADING_ICD.match(s)
+    if m and m.group(1):
+        return True
+    first = s[:1]
+    if first.isdigit() or first.islower():
+        # дата/«от 11.09.2024…» или продолжение со строчной — это перенос, не новый диагноз
+        return False
+    return True
+
+
 def _split_diagnosis_lines(diagnosis_block: str) -> list[str]:
+    """Разбивает блок на диагнозы, склеивая перенесённые строки (даты/уточнения).
+
+    Жёсткие разделители — `;` и перенос строки; но строка-продолжение
+    (без кода МКБ, начинается со строчной буквы или с цифры-даты) приклеивается
+    к предыдущему диагнозу, а не образует отдельный.
+    """
     if not diagnosis_block:
         return []
     parts: list[str] = []
-    for line in re.split(r"[\n;]+", diagnosis_block):
-        line = line.strip(" -—\t")
-        if len(line) >= 3:
+    for raw in re.split(r"[\n;]+", diagnosis_block):
+        line = raw.strip(" -—\t")
+        if len(line) < 3:
+            # слишком короткий фрагмент — приклеиваем к предыдущему, если это хвост
+            if line and parts:
+                parts[-1] = (parts[-1] + " " + line).strip()
+            continue
+        if parts and not _starts_new_diagnosis(line):
+            parts[-1] = (parts[-1] + " " + line).strip()
+        else:
             parts.append(line)
     return parts
 
