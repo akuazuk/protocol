@@ -83,6 +83,14 @@ def test_training_cases_ok(client: TestClient) -> None:
     assert len(r.json().get("cases") or []) >= 5
 
 
+def test_presentation_stats_ok(client: TestClient) -> None:
+    r = client.get("/api/presentation-stats")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("protocol_analysis") is not None
+    assert "rules_coverage" in body
+
+
 def test_pilot_analytics_demo_ok(client: TestClient) -> None:
     r = client.get("/api/pilot-analytics-demo")
     assert r.status_code == 200

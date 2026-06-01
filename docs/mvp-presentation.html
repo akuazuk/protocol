@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Презентация Protocol: полный каталог клинических протоколов Минздрава РБ, детерминированный аудит КЗ, карта доказательств, интеграция с МИС." />
-  <title>Protocol — навигатор протоколов и аудит качества КЗ</title>
+  <title>Protocol - навигатор протоколов и аудит качества КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -1657,7 +1657,7 @@
 
     <header class="hero">
       <p class="hero-eyebrow">Protocol · навигатор протоколов Минздрава РБ и аудит КЗ</p>
-      <h1>Официальные клинические протоколы под рукой. Качество заключений — в цифрах, цитатах и карте доказательств</h1>
+      <h1>Официальные клинические протоколы под рукой. Качество заключений - в цифрах, цитатах и карте доказательств</h1>
       <p class="hero-lead">
         Сервис индексирует опубликованные PDF Минздрава РБ, подбирает протоколы по МКБ и тексту КЗ,
         выполняет <strong>детерминированный разбор</strong> (оформление, применимость протокола, клинические правила, красные флаги)
@@ -1672,7 +1672,7 @@
       </div>
       <p class="tag-demo" style="margin-top: 0.85rem" id="hero-tag">
         Статистика корпуса и правил подгружается с сервера приложения (<code>/api/corpus-stats</code>, <code>/api/clinical-knowledge/status</code>).
-        Ниже — живые диаграммы и эталонные прогоны на обезличенных КЗ.
+        Ниже - живые диаграммы и эталонные прогоны на обезличенных КЗ.
       </p>
     </header>
 
@@ -1903,6 +1903,62 @@ flowchart TB
       </div>
     </section>
 
+    <section class="live-stats-shell live-stats-shell--analysis screen-only" id="protocol-analysis-stats" aria-labelledby="protocol-analysis-title">
+      <h2 id="protocol-analysis-title">Структурный анализ протоколов (protocol summaries)</h2>
+      <p class="live-stats-meta">
+        <span class="live-pill live-pill--live"><span class="live-pill__dot" aria-hidden="true"></span>Данные из каталога и YAML/JSON анализа</span>
+        <span id="protocol-analysis-updated">Загрузка…</span>
+      </p>
+      <div class="live-kpi-grid" id="protocol-analysis-kpi">
+        <div class="live-kpi live-kpi--accent"><span class="live-kpi__val" id="pa-summaries">…</span><span class="live-kpi__lbl">карточек protocol summaries</span></div>
+        <div class="live-kpi live-kpi--violet"><span class="live-kpi__val" id="pa-conditions">…</span><span class="live-kpi__lbl">нозологий в summaries</span></div>
+        <div class="live-kpi live-kpi--rose"><span class="live-kpi__val" id="pa-icd10">…</span><span class="live-kpi__lbl">уникальных кодов МКБ-10</span></div>
+        <div class="live-kpi"><span class="live-kpi__val" id="pa-structured">…</span><span class="live-kpi__lbl">PDF со структурой (build_state)</span></div>
+        <div class="live-kpi"><span class="live-kpi__val" id="pa-rules-total">…</span><span class="live-kpi__lbl">автоизвлечённых правил</span></div>
+        <div class="live-kpi"><span class="live-kpi__val" id="pa-coverage">…</span><span class="live-kpi__lbl">покрытие каталога правилами</span></div>
+      </div>
+      <div class="charts-row charts-row--2" style="margin-top: 1rem">
+        <div class="chart-box chart-box--accent">
+          <h3 style="margin-top: 0">Protocol summaries по рубрикам (топ‑10)</h3>
+          <div class="screen-chart" style="height: 280px; position: relative;">
+            <canvas id="chartPaSummariesRubrics" aria-label="Число protocol summaries по рубрикам"></canvas>
+          </div>
+          <p class="chart-caption" id="pa-summaries-caption">Источник: data/protocol_summaries/json.</p>
+        </div>
+        <div class="chart-box chart-box--violet">
+          <h3 style="margin-top: 0">Топ нозологий по числу правил</h3>
+          <div class="screen-chart" style="height: 280px; position: relative;">
+            <canvas id="chartPaRulesConditions" aria-label="Правила по condition_id"></canvas>
+          </div>
+          <p class="chart-caption" id="pa-rules-caption">Источник: rules_coverage_report.json.</p>
+        </div>
+      </div>
+      <div class="charts-row charts-row--2">
+        <div class="chart-box">
+          <h3 style="margin-top: 0">Покрытие правилами: все рубрики каталога</h3>
+          <div class="screen-chart" style="height: 320px; position: relative;">
+            <canvas id="chartPaAllRubrics" aria-label="PDF с правилами по всем рубрикам"></canvas>
+          </div>
+          <p class="chart-caption">478 PDF · 24 рубрики · 100% с извлечёнными правилами.</p>
+        </div>
+        <div class="chart-box chart-box--accent">
+          <h3 style="margin-top: 0">Конвейер анализа протоколов</h3>
+          <div class="stat-splash" style="grid-template-columns: 1fr 1fr; margin: 0.5rem 0 0;" id="pa-pipeline-stats">
+            <div class="cell"><span class="big" id="pa-pipe-pdfs">478</span><span class="lbl">PDF в каталоге</span></div>
+            <div class="cell"><span class="big" id="pa-pipe-chunks">…</span><span class="lbl">фрагментов RAG</span></div>
+            <div class="cell"><span class="big" id="pa-pipe-cards">…</span><span class="lbl">protocol cards</span></div>
+            <div class="cell"><span class="big" id="pa-pipe-summaries">…</span><span class="lbl">protocol summaries</span></div>
+          </div>
+          <p class="chart-caption" style="margin-top: 0.75rem">PDF → чанки → правила → карточки → summaries для навигации и аудита КЗ.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="print-only print-live-stats" id="print-protocol-analysis" style="margin-bottom: 10px; font-size: 9.6pt;">
+      <p style="margin: 0 0 6px;"><strong>Структурный анализ протоколов:</strong></p>
+      <p style="margin: 0;" id="print-protocol-analysis-body">Загрузка…</p>
+    </div>
+
     <div class="print-only print-live-stats" id="print-kz-stats" style="margin-bottom: 10px; font-size: 9.6pt;">
       <p style="margin: 0 0 6px;"><strong>Детерминированный аудит КЗ:</strong></p>
       <p style="margin: 0;" id="print-kz-stats-body">Загрузка…</p>
@@ -1998,7 +2054,7 @@ flowchart TB
       <div class="kpi-cell"><strong id="cap-protocols">478</strong><span>протоколов в индексируемом корпусе</span></div>
       <div class="kpi-cell"><strong id="cap-rules">498</strong><span>клинических правил из PDF (100% покрытие)</span></div>
       <div class="kpi-cell"><strong>3 слоя</strong><span>оформление · протокол · клиника + safety cap</span></div>
-      <div class="kpi-cell"><strong>1–3</strong><span>консультативных заключения за один прогон</span></div>
+      <div class="kpi-cell"><strong>1-3</strong><span>консультативных заключения за один прогон</span></div>
     </div>
     <!-- Дубль KPI для печати (канвасы скрыты) -->
     <div class="print-only" style="margin: 8px 0 12px;">
@@ -2007,7 +2063,7 @@ flowchart TB
         <li>Полный каталог Минздрава РБ + детерминированный аудит КЗ;</li>
         <li>Карта доказательств на русском, цветной HTML-отчёт;</li>
         <li>Safety cap и красные флаги при критических расхождениях;</li>
-        <li>Загрузка 1–3 PDF с текстовым слоем, API для МИС.</li>
+        <li>Загрузка 1-3 PDF с текстовым слоем, API для МИС.</li>
       </ul>
     </div>
 
@@ -2035,7 +2091,7 @@ flowchart TB
         </h3>
         <ul>
           <li>До <strong>трёх PDF</strong> в одном окне (несколько приёмов, сравнение редакций).</li>
-          <li><strong>Детерминированный аудит</strong>: оформление, применимость протокола, клинические правила, красные флаги — без «угадывания» модели.</li>
+          <li><strong>Детерминированный аудит</strong>: оформление, применимость протокола, клинические правила, красные флаги - без «угадывания» модели.</li>
           <li><strong>Карта доказательств</strong> с цитатами из PDF и русскими подписями правил; индекс уверенности и safety cap.</li>
           <li>Цветной <strong>HTML-отчёт</strong> с тремя слоями баллов, диаграммой и печатью для методсовета.</li>
         </ul>
@@ -2094,8 +2150,8 @@ flowchart TB
         <h3>С приложением Protocol</h3>
         <ul>
           <li>Один интерфейс: подбор КП из полного корпуса каталога, выдержки и черновик КЗ перед подписью.</li>
-          <li>Сверка 1–3 PDF КЗ: три слоя баллов, карта доказательств, красные флаги, печатный отчёт для комиссии.</li>
-          <li><span id="compare-rules-line">498+ правил</span> извлечены из PDF автоматически; покрытие каталога — 100%.</li>
+          <li>Сверка 1-3 PDF КЗ: три слоя баллов, карта доказательств, красные флаги, печатный отчёт для комиссии.</li>
+          <li><span id="compare-rules-line">498+ правил</span> извлечены из PDF автоматически; покрытие каталога - 100%.</li>
           <li>API готов к вызову из МИС: тот же контур качества можно распространить на сеть центров.</li>
         </ul>
       </div>
@@ -2147,7 +2203,7 @@ flowchart TB
       </div>
       <div class="api-chip">
         <code>POST /api/consult-review</code>
-        <strong>Аудит 1–3 PDF</strong>: compliance engine, карта доказательств, HTML-отчёт.
+        <strong>Аудит 1-3 PDF</strong>: compliance engine, карта доказательств, HTML-отчёт.
       </div>
       <div class="api-chip">
         <code>GET /api/clinical-knowledge/status</code>
@@ -2316,7 +2372,7 @@ flowchart LR
           </ul>
         </div>
         <p class="chart-caption" id="chart-donut-caption">
-          Классификация по итоговому баллу: ≥85% · 70–84% · &lt;70% (на выборке из 3 эталонных КЗ).
+          Классификация по итоговому баллу: ≥85% · 70-84% · &lt;70% (на выборке из 3 эталонных КЗ).
         </p>
       </div>
     </div>
@@ -2346,7 +2402,7 @@ flowchart LR
       <div class="chart-box">
         <h3 style="margin-top: 0">Два эталонных КЗ: профиль по шести блокам</h3>
         <p class="chart-caption" style="margin-top: 0; margin-bottom: 0.5rem" id="chart-radar-caption">
-          Зелёная заливка — гастро (в основном соответствует); красная — хирургия с красным флагом (ручная проверка).
+          Зелёная заливка - гастро (в основном соответствует); красная - хирургия с красным флагом (ручная проверка).
         </p>
         <div class="screen-chart" style="height: 290px; position: relative">
           <canvas id="chartRadar" aria-label="Радарная диаграмма шести критериев качества текста выписки"></canvas>
@@ -2383,7 +2439,7 @@ flowchart LR
     <h2>Дорожная карта (этапы)</h2>
     <ol class="timeline">
       <li>
-        <strong>Production-ready в браузере</strong>&nbsp;— полный каталог Минздрава (478 PDF), детерминированный аудит КЗ,
+        <strong>Production-ready в браузере</strong>&nbsp; - полный каталог Минздрава (478 PDF), детерминированный аудит КЗ,
         карта доказательств на русском, цветной отчёт; демо-режим <code>?presentation=1</code>.
       </li>
       <li>
@@ -2464,6 +2520,9 @@ flowchart LR
       var chartLiveQualityInst = null;
       var chartKzRubricsInst = null;
       var chartKzFixturesInst = null;
+      var chartPaSummariesRubricsInst = null;
+      var chartPaRulesConditionsInst = null;
+      var chartPaAllRubricsInst = null;
 
       var chartMuted = "#5a6f6a";
       var chartGreen = "#1a8a72";
@@ -2603,7 +2662,7 @@ flowchart LR
           tag.innerHTML =
             'Статистика подгружена с сервера приложения. Сборка <code>' +
             version.version +
-            "</code>. Ниже — живые диаграммы корпуса, правил и эталонные прогоны на обезличенных КЗ.";
+            "</code>. Ниже - живые диаграммы корпуса, правил и эталонные прогоны на обезличенных КЗ.";
         }
       }
 
@@ -2635,7 +2694,7 @@ flowchart LR
 
         var cr = document.getElementById("compare-rules-line");
         if (cr && rules != null) {
-          cr.textContent = fmtNum(rules) + "+ правил извлечены из PDF автоматически; покрытие каталога — " + (coveragePct != null ? coveragePct + "%" : "100%") + ".";
+          cr.textContent = fmtNum(rules) + "+ правил извлечены из PDF автоматически; покрытие каталога - " + (coveragePct != null ? coveragePct + "%" : "100%") + ".";
         }
 
         var gastro = kzFixtures && kzFixtures.gastro_adult;
@@ -2676,6 +2735,190 @@ flowchart LR
 
         updatePrintKzStats(ck, kzFixtures, version);
         renderKzCharts(ck, kzFixtures, corpus);
+      }
+
+      function humanConditionId(cid) {
+        return String(cid || "")
+          .replace(/_protocol$/, "")
+          .replace(/_/g, " ")
+          .slice(0, 28);
+      }
+
+      function applyProtocolAnalysisStats(bundle, corpus, version, ck) {
+        bundle = bundle || {};
+        var pa = bundle.protocol_analysis || {};
+        var rc = bundle.rules_coverage || (ck && ck.rules_coverage) || {};
+        var build = bundle.catalog_build || {};
+
+        function set(id, val) {
+          var el = document.getElementById(id);
+          if (el && val != null) el.textContent = fmtNum(val);
+        }
+        set("pa-summaries", pa.summaries_total);
+        set("pa-conditions", pa.conditions_in_summaries);
+        set("pa-icd10", pa.unique_icd10_in_summaries);
+        var structured = (build.summary && build.summary.pdfs_structured) || build.pdfs_structured;
+        set("pa-structured", structured);
+        set("pa-rules-total", rc.total_auto_rules || (ck && ck.rules));
+        var covEl = document.getElementById("pa-coverage");
+        if (covEl && rc.coverage_pct != null) {
+          covEl.textContent = rc.coverage_pct + "%";
+        }
+        set("pa-pipe-pdfs", rc.pdfs_total || (corpus && corpus.protocols_in_index));
+        set("pa-pipe-chunks", (version && version.corpus_chunks) || (bundle.rag && bundle.rag.corpus_chunks));
+        set("pa-pipe-cards", ck && ck.protocol_cards);
+        set("pa-pipe-summaries", pa.summaries_total);
+
+        var upd = document.getElementById("protocol-analysis-updated");
+        if (upd) {
+          var ts = bundle.generated_utc || (build.updated_utc || build.finished_utc);
+          if (ts) {
+            try {
+              upd.textContent = "Обновлено: " + new Date(ts).toLocaleString("ru-RU");
+            } catch (e3) {
+              upd.textContent = "Каталог protocol summaries";
+            }
+          } else {
+            upd.textContent = "data/protocol_summaries + catalog/build_state";
+          }
+        }
+
+        var printBody = document.getElementById("print-protocol-analysis-body");
+        if (printBody) {
+          var lines = [];
+          if (pa.summaries_total != null) lines.push("Summaries: " + fmtNum(pa.summaries_total));
+          if (pa.conditions_in_summaries != null) lines.push("Нозологий: " + fmtNum(pa.conditions_in_summaries));
+          if (pa.unique_icd10_in_summaries != null) lines.push("МКБ-10: " + fmtNum(pa.unique_icd10_in_summaries));
+          if (rc.total_auto_rules != null) lines.push("Правил: " + fmtNum(rc.total_auto_rules));
+          if (rc.coverage_pct != null) lines.push("Покрытие PDF: " + rc.coverage_pct + "%");
+          printBody.textContent = lines.length ? lines.join(" · ") : "Данные анализа протоколов недоступны.";
+        }
+
+        renderProtocolAnalysisCharts(bundle, corpus, ck);
+      }
+
+      function renderProtocolAnalysisCharts(bundle, corpus, ck) {
+        if (typeof Chart === "undefined") return;
+        bundle = bundle || {};
+        var pa = bundle.protocol_analysis || {};
+        var rc = bundle.rules_coverage || (ck && ck.rules_coverage) || {};
+
+        chartPaSummariesRubricsInst = destroyChart(chartPaSummariesRubricsInst);
+        chartPaRulesConditionsInst = destroyChart(chartPaRulesConditionsInst);
+        chartPaAllRubricsInst = destroyChart(chartPaAllRubricsInst);
+
+        var labelMap = {};
+        if (corpus && corpus.categories_top) {
+          corpus.categories_top.forEach(function (c) {
+            labelMap[c.slug] = c.label;
+          });
+        }
+        Object.keys(RUBRIC_LABELS).forEach(function (slug) {
+          if (!labelMap[slug]) labelMap[slug] = RUBRIC_LABELS[slug];
+        });
+
+        var topSum = (pa.top_rubrics || []).slice(0, 10);
+        var sumCtx = document.getElementById("chartPaSummariesRubrics");
+        if (sumCtx && topSum.length) {
+          chartPaSummariesRubricsInst = new Chart(sumCtx, {
+            type: "bar",
+            data: {
+              labels: topSum.map(function (x) {
+                return shortRubricLabel(labelMap[x.slug] || x.slug.replace(/-/g, " "), 16);
+              }),
+              datasets: [
+                {
+                  label: "Protocol summaries",
+                  data: topSum.map(function (x) { return x.count; }),
+                  backgroundColor: "rgba(26, 138, 114, 0.72)",
+                  borderRadius: 8,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { color: chartMuted } },
+                y: { ticks: { color: chartMuted, font: { size: 10 } } },
+              },
+            },
+          });
+        }
+
+        var topRules = rc.top_rules_by_condition || [];
+        var rulesCtx = document.getElementById("chartPaRulesConditions");
+        if (rulesCtx && topRules.length) {
+          chartPaRulesConditionsInst = new Chart(rulesCtx, {
+            type: "bar",
+            data: {
+              labels: topRules.map(function (x) { return humanConditionId(x.condition_id); }),
+              datasets: [
+                {
+                  label: "Правил",
+                  data: topRules.map(function (x) { return x.rules; }),
+                  backgroundColor: "rgba(92, 61, 158, 0.78)",
+                  borderRadius: 8,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { color: chartMuted } },
+                y: { ticks: { color: chartMuted, font: { size: 10 } } },
+              },
+            },
+          });
+        }
+
+        var rubRows = rc.by_rubric || [];
+        if (!rubRows.length && rc.by_rubric && typeof rc.by_rubric === "object" && !Array.isArray(rc.by_rubric)) {
+          rubRows = Object.keys(rc.by_rubric).map(function (slug) {
+            var row = rc.by_rubric[slug];
+            return { slug: slug, pdfs_with_rules: row.pdfs_with_rules, pdfs_total: row.pdfs_total };
+          });
+        }
+        rubRows = rubRows.slice().sort(function (a, b) {
+          return (b.pdfs_total || 0) - (a.pdfs_total || 0);
+        });
+        var allCtx = document.getElementById("chartPaAllRubrics");
+        if (allCtx && rubRows.length) {
+          chartPaAllRubricsInst = new Chart(allCtx, {
+            type: "bar",
+            data: {
+              labels: rubRows.map(function (x) {
+                return shortRubricLabel(labelMap[x.slug] || String(x.slug).replace(/-/g, " "), 14);
+              }),
+              datasets: [
+                {
+                  label: "PDF с правилами",
+                  data: rubRows.map(function (x) { return x.pdfs_with_rules || x.pdfs_total || 0; }),
+                  backgroundColor: "rgba(12, 107, 148, 0.72)",
+                  borderRadius: 6,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { beginAtZero: true, ticks: { color: chartMuted } },
+                y: { ticks: { color: chartMuted, font: { size: 9 } } },
+              },
+            },
+          });
+        }
       }
 
       function topRubricsFromCoverage(ck, corpus, limit) {
@@ -2931,7 +3174,7 @@ flowchart LR
         }
       }
 
-      function applyLiveStats(corpus, version, health, quality, ck, buildStatus, kzFixtures) {
+      function applyLiveStats(corpus, version, health, quality, ck, buildStatus, kzFixtures, presBundle) {
         var protocols = corpus && corpus.protocols_in_index;
         var rubrics = (corpus && (corpus.rubrics_in_index || corpus.specialties_catalog)) || null;
         var chunks =
@@ -2985,6 +3228,17 @@ flowchart LR
         renderLiveCharts(corpus, version, health, quality);
         applyKzStats(ck, buildStatus, kzFixtures, version, corpus);
         renderFixtureCharts(kzFixtures);
+        applyProtocolAnalysisStats(presBundle || {}, corpus, version, ck);
+      }
+
+      function mergePresentationBundle(fb, presStats) {
+        if (!presStats || typeof presStats !== "object") return fb || {};
+        var out = Object.assign({}, fb || {}, presStats);
+        if (fb && fb.kz_fixtures && !presStats.kz_fixtures) out.kz_fixtures = fb.kz_fixtures;
+        if (fb && fb.rag && presStats.rag && !presStats.rag.corpus_chunks) {
+          out.rag = Object.assign({}, fb.rag, presStats.rag);
+        }
+        return out;
       }
 
       function fetchFallbackBundle() {
@@ -3007,6 +3261,7 @@ flowchart LR
           fetchJson("/api/quality-benchmark").catch(function () { return null; }),
           fetchJson("/api/clinical-knowledge/status").catch(function () { return null; }),
           fetchJson("/api/clinical-knowledge/build-status").catch(function () { return null; }),
+          fetchJson("/api/presentation-stats").catch(function () { return null; }),
         ]);
         return Promise.all([fallbackP, liveP]).then(function (pair) {
           var fb = pair[0] || {};
@@ -3025,8 +3280,11 @@ flowchart LR
           var ckLive = parts[4];
           var ck = (ckLive && ckLive.ok !== false && ckLive.rules != null ? ckLive : null) || fb.clinical_knowledge || {};
           var buildStatus = parts[5] || fb.catalog_build || (ck && ck.catalog_build) || {};
-          var kzFixtures = fb.kz_fixtures || {};
-          applyLiveStats(corpus, version, health, quality, ck, buildStatus, kzFixtures);
+          var presStats = parts[6];
+          var presBundle = mergePresentationBundle(fb, presStats);
+          if (!version.version && presBundle.build_version) version.version = presBundle.build_version;
+          var kzFixtures = presBundle.kz_fixtures || fb.kz_fixtures || {};
+          applyLiveStats(corpus, version, health, quality, ck, buildStatus, kzFixtures, presBundle);
         });
       }
 
@@ -3122,7 +3380,7 @@ flowchart LR
           chartDonutInst = new Chart(ctxDonut, {
             type: "doughnut",
             data: {
-              labels: ["≥85% (" + zones.green + ")", "70–84% (" + zones.amber + ")", "<70% (" + zones.red + ")"],
+              labels: ["≥85% (" + zones.green + ")", "70-84% (" + zones.amber + ")", "<70% (" + zones.red + ")"],
               datasets: [
                 {
                   data: [zones.green, zones.amber, zones.red],

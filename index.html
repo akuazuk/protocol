@@ -131,7 +131,7 @@
       padding: 1rem 1rem 3rem;
     }
 
-    /* ——— Главная вкладка «Проверка КЗ»: типографика и иконки ——— */
+    /* -  -  - Главная вкладка «Проверка КЗ»: типографика и иконки -  -  - */
     .consult-brand-eyebrow {
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
       font-size: 0.68rem;
@@ -309,7 +309,7 @@
         0 0 0 1px rgba(26, 138, 114, 0.15);
     }
 
-    /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается — данные сохраняются) */
+    /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
     .app-main-tabs {
       display: flex;
       gap: 0.55rem;
@@ -487,7 +487,7 @@
       margin-top: 0.85rem;
     }
 
-    /* сетка рубрик — те же классы, что у поиска (.specialty-grid внутри вкладки КЗ) */
+    /* сетка рубрик - те же классы, что у поиска (.specialty-grid внутри вкладки КЗ) */
 
     .consult-actions {
       display: flex;
@@ -1592,7 +1592,7 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
       margin-bottom: 1.75rem;
       position: relative;
-      /* overflow: visible — для корректного sticky у дочерних элементов при необходимости */
+      /* overflow: visible - для корректного sticky у дочерних элементов при необходимости */
       overflow: visible;
       isolation: isolate;
     }
@@ -1693,7 +1693,7 @@
       color: #8aa39c;
     }
 
-    /* Панель под полем: голос и МКБ — две колонки с подписями */
+    /* Панель под полем: голос и МКБ - две колонки с подписями */
     .query-toolbar {
       margin-top: 0.35rem;
       padding: 0.85rem 0.95rem;
@@ -5382,6 +5382,60 @@
       color: var(--green-700);
       font-weight: 600;
     }
+
+    .presentation-cta-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin: 0 0 1rem;
+      gap: 0.75rem;
+    }
+
+    .btn-presentation-prominent {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.72rem 1.15rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--green-800) 0%, var(--green-600) 55%, #1a8a72 100%);
+      color: #fff !important;
+      text-decoration: none !important;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(13, 92, 74, 0.38);
+      border: 2px solid rgba(255, 255, 255, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-presentation-prominent:hover,
+    .btn-presentation-prominent:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(13, 92, 74, 0.45);
+      outline: none;
+    }
+
+    .btn-presentation-prominent svg {
+      flex-shrink: 0;
+      opacity: 0.95;
+    }
+
+    .btn-presentation-prominent__text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.25;
+    }
+
+    .btn-presentation-prominent__text small {
+      font-size: 0.72rem;
+      font-weight: 600;
+      opacity: 0.92;
+      margin-top: 0.12rem;
+    }
+
+    .minister-doc-links .btn-presentation-prominent {
+      margin-right: 0;
+      font-size: 0.88rem;
+    }
   </style>
 </head>
 <body>
@@ -5399,6 +5453,22 @@
   </div>
   <div class="bg-pattern" aria-hidden="true"></div>
   <div class="wrap">
+    <div class="presentation-cta-bar consult-hide-print" aria-label="Материалы для руководства">
+      <a href="docs/mvp-presentation.html" class="btn-presentation-prominent" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <path d="M8 21h8" />
+          <path d="M12 17v4" />
+          <path d="M7 8h2v6H7z" />
+          <path d="M11 10h2v4h-2z" />
+          <path d="M15 7h2v7h-2z" />
+        </svg>
+        <span class="btn-presentation-prominent__text">
+          <span>Презентация MVP</span>
+          <small>Графики корпуса, анализ протоколов, аудит КЗ</small>
+        </span>
+      </a>
+    </div>
     <div class="app-main-tabs" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
         <span class="app-main-tab-visual" aria-hidden="true">
@@ -5452,7 +5522,7 @@
           <p class="tagline tagline--rich">
             <span class="tagline-lead"
               ><span class="hl">Поддержка врача</span> при оказании помощи по протоколам и
-              <span class="hl">контроль консультативных заключений</span> для методслужбы — по официальным PDF
+              <span class="hl">контроль консультативных заключений</span> для методслужбы - по официальным PDF
               <span class="hl-doc">Минздрава РБ</span>.</span>
             <span class="tagline-sub"
               >Поиск по <strong>диагнозу и МКБ-10</strong>; жалобы можно уточнить до кодов МКБ. Не замена очного приёма и
@@ -5467,7 +5537,7 @@
       </div>
       <div class="site-header__bottom">
         <p class="site-header__legal-note" id="site-legal-note">
-          Информация из опубликованных протоколов; решение принимает врач. Персональные данные в PDF КЗ — только в
+          Информация из опубликованных протоколов; решение принимает врач. Персональные данные в PDF КЗ - только в
           защищённом контуре учреждения.
         </p>
         <div class="toolbar-new-search">
@@ -5486,12 +5556,17 @@
 
     <section class="compliance-norm-panel" id="compliance-norm-panel" aria-label="Нормативная база">
       <strong>Соответствие публикациям Минздрава РБ.</strong>
-      Источник — раздел
+      Источник - раздел
       <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">«Стандарты обследования и лечения»</a>
       на minzdrav.gov.by. При расхождении с интерфейсом действует актуальный PDF на сайте Минздрава. Сервис не изменяет тексты протоколов.
       <p class="minister-doc-links">
+        <a href="docs/mvp-presentation.html" class="btn-presentation-prominent" target="_blank" rel="noopener noreferrer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4M7 8h2v6H7zM11 10h2v4h-2zM15 7h2v7h-2z" />
+          </svg>
+          <span class="btn-presentation-prominent__text"><span>Презентация MVP</span><small>графики и инфографика</small></span>
+        </a>
         <a href="docs/ministry-brief-print.html" target="_blank" rel="noopener">Буклет для руководства (PDF через печать)</a>
-        <a href="docs/mvp-presentation.html" target="_blank" rel="noopener">Презентация MVP (графики и схемы)</a>
         <a href="docs/roadmap-mis.md" target="_blank" rel="noopener">Этап 2: МИС</a>
         <a href="docs/deployment-belarus.md" target="_blank" rel="noopener">Развёртывание в РБ</a>
       </p>
@@ -5536,7 +5611,7 @@
     <section class="hero" aria-labelledby="search-title">
       <div class="hero-intro">
         <p class="hero-eyebrow">Запрос для поиска</p>
-        <h2 id="search-title">Диагноз или код МКБ-10 — основа подбора; жалобы можно уточнить до кодов</h2>
+        <h2 id="search-title">Диагноз или код МКБ-10 - основа подбора; жалобы можно уточнить до кодов</h2>
       </div>
 
       <div id="section-filters" class="section-anchor section-block--filters">
@@ -5560,7 +5635,7 @@
             <label class="ctx-label" for="ctx-sex"
               >Пол
               <select id="ctx-sex" aria-label="Пол пациента">
-                <option value="">— не указано —</option>
+                <option value=""> - не указано - </option>
                 <option value="женский">женский</option>
                 <option value="мужской">мужской</option>
               </select>
@@ -5578,9 +5653,9 @@
           </div>
         </details>
         <details class="specialty-panel" id="specialty-panel">
-          <summary>Медицинское направление — рубрики протоколов <span class="optional-mark">(необязательно)</span></summary>
+          <summary>Медицинское направление - рубрики протоколов <span class="optional-mark">(необязательно)</span></summary>
           <p class="specialty-hint">
-            Можно выбрать несколько областей — поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
+            Можно выбрать несколько областей - поиск будет сильнее ориентироваться на протоколы из этих разделов каталога.
           </p>
           <p class="specialty-site-note">
             На сайте
@@ -5591,7 +5666,7 @@
               >Минздрава</a
             >
             нет отдельной рубрики «Терапия»: перечень совпадает с каталогом (24 раздела). Общие и «терапевтические» протоколы
-            отнесены к профильным разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
+            отнесены к профильным разделам - например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
             <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
           </p>
           <div class="specialty-toolbar">
@@ -5616,7 +5691,7 @@
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
             Индекс рассчитан под сопоставление с <strong>формулировками диагноза и МКБ-10</strong> в протоколах. При
-            одних жалобах сначала нажмите <strong>«Подобрать коды МКБ»</strong>, затем — <strong>«Найти протоколы»</strong>.
+            одних жалобах сначала нажмите <strong>«Подобрать коды МКБ»</strong>, затем - <strong>«Найти протоколы»</strong>.
           </p>
         </div>
         <div id="section-query" class="section-anchor section-block--query">
@@ -5629,7 +5704,7 @@
                 rows="6"
                 autocomplete="off"
                 maxlength="12000"
-                placeholder="Предпочтительно: диагноз словами и/или код МКБ-10 (например J20.9, I10). Можно кратко описать жалобы — тогда сначала нажмите «Подобрать коды МКБ» под полем."
+                placeholder="Предпочтительно: диагноз словами и/или код МКБ-10 (например J20.9, I10). Можно кратко описать жалобы - тогда сначала нажмите «Подобрать коды МКБ» под полем."
                 aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
               ></textarea>
               <p class="query-form-hint" id="query-form-hint">
@@ -5665,7 +5740,7 @@
                       Подобрать коды МКБ-10
                     </button>
                     <p class="query-toolbar__hint">
-                      Если в поле только жалобы без диагноза — подбор кодов перед поиском протоколов.
+                      Если в поле только жалобы без диагноза - подбор кодов перед поиском протоколов.
                     </p>
                     <div class="icd-preflight-result" id="icd-preflight-result" hidden></div>
                   </div>
@@ -5696,21 +5771,21 @@
         <div class="hero-help-content">
           <p class="hero-help-lead">
             Отбор фрагментов PDF рассчитан на совпадение с <strong>диагнозом и кодами МКБ-10</strong> в тексте протоколов.
-            Краткий ответ — ориентир по документам, не установление диагноза и не замена очного приёма.
+            Краткий ответ - ориентир по документам, не установление диагноза и не замена очного приёма.
           </p>
           <div class="hero-help-steps">
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">1</span>
               <div class="hero-help-step-body">
                 Укажите при необходимости <strong>контекст и рубрики</strong>. В поле запроса лучше сразу ввести
-                <strong>диагноз и/или МКБ-10</strong>. Если есть только жалобы — нажмите <strong>«Подобрать коды МКБ»</strong>,
+                <strong>диагноз и/или МКБ-10</strong>. Если есть только жалобы - нажмите <strong>«Подобрать коды МКБ»</strong>,
                 проверьте предложенные коды, при необходимости отредактируйте текст и затем <strong>«Найти протоколы»</strong>.
               </div>
             </div>
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">2</span>
               <div class="hero-help-step-body">
-                В <strong>«Результат подбора»</strong> — список протоколов с оценкой близости (<strong>0–100%</strong>):
+                В <strong>«Результат подбора»</strong> - список протоколов с оценкой близости (<strong>0-100%</strong>):
                 технический ориентир для выбора PDF, не «вероятность диагноза». Даётся краткий разбор по запросу.
               </div>
             </div>
@@ -5718,12 +5793,12 @@
               <span class="hero-help-step-num" aria-hidden="true">3</span>
               <div class="hero-help-step-body">
                 По желанию: <strong>дифференциальные гипотезы</strong> (кнопка «Искать протокол» подставляет выбранную
-                строку в запрос) и <strong>шаблон консультативного заключения</strong> по развёрнутой выдержке — только
+                строку в запрос) и <strong>шаблон консультативного заключения</strong> по развёрнутой выдержке - только
                 черновик; нужна проверка и правка врачом.
               </div>
             </div>
           </div>
-          <p class="hero-help-examples-label">Примеры (сначала диагноз/МКБ — точнее подбор)</p>
+          <p class="hero-help-examples-label">Примеры (сначала диагноз/МКБ - точнее подбор)</p>
           <div class="hero-help-chips">
             <span class="hero-chip">J20.9 острый бронхит</span>
             <span class="hero-chip">I10 эссенциальная гипертензия</span>
@@ -5732,7 +5807,7 @@
           </div>
           <p class="hero-help-footnote">
             <strong>Совет:</strong> на телефоне можно надиктовать в поле кнопкой <strong>«Надиктовать в поле»</strong> (слева под
-            полем) — аудио на сервер не уходит.
+            полем) - аудио на сервер не уходит.
           </p>
         </div>
       </details>
@@ -5782,8 +5857,12 @@
                 PDF, TXT, DOCX, RTF, ODT, HTML → сверка с фрагментами клинических протоколов Минздрава РБ
               </p>
               <p class="consult-hint-small consult-intro-hide-print" style="margin: 0.5rem 0 0">
-                <a href="docs/mvp-presentation.html" target="_blank" rel="noopener">Презентация MVP для руководства</a>
-                — графики, схемы контура качества и дорожная карта (новая вкладка).
+                <a href="docs/mvp-presentation.html" class="btn-presentation-prominent" target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4M7 8h2v6H7zM11 10h2v4h-2zM15 7h2v7h-2z" />
+                  </svg>
+                  <span class="btn-presentation-prominent__text"><span>Презентация MVP для руководства</span><small>схемы контура качества и дорожная карта</small></span>
+                </a>
               </p>
             </div>
           </div>
@@ -5796,10 +5875,10 @@
           <p class="consult-hint-small" style="margin-top: 0.55rem">
             <strong>Жалобы и претензии.</strong> Расхождение между текстом заключения и протоколом часто становится предметом
             разбора случая. Инструмент помогает <strong>методслужбе и заведующему</strong> заранее увидеть слабые места в
-            документации (критерии ниже 70%) — до эскалации, не вместо очной экспертизы.
+            документации (критерии ниже 70%) - до эскалации, не вместо очной экспертизы.
           </p>
           <p class="consult-hint-small consult-intro-hide-print" style="margin-top: 0.45rem; margin-bottom: 0">
-            Документ может содержать персональные данные — не передавайте через публичные незащищённые каналы без решения по
+            Документ может содержать персональные данные - не передавайте через публичные незащищённые каналы без решения по
             ИБ.
           </p>
         </header>
@@ -5834,7 +5913,7 @@
           <details class="specialty-panel consult-slugs-panel" id="consult-rubrics-details">
             <summary>Рубрики каталога <span class="optional-mark">(необязательно)</span></summary>
             <p class="specialty-hint">
-              Можно выбрать несколько областей — отбор протоколов будет сильнее ориентироваться на эти разделы каталога.
+              Можно выбрать несколько областей - отбор протоколов будет сильнее ориентироваться на эти разделы каталога.
             </p>
             <p class="specialty-site-note">
               На сайте
@@ -5845,7 +5924,7 @@
                 >Минздрава</a
               >
               перечень совпадает с каталогом ниже (24 раздела). Общие и «терапевтические» протоколы отнесены к профильным
-              разделам — например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
+              разделам - например, <strong>болезни системы кровообращения</strong>, <strong>гастроэнтерология</strong>,
               <strong>пульмонология</strong>, <strong>эндокринология</strong>, <strong>неврология</strong> и др.
             </p>
             <div class="specialty-toolbar">
@@ -5874,7 +5953,7 @@
               <div class="consult-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="consult-progress-bar">
                 <div class="consult-progress-bar__fill" id="consult-progress-fill"></div>
               </div>
-              <p class="consult-progress-label" id="consult-progress-label">0% — подготовка…</p>
+              <p class="consult-progress-label" id="consult-progress-label">0% - подготовка…</p>
               <p class="consult-progress-partial" id="consult-progress-partial" hidden></p>
             </div>
             <p class="consult-analyze-banner__note">
@@ -5891,7 +5970,7 @@
             <p style="margin: 0 0 0.25rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; color: var(--green-600)">
               Ориентировочное соответствие
             </p>
-            <p class="consult-pct" id="consult-out-pct">—</p>
+            <p class="consult-pct" id="consult-out-pct"> - </p>
             <p class="consult-hint-small" style="margin: 0.3rem 0 0; opacity: 0.88" id="consult-out-pct-method" hidden></p>
           </div>
           <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-out-summary"></p>
@@ -5969,7 +6048,7 @@
         Сверка с протоколами Минздрава…
       </div>
       <p class="assist-timer-overlay__disclaimer" style="margin: 0.35rem 0 0; font-size: 0.78rem; color: var(--muted)">
-        Обычно 40–90 с: подбор кодов МКБ, поиск по корпусу PDF, формирование ответа. Не закрывайте вкладку.
+        Обычно 40-90 с: подбор кодов МКБ, поиск по корпусу PDF, формирование ответа. Не закрывайте вкладку.
       </p>
       <div class="assist-loading__timer">
         <span class="assist-timer-num">0</span>
@@ -6026,7 +6105,7 @@
   var ASSIST_PHASE_DISCLAIMER =
     "Этапы ориентировочные: фактическое время зависит от нагрузки и длины ответа.";
 
-  /** Если /api/specialties недоступен — тот же набор slug, что на сервере. */
+  /** Если /api/specialties недоступен - тот же набор slug, что на сервере. */
   var FALLBACK_SPECIALTIES = [
     { slug: "akusherstvo-ginekologiya", label: "Акушерство и гинекология" },
     { slug: "allergologiya-immunologiya", label: "Аллергология и иммунология" },
@@ -6359,7 +6438,7 @@
       btn.textContent = "Стоп";
       showVoicePanel(
         "recording",
-        "Идёт запись голоса. Говорите в микрофон — речь распознаётся в браузере и переводится в текст (аудио на сервер не отправляется)."
+        "Идёт запись голоса. Говорите в микрофон - речь распознаётся в браузере и переводится в текст (аудио на сервер не отправляется)."
       );
       setInterim("");
       try {
@@ -6482,7 +6561,7 @@
       : null;
   }
 
-  /** Нормализует score отбора RAG по path (0–1 внутри батча). */
+  /** Нормализует score отбора RAG по path (0-1 внутри батча). */
   function normalizeRagByPath(retrieval) {
     var m = {};
     if (!retrieval || !retrieval.length) return m;
@@ -6502,7 +6581,7 @@
     return m;
   }
 
-  /** Оценка 0–1: приоритет confidence_score от модели, иначе текстовая шкала. */
+  /** Оценка 0-1: приоритет confidence_score от модели, иначе текстовая шкала. */
   function confidenceFromProtocol(pr) {
     if (pr.confidence_score != null) {
       var num = Number(pr.confidence_score);
@@ -6567,7 +6646,7 @@
     var base = (lastAssistClinical || "").trim();
     var hyp = String(hypothesisLine || "").trim();
     if (!hyp) return base;
-    var tag = "\n\n— Дифференциальная гипотеза для подбора протокола: ";
+    var tag = "\n\n - Дифференциальная гипотеза для подбора протокола: ";
     if (!base) return hyp;
     return base + tag + hyp;
   }
@@ -6904,7 +6983,7 @@
         return "Что внести: сопутствующие заболевания, аллергоанамнез, перенесённые операции, наследственность, образ жизни, вредные привычки.";
       }
       if (sec.indexOf("объективно") !== -1) {
-        return "Что внести: общее состояние, кожные покровы, ЧДД, АД, живот, стул; местный статус (промежность, ректальное исследование) — по осмотру.";
+        return "Что внести: общее состояние, кожные покровы, ЧДД, АД, живот, стул; местный статус (промежность, ректальное исследование) - по осмотру.";
       }
       if (sec.indexOf("наблюдение") !== -1 || sec.indexOf("контроль") !== -1) {
         return "Что внести: сроки повторного визита, контрольные исследования, рекомендации при выписке.";
@@ -6975,7 +7054,7 @@
   function attentionClassSuffixForLine(line) {
     var x = String(line || "").trim();
     if (
-      /^ВАЖНО[\s:—\-]/i.test(x) ||
+      /^ВАЖНО[\s: - \-]/i.test(x) ||
       /^ОБРАТИТЕ ВНИМАНИЕ/i.test(x) ||
       /^НЕОБХОДИМО[\s:]/i.test(x)
     ) {
@@ -6990,7 +7069,7 @@
   function attentionClassSuffixForListLine(line) {
     var x = String(line || "").trim();
     if (
-      /^ВАЖНО[\s:—\-]/i.test(x) ||
+      /^ВАЖНО[\s: - \-]/i.test(x) ||
       /^ОБРАТИТЕ ВНИМАНИЕ/i.test(x) ||
       /^НЕОБХОДИМО[\s:]/i.test(x)
     ) {
@@ -7056,7 +7135,7 @@
       var headPart = trimmed.slice(0, col).trim();
       var rest = trimmed.slice(col + 1).trim();
       if (headPart.length < 3 || headPart.length > 125) return null;
-      if (!/^[А-ЯЁA-Z0-9()\-–\s\.,\(\)]+$/i.test(headPart)) return null;
+      if (!/^[А-ЯЁA-Z0-9()\--\s\.,\(\)]+$/i.test(headPart)) return null;
       return { head: headPart + ":", rest: rest };
     }
     var li;
@@ -7401,13 +7480,13 @@
       else sugLex.push(sug[si]);
     }
     var leadText =
-      "Коды из текста запроса; при подборе по жалобе формируется ограниченный список кандидатов (лексика и смысловая близость), затем из него отбираются варианты. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.";
+      "Коды из текста запроса; при подборе по жалобе формируется ограниченный список кандидатов (лексика и смысловая близость), затем из него отбираются варианты. Англ. названия - справочник ВОЗ. Не заменяет клиническую классификацию.";
     if (explicit && det.length) {
       leadText =
-        "В запросе указаны коды МКБ, подтверждённые справочником: они используются для поиска протоколов; лексические гипотезы по жалобе к кодам не подмешиваются. Англ. названия — справочник ВОЗ. Не заменяет клиническую классификацию.";
+        "В запросе указаны коды МКБ, подтверждённые справочником: они используются для поиска протоколов; лексические гипотезы по жалобе к кодам не подмешиваются. Англ. названия - справочник ВОЗ. Не заменяет клиническую классификацию.";
     } else if (explicit && !det.length && unk.length) {
       leadText =
-        "В тексте есть фрагменты, похожие на коды МКБ, но не найденные в справочнике (см. ниже). Подбор кодов по жалобе — по общим правилам. Англ. названия — справочник ВОЗ.";
+        "В тексте есть фрагменты, похожие на коды МКБ, но не найденные в справочнике (см. ниже). Подбор кодов по жалобе - по общим правилам. Англ. названия - справочник ВОЗ.";
     }
     var html =
       '<div class="assist-sec assist-sec--icd">' +
@@ -7421,9 +7500,9 @@
     }
     if (icd.meta && icd.meta.strategy) {
       html +=
-        '<p class="assist-icd-meta">Пул: лексический топ — ' +
+        '<p class="assist-icd-meta">Пул: лексический топ - ' +
         escapeHtml(String(icd.meta.lex_top != null ? icd.meta.lex_top : "")) +
-        " кодов; смысловое уточнение — до " +
+        " кодов; смысловое уточнение - до " +
         escapeHtml(String(icd.meta.embed_k != null ? icd.meta.embed_k : "")) +
         " из " +
         escapeHtml(String(icd.meta.embed_pool != null ? icd.meta.embed_pool : "")) +
@@ -7436,8 +7515,8 @@
       var tr = (it.title_ru || "").trim();
       var ten = (it.title_en || "").trim();
       var line = '<span class="assist-icd-code">' + code + "</span>";
-      if (tr) line += " — " + escapeHtml(tr);
-      if (ten) line += " — «" + escapeHtml(ten) + "»";
+      if (tr) line += " - " + escapeHtml(tr);
+      if (ten) line += " - «" + escapeHtml(ten) + "»";
       if (it.score != null && it.role === "suggested_lexicon") {
         line +=
           ' <span class="assist-icd-lexscore">(лексикон · ' +
@@ -7571,7 +7650,7 @@
           "</span>";
         if (row.title_ru) {
           html +=
-            '<span class="assist-proto-icd-top-title"> — ' +
+            '<span class="assist-proto-icd-top-title"> - ' +
             escapeHtml(String(row.title_ru)) +
             "</span>";
         }
@@ -7596,7 +7675,7 @@
     );
   }
 
-  /** Секундомер для загрузки выдержки / практического разбора (корни — id контейнеров с .assist-timer-num). */
+  /** Секундомер для загрузки выдержки / практического разбора (корни - id контейнеров с .assist-timer-num). */
   function startDetailLoadingTimer(opts) {
     opts = opts || {};
     var t0 = Date.now();
@@ -7814,11 +7893,11 @@
       for (ti = 0; ti < texts.length; ti++) {
         var qtext = lastAssistQuestions[ti] || "";
         var t = texts[ti].value.trim();
-        lines.push(ti + 1 + ". " + qtext + "\n" + (t || "— не указано"));
+        lines.push(ti + 1 + ". " + qtext + "\n" + (t || " - не указано"));
       }
       var combined =
         baseQ +
-        "\n\n— Ответы на уточняющие вопросы:\n" +
+        "\n\n - Ответы на уточняющие вопросы:\n" +
         lines.join("\n\n");
       var qInput = document.getElementById("q");
       if (qInput) qInput.value = combined;
@@ -7873,7 +7952,7 @@
     }
     function algorithmsHtml() {
       if (!alg.length) {
-        return '<p class="assist-detail-fact-empty">— алгоритмы в этой выдержке не выделены</p>';
+        return '<p class="assist-detail-fact-empty"> - алгоритмы в этой выдержке не выделены</p>';
       }
       var h = '<ul class="assist-detail-list assist-detail-list--pick">';
       var i;
@@ -7927,7 +8006,7 @@
     function listHtmlChecks(items, catKey) {
       if (!items || !items.length) {
         return (
-          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
+          '<p class="assist-detail-fact-empty"> - не указано во фрагменте протокола</p>'
         );
       }
       var h = '<ul class="assist-detail-list assist-detail-list--pick">';
@@ -7963,7 +8042,7 @@
     function freqHtml() {
       if (!mf) {
         return (
-          '<p class="assist-detail-fact-empty">— не указано во фрагменте протокола</p>'
+          '<p class="assist-detail-fact-empty"> - не указано во фрагменте протокола</p>'
         );
       }
       var wrapCls =
@@ -8010,7 +8089,7 @@
     }
     if (tabKey === "investigations") {
       return (
-        '<p class="assist-detail-fact-callout">Сверьте перечень с клиникой — обязательные исследования по протоколу легко пропустить.</p>' +
+        '<p class="assist-detail-fact-callout">Сверьте перечень с клиникой - обязательные исследования по протоколу легко пропустить.</p>' +
         '<div class="assist-detail-fact-body">' +
         sectionHtml("Пункты обследования", listHtmlChecks(inv, "investigations"), inv.length, true) +
         "</div>"
@@ -8144,7 +8223,7 @@
   function renderKzMatrixColumn(matrix) {
     if (!matrix || !matrix.sections || !matrix.sections.length) {
       return (
-        '<p class="assist-detail-note">Матрица пунктов КЗ не сформирована — используйте выдержку по протоколу выше и PDF на сайте Минздрава.</p>'
+        '<p class="assist-detail-note">Матрица пунктов КЗ не сформирована - используйте выдержку по протоколу выше и PDF на сайте Минздрава.</p>'
       );
     }
     var html = "";
@@ -8215,7 +8294,7 @@
       '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
       '<p class="assist-detail-meta">' +
       escapeHtml(String(titleLine)) +
-      " — загрузка выдержки и матрицы для КЗ…</p>" +
+      " - загрузка выдержки и матрицы для КЗ…</p>" +
       getDetailLoadingHtml() +
       "</div>"
     );
@@ -8857,7 +8936,7 @@
         "%. Блок показывается при ≥80%; значение может быть ниже 100%.";
       if (dp >= 100) {
         confLine =
-          "Оценка соответствия запросу: 100% — развёрнутый разбор по тексту протокола.";
+          "Оценка соответствия запросу: 100% - развёрнутый разбор по тексту протокола.";
       }
       html +=
         '<p class="assist-detail-confidence">' + escapeHtml(confLine) + "</p>";
@@ -8870,7 +8949,7 @@
     }
     if (cd.detail_prompt_truncated) {
       html +=
-        '<p class="assist-detail-warning assist-detail-warning--context">Текст протокола в запросе к модели обрезан по лимиту контекста — проверьте полноту разделов по файлу PDF на сайте Минздрава.</p>';
+        '<p class="assist-detail-warning assist-detail-warning--context">Текст протокола в запросе к модели обрезан по лимиту контекста - проверьте полноту разделов по файлу PDF на сайте Минздрава.</p>';
     }
     if (cd.is_algorithmic_protocol) {
       html +=
@@ -8902,7 +8981,7 @@
     }
     if (adultPediatricMismatch) {
       html +=
-        '<p class="assist-detail-warning"><strong>Важно:</strong> возраст пациента во входных данных — взрослый, а текущая развёрнутая выдержка относится к детскому протоколу. Чтобы не вводить в заблуждение, блок рекомендаций по обследованию/лечению скрыт. Запустите новый поиск с акцентом на взрослый протокол.</p>';
+        '<p class="assist-detail-warning"><strong>Важно:</strong> возраст пациента во входных данных - взрослый, а текущая развёрнутая выдержка относится к детскому протоколу. Чтобы не вводить в заблуждение, блок рекомендаций по обследованию/лечению скрыт. Запустите новый поиск с акцентом на взрослый протокол.</p>';
     } else if (ex.detailed) {
       html += renderClinicalFactsBlock(ex, cd, assistQuery);
     } else {
@@ -8973,7 +9052,7 @@
       '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>' +
       '<p class="assist-detail-confidence">Оценка соответствия запросу: ' +
       pct +
-      "%. Ниже 100% — полный разбор по тексту протокола не подгружается автоматически, чтобы быстрее показать краткий ответ.</p>" +
+      "%. Ниже 100% - полный разбор по тексту протокола не подгружается автоматически, чтобы быстрее показать краткий ответ.</p>" +
       '<p class="assist-detail-meta">' +
       escapeHtml(String(titleLine)) +
       "</p>" +
@@ -9032,7 +9111,7 @@
           '<p class="assist-source-note"><strong>Режим «только цитаты»:</strong> показаны выдержки из PDF протоколов Минздрава и ссылки; краткий ответ модели скрыт.</p>';
       } else {
         html +=
-          '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность — в файле на сайте Минздрава.</p>';
+          '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность - в файле на сайте Минздрава.</p>';
       }
 
       if (data.audience_inferred) {
@@ -9072,7 +9151,7 @@
         html +=
           '<span class="assist-sec-label assist-sec-label--alert">Обратить внимание (по тексту отобранных фрагментов)</span>';
         html +=
-          '<p class="assist-redflags-lead">Найдены формулировки о срочности, стационаре или угрозе для жизни — сверьтесь с полным протоколом и клиникой.</p><ul class="assist-redflags-list">';
+          '<p class="assist-redflags-lead">Найдены формулировки о срочности, стационаре или угрозе для жизни - сверьтесь с полным протоколом и клиникой.</p><ul class="assist-redflags-list">';
         var ri;
         for (ri = 0; ri < data.red_flags.length; ri++) {
           html +=
@@ -9124,7 +9203,7 @@
         html +=
           '<span class="assist-sec-label">Дифференциальные гипотезы</span>';
         html +=
-          '<p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 — относительно более вероятный. Кнопка «Искать протокол» подставляет гипотезу в запрос вместе с предыдущим текстом жалобы и контекстом пациента (если он был указан).</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
+          '<p class="assist-diff-lead">Не окончательный диагноз. Варианты для обсуждения с врачом и сверки с протоколом; 1 - относительно более вероятный. Кнопка «Искать протокол» подставляет гипотезу в запрос вместе с предыдущим текстом жалобы и контекстом пациента (если он был указан).</p><div class="assist-diff-wrap"><ul class="assist-diff-list">';
         var di;
         var diffItems = j.differential.slice(0, 5);
         for (di = 0; di < diffItems.length; di++) {
@@ -9158,7 +9237,7 @@
         html +=
           '<hr class="assist-hr" /><details class="assist-collapsible"><summary>Уточняющие вопросы <span style="font-weight:500;color:var(--muted);font-size:0.85em">(развернуть)</span></summary><div class="assist-sec">';
         html +=
-          '<p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте — они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
+          '<p style="margin:0 0 0.45rem;font-size:0.8rem;color:var(--muted)">Ответьте и отправьте - они будут добавлены к запросу вместе с контекстом пациента (если заполнен выше).</p>';
         html +=
           '<form class="llm-followup-form" id="llm-followup-form" action="#" method="post"><ol>';
         var qi;
@@ -9182,8 +9261,8 @@
 
       if (rawProtos.length) {
         html +=
-          '<details class="assist-collapsible assist-collapsible--legend"><summary>Пояснение к оценкам (%)</summary><p class="assist-metrics-legend" style="margin:0"><strong>Соответствие (%)</strong> — насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0–100%). ' +
-          "<strong>Фрагмент (%)</strong> — насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
+          '<details class="assist-collapsible assist-collapsible--legend"><summary>Пояснение к оценкам (%)</summary><p class="assist-metrics-legend" style="margin:0"><strong>Соответствие (%)</strong> - насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0-100%). ' +
+          "<strong>Фрагмент (%)</strong> - насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
       var practicalOffer = pickTopProtocolForPractical(rawProtos, 0.8);
@@ -9296,7 +9375,7 @@
         return (
           "Сервис на Render временно недоступен (HTTP " +
           status +
-          "). Обычно это таймаут прокси или перезапуск — подождите 1–2 минуты и повторите. " +
+          "). Обычно это таймаут прокси или перезапуск - подождите 1-2 минуты и повторите. " +
           "Если не помогает, проверьте логи сервиса и готовность индекса RAG (/health)."
         );
       }
@@ -9569,7 +9648,7 @@
       html += "<li><strong>" + escapeHtml(label) + ":</strong> ";
       html += escapeHtml(items.slice(0, 6).join("; "));
       if (items.length > 6) html += " …";
-      html += " — отметить в КЗ: да / нет / не применимо</li>";
+      html += " - отметить в КЗ: да / нет / не применимо</li>";
     }
     html += "</ul>";
     html +=
@@ -9604,7 +9683,7 @@
           d.risk_zone_rate_pct +
           "%</strong> с зоной риска</div>" +
           '<div class="pilot-stat"><strong>' +
-          (d.protocols_in_corpus || "—") +
+          (d.protocols_in_corpus || " - ") +
           "</strong> протоколов в корпусе</div></div>";
         var crit = d.top_weak_criteria || [];
         var ch = "<ul class=\"assist-checklist-list\">";
@@ -9613,7 +9692,7 @@
           ch +=
             "<li>" +
             escapeHtml(crit[ci].name || "") +
-            " — ср. " +
+            " - ср. " +
             crit[ci].avg_pct +
             "%</li>";
         }
@@ -9702,28 +9781,28 @@
     {
       title: "Задача системы здравоохранения",
       html:
-        "<p>Сотни клинических протоколов Минздрава РБ — врач не может держать все редакции в памяти. Разный уровень соблюдения стандартов ведёт к разному качеству помощи и росту претензий.</p>" +
+        "<p>Сотни клинических протоколов Минздрава РБ - врач не может держать все редакции в памяти. Разный уровень соблюдения стандартов ведёт к разному качеству помощи и росту претензий.</p>" +
         "<ul><li>Единообразие тактики по официальным PDF</li><li>Поддержка врача в момент приёма</li><li>Ранний контроль консультативных заключений</li></ul>",
     },
     {
       title: "Два контура сервиса",
       html:
-        "<p><strong>1. Поиск протоколов</strong> — по диагнозу, МКБ-10 и рубрикам каталога (24 раздела, как на сайте Минздрава).</p>" +
-        "<p><strong>2. Проверка КЗ (PDF)</strong> — ориентировочная сверка заключения с выдержками протоколов, таблица критериев и зоны риска для методслужбы.</p>" +
-        "<p>Источник — только опубликованные протоколы Минздрава РБ.</p>",
+        "<p><strong>1. Поиск протоколов</strong> - по диагнозу, МКБ-10 и рубрикам каталога (24 раздела, как на сайте Минздрава).</p>" +
+        "<p><strong>2. Проверка КЗ (PDF)</strong> - ориентировочная сверка заключения с выдержками протоколов, таблица критериев и зоны риска для методслужбы.</p>" +
+        "<p>Источник - только опубликованные протоколы Минздрава РБ.</p>",
     },
     {
       title: "KPI пилота (3 месяца)",
       html:
-        "<ul><li>Доля приёмов с открытым релевантным клиническим протоколом</li><li>Среднее время поиска протокола vs поиск вручную</li><li>Доля КЗ с зоной риска (&lt; 70% по критерию) — ранний сигнал методслужбе</li><li>Оценка заведующих и методсовета</li></ul>" +
-        "<p>Пилот: 2–3 учреждения под методическим сопровождением.</p>",
+        "<ul><li>Доля приёмов с открытым релевантным клиническим протоколом</li><li>Среднее время поиска протокола vs поиск вручную</li><li>Доля КЗ с зоной риска (&lt; 70% по критерию) - ранний сигнал методслужбе</li><li>Оценка заведующих и методсовета</li></ul>" +
+        "<p>Пилот: 2-3 учреждения под методическим сопровождением.</p>",
     },
     {
       title: "Демонстрация",
       html:
-        "<p>Ниже — рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии, учебные кейсы или загрузите обезличенное консультативное заключение.</p>" +
+        "<p>Ниже - рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии, учебные кейсы или загрузите обезличенное консультативное заключение.</p>" +
         "<p>Оценка не является МЭЭ и не заменяет решение врача.</p>" +
-        "<p><a href=\"docs/mvp-presentation.html\" target=\"_blank\" rel=\"noopener\">Полная презентация MVP</a> — диаграммы, витрина для МИС и Минздрава (новая вкладка).</p>",
+        "<p><a href=\"docs/mvp-presentation.html\" target=\"_blank\" rel=\"noopener\">Полная презентация MVP</a> - диаграммы, витрина для МИС и Минздрава (новая вкладка).</p>",
     },
   ];
 
@@ -9862,7 +9941,7 @@
   }
 
   function formatUtcDateRu(iso) {
-    if (!iso) return "—";
+    if (!iso) return " - ";
     try {
       var d = new Date(iso);
       if (isNaN(d.getTime())) return iso.slice(0, 10);
@@ -9885,10 +9964,10 @@
         return r.ok ? r.json() : null;
       })
       .then(function (data) {
-        el.textContent = data && data.version ? data.version : "—";
+        el.textContent = data && data.version ? data.version : " - ";
       })
       .catch(function () {
-        el.textContent = "—";
+        el.textContent = " - ";
       });
   }
 
@@ -10015,7 +10094,7 @@
         } else if (cov.pdfs_total) {
           parts.push(
             "<span><strong>" +
-              (cov.coverage_pct != null ? cov.coverage_pct : "—") +
+              (cov.coverage_pct != null ? cov.coverage_pct : " - ") +
               "%</strong> PDF с правилами (" +
               (cov.pdfs_with_rules || 0) +
               "/" +
@@ -10028,7 +10107,7 @@
         if (rubricKeys.length) {
           var rubricBits = rubricKeys.slice(0, 6).map(function (slug) {
             var row = byRubric[slug] || {};
-            return slug.replace(/-/g, " ").slice(0, 18) + " " + (row.coverage_pct != null ? row.coverage_pct : "—") + "%";
+            return slug.replace(/-/g, " ").slice(0, 18) + " " + (row.coverage_pct != null ? row.coverage_pct : " - ") + "%";
           });
           parts.push("<span class=\"info-panel-note\">Рубрики: " + rubricBits.join(" · ") + (rubricKeys.length > 6 ? " …" : "") + "</span>");
         }
@@ -10103,16 +10182,16 @@
     if (sumEl) {
       sumEl.textContent =
         "Общее соответствие: " +
-        (overall != null ? overall + "%" : "—") +
+        (overall != null ? overall + "%" : " - ") +
         (avg != null ? ". Среднее по " + scores.length + " критериям: " + avg + "%." : ".") +
         (low.length
-          ? " Зон риска (&lt; 70%): " + low.length + " — рекомендуется разбор методслужбой."
+          ? " Зон риска (&lt; 70%): " + low.length + " - рекомендуется разбор методслужбой."
           : " Существенных зон риска по порогу 70% не выделено.");
     }
     if (grpEl) {
       var gtxt = [];
       if (high.length) gtxt.push("Высокое согласие (≥ 85%): " + high.join("; "));
-      if (mid.length) gtxt.push("Требует внимания (70–84%): " + mid.join("; "));
+      if (mid.length) gtxt.push("Требует внимания (70-84%): " + mid.join("; "));
       grpEl.textContent = gtxt.join(" · ") || "";
       grpEl.hidden = !gtxt.length;
     }
@@ -10122,7 +10201,7 @@
         low.forEach(function (row) {
           var li = document.createElement("li");
           li.className = "risk-high";
-          li.textContent = row.name + " — " + row.score + "%" + (row.comment ? ": " + row.comment : "");
+          li.textContent = row.name + " - " + row.score + "%" + (row.comment ? ": " + row.comment : "");
           riskUl.appendChild(li);
         });
         riskUl.hidden = false;
@@ -10153,7 +10232,7 @@
       .join("");
     var stamp = new Date().toLocaleString("ru-RU");
     return (
-      "<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"utf-8\"/><title>Отчёт методслужбы — проверка КЗ</title>" +
+      "<!DOCTYPE html><html lang=\"ru\"><head><meta charset=\"utf-8\"/><title>Отчёт методслужбы - проверка КЗ</title>" +
       "<style>body{font-family:system-ui,sans-serif;max-width:48rem;margin:1.5rem auto;padding:0 1rem;color:#1a2e2a}" +
       "h1{font-size:1.25rem}table{width:100%;border-collapse:collapse;font-size:0.9rem}th,td{border:1px solid #ccc;padding:0.35rem 0.5rem;text-align:left}" +
       ".muted{color:#5a6f6a;font-size:0.85rem}</style></head><body>" +
@@ -10162,7 +10241,7 @@
       stamp +
       " · не МЭЭ, не юридическая экспертиза</p>" +
       "<p><strong>Общее соответствие:</strong> " +
-      (rev.overall_compliance_pct != null ? rev.overall_compliance_pct + "%" : "—") +
+      (rev.overall_compliance_pct != null ? rev.overall_compliance_pct + "%" : " - ") +
       "</p><p>" +
       escapeHtml(rev.summary_ru || "") +
       "</p>" +
@@ -10175,22 +10254,22 @@
     );
   }
 
-  /** Подсказки во время ожидания проверки КЗ — постепенно сменяются по мере роста секунд. */
+  /** Подсказки во время ожидания проверки КЗ - постепенно сменяются по мере роста секунд. */
   var CONSULT_WAIT_TIPS = [
-    "Можно выбрать до трёх PDF заключений в одном окне (Ctrl/⌘ + щёлчки) — сервер соберёт их в правильном порядке.",
+    "Можно выбрать до трёх PDF заключений в одном окне (Ctrl/⌘ + щёлчки) - сервер соберёт их в правильном порядке.",
     "Из каждого PDF извлекается текст и по нему подбираются протоколы.",
-    "Отобранные фрагменты текстов протоколов сопоставляются с вашим текстом через поиск по смыслу — полный охват протоколов не гарантирован.",
-    "Проверьте нужные рубрики каталога в блоке ниже — отмеченные разделы усиливают прицельность отбора протоколов.",
+    "Отобранные фрагменты текстов протоколов сопоставляются с вашим текстом через поиск по смыслу - полный охват протоколов не гарантирован.",
+    "Проверьте нужные рубрики каталога в блоке ниже - отмеченные разделы усиливают прицельность отбора протоколов.",
     "Если есть несколько PDF, сервер добавляет блоки вида «ЗАКЛЮЧЕНИЕ N» в порядке выбора файлов.",
     "Редакции протоколов на сайте могут меняться; при разночтениях ориентируйтесь на актуальный файл в каталоге Минздрава.",
     "Не выдёргайте текст из столбца критериев судебного значения без проверки с исходником протокола.",
-    "Раз в минуту «отведите стопу» со стула или пройдите к окну без телефона — микродвижения уменьшают заторможенность после сидения.",
-    "Стакан воды маленькими глотками и простое выпрямление плеч — быстрый способ немного освежиться за экраном.",
+    "Раз в минуту «отведите стопу» со стула или пройдите к окну без телефона - микродвижения уменьшают заторможенность после сидения.",
+    "Стакан воды маленькими глотками и простое выпрямление плеч - быстрый способ немного освежиться за экраном.",
     "Длинным запрос часто становится именно очередь к языковой модели в облаке, не «сломался» браузер.",
     "Явное упоминание диагноза или МКБ в тексте обычно улучшает прицельность источников.",
     "При сюрпризе в баллах иногда достаточно отметить специализированную рубрику в блоке ниже или уточнить диагноз в тексте КЗ.",
     "Протокол опирается на типичную популяцию; ваш случай может честнее быть «между формулировками», чем против них.",
-    "Пока идёт ожидание, можно порядком пройти путь пациента: жалобы → вывод → план наблюдения — так таблица критериев восприятия яснее.",
+    "Пока идёт ожидание, можно порядком пройти путь пациента: жалобы → вывод → план наблюдения - так таблица критериев восприятия яснее.",
     "Не закрывайте вкладку: после ответа данные раздела останутся на экране."
   ];
 
@@ -10256,7 +10335,7 @@
     var consBasis = flags.consultation_basis_ru;
     if (consBasis && consBasis.length) {
       parts.push(
-        '<p class="consult-onco-alert__sub"><strong>По тексту заключения — основание:</strong></p>'
+        '<p class="consult-onco-alert__sub"><strong>По тексту заключения - основание:</strong></p>'
       );
       parts.push('<ul class="consult-onco-basis-list">');
       consBasis.forEach(function (ln) {
@@ -10270,7 +10349,7 @@
     }
     if (flags.protocol_hit && flags.protocol_items && flags.protocol_items.length) {
       parts.push(
-        '<p class="consult-onco-alert__sub"><strong>По протоколам из отбора — основание:</strong></p>'
+        '<p class="consult-onco-alert__sub"><strong>По протоколам из отбора - основание:</strong></p>'
       );
       parts.push('<ul class="consult-onco-list">');
       flags.protocol_items.forEach(function (it) {
@@ -10295,7 +10374,7 @@
   }
 
   function renderConsultClinicalRulesPanel(_data) {
-    /* Панель MVP снята — детерминированный разбор в consult-structured-panel / report_html */
+    /* Панель MVP снята - детерминированный разбор в consult-structured-panel / report_html */
   }
 
   function renderConsultProtocolsSection(data, rev) {
@@ -10475,7 +10554,7 @@
     ht.className = "consult-hint-small";
     ht.style.margin = "0 0 0.55rem";
     ht.textContent =
-      "Уникальные PDF из автоматического отбора. Сначала — с подтверждением кодов МКБ в переданной выдержке; ссылки открывают документ на сервере.";
+      "Уникальные PDF из автоматического отбора. Сначала - с подтверждением кодов МКБ в переданной выдержке; ссылки открывают документ на сервере.";
     pw.appendChild(ht);
 
     var preciseNote = (data && data.consult_icd_precise_note_ru) || "";
@@ -10507,7 +10586,7 @@
     if (fill) fill.style.width = String(p) + "%";
     if (bar) bar.setAttribute("aria-valuenow", String(p));
     if (lbl) {
-      var line = String(p) + "% — " + (labelRu || "обработка…");
+      var line = String(p) + "% - " + (labelRu || "обработка…");
       if (partialNote) line += " · " + partialNote;
       lbl.textContent = line;
       lbl.title = line;
@@ -10554,7 +10633,7 @@
     if (st) st.textContent = "Готово.";
     var rev = (data && data.review) || {};
     document.getElementById("consult-out-pct").textContent =
-      typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : "—";
+      typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : " - ";
     var methodEl = document.getElementById("consult-out-pct-method");
     if (methodEl) {
       var m = rev.overall_compliance_method || "";
@@ -10697,7 +10776,7 @@
     } else {
       var bd = comp.score_breakdown || {};
       body =
-        '<p class="consult-hint-small">Полный HTML-отчёт недоступен — краткая сводка.</p>' +
+        '<p class="consult-hint-small">Полный HTML-отчёт недоступен - краткая сводка.</p>' +
         '<table style="font-size:0.85rem;margin-top:0.5rem"><tbody>' +
         ["documentation_score", "protocol_applicability_score", "diagnosis_score", "safety_score"]
           .map(function (k) {
@@ -10808,7 +10887,7 @@
         }, timeoutRef.ms);
         if (!health.rag_ready) {
           throw new Error(
-            "Индекс протоколов на сервере ещё загружается. Подождите 1–2 минуты и обновите страницу."
+            "Индекс протоколов на сервере ещё загружается. Подождите 1-2 минуты и обновите страницу."
           );
         }
         if (!health.gemini_configured) {
@@ -10835,7 +10914,7 @@
           });
         }
         if (!r.body || !r.body.getReader) {
-          throw new Error("Браузер не поддерживает потоковый ответ — обновите браузер.");
+          throw new Error("Браузер не поддерживает потоковый ответ - обновите браузер.");
         }
         var reader = r.body.getReader();
         var decoder = new TextDecoder();
@@ -11344,7 +11423,7 @@
           "<code>" +
           escapeHtml(ch.code) +
           "</code>" +
-          (ch.title_ru ? " — " + escapeHtml(ch.title_ru) : "") +
+          (ch.title_ru ? " - " + escapeHtml(ch.title_ru) : "") +
           "</label></li>";
       }
       html += "</ul>";
@@ -11579,7 +11658,7 @@
     var compact = q.replace(/\s+/g, "");
     var hasIcdCode =
       /^[A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?$/.test(compact) ||
-      /^[A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?[-–][A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?$/.test(compact);
+      /^[A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?[--][A-Za-zА-Яа-яЁё]\d{2}(?:\.\d{1,2})?$/.test(compact);
     if (hasIcdCode) {
       return { ok: true, query: q };
     }
@@ -11921,7 +12000,7 @@
     input.value = params;
   }
 
-  // protocols.json нужен только для счётчика протоколов в бейдже — необязателен для работы.
+  // protocols.json нужен только для счётчика протоколов в бейдже - необязателен для работы.
   fetch("protocols.json")
     .then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
