@@ -5860,7 +5860,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r57-presentation-stats-dash"
+BUILD_VERSION = "2026-06-01-r58-remove-top-presentation-cta"
 
 
 def _app_version() -> str:
