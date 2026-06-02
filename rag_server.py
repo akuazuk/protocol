@@ -221,6 +221,14 @@ def _load_index_csv_by_path() -> dict[str, dict[str, str]]:
     return out
 
 
+def _protocol_display_title(path: str = "", title: str | None = None) -> str:
+    """Читаемое название КП для UI и ответов API (без подчёркиваний из имён PDF)."""
+    from clinical_knowledge.protocol_links import protocol_display_name
+
+    reg = (title or "").strip() or None
+    return protocol_display_name(path or None, fallback=reg or "", registry_title=reg)
+
+
 def protocol_ui_meta_for_path(path: str) -> dict:
     """Метаданные КП для UI: год, пост МЗ, аудитория (из index.csv и имени файла)."""
     fn = Path(path).name if path else ""
@@ -762,9 +770,8 @@ def _enrich_chunks_from_index() -> None:
         pr = _protocols_by_path.get(p) or {}
         pm = _protocol_meta.get(p) or {}
         if not (ch.get("title") or "").strip():
-            ch["title"] = (pr.get("title") or pm.get("title") or "").strip() or Path(
-                p
-            ).stem
+            raw_title = (pr.get("title") or pm.get("title") or "").strip()
+            ch["title"] = _protocol_display_title(p, raw_title or Path(p).stem)
         if not (ch.get("category") or "").strip():
             ch["category"] = (pr.get("category") or pm.get("category") or "").strip()
 
@@ -3534,11 +3541,7 @@ def _consult_precise_links_for_icd_in_fragments(
         if not matched:
             continue
         pr = _protocols_by_path.get(path) or {}
-        ttl = (
-            str(pr.get("title") or "").strip()
-            or str(Path(path).name or path).strip()
-            or path
-        )
+        ttl = _protocol_display_title(path, str(pr.get("title") or "").strip() or None)
         rows_list.append(
             (
                 -best_s,
@@ -3696,7 +3699,7 @@ def _consult_candidates_blob_for_second_pass(retrieved: list[dict]) -> tuple[str
         if not p or p in seen_path:
             continue
         seen_path.add(p)
-        ttl = str(row.get("title") or "").strip() or Path(p).name
+        ttl = _protocol_display_title(p, str(row.get("title") or "").strip() or None)
         body = _retrieval_fragment_body(row).replace("\n", " ").strip()
         if len(body) > 420:
             body = body[:419].rstrip() + "…"
@@ -4374,7 +4377,7 @@ def _consult_ui_protocol_fragments(
     for pth in paths_used:
         frags = buckets.get(pth) or []
         pr = _protocols_by_path.get(pth) or {}
-        ttl = str(pr.get("title") or "").strip() or Path(pth).name
+        ttl = _protocol_display_title(pth, str(pr.get("title") or "").strip() or None)
         out.append({"path": pth, "title": ttl, "fragments": frags})
     return out
 
@@ -4538,7 +4541,7 @@ def _consult_oncology_flags(
         prot_items.append(
             {
                 "path": pth,
-                "title": title_raw or Path(pth).name,
+                "title": _protocol_display_title(pth, str(title_raw or "").strip() or None),
                 "basis_ru": list(basis_lines),
                 # Совместимость со старым фронтом: то же содержание, но конкретнее.
                 "hints_ru": list(basis_lines),
@@ -5216,7 +5219,7 @@ def build_kz_matrix(
 ) -> dict:
     icd_norm = _icd_codes_from_query_and_analysis(query, icd_codes)
     meta = _protocol_meta.get(path) or {}
-    title_line = title or meta.get("title") or Path(path).name
+    title_line = _protocol_display_title(path, title or meta.get("title"))
     max_body = int(os.environ.get("RAG_KZ_MATRIX_MAX_CHARS", "24000"))
     body = gather_protocol_text(path, max_body)
     if len(body.strip()) < 80:
@@ -5860,7 +5863,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r58-remove-top-presentation-cta"
+BUILD_VERSION = "2026-06-01-r59-protocol-title-beautify"
 
 
 def _app_version() -> str:

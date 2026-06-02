@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from clinical_knowledge.protocol_links import (
+    beautify_protocol_title,
     content_disposition_inline,
     normalize_protocol_path,
     protocol_display_name,
@@ -33,6 +34,28 @@ def test_protocol_display_name_cyrillic():
     name = protocol_display_name(p)
     assert "слюнных" in name.lower()
     assert ".pdf" not in name
+    assert "_" not in name
+
+
+def test_beautify_protocol_title_long_filename():
+    raw = (
+        "КП_Диагностика_и_лечение_пациентов_(взрослое_население)_"
+        "с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17"
+    )
+    name = beautify_protocol_title(raw)
+    assert "_" not in name
+    assert "взрослое население" in name
+    assert "22.03.2022" in name
+    assert "№17" in name
+    assert "тромбозом" in name.lower()
+
+
+def test_protocol_display_name_uses_registry_with_underscores():
+    p = "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/foo.pdf"
+    raw = "КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17"
+    name = protocol_display_name(p, registry_title=raw)
+    assert "_" not in name
+    assert "22.03.2022" in name
 
 
 def test_content_disposition_ascii_safe():

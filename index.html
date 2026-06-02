@@ -800,13 +800,15 @@
       border-left: 3px solid #94a3b8;
     }
     .consult-report-html .cr-src-link {
-      color: #0d6e58;
-      font-weight: 600;
-      text-decoration: underline;
-      text-underline-offset: 2px;
+      color: var(--green-800, #0d6e58);
+      font-weight: 650;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.34);
+      padding-bottom: 0.05em;
     }
     .consult-report-html .cr-src-link:hover {
-      color: #0a5544;
+      color: var(--green-950, #0a5544);
+      border-bottom-color: currentColor;
     }
     .consult-report-html .cr-muted-li {
       list-style: none;
@@ -1110,14 +1112,34 @@
       font-weight: 650;
       color: var(--green-900, #0a5544);
       text-decoration: none;
-      line-height: 1.38;
+      line-height: 1.42;
       word-break: break-word;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.32);
+      padding-bottom: 0.04em;
     }
 
     .consult-proto-chip__link:hover {
       color: var(--green-950);
-      text-decoration: underline;
-      text-underline-offset: 0.14em;
+      border-bottom-color: rgba(10, 85, 68, 0.72);
+    }
+
+    a.proto-link {
+      font-weight: 650;
+      color: var(--green-800);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.34);
+      padding-bottom: 0.05em;
+      line-height: 1.45;
+    }
+
+    a.proto-link:hover,
+    a.proto-link:focus-visible {
+      color: var(--green-950);
+      border-bottom-color: currentColor;
+    }
+
+    .assist-proto-list a.proto-link {
+      display: inline;
     }
 
     .consult-proto-chip__meta {
@@ -4450,7 +4472,7 @@
     }
 
     .assist-proto-list a {
-      font-weight: 600;
+      font-weight: 650;
       color: var(--green-800);
     }
 
@@ -6059,11 +6081,35 @@
   }
 
   /** Читаемое название: подчёркивания из имён файлов → пробелы */
-  function formatDisplayTitle(title) {
-    return String(title || "")
-      .replace(/_/g, " ")
-      .replace(/\s+/g, " ")
+  function beautifyProtocolTitle(raw) {
+    var name = String(raw || "").trim();
+    if (!name) return "";
+    if (name.indexOf("/") >= 0 || name.indexOf("\\") >= 0) {
+      name = name.replace(/\\/g, "/").split("/").pop() || name;
+    }
+    if (/\.pdf$/i.test(name)) name = name.slice(0, -4);
+    name = name.replace(/_/g, " ").replace(/\s+/g, " ").trim();
+    name = name.replace(/\b(\d{1,2})\s+(\d{1,2})\s+(\d{4})\b/g, function (_m, d, mo, y) {
+      var di = parseInt(d, 10);
+      var mi = parseInt(mo, 10);
+      if (di >= 1 && di <= 31 && mi >= 1 && mi <= 12) {
+        return (di < 10 ? "0" : "") + di + "." + (mi < 10 ? "0" : "") + mi + "." + y;
+      }
+      return _m;
+    });
+    name = name.replace(/пост\.?\s*МЗ/gi, "пост. МЗ");
+    name = name.replace(/\bот\s+(\d{2}\.\d{2}\.\d{4})\b/gi, "от $1");
+    name = name.replace(/№\s*(\d+)/g, "№$1");
+    name = name
+      .replace(/^(?:КП[\s_]*\d*[._\s-]*|кп[\s_]*\d*[._\s-]*)/i, "")
+      .replace(/(?:_оф\.?\s*опубл\.?|_офиц\.?|оф\.?\s*опубл\.?).*$/i, "")
       .trim();
+    name = name.replace(/\(\s+/g, "(").replace(/\s+\)/g, ")").replace(/\s+/g, " ").trim();
+    return name;
+  }
+
+  function formatDisplayTitle(title) {
+    return beautifyProtocolTitle(title);
   }
 
   function pct01(x) {
@@ -7545,14 +7591,14 @@
     var excerptByPath = opts.excerptByPath || {};
     var protocolIcdMentions = opts.protocolIcdMentions || {};
     var href = safeResourceHref(pr.path || "");
-    var title = formatDisplayTitle(pr.title || pr.path || "");
+    var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
     var html = "<li>";
     html +=
-      '<a href="' +
+      '<a class="proto-link" href="' +
       href +
-      '" target="_blank" rel="noopener">' +
+      '" target="_blank" rel="noopener noreferrer">' +
       escapeHtml(title) +
       "</a>";
     html += catalogBadgesHtml(pr.path, opts.protocolUiMeta);
@@ -8264,7 +8310,10 @@
   }
 
   function renderPracticalReviewLoading(offer) {
-    var titleLine = (offer && offer.title) || (offer && offer.path) || "";
+    var titleLine = formatProtocolDisplayTitle(
+      (offer && offer.path) || "",
+      (offer && offer.title) || ""
+    );
     return (
       '<div class="practical-review-panel practical-review-panel--loading" id="practical-review-panel">' +
       '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
@@ -8308,7 +8357,9 @@
       '<h3 class="practical-review-head">Практический разбор по протоколу</h3>';
     if (cd && cd.title) {
       html +=
-        '<p class="assist-detail-meta">' + escapeHtml(String(cd.title)) + "</p>";
+        '<p class="assist-detail-meta">' +
+        escapeHtml(formatProtocolDisplayTitle(cd.path || "", cd.title)) +
+        "</p>";
     }
     var pthMeta = (cd && cd.path) || "";
     var metaMap = {};
@@ -9022,7 +9073,7 @@
   function renderClinicalDetailPlaceholder(offer) {
     if (!offer || !offer.path) return "";
     var pct = pct01(Number(offer.confidence_score));
-    var titleLine = offer.title || offer.path;
+    var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
     return (
       '<div class="assist-clinical-detail assist-clinical-detail--pending" id="protocol-detail-block">' +
       '<h3 class="assist-detail-head">Развёрнутая выдержка из протокола</h3>' +
@@ -9381,17 +9432,12 @@
   }
 
   function formatProtocolDisplayTitle(path, registryTitle) {
-    if (registryTitle && String(registryTitle).trim().length >= 8) {
-      return formatDisplayTitle(registryTitle);
-    }
+    var fromReg = registryTitle ? beautifyProtocolTitle(registryTitle) : "";
+    if (fromReg && fromReg.length >= 6) return fromReg;
     var base = String(path || "").split("/").pop() || "";
     if (/\.pdf$/i.test(base)) base = base.slice(0, -4);
-    base = formatDisplayTitle(base);
-    base = base
-      .replace(/^(?:КП[\s_]*\d*[._\s-]*|кп[\s_]*\d*[._\s-]*)/i, "")
-      .replace(/(?:_оф\.?\s*опубл\.?|_офиц\.?|оф\.?\s*опубл\.?).*$/i, "")
-      .trim();
-    return base || formatDisplayTitle(path.split("/").pop() || "Протокол");
+    var pretty = beautifyProtocolTitle(base);
+    return pretty || beautifyProtocolTitle(registryTitle) || "Протокол";
   }
 
   function protocolRubricLabelFromPath(path) {
@@ -9438,6 +9484,19 @@
         if (!a.getAttribute("target")) {
           a.setAttribute("target", "_blank");
           a.setAttribute("rel", "noopener noreferrer");
+        }
+        if (!a.classList.contains("proto-link")) a.classList.add("proto-link");
+        var pathFromHref = "";
+        try {
+          var u = new URL(fixed, window.location.origin);
+          pathFromHref = u.searchParams.get("path") || "";
+        } catch (e0) {
+          var m = href.match(/[?&]path=([^&]+)/);
+          if (m) pathFromHref = decodeURIComponent(m[1]);
+        }
+        var label = (a.textContent || "").trim();
+        if (pathFromHref && (label.indexOf("_") >= 0 || /\.pdf$/i.test(label) || label.length < 8)) {
+          a.textContent = formatProtocolDisplayTitle(pathFromHref, label);
         }
       }
     });
@@ -10329,7 +10388,9 @@
       );
       parts.push('<ul class="consult-onco-list">');
       flags.protocol_items.forEach(function (it) {
-        var t = escapeHtml(String((it && it.title) || (it && it.path) || ""));
+        var t = escapeHtml(
+          formatProtocolDisplayTitle((it && it.path) || "", (it && it.title) || "")
+        );
         parts.push("<li><strong>" + t + "</strong>");
         var basis =
           (Array.isArray(it && it.basis_ru) && it.basis_ru) ||
@@ -10372,9 +10433,10 @@
       if (!key) return;
       var prev = byPath[key];
       var title =
-        row.title ||
-        (prev && prev.title) ||
-        formatProtocolDisplayTitle(key, row.registry_title || "");
+        formatProtocolDisplayTitle(
+          key,
+          row.title || row.registry_title || (prev && prev.title) || ""
+        );
       var merged = {
         path: key,
         title: title,
@@ -10470,8 +10532,8 @@
         a.href = row.pdf_url || safeResourceHref(pth || "#");
         a.target = "_blank";
         a.rel = "noopener noreferrer";
-        a.className = "consult-proto-chip__link";
-        a.textContent = row.title || formatProtocolDisplayTitle(pth);
+        a.className = "consult-proto-chip__link proto-link";
+        a.textContent = formatProtocolDisplayTitle(pth, row.title || row.registry_title || "");
 
         var meta = document.createElement("div");
         meta.className = "consult-proto-chip__meta";
