@@ -14,6 +14,16 @@ def _env_bool(name: str, default: bool) -> bool:
     return raw in ("1", "true", "yes", "on")
 
 
+def _env_int(name: str, default: int) -> int:
+    raw = (os.environ.get(name) or "").strip()
+    if not raw:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
 def _needs_summary_fallback(rules_check: dict[str, Any]) -> bool:
     pct = rules_check.get("rules_compliance_pct")
     if isinstance(pct, (int, float)) and float(pct) > 0:
@@ -41,44 +51,68 @@ def apply_summary_rules_fallback(
         return clinical_rules
 
     try:
-        from .protocol_summary.loader import find_conditions_by_icd, find_summary_for_condition
+        from .protocol_summary.icd_index import find_summary_refs_by_icd
+        from .protocol_summary.loader import load_summary_by_protocol_id
         from .protocol_summary.summary_to_rules import (
+            condition_to_protocol_rules,
             protocol_rule_to_legacy_dict,
-            summary_to_protocol_rules,
         )
     except ImportError:
         return clinical_rules
 
+    max_summaries = max(1, min(6, _env_int("CONSULT_RULES_SUMMARY_FALLBACK_MAX_SUMMARIES", 2)))
+    max_rules = max(5, min(120, _env_int("CONSULT_RULES_SUMMARY_FALLBACK_MAX_RULES", 48)))
+
     facts = clinical_rules.get("consult_facts") or {}
     matched = clinical_rules.get("matched_protocols") or []
     extra: list[dict[str, Any]] = []
+    condition_ids: list[str] = []
     seen_summary: set[str] = set()
     seen_rule: set[str] = set()
 
-    for icd in codes[:8]:
-        for cond in find_conditions_by_icd(icd)[:4]:
-            summary = find_summary_for_condition(cond, usable_only=False)
-            if summary is None or summary.protocol_id in seen_summary:
+    refs: list[tuple[str, str]] = []
+    for icd in codes[:6]:
+        for ref in find_summary_refs_by_icd(icd, limit=2):
+            if ref not in refs:
+                refs.append(ref)
+        if len(refs) >= max_summaries:
+            break
+    refs = refs[:max_summaries]
+
+    for protocol_id, condition_id in refs:
+        if protocol_id in seen_summary:
+            continue
+        summary = load_summary_by_protocol_id(protocol_id)
+        if summary is None:
+            continue
+        seen_summary.add(protocol_id)
+        cond = next((c for c in summary.conditions if c.condition_id == condition_id), None)
+        if cond is None:
+            continue
+        if condition_id not in condition_ids:
+            condition_ids.append(condition_id)
+        for pr in condition_to_protocol_rules(summary, cond):
+            leg = protocol_rule_to_legacy_dict(pr)
+            rid = str(leg.get("rule_id") or "")
+            if rid and rid in seen_rule:
                 continue
-            seen_summary.add(summary.protocol_id)
-            for pr in summary_to_protocol_rules(summary):
-                if cond.condition_id and pr.condition_id and pr.condition_id != cond.condition_id:
-                    continue
-                leg = protocol_rule_to_legacy_dict(pr)
-                rid = str(leg.get("rule_id") or "")
-                if rid and rid in seen_rule:
-                    continue
-                if rid:
-                    seen_rule.add(rid)
-                extra.append(leg)
+            if rid:
+                seen_rule.add(rid)
+            extra.append(leg)
+            if len(extra) >= max_rules:
+                break
+        if len(extra) >= max_rules:
+            break
 
     if not extra:
         return clinical_rules
 
     new_check = run_rule_checker(
         facts,
+        condition_ids=condition_ids or None,
         matched_protocols=matched if isinstance(matched, list) else None,
         extra_rules=extra,
+        include_catalog=False,
     )
     new_pct = new_check.get("rules_compliance_pct")
     if new_pct is None or float(new_pct) <= 0:
@@ -89,6 +123,7 @@ def apply_summary_rules_fallback(
     merged_rc.update(new_check)
     merged_rc["summary_fallback_applied"] = True
     merged_rc["summary_rules_count"] = len(extra)
+    merged_rc["summary_fallback_summaries"] = len(seen_summary)
     merged_rc["method"] = str(rc.get("method") or "") + "+summary_icd_fallback"
     out["rules_check"] = merged_rc
     return out

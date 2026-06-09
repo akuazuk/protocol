@@ -852,6 +852,15 @@ def _run_load_data_background() -> None:
     global _chunks_load_error
     try:
         load_data()
+        if env_bool("CONSULT_RULES_SUMMARY_FALLBACK", True) and env_bool(
+            "CONSULT_PREWARM_SUMMARY_ICD_INDEX", True
+        ):
+            try:
+                from clinical_knowledge.protocol_summary.icd_index import prewarm_icd_summary_index
+
+                prewarm_icd_summary_index()
+            except Exception:
+                pass
         _chunks_load_error = None
     except SystemExit as e:
         code = e.code
@@ -5873,7 +5882,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r70-sign-decision-quality"
+BUILD_VERSION = "2026-05-31-r71-fallback-fast"
 
 
 def _app_version() -> str:

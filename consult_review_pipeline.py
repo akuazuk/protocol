@@ -183,13 +183,6 @@ def iter_consult_review_pipeline(
         list(merged_icd or []),
         user_slugs,
     )
-    try:
-        from clinical_knowledge.rules_summary_fallback import apply_summary_rules_fallback
-
-        clinical_rules = apply_summary_rules_fallback(clinical_rules, list(merged_icd or []))
-    except Exception:
-        pass
-
     from clinical_knowledge.consult_retrieval import (
         consult_target_protocol_paths,
         filter_retrieval_rows_by_paths,
@@ -428,6 +421,19 @@ def iter_consult_review_pipeline(
             "protocol_paths_used": paths_used[:8],
         },
     )
+
+    # Summary-fallback по МКБ: после RAG (не блокирует поиск), ~0.1 с вместо ~30 с на полный корпус.
+    try:
+        from clinical_knowledge.rules_summary_fallback import apply_summary_rules_fallback
+
+        clinical_rules = apply_summary_rules_fallback(clinical_rules, list(merged_icd or []))
+        if isinstance(clinical_rules, dict):
+            rc = clinical_rules.get("rules_check") or {}
+            if isinstance(rc, dict) and rc.get("summary_fallback_applied"):
+                rules_partial["rules_compliance_pct"] = rc.get("rules_compliance_pct")
+                rules_partial["summary_fallback_applied"] = True
+    except Exception:
+        pass
 
     consult_max = rs._consult_env_int("CONSULT_REVIEW_CONSULT_CHARS", 20000, default_fast=14000)
     multi_intro = (
