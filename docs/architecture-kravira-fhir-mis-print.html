@@ -61,7 +61,21 @@
   <header class="hero">
     <h1>Protocol: архитектура по этапам и проверка КЗ перед отправкой в Минздрав</h1>
     <p class="lead">Модуль анализа клинических протоколов и консультативных заключений – разработка МЦ «Кравира». Интеграция с МИС «Айболит» (EPAM) – следующий этап.</p>
-    <p class="footnote" style="border:0;margin:0;padding:0">Июнь 2026 · Версия сборки: <code>2026-05-31-r61-consult-ui-compact</code> · Не заменяет МЭЭ и нормативные акты Минздрава</p>
+    <p class="footnote" style="border:0;margin:0;padding:0">
+      Июнь 2026 · Версия сборки: <code>2026-05-31-r63-cisz-composition-v14</code> ·
+      API: <code>GET /api/version</code> ·
+      Нормативная база: FHIR BY 5.0, Протокол МИС ОЗ–ЦИСЗ v.1.4, программа испытаний МИС v.1.3-4 (амбулаторный профиль)
+    </p>
+    <table class="simple" style="margin-top:.55rem;font-size:.85rem">
+      <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+      <tbody>
+        <tr><td>Заказчик пилота</td><td>МЦ «Кравира» (частная ОЗ, интеграция с МИС «Айболит», EPAM)</td></tr>
+        <tr><td>Стек сервера</td><td>Python 3.11+, FastAPI (<code>rag_server.py</code>), детерминированные правила + RAG + LLM (опционально)</td></tr>
+        <tr><td>Корпус КП</td><td>~478 PDF клинических протоколов Минздрава РБ, ~105 000 фрагментов в индексе</td></tr>
+        <tr><td>FHIR</td><td>HL7 FHIR 5.0, профили <a href="https://fhir.by">fhir.by</a> (пакет fhir.by#1.4.411)</td></tr>
+        <tr><td>Роль в контуре ЦИСЗ</td><td>Предимпортная экспертиза КЗ и Bundle <strong>до ЭЦП</strong>; Protocol <strong>не</strong> вызывает ЦИСЗ и не подписывает пакеты</td></tr>
+      </tbody>
+    </table>
   </header>
 
   <!-- ===== 1. ЗАЧЕМ ===== -->
@@ -245,7 +259,8 @@
     <table class="simple">
       <thead><tr><th>Блок UI</th><th>Видимость</th><th>Содержание</th></tr></thead>
       <tbody>
-        <tr><td>Дашборд оценок</td><td>Сразу</td><td>3 карточки: гибрид, структурный, среднее LLM; легенда «что означает каждая цифра»</td></tr>
+        <tr><td>Дашборд оценок</td><td>Сразу</td><td>4 карточки: гибрид, структурный, LLM, <strong>Готовность к ЦИСЗ</strong>; донаты и таблицы блоков</td></tr>
+        <tr><td>Готовность к ЦИСЗ</td><td>Сразу + спойлер</td><td><code>cisz_readiness</code>: чек-лист слоёв A–C, сценарий 3.2.1/3.13.1</td></tr>
         <tr><td>Краткий вывод</td><td>Спойлер (открыт)</td><td><code>summary_ru</code> от LLM</td></tr>
         <tr><td>Ограничения оценки</td><td>Спойлер</td><td><code>limitations_ru</code> (нет КП в RAG, неполные выдержки…)</td></tr>
         <tr><td>Допуск к подписи (МИС)</td><td>Сразу</td><td><code>send_gate</code>: статус, <code>gate_score</code>, порог 70%</td></tr>
@@ -475,8 +490,177 @@ POST импорт пакета в ЦИСЗ
       </tbody>
     </table>
     <div class="note">
-      <strong>Вывод:</strong> Protocol не заменяет валидацию ЦИСЗ и не импортирует пакеты. Он проверяет <em>клиническое</em> соответствие до подписи, используя те же структурированные поля, которые МИС положит в Bundle.
+      <strong>Вывод:</strong> Protocol не заменяет валидацию ЦИСЗ и не импортирует пакеты. Он проверяет <em>клиническое</em> соответствие и <em>структурную готовность Bundle</em> до подписи, используя те же поля, которые МИС отправит в ЦИСЗ.
     </div>
+
+    <h3>5.12. Три слоя контроля готовности к ЦИСЗ (реализовано в <code>cisz_readiness</code>)</h3>
+    <p>Локальная оценка <code>cisz_readiness</code> объединяет три независимых оси. Это <strong>не</strong> замена серверной валидации ЦИСЗ, а зеркало требований для раннего предупреждения в МИС.</p>
+    <table class="simple">
+      <thead><tr><th>Слой</th><th>Источник</th><th>Модуль</th><th>Что проверяется</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A. Обёртка пакета</strong></td>
+          <td>Протокол МИС ОЗ–ЦИСЗ <strong>v.1.4</strong> §5.1.1, §4.1</td>
+          <td><code>PROTOCOL_V14_BUNDLE_CHECKS</code></td>
+          <td><code>Bundle.type=document</code>, <code>meta.profile</code> пакета, <code>identifier</code>, <code>timestamp</code></td>
+        </tr>
+        <tr>
+          <td><strong>B. Composition</strong></td>
+          <td>Протокол v.1.4 §5.2.2, §5.1.1</td>
+          <td><code>PROTOCOL_V14_COMPOSITION_CHECKS</code></td>
+          <td>Composition первым в <code>entry</code>; <code>author</code>, <code>custodian</code>, <code>subject</code>, <code>encounter</code>, <code>type</code>, <code>date</code>, <code>event</code></td>
+        </tr>
+        <tr>
+          <td><strong>C. Клинические ресурсы</strong></td>
+          <td>Программа испытаний МИС <strong>v.1.3-4</strong> (ч.4 амбулаторный)</td>
+          <td><code>PRIMARY_AMBULATORY_CHECKS</code> / <code>SPECIALIST_CONSULT_CHECKS</code></td>
+          <td>Patient, Encounter, Observation*, Condition/FinalDiagnosis, ServiceRequest, MedicationRequest</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="diagram">FHIR Bundle (JSON из МИС)
+    │
+    ├─ Слой A+B: fhir_bundle_inspect.inspect_protocol_v14_checks()
+    │     → 14 проверок обёртки (критичные: type, profile, Composition first, author, custodian)
+    │
+    ├─ Слой C: inspect_bundle_checks() — сценарий auto (3.2.1 / 3.13.1 / 3.3)
+    │
+    └─ cisz_readiness.evaluate_cisz_readiness()
+          → overall_score (%), checks[], critical_failures
+          → merge_send_gate_with_cisz: gate_score = min(клиника, cisz_score)
+
+Параллельно (отдельная ось): клиника по КП Минздрава → compliance_engine, gate по протоколам лечения</div>
+
+    <h3>5.13. Методы API ЦИСЗ по Протоколу v.1.4 (выполняет МИС, не Protocol)</h3>
+    <p>Ниже – справочник для разработчиков «Айболит» и аудита со стороны Минздрава. Protocol готовит данные к этим вызовам, но <strong>не проксирует</strong> их (планируется опционально на стороне МИС).</p>
+    <table class="simple">
+      <thead><tr><th>Метод (Протокол v.1.4)</th><th>HTTP</th><th>OAuth</th><th>Назначение</th><th>Ответ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>5.1.1 Проверка без импорта</td>
+          <td><code>POST [FHIR_BASE]/Bundle/$validate</code></td>
+          <td>Не требуется</td>
+          <td>Валидация профиля пакета и ресурсов без сохранения в ЦИСЗ</td>
+          <td>HTTP 200 + <code>OperationOutcome</code> (success/error)</td>
+        </tr>
+        <tr>
+          <td>5.2.2 Импорт ЭД (боевой)</td>
+          <td><code>POST [FHIR_BASE]/Bundle/$import</code></td>
+          <td>Токен <strong>медработника</strong> (PKCE)</td>
+          <td>Подписанный CMS (<code>Content-Type: application/cms</code>)</td>
+          <td>HTTP 202 + <code>Parameters</code> (ProcessingStatus=Pending)</td>
+        </tr>
+        <tr>
+          <td>5.1.2 Импорт JSON (разработка)</td>
+          <td><code>POST .../Bundle/$import</code></td>
+          <td>Токен медработника</td>
+          <td>Неподписанный JSON – только для испытаний МИС</td>
+          <td>202 / 4xx + OperationOutcome</td>
+        </tr>
+        <tr>
+          <td>5.2.3 Статус обработки</td>
+          <td><code>GET [FHIR_BASE]/Bundle/{id}/$status</code></td>
+          <td>Токен</td>
+          <td>Polling после импорта (~5 с)</td>
+          <td><code>ProcessingStatus</code>: Pending→InProgress→Successed|Failed</td>
+        </tr>
+        <tr>
+          <td>5.1.4 CapabilityStatement</td>
+          <td><code>GET [FHIR_BASE]/metadata</code></td>
+          <td>Не требуется</td>
+          <td>Версии FHIR, поддерживаемые операции</td>
+          <td>CapabilityStatement</td>
+        </tr>
+        <tr>
+          <td>6.1 Терминология НСИ</td>
+          <td><code>$validate-code</code>, <code>$expand</code></td>
+          <td>Частично без auth</td>
+          <td>Сверка МКБ-10, CompositionType и др. со справочниками ЦИСЗ</td>
+          <td>Parameters / ValueSet</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note note--warn">
+      <strong>Обязательные поля при импорте ЭД (§5.2.2):</strong>
+      <code>Composition.author</code> = <code>practitioner_id</code> из OAuth-токена;
+      <code>Composition.custodian</code> = <code>department_ids</code> (ОЗ) из токена.
+      Protocol проверяет <em>наличие</em> ссылок локально; сверку с токеном выполняет МИС перед вызовом ЦИСЗ.
+    </div>
+
+    <h3>5.14. Чек-лист Composition и пакета (слои A–B, код)</h3>
+    <table class="simple">
+      <thead><tr><th>check_id</th><th>Проверка</th><th>Критично</th><th>Ссылка v.1.4</th></tr></thead>
+      <tbody>
+        <tr><td><code>bundle_type_document</code></td><td>Bundle.type = document</td><td>да</td><td>§5.1.1</td></tr>
+        <tr><td><code>bundle_profile_package</code></td><td>meta.profile пакета (MedicationDocument)</td><td>да</td><td>§4.1</td></tr>
+        <tr><td><code>bundle_identifier</code></td><td>Идентификатор документа/пакета</td><td>нет</td><td>§5.1.1</td></tr>
+        <tr><td><code>bundle_timestamp</code></td><td>Дата формирования пакета</td><td>нет</td><td>§5.1.1</td></tr>
+        <tr><td><code>composition_first_entry</code></td><td>Composition — первый ресурс в entry</td><td>да</td><td>§5.1.1</td></tr>
+        <tr><td><code>composition_present</code></td><td>Ресурс Composition (CompDocument)</td><td>да</td><td>§4.1</td></tr>
+        <tr><td><code>composition_author</code></td><td>author → Practitioner/Role</td><td>да</td><td>§5.2.2</td></tr>
+        <tr><td><code>composition_custodian</code></td><td>custodian → Organization</td><td>да</td><td>§5.2.2</td></tr>
+        <tr><td><code>composition_subject</code></td><td>subject → Patient</td><td>да</td><td>§4.1</td></tr>
+        <tr><td><code>composition_encounter</code></td><td>encounter → Encounter</td><td>нет</td><td>§4.4</td></tr>
+        <tr><td><code>composition_type</code></td><td>type.coding (CompositionType)</td><td>нет</td><td>НСИ</td></tr>
+        <tr><td><code>composition_date</code></td><td>date — дата составления</td><td>нет</td><td>§5.1.1</td></tr>
+        <tr><td><code>composition_event_links</code></td><td>event.detail → Condition/Observation</td><td>нет</td><td>fhir.by example</td></tr>
+      </tbody>
+    </table>
+    <p>Фикстура для автотестов: <code>tests/fixtures/fhir_by/primary_ambulatory_min.json</code> (Composition + амбулаторный сценарий 3.2.1).</p>
+
+    <h3>5.15. Сопоставление: локальный Protocol vs сервер ЦИСЗ</h3>
+    <table class="simple">
+      <thead><tr><th>Критерий</th><th>Protocol <code>cisz_readiness</code></th><th>ЦИСЗ <code>Bundle/$validate</code></th><th>ЦИСЗ импорт + <code>$status</code></th></tr></thead>
+      <tbody>
+        <tr><td>Структура Bundle/Composition</td><td>Эвристики по JSON</td><td>StructureDefinition, полная схема</td><td>То же + асинхронная обработка</td></tr>
+        <tr><td>Коды НСИ (МКБ-10)</td><td>Наличие coding.system/code</td><td><code>$validate-code</code>, справочники ЦИСЗ</td><td>Отклонение при несовпадении НСИ</td></tr>
+        <tr><td>Клиника (жалобы, осмотр, диагноз)</td><td>Чек-лист программы испытаний</td><td>Не оценивает клинику</td><td>Не оценивает клинику</td></tr>
+        <tr><td>Клинические протоколы Минздрава</td><td><strong>Да</strong> (отдельная ось)</td><td>Нет</td><td>Нет</td></tr>
+        <tr><td>ЭЦП / CMS</td><td>Нет</td><td>Нет</td><td>Обязательно (боевой путь)</td></tr>
+        <tr><td>Время ответа</td><td>&lt; 2 с (L0)</td><td>Сеть + ЦИСЗ</td><td>10–20 с + polling</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.16. JSON-ответ API (фрагмент для интеграции МИС)</h3>
+    <div class="diagram">POST /api/consult-compliance-screen
+Content-Type: application/json
+
+{
+  "bundle": { "resourceType": "Bundle", "type": "document", ... },
+  "consultation_id": "enc-12345"
+}
+
+→ 200 OK
+
+{
+  "ok": true,
+  "screen_level": "L0",
+  "overall_score": 72.5,
+  "send_gate": {
+    "gate_allowed": true,
+    "gate_score": 68.0,
+    "clinical_gate_score": 72.5,
+    "cisz_score": 68.0,
+    "gate_mode": "soft_gate",
+    "requires_override": true,
+    "block_reason_ru": "Оценка 68% ниже 70% – требуется подтверждение врача.",
+    "cisz_readiness": { "...": "вложенный объект" }
+  },
+  "cisz_readiness": {
+    "overall_score": 68.0,
+    "scenario": "primary_ambulatory",
+    "scenario_label_ru": "Первичный приём (3.2.1)",
+    "critical_failures": 0,
+    "check_layers": { "protocol_v14": true, "mis_test_scenario": "primary_ambulatory" },
+    "program_refs": [
+      "Программа испытаний МИС v.1.3-4 — Амбулаторный профиль",
+      "Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ v.1.4"
+    ],
+    "checks": [
+      { "check_id": "composition_author", "title_ru": "...", "passed": true, "critical": true, "verdict_ru": "Хорошо" }
+    ]
+  }
+}</div>
   </section>
 
   <!-- ===== 6. GATE ===== -->
@@ -554,7 +738,7 @@ POST импорт пакета в ЦИСЗ
       <tbody>
         <tr><td>A</td><td><strong>Готово (backend)</strong></td><td><code>send_gate</code>, <code>gate_score</code>, JSON-отчёт, UI-пилот PDF</td><td>Кнопка «Проверить»; встраивание панели gate</td></tr>
         <tr><td>B</td><td><strong>Готово (backend)</strong></td><td>FHIR-адаптер, L0/L2 API, <code>cisz_readiness</code>, validate-bundle</td><td>Автовызов L0 при сохранении; soft_gate перед ЕСИФЮЛ</td></tr>
-        <tr><td>C</td><td>План</td><td>Расширение чек-листа ЦИСЗ; сервер в РБ</td><td>Журнал override; статусы ProcessingStatus рядом с gate_score</td></tr>
+        <tr><td>C</td><td><strong>В работе</strong></td><td>Composition v1.4 в <code>cisz_readiness</code>; прокси <code>$validate</code> (опц.)</td><td>Журнал override; <code>ProcessingStatus</code> после импорта</td></tr>
         <tr><td>D</td><td>План</td><td>Аналитика методслужбы (агрегаты без ПДн)</td><td>Дашборд качества; связка gate ↔ ProcessingStatus Failed</td></tr>
       </tbody>
     </table>
@@ -569,7 +753,7 @@ POST импорт пакета в ЦИСЗ
       <li><code>compliance_gate.py</code> – <code>send_gate</code>, <code>gate_score = min(гибрид, структурный)</code>, режимы inform/soft/hard/critical_only.</li>
       <li>API: <code>POST /api/consult-compliance-screen</code> (L0), <code>POST /api/consult-review/json</code> (полный конвейер из text/bundle).</li>
       <li><code>fhir_bundle_adapter.py</code> – Bundle → ConsultationDocument и синтетический текст (Subjective/Objective, ServiceRequest, MedicationRequest, AllergyIntolerance…).</li>
-      <li><code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code> – чек-лист программы испытаний МИС v.1.3-4 (амбулаторный профиль).</li>
+      <li><code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code>, <code>fhir_bundle_inspect.py</code> – три слоя: Протокол v.1.4 (Bundle/Composition) + программа испытаний v.1.3-4.</li>
       <li><code>consult_screen.py</code> – L0 без RAG/LLM-критериев + <code>cisz_readiness</code>.</li>
       <li>Гибридный headline: 75% структурный + 25% правила + safety cap.</li>
       <li>Матчер протоколов: приоритет венозных КП при I80–I89; штраф КП по СН при флеботромбозе.</li>
@@ -581,7 +765,8 @@ POST импорт пакета в ЦИСЗ
     <h3>В работе / следующий приоритет</h3>
     <ol>
       <li><strong>Интеграция в «Айболит»</strong> – вызов L0 при сохранении формы; блокировка ЕСИФЮЛ по <code>gate_allowed</code>.</li>
-      <li><strong>Расширение чек-листа ЦИСЗ</strong> – сценарии стационара и стоматологии (части 5–6 программы испытаний).</li>
+      <li><strong>Чек-лист ЦИСЗ</strong> – стационар/стоматология (программа испытаний ч.5–6); прокси <code>Bundle/$validate</code> на стороне МИС.</li>
+      <li><strong>Сверка author/custodian с OAuth-токеном</strong> – в МИС перед импортом (Protocol проверяет только наличие ссылок).</li>
       <li><strong>Корпус L93.0 / дерматовенерология</strong> – специфические КП в RAG (пример pl_2_d_s: rules 0% из‑за отсутствия выдержек).</li>
       <li><strong>Правила структуры диагноза</strong> – профили для ТГВ (локализация, стадия) и дерматологии (форма, локализация без «?»).</li>
       <li><strong>Журнал override</strong> в МИС – кто подписал при gate_score &lt; порога.</li>
@@ -596,10 +781,53 @@ POST импорт пакета в ЦИСЗ
     </ul>
   </section>
 
+  <section class="card card--future">
+    <h2>10. Карта модулей (для технического аудита)</h2>
+    <table class="simple">
+      <thead><tr><th>Модуль</th><th>Назначение</th><th>Вход</th><th>Выход</th></tr></thead>
+      <tbody>
+        <tr><td><code>rag_server.py</code></td><td>HTTP API, версия <code>BUILD_VERSION</code></td><td>REST / multipart</td><td>JSON, SSE stream</td></tr>
+        <tr><td><code>consult_review_pipeline.py</code></td><td>L2 конвейер с прогрессом</td><td>text / bundle meta</td><td>review + structured_analysis + cisz</td></tr>
+        <tr><td><code>consult_screen.py</code></td><td>L0 скрининг (&lt;2 с)</td><td>text | bundle</td><td>send_gate + cisz_readiness</td></tr>
+        <tr><td><code>compliance_engine.py</code></td><td>8 блоков vs КП</td><td>ConsultationDocument</td><td>ComplianceReport</td></tr>
+        <tr><td><code>compliance_gate.py</code></td><td>Политика подписи</td><td>ComplianceReport</td><td>send_gate, gate_score</td></tr>
+        <tr><td><code>cisz_readiness.py</code></td><td>Готовность к ЦИСЗ</td><td>Bundle | text</td><td>%, checks[], merge gate</td></tr>
+        <tr><td><code>fhir_bundle_adapter.py</code></td><td>FHIR → ConsultationDocument</td><td>Bundle</td><td>текст + структура</td></tr>
+        <tr><td><code>fhir_bundle_inspect.py</code></td><td>Разбор Bundle</td><td>Bundle</td><td>bool-мапа проверок</td></tr>
+        <tr><td><code>fhir_mis_test_matrix.py</code></td><td>Веса и критичность чеков</td><td>scenario id</td><td>MisCheckDef[]</td></tr>
+        <tr><td><code>consult_report.py</code></td><td>HTML отчёт методслужбы</td><td>ComplianceReport</td><td>HTML + JSON</td></tr>
+      </tbody>
+    </table>
+    <h3>10.1. Автотесты (pytest)</h3>
+    <ul>
+      <li><code>tests/test_cisz_readiness.py</code> – слои v1.4 + сценарий 3.2.1, merge gate</li>
+      <li><code>tests/test_compliance_gate.py</code> – режимы inform/soft/hard/critical_only</li>
+      <li><code>tests/test_fhir_bundle_adapter.py</code> – маппинг Bundle → КЗ</li>
+      <li><code>tests/test_consult_screen.py</code> – L0 API-логика</li>
+      <li>Фикстуры FHIR: <code>tests/fixtures/fhir_by/</code></li>
+    </ul>
+    <h3>10.2. Нормативные документы в репозитории</h3>
+    <ul>
+      <li><code>data/Программа испытаний МИС v.1.3-4 - Амбулаторный профиль.pdf</code></li>
+      <li><code>data/Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ_v_1.4.pdf</code></li>
+      <li>Публично: <a href="https://fhir.by/interactionMIS.html">fhir.by/interactionMIS</a>, <a href="https://fhir.by">профили FHIR BY</a></li>
+    </ul>
+  </section>
+
   <section class="card">
-    <h2>10. Заключение</h2>
-    <p>Архитектура Protocol – это <strong>конвейер от официальных протоколов Минздрава до понятной оценки КЗ</strong> с прозрачными цитатами и решением о допуске к подписи. Государственный контур (ЦИСЗ) и клинический контур (протоколы лечения) дополняют друг друга; медцентр защищён, если проверка Protocol встроена в «Айболит» <strong>до ЭЦП</strong> и опирается на те же структурированные данные, что отправляются в Минздрав.</p>
-    <p class="footnote">МЦ «Кравира» · Protocol · МИС «Айболит» (EPAM) · Нормативная база: <a href="https://fhir.by/index.html">FHIR BY v1.4.411</a>, <a href="https://fhir.by/interactionMIS.html">регламент МИС ОЗ–ЦИСЗ v1.4</a>, протоколы КП Минздрава РБ</p>
+    <h2>11. Заключение для методслужбы и ИТ Минздрава</h2>
+    <p>Protocol реализует <strong>двухконтурную предимпортную экспертизу</strong> амбулаторного заключения:</p>
+    <ol>
+      <li><strong>Клинический контур</strong> – соответствие тексту/структуре официальным клиническим протоколам Минздрава РБ (детерминированные правила, evidence_map, опционально LLM для пояснений).</li>
+      <li><strong>Контур готовности к ЦИСЗ</strong> – зеркало требований Протокола взаимодействия v.1.4 (Bundle/Composition) и программы испытаний МИС v.1.3-4 (ресурсы приёма).</li>
+    </ol>
+    <p>Итоговый <code>gate_score = min(клинический балл, cisz_score)</code> даёт МИС единый порог для политики подписи. Система <strong>прозрачна</strong>: каждая оценка раскладывается на проверки с весами; критические пробелы по ЦИСЗ и red flags по безопасности учитываются отдельно.</p>
+    <p>Protocol <strong>не подменяет</strong> ЦИСЗ: серверная валидация НСИ, OperationOutcome и ProcessingStatus остаются на стороне государственного контура. Задача модуля – снизить долю отклонённых пакетов и клинически слабых КЗ <em>до</em> вызова ЕСИФЮЛ и <code>Bundle/$import</code>.</p>
+    <p class="footnote">
+      МЦ «Кравира» · Protocol <code>2026-05-31-r63-cisz-composition-v14</code> · МИС «Айболит» (EPAM) ·
+      <a href="https://fhir.by/index.html">FHIR BY</a> ·
+      Протокол МИС ОЗ–ЦИСЗ v.1.4 · Программа испытаний МИС v.1.3-4 (амбулаторный) · КП Минздрава РБ
+    </p>
   </section>
 </div>
 </body>

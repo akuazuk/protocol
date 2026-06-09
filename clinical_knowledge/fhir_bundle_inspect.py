@@ -1,4 +1,7 @@
-"""Разбор FHIR BY Bundle для проверки готовности к ЦИСЗ (программа испытаний v.1.3-4)."""
+"""Разбор FHIR BY Bundle для проверки готовности к ЦИСЗ.
+
+Программа испытаний МИС v.1.3-4 (содержимое) + Протокол МИС ОЗ–ЦИСЗ v.1.4 (Composition/пакет).
+"""
 from __future__ import annotations
 
 import re
@@ -196,6 +199,100 @@ def _medication_linked_to_encounter(mr: dict[str, Any]) -> bool:
     return False
 
 
+def _first_entry_resource(bundle: dict[str, Any]) -> dict[str, Any] | None:
+    entries = bundle.get("entry") or []
+    if not entries or not isinstance(entries[0], dict):
+        return None
+    res = entries[0].get("resource")
+    return res if isinstance(res, dict) else None
+
+
+def _bundle_has_package_profile(bundle: dict[str, Any]) -> bool:
+    meta = bundle.get("meta") or {}
+    prof = " ".join(str(p) for p in meta.get("profile") or []).lower()
+    if "medicationdocument" in prof.replace("-", "").replace("_", ""):
+        return True
+    if "пакет" in prof or "packagedocument" in prof:
+        return True
+    # Допуск: type=document без profile — частичное соответствие (МИС в разработке)
+    return str(bundle.get("type") or "").lower() == "document" and bool(prof)
+
+
+def _composition_subject_ok(comp: dict[str, Any]) -> bool:
+    subj = comp.get("subject")
+    if isinstance(subj, list):
+        return any(isinstance(s, dict) and s.get("reference") for s in subj)
+    if isinstance(subj, dict):
+        return bool(subj.get("reference"))
+    return False
+
+
+def _composition_author_ok(comp: dict[str, Any]) -> bool:
+    for item in comp.get("author") or []:
+        if isinstance(item, dict) and item.get("reference"):
+            return True
+    return False
+
+
+def _composition_custodian_ok(comp: dict[str, Any]) -> bool:
+    cust = comp.get("custodian")
+    return isinstance(cust, dict) and bool(cust.get("reference"))
+
+
+def _composition_event_has_refs(comp: dict[str, Any]) -> bool:
+    for ev in comp.get("event") or []:
+        if not isinstance(ev, dict):
+            continue
+        for det in ev.get("detail") or []:
+            if not isinstance(det, dict):
+                continue
+            ref = det.get("reference")
+            if isinstance(ref, dict) and ref.get("reference"):
+                return True
+            if isinstance(ref, str) and ref.strip():
+                return True
+    # Секции Composition как слабый признак связности narrative
+    for sec in comp.get("section") or []:
+        if isinstance(sec, dict) and (sec.get("entry") or sec.get("text")):
+            return True
+    return False
+
+
+def inspect_protocol_v14_checks(bundle: dict[str, Any]) -> dict[str, bool]:
+    """Проверки структуры пакета по Протоколу взаимодействия МИС ОЗ – ЦИСЗ v.1.4."""
+    compositions = resources_by_type(bundle).get("Composition") or []
+    comp = compositions[0] if compositions else {}
+    first = _first_entry_resource(bundle)
+    first_is_comp = bool(first and first.get("resourceType") == "Composition")
+    type_obj = comp.get("type") or {}
+    has_type = any(
+        isinstance(c, dict) and c.get("code")
+        for c in type_obj.get("coding") or []
+    )
+    bundle_id = bundle.get("identifier") or comp.get("identifier")
+    has_bundle_id = bool(bundle_id)
+    return {
+        "bundle_type_document": str(bundle.get("type") or "").lower() == "document",
+        "bundle_profile_package": _bundle_has_package_profile(bundle),
+        "bundle_identifier": has_bundle_id,
+        "bundle_timestamp": bool(bundle.get("timestamp")),
+        "composition_first_entry": first_is_comp,
+        "composition_present": bool(compositions),
+        "composition_status": bool(comp.get("status")),
+        "composition_type": has_type,
+        "composition_subject": _composition_subject_ok(comp) if compositions else False,
+        "composition_encounter": bool(
+            isinstance(comp.get("encounter"), dict) and comp.get("encounter", {}).get("reference")
+        )
+        if compositions
+        else False,
+        "composition_author": _composition_author_ok(comp) if compositions else False,
+        "composition_custodian": _composition_custodian_ok(comp) if compositions else False,
+        "composition_date": bool(comp.get("date")),
+        "composition_event_links": _composition_event_has_refs(comp) if compositions else False,
+    }
+
+
 def detect_bundle_scenario(bundle: dict[str, Any]) -> str:
     """auto: specialist_consult если есть ServiceRequest консультации, иначе primary_ambulatory."""
     by_type = resources_by_type(bundle)
@@ -236,7 +333,8 @@ def inspect_bundle_checks(bundle: dict[str, Any]) -> dict[str, bool]:
             csub = conditions[0].get("subject") or {}
             links_ok = links_ok and isinstance(csub, dict) and bool(csub.get("reference"))
 
-    return {
+    protocol = inspect_protocol_v14_checks(bundle)
+    clinical = {
         "patient": bool(patients),
         "encounter": bool(encounters),
         "encounter_completed": _encounter_status_completed(enc) if encounters else False,
@@ -259,6 +357,7 @@ def inspect_bundle_checks(bundle: dict[str, Any]) -> dict[str, bool]:
             any(_medication_linked_to_encounter(m) for m in medications) if medications else False
         ),
     }
+    return {**protocol, **clinical}
 
 
 def inspect_text_checks(text: str) -> dict[str, bool]:

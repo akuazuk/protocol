@@ -1,7 +1,8 @@
-"""Матрица проверок по программе испытаний МИС v.1.3-4 (амбулаторный профиль).
+"""Матрица проверок готовности FHIR-пакета к ЦИСЗ.
 
-Сценарии: 3.2.1 первичный приём, 3.13.1 консультация специалиста, 3.3 лекарства.
-Источник: data/Программа испытаний МИС v.1.3-4 - Амбулаторный профиль.pdf
+Источники:
+- data/Программа испытаний МИС v.1.3-4 - Амбулаторный профиль.pdf (содержимое сценариев)
+- data/Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ_v_1.4.pdf (структура пакета)
 """
 from __future__ import annotations
 
@@ -58,6 +59,37 @@ MEDICATION_EXTRA_CHECKS: tuple[MisCheckDef, ...] = (
     MisCheckDef("medication_encounter_link", "Назначение привязано к визиту", 10, "табл. 49"),
 )
 
+# Протокол взаимодействия МИС ОЗ – ЦИСЗ v.1.4 (§4.1, §5.1.1, §5.2.2) — обёртка пакета
+PROTOCOL_V14_BUNDLE_CHECKS: tuple[MisCheckDef, ...] = (
+    MisCheckDef("bundle_type_document", "Bundle.type = document", 8, "ПИ МИС–ЦИСЗ §5.1.1", critical=True),
+    MisCheckDef(
+        "bundle_profile_package",
+        "meta.profile пакета (MedicationDocument / пакет МИО)",
+        7,
+        "ПИ v1.4 §4.1",
+        critical=True,
+    ),
+    MisCheckDef("bundle_identifier", "Идентификатор пакета/документа", 4, "ПИ v1.4 §5.1.1"),
+    MisCheckDef("bundle_timestamp", "Bundle.timestamp (дата формирования)", 3, "ПИ v1.4 §5.1.1"),
+)
+
+PROTOCOL_V14_COMPOSITION_CHECKS: tuple[MisCheckDef, ...] = (
+    MisCheckDef("composition_first_entry", "Composition — первый entry Bundle", 10, "ПИ v1.4 §5.1.1", critical=True),
+    MisCheckDef("composition_present", "Ресурс Composition (CompDocument)", 8, "ПИ v1.4 §4.1", critical=True),
+    MisCheckDef("composition_status", "Composition.status", 3, "ПИ v1.4"),
+    MisCheckDef("composition_type", "Composition.type (НСИ CompositionType)", 5, "ПИ v1.4"),
+    MisCheckDef("composition_subject", "Composition.subject → Patient", 7, "ПИ v1.4", critical=True),
+    MisCheckDef("composition_encounter", "Composition.encounter → Encounter", 5, "ПИ v1.4"),
+    MisCheckDef("composition_author", "Composition.author (медработник)", 8, "ПИ v1.4 §5.2.2", critical=True),
+    MisCheckDef("composition_custodian", "Composition.custodian (ОЗ)", 8, "ПИ v1.4 §5.2.2", critical=True),
+    MisCheckDef("composition_date", "Composition.date (дата составления)", 5, "ПИ v1.4 §5.1.1"),
+    MisCheckDef("composition_event_links", "Composition.event → Condition/Observation", 5, "ПИ v1.4 / fhir.by"),
+)
+
+PROTOCOL_V14_CHECKS: tuple[MisCheckDef, ...] = (
+    PROTOCOL_V14_BUNDLE_CHECKS + PROTOCOL_V14_COMPOSITION_CHECKS
+)
+
 SCENARIO_CHECKS: dict[str, tuple[MisCheckDef, ...]] = {
     "primary_ambulatory": PRIMARY_AMBULATORY_CHECKS,
     "specialist_consult": SPECIALIST_CONSULT_CHECKS,
@@ -65,12 +97,20 @@ SCENARIO_CHECKS: dict[str, tuple[MisCheckDef, ...]] = {
 }
 
 
-def checks_for_scenario(scenario: str, *, include_medication: bool = False) -> tuple[MisCheckDef, ...]:
+def checks_for_scenario(
+    scenario: str,
+    *,
+    include_medication: bool = False,
+    include_protocol_v14: bool = False,
+) -> tuple[MisCheckDef, ...]:
     if scenario == "specialist_consult":
-        return SPECIALIST_CONSULT_CHECKS
-    if scenario == "medication":
-        return SCENARIO_CHECKS["medication"]
-    base = PRIMARY_AMBULATORY_CHECKS
-    if include_medication:
-        return base + MEDICATION_EXTRA_CHECKS
+        base: tuple[MisCheckDef, ...] = SPECIALIST_CONSULT_CHECKS
+    elif scenario == "medication":
+        base = SCENARIO_CHECKS["medication"]
+    else:
+        base = PRIMARY_AMBULATORY_CHECKS
+        if include_medication:
+            base = base + MEDICATION_EXTRA_CHECKS
+    if include_protocol_v14:
+        return PROTOCOL_V14_CHECKS + base
     return base

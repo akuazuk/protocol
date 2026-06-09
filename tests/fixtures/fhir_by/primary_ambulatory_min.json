@@ -1,7 +1,49 @@
 {
   "resourceType": "Bundle",
   "type": "document",
+  "meta": {
+    "profile": [
+      "https://fhir.by/AbstractArea/StructureDefinition/Bundle/MedicationDocument"
+    ]
+  },
+  "identifier": {
+    "system": "urn:oid:2.16.112.6.1.1.1.1",
+    "value": "ambulatory-doc-2024-0407-001"
+  },
+  "timestamp": "2024-04-07T11:12:21Z",
   "entry": [
+    {
+      "resource": {
+        "resourceType": "Composition",
+        "id": "comp1",
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/CompDocument"]
+        },
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.by/ValueSet/CompositionType",
+              "code": "general",
+              "display": "Общая медицинская информация"
+            }
+          ]
+        },
+        "date": "2024-04-07T11:25:21Z",
+        "subject": [{ "reference": "Patient/p1" }],
+        "encounter": { "reference": "Encounter/e1" },
+        "author": [{ "reference": "PractitionerRole/pr1" }],
+        "custodian": { "reference": "Organization/org1" },
+        "event": [
+          {
+            "detail": [
+              { "reference": { "reference": "Condition/c1" } },
+              { "reference": { "reference": "Observation/obs-subj" } }
+            ]
+          }
+        ]
+      }
+    },
     {
       "resource": {
         "resourceType": "Patient",
@@ -53,6 +95,7 @@
     {
       "resource": {
         "resourceType": "Observation",
+        "id": "obs-subj",
         "meta": {
           "profile": ["https://fhir.by/StructureDefinition/ObservationSubjective"]
         },

@@ -26,7 +26,22 @@ def test_inspect_bundle_primary_ambulatory_fixture():
     assert checks["diagnosis_icd10"]
     assert checks["complaints"]
     assert checks["vitals"]
+    assert checks["bundle_type_document"]
+    assert checks["composition_first_entry"]
+    assert checks["composition_author"]
+    assert checks["composition_custodian"]
     assert detect_bundle_scenario(bundle) == "primary_ambulatory"
+
+
+def test_protocol_v14_composition_required_for_high_score():
+    bundle = _load_fixture("primary_ambulatory_min.json")
+    full = evaluate_cisz_readiness(bundle=bundle)
+    # Без Composition (удаляем первый entry)
+    stripped = dict(bundle)
+    stripped["entry"] = [e for e in bundle["entry"] if e["resource"]["resourceType"] != "Composition"]
+    low = evaluate_cisz_readiness(bundle=stripped)
+    assert full["overall_score"] > low["overall_score"]
+    assert full["check_layers"]["protocol_v14"] is True
 
 
 def test_evaluate_cisz_readiness_bundle_high_score():

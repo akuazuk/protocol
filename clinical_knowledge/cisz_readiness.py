@@ -93,9 +93,11 @@ def evaluate_cisz_readiness(
             ),
         }
 
+    is_bundle = source == "fhir_bundle"
     check_defs = checks_for_scenario(
         detected,
         include_medication=(detected == "medication"),
+        include_protocol_v14=is_bundle,
     )
     pct, items, critical_fail = _score_from_checks(check_defs, results)
 
@@ -131,10 +133,18 @@ def evaluate_cisz_readiness(
         "checks": items,
         "summary_ru": summary,
         "disclaimer_ru": (
-            "Проверка по чек-листу программы испытаний МИС v.1.3-4 (амбулаторный профиль). "
-            "Не заменяет метод «проверка пакета без импорта» и импорт в ЦИСЗ."
+            "Локальный чек-лист: программа испытаний МИС v.1.3-4 (содержимое) "
+            "и Протокол взаимодействия МИС ОЗ–ЦИСЗ v.1.4 (Composition/пакет). "
+            "Не заменяет POST Bundle/$validate и импорт в ЦИСЗ."
         ),
-        "program_ref": "Программа испытаний МИС v.1.3-4 — Амбулаторный профиль",
+        "program_refs": [
+            "Программа испытаний МИС v.1.3-4 — Амбулаторный профиль",
+            "Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ v.1.4",
+        ],
+        "check_layers": {
+            "protocol_v14": is_bundle,
+            "mis_test_scenario": detected,
+        },
     }
 
 
