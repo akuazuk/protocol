@@ -5998,6 +5998,7 @@
         <a href="docs/ministry-brief-print.html" target="_blank" rel="noopener">Буклет для руководства (PDF через печать)</a>
         <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener">Архитектура (HTML)</a>
         <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener">Архитектура (PDF)</a>
+        <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener">Чек-лист перед подписью</a>
         <a href="docs/roadmap-mis.md" target="_blank" rel="noopener">Этап 2: МИС</a>
         <a href="docs/deployment-belarus.md" target="_blank" rel="noopener">Развёртывание в РБ</a>
       </p>
@@ -6475,7 +6476,7 @@
             <summary>Краткий вывод</summary>
             <p class="consult-spoiler__text" id="consult-out-summary"></p>
           </details>
-          <details class="consult-spoiler consult-hide-print" id="consult-limit-spoiler" hidden>
+          <details class="consult-spoiler consult-hide-print" id="consult-limit-spoiler" hidden open>
             <summary>Ограничения оценки</summary>
             <p class="consult-spoiler__text" id="consult-out-limit"></p>
           </details>
@@ -6493,7 +6494,7 @@
             <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-send-gate-detail"></p>
           </div>
 
-          <details class="consult-spoiler consult-hide-print" id="consult-methodology-spoiler" hidden>
+          <details class="consult-spoiler consult-hide-print" id="consult-methodology-spoiler" hidden open>
             <summary id="consult-methodology-summary-line">Сводка для методслужбы</summary>
             <div id="consult-methodology-panel" class="consult-methodology-panel">
               <p class="consult-methodology-summary" id="consult-methodology-summary"></p>
@@ -6526,7 +6527,7 @@
             </div>
           </details>
 
-          <details class="consult-spoiler consult-hide-print" id="consult-protocols-spoiler">
+          <details class="consult-spoiler consult-hide-print" id="consult-protocols-spoiler" open>
             <summary id="consult-protocols-summary">Протоколы по тексту заключения</summary>
             <div id="consult-protocols-footer" class="consult-protocols-footer-wrap" style="margin-top:0;border-top:none;padding-top:0">
               <div id="consult-out-paths"></div>
@@ -6555,6 +6556,8 @@
         <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener noreferrer">Архитектура Protocol (PDF)</a>
         ·
         <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener noreferrer">HTML</a>
+        ·
+        <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener noreferrer">Чек-лист перед подписью</a>
         · Версия: <span id="build-version-badge">…</span>
       </p>
     </footer>
@@ -11147,6 +11150,7 @@
           li.appendChild(head);
           if (row.comment) {
             var det = document.createElement("details");
+            det.open = true;
             det.style.marginTop = "0.3rem";
             var sm = document.createElement("summary");
             sm.style.fontSize = "0.74rem";
@@ -11752,7 +11756,10 @@
       });
     }
 
-    if (res) res.hidden = false;
+    if (res) {
+      res.hidden = false;
+      openAllDetailsIn(res);
+    }
   }
 
   var CONSULT_STATUS_RU = {
@@ -11794,6 +11801,13 @@
     female: "женский",
     unknown: "не определён"
   };
+
+  function openAllDetailsIn(root) {
+    if (!root || !root.querySelectorAll) return;
+    root.querySelectorAll("details").forEach(function (el) {
+      el.open = true;
+    });
+  }
 
   /** Панель детерминированного структурного разбора КЗ (цветной HTML-отчёт). */
   function renderConsultStructuredAnalysis(data) {
@@ -11851,7 +11865,7 @@
     var mdBlock = "";
     if (md) {
       mdBlock =
-        '<details style="margin-top:0.65rem" class="consult-hide-print">' +
+        '<details style="margin-top:0.65rem" class="consult-hide-print" open>' +
         '<summary style="cursor:pointer;font-size:0.82rem;color:#64748b;font-weight:600">Markdown / экспорт</summary>' +
         '<div class="cr-report-actions">' +
         '<button type="button" data-copy-md="1">Скопировать Markdown</button>' +
@@ -11864,6 +11878,7 @@
 
     panel.innerHTML = body + mdBlock;
     fixProtocolLinksInContainer(panel);
+    openAllDetailsIn(panel);
 
     var copyBtn = panel.querySelector("[data-copy-md]");
     if (copyBtn && md) {

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Protocol - чек-лист перед подписью ЭЦП</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --g950: #063d35;
+      --g800: #0d5c4a;
+      --g600: #1a8a72;
+      --gsoft: #e8f5f1;
+      --ocean: #0c6b94;
+      --amber: #b45309;
+      --risk: #b91c1c;
+      --risk-bg: #fef2f2;
+      --warn-bg: #fff8eb;
+      --ok-bg: #f0f8f4;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+      --border: rgba(26, 138, 114, 0.22);
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      font-size: 10.5pt;
+      line-height: 1.45;
+      background: linear-gradient(165deg, #f4f8f6 0%, #eef5f2 100%);
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 1rem 1.25rem 1.5rem; }
+    .no-print {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center;
+      margin-bottom: 0.85rem; padding: 0.55rem 0.75rem; border-radius: 12px;
+      background: #fff; border: 1px solid var(--border);
+    }
+    .no-print a { color: var(--g800); font-weight: 600; text-decoration: none; }
+    .no-print a:hover { text-decoration: underline; }
+    .no-print button {
+      font-family: Outfit, sans-serif; font-weight: 700; padding: 0.4rem 0.95rem;
+      border-radius: 999px; border: none; cursor: pointer; background: var(--g600); color: #fff;
+    }
+    .sheet {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.1rem 0.85rem;
+      box-shadow: 0 8px 28px rgba(6, 61, 53, 0.08);
+    }
+    .sheet-header {
+      display: flex; flex-wrap: wrap; gap: 0.65rem 1rem; align-items: flex-start;
+      justify-content: space-between; margin-bottom: 0.65rem;
+      padding-bottom: 0.55rem; border-bottom: 2px solid var(--gsoft);
+    }
+    h1 {
+      margin: 0; font-family: Outfit, sans-serif; font-size: 1.35rem;
+      color: var(--g950); line-height: 1.2; max-width: 28rem;
+    }
+    .eyebrow {
+      font-family: Outfit, sans-serif; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--g600); margin: 0 0 0.25rem;
+    }
+    .meta-box {
+      font-size: 0.78rem; color: var(--muted); min-width: 11rem;
+    }
+    .meta-box strong { color: var(--g800); }
+    .lead {
+      margin: 0 0 0.65rem; padding: 0.5rem 0.65rem; border-radius: 10px;
+      background: var(--gsoft); font-size: 0.88rem; color: var(--g800);
+    }
+    .priority-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.65rem;
+    }
+    .prio-card {
+      border-radius: 12px; padding: 0.45rem 0.55rem; border: 1px solid var(--border);
+    }
+    .prio-card--crit { background: var(--risk-bg); border-left: 4px solid var(--risk); }
+    .prio-card--high { background: var(--warn-bg); border-left: 4px solid var(--amber); }
+    .prio-card--med { background: var(--ok-bg); border-left: 4px solid var(--g600); }
+    .prio-card h2 {
+      margin: 0 0 0.35rem; font-family: Outfit, sans-serif; font-size: 0.78rem;
+      font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .prio-card--crit h2 { color: var(--risk); }
+    .prio-card--high h2 { color: var(--amber); }
+    .prio-card--med h2 { color: var(--g800); }
+    .checklist { margin: 0; padding: 0; list-style: none; }
+    .checklist li {
+      display: flex; gap: 0.35rem; align-items: flex-start;
+      font-size: 0.76rem; margin-bottom: 0.22rem; line-height: 1.32;
+    }
+    .box {
+      flex: 0 0 0.85rem; width: 0.85rem; height: 0.85rem; margin-top: 0.08rem;
+      border: 1.5px solid #9ab5ae; border-radius: 3px; background: #fff;
+    }
+    table.map {
+      width: 100%; border-collapse: collapse; font-size: 0.74rem; margin: 0;
+    }
+    table.map th, table.map td {
+      border: 1px solid #c5d9d3; padding: 0.28rem 0.38rem; vertical-align: top; text-align: left;
+    }
+    table.map th { background: var(--gsoft); font-weight: 700; font-size: 0.72rem; }
+    table.map code { font-size: 0.68rem; word-break: break-word; }
+    .risk {
+      display: inline-block; font-size: 0.62rem; font-weight: 800; padding: 0.06rem 0.35rem;
+      border-radius: 999px; white-space: nowrap; letter-spacing: 0.02em;
+    }
+    .risk--crit { background: #fecaca; color: #991b1b; }
+    .risk--high { background: #fde68a; color: #92400e; }
+    .risk--med { background: #bbf7d0; color: #166534; }
+    .proto { font-size: 0.68rem; color: var(--ocean); font-weight: 600; }
+    .foot {
+      margin-top: 0.55rem; padding-top: 0.45rem; border-top: 1px solid var(--border);
+      font-size: 0.72rem; color: var(--muted);
+    }
+    .flow {
+      display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center;
+      font-size: 0.72rem; font-weight: 600; color: var(--g800); margin-bottom: 0.55rem;
+    }
+    .flow span {
+      padding: 0.15rem 0.45rem; border-radius: 999px; background: rgba(26, 138, 114, 0.12);
+    }
+    .flow .arrow { background: none; padding: 0; color: var(--muted); font-weight: 400; }
+    @media print {
+      @page { size: A4 portrait; margin: 8mm; }
+      body { font-size: 9pt; background: #fff; }
+      .wrap { padding: 0; max-width: none; }
+      .no-print { display: none !important; }
+      .sheet { box-shadow: none; border-radius: 0; border: none; padding: 0; }
+      .priority-grid { gap: 0.35rem; }
+      table.map { font-size: 7.2pt; }
+      table.map th, table.map td { padding: 0.2rem 0.28rem; }
+      .checklist li { font-size: 7.4pt; }
+      h1 { font-size: 13pt; }
+      .sheet-header, .prio-card, table.map tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="no-print">
+    <span style="font-family: Outfit, sans-serif; font-weight: 700; color: var(--g950)">Protocol · чек-лист для врача</span>
+    <a href="pre-sign-checklist.pdf" target="_blank" rel="noopener">PDF чек-листа</a>
+    <a href="architecture-kravira-fhir-mis-print.html">Полная архитектура</a>
+    <a href="../index.html#consult-review">К приложению</a>
+    <button type="button" onclick="window.print()">Печать / PDF</button>
+  </div>
+
+  <article class="sheet">
+    <header class="sheet-header">
+      <div>
+        <p class="eyebrow">МЦ «Кравира» · перед ЭЦП и отправкой в ЦИСЗ</p>
+        <h1>Чек-лист перед подписью консультативного заключения</h1>
+      </div>
+      <div class="meta-box">
+        <div><strong>Пациент:</strong> __________________</div>
+        <div><strong>Дата приёма:</strong> __.__.____</div>
+        <div><strong>Врач:</strong> __________________</div>
+      </div>
+    </header>
+
+    <p class="lead">
+      МИС формирует FHIR-пакет (Bundle) и перед подписью показывает оценку Protocol:
+      <strong>send_gate</strong> и <strong>gate_score</strong> = min(клиника по КП, готовность к ЦИСЗ).
+      Если балл ниже порога учреждения (обычно 70%) - доработайте форму, затем подписывайте.
+    </p>
+
+    <div class="flow">
+      <span>Сохранить в МИС</span><span class="arrow">→</span>
+      <span>Protocol L0</span><span class="arrow">→</span>
+      <span>gate OK?</span><span class="arrow">→</span>
+      <span>ЕСИФЮЛ</span><span class="arrow">→</span>
+      <span>ЦИСЗ</span>
+    </div>
+
+    <div class="priority-grid">
+      <section class="prio-card prio-card--crit">
+        <h2>Критично - не подписывать</h2>
+        <ul class="checklist">
+          <li><span class="box" aria-hidden="true"></span><span><strong>Пациент</strong> - верный человек (ИНП / ФИО / ДР)</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>МКБ-10</strong> соответствует формулировке диагноза</span></li>
+          <li><span class="box" aria-hidden="true"></span><span>Не отправлять <strong>«?» / предварительный</strong> как заключительный</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>Подписант</strong> = вы (author в пакете)</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>Организация</strong> = ваше ОЗ (custodian)</span></li>
+        </ul>
+      </section>
+      <section class="prio-card prio-card--high">
+        <h2>Важно - частые претензии</h2>
+        <ul class="checklist">
+          <li><span class="box" aria-hidden="true"></span><span><strong>Жалобы</strong> и <strong>осмотр</strong> не пустые / не шаблон</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>Назначения</strong>: препарат, доза, длительность</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>Контроль</strong>: срок повторного визита / обследования</span></li>
+          <li><span class="box" aria-hidden="true"></span><span>При <strong>онкориске / red flag</strong> - маршрут в рекомендациях</span></li>
+          <li><span class="box" aria-hidden="true"></span><span>Консультация: есть <strong>направление</strong> и связь с визитом</span></li>
+        </ul>
+      </section>
+      <section class="prio-card prio-card--med">
+        <h2>Формально - отказ ЦИСЗ</h2>
+        <ul class="checklist">
+          <li><span class="box" aria-hidden="true"></span><span><strong>Визит</strong> completed, дата/время приёма</span></li>
+          <li><span class="box" aria-hidden="true"></span><span><strong>Витальные</strong> и антропометрия (если первичный приём)</span></li>
+          <li><span class="box" aria-hidden="true"></span><span>Диагноз <strong>привязан к визиту</strong></span></li>
+          <li><span class="box" aria-hidden="true"></span><span>Composition - <strong>первый</strong> в пакете, дата документа</span></li>
+        </ul>
+      </section>
+    </div>
+
+    <table class="map" aria-label="Соответствие полей FHIR Bundle и формы врача">
+      <thead>
+        <tr>
+          <th style="width:22%">Поле в пакете (FHIR)</th>
+          <th style="width:24%">Что проверить в форме МИС</th>
+          <th style="width:8%">Риск</th>
+          <th style="width:18%">Protocol</th>
+          <th style="width:28%">Если ошибка</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Patient.identifier</code> (INP)</td>
+          <td>Карта верного пациента</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">cisz · Patient</td>
+          <td>Чужие данные в госреестре</td>
+        </tr>
+        <tr>
+          <td><code>Condition.code</code> МКБ-10</td>
+          <td>Код = смысл диагноза в КЗ</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">8 блоков · диагноз</td>
+          <td>Отклонение НСИ / аудит</td>
+        </tr>
+        <tr>
+          <td><code>KindOfDiagnosis</code> / final</td>
+          <td>«?» только если предварительный</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">FinalDiagnosis</td>
+          <td>Ложный заключительный в ЦИСЗ</td>
+        </tr>
+        <tr>
+          <td><code>Composition.author</code></td>
+          <td>Вы - автор заключения</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">cisz слой B</td>
+          <td>Импорт отклонён (≠ токен)</td>
+        </tr>
+        <tr>
+          <td><code>Composition.custodian</code></td>
+          <td>Ваше медучреждение</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">cisz слой B</td>
+          <td>Импорт отклонён (≠ токен)</td>
+        </tr>
+        <tr>
+          <td><code>Encounter.diagnosis</code></td>
+          <td>Диагноз привязан к визиту</td>
+          <td><span class="risk risk--crit">КРИТ</span></td>
+          <td class="proto">cisz 3.2.1</td>
+          <td>Пакет «без диагноза приёма»</td>
+        </tr>
+        <tr>
+          <td><code>ObservationSubjective</code></td>
+          <td>Жалобы своими словами</td>
+          <td><span class="risk risk--high">ВЫС</span></td>
+          <td class="proto">cisz · оформление</td>
+          <td>Слабая документация в ЦИСЗ</td>
+        </tr>
+        <tr>
+          <td><code>ObservationObjective</code></td>
+          <td>Осмотр по системам</td>
+          <td><span class="risk risk--high">ВЫС</span></td>
+          <td class="proto">8 блоков · структура</td>
+          <td>Методслужба / полнота КЗ</td>
+        </tr>
+        <tr>
+          <td><code>VitalSignsBy</code> / anthropo</td>
+          <td>АД, ЧСС, рост, вес (первичный)</td>
+          <td><span class="risk risk--med">СРЕД</span></td>
+          <td class="proto">cisz 3.2.1</td>
+          <td>Низкий cisz_score</td>
+        </tr>
+        <tr>
+          <td><code>MedicationRequest</code></td>
+          <td>Препарат, доза, курс</td>
+          <td><span class="risk risk--high">ВЫС</span></td>
+          <td class="proto">8 блоков · лечение</td>
+          <td>Клинический риск / КП</td>
+        </tr>
+        <tr>
+          <td>Рекомендации / контроль</td>
+          <td>Срок повторного визита</td>
+          <td><span class="risk risk--high">ВЫС</span></td>
+          <td class="proto">8 блоков · контроль</td>
+          <td>Нарушение КП / жалобы</td>
+        </tr>
+        <tr>
+          <td><code>ServiceRequest</code> (консультация)</td>
+          <td>Направление + связь с визитом</td>
+          <td><span class="risk risk--high">ВЫС</span></td>
+          <td class="proto">cisz 3.13.1</td>
+          <td>Неоформленная консультация</td>
+        </tr>
+        <tr>
+          <td><code>Bundle.type=document</code></td>
+          <td>Формирует МИС автоматически</td>
+          <td><span class="risk risk--med">СРЕД</span></td>
+          <td class="proto">cisz слой A</td>
+          <td>Технический Failed</td>
+        </tr>
+        <tr>
+          <td><code>Composition</code> первым в entry</td>
+          <td>Формирует МИС</td>
+          <td><span class="risk risk--med">СРЕД</span></td>
+          <td class="proto">cisz слой B</td>
+          <td>Отклонение пакета</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="foot">
+      Protocol не подписывает и не отправляет данные в ЦИСЗ - только ориентир методслужбы по КП Минздрава и чек-лист FHIR.
+      Не замена МЭЭ. Полная архитектура:
+      <a href="architecture-kravira-fhir-mis-print.html">architecture-kravira-fhir-mis-print.html</a>
+      · Нормативка: FHIR BY, Протокол МИС–ЦИСЗ v.1.4, программа испытаний МИС v.1.3-4.
+    </p>
+  </article>
+</div>
+</body>
+</html>

@@ -43,6 +43,9 @@
     .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:.08rem .4rem;border-radius:999px;margin-right:.15rem;background:rgba(26,138,114,.14);color:var(--g800)}
     .tag--ai{background:rgba(92,61,158,.12);color:var(--violet)}
     .tag--rules{background:rgba(26,138,114,.2)}
+    .tag--crit{background:#fecaca;color:#991b1b}
+    .tag--high{background:#fde68a;color:#92400e}
+    .tag--med{background:#bbf7d0;color:#166534}
     .footnote{font-size:.78rem;color:var(--muted);margin-top:.9rem;padding-top:.55rem;border-top:1px solid var(--border)}
     @media print{
       @page{size:A4;margin:10mm}
@@ -60,6 +63,7 @@
   <div class="no-print">
     <span>Архитектура Protocol – FHIR BY / ЦИСЗ / КЗ</span>
     <a href="architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener">Скачать PDF</a>
+    <a href="pre-sign-checklist-print.html">Чек-лист перед подписью</a>
     <a href="../index.html#consult-review">← К приложению</a>
     <button type="button" onclick="window.print()">Печать / сохранить в PDF</button>
   </div>
@@ -68,7 +72,7 @@
     <h1>Protocol: архитектура по этапам и проверка КЗ перед отправкой в Минздрав</h1>
     <p class="lead">Модуль анализа клинических протоколов и консультативных заключений – разработка МЦ «Кравира». Интеграция с МИС «Айболит» (EPAM) – следующий этап.</p>
     <p class="footnote" style="border:0;margin:0;padding:0">
-      Июнь 2026 · Версия сборки: <code>2026-05-31-r65-architecture-fullwidth</code> ·
+      Июнь 2026 · Версия сборки: <code>2026-05-31-r68-pre-sign-checklist</code> ·
       API: <code>GET /api/version</code> ·
       Нормативная база: FHIR BY 5.0, Протокол МИС ОЗ–ЦИСЗ v.1.4, программа испытаний МИС v.1.3-4 (амбулаторный профиль)
     </p>
@@ -669,6 +673,65 @@ Content-Type: application/json
 }</div>
   </section>
 
+  <!-- ===== 5.17 ЧЕК-ЛИСТ ВРАЧА ===== -->
+  <section class="card card--gate" id="pre-sign-checklist">
+    <h2>5.17. Чек-лист перед подписью ЭЦП (для врача)</h2>
+    <p>
+      Одностраничная памятка для рабочего места врача и методслужбы:
+      <a href="pre-sign-checklist-print.html"><strong>pre-sign-checklist-print.html</strong></a>
+      (печать / PDF). Ниже - та же логика внутри архитектурного документа.
+    </p>
+    <div class="diagram">Сохранить в МИС → Protocol L0 (send_gate) → gate OK? → ЕСИФЮЛ → CMS → ЦИСЗ
+gate_score = min(клиника по КП, cisz_readiness) · порог учреждения обычно 70%</div>
+
+    <h3>Три уровня проверки перед подписью</h3>
+    <table class="simple">
+      <thead><tr><th>Уровень</th><th>Что проверить</th><th>Пример ошибки</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag--crit">Критично</span></td>
+          <td>Пациент (INP), МКБ-10 = текст диагноза, не «?» как заключительный, author/custodian = вы и ваше ОЗ, диагноз привязан к визиту</td>
+          <td>Чужой пациент; импорт отклонён; ложный final в ЦИСЗ</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--high">Важно</span></td>
+          <td>Жалобы, осмотр, назначения (доза, курс), контроль, red flags с маршрутом, направление при консультации</td>
+          <td>Слабое КЗ в реестре; претензии методслужбы / по КП</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag--med">Формально</span></td>
+          <td>Encounter completed, vitals/anthropo, Bundle.type=document, Composition первым в entry</td>
+          <td>Низкий cisz_score; ProcessingStatus Failed</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Соответствие: поле FHIR Bundle → форма врача → Protocol</h3>
+    <table class="simple">
+      <thead><tr><th>Поле FHIR</th><th>В форме МИС</th><th>Риск</th><th>Контур Protocol</th></tr></thead>
+      <tbody>
+        <tr><td><code>Patient.identifier</code> (INP)</td><td>Карта пациента</td><td><span class="tag tag--crit">крит</span></td><td>cisz · Patient</td></tr>
+        <tr><td><code>Condition.code</code> (МКБ-10)</td><td>Код и формулировка диагноза</td><td><span class="tag tag--crit">крит</span></td><td>8 блоков · диагноз + КП</td></tr>
+        <tr><td><code>KindOfDiagnosis</code> / final</td><td>Предварительный vs заключительный</td><td><span class="tag tag--crit">крит</span></td><td>FinalDiagnosis</td></tr>
+        <tr><td><code>Composition.author</code></td><td>Подписывающий врач</td><td><span class="tag tag--crit">крит</span></td><td>cisz слой B (= OAuth-токен)</td></tr>
+        <tr><td><code>Composition.custodian</code></td><td>Медорганизация ОЗ</td><td><span class="tag tag--crit">крит</span></td><td>cisz слой B (= OAuth-токен)</td></tr>
+        <tr><td><code>Encounter.diagnosis</code></td><td>Диагноз визита</td><td><span class="tag tag--crit">крит</span></td><td>cisz 3.2.1</td></tr>
+        <tr><td><code>ObservationSubjective</code></td><td>Жалобы</td><td><span class="tag tag--high">высок</span></td><td>cisz + оформление</td></tr>
+        <tr><td><code>ObservationObjective</code></td><td>Объективный статус</td><td><span class="tag tag--high">высок</span></td><td>8 блоков · структура</td></tr>
+        <tr><td><code>VitalSignsBy</code> / anthropo</td><td>АД, ЧСС, рост, вес</td><td><span class="tag tag--med">средн</span></td><td>cisz 3.2.1</td></tr>
+        <tr><td><code>MedicationRequest</code></td><td>Назначения</td><td><span class="tag tag--high">высок</span></td><td>8 блоков · лечение + КП</td></tr>
+        <tr><td>Контроль / рекомендации</td><td>Срок повторного визита</td><td><span class="tag tag--high">высок</span></td><td>8 блоков · контроль</td></tr>
+        <tr><td><code>ServiceRequest</code></td><td>Направление (консультация)</td><td><span class="tag tag--high">высок</span></td><td>cisz 3.13.1</td></tr>
+        <tr><td><code>Bundle.type</code>, Composition first</td><td>Формирует МИС</td><td><span class="tag tag--med">средн</span></td><td>cisz слои A–B</td></tr>
+      </tbody>
+    </table>
+    <div class="note note--warn">
+      <strong>Два контура:</strong> ЦИСЗ проверяет схему и НСИ; клинические протоколы лечения на импорте не оценивает.
+      Protocol закрывает оба риска <em>до</em> ЭЦП. Памятка на одну страницу:
+      <a href="pre-sign-checklist-print.html">pre-sign-checklist-print.html</a>.
+    </div>
+  </section>
+
   <!-- ===== 6. GATE ===== -->
   <section class="card card--gate">
     <h2>6. Блокировка отправки при низкой оценке (send_gate)</h2>
@@ -830,7 +893,7 @@ Content-Type: application/json
     <p>Итоговый <code>gate_score = min(клинический балл, cisz_score)</code> даёт МИС единый порог для политики подписи. Система <strong>прозрачна</strong>: каждая оценка раскладывается на проверки с весами; критические пробелы по ЦИСЗ и red flags по безопасности учитываются отдельно.</p>
     <p>Protocol <strong>не подменяет</strong> ЦИСЗ: серверная валидация НСИ, OperationOutcome и ProcessingStatus остаются на стороне государственного контура. Задача модуля – снизить долю отклонённых пакетов и клинически слабых КЗ <em>до</em> вызова ЕСИФЮЛ и <code>Bundle/$import</code>.</p>
     <p class="footnote">
-      МЦ «Кравира» · Protocol <code>2026-05-31-r65-architecture-fullwidth</code> · МИС «Айболит» (EPAM) ·
+      МЦ «Кравира» · Protocol <code>2026-05-31-r68-pre-sign-checklist</code> · МИС «Айболит» (EPAM) ·
       <a href="https://fhir.by/index.html">FHIR BY</a> ·
       Протокол МИС ОЗ–ЦИСЗ v.1.4 · Программа испытаний МИС v.1.3-4 (амбулаторный) · КП Минздрава РБ
     </p>

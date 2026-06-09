@@ -30,6 +30,8 @@
 - [docs/roadmap-mis.md](docs/roadmap-mis.md) - этап 2: интеграция с МИС
 - [docs/architecture-kravira-fhir-mis-print.html](docs/architecture-kravira-fhir-mis-print.html) - архитектура: КЗ, FHIR BY, ЦИСЗ, МИС «Айболит» (HTML)
 - [docs/architecture-kravira-fhir-mis.pdf](docs/architecture-kravira-fhir-mis.pdf) - тот же документ (PDF)
+- [docs/pre-sign-checklist-print.html](docs/pre-sign-checklist-print.html) - чек-лист перед подписью ЭЦП для врача (одна страница, печать/PDF)
+- [docs/pre-sign-checklist.pdf](docs/pre-sign-checklist.pdf) - тот же чек-лист (PDF)
 
 ## Пересчёт метрик качества
 

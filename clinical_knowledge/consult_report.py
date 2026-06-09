@@ -115,7 +115,7 @@ def _score_verdict_ru(pct: float | None) -> tuple[str, str]:
     return "Критично", "cr-verdict--low"
 
 
-def _spoiler_section(title: str, inner_html: str, *, open_default: bool = False) -> str:
+def _spoiler_section(title: str, inner_html: str, *, open_default: bool = True) -> str:
     open_attr = " open" if open_default else ""
     return (
         f'<details class="cr-spoiler"{open_attr}>'
