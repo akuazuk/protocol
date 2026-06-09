@@ -54,7 +54,22 @@ def test_evaluate_cisz_readiness_bundle_high_score():
     assert len(out["checks"]) > 0
 
 
-def test_evaluate_cisz_readiness_text_heuristics():
+def test_evaluate_cisz_readiness_includes_critical_gaps_decode():
+    bundle = _load_fixture("primary_ambulatory_min.json")
+    stripped = dict(bundle)
+    stripped["entry"] = [
+        e for e in bundle["entry"] if e["resource"]["resourceType"] != "Composition"
+    ]
+    out = evaluate_cisz_readiness(bundle=stripped)
+    assert out["critical_failures"] >= 1
+    assert isinstance(out.get("critical_gaps"), list)
+    assert len(out["critical_gaps"]) >= 1
+    assert out["critical_gaps"][0].get("fix_ru")
+    assert out.get("decode_ru")
+    assert "Критические пробелы" in out["decode_ru"]
+
+
+def test_evaluate_cisz_readiness_text_has_source_note():
     text = """\
 Врач: терапевт
 Дата консультации: 2024-04-07
@@ -66,6 +81,7 @@ def test_evaluate_cisz_readiness_text_heuristics():
 """
     out = evaluate_cisz_readiness(text=text)
     assert out["source"] == "text"
+    assert out.get("source_note_ru")
     assert out["overall_score"] is not None
     assert out["overall_score"] >= 50
 

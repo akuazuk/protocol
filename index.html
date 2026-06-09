@@ -5475,6 +5475,64 @@
       color: #2d4a42;
     }
 
+    .consult-cisz-decode {
+      margin: 0.45rem 0 0;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(236, 248, 255, 0.75);
+      border: 1px solid rgba(12, 107, 148, 0.18);
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: #2d4a42;
+      white-space: pre-wrap;
+    }
+
+    .consult-cisz-gaps {
+      margin: 0.45rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .consult-cisz-gaps li {
+      margin-bottom: 0.35rem;
+      padding: 0.4rem 0.55rem;
+      border-radius: 10px;
+      font-size: 0.76rem;
+      line-height: 1.4;
+      background: #fef2f2;
+      border-left: 3px solid #b91c1c;
+    }
+
+    .consult-cisz-gaps li strong {
+      color: #991b1b;
+      font-weight: 700;
+    }
+
+    .consult-cisz-gaps .cisz-gap-layer {
+      display: inline-block;
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 0.05rem 0.35rem;
+      border-radius: 999px;
+      background: rgba(12, 107, 148, 0.12);
+      color: #0c6b94;
+      margin-right: 0.25rem;
+    }
+
+    .consult-cisz-table-note {
+      font-size: 0.72rem;
+      color: #6b7f78;
+      margin: 0.35rem 0 0;
+      line-height: 1.35;
+    }
+
+    .consult-cisz-fix {
+      font-size: 0.72rem;
+      color: #4a5f58;
+      line-height: 1.35;
+      margin-top: 0.15rem;
+    }
+
     .site-header__legal-note {
       margin: 0;
       font-size: 0.78rem;
@@ -6463,10 +6521,12 @@
                       <th scope="col">Проверка</th>
                       <th scope="col">Статус</th>
                       <th scope="col">Итог</th>
+                      <th scope="col">Что сделать</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
                 </table>
+                <p class="consult-cisz-table-note" id="consult-cisz-table-note" hidden></p>
                 <p class="consult-hint-small" style="margin: 0.35rem 0 0; font-size: 0.72rem; color: #6b7f78" id="consult-cisz-disclaimer"></p>
               </div>
             </div>
@@ -6485,6 +6545,9 @@
           <div id="consult-cisz-panel" class="consult-send-gate-panel consult-cisz-panel consult-hide-print" hidden>
             <h3>Готовность к ЦИСЗ</h3>
             <p class="consult-send-gate-summary" id="consult-cisz-summary"></p>
+            <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-cisz-source-note"></p>
+            <ul class="consult-cisz-gaps" id="consult-cisz-gaps" hidden></ul>
+            <div class="consult-cisz-decode" id="consult-cisz-decode" hidden></div>
             <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-cisz-detail"></p>
           </div>
 
@@ -10950,6 +11013,7 @@
     var ciszTb = document.querySelector("#consult-cisz-scores-table tbody");
     var ciszDisc = document.getElementById("consult-cisz-disclaimer");
     var ciszTitle = document.getElementById("consult-cisz-table-title");
+    var ciszTableNote = document.getElementById("consult-cisz-table-note");
     if (ciszBlock && ciszTb && cisz && Array.isArray(cisz.checks) && cisz.checks.length) {
       ciszBlock.hidden = false;
       if (ciszTitle && cisz.scenario_label_ru) {
@@ -10958,8 +11022,19 @@
       ciszTb.innerHTML = "";
       cisz.checks.forEach(function (chk) {
         var tr = document.createElement("tr");
+        if (!chk.passed && chk.critical) {
+          tr.style.background = "rgba(254, 242, 242, 0.55)";
+        }
         var tdName = document.createElement("td");
-        tdName.textContent = chk.title_ru || chk.check_id || "";
+        var nameHtml = escapeHtml(chk.title_ru || chk.check_id || "");
+        if (chk.layer_label_ru) {
+          nameHtml =
+            '<span class="cisz-gap-layer">' +
+            escapeHtml("слой " + (chk.layer || "?") + " · " + chk.layer_label_ru) +
+            "</span><br>" +
+            nameHtml;
+        }
+        tdName.innerHTML = nameHtml;
         var tdStat = document.createElement("td");
         tdStat.textContent = chk.passed ? "✓" : "✗";
         tdStat.style.color = chk.passed ? "#1a8a72" : "#c45c4a";
@@ -10971,12 +11046,35 @@
           '">' +
           escapeHtml(chk.verdict_ru || (chk.passed ? "Хорошо" : "Доработать")) +
           "</span>";
+        var tdFix = document.createElement("td");
+        if (!chk.passed && (chk.fix_ru || chk.mis_field_ru)) {
+          var fixParts = [];
+          if (chk.mis_field_ru) fixParts.push(escapeHtml(chk.mis_field_ru));
+          if (chk.fix_ru) fixParts.push(escapeHtml(chk.fix_ru));
+          tdFix.innerHTML = '<span class="consult-cisz-fix">' + fixParts.join(". ") + "</span>";
+        } else if (chk.passed) {
+          tdFix.innerHTML = '<span class="consult-cisz-fix" style="color:#6b7f78">—</span>';
+        }
         tr.appendChild(tdName);
         tr.appendChild(tdStat);
         tr.appendChild(tdVer);
+        tr.appendChild(tdFix);
         ciszTb.appendChild(tr);
       });
       if (ciszDisc) ciszDisc.textContent = cisz.disclaimer_ru || "";
+      if (ciszTableNote) {
+        var noteParts = [];
+        if (cisz.source_note_ru) noteParts.push(cisz.source_note_ru);
+        if (cisz.critical_failures > 0) {
+          noteParts.push(
+            "Критических пробелов: " +
+              cisz.critical_failures +
+              " — см. карточку «Готовность к ЦИСЗ» выше."
+          );
+        }
+        ciszTableNote.textContent = noteParts.join(" ");
+        ciszTableNote.hidden = !noteParts.length;
+      }
     } else if (ciszBlock) {
       ciszBlock.hidden = true;
     }
@@ -10990,6 +11088,9 @@
   function renderConsultCiszPanel(data) {
     var panel = document.getElementById("consult-cisz-panel");
     var sumEl = document.getElementById("consult-cisz-summary");
+    var srcEl = document.getElementById("consult-cisz-source-note");
+    var gapsEl = document.getElementById("consult-cisz-gaps");
+    var decodeEl = document.getElementById("consult-cisz-decode");
     var detEl = document.getElementById("consult-cisz-detail");
     var card = document.getElementById("consult-score-cisz-card");
     var pctEl = document.getElementById("consult-cisz-pct");
@@ -11021,6 +11122,42 @@
     }
     if (sumEl) {
       sumEl.textContent = cisz.summary_ru || "Готовность к ЦИСЗ: " + pct + "%";
+    }
+    if (srcEl) {
+      srcEl.textContent = cisz.source_note_ru || "";
+      srcEl.hidden = !cisz.source_note_ru;
+    }
+    if (gapsEl) {
+      gapsEl.innerHTML = "";
+      var gaps = cisz.critical_gaps || [];
+      if (gaps.length) {
+        gaps.forEach(function (g) {
+          var li = document.createElement("li");
+          var layer = g.layer
+            ? '<span class="cisz-gap-layer">слой ' + escapeHtml(g.layer) + "</span> "
+            : "";
+          li.innerHTML =
+            layer +
+            "<strong>" +
+            escapeHtml(g.title_ru || g.check_id || "Проверка") +
+            "</strong>" +
+            (g.mis_field_ru ? " — " + escapeHtml(g.mis_field_ru) + "." : "") +
+            (g.fix_ru ? " " + escapeHtml(g.fix_ru) : "");
+          gapsEl.appendChild(li);
+        });
+        gapsEl.hidden = false;
+      } else {
+        gapsEl.hidden = true;
+      }
+    }
+    if (decodeEl) {
+      if (cisz.decode_ru) {
+        decodeEl.textContent = cisz.decode_ru;
+        decodeEl.hidden = false;
+      } else {
+        decodeEl.hidden = true;
+        decodeEl.textContent = "";
+      }
     }
     if (detEl) {
       detEl.textContent = cisz.disclaimer_ru || "";

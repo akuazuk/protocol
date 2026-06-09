@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
+from .cisz_check_hints import build_critical_gaps, build_decode_ru, enrich_check_item
 from .fhir_bundle_inspect import detect_bundle_scenario, inspect_bundle_checks, inspect_text_checks
 from .fhir_mis_test_matrix import MisCheckDef, checks_for_scenario
 
@@ -27,6 +28,8 @@ def _verdict_class(passed: bool, critical: bool) -> VerdictRu:
 def _score_from_checks(
     check_defs: tuple[MisCheckDef, ...],
     results: dict[str, bool],
+    *,
+    source: str = "fhir_bundle",
 ) -> tuple[float, list[dict[str, Any]], int]:
     total_w = sum(c.weight for c in check_defs)
     if total_w <= 0:
@@ -40,6 +43,7 @@ def _score_from_checks(
             earned += cdef.weight
         elif cdef.critical:
             critical_fail += 1
+        hints = enrich_check_item(cdef.check_id, passed=passed, source=source)
         items.append({
             "check_id": cdef.check_id,
             "title_ru": cdef.title_ru,
@@ -49,6 +53,7 @@ def _score_from_checks(
             "critical": cdef.critical,
             "verdict_ru": _verdict_ru(passed, cdef.critical),
             "verdict_class": _verdict_class(passed, cdef.critical),
+            **hints,
         })
     pct = round(100.0 * earned / total_w, 1)
     return pct, items, critical_fail
@@ -99,7 +104,14 @@ def evaluate_cisz_readiness(
         include_medication=(detected == "medication"),
         include_protocol_v14=is_bundle,
     )
-    pct, items, critical_fail = _score_from_checks(check_defs, results)
+    pct, items, critical_fail = _score_from_checks(check_defs, results, source=source)
+
+    scenario_labels = {
+        "primary_ambulatory": "Первичный приём (3.2.1)",
+        "specialist_consult": "Консультация специалиста (3.13.1)",
+        "medication": "Приём с лекарственным обеспечением (3.2.1 + 3.3)",
+    }
+    scenario_label_ru = scenario_labels.get(detected, detected)
 
     if critical_fail > 0:
         status = "non_compliant"
@@ -113,32 +125,52 @@ def evaluate_cisz_readiness(
     failed = [i for i in items if not i["passed"]]
     summary = (
         f"Готовность к ЦИСЗ: {pct:.0f}% "
-        f"({len(items) - len(failed)}/{len(items)} проверок, сценарий {detected})."
+        f"({len(items) - len(failed)}/{len(items)} проверок, {scenario_label_ru})."
     )
     if critical_fail:
         summary += f" Критических пробелов: {critical_fail}."
+        crit_titles = [
+            i["title_ru"] for i in items if not i["passed"] and i.get("critical")
+        ]
+        if crit_titles:
+            summary += " " + "; ".join(crit_titles[:4])
+            if len(crit_titles) > 4:
+                summary += f" (+{len(crit_titles) - 4})."
+
+    critical_gaps = build_critical_gaps(items)
+    decode_ru = build_decode_ru(
+        checks=items,
+        critical_gaps=critical_gaps,
+        source=source,
+        scenario_label_ru=scenario_label_ru,
+    )
+    source_note_ru = (
+        "Оценка по тексту PDF - эвристика по содержимому КЗ. "
+        "Слои A-B (Bundle/Composition) проверяются при FHIR Bundle из МИС."
+        if source == "text"
+        else "Оценка по FHIR Bundle: слои A (пакет), B (Composition v1.4), C (ресурсы приёма)."
+    )
 
     return {
         "ok": True,
         "source": source,
         "scenario": detected,
-        "scenario_label_ru": {
-            "primary_ambulatory": "Первичный приём (3.2.1)",
-            "specialist_consult": "Консультация специалиста (3.13.1)",
-            "medication": "Приём с лекарственным обеспечением (3.2.1 + 3.3)",
-        }.get(detected, detected),
+        "scenario_label_ru": scenario_label_ru,
         "overall_score": pct,
         "overall_status": status,
         "critical_failures": critical_fail,
         "checks": items,
+        "critical_gaps": critical_gaps,
+        "decode_ru": decode_ru,
+        "source_note_ru": source_note_ru,
         "summary_ru": summary,
         "disclaimer_ru": (
             "Локальный чек-лист: программа испытаний МИС v.1.3-4 (содержимое) "
-            "и Протокол взаимодействия МИС ОЗ–ЦИСЗ v.1.4 (Composition/пакет). "
+            "и Протокол взаимодействия МИС ОЗ-ЦИСЗ v.1.4 (Composition/пакет). "
             "Не заменяет POST Bundle/$validate и импорт в ЦИСЗ."
         ),
         "program_refs": [
-            "Программа испытаний МИС v.1.3-4 — Амбулаторный профиль",
+            "Программа испытаний МИС v.1.3-4 - Амбулаторный профиль",
             "Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ v.1.4",
         ],
         "check_layers": {
@@ -170,10 +202,17 @@ def merge_send_gate_with_cisz(
             out["score_combined"] = True
             if cisz.get("critical_failures", 0) > 0:
                 prev = out.get("block_reason_ru") or ""
+                gaps = cisz.get("critical_gaps") or []
+                gap_titles = [g.get("title_ru") for g in gaps if g.get("title_ru")]
                 cisz_note = (
                     f"Готовность к ЦИСЗ {cisz_score:.0f}%: "
-                    f"критические пробелы по программе испытаний МИС."
+                    f"критические пробелы ({cisz.get('critical_failures', 0)})"
                 )
+                if gap_titles:
+                    cisz_note += ": " + "; ".join(gap_titles[:3])
+                    if len(gap_titles) > 3:
+                        cisz_note += f" (+{len(gap_titles) - 3})"
+                cisz_note += "."
                 out["block_reason_ru"] = f"{prev} {cisz_note}".strip() if prev else cisz_note
                 if out.get("gate_mode") == "hard_gate":
                     out["gate_allowed"] = False
