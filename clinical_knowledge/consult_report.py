@@ -383,80 +383,6 @@ def _status_badge_html(status: str, label: str | None = None) -> str:
     )
 
 
-def _score_bars_html(bd: Any) -> str:
-    rows: list[str] = []
-    seen: set[str] = set()
-    for key, title, color, fallbacks in _SCORE_KEYS:
-        val = _score_val(bd, key, *fallbacks)
-        if val is None:
-            continue
-        dedupe = key.replace("documentation_score", "doc").replace("protocol_applicability_score", "proto")
-        if dedupe in seen:
-            continue
-        if key in ("documentation_score", "structural_score", "documentation_quality_score"):
-            if "doc" in seen:
-                continue
-            seen.add("doc")
-        elif key in ("protocol_applicability_score", "protocol_match_score"):
-            if "proto" in seen:
-                continue
-            seen.add("proto")
-        else:
-            seen.add(key)
-        pct = float(val)
-        width = max(0, min(100, pct))
-        display = _fmt_pct(val)
-        bar_color = _score_bar_color(pct)
-        emphasis = " cr-bar-row--low" if pct < 70 else (" cr-bar-row--mid" if pct < 85 else "")
-        rows.append(
-            f'<div class="cr-bar-row{emphasis}"><span class="cr-bar-label">{_e(title)}</span>'
-            f'<div class="cr-bar-track"><div class="cr-bar-fill" style="width:{width:.0f}%;'
-            f'background:{bar_color}"></div></div>'
-            f'<span class="cr-bar-val">{display}</span></div>'
-        )
-    return "".join(rows)
-
-
-def _score_summary_table_html(bd: Any) -> str:
-    """Таблица 8 блоков с мини-диаграммами и вердиктом."""
-    rows: list[str] = []
-    seen: set[str] = set()
-    for primary, title, _weight, fallbacks in _SCORE_KEYS:
-        val = _score_val(bd, primary, *fallbacks)
-        if val is None:
-            continue
-        dedupe = primary
-        if primary == "documentation_score":
-            if "doc" in seen:
-                continue
-            seen.add("doc")
-        elif primary == "protocol_applicability_score":
-            if "proto" in seen:
-                continue
-            seen.add("proto")
-        verdict, vcls = _score_verdict_ru(val)
-        bar_color = _score_bar_color(val)
-        w = max(0, min(100, val))
-        rows.append(
-            f"<tr><td class='cr-score-td-name'>{_e(title)}</td>"
-            f"<td class='cr-score-td-donut'>{_mini_donut_svg(val)}</td>"
-            f"<td class='cr-score-td-bar'><div class='cr-bar-track'>"
-            f"<div class='cr-bar-fill' style='width:{w:.0f}%;background:{bar_color}'></div>"
-            f"</div></td>"
-            f"<td class='cr-score-td-val'>{_fmt_pct(val)}</td>"
-            f"<td class='cr-score-td-verdict'><span class='cr-verdict {_e(vcls)}'>{_e(verdict)}</span></td></tr>"
-        )
-    if not rows:
-        return ""
-    return (
-        '<table class="cr-score-table"><thead><tr>'
-        "<th>Блок</th><th>%</th><th colspan='2'>Шкала</th><th>Итог</th>"
-        "</tr></thead><tbody>"
-        + "".join(rows)
-        + "</tbody></table>"
-    )
-
-
 def report_to_html(
     report: ComplianceReport,
     doc: ConsultationDocument | None = None,
@@ -593,19 +519,6 @@ def report_to_html(
             proto_inner.append("</li>")
         proto_inner.append("</ul>")
         parts.append(_spoiler_section("Подобранные протоколы (карточки каталога)", "".join(proto_inner)))
-
-    # Баллы – таблица на виду, полоски – в спойлере
-    score_table = _score_summary_table_html(bd)
-    bars = _score_bars_html(bd)
-    if score_table or bars:
-        inner = score_table
-        if bars:
-            inner += _spoiler_section("Полоски по блокам", f'<div class="cr-bars">{bars}</div>')
-        parts.append(
-            '<section class="cr-section cr-section--scores">'
-            '<h3 class="cr-section-title">Детализация по блокам</h3>'
-            f"{inner}</section>"
-        )
 
     # Диагнозы
     if report.diagnosis_assessments:

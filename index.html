@@ -12263,7 +12263,6 @@
 
     var comp = sa.compliance || {};
     var htmlReport = data.report_html || "";
-    var md = data.report_markdown || "";
     var status = comp.overall_status || "insufficient_data";
     var statusRu = CONSULT_STATUS_RU[status] || status;
     if (sumEl) {
@@ -12302,35 +12301,9 @@
         "</tbody></table>";
     }
 
-    var mdBlock = "";
-    if (md) {
-      mdBlock =
-        '<details style="margin-top:0.65rem" class="consult-hide-print" open>' +
-        '<summary style="cursor:pointer;font-size:0.82rem;color:#64748b;font-weight:600">Markdown / экспорт</summary>' +
-        '<div class="cr-report-actions">' +
-        '<button type="button" data-copy-md="1">Скопировать Markdown</button>' +
-        "</div>" +
-        '<pre class="cr-md-pre" style="white-space:pre-wrap;font-size:0.78rem;background:#fff;' +
-        'border:1px solid #e0ebe8;border-radius:0.4rem;padding:0.6rem;max-height:14rem;overflow:auto">' +
-        escapeHtml(md) +
-        "</pre></details>";
-    }
-
-    panel.innerHTML = body + mdBlock;
+    panel.innerHTML = body;
     fixProtocolLinksInContainer(panel);
     openAllDetailsIn(panel);
-
-    var copyBtn = panel.querySelector("[data-copy-md]");
-    if (copyBtn && md) {
-      copyBtn.addEventListener("click", function () {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(md).then(function () {
-            copyBtn.textContent = "Скопировано";
-            setTimeout(function () { copyBtn.textContent = "Скопировать Markdown"; }, 1800);
-          });
-        }
-      });
-    }
   }
 
   function renderConsultPartialUI(acc) {
