@@ -13,6 +13,7 @@ from .consult_schema import ComplianceReport
 
 GateMode = Literal["inform", "soft_gate", "hard_gate", "critical_only"]
 SendRiskLevel = Literal["low", "medium", "high", "blocked"]
+SignDecision = Literal["allowed", "blocked", "review_required"]
 
 
 def _env_float(name: str, default: float) -> float:
@@ -43,6 +44,51 @@ def _has_blocking_critical(report: ComplianceReport) -> bool:
         if s.severity == "critical" and s.status not in ("handled", "partially_handled"):
             return True
     return False
+
+
+def enrich_sign_decision(gate: dict[str, Any]) -> dict[str, Any]:
+    """Единое решение для врача: можно / нельзя / нужно подтверждение."""
+    allowed = bool(gate.get("gate_allowed"))
+    override = bool(gate.get("requires_override"))
+
+    if allowed and not override:
+        status: SignDecision = "allowed"
+        title_ru = "Можно подписывать"
+    elif allowed and override:
+        status = "review_required"
+        title_ru = "Нужно подтверждение врача"
+    else:
+        status = "blocked"
+        title_ru = "Подпись не рекомендуется"
+
+    detail_parts: list[str] = []
+    if gate.get("block_reason_ru"):
+        detail_parts.append(str(gate["block_reason_ru"]))
+
+    cisz = gate.get("cisz_readiness") if isinstance(gate.get("cisz_readiness"), dict) else {}
+    for g in (cisz.get("critical_gaps") or [])[:3]:
+        if isinstance(g, dict) and g.get("title_ru"):
+            fix = g.get("fix_ru") or g.get("mis_field_ru") or ""
+            line = f"ЦИСЗ: {g['title_ru']}"
+            if fix:
+                line += f" ({fix})"
+            detail_parts.append(line)
+
+    if status == "allowed" and not detail_parts:
+        detail_ru = "Критических препятствий к подписи не выявлено."
+    elif status == "review_required" and not detail_parts:
+        detail_ru = "Оценка ниже порога - подтвердите подпись осознанно."
+    else:
+        detail_ru = " ".join(detail_parts).strip()
+
+    gate_score = gate.get("gate_score")
+    if gate_score is not None and status != "allowed":
+        detail_ru = (detail_ru + f" Балл gate: {float(gate_score):.0f}%.").strip()
+
+    gate["sign_decision"] = status
+    gate["sign_decision_ru"] = title_ru
+    gate["sign_decision_detail_ru"] = detail_ru
+    return gate
 
 
 def resolve_gate_score(
@@ -130,7 +176,7 @@ def evaluate_send_gate(
             else:
                 block_reason = "Низкая уверенность разбора – требуется подтверждение врача."
 
-    return {
+    return enrich_sign_decision({
         "gate_mode": mode,
         "gate_allowed": gate_allowed,
         "requires_override": requires_override,
@@ -149,7 +195,7 @@ def evaluate_send_gate(
             "Ориентир методслужбы по клиническим протоколам Минздрава РБ; "
             "не заменяет МЭЭ и не является юридическим заключением."
         ),
-    }
+    })
 
 
 def evaluate_send_gate_from_compliance(

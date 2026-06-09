@@ -5441,6 +5441,54 @@
       color: #4a5c56;
     }
 
+    .consult-sign-decision-panel {
+      border-radius: 12px;
+      border: 2px solid #c8ddd4;
+      background: linear-gradient(135deg, #f2f8f5 0%, #fff 55%);
+      padding: 0.75rem 0.85rem;
+      margin: 0 0 0.65rem;
+    }
+
+    .consult-sign-decision-panel.sign-allowed {
+      border-color: #9fd4c4;
+      background: linear-gradient(135deg, #e8f5f1 0%, #fff 60%);
+    }
+
+    .consult-sign-decision-panel.sign-review {
+      border-color: #e8d4a8;
+      background: linear-gradient(135deg, #faf5eb 0%, #fff 60%);
+    }
+
+    .consult-sign-decision-panel.sign-blocked {
+      border-color: #e8b4b4;
+      background: linear-gradient(135deg, #faf0f0 0%, #fff 60%);
+    }
+
+    .consult-sign-decision-panel h3 {
+      margin: 0 0 0.35rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #5a6f6a;
+    }
+
+    .consult-sign-decision-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.3;
+      color: #1a4a3e;
+    }
+
+    .consult-sign-decision-detail {
+      font-size: 0.84rem;
+      margin: 0.4rem 0 0;
+      line-height: 1.45;
+      color: #4a5c56;
+    }
+
     .consult-send-gate-panel {
       border-radius: 10px;
       border: 1px solid #ecd8d8;
@@ -6455,7 +6503,22 @@
         </div>
 
         <div id="consult-results-wrap" class="consult-results-card" hidden>
+          <div
+            id="consult-sign-decision-panel"
+            class="consult-sign-decision-panel consult-hide-print"
+            hidden
+            role="status"
+            aria-live="polite"
+          >
+            <h3>Решение о подписи</h3>
+            <p class="consult-sign-decision-title" id="consult-sign-decision-title">—</p>
+            <p class="consult-sign-decision-detail" id="consult-sign-decision-detail"></p>
+          </div>
+
           <div id="consult-oncology-banner" class="consult-onco-alert" hidden></div>
+
+          <details class="consult-spoiler consult-hide-print" id="consult-scores-spoiler" open>
+            <summary>Подробности для методслужбы (проценты и таблицы)</summary>
 
           <div class="consult-score-dashboard">
             <div class="consult-score-card consult-score-card--hero tier-mid" id="consult-score-hero-card">
@@ -6557,6 +6620,8 @@
             <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-send-gate-detail"></p>
           </div>
 
+          </details>
+
           <details class="consult-spoiler consult-hide-print" id="consult-methodology-spoiler" hidden open>
             <summary id="consult-methodology-summary-line">Сводка для методслужбы</summary>
             <div id="consult-methodology-panel" class="consult-methodology-panel">
@@ -6591,7 +6656,7 @@
           </details>
 
           <details class="consult-spoiler consult-hide-print" id="consult-protocols-spoiler" open>
-            <summary id="consult-protocols-summary">Протоколы по тексту заключения</summary>
+            <summary id="consult-protocols-summary">Протоколы для оценки (RAG по тексту КЗ)</summary>
             <div id="consult-protocols-footer" class="consult-protocols-footer-wrap" style="margin-top:0;border-top:none;padding-top:0">
               <div id="consult-out-paths"></div>
             </div>
@@ -11166,6 +11231,33 @@
     else panel.classList.add("gate-ok");
   }
 
+  function renderConsultSignDecision(data) {
+    var panel = document.getElementById("consult-sign-decision-panel");
+    var titleEl = document.getElementById("consult-sign-decision-title");
+    var detEl = document.getElementById("consult-sign-decision-detail");
+    if (!panel) return;
+    var sg =
+      (data && data.send_gate) ||
+      (data &&
+        data.structured_analysis &&
+        data.structured_analysis.compliance &&
+        data.structured_analysis.compliance.send_gate);
+    if (!sg || !sg.sign_decision_ru) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    panel.classList.remove("sign-allowed", "sign-review", "sign-blocked");
+    var sd = sg.sign_decision || "allowed";
+    if (sd === "blocked") panel.classList.add("sign-blocked");
+    else if (sd === "review_required") panel.classList.add("sign-review");
+    else panel.classList.add("sign-allowed");
+    if (titleEl) titleEl.textContent = sg.sign_decision_ru;
+    if (detEl) {
+      detEl.textContent = sg.sign_decision_detail_ru || sg.block_reason_ru || "";
+    }
+  }
+
   function renderConsultSendGate(data) {
     var panel = document.getElementById("consult-send-gate-panel");
     var sumEl = document.getElementById("consult-send-gate-summary");
@@ -11656,8 +11748,31 @@
     var ht = document.createElement("p");
     ht.className = "consult-hint-small";
     ht.style.margin = "0 0 0.45rem";
-    ht.textContent = "PDF из автоматического отбора; ссылки открывают документ на сервере.";
+    ht.textContent =
+      "Для оценки соответствия используются PDF из автоматического отбора (RAG) ниже; ссылки открывают документ на сервере.";
     pw.appendChild(ht);
+
+    var catalog = data && data.clinical_rules && data.clinical_rules.matched_protocols;
+    if (catalog && catalog.length) {
+      var catNote = document.createElement("p");
+      catNote.className = "consult-hint-small";
+      catNote.style.margin = "0 0 0.45rem";
+      catNote.style.color = "var(--muted-strong, #475569)";
+      var catNames = catalog
+        .slice(0, 6)
+        .map(function (m) {
+          return formatProtocolDisplayTitle(
+            m.source_path || m.path || "",
+            m.title || m.document_title || m.protocol_id || ""
+          );
+        })
+        .filter(Boolean);
+      catNote.textContent =
+        "Карточки каталога (справочно, не для итогового %): " +
+        (catNames.join("; ") || catalog.length + " шт.");
+      if (catalog.length > 6) catNote.textContent += " …";
+      pw.appendChild(catNote);
+    }
 
     var preciseNote = (data && data.consult_icd_precise_note_ru) || "";
     if (preciseNote) {
@@ -11839,6 +11954,7 @@
     var discEl = document.getElementById("consult-out-disclaimer");
     if (discEl) discEl.textContent = rev.disclaimer_ru || "";
 
+    renderConsultSignDecision(data);
     renderConsultOncologyBanner(data.consult_oncology_flags);
     renderConsultClinicalRulesPanel(data);
     renderConsultProtocolsSection(data, rev);

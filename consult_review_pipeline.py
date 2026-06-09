@@ -183,6 +183,12 @@ def iter_consult_review_pipeline(
         list(merged_icd or []),
         user_slugs,
     )
+    try:
+        from clinical_knowledge.rules_summary_fallback import apply_summary_rules_fallback
+
+        clinical_rules = apply_summary_rules_fallback(clinical_rules, list(merged_icd or []))
+    except Exception:
+        pass
 
     from clinical_knowledge.consult_retrieval import (
         consult_target_protocol_paths,

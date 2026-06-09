@@ -4382,6 +4382,12 @@ def _consult_ui_protocol_fragments(
     return out
 
 
+def _consult_onco_scan_source() -> str:
+    """kz_only - только текст КЗ; legacy - также рубрика novoobrazovaniya в отборе протоколов."""
+    raw = (os.environ.get("CONSULT_ONCO_SCAN_SOURCE") or "kz_only").strip().lower()
+    return raw if raw in ("kz_only", "legacy") else "kz_only"
+
+
 def _consult_oncology_dual_scan(blob: str) -> tuple[list[str], list[str]]:
     """Сильные маркеры (достаточно одного) и слабые (скрининг/общие - по порогу количества)."""
     nb = (_norm_query(blob or "")).strip()
@@ -4523,13 +4529,15 @@ def _consult_oncology_flags(
         )
 
     in_proto = len(prot_items) > 0
+    kz_only = _consult_onco_scan_source() == "kz_only"
+    banner_proto = in_proto and not kz_only
 
     sentences: list[str] = []
     if in_consult:
         sentences.append(
             "В тексте загруженного заключения обнаружены формулировки, которые могут относиться к опухоли, её подозрению, наблюдению после лечения или онкологическому контролю."
         )
-    if in_proto:
+    if banner_proto:
         sentences.append(
             "В числе отобранных протоколов есть источники из рубрики «новообразования» каталога - особенно внимательно сверьте заключение с ними."
         )
@@ -4563,17 +4571,23 @@ def _consult_oncology_flags(
             clipped = clipped[:1397].rstrip() + "…"
         instruction_ru = f"{instruction_ru} Основание (эвристика): {clipped}"
 
+    scan_note = (
+        "Сканируется только текст заключения."
+        if kz_only
+        else "Учитываются текст заключения и рубрика «новообразования» в каталоге протоколов."
+    )
     method_note_ru = (
         "Это не клиническое решение модели про «онко-риск»: учитываются сильные маркеры (злокачественность, "
         "химиотерапия, типичные паттерны рака/миеломы/лимфомы с отсечением ложных вроде «лимфоменингит», и т.д.) "
         f"или не менее {weak_min} слабых скрининговых; совпадение по одному нейтральному слову недостаточно. "
-        "Маркеры в тексте заключения учитываются отдельно; фрагменты протоколов в онко-скане не используются."
+        f"{scan_note}"
     )
 
     return {
-        "any": in_consult or in_proto,
+        "any": in_consult or banner_proto,
         "consultation_hit": in_consult,
         "protocol_hit": in_proto,
+        "scan_source": _consult_onco_scan_source(),
         "consultation_markers": cons_hits[:16],
         "consultation_strong_markers": list(cons_strong),
         "consultation_weak_markers": list(cons_weak),
@@ -5859,7 +5873,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r69-cisz-decode"
+BUILD_VERSION = "2026-05-31-r70-sign-decision-quality"
 
 
 def _app_version() -> str:

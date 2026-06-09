@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from .cisz_check_hints import build_critical_gaps, build_decode_ru, enrich_check_item
+from .compliance_gate import enrich_sign_decision
 from .fhir_bundle_inspect import detect_bundle_scenario, inspect_bundle_checks, inspect_text_checks
 from .fhir_mis_test_matrix import MisCheckDef, checks_for_scenario
 
@@ -220,7 +221,7 @@ def merge_send_gate_with_cisz(
         elif isinstance(cisz_score, (int, float)):
             out["gate_score"] = cisz_score
             out["overall_score"] = cisz_score
-    return out
+    return enrich_sign_decision(out)
 
 
 def attach_cisz_readiness(

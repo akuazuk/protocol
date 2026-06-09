@@ -499,6 +499,27 @@ def report_to_html(
     parts.append(_layer_cards_html(bd))
     parts.append("</header>")
 
+    from .compliance_gate import evaluate_send_gate
+
+    sg = evaluate_send_gate(report)
+    sd = sg.get("sign_decision") or "allowed"
+    sd_ru = _e(sg.get("sign_decision_ru") or "Решение о подписи")
+    sd_det = _e(sg.get("sign_decision_detail_ru") or "")
+    sd_colors = {
+        "allowed": ("#1a6b52", "#e8f5f1"),
+        "review_required": ("#8a5a12", "#faf5eb"),
+        "blocked": ("#9a3030", "#faf0f0"),
+    }
+    sd_fg, sd_bg = sd_colors.get(sd, ("#334155", "#f8fafc"))
+    parts.append(
+        f'<section class="cr-sign-decision" style="margin:0.65rem 0;padding:0.65rem 0.75rem;'
+        f'border-radius:10px;border:1px solid {sd_fg}33;background:{sd_bg}">'
+        f'<h3 style="margin:0 0 0.35rem;font-size:0.95rem;color:{sd_fg}">Решение о подписи</h3>'
+        f'<p style="margin:0;font-weight:700;color:{sd_fg}">{sd_ru}</p>'
+        f'<p style="margin:0.35rem 0 0;font-size:0.88rem;color:#4a5c56">{sd_det}</p>'
+        "</section>"
+    )
+
     # Резюме (компактно, в спойлере)
     resume_inner: list[str] = ['<ul class="cr-kv">']
     if doc is not None:

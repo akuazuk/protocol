@@ -45,6 +45,7 @@ def test_json_report_shape():
     assert "doctor_summary" in j
     assert "send_gate" in j
     assert "gate_allowed" in j["send_gate"]
+    assert "sign_decision" in j["send_gate"]
 
 
 def test_markdown_report_sections():
@@ -77,4 +78,6 @@ def test_html_report_has_structure():
     assert "cr-bar-fill" in html
     assert "cr-badge" in html
     assert "<script" not in html.lower()
+    assert "cr-sign-decision" in html
+    assert "Решение о подписи" in html
 
