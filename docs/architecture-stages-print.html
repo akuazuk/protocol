@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Protocol - архитектура по этапам и интеграция с МИС</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-950: #063d35;
+      --green-800: #0d5c4a;
+      --green-700: #126b5c;
+      --green-600: #1a8a72;
+      --green-soft: #e8f5f1;
+      --ocean: #0c6b94;
+      --violet: #5c3d9e;
+      --amber: #b45309;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+      --border: rgba(26, 138, 114, 0.22);
+    }
+    * { box-sizing: border-box; }
+    html {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      margin: 0;
+      font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      font-size: 10.5pt;
+      line-height: 1.52;
+      background: #f4f8f6;
+    }
+    .wrap {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1rem 1.4rem 2rem;
+    }
+    .no-print {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+    .no-print button {
+      font-family: Outfit, sans-serif;
+      font-weight: 700;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--green-600), var(--green-700));
+      color: #fff;
+    }
+    .no-print button.secondary {
+      background: #fff;
+      color: var(--green-800);
+      border: 2px solid var(--border);
+    }
+    h1, h2, h3, h4 {
+      font-family: Outfit, sans-serif;
+      color: var(--green-950);
+      line-height: 1.25;
+    }
+    h1 { font-size: 1.65rem; margin: 0 0 0.35rem; }
+    h2 {
+      font-size: 1.15rem;
+      margin: 1.35rem 0 0.55rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 2px solid var(--green-soft);
+    }
+    h3 { font-size: 0.98rem; margin: 0.75rem 0 0.35rem; color: var(--green-800); }
+    h4 { font-size: 0.9rem; margin: 0.55rem 0 0.25rem; }
+    p { margin: 0.4rem 0; }
+    ul, ol { margin: 0.35rem 0 0.5rem; padding-left: 1.25rem; }
+    li { margin-bottom: 0.22rem; }
+    .hero {
+      padding: 1.1rem 1.15rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff 0%, var(--green-soft) 100%);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .hero-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+    .print-module {
+      margin: 0.65rem 0;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
+    }
+    .print-module--accent {
+      border-left: 4px solid var(--green-600);
+    }
+    .print-module--future {
+      border-left: 4px solid var(--ocean);
+      background: linear-gradient(90deg, rgba(12, 107, 148, 0.06) 0%, #fff 28%);
+    }
+    .print-module--opt {
+      border-left: 4px solid var(--violet);
+      background: linear-gradient(90deg, rgba(92, 61, 158, 0.05) 0%, #fff 28%);
+    }
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.45rem 0;
+    }
+    table.data th, table.data td {
+      border: 1px solid #c5d9d3;
+      padding: 0.35rem 0.5rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.data th {
+      background: var(--green-soft);
+      font-weight: 700;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(26, 138, 114, 0.14);
+      color: var(--green-800);
+      margin-right: 0.25rem;
+    }
+    .tag--future { background: rgba(12, 107, 148, 0.14); color: var(--ocean); }
+    .tag--llm { background: rgba(92, 61, 158, 0.12); color: var(--violet); }
+    .diagram {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.72rem;
+      line-height: 1.38;
+      background: #f8faf9;
+      border: 1px solid #c5d9d3;
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0.5rem 0;
+    }
+    .footnote {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
+    code {
+      font-size: 0.86em;
+      background: rgba(26, 138, 114, 0.1);
+      padding: 0.05rem 0.3rem;
+      border-radius: 4px;
+    }
+    @media print {
+      @page { size: A4; margin: 14mm 12mm 16mm 12mm; }
+      body { background: #fff; font-size: 10pt; }
+      .wrap { max-width: 100%; padding: 0; }
+      .no-print { display: none !important; }
+      .print-module,
+      .hero,
+      table.data tr,
+      .diagram {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      h2, h3, h4 {
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+      }
+      table.data { break-inside: auto; }
+      table.data thead { display: table-header-group; }
+      table.data tr { break-inside: avoid !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="no-print">
+      <span>Документ для печати в PDF. Блоки не разрываются между страницами.</span>
+      <button type="button" onclick="window.print()">Сохранить в PDF</button>
+      <button type="button" class="secondary" onclick="window.print()">Печать</button>
+    </div>
+
+    <header class="hero print-module">
+      <h1>Protocol: архитектура по этапам</h1>
+      <p><strong>Навигатор клинических протоколов Минздрава РБ и ориентировочная проверка консультативных заключений (КЗ).</strong></p>
+      <p>Документ описывает текущую реализацию (MVP), целевую интеграцию с МИС и Минздравом через стандарт FHIR BY / ЦИСЗ, а также предложения по масштабированию на тысячи КЗ в сутки.</p>
+      <p class="hero-meta">Версия документа: 2026-06-02 · Сборка приложения: 2026-06-01-r59 · Не является ТЗ и не заменяет нормативные акты Минздрава.</p>
+    </header>
+
+    <section class="print-module print-module--accent">
+      <h2>1. Назначение и границы системы</h2>
+      <p><span class="tag">MVP</span> Protocol - веб-сервис и API для двух сценариев:</p>
+      <ol>
+        <li><strong>Поиск протоколов</strong> - подбор официальных КП Минздрава РБ по диагнозу, МКБ-10, жалобам и рубрикам каталога.</li>
+        <li><strong>Проверка КЗ</strong> - ориентировочная сверка консультативного заключения с фрагментами протоколов и формализованными правилами; отчёт для врача и методслужбы.</li>
+      </ol>
+      <p><strong>Не входит:</strong> установление диагноза, замена очного приёма, МЭЭ, юридически обязательная экспертиза, прямая запись в медицинскую карту (на этапе пилота).</p>
+      <p><strong>Два контура intelligence:</strong> (1) <span class="tag tag--llm">LLM</span> - языковая модель для синтеза, уточнения запроса и дополнения ответа; (2) <strong>детерминированный слой</strong> <code>clinical_knowledge/</code> - парсинг, правила из протоколов, scoring без «магии» модели.</p>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>2. Этап 0. Корпус протоколов и справочники</h2>
+      <h3>2.1. Источник данных</h3>
+      <p>Официальный каталог PDF на minzdrav.gov.by (раздел «Стандарты обследования и лечения»). Синхронизация скриптом <code>download_minzdrav_protocols.py</code> в каталог <code>minzdrav_protocols/</code> (~478 PDF, 24 рубрики).</p>
+      <h3>2.2. Индекс каталога</h3>
+      <p><code>index.csv</code> - метаданные: рубрика, год в имени файла, признак постановления МЗ. Используется для UI-бейджей, статистики презентации и фильтрации.</p>
+      <h3>2.3. Справочники</h3>
+      <ul>
+        <li><code>protocols.json</code>, <code>protocol_meta.json</code> - реестр путей и метаданные.</li>
+        <li><code>data/catalog/</code> - 85 нозологий, 482 автоизвлечённых правила, отчёт покрытия 100% PDF.</li>
+        <li><code>data/protocol_summaries/</code> - YAML/JSON карточки протоколов (~465 summaries) для навигации и расширения правил.</li>
+        <li><code>config/</code> - требования к КЗ, веса scoring, red flags.</li>
+      </ul>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>3. Этап 1. Подготовка корпуса для RAG</h2>
+      <h3>3.1. Два пути сборки (legacy и новый)</h3>
+      <table class="data">
+        <thead><tr><th>Путь</th><th>Скрипты</th><th>Результат</th></tr></thead>
+        <tbody>
+          <tr><td>Legacy</td><td><code>extract_corpus.py</code> → <code>build_chunks.py</code> → <code>split_chunks_jsonl.py</code></td><td><code>corpus_chunks_parts/*.jsonl</code></td></tr>
+          <tr><td>Новый</td><td><code>corpus_pipeline/run_pipeline</code></td><td>Секции, таблицы, entities → <code>output/chunks/</code></td></tr>
+        </tbody>
+      </table>
+      <h3>3.2. Чанки RAG</h3>
+      <p>~105 000 фрагментов текста с разметкой разделов (диагноз, лечение, обследование). Хранятся в <code>corpus_chunks_parts/</code> (JSONL, 7 частей). При старте сервера загружаются в память фоновым потоком.</p>
+      <h3>3.3. Индексы поиска</h3>
+      <p>При загрузке строятся: лексический инвертированный индекс, BM25 (<code>retrieval_bm25.py</code>), маршрутизация по симптомам (<code>symptom_routing.json</code>).</p>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>4. Этап 2. Слой clinical_knowledge (детерминированный)</h2>
+      <p>Каталог <code>clinical_knowledge/</code> (~61 модуль). Публичный API: <code>clinical_knowledge_status</code>, <code>match_protocol_cards</code>, <code>run_rule_checker</code>, <code>extract_consult_facts_heuristic</code>.</p>
+      <table class="data">
+        <thead><tr><th>Блок</th><th>Модули</th><th>Функция</th></tr></thead>
+        <tbody>
+          <tr><td>Схемы</td><td><code>consult_schema.py</code></td><td>ConsultationDocument, ComplianceReport, 8 блоков scoring</td></tr>
+          <tr><td>Парсинг КЗ</td><td><code>consult_parser.py</code>, <code>text_extract.py</code>, <code>medication_parser.py</code></td><td>PDF/TXT/DOCX → структура документа</td></tr>
+          <tr><td>Подбор КП</td><td><code>protocol_match.py</code>, <code>diagnosis_icd.py</code></td><td>Сопоставление с протоколами по МКБ и рубрике</td></tr>
+          <tr><td>Правила</td><td><code>rule_checker.py</code>, <code>rules_from_path.py</code></td><td>482 правила из PDF, покрытие по рубрикам</td></tr>
+          <tr><td>Compliance</td><td><code>compliance_engine.py</code>, <code>requirement_checker.py</code>, <code>safety_checker.py</code></td><td>Итоговый отчёт, issues, source_refs</td></tr>
+          <tr><td>Summaries</td><td><code>protocol_summary/</code></td><td>Карточки протоколов → rules → RAG chunks</td></tr>
+          <tr><td>Отчёты</td><td><code>consult_report.py</code>, <code>batch_runner.py</code></td><td>HTML/MD для печати, пакетная обработка</td></tr>
+        </tbody>
+      </table>
+      <p>Оркестратор: <code>consult_analysis.analyze_consultation_text()</code>. В production вызывается из <code>consult_review_pipeline.py</code>.</p>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>5. Этап 3. Runtime: rag_server.py (FastAPI)</h2>
+      <h3>5.1. Стек</h3>
+      <p>Python 3.11+, FastAPI, uvicorn. Ключ API языковой модели хранится на сервере (<code>GOOGLE_API_KEY</code> / аналог в .env - в документации обозначается как <strong>LLM API</strong>). Фронтенд ключ не получает.</p>
+      <h3>5.2. Загрузка при старте</h3>
+      <p>Фоновый поток <code>load_data()</code>: JSONL-чанки, protocols, meta, summary chunks, BM25. Endpoint <code>/health</code> отвечает до полной готовности RAG (важно для Render/K8s).</p>
+      <h3>5.3. Гибридный retrieve</h3>
+      <p>Функция <code>retrieve()</code>: лексика + BM25 + routing boost + фильтр аудитории + опциональный embed-rerank через LLM. Результат - топ фрагментов по протоколам.</p>
+      <h3>5.4. Группы API</h3>
+      <table class="data">
+        <thead><tr><th>Домен</th><th>Endpoints</th></tr></thead>
+        <tbody>
+          <tr><td>Health</td><td><code>GET /health</code>, <code>/api/version</code>, <code>/api/corpus-stats</code></td></tr>
+          <tr><td>Поиск</td><td><code>POST /api/assist</code>, <code>/api/protocol-detail</code>, <code>/api/protocol-practical</code>, <code>/api/kz-matrix</code>, <code>GET /api/protocol-pdf</code></td></tr>
+          <tr><td>КЗ</td><td><code>POST /api/consult-review</code>, <code>/api/consult-review/stream</code> (SSE)</td></tr>
+          <tr><td>Справочники</td><td><code>/api/specialties</code>, <code>/api/icd-suggest</code>, <code>/api/training-cases</code></td></tr>
+          <tr><td>Аналитика</td><td><code>/api/presentation-stats</code>, <code>/api/quality-benchmark</code>, <code>/api/pilot-analytics-demo</code></td></tr>
+          <tr><td>Clinical knowledge</td><td><code>/api/clinical-knowledge/status</code>, <code>/build-status</code>, <code>/benchmark</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>6. Этап 4. Проверка КЗ (pipeline)</h2>
+      <p>Модуль <code>consult_review_pipeline.py</code> - оркестрация с SSE-прогрессом для UI.</p>
+      <div class="diagram">PDF/TXT/DOCX
+    → извлечение текста
+    → МКБ-10 + якорь рубрики врача
+    → retrieve (RAG по allowlist протоколов)
+    → match_protocol_cards + run_rule_checker
+    → build_compliance_report (детерминированно)
+    → LLM: синтез критериев и дополнение (если включено)
+    → structured_analysis + report_html + report_markdown</div>
+      <p>Флаг <code>CONSULT_STRUCTURED_ANALYSIS=1</code> включает полный структурный разбор. Fast mode на production сокращает второй проход RAG и таймауты.</p>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>7. Этап 5. Frontend (index.html)</h2>
+      <p>Монолитный SPA (~12k строк): inline CSS + vanilla JS, без bundler.</p>
+      <ul>
+        <li><strong>Вкладка по умолчанию:</strong> «Проверка КЗ» (<code>#consult-review</code>).</li>
+        <li><strong>Вторая вкладка:</strong> «Поиск протоколов» (<code>#search</code>).</li>
+        <li>Демо: <code>?presentation=1</code> - overlay для показа руководству.</li>
+        <li>SSE для потоковой проверки КЗ; lazy-load развёрнутых выдержек протоколов.</li>
+        <li>Читаемые ссылки на PDF протоколов (<code>beautify_protocol_title</code>).</li>
+      </ul>
+      <p>Дополнительно: <code>docs/mvp-presentation.html</code>, <code>consult_review.html</code>.</p>
+    </section>
+
+    <section class="print-module print-module--accent">
+      <h2>8. Сводная схема текущей архитектуры</h2>
+      <div class="diagram">┌─────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│  Браузер    │────▶│  rag_server.py   │────▶│  LLM API (сервер)   │
+│  index.html │◀────│  FastAPI + RAG   │     └─────────────────────┘
+└─────────────┘     └────────┬─────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+     corpus_chunks_parts   clinical_knowledge   minzdrav_protocols/
+     data/catalog           consult_review_pipeline
+     protocol_summaries</div>
+      <h3>8.1. Поток «Поиск протоколов»</h3>
+      <p>Запрос → МКБ (<code>icd_mkb.py</code> + LLM) → retrieve → LLM формирует список протоколов с confidence → опционально protocol-detail.</p>
+      <h3>8.2. Поток «Проверка КЗ»</h3>
+      <p>Файл → pipeline → детерминированный compliance + RAG + LLM → отчёт с цитатами из официальных PDF.</p>
+    </section>
+
+    <section class="print-module print-module--future">
+      <h2>9. Будущая интеграция с МИС и Минздравом</h2>
+      <p><span class="tag tag--future">Этап 2</span> Согласно <a href="https://fhir.by/index.html">FHIR BY</a> и <a href="https://fhir.by/interactionMIS.html">регламенту МИС ОЗ - ЦИСЗ</a> (v1.4, FHIR 5.0.0):</p>
+      <h3>9.1. Разделение ответственности</h3>
+      <table class="data">
+        <thead><tr><th>Система</th><th>Что проверяет</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ЦИСЗ</strong></td><td>Профили FHIR, структура Bundle, справочники НСИ, OAuth 2.0, импорт пакета</td></tr>
+          <tr><td><strong>Protocol</strong></td><td>Соответствие <em>содержания</em> КЗ клиническим протоколам Минздрава (ориентир, не МЭЭ)</td></tr>
+          <tr><td><strong>МИС</strong></td><td>Формирование Bundle, ЭЦП, UI врача, вызов Protocol до подписи</td></tr>
+          <tr><td><strong>Минздрав</strong></td><td>Владелец корпуса КП, методические требования, пилоты, агрегированная аналитика</td></tr>
+        </tbody>
+      </table>
+      <h3>9.2. Точка встраивания в МИС</h3>
+      <div class="diagram">Врач заполняет КЗ в МИС
+    → МИС собирает FHIR Bundle (Patient, Encounter, Condition, Composition…)
+    → [НОВОЕ] вызов Protocol API (до ЭЦП)
+    → предупреждения / отчёт врачу
+    → врач исправляет (при необходимости)
+    → ЭЦП (ЕСИФЮЛ) → импорт в ЦИСЗ (202 Accepted → poll status)</div>
+      <h3>9.3. Маппинг FHIR → Protocol</h3>
+      <table class="data">
+        <thead><tr><th>FHIR BY</th><th>Protocol</th></tr></thead>
+        <tbody>
+          <tr><td>Patient</td><td>PatientContext (пол, возраст)</td></tr>
+          <tr><td>Condition + МКБ-10</td><td>диагнозы, match_protocol_cards</td></tr>
+          <tr><td>Observation</td><td>витальные показатели в контексте КЗ</td></tr>
+          <tr><td>Encounter</td><td>care_setting, применимость протокола</td></tr>
+          <tr><td>Composition</td><td>секции КЗ → consult_parser</td></tr>
+          <tr><td>DocumentReference / PDF</td><td>текущий POST /api/consult-review</td></tr>
+        </tbody>
+      </table>
+      <h3>9.4. Планируемые фазы</h3>
+      <table class="data">
+        <thead><tr><th>Фаза</th><th>Срок (ориентир)</th><th>Содержание</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>3-6 мес.</td><td>REST из МИС: МКБ + текст → <code>/api/consult-review</code>; кнопка «Проверить по протоколу»</td></tr>
+          <tr><td>B</td><td>6-12 мес.</td><td>Адаптер <code>fhir_bundle_to_consult</code>; endpoint <code>POST /api/fhir/consult-compliance</code>; ответ в духе OperationOutcome</td></tr>
+          <tr><td>C</td><td>12+ мес.</td><td>On-premise в контуре РБ; дашборд Минздрава (агрегаты без ПДн); синхронизация корпуса КП</td></tr>
+        </tbody>
+      </table>
+      <h3>9.5. Развёртывание</h3>
+      <p>См. <code>docs/deployment-belarus.md</code>: сервер в контуре оператора/Минздрава, корпус на диске/S3, LLM - разрешённый API или on-premise модель в РБ, ПДн не выносить в публичный интернет.</p>
+    </section>
+
+    <section class="print-module print-module--opt">
+      <h2>10. Масштабирование: тысячи КЗ в сутки</h2>
+      <p>При полной проверке каждого КЗ с LLM + RAG нагрузка растёт линейно. Ниже - меры ускорения и снижения стоимости.</p>
+      <h3>10.1. Технические оптимизации</h3>
+      <table class="data">
+        <thead><tr><th>Мера</th><th>Эффект</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Детерминированный fast path</strong></td><td>Сначала rule_checker + requirement_checker без LLM; LLM только при пограничных баллах или по запросу</td></tr>
+          <tr><td><strong>Кэш consult-review</strong></td><td><code>CONSULT_REVIEW_CACHE</code> - повторные проверки того же текста/хеша</td></tr>
+          <tr><td><strong>Очередь + воркеры</strong></td><td>Celery/RQ: асинхронная обработка пакетов; API возвращает job_id, МИС опрашивает статус (аналог poll ЦИСЗ)</td></tr>
+          <tr><td><strong>Отключение embed-rerank</strong></td><td>На batch-режиме: только lex + BM25 (уже есть флаг в CI)</td></tr>
+          <tr><td><strong>Предварительный digest</strong></td><td>Сокращение текста КЗ до ключевых секций перед LLM (уже частично в pipeline)</td></tr>
+          <tr><td><strong>Горизонтальное масштабирование</strong></td><td>Несколько инстансов API за балансировщиком; корпус read-only на shared disk</td></tr>
+          <tr><td><strong>Инкрементальный corpus</strong></td><td>Не перезагружать весь RAG при деплое - hot-reload index.csv</td></tr>
+        </tbody>
+      </table>
+      <h3>10.2. Ориентиры производительности (пилот)</h3>
+      <ul>
+        <li>Детерминированный разбор одного КЗ (без LLM): секунды.</li>
+        <li>Полная проверка с LLM: десятки секунд - минуты (зависит от длины и fast mode).</li>
+        <li>Целевой batch: 100% КЗ - только детерминированный скоринг; 5-15% - углублённо с LLM.</li>
+      </ul>
+    </section>
+
+    <section class="print-module print-module--opt">
+      <h2>11. Методика выборочного контроля качества КЗ</h2>
+      <p>Цель: выявить врачей/подразделения с систематически слабыми КЗ без проверки каждого документа LLM.</p>
+      <h3>11.1. Уровни выборки</h3>
+      <table class="data">
+        <thead><tr><th>Уровень</th><th>Охват</th><th>Метод</th></tr></thead>
+        <tbody>
+          <tr><td>L0 - скрининг</td><td>100% КЗ</td><td>Только детерминированный скоринг (без LLM): оформление, МКБ, обязательные поля, red flags. &lt; 1 с на документ.</td></tr>
+          <tr><td>L1 - выборка</td><td>10-20% КЗ</td><td>Случайная + стратифицированная по врачу, рубрике, итоговому L0-баллу.</td></tr>
+          <tr><td>L2 - углублённо</td><td>2-5% КЗ</td><td>Полный pipeline с RAG + LLM; эталон для методслужбы.</td></tr>
+          <tr><td>L3 - ручной аудит</td><td>0.5-1%</td><td>Эксперт методслужбы по списку «красных» врачей из L0-L2.</td></tr>
+        </tbody>
+      </table>
+      <h3>11.2. Критерии отбора «проблемных» врачей</h3>
+      <ul>
+        <li>Средний балл L0 за месяц &lt; 70% при n ≥ 10 КЗ.</li>
+        <li>Доля КЗ с критическими issues (red flags) &gt; 15%.</li>
+        <li>Тренд: снижение балла 3 месяца подряд.</li>
+        <li>Выбросы: единичные КЗ &lt; 50% при обычно нормальном профиле - в L2, не автоматическая санкция.</li>
+      </ul>
+      <h3>11.3. Агрегаты для Минздрава (без ПДн)</h3>
+      <p>Учреждение, рубрика, период, средний % по блокам, доля «зелёных/жёлтых/красных» зон. Без ФИО пациентов; идентификатор врача - только внутри контура учреждения.</p>
+      <h3>11.4. Хранение результатов</h3>
+      <p>Таблица <code>kz_quality_scores</code>: hash текста, author_id (из токена МИС), timestamp, L0_score, flags, optional L2_job_id. Retention по политике ИБ.</p>
+    </section>
+
+    <section class="print-module print-module--opt">
+      <h2>12. Вариант: блокировка ЭЦП до нормы соответствия</h2>
+      <p><span class="tag tag--future">Опция для МИС</span> Не юридическое требование Protocol, а <strong>настраиваемая политика учреждения</strong>, согласуемая с Минздравом и юристами.</p>
+      <h3>12.1. Режимы (config в МИС)</h3>
+      <table class="data">
+        <thead><tr><th>Режим</th><th>Поведение</th></tr></thead>
+        <tbody>
+          <tr><td><strong>inform</strong></td><td>Только предупреждения; ЭЦП всегда доступна (текущий пилот).</td></tr>
+          <tr><td><strong>soft_gate</strong></td><td>При балле &lt; порога (напр. 70%) - диалог «Подписать всё равно?» + запись override в журнал.</td></tr>
+          <tr><td><strong>hard_gate</strong></td><td>Кнопка ЭЦП неактивна, пока L0 ≥ порога или методист не снял блок (workflow).</td></tr>
+          <tr><td><strong>critical_only</strong></td><td>Блок только при critical red flags (безопасность, противопоказания).</td></tr>
+        </tbody>
+      </table>
+      <h3>12.2. Техническая реализация в МИС</h3>
+      <ol>
+        <li>МИС вызывает <code>POST /api/consult-review?mode=fast</code> или лёгкий <code>POST /api/consult-compliance-screen</code> (только L0).</li>
+        <li>Ответ: <code>overall_compliance_pct</code>, <code>blocks</code>, <code>critical_issues[]</code>, <code>gate_allowed: bool</code>.</li>
+        <li>МИС применяет локальную политику → разрешает/блокирует вызов ЕСИФЮЛ.</li>
+        <li>При override - запись в audit log (врач, время, причина).</li>
+      </ol>
+      <h3>12.3. Риски и смягчение</h3>
+      <ul>
+        <li><strong>Ложные срабатывания</strong> - порог только по L0; спорные случаи - soft_gate.</li>
+        <li><strong>Юридическая нагрузка</strong> - формулировка «ориентир методслужбы», не МЭЭ.</li>
+        <li><strong>Сопротивление врачей</strong> - пилот в одном отделении, обучение, прозрачные критерии из протоколов с цитатами.</li>
+      </ul>
+    </section>
+
+    <section class="print-module">
+      <h2>13. Тестирование и качество</h2>
+      <ul>
+        <li><strong>CI:</strong> Ruff + pytest (~55 модулей), миникорпус <code>tests/fixtures/chunks.mini.jsonl</code>.</li>
+        <li><strong>Eval:</strong> <code>eval/golden_queries.jsonl</code> → <code>data/quality_benchmark.json</code> для UI.</li>
+        <li><strong>Regression KZ:</strong> <code>tests/test_regression_kz_compliance.py</code>, fixtures в <code>tests/fixtures/consultations/</code>.</li>
+      </ul>
+    </section>
+
+    <section class="print-module">
+      <h2>14. Заключение</h2>
+      <p>Protocol сегодня - монолитный MVP с двумя контурами: <strong>LLM</strong> для поиска и синтеза и <strong>детерминированный clinical_knowledge</strong> для воспроизводимой проверки КЗ. Корпус привязан к официальным PDF Минздрава РБ.</p>
+      <p>Интеграция с МИС через FHIR BY логична <em>до подписи ЭЦП</em>: ЦИСЗ проверяет упаковку данных, Protocol - клиническое соответствие протоколам. Масштаб на тысячи КЗ достижим за счёт L0-скрининга, выборочного L2 и очередей; блокировка ЭЦП - опциональная политика учреждения, не обязательная часть MVP.</p>
+      <p class="footnote">Protocol · Kravira · Документ сгенерирован для внутреннего использования и презентаций Минздраву/МИС. Ссылки: fhir.by, minzdrav.gov.by, репозиторий protocol (docs/roadmap-mis.md, deployment-belarus.md).</p>
+    </section>
+  </div>
+</body>
+</html>
