@@ -972,11 +972,145 @@
     }
 
     .consult-results-card {
-      border-radius: 18px;
-      border: 1px solid rgba(26, 138, 114, 0.32);
-      background: linear-gradient(165deg, #ffffff 0%, rgba(232, 245, 241, 0.35) 100%);
-      padding: 1rem 1.05rem 1.2rem;
-      box-shadow: 0 10px 34px rgba(6, 61, 53, 0.08);
+      border-radius: 16px;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      background: linear-gradient(165deg, #ffffff 0%, rgba(240, 247, 244, 0.55) 100%);
+      padding: 0.85rem 0.95rem 1rem;
+      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.06);
+    }
+
+    .consult-score-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .consult-score-card {
+      padding: 0.55rem 0.65rem;
+      border-radius: 12px;
+      background: #f7faf8;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+    }
+
+    .consult-score-card--hero {
+      background: linear-gradient(145deg, #f0f7f3, #eef4f8);
+      border-color: rgba(26, 138, 114, 0.28);
+      grid-column: span 1;
+    }
+
+    @media (min-width: 520px) {
+      .consult-score-card--hero {
+        grid-column: span 1;
+      }
+    }
+
+    .consult-score-card__label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7f78;
+      margin-bottom: 0.2rem;
+    }
+
+    .consult-score-card__value {
+      display: block;
+      font-size: clamp(1.65rem, 5vw, 2.1rem);
+      font-weight: 800;
+      line-height: 1.05;
+      font-variant-numeric: tabular-nums;
+      color: #2d4a42;
+    }
+
+    .consult-score-card--hero .consult-score-card__value {
+      font-size: clamp(2rem, 6vw, 2.55rem);
+      color: #1e3d34;
+    }
+
+    .consult-score-card__sub {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: #6b7f78;
+      font-weight: 500;
+    }
+
+    .consult-score-card.tier-mid {
+      background: #f8f5ef;
+      border-color: rgba(196, 165, 116, 0.35);
+    }
+
+    .consult-score-card.tier-low {
+      background: #f9f3f3;
+      border-color: rgba(201, 154, 154, 0.35);
+    }
+
+    .consult-score-card.tier-good {
+      background: #f0f6f2;
+      border-color: rgba(122, 171, 150, 0.35);
+    }
+
+    .consult-score-legend {
+      margin: 0 0 0.65rem;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.76rem;
+      line-height: 1.42;
+      color: #5f6f6a;
+      background: #f4f8f6;
+      border-radius: 8px;
+      border-left: 3px solid #b8d4c8;
+    }
+
+    .consult-spoiler {
+      margin: 0.45rem 0;
+      border: 1px solid rgba(26, 138, 114, 0.12);
+      border-radius: 10px;
+      background: #fafcfb;
+      overflow: hidden;
+    }
+
+    .consult-spoiler > summary {
+      cursor: pointer;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.84rem;
+      font-weight: 650;
+      color: #2d4a42;
+      list-style: none;
+      user-select: none;
+    }
+
+    .consult-spoiler > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .consult-spoiler > summary::before {
+      content: "▸ ";
+      color: #7aab96;
+      font-size: 0.75rem;
+    }
+
+    .consult-spoiler[open] > summary::before {
+      content: "▾ ";
+    }
+
+    .consult-spoiler__body,
+    .consult-spoiler__text {
+      padding: 0 0.65rem 0.55rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #3d4f4a;
+      margin: 0;
+    }
+
+    .consult-disclaimer-line {
+      margin: 0.4rem 0 0.55rem;
+      font-size: 0.74rem;
+      font-style: italic;
+      color: #7a8a84;
+      line-height: 1.4;
     }
 
     .consult-pct {
@@ -986,6 +1120,65 @@
       line-height: 1;
       margin: 0 0 0.45rem;
       font-variant-numeric: tabular-nums;
+    }
+
+    .consult-crit-pill {
+      display: inline-block;
+      min-width: 2.2rem;
+      padding: 0.12rem 0.4rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .consult-crit-pill.tier-good { background: #e4f0ea; color: #3d6b58; }
+    .consult-crit-pill.tier-mid { background: #f5f0e6; color: #8a6f45; }
+    .consult-crit-pill.tier-low { background: #f5ebeb; color: #8f5a5a; }
+
+    .consult-crit-name { font-weight: 650; color: #2d4a42; }
+
+    .consult-crit-excerpt {
+      margin-top: 0.35rem;
+      font-size: 0.76rem;
+      color: #6b7f78;
+      line-height: 1.38;
+    }
+
+    .consult-report-html .cr-spoiler {
+      margin: 0.4rem 0;
+      border: 1px solid #e4ebe8;
+      border-radius: 8px;
+      background: #fafcfb;
+    }
+
+    .consult-report-html .cr-spoiler__summary {
+      cursor: pointer;
+      padding: 0.42rem 0.55rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: #3d524c;
+      list-style: none;
+    }
+
+    .consult-report-html .cr-spoiler__summary::-webkit-details-marker { display: none; }
+
+    .consult-report-html .cr-spoiler__body {
+      padding: 0 0.55rem 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .consult-report-html .cr-bar-row--low .cr-bar-val { color: #8f5a5a; font-weight: 700; }
+    .consult-report-html .cr-bar-row--mid .cr-bar-val { color: #8a6f45; font-weight: 700; }
+
+    .consult-report-html .cr-sev--high { color: #8f5a5a; font-weight: 600; }
+    .consult-report-html .cr-sev--critical { color: #7a4f4f; font-weight: 700; }
+    .consult-report-html .cr-sev--medium { color: #8a6f45; }
+
+    .consult-report-html .cr-section--safety {
+      border-color: #ecd8d8;
+      background: linear-gradient(180deg, #fdfafa, #fff);
     }
 
     table.consult-crit-table {
@@ -5012,68 +5205,72 @@
     }
 
     .consult-methodology-panel {
-      border-radius: 14px;
-      border: 1px solid rgba(26, 138, 114, 0.32);
-      background: rgba(232, 245, 241, 0.45);
-      padding: 0.85rem 0.9rem;
-      margin: 0 0 1rem;
-    }
-
-    .consult-methodology-panel h3 {
-      margin: 0 0 0.5rem;
-      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 1rem;
-      color: var(--green-950);
+      padding: 0 0.65rem 0.55rem;
+      margin: 0;
+      border: none;
+      background: transparent;
     }
 
     .consult-risk-list {
-      margin: 0.45rem 0 0;
-      padding-left: 1.1rem;
-      font-size: 0.82rem;
-      line-height: 1.45;
+      margin: 0.35rem 0 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.8rem;
+      line-height: 1.42;
+    }
+
+    .consult-risk-list li {
+      margin-bottom: 0.35rem;
+      padding: 0.35rem 0.45rem;
+      border-radius: 8px;
+      background: #f9f3f3;
+      border: 1px solid #ecd8d8;
     }
 
     .consult-risk-list li.risk-high {
-      color: var(--red-700);
-      font-weight: 650;
+      color: #6b4545;
+      font-weight: 600;
     }
 
     .consult-methodology-summary {
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       margin: 0 0 0.35rem;
       line-height: 1.45;
+      color: #4a5c56;
     }
 
     .consult-send-gate-panel {
-      border-radius: 14px;
-      border: 1px solid rgba(185, 28, 28, 0.28);
-      background: rgba(254, 242, 242, 0.55);
-      padding: 0.85rem 0.9rem;
-      margin: 0 0 1rem;
+      border-radius: 10px;
+      border: 1px solid #ecd8d8;
+      background: #faf6f6;
+      padding: 0.55rem 0.65rem;
+      margin: 0 0 0.5rem;
     }
 
     .consult-send-gate-panel.gate-ok {
-      border-color: rgba(26, 138, 114, 0.35);
-      background: rgba(232, 245, 241, 0.55);
+      border-color: #c8ddd4;
+      background: #f2f8f5;
     }
 
     .consult-send-gate-panel.gate-warn {
-      border-color: rgba(180, 83, 9, 0.35);
-      background: rgba(255, 248, 235, 0.7);
+      border-color: #e8dcc8;
+      background: #faf7f0;
     }
 
     .consult-send-gate-panel h3 {
-      margin: 0 0 0.45rem;
+      margin: 0 0 0.3rem;
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 1rem;
-      color: var(--green-950);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #3d524c;
     }
 
     .consult-send-gate-summary {
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 650;
       margin: 0;
-      line-height: 1.45;
+      line-height: 1.4;
+      color: #2d4a42;
     }
 
     .site-header__legal-note {
@@ -5996,53 +6193,78 @@
 
         <div id="consult-results-wrap" class="consult-results-card" hidden>
           <div id="consult-oncology-banner" class="consult-onco-alert" hidden></div>
-          <div id="consult-out-pct-wrap">
-            <p style="margin: 0 0 0.25rem; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; color: var(--green-600)">
-              Ориентировочное соответствие
-            </p>
-            <p class="consult-pct" id="consult-out-pct"> - </p>
-            <p class="consult-hint-small" style="margin: 0.3rem 0 0; opacity: 0.88" id="consult-out-pct-method" hidden></p>
+
+          <div class="consult-score-dashboard">
+            <div class="consult-score-card consult-score-card--hero tier-mid" id="consult-score-hero-card">
+              <span class="consult-score-card__label">Итог для врача (гибрид)</span>
+              <span class="consult-score-card__value" id="consult-out-pct">—</span>
+              <span class="consult-score-card__sub" id="consult-out-pct-method" hidden></span>
+            </div>
+            <div class="consult-score-card tier-good" id="consult-score-struct-card" hidden>
+              <span class="consult-score-card__label">Структурный разбор</span>
+              <span class="consult-score-card__value" id="consult-struct-pct">—</span>
+              <span class="consult-score-card__sub" id="consult-struct-meta"></span>
+            </div>
+            <div class="consult-score-card tier-mid" id="consult-score-llm-card" hidden>
+              <span class="consult-score-card__label">Среднее LLM</span>
+              <span class="consult-score-card__value" id="consult-llm-avg-pct">—</span>
+              <span class="consult-score-card__sub">пояснения модели</span>
+            </div>
           </div>
-          <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-out-summary"></p>
-          <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
-          <p class="consult-hint-small" style="margin: 0.45rem 0 0; font-style: italic" id="consult-out-disclaimer"></p>
+          <p class="consult-score-legend" id="consult-score-legend" hidden></p>
+
+          <details class="consult-spoiler consult-hide-print" id="consult-summary-spoiler" open>
+            <summary>Краткий вывод</summary>
+            <p class="consult-spoiler__text" id="consult-out-summary"></p>
+          </details>
+          <details class="consult-spoiler consult-hide-print" id="consult-limit-spoiler" hidden>
+            <summary>Ограничения оценки</summary>
+            <p class="consult-spoiler__text" id="consult-out-limit"></p>
+          </details>
+          <p class="consult-disclaimer-line" id="consult-out-disclaimer"></p>
 
           <div id="consult-send-gate-panel" class="consult-send-gate-panel consult-hide-print" hidden>
-            <h3>Допуск к подписи (для МИС)</h3>
+            <h3>Допуск к подписи (МИС)</h3>
             <p class="consult-send-gate-summary" id="consult-send-gate-summary"></p>
-            <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-send-gate-detail"></p>
+            <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-send-gate-detail"></p>
           </div>
 
-          <div id="consult-methodology-panel" class="consult-methodology-panel consult-hide-print" hidden>
-            <h3>Сводка для методслужбы</h3>
-            <p class="consult-methodology-summary" id="consult-methodology-summary"></p>
-            <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-methodology-groups"></p>
-            <ul class="consult-risk-list" id="consult-risk-list" hidden></ul>
-          </div>
+          <details class="consult-spoiler consult-hide-print" id="consult-methodology-spoiler" hidden>
+            <summary id="consult-methodology-summary-line">Сводка для методслужбы</summary>
+            <div id="consult-methodology-panel" class="consult-methodology-panel">
+              <p class="consult-methodology-summary" id="consult-methodology-summary"></p>
+              <p class="consult-hint-small" style="margin: 0.25rem 0" id="consult-methodology-groups"></p>
+              <ul class="consult-risk-list" id="consult-risk-list" hidden></ul>
+            </div>
+          </details>
 
-          <section id="consult-structured-panel" hidden aria-label="Детерминированный разбор КЗ"></section>
+          <details class="consult-spoiler consult-hide-print" id="consult-structured-spoiler" hidden>
+            <summary id="consult-structured-summary">Структурный отчёт (детализация)</summary>
+            <section id="consult-structured-panel" aria-label="Детерминированный разбор КЗ"></section>
+          </details>
 
-          <h3 style="font-family: Outfit, DM Sans, system-ui, sans-serif; font-size: 1.02rem; margin: 1.05rem 0 0.45rem; color: var(--green-950)">
-            Критерии модели
-          </h3>
-          <div style="overflow-x: auto">
-            <table class="consult-crit-table" id="consult-out-table">
-              <thead>
-                <tr>
-                  <th scope="col">Критерий</th>
-                  <th scope="col">%</th>
-                  <th scope="col">Комментарий</th>
-                  <th scope="col">Фрагмент из КЗ</th>
-                  <th scope="col">Фрагмент из протокола</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+          <details class="consult-spoiler consult-hide-print" id="consult-criteria-spoiler">
+            <summary>Критерии модели (цитаты и комментарии)</summary>
+            <div style="overflow-x: auto; padding: 0 0.5rem 0.55rem">
+              <table class="consult-crit-table" id="consult-out-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Критерий</th>
+                    <th scope="col">%</th>
+                    <th scope="col">Комментарий</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </details>
 
-          <div id="consult-protocols-footer" class="consult-protocols-footer-wrap">
-            <div id="consult-out-paths"></div>
-          </div>
+          <details class="consult-spoiler consult-hide-print" id="consult-protocols-spoiler">
+            <summary id="consult-protocols-summary">Протоколы по тексту заключения</summary>
+            <div id="consult-protocols-footer" class="consult-protocols-footer-wrap" style="margin-top:0;border-top:none;padding-top:0">
+              <div id="consult-out-paths"></div>
+            </div>
+          </details>
 
           <div class="consult-result-actions consult-hide-print">
             <button type="button" class="btn-consult-outline" id="consult-btn-print">Печать отчёта</button>
@@ -10217,6 +10439,27 @@
       });
   }
 
+  function consultScoreTier(pct) {
+    var n = Number(pct);
+    if (isNaN(n)) return "";
+    if (n >= 75) return "tier-good";
+    if (n >= 50) return "tier-mid";
+    return "tier-low";
+  }
+
+  function applyConsultScoreTier(el, pct) {
+    if (!el) return;
+    el.classList.remove("tier-good", "tier-mid", "tier-low");
+    var t = consultScoreTier(pct);
+    if (t) el.classList.add(t);
+  }
+
+  function truncateConsultText(s, max) {
+    var t = s == null ? "" : String(s);
+    if (t.length <= max) return t;
+    return t.slice(0, max - 1).trim() + "…";
+  }
+
   function renderConsultSendGate(data) {
     var panel = document.getElementById("consult-send-gate-panel");
     var sumEl = document.getElementById("consult-send-gate-summary");
@@ -10238,32 +10481,30 @@
     var override = !!sg.requires_override;
     var risk = sg.send_risk_level || "low";
     var gateScore = sg.gate_score != null ? sg.gate_score : sg.overall_score;
-    var headline = sg.headline_score;
-    var structural = sg.structural_score;
-    var scoreBits = [];
-    if (gateScore != null) scoreBits.push("балл для gate: " + Math.round(gateScore) + "%");
-    if (typeof headline === "number" && typeof structural === "number") {
-      scoreBits.push("гибрид " + Math.round(headline) + "% · структурный " + Math.round(structural) + "%");
-    }
     var statusRu = allowed
       ? override
-        ? "Подпись возможна после подтверждения врача"
+        ? "Нужно подтверждение врача"
         : "Подпись разрешена"
-      : "Подпись заблокирована политикой учреждения";
+      : "Подпись заблокирована";
     if (sumEl) {
-      sumEl.textContent = statusRu + (scoreBits.length ? " (" + scoreBits.join("; ") + ")" : "");
+      sumEl.textContent =
+        statusRu +
+        (gateScore != null ? " · балл gate " + Math.round(gateScore) + "%" : "");
     }
     if (allowed && !override) panel.classList.add("gate-ok");
     else if (!allowed || risk === "blocked") panel.classList.add("gate-warn");
     else panel.classList.add("gate-warn");
     if (detEl) {
-      detEl.textContent =
-        (sg.block_reason_ru || "") +
-        (sg.disclaimer_ru ? " " + sg.disclaimer_ru : "");
+      var parts = [];
+      if (sg.block_reason_ru) parts.push(sg.block_reason_ru);
+      if (sg.disclaimer_ru) parts.push(sg.disclaimer_ru);
+      detEl.textContent = parts.join(" ");
     }
   }
 
   function renderConsultMethodologyPanel(rev) {
+    var spoiler = document.getElementById("consult-methodology-spoiler");
+    var sumLine = document.getElementById("consult-methodology-summary-line");
     var panel = document.getElementById("consult-methodology-panel");
     var sumEl = document.getElementById("consult-methodology-summary");
     var grpEl = document.getElementById("consult-methodology-groups");
@@ -10271,9 +10512,10 @@
     if (!panel || !rev) return;
     var criteria = rev.criteria || [];
     if (!criteria.length) {
-      panel.hidden = true;
+      if (spoiler) spoiler.hidden = true;
       return;
     }
+    if (spoiler) spoiler.hidden = false;
     var scores = [];
     var high = [];
     var mid = [];
@@ -10298,14 +10540,18 @@
           }, 0) / scores.length)
         : null;
     var overall = rev.overall_compliance_pct;
+    if (sumLine) {
+      sumLine.textContent =
+        "Сводка методслужбы · итог " +
+        (overall != null ? overall + "%" : "—") +
+        (low.length ? " · зон риска: " + low.length : "");
+    }
     if (sumEl) {
       sumEl.textContent =
-        "Общее соответствие: " +
-        (overall != null ? overall + "%" : " - ") +
-        (avg != null ? ". Среднее по " + scores.length + " критериям: " + avg + "%." : ".") +
+        (avg != null ? "Среднее по критериям LLM: " + avg + "%. " : "") +
         (low.length
-          ? " Зон риска (&lt; 70%): " + low.length + " - рекомендуется разбор методслужбой."
-          : " Существенных зон риска по порогу 70% не выделено.");
+          ? "Ниже 70%: " + low.map(function (r) { return r.name; }).join(", ") + "."
+          : "Существенных зон риска по порогу 70% не выделено.");
     }
     if (grpEl) {
       var gtxt = [];
@@ -10320,7 +10566,31 @@
         low.forEach(function (row) {
           var li = document.createElement("li");
           li.className = "risk-high";
-          li.textContent = row.name + " - " + row.score + "%" + (row.comment ? ": " + row.comment : "");
+          var head = document.createElement("div");
+          head.innerHTML =
+            '<span class="consult-crit-pill ' +
+            consultScoreTier(row.score) +
+            '">' +
+            row.score +
+            "%</span> <span class=\"consult-crit-name\">" +
+            escapeHtml(row.name) +
+            "</span>";
+          li.appendChild(head);
+          if (row.comment) {
+            var det = document.createElement("details");
+            det.style.marginTop = "0.3rem";
+            var sm = document.createElement("summary");
+            sm.style.fontSize = "0.74rem";
+            sm.style.cursor = "pointer";
+            sm.textContent = "Комментарий";
+            var p = document.createElement("p");
+            p.className = "consult-crit-excerpt";
+            p.style.margin = "0.25rem 0 0";
+            p.textContent = row.comment;
+            det.appendChild(sm);
+            det.appendChild(p);
+            li.appendChild(det);
+          }
           riskUl.appendChild(li);
         });
         riskUl.hidden = false;
@@ -10328,7 +10598,6 @@
         riskUl.hidden = true;
       }
     }
-    panel.hidden = false;
   }
 
   function buildConsultMethodologyHtmlReport() {
@@ -10630,9 +10899,10 @@
         }
         if (row.section || row.pages) {
           var loc = document.createElement("span");
+          var secTxt = row.section ? truncateConsultText(row.section, 72) : "";
           loc.textContent =
-            (row.section ? "Раздел: " + row.section : "") +
-            (row.pages ? (row.section ? ", " : "") + "стр. " + row.pages : "");
+            (secTxt ? "Раздел: " + secTxt : "") +
+            (row.pages ? (secTxt ? ", " : "") + "стр. " + row.pages : "");
           meta.appendChild(loc);
         }
         if (row.icd_verified) {
@@ -10667,16 +10937,16 @@
       return String(a.title || "").localeCompare(String(b.title || ""), "ru");
     });
 
-    var hh = document.createElement("div");
-    hh.className = "consult-protocols-heading";
-    hh.textContent = "Протоколы по тексту заключения";
-    pw.appendChild(hh);
+    var protoSummary = document.getElementById("consult-protocols-summary");
+    if (protoSummary) {
+      protoSummary.textContent =
+        "Протоколы · " + (rows.length ? rows.length + " PDF" : "нет отбора");
+    }
 
     var ht = document.createElement("p");
     ht.className = "consult-hint-small";
-    ht.style.margin = "0 0 0.55rem";
-    ht.textContent =
-      "Уникальные PDF из автоматического отбора. Сначала - с подтверждением кодов МКБ в переданной выдержке; ссылки открывают документ на сервере.";
+    ht.style.margin = "0 0 0.45rem";
+    ht.textContent = "PDF из автоматического отбора; ссылки открывают документ на сервере.";
     pw.appendChild(ht);
 
     var preciseNote = (data && data.consult_icd_precise_note_ru) || "";
@@ -10754,33 +11024,108 @@
     window.__consultReviewLastPayload = data;
     if (st) st.textContent = "Готово.";
     var rev = (data && data.review) || {};
-    document.getElementById("consult-out-pct").textContent =
-      typeof rev.overall_compliance_pct === "number" ? String(rev.overall_compliance_pct) + "%" : " - ";
+    var comp = rev.overall_compliance_components || {};
+    var sa = data && data.structured_analysis;
+    var saComp = sa && sa.compliance ? sa.compliance : {};
+    var headlinePct = rev.overall_compliance_pct;
+    var structPct = saComp.overall_score;
+    if (structPct == null && typeof comp.structured === "number") structPct = comp.structured;
+
+    var pctEl = document.getElementById("consult-out-pct");
+    if (pctEl) {
+      pctEl.textContent =
+        typeof headlinePct === "number" ? String(Math.round(headlinePct)) + "%" : "—";
+    }
+    applyConsultScoreTier(document.getElementById("consult-score-hero-card"), headlinePct);
+
+    var structCard = document.getElementById("consult-score-struct-card");
+    var structPctEl = document.getElementById("consult-struct-pct");
+    if (structCard && structPctEl && typeof structPct === "number") {
+      structCard.hidden = false;
+      structPctEl.textContent = Math.round(structPct) + "%";
+      applyConsultScoreTier(structCard, structPct);
+      var metaEl = document.getElementById("consult-struct-meta");
+      if (metaEl) {
+        var bits = [];
+        if (saComp.overall_status) {
+          bits.push(CONSULT_STATUS_RU[saComp.overall_status] || saComp.overall_status);
+        }
+        if (typeof saComp.confidence_score === "number") {
+          bits.push("уверенность " + Math.round(saComp.confidence_score) + "%");
+        }
+        metaEl.textContent = bits.join(" · ");
+      }
+    } else if (structCard) {
+      structCard.hidden = true;
+    }
+
+    var criteria = rev.criteria || [];
+    var llmScores = criteria
+      .map(function (c) { return Number(c.score_pct); })
+      .filter(function (n) { return !isNaN(n); });
+    var llmAvg =
+      llmScores.length > 0
+        ? Math.round(llmScores.reduce(function (a, b) { return a + b; }, 0) / llmScores.length)
+        : null;
+    var llmCard = document.getElementById("consult-score-llm-card");
+    var llmEl = document.getElementById("consult-llm-avg-pct");
+    if (llmCard && llmEl && llmAvg != null) {
+      llmCard.hidden = false;
+      llmEl.textContent = llmAvg + "%";
+      applyConsultScoreTier(llmCard, llmAvg);
+    } else if (llmCard) {
+      llmCard.hidden = true;
+    }
+
+    var legendEl = document.getElementById("consult-score-legend");
+    if (legendEl) {
+      var legendParts = [];
+      legendParts.push(
+        "<strong>Итог</strong> – детерминированный гибрид (75% структурный + 25% правила протокола), с учётом safety cap."
+      );
+      if (typeof comp.structured === "number" || typeof comp.rules === "number") {
+        legendParts.push(
+          "Сейчас: структурный " +
+            (comp.structured != null ? comp.structured + "%" : "—") +
+            ", правила " +
+            (comp.rules != null ? comp.rules + "%" : "—") +
+            "."
+        );
+      }
+      legendParts.push(
+        "<strong>Структурный</strong> – восемь блоков по правилам (оформление, диагноз, лечение…). " +
+          "<strong>LLM</strong> – пояснения по цитатам, на блокировку не влияет."
+      );
+      legendEl.innerHTML = legendParts.join(" ");
+      legendEl.hidden = false;
+    }
+
     var methodEl = document.getElementById("consult-out-pct-method");
     if (methodEl) {
       var m = rev.overall_compliance_method || "";
-      var comp = rev.overall_compliance_components || {};
       if (m.indexOf("hybrid") === 0) {
-        var parts = [];
-        if (typeof comp.structured === "number") parts.push("структурный разбор " + comp.structured + "%");
-        if (typeof comp.rules === "number") parts.push("правила протокола " + comp.rules + "%");
-        methodEl.textContent =
-          "Расчёт: детерминированный гибрид" +
-          (parts.length ? " (" + parts.join(", ") + ")" : "") +
-          ". Повторная загрузка того же КЗ даёт тот же процент.";
+        methodEl.textContent = "Повторная загрузка того же КЗ даёт тот же %";
         methodEl.hidden = false;
       } else {
         methodEl.hidden = true;
         methodEl.textContent = "";
       }
     }
+
     var docN = Number((data && data.documents_count) || 1);
-    var sumPref = docN > 1 ? "Объединённый разбор " + docN + " загруженных заключений. " : "";
-    document.getElementById("consult-out-summary").textContent = sumPref + (rev.summary_ru || "");
-    document.getElementById("consult-out-limit").textContent = rev.limitations_ru
-      ? "Ограничения: " + rev.limitations_ru
-      : "";
-    document.getElementById("consult-out-disclaimer").textContent = rev.disclaimer_ru || "";
+    var sumPref = docN > 1 ? "Объединённый разбор " + docN + " файлов. " : "";
+    var sumEl = document.getElementById("consult-out-summary");
+    if (sumEl) sumEl.textContent = sumPref + (rev.summary_ru || "");
+    var limitSpoiler = document.getElementById("consult-limit-spoiler");
+    var limitEl = document.getElementById("consult-out-limit");
+    if (limitEl && rev.limitations_ru) {
+      limitEl.textContent = rev.limitations_ru;
+      if (limitSpoiler) limitSpoiler.hidden = false;
+    } else if (limitSpoiler) {
+      limitSpoiler.hidden = true;
+    }
+    var discEl = document.getElementById("consult-out-disclaimer");
+    if (discEl) discEl.textContent = rev.disclaimer_ru || "";
 
     renderConsultOncologyBanner(data.consult_oncology_flags);
     renderConsultClinicalRulesPanel(data);
@@ -10789,21 +11134,61 @@
     renderConsultMethodologyPanel(rev);
     renderConsultStructuredAnalysis(data);
 
+    var critSpoiler = document.getElementById("consult-criteria-spoiler");
+    var critList = rev.criteria || [];
+    if (critSpoiler && critList.length) {
+      var critSum = critSpoiler.querySelector("summary");
+      if (critSum) {
+        critSum.textContent = "Критерии модели (" + critList.length + ")";
+      }
+    }
+
     var tb = document.querySelector("#consult-out-table tbody");
     if (tb) {
       tb.innerHTML = "";
-      (rev.criteria || []).forEach(function (c) {
-        function td(x) {
-          var d = document.createElement("td");
-          d.textContent = x == null ? "" : String(x);
-          return d;
-        }
+      critList.forEach(function (c) {
+        var score = c.score_pct != null ? Number(c.score_pct) : null;
         var tr = document.createElement("tr");
-        tr.appendChild(td(c.name_ru || c.name || ""));
-        tr.appendChild(td(c.score_pct != null ? c.score_pct : ""));
-        tr.appendChild(td(c.comment_ru || c.comment || ""));
-        tr.appendChild(td(c.conclusion_excerpt || ""));
-        tr.appendChild(td(c.protocol_excerpt || ""));
+        var tdName = document.createElement("td");
+        tdName.innerHTML =
+          '<span class="consult-crit-name">' + escapeHtml(c.name_ru || c.name || "") + "</span>";
+        var tdPct = document.createElement("td");
+        if (score != null && !isNaN(score)) {
+          tdPct.innerHTML =
+            '<span class="consult-crit-pill ' +
+            consultScoreTier(score) +
+            '">' +
+            score +
+            "%</span>";
+        }
+        var tdComment = document.createElement("td");
+        var comment = c.comment_ru || c.comment || "";
+        tdComment.textContent = truncateConsultText(comment, 220);
+        if ((c.conclusion_excerpt || c.protocol_excerpt) && comment.length > 80) {
+          var det = document.createElement("details");
+          det.style.marginTop = "0.35rem";
+          var sm = document.createElement("summary");
+          sm.style.fontSize = "0.72rem";
+          sm.style.cursor = "pointer";
+          sm.textContent = "Цитаты";
+          det.appendChild(sm);
+          if (c.conclusion_excerpt) {
+            var p1 = document.createElement("p");
+            p1.className = "consult-crit-excerpt";
+            p1.textContent = "КЗ: " + truncateConsultText(c.conclusion_excerpt, 280);
+            det.appendChild(p1);
+          }
+          if (c.protocol_excerpt) {
+            var p2 = document.createElement("p");
+            p2.className = "consult-crit-excerpt";
+            p2.textContent = "Протокол: " + truncateConsultText(c.protocol_excerpt, 280);
+            det.appendChild(p2);
+          }
+          tdComment.appendChild(det);
+        }
+        tr.appendChild(tdName);
+        tr.appendChild(tdPct);
+        tr.appendChild(tdComment);
         tb.appendChild(tr);
       });
     }
@@ -10854,43 +11239,31 @@
   /** Панель детерминированного структурного разбора КЗ (цветной HTML-отчёт). */
   function renderConsultStructuredAnalysis(data) {
     var sa = data && data.structured_analysis;
-    var host = document.getElementById("consult-results-wrap");
+    var spoiler = document.getElementById("consult-structured-spoiler");
+    var sumEl = document.getElementById("consult-structured-summary");
     var panel = document.getElementById("consult-structured-panel");
-    if (!sa || !host) {
-      if (panel) panel.hidden = true;
+    if (!sa || !panel) {
+      if (spoiler) spoiler.hidden = true;
       return;
     }
-    if (!panel) {
-      panel = document.createElement("section");
-      panel.id = "consult-structured-panel";
-      panel.setAttribute("aria-label", "Детерминированный разбор КЗ");
-      var critHeading = host.querySelector("h3");
-      if (critHeading && critHeading.textContent.indexOf("Критерии") >= 0) {
-        host.insertBefore(panel, critHeading);
-      } else {
-        host.appendChild(panel);
-      }
-    }
-    panel.hidden = false;
+    if (spoiler) spoiler.hidden = false;
 
     var comp = sa.compliance || {};
     var htmlReport = data.report_html || "";
     var md = data.report_markdown || "";
     var status = comp.overall_status || "insufficient_data";
     var statusRu = CONSULT_STATUS_RU[status] || status;
-    var conf =
-      typeof comp.confidence_score === "number"
-        ? " · уверенность " + Math.round(comp.confidence_score) + "%"
-        : "";
-
-    var head =
-      '<div class="consult-structured-head">' +
-      '<h3>Детерминированный разбор КЗ</h3>' +
-      '<span class="consult-hint-small" style="margin:0;font-weight:600;color:var(--green-800)">' +
-      escapeHtml(statusRu) +
-      (comp.overall_score != null ? " · " + Math.round(comp.overall_score) + "%" : "") +
-      conf +
-      "</span></div>";
+    if (sumEl) {
+      var sumBits = ["Структурный отчёт"];
+      if (typeof comp.overall_score === "number") {
+        sumBits.push(Math.round(comp.overall_score) + "%");
+      }
+      sumBits.push(statusRu);
+      if (typeof comp.confidence_score === "number") {
+        sumBits.push("уверенность " + Math.round(comp.confidence_score) + "%");
+      }
+      sumEl.textContent = sumBits.join(" · ");
+    }
 
     var body = "";
     if (htmlReport) {
@@ -10930,7 +11303,7 @@
         "</pre></details>";
     }
 
-    panel.innerHTML = head + body + mdBlock;
+    panel.innerHTML = body + mdBlock;
     fixProtocolLinksInContainer(panel);
 
     var copyBtn = panel.querySelector("[data-copy-md]");

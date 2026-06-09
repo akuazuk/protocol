@@ -65,32 +65,49 @@ _SEVERITY_RU = {
 }
 _SEX_RU = {"male": "мужской", "female": "женский", "unknown": "не определён"}
 
-# Цвета статусов для HTML-бейджей.
+# Пастельные цвета статусов для HTML-бейджей.
 _STATUS_COLOR = {
-    "compliant": ("#0d7a4a", "#e6f7ef"),
-    "mostly_compliant": ("#1a7f5a", "#e8f5f0"),
-    "partially_compliant": ("#b45309", "#fef3c7"),
-    "non_compliant": ("#b91c1c", "#fee2e2"),
-    "insufficient_data": ("#64748b", "#f1f5f9"),
-    "insufficient_protocol_data": ("#475569", "#f1f5f9"),
-    "low_confidence": ("#7c3aed", "#f3e8ff"),
-    "manual_review_required": ("#9333ea", "#f3e8ff"),
+    "compliant": ("#3d6b58", "#e8f3ed"),
+    "mostly_compliant": ("#4a7262", "#eaf4ef"),
+    "partially_compliant": ("#8a6f45", "#f5f0e6"),
+    "non_compliant": ("#8f5a5a", "#f5ebeb"),
+    "insufficient_data": ("#6b7280", "#f3f4f6"),
+    "insufficient_protocol_data": ("#6b7280", "#f3f4f6"),
+    "low_confidence": ("#6b5f8a", "#f0edf5"),
+    "manual_review_required": ("#7a5f8a", "#f3eef5"),
 }
 _SCORE_KEYS = (
-    ("documentation_score", "Оформление КЗ", "#64748b", ("structural_score", "documentation_quality_score")),
-    ("patient_data_score", "Данные пациента", "#0891b2", ()),
-    ("protocol_applicability_score", "Применимость протокола", "#2563eb", ("protocol_match_score",)),
-    ("diagnosis_score", "Диагноз", "#0d9488", ()),
-    ("required_exams_score", "Обследования", "#7c3aed", ()),
-    ("treatment_score", "Лечение", "#db2777", ()),
-    ("safety_score", "Безопасность", "#dc2626", ()),
-    ("follow_up_score", "Контроль", "#ea580c", ()),
+    ("documentation_score", "Оформление КЗ", "", ("structural_score", "documentation_quality_score")),
+    ("patient_data_score", "Данные пациента", "", ()),
+    ("protocol_applicability_score", "Применимость протокола", "", ("protocol_match_score",)),
+    ("diagnosis_score", "Диагноз", "", ()),
+    ("required_exams_score", "Обследования", "", ()),
+    ("treatment_score", "Лечение", "", ()),
+    ("safety_score", "Безопасность", "", ()),
+    ("follow_up_score", "Контроль", "", ()),
 )
 _LAYER_KEYS = (
-    ("documentation_score", "structural_score", "A. Оформление КЗ", "#64748b"),
-    ("protocol_applicability_score", "protocol_match_score", "B. Протокол", "#2563eb"),
-    ("diagnosis_score", None, "C. Клиника", "#0d9488"),
+    ("documentation_score", "structural_score", "A. Оформление", "#8a9f8e"),
+    ("protocol_applicability_score", "protocol_match_score", "B. Протокол", "#8fa8b8"),
+    ("diagnosis_score", None, "C. Клиника", "#7aab96"),
 )
+
+
+def _score_bar_color(pct: float) -> str:
+    if pct >= 75:
+        return "#7aab96"
+    if pct >= 50:
+        return "#c4a574"
+    return "#c99a9a"
+
+
+def _spoiler_section(title: str, inner_html: str, *, open_default: bool = False) -> str:
+    open_attr = " open" if open_default else ""
+    return (
+        f'<details class="cr-spoiler"{open_attr}>'
+        f'<summary class="cr-spoiler__summary">{_e(title)}</summary>'
+        f'<div class="cr-spoiler__body">{inner_html}</div></details>'
+    )
 
 
 def _score_val(bd: Any, *keys: str) -> float | None:
@@ -133,10 +150,10 @@ def _svg_donut(
 
 def _issue_chips_html(report: ComplianceReport) -> str:
     chips = [
-        (len(report.critical_issues), "Критич.", "#b91c1c", "#fee2e2"),
-        (len(report.major_issues), "Существен.", "#b45309", "#fef3c7"),
-        (len(report.missing_required_items), "Пропуски", "#7c3aed", "#ede9fe"),
-        (len(report.warnings), "Предупр.", "#0369a1", "#e0f2fe"),
+        (len(report.critical_issues), "Критич.", "#8f5a5a", "#f5ebeb"),
+        (len(report.major_issues), "Существен.", "#8a6f45", "#f5f0e6"),
+        (len(report.missing_required_items), "Пропуски", "#7a6f8a", "#f0edf5"),
+        (len(report.warnings), "Предупр.", "#5f7a8a", "#edf2f5"),
     ]
     parts = ['<div class="cr-issue-chips">']
     for n, label, fg, bg in chips:
@@ -341,10 +358,12 @@ def _score_bars_html(bd: Any) -> str:
         pct = float(val)
         width = max(0, min(100, pct))
         display = _fmt_pct(val)
+        bar_color = _score_bar_color(pct)
+        emphasis = " cr-bar-row--low" if pct < 70 else (" cr-bar-row--mid" if pct < 85 else "")
         rows.append(
-            f'<div class="cr-bar-row"><span class="cr-bar-label">{_e(title)}</span>'
+            f'<div class="cr-bar-row{emphasis}"><span class="cr-bar-label">{_e(title)}</span>'
             f'<div class="cr-bar-track"><div class="cr-bar-fill" style="width:{width:.0f}%;'
-            f'background:{color}"></div></div>'
+            f'background:{bar_color}"></div></div>'
             f'<span class="cr-bar-val">{display}</span></div>'
         )
     return "".join(rows)
@@ -360,7 +379,7 @@ def report_to_html(
     status = report.overall_status
     status_ru = _OVERALL_RU.get(status, status)
     fg, bg = _STATUS_COLOR.get(status, ("#334155", "#f8fafc"))
-    conf_color = "#7c3aed" if (report.confidence_score or 100) < 55 else "#0d9488"
+    conf_color = "#9a8fb8" if (report.confidence_score or 100) < 55 else "#7aab96"
 
     parts: list[str] = [
         '<article class="consult-report-html">',
@@ -373,8 +392,8 @@ def report_to_html(
     ]
     if report.safety_cap.applied:
         parts.append(
-            f'<span class="cr-badge" style="color:#b91c1c;background:#fee2e2;border:1px solid #b91c1c44">'
-            f"⚠ Safety cap {_fmt_pct(report.safety_cap.cap_value)}</span>"
+            f'<span class="cr-badge" style="color:#8f5a5a;background:#f5ebeb;border:1px solid #c99a9a55">'
+            f"Ограничение балла {_fmt_pct(report.safety_cap.cap_value)}</span>"
         )
     parts.append("</div>")
     if report.limitations:
@@ -392,25 +411,25 @@ def report_to_html(
     parts.append(_layer_cards_html(bd))
     parts.append("</header>")
 
-    # Резюме
-    parts.append('<section class="cr-section"><h3 class="cr-section-title">Краткое резюме</h3><ul class="cr-kv">')
+    # Резюме (компактно, в спойлере)
+    resume_inner: list[str] = ['<ul class="cr-kv">']
     if doc is not None:
         p = doc.patient
         initials = name_to_initials(p.full_name)
-        parts.append(f"<li><strong>Пациент:</strong> {_e(initials)}</li>")
-        parts.append(
+        resume_inner.append(f"<li><strong>Пациент:</strong> {_e(initials)}</li>")
+        resume_inner.append(
             f"<li><strong>Возраст:</strong> {p.age_years if p.age_years is not None else '—'} "
             f"({_e(p.age_group)})</li>"
         )
-        parts.append(f"<li><strong>Пол:</strong> {_e(_SEX_RU.get(p.sex, p.sex))}</li>")
+        resume_inner.append(f"<li><strong>Пол:</strong> {_e(_SEX_RU.get(p.sex, p.sex))}</li>")
         cdate = doc.consultation_date.isoformat() if doc.consultation_date else "—"
-        parts.append(f"<li><strong>Дата консультации:</strong> {_e(cdate)}</li>")
-        parts.append(f"<li><strong>Специальность врача:</strong> {_e(doc.doctor_specialty or '—')}</li>")
+        resume_inner.append(f"<li><strong>Дата консультации:</strong> {_e(cdate)}</li>")
+        resume_inner.append(f"<li><strong>Специальность врача:</strong> {_e(doc.doctor_specialty or '—')}</li>")
         diags = ", ".join(
             _e(f"{d.icd10_code or ''} {d.diagnosis_name or d.raw_text}".strip())
             for d in doc.diagnoses
         ) or "—"
-        parts.append(f"<li><strong>Диагнозы:</strong> {diags}</li>")
+        resume_inner.append(f"<li><strong>Диагнозы:</strong> {diags}</li>")
     protos_html: list[str] = []
     seen_proto: set[str] = set()
     for m in report.protocol_matches[:8]:
@@ -433,17 +452,14 @@ def report_to_html(
             protos_html.append(inner)
         else:
             protos_html.append(title)
-    parts.append(
+    resume_inner.append(
         f"<li><strong>Протоколы:</strong> {', '.join(protos_html) if protos_html else '—'}</li>"
     )
-    parts.append("</ul></section>")
+    resume_inner.append("</ul>")
+    parts.append(_spoiler_section("Краткое резюме", "".join(resume_inner), open_default=True))
 
     if report.protocol_matches:
-        parts.append(
-            '<section class="cr-section cr-section--protocols">'
-            '<h3 class="cr-section-title">Подобранные протоколы</h3>'
-            '<ul class="cr-list cr-list--sources cr-proto-cards">'
-        )
+        proto_inner: list[str] = ['<ul class="cr-list cr-list--sources cr-proto-cards">']
         seen_proto = set()
         for m in report.protocol_matches[:8]:
             sp = m.source_path or ""
@@ -455,18 +471,19 @@ def report_to_html(
             )
             url = protocol_pdf_api_path(sp)
             rub = protocol_rubric_label(sp)
-            parts.append('<li class="cr-proto-card">')
+            proto_inner.append('<li class="cr-proto-card">')
             if url:
-                parts.append(
+                proto_inner.append(
                     f'<a class="cr-src-link cr-proto-card__link" href="{url}" target="_blank" '
                     f'rel="noopener noreferrer">{title}</a>'
                 )
             else:
-                parts.append(f'<span class="cr-proto-card__link">{title}</span>')
+                proto_inner.append(f'<span class="cr-proto-card__link">{title}</span>')
             if rub:
-                parts.append(f'<span class="cr-proto-rubric">{_e(rub)}</span>')
-            parts.append("</li>")
-        parts.append("</ul></section>")
+                proto_inner.append(f'<span class="cr-proto-rubric">{_e(rub)}</span>')
+            proto_inner.append("</li>")
+        proto_inner.append("</ul>")
+        parts.append(_spoiler_section("Подобранные протоколы (карточки каталога)", "".join(proto_inner)))
 
     # Баллы
     bars = _score_bars_html(bd)
@@ -479,55 +496,60 @@ def report_to_html(
 
     # Диагнозы
     if report.diagnosis_assessments:
-        parts.append('<section class="cr-section"><h3 class="cr-section-title">Диагноз</h3><ul class="cr-list">')
+        diag_inner = ["<ul class='cr-list'>"]
         for a in report.diagnosis_assessments:
             st = _DIAG_RU.get(a.status, a.status)
             code = a.icd10_code or ""
             txt = a.diagnosis_text or ""
             raw_label = txt if (code and txt.upper().startswith(code.upper())) else f"{code} {txt}".strip()
             label = _e(raw_label)
-            parts.append(f"<li><span class='cr-icd'>{label}</span> — {_status_badge_html(a.status, st)}</li>")
-        parts.append("</ul></section>")
+            diag_inner.append(f"<li><span class='cr-icd'>{label}</span> — {_status_badge_html(a.status, st)}</li>")
+        diag_inner.append("</ul>")
+        parts.append(_spoiler_section("Диагноз", "".join(diag_inner), open_default=True))
 
     # Обследования
-    parts.append('<section class="cr-section"><h3 class="cr-section-title">Обследования</h3>')
     if report.exam_assessments:
-        parts.append("<ul class='cr-list'>")
+        exam_inner = ["<ul class='cr-list'>"]
         for e in report.exam_assessments:
             st = _EXAM_RU.get(e.status, e.status)
-            parts.append(f"<li>{_e(e.exam_name)} — <strong>{_e(st)}</strong></li>")
-        parts.append("</ul>")
+            exam_inner.append(f"<li>{_e(e.exam_name)} — <strong>{_e(st)}</strong></li>")
+        exam_inner.append("</ul>")
+        parts.append(_spoiler_section("Обследования", "".join(exam_inner)))
     else:
-        parts.append("<p class='cr-muted'>Детерминированные правила не сработали (нет данных).</p>")
-    parts.append("</section>")
+        parts.append(_spoiler_section("Обследования", "<p class='cr-muted'>Детерминированные правила не сработали (нет данных).</p>"))
 
     # Лечение
-    parts.append('<section class="cr-section"><h3 class="cr-section-title">Лечение</h3>')
     if report.treatment_assessments:
-        parts.append("<ul class='cr-list'>")
+        treat_inner = ["<ul class='cr-list'>"]
         for t in report.treatment_assessments:
             st = _TREAT_RU.get(t.status, t.status)
-            parts.append(f"<li>{_e(t.treatment_text)} — <strong>{_e(st)}</strong></li>")
-        parts.append("</ul>")
+            treat_inner.append(f"<li>{_e(t.treatment_text)} — <strong>{_e(st)}</strong></li>")
+        treat_inner.append("</ul>")
+        parts.append(_spoiler_section("Лечение и назначения", "".join(treat_inner), open_default=True))
     else:
-        parts.append("<p class='cr-muted'>Назначения не распознаны.</p>")
-    parts.append("</section>")
+        parts.append(_spoiler_section("Лечение и назначения", "<p class='cr-muted'>Назначения не распознаны.</p>"))
 
     # Безопасность
-    parts.append('<section class="cr-section cr-section--safety"><h3 class="cr-section-title">Красные флаги</h3>')
+    safety_inner: list[str]
     if report.safety_assessments:
-        parts.append("<ul class='cr-list'>")
+        safety_inner = ["<ul class='cr-list'>"]
         for s in report.safety_assessments:
             sev = _SEVERITY_RU.get(s.severity, s.severity)
             st = _SAFETY_RU.get(s.status, s.status)
-            parts.append(
+            safety_inner.append(
                 f"<li><span class='cr-sev cr-sev--{_e(s.severity)}'>[{_e(sev)}]</span> "
                 f"{_e(s.finding_text)} — <strong>{_e(st)}</strong></li>"
             )
-        parts.append("</ul>")
+        safety_inner.append("</ul>")
     else:
-        parts.append("<p class='cr-muted'>Красные флаги не обнаружены.</p>")
-    parts.append("</section>")
+        safety_inner = ["<p class='cr-muted'>Красные флаги не обнаружены.</p>"]
+    parts.append(
+        _spoiler_section(
+            "Красные флаги",
+            "".join(safety_inner),
+            open_default=bool(report.safety_assessments),
+        )
+    )
 
     if report.not_applicable_protocols:
         parts.append(
@@ -540,24 +562,20 @@ def report_to_html(
         parts.append("</ul></section>")
 
     if report.evidence_map:
-        parts.append(
-            '<section class="cr-section cr-section--evidence">'
-            '<h3 class="cr-section-title">Карта доказательств</h3>'
-            '<div class="cr-evidence-grid">'
-        )
+        ev_inner = ['<div class="cr-evidence-grid">']
         for ev in report.evidence_map[:16]:
             dec = ev.decision or "unknown"
             dec_label = ev.decision_ru or decision_ru(dec)
             title = ev.title_ru or rule_title_ru(ev.rule_id, {})
             dec_color = {
-                "satisfied": "#0d7a4a",
-                "satisfied_by_recommendation": "#1a7f5a",
-                "missing": "#b91c1c",
-                "not_applicable": "#64748b",
-                "manual_review": "#9333ea",
-            }.get(dec, "#475569")
+                "satisfied": "#7aab96",
+                "satisfied_by_recommendation": "#8ab5a3",
+                "missing": "#c99a9a",
+                "not_applicable": "#a8b0b8",
+                "manual_review": "#b0a0c4",
+            }.get(dec, "#9aa3ab")
             type_label = ev.rule_type_ru or rule_type_ru(ev.rule_type)
-            parts.append(
+            ev_inner.append(
                 f'<div class="cr-evidence-card" style="border-left-color:{dec_color}">'
                 f'<div class="cr-evidence-card__id">{_e(title)}</div>'
                 f'<div class="cr-evidence-card__dec">{_e(dec_label)}'
@@ -565,40 +583,40 @@ def report_to_html(
                 f'<div class="cr-evidence-card__txt">{_e(ev.explanation or ev.required_item or "")}</div>'
                 f"</div>"
             )
-        parts.append("</div></section>")
+        ev_inner.append("</div>")
+        parts.append(_spoiler_section("Карта доказательств", "".join(ev_inner)))
 
     # Рубрика
     if rubric_specifics:
         by_rubric = rubric_specifics.get("by_rubric") or {}
         measurements = rubric_specifics.get("measurements") or {}
         if by_rubric or measurements:
-            parts.append('<section class="cr-section"><h3 class="cr-section-title">Профиль рубрики</h3>')
+            rub_inner: list[str] = []
             if by_rubric:
-                parts.append("<ul class='cr-list'>")
+                rub_inner.append("<ul class='cr-list'>")
                 for slug, info in by_rubric.items():
                     title = (info or {}).get("title", slug)
                     cov = (info or {}).get("term_coverage_pct", 0)
-                    parts.append(f"<li><strong>{_e(title)}</strong> — {cov}%</li>")
-                parts.append("</ul>")
+                    rub_inner.append(f"<li><strong>{_e(title)}</strong> — {cov}%</li>")
+                rub_inner.append("</ul>")
             if measurements:
-                parts.append("<ul class='cr-list cr-list--meas'>")
+                rub_inner.append("<ul class='cr-list cr-list--meas'>")
                 for name, m in measurements.items():
                     unit = (m or {}).get("unit") or ""
                     val = (m or {}).get("value") or ""
-                    parts.append(f"<li>{_e(name)}: <strong>{_e(val)}</strong> {_e(unit)}</li>")
-                parts.append("</ul>")
-            parts.append("</section>")
+                    rub_inner.append(f"<li>{_e(name)}: <strong>{_e(val)}</strong> {_e(unit)}</li>")
+                rub_inner.append("</ul>")
+            parts.append(_spoiler_section("Профиль рубрики", "".join(rub_inner)))
 
     # Источники
-    parts.append('<section class="cr-section cr-section--sources"><h3 class="cr-section-title">Источники</h3>')
     if report.source_refs:
-        parts.append("<ul class='cr-list cr-list--sources'>")
+        src_inner = ["<ul class='cr-list cr-list--sources'>"]
         for r in report.source_refs:
-            parts.append(f"<li>{_src_line_html(r)}</li>")
-        parts.append("</ul>")
+            src_inner.append(f"<li>{_src_line_html(r)}</li>")
+        src_inner.append("</ul>")
+        parts.append(_spoiler_section("Источники протоколов", "".join(src_inner)))
     else:
-        parts.append("<p class='cr-muted'>Источники не указаны.</p>")
-    parts.append("</section>")
+        parts.append(_spoiler_section("Источники протоколов", "<p class='cr-muted'>Источники не указаны.</p>"))
 
     parts.append(
         '<footer class="cr-disclaimer">Оценка ориентировочная и не заменяет врача. '
