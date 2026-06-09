@@ -24,6 +24,38 @@ def _icd_root(code: str) -> str:
     return c[:3] if len(c) >= 3 else c
 
 
+_VENOUS_ICD_ROOTS = frozenset({"I80", "I81", "I82", "I83", "I84", "I85", "I86", "I87", "I88", "I89"})
+_VENOUS_CARD_NEEDLES = (
+    "тромбоз", "тгв", "тромбоэмбол", "флеб", "вен ", "веноз", "варикоз", "тромбофлеб",
+    "флеботромб", "глубоких вен", "поверхностн",
+)
+_HEART_FAILURE_NEEDLES = (
+    "недостаточност", "сердечн", "кардиомиопат", "функциональн класс", "nyha",
+)
+
+
+def _is_venous_icd(icd_list: list[str]) -> bool:
+    for c in icd_list:
+        root = _icd_root(c)
+        if root in _VENOUS_ICD_ROOTS or (len(root) >= 2 and root.startswith("I8")):
+            return True
+    return False
+
+
+def _card_venous_relevance(card: dict[str, Any]) -> float:
+    """1.0 – явно венозный КП; 0.0 – явно ЧСН без вен; 0.5 – нейтрально."""
+    blob = ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
+    venous = any(n in blob for n in _VENOUS_CARD_NEEDLES)
+    heart = any(n in blob for n in _HEART_FAILURE_NEEDLES)
+    if venous and not heart:
+        return 1.0
+    if heart and not venous:
+        return 0.0
+    if venous and heart:
+        return 0.7
+    return 0.5
+
+
 def _population_match(card_pop: str, consult_audience: str | None) -> float:
     cp = (card_pop or "any").lower()
     ca = (consult_audience or "").lower()
@@ -113,6 +145,14 @@ def compute_match_score(
         raw *= 0.2
     if (card.get("status") or "active") != "active":
         raw *= 0.7
+
+    if _is_venous_icd(icd_list):
+        rel = _card_venous_relevance(card)
+        if rel >= 0.9:
+            raw = min(1.0, raw * 1.15)
+        elif rel <= 0.1:
+            raw *= 0.12
+
     return round(max(0.0, min(100.0, raw * 100)), 2)
 
 

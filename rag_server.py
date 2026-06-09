@@ -4499,26 +4499,6 @@ def _consult_oncology_flags(
             continue
         path_l = pth.lower()
         title_raw = row.get("title") or ""
-        title_l = str(title_raw).lower()
-        pieces = [title_l, path_l]
-        fragments = row.get("fragments") or []
-        for fr in fragments:
-            if isinstance(fr, dict):
-                blk = ""
-                tx = fr.get("text")
-                if isinstance(tx, str) and tx.strip():
-                    blk = tx
-                else:
-                    ex = fr.get("excerpt")
-                    if isinstance(ex, str):
-                        blk = ex
-                if blk:
-                    pieces.append(blk)
-        merged = "\n".join(pieces)
-        prot_strong, prot_weak = _consult_oncology_dual_scan(merged)
-        oncology_in_text = bool(prot_strong) or len(prot_weak) >= weak_min
-        marks = sorted(set(prot_strong + prot_weak))
-
         basis_lines: list[str] = []
         pr_meta = _protocols_by_path.get(pth) or {}
         cat = str(pr_meta.get("category") or "").lower()
@@ -4527,13 +4507,6 @@ def _consult_oncology_flags(
             basis_lines.append(
                 'Каталог протоколов: файл отнесён к ветви «новообразования» - в URL пути или в '
                 "поле category присутствует «novoobrazovan»."
-            )
-        if oncology_in_text and marks:
-            basis_lines.append(
-                needle_basis_sentence(
-                    "Совокупно по названию файла, пути в каталоге и отобранным фрагментам текста",
-                    marks,
-                )
             )
         if not basis_lines:
             continue
@@ -4545,7 +4518,7 @@ def _consult_oncology_flags(
                 "basis_ru": list(basis_lines),
                 # Совместимость со старым фронтом: то же содержание, но конкретнее.
                 "hints_ru": list(basis_lines),
-                "markers": marks[:16],
+                "markers": [],
             }
         )
 
@@ -4558,7 +4531,7 @@ def _consult_oncology_flags(
         )
     if in_proto:
         sentences.append(
-            "В числе отобранных протоколов есть источники с онкологическим профилем (рубрика каталога и/или фрагменты из отбора) - особенно внимательно сверьте заключение с ними по допустимости обследований и наблюдения."
+            "В числе отобранных протоколов есть источники из рубрики «новообразования» каталога - особенно внимательно сверьте заключение с ними."
         )
 
     banner = " ".join(sentences) if sentences else ""
@@ -4594,7 +4567,7 @@ def _consult_oncology_flags(
         "Это не клиническое решение модели про «онко-риск»: учитываются сильные маркеры (злокачественность, "
         "химиотерапия, типичные паттерны рака/миеломы/лимфомы с отсечением ложных вроде «лимфоменингит», и т.д.) "
         f"или не менее {weak_min} слабых скрининговых; совпадение по одному нейтральному слову недостаточно. "
-        "В тексте названий протоколов и фрагментах RAG возможны ошибки классификации."
+        "Маркеры в тексте заключения учитываются отдельно; фрагменты протоколов в онко-скане не используются."
     )
 
     return {
@@ -5570,6 +5543,22 @@ class ProtocolPracticalIn(BaseModel):
     )
 
 
+class ConsultComplianceScreenIn(BaseModel):
+    """L0-скрининг КЗ для МИС (текст или FHIR BY Bundle)."""
+
+    text: str | None = Field(default=None, max_length=120000)
+    bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
+    consultation_id: str = Field(default="screen", max_length=64)
+
+
+class ConsultReviewJsonIn(BaseModel):
+    """Полная проверка КЗ из структуры МИС / FHIR (без PDF)."""
+
+    text: str | None = Field(default=None, max_length=200000)
+    bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
+    category_slugs: str = Field(default="", max_length=400)
+
+
 class ConsultationTemplateIn(BaseModel):
     """Шаблон консультативного заключения по развёрнутой выдержке."""
 
@@ -5863,7 +5852,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r59-protocol-title-beautify"
+BUILD_VERSION = "2026-06-01-r60-gate-fhir-mis"
 
 
 def _app_version() -> str:
@@ -6918,6 +6907,49 @@ def _consult_review_from_uploads(
         content_signature=content_signature,
         category_slugs=category_slugs,
         on_progress=on_progress,
+    )
+
+
+@app.post("/api/consult-compliance-screen")
+def api_consult_compliance_screen(body: ConsultComplianceScreenIn) -> dict:
+    """Быстрый L0: структурный разбор + send_gate (<2 с, без LLM-критериев и RAG)."""
+    from clinical_knowledge.consult_screen import run_compliance_screen
+
+    if not (body.text or "").strip() and not body.bundle:
+        raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
+    try:
+        return run_compliance_screen(
+            text=body.text,
+            bundle=body.bundle,
+            consultation_id=body.consultation_id,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@app.post("/api/consult-review/json")
+def api_consult_review_json(body: ConsultReviewJsonIn) -> dict:
+    """Полный конвейер проверки КЗ из текста или FHIR BY Bundle (интеграция «Айболит»)."""
+    from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
+    from consult_review_pipeline import run_consult_review_pipeline
+
+    _require_rag_loaded()
+    if body.bundle:
+        full_text = bundle_to_consultation_text(body.bundle)
+        meta = [{"filename": "fhir_bundle.json", "source": "fhir"}]
+    elif (body.text or "").strip():
+        full_text = body.text.strip()
+        meta = [{"filename": "mis_text.txt", "source": "json"}]
+    else:
+        raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
+
+    return run_consult_review_pipeline(
+        full_text=full_text,
+        n_files=1,
+        consult_docs_meta=meta,
+        pdf_warnings=[],
+        content_signature=full_text[:8000],
+        category_slugs=body.category_slugs,
     )
 
 

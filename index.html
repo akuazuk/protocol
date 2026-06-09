@@ -5044,6 +5044,38 @@
       line-height: 1.45;
     }
 
+    .consult-send-gate-panel {
+      border-radius: 14px;
+      border: 1px solid rgba(185, 28, 28, 0.28);
+      background: rgba(254, 242, 242, 0.55);
+      padding: 0.85rem 0.9rem;
+      margin: 0 0 1rem;
+    }
+
+    .consult-send-gate-panel.gate-ok {
+      border-color: rgba(26, 138, 114, 0.35);
+      background: rgba(232, 245, 241, 0.55);
+    }
+
+    .consult-send-gate-panel.gate-warn {
+      border-color: rgba(180, 83, 9, 0.35);
+      background: rgba(255, 248, 235, 0.7);
+    }
+
+    .consult-send-gate-panel h3 {
+      margin: 0 0 0.45rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 1rem;
+      color: var(--green-950);
+    }
+
+    .consult-send-gate-summary {
+      font-size: 0.88rem;
+      font-weight: 650;
+      margin: 0;
+      line-height: 1.45;
+    }
+
     .site-header__legal-note {
       margin: 0;
       font-size: 0.78rem;
@@ -5974,6 +6006,12 @@
           <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-out-summary"></p>
           <p class="consult-hint-small" style="margin: 0.55rem 0 0; font-weight: 600; color: var(--green-800)" id="consult-out-limit"></p>
           <p class="consult-hint-small" style="margin: 0.45rem 0 0; font-style: italic" id="consult-out-disclaimer"></p>
+
+          <div id="consult-send-gate-panel" class="consult-send-gate-panel consult-hide-print" hidden>
+            <h3>Допуск к подписи (для МИС)</h3>
+            <p class="consult-send-gate-summary" id="consult-send-gate-summary"></p>
+            <p class="consult-hint-small" style="margin: 0.35rem 0 0" id="consult-send-gate-detail"></p>
+          </div>
 
           <div id="consult-methodology-panel" class="consult-methodology-panel consult-hide-print" hidden>
             <h3>Сводка для методслужбы</h3>
@@ -10179,6 +10217,52 @@
       });
   }
 
+  function renderConsultSendGate(data) {
+    var panel = document.getElementById("consult-send-gate-panel");
+    var sumEl = document.getElementById("consult-send-gate-summary");
+    var detEl = document.getElementById("consult-send-gate-detail");
+    if (!panel) return;
+    var sg =
+      (data && data.send_gate) ||
+      (data &&
+        data.structured_analysis &&
+        data.structured_analysis.compliance &&
+        data.structured_analysis.compliance.send_gate);
+    if (!sg) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    panel.classList.remove("gate-ok", "gate-warn");
+    var allowed = !!sg.gate_allowed;
+    var override = !!sg.requires_override;
+    var risk = sg.send_risk_level || "low";
+    var gateScore = sg.gate_score != null ? sg.gate_score : sg.overall_score;
+    var headline = sg.headline_score;
+    var structural = sg.structural_score;
+    var scoreBits = [];
+    if (gateScore != null) scoreBits.push("балл для gate: " + Math.round(gateScore) + "%");
+    if (typeof headline === "number" && typeof structural === "number") {
+      scoreBits.push("гибрид " + Math.round(headline) + "% · структурный " + Math.round(structural) + "%");
+    }
+    var statusRu = allowed
+      ? override
+        ? "Подпись возможна после подтверждения врача"
+        : "Подпись разрешена"
+      : "Подпись заблокирована политикой учреждения";
+    if (sumEl) {
+      sumEl.textContent = statusRu + (scoreBits.length ? " (" + scoreBits.join("; ") + ")" : "");
+    }
+    if (allowed && !override) panel.classList.add("gate-ok");
+    else if (!allowed || risk === "blocked") panel.classList.add("gate-warn");
+    else panel.classList.add("gate-warn");
+    if (detEl) {
+      detEl.textContent =
+        (sg.block_reason_ru || "") +
+        (sg.disclaimer_ru ? " " + sg.disclaimer_ru : "");
+    }
+  }
+
   function renderConsultMethodologyPanel(rev) {
     var panel = document.getElementById("consult-methodology-panel");
     var sumEl = document.getElementById("consult-methodology-summary");
@@ -10701,6 +10785,7 @@
     renderConsultOncologyBanner(data.consult_oncology_flags);
     renderConsultClinicalRulesPanel(data);
     renderConsultProtocolsSection(data, rev);
+    renderConsultSendGate(data);
     renderConsultMethodologyPanel(rev);
     renderConsultStructuredAnalysis(data);
 

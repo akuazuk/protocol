@@ -251,6 +251,9 @@ def report_to_json(
         + list(report.missing_required_items)
         + list(report.warnings)
     )
+    from .compliance_gate import evaluate_send_gate
+
+    send_gate = evaluate_send_gate(report)
     return {
         "consultation_id": report.consultation_id,
         "source_file": report.source_file,
@@ -294,6 +297,7 @@ def report_to_json(
         "legacy_source_refs": [r.model_dump(mode="json") for r in report.legacy_source_refs],
         "summary_diagnostics": report.summary_diagnostics,
         "rules_count_by_source": report.rules_count_by_source,
+        "send_gate": send_gate,
     }
 
 

@@ -43,6 +43,8 @@ def test_json_report_shape():
     assert "structural_assessment" in j
     assert "protocol_assessment" in j
     assert "doctor_summary" in j
+    assert "send_gate" in j
+    assert "gate_allowed" in j["send_gate"]
 
 
 def test_markdown_report_sections():

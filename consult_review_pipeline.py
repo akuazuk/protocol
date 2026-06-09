@@ -350,6 +350,39 @@ def iter_consult_review_pipeline(
             second_pass_diag["reason"] = "first_pass_ok"
 
     retrieved, audience_hint, audience_fb = rs.filter_retrieval_by_audience(retrieved, rq, rs._routing)
+
+    _acoag_markers = (
+        "ривароксабан", "апиксабан", "варфарин", "дабигатран", "эноксапарин",
+        "антикоагул", "флеботромбоз", "тромбоз глубок", "тгв",
+    )
+    if any(m in full_text.lower() for m in _acoag_markers):
+        try:
+            med_q = (
+                "антикоагулянтная терапия дозировка длительность ривароксабан "
+                "прямые оральные антикоагулянты контроль узи глубоких вен"
+            )
+            r_med = rs.retrieve(
+                med_q,
+                routing_query=rq,
+                category_boost=boost_merged or None,
+                user_category_slugs=retrieval_category_slugs or None,
+                icd_codes_for_lex=icd_for_retrieval,
+                path_boost=matched_path_boost or None,
+                path_allowlist=path_allow,
+                max_chunks=4,
+                max_per_path=2,
+                embed_rerank=embed_rerank,
+            )
+            if r_med:
+                retrieved = rs._merge_chunk_retrieval_lists(
+                    [retrieved, r_med],
+                    max_chunks=max_chunks_r + 4,
+                    max_per_path=max_per_path_r,
+                )
+                retrieved = filter_retrieval_rows_by_paths(retrieved, path_allow)
+        except Exception:
+            pass
+
     icd_frag_needles = rs._consult_needles_icd_fragments_consult_review(list(diag_codes_list), merged_icd)
     retrieved = rs._consult_sort_retrieval_by_icd_fragments_first(retrieved, icd_frag_needles)
     precise_links, precise_note_ru = rs._consult_precise_links_for_icd_in_fragments(
@@ -518,6 +551,24 @@ def iter_consult_review_pipeline(
         result["report_markdown"] = report_markdown
     if report_html:
         result["report_html"] = report_html
+
+    if isinstance(structured_analysis, dict):
+        comp = structured_analysis.get("compliance")
+        if isinstance(comp, dict):
+            try:
+                from clinical_knowledge.compliance_gate import evaluate_send_gate_from_compliance
+
+                headline = (
+                    review.get("overall_compliance_pct")
+                    if isinstance(review, dict)
+                    else None
+                )
+                hs = float(headline) if isinstance(headline, (int, float)) else None
+                sg = evaluate_send_gate_from_compliance(comp, headline_score=hs)
+                comp["send_gate"] = sg
+                result["send_gate"] = sg
+            except Exception:
+                pass
 
     # Опционально: тихо дописать снимок в manifest на диске (CONSULT_ARCHIVE_ANALYSES=1).
     try:
