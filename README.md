@@ -28,6 +28,8 @@
 - [docs/mvp-presentation.html](docs/mvp-presentation.html) - презентация MVP для руководства (качество, МИС, Минздрав; концепт-демо графики)
 - [docs/deployment-belarus.md](docs/deployment-belarus.md) - развёртывание в контуре РБ
 - [docs/roadmap-mis.md](docs/roadmap-mis.md) - этап 2: интеграция с МИС
+- [docs/architecture-kravira-fhir-mis-print.html](docs/architecture-kravira-fhir-mis-print.html) - архитектура: КЗ, FHIR BY, ЦИСЗ, МИС «Айболит» (HTML)
+- [docs/architecture-kravira-fhir-mis.pdf](docs/architecture-kravira-fhir-mis.pdf) - тот же документ (PDF)
 
 ## Пересчёт метрик качества
 
