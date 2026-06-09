@@ -5559,6 +5559,13 @@ class ConsultReviewJsonIn(BaseModel):
     category_slugs: str = Field(default="", max_length=400)
 
 
+class ConsultValidateBundleIn(BaseModel):
+    """Проверка FHIR BY Bundle на готовность к ЦИСЗ (без клинического RAG)."""
+
+    bundle: dict = Field(..., description="FHIR BY Bundle document")
+    scenario: str = Field(default="auto", max_length=32)
+
+
 class ConsultationTemplateIn(BaseModel):
     """Шаблон консультативного заключения по развёрнутой выдержке."""
 
@@ -5852,7 +5859,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r61-consult-ui-compact"
+BUILD_VERSION = "2026-05-31-r62-cisz-readiness"
 
 
 def _app_version() -> str:
@@ -6950,7 +6957,19 @@ def api_consult_review_json(body: ConsultReviewJsonIn) -> dict:
         pdf_warnings=[],
         content_signature=full_text[:8000],
         category_slugs=body.category_slugs,
+        fhir_bundle=body.bundle if body.bundle else None,
     )
+
+
+@app.post("/api/consult-validate-bundle")
+def api_consult_validate_bundle(body: ConsultValidateBundleIn) -> dict:
+    """Чек-лист готовности Bundle к импорту в ЦИСЗ (программа испытаний МИС v.1.3-4)."""
+    from clinical_knowledge.cisz_readiness import evaluate_cisz_readiness
+
+    if not isinstance(body.bundle, dict) or body.bundle.get("resourceType") != "Bundle":
+        raise HTTPException(status_code=400, detail="Ожидается FHIR Bundle (resourceType=Bundle).")
+    cisz = evaluate_cisz_readiness(bundle=body.bundle, scenario=body.scenario)
+    return {"ok": cisz.get("ok", True), "cisz_readiness": cisz}
 
 
 @app.post("/api/consult-review")

@@ -29,6 +29,7 @@ def iter_consult_review_pipeline(
     pdf_warnings: list[str],
     content_signature: str,
     category_slugs: str,
+    fhir_bundle: dict[str, Any] | None = None,
     on_progress: ProgressFn | None = None,
 ) -> Iterator[tuple[str, Any]]:
     """Генератор: ('progress', {stage,pct,label_ru,partial}) | ('done', result dict)."""
@@ -45,6 +46,16 @@ def iter_consult_review_pipeline(
     cached = rs._consult_cache_get(cache_key)
     if cached is not None:
         yield emit("cache_hit", 100, "Результат из кэша", {"cached_result": True})
+        try:
+            from clinical_knowledge.cisz_readiness import attach_cisz_readiness
+
+            attach_cisz_readiness(
+                cached,
+                bundle=fhir_bundle,
+                text=full_text if not fhir_bundle else None,
+            )
+        except Exception:
+            pass
         yield ("done", cached)
         return
 
@@ -570,6 +581,17 @@ def iter_consult_review_pipeline(
             except Exception:
                 pass
 
+    try:
+        from clinical_knowledge.cisz_readiness import attach_cisz_readiness
+
+        attach_cisz_readiness(
+            result,
+            bundle=fhir_bundle,
+            text=full_text if not fhir_bundle else None,
+        )
+    except Exception:
+        pass
+
     # Опционально: тихо дописать снимок в manifest на диске (CONSULT_ARCHIVE_ANALYSES=1).
     try:
         from clinical_knowledge.analysis_archive import build_snapshot, save_snapshot
@@ -603,6 +625,7 @@ def run_consult_review_pipeline(
     pdf_warnings: list[str],
     content_signature: str,
     category_slugs: str,
+    fhir_bundle: dict[str, Any] | None = None,
     on_progress: ProgressFn | None = None,
 ) -> dict:
     result: dict | None = None
@@ -613,6 +636,7 @@ def run_consult_review_pipeline(
         pdf_warnings=pdf_warnings,
         content_signature=content_signature,
         category_slugs=category_slugs,
+        fhir_bundle=fhir_bundle,
         on_progress=on_progress,
     ):
         if kind == "done":

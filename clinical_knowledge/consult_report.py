@@ -101,6 +101,20 @@ def _score_bar_color(pct: float) -> str:
     return "#c99a9a"
 
 
+def _score_verdict_ru(pct: float | None) -> tuple[str, str]:
+    """Краткий вердикт для врача: (текст, css-класс)."""
+    if not isinstance(pct, (int, float)):
+        return "—", "cr-verdict--na"
+    p = float(pct)
+    if p >= 85:
+        return "Хорошо", "cr-verdict--good"
+    if p >= 70:
+        return "Приемлемо", "cr-verdict--ok"
+    if p >= 50:
+        return "Доработать", "cr-verdict--warn"
+    return "Критично", "cr-verdict--low"
+
+
 def _spoiler_section(title: str, inner_html: str, *, open_default: bool = False) -> str:
     open_attr = " open" if open_default else ""
     return (
@@ -122,29 +136,59 @@ def _score_val(bd: Any, *keys: str) -> float | None:
     return None
 
 
+def _mini_donut_svg(
+    score: float | None,
+    *,
+    size: int = 52,
+    stroke: str | None = None,
+) -> str:
+    pct = max(0.0, min(100.0, float(score))) if isinstance(score, (int, float)) else 0.0
+    r = 18
+    c_len = 2 * 3.14159 * r
+    dash = c_len * pct / 100.0
+    col = stroke or _score_bar_color(pct)
+    display = f"{pct:.0f}" if isinstance(score, (int, float)) else "—"
+    cx = size / 2
+    return (
+        f'<svg class="cr-mini-donut" width="{size}" height="{size}" viewBox="0 0 {size} {size}" '
+        f'role="img" aria-hidden="true">'
+        f'<circle cx="{cx}" cy="{cx}" r="{r}" fill="#f4f7f6" stroke="#e8eeec" stroke-width="1"/>'
+        f'<circle cx="{cx}" cy="{cx}" r="{r}" fill="none" stroke="#e8eeec" stroke-width="5"/>'
+        f'<circle cx="{cx}" cy="{cx}" r="{r}" fill="none" stroke="{col}" stroke-width="5" '
+        f'stroke-dasharray="{dash:.2f} {c_len:.2f}" stroke-linecap="round" '
+        f'transform="rotate(-90 {cx} {cx})"/>'
+        f'<text x="{cx}" y="{cx + 4}" text-anchor="middle" font-size="11" font-weight="700" '
+        f'fill="#2d4a42">{display}</text></svg>'
+    )
+
+
 def _svg_donut(
     score: float | None,
     *,
     color: str,
     caption: str,
-    size: int = 108,
+    size: int = 120,
 ) -> str:
     pct = max(0.0, min(100.0, float(score))) if isinstance(score, (int, float)) else 0.0
-    r = 38
+    r = 40
     c_len = 2 * 3.14159 * r
     dash = c_len * pct / 100.0
     display = _fmt_pct(score) if isinstance(score, (int, float)) else "—"
+    verdict, vcls = _score_verdict_ru(score if isinstance(score, (int, float)) else None)
+    ring = _score_bar_color(pct) if isinstance(score, (int, float)) else "#cbd5e1"
     return (
-        f'<figure class="cr-donut-wrap" aria-label="{_e(caption)}: {display}">'
-        f'<svg class="cr-donut" width="{size}" height="{size}" viewBox="0 0 88 88" role="img">'
-        f'<circle cx="44" cy="44" r="{r}" fill="none" stroke="#e2e8f0" stroke-width="9"/>'
-        f'<circle cx="44" cy="44" r="{r}" fill="none" stroke="{color}" stroke-width="9" '
+        f'<figure class="cr-donut-wrap cr-donut-wrap--lg" aria-label="{_e(caption)}: {display}">'
+        f'<svg class="cr-donut" width="{size}" height="{size}" viewBox="0 0 96 96" role="img">'
+        f'<circle cx="48" cy="48" r="{r + 6}" fill="#f8fbfa" stroke="#e8f0ed" stroke-width="1"/>'
+        f'<circle cx="48" cy="48" r="{r}" fill="none" stroke="#eef2f7" stroke-width="10"/>'
+        f'<circle cx="48" cy="48" r="{r}" fill="none" stroke="{ring}" stroke-width="10" '
         f'stroke-dasharray="{dash:.2f} {c_len:.2f}" stroke-linecap="round" '
-        f'transform="rotate(-90 44 44)"/>'
-        f'<text x="44" y="42" text-anchor="middle" font-size="17" font-weight="700" fill="{color}">'
+        f'transform="rotate(-90 48 48)"/>'
+        f'<text x="48" y="44" text-anchor="middle" font-size="20" font-weight="800" fill="#1e3d34">'
         f'{display if display != "—" else "—"}</text>'
-        f'<text x="44" y="56" text-anchor="middle" font-size="9" fill="#64748b">{_e(caption)}</text>'
-        f"</svg></figure>"
+        f'<text x="48" y="58" text-anchor="middle" font-size="8.5" fill="#6b7f78" font-weight="600">'
+        f'{_e(caption)}</text></svg>'
+        f'<figcaption class="cr-donut-verdict {_e(vcls)}">{_e(verdict)}</figcaption></figure>'
     )
 
 
@@ -182,12 +226,16 @@ def _layer_cards_html(bd: Any) -> str:
         if val is None:
             continue
         w = max(0, min(100, val))
+        verdict, vcls = _score_verdict_ru(val)
         cards.append(
             f'<div class="cr-layer-card" style="--layer-color:{color}">'
+            f'<div class="cr-layer-card__donut">{_mini_donut_svg(val, stroke=color)}</div>'
+            f'<div class="cr-layer-card__body">'
             f'<div class="cr-layer-card__title">{_e(title)}</div>'
             f'<div class="cr-layer-card__pct">{_fmt_pct(val)}</div>'
+            f'<span class="cr-verdict {_e(vcls)}">{_e(verdict)}</span>'
             f'<div class="cr-layer-card__track"><div class="cr-layer-card__fill" '
-            f'style="width:{w:.0f}%"></div></div></div>'
+            f'style="width:{w:.0f}%"></div></div></div></div>'
         )
     if not cards:
         return ""
@@ -369,6 +417,46 @@ def _score_bars_html(bd: Any) -> str:
     return "".join(rows)
 
 
+def _score_summary_table_html(bd: Any) -> str:
+    """Таблица 8 блоков с мини-диаграммами и вердиктом."""
+    rows: list[str] = []
+    seen: set[str] = set()
+    for primary, title, _weight, fallbacks in _SCORE_KEYS:
+        val = _score_val(bd, primary, *fallbacks)
+        if val is None:
+            continue
+        dedupe = primary
+        if primary == "documentation_score":
+            if "doc" in seen:
+                continue
+            seen.add("doc")
+        elif primary == "protocol_applicability_score":
+            if "proto" in seen:
+                continue
+            seen.add("proto")
+        verdict, vcls = _score_verdict_ru(val)
+        bar_color = _score_bar_color(val)
+        w = max(0, min(100, val))
+        rows.append(
+            f"<tr><td class='cr-score-td-name'>{_e(title)}</td>"
+            f"<td class='cr-score-td-donut'>{_mini_donut_svg(val)}</td>"
+            f"<td class='cr-score-td-bar'><div class='cr-bar-track'>"
+            f"<div class='cr-bar-fill' style='width:{w:.0f}%;background:{bar_color}'></div>"
+            f"</div></td>"
+            f"<td class='cr-score-td-val'>{_fmt_pct(val)}</td>"
+            f"<td class='cr-score-td-verdict'><span class='cr-verdict {_e(vcls)}'>{_e(verdict)}</span></td></tr>"
+        )
+    if not rows:
+        return ""
+    return (
+        '<table class="cr-score-table"><thead><tr>'
+        "<th>Блок</th><th>%</th><th colspan='2'>Шкала</th><th>Итог</th>"
+        "</tr></thead><tbody>"
+        + "".join(rows)
+        + "</tbody></table>"
+    )
+
+
 def report_to_html(
     report: ComplianceReport,
     doc: ConsultationDocument | None = None,
@@ -485,13 +573,17 @@ def report_to_html(
         proto_inner.append("</ul>")
         parts.append(_spoiler_section("Подобранные протоколы (карточки каталога)", "".join(proto_inner)))
 
-    # Баллы
+    # Баллы – таблица на виду, полоски – в спойлере
+    score_table = _score_summary_table_html(bd)
     bars = _score_bars_html(bd)
-    if bars:
+    if score_table or bars:
+        inner = score_table
+        if bars:
+            inner += _spoiler_section("Полоски по блокам", f'<div class="cr-bars">{bars}</div>')
         parts.append(
             '<section class="cr-section cr-section--scores">'
             '<h3 class="cr-section-title">Детализация по блокам</h3>'
-            f'<div class="cr-bars">{bars}</div></section>'
+            f"{inner}</section>"
         )
 
     # Диагнозы

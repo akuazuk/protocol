@@ -608,9 +608,86 @@
     }
     .consult-report-html .cr-donut-wrap {
       margin: 0;
+      text-align: center;
     }
-    .consult-report-html .cr-donut {
-      filter: drop-shadow(0 4px 10px rgba(15, 61, 54, 0.08));
+    .consult-report-html .cr-donut-wrap--lg .cr-donut {
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 3px 8px rgba(30, 61, 52, 0.12));
+    }
+    .consult-main-donut svg {
+      filter: drop-shadow(0 3px 10px rgba(30, 61, 52, 0.1));
+    }
+    .consult-report-html .cr-donut-verdict {
+      margin: 0.2rem 0 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .consult-report-html .cr-score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+    }
+    .consult-report-html .cr-score-table th,
+    .consult-report-html .cr-score-table td {
+      border: 1px solid #e2ebe8;
+      padding: 0.38rem 0.45rem;
+      vertical-align: middle;
+    }
+    .consult-report-html .cr-score-table th {
+      background: #f0f7f4;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #5f6f6a;
+    }
+    .consult-report-html .cr-score-td-donut {
+      width: 3.2rem;
+      text-align: center;
+    }
+    .consult-report-html .cr-score-td-bar {
+      min-width: 5rem;
+    }
+    .consult-report-html .cr-score-td-val {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      width: 2.8rem;
+    }
+    .consult-report-html .cr-verdict,
+    .consult-score-table .consult-verdict {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.42rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .consult-report-html .cr-verdict--good,
+    .consult-score-table .verdict-good {
+      color: #3d6b58;
+      background: #e8f3ed;
+    }
+    .consult-report-html .cr-verdict--ok,
+    .consult-score-table .verdict-ok {
+      color: #4a7262;
+      background: #eaf4ef;
+    }
+    .consult-report-html .cr-verdict--warn,
+    .consult-score-table .verdict-warn {
+      color: #8a6f45;
+      background: #f5f0e6;
+    }
+    .consult-report-html .cr-verdict--low,
+    .consult-score-table .verdict-low {
+      color: #8f5a5a;
+      background: #f5ebeb;
+    }
+    .consult-report-html .cr-verdict--na,
+    .consult-score-table .verdict-na {
+      color: #6b7280;
+      background: #f3f4f6;
     }
     .consult-report-html .cr-limitations {
       margin: 0.55rem 0 0;
@@ -646,11 +723,21 @@
       margin-top: 0.85rem;
     }
     .consult-report-html .cr-layer-card {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
       padding: 0.55rem 0.65rem;
       border-radius: 10px;
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(15, 61, 54, 0.1);
       box-shadow: 0 2px 8px rgba(15, 61, 54, 0.04);
+    }
+    .consult-report-html .cr-layer-card__body {
+      flex: 1;
+      min-width: 0;
+    }
+    .consult-report-html .cr-layer-card__donut {
+      flex-shrink: 0;
     }
     .consult-report-html .cr-layer-card__title {
       font-size: 0.72rem;
@@ -1200,6 +1287,121 @@
       background: rgba(232, 245, 241, 0.92);
       font-size: 0.76rem;
       font-weight: 800;
+    }
+
+    .consult-score-overview {
+      margin: 0.65rem 0;
+      padding: 0.75rem 0.8rem;
+      border-radius: 14px;
+      background: linear-gradient(165deg, #fafcfb 0%, #f4f8f6 100%);
+      border: 1px solid rgba(26, 138, 114, 0.18);
+    }
+
+    .consult-score-overview__title {
+      margin: 0 0 0.55rem;
+      font-family: Outfit, DM Sans, system-ui, sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #1e3d34;
+    }
+
+    .consult-main-donuts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.12);
+    }
+
+    .consult-main-donut {
+      flex: 1 1 6.5rem;
+      max-width: 8.5rem;
+      text-align: center;
+      padding: 0.45rem 0.35rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.12);
+      box-shadow: 0 3px 12px rgba(6, 61, 53, 0.05);
+    }
+
+    .consult-main-donut__label {
+      display: block;
+      margin-top: 0.28rem;
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6b7f78;
+      line-height: 1.3;
+    }
+
+    .consult-score-tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+      gap: 0.65rem;
+    }
+
+    .consult-score-table-block {
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+      border-radius: 10px;
+      padding: 0.5rem 0.55rem 0.55rem;
+      overflow-x: auto;
+    }
+
+    .consult-score-table-block h4 {
+      margin: 0 0 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #3d524c;
+    }
+
+    table.consult-score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    table.consult-score-table th,
+    table.consult-score-table td {
+      border: 1px solid rgba(26, 138, 114, 0.12);
+      padding: 0.35rem 0.4rem;
+      vertical-align: middle;
+    }
+
+    table.consult-score-table th {
+      background: #f0f7f4;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #6b7f78;
+    }
+
+    table.consult-score-table .td-donut {
+      width: 3rem;
+      text-align: center;
+    }
+
+    table.consult-score-table .td-bar {
+      min-width: 4.5rem;
+    }
+
+    table.consult-score-table .td-bar-track {
+      height: 7px;
+      background: #eef2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    table.consult-score-table .td-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .consult-mini-donut {
+      display: block;
+      margin: 0 auto;
     }
 
     .consult-protocols-footer-wrap {
@@ -6210,8 +6412,62 @@
               <span class="consult-score-card__value" id="consult-llm-avg-pct">—</span>
               <span class="consult-score-card__sub">пояснения модели</span>
             </div>
+            <div class="consult-score-card tier-mid" id="consult-score-cisz-card" hidden>
+              <span class="consult-score-card__label">Готовность к ЦИСЗ</span>
+              <span class="consult-score-card__value" id="consult-cisz-pct">—</span>
+              <span class="consult-score-card__sub" id="consult-cisz-meta"></span>
+            </div>
           </div>
           <p class="consult-score-legend" id="consult-score-legend" hidden></p>
+
+          <section class="consult-score-overview" id="consult-score-overview" hidden>
+            <h3 class="consult-score-overview__title">Сводная оценка</h3>
+            <div class="consult-main-donuts" id="consult-main-donuts" aria-label="Итоговые проценты"></div>
+            <div class="consult-score-tables-grid">
+              <div class="consult-score-table-block">
+                <h4>Структурный разбор — 8 блоков</h4>
+                <table class="consult-score-table" id="consult-struct-scores-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Блок</th>
+                      <th scope="col">%</th>
+                      <th scope="col" colspan="2">Шкала</th>
+                      <th scope="col">Итог</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="consult-score-table-block">
+                <h4>Критерии модели (LLM)</h4>
+                <table class="consult-score-table" id="consult-llm-scores-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Критерий</th>
+                      <th scope="col">%</th>
+                      <th scope="col" colspan="2">Шкала</th>
+                      <th scope="col">Итог</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <div class="consult-score-table-block" id="consult-cisz-table-block" hidden>
+                <h4 id="consult-cisz-table-title">Готовность к ЦИСЗ — чек-лист МИС</h4>
+                <table class="consult-score-table" id="consult-cisz-scores-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Проверка</th>
+                      <th scope="col">Статус</th>
+                      <th scope="col">Итог</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+                <p class="consult-hint-small" style="margin: 0.35rem 0 0; font-size: 0.72rem; color: #6b7f78" id="consult-cisz-disclaimer"></p>
+              </div>
+            </div>
+          </section>
 
           <details class="consult-spoiler consult-hide-print" id="consult-summary-spoiler" open>
             <summary>Краткий вывод</summary>
@@ -6222,6 +6478,12 @@
             <p class="consult-spoiler__text" id="consult-out-limit"></p>
           </details>
           <p class="consult-disclaimer-line" id="consult-out-disclaimer"></p>
+
+          <div id="consult-cisz-panel" class="consult-send-gate-panel consult-cisz-panel consult-hide-print" hidden>
+            <h3>Готовность к ЦИСЗ</h3>
+            <p class="consult-send-gate-summary" id="consult-cisz-summary"></p>
+            <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-cisz-detail"></p>
+          </div>
 
           <div id="consult-send-gate-panel" class="consult-send-gate-panel consult-hide-print" hidden>
             <h3>Допуск к подписи (МИС)</h3>
@@ -6238,20 +6500,23 @@
             </div>
           </details>
 
-          <details class="consult-spoiler consult-hide-print" id="consult-structured-spoiler" hidden>
+          <details class="consult-spoiler consult-hide-print" id="consult-structured-spoiler" hidden open>
             <summary id="consult-structured-summary">Структурный отчёт (детализация)</summary>
             <section id="consult-structured-panel" aria-label="Детерминированный разбор КЗ"></section>
           </details>
 
-          <details class="consult-spoiler consult-hide-print" id="consult-criteria-spoiler">
-            <summary>Критерии модели (цитаты и комментарии)</summary>
+          <details class="consult-spoiler consult-hide-print" id="consult-criteria-spoiler" open>
+            <summary id="consult-criteria-summary">Подробные комментарии и цитаты</summary>
             <div style="overflow-x: auto; padding: 0 0.5rem 0.55rem">
               <table class="consult-crit-table" id="consult-out-table">
                 <thead>
                   <tr>
                     <th scope="col">Критерий</th>
                     <th scope="col">%</th>
+                    <th scope="col">Итог</th>
                     <th scope="col">Комментарий</th>
+                    <th scope="col">Фрагмент КЗ</th>
+                    <th scope="col">Фрагмент протокола</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -10460,6 +10725,302 @@
     return t.slice(0, max - 1).trim() + "…";
   }
 
+  function consultScoreBarColor(pct) {
+    var n = Number(pct);
+    if (isNaN(n)) return "#cbd5e1";
+    if (n >= 75) return "#7aab96";
+    if (n >= 50) return "#c4a574";
+    return "#c99a9a";
+  }
+
+  function consultScoreVerdict(pct) {
+    var n = Number(pct);
+    if (isNaN(n)) return { label: "—", cls: "verdict-na" };
+    if (n >= 85) return { label: "Хорошо", cls: "verdict-good" };
+    if (n >= 70) return { label: "Приемлемо", cls: "verdict-ok" };
+    if (n >= 50) return { label: "Доработать", cls: "verdict-warn" };
+    return { label: "Критично", cls: "verdict-low" };
+  }
+
+  function renderMiniDonutSvg(pct, size) {
+    size = size || 52;
+    var n = Math.max(0, Math.min(100, Number(pct) || 0));
+    var r = 18;
+    var cLen = 2 * Math.PI * r;
+    var dash = cLen * n / 100;
+    var col = consultScoreBarColor(n);
+    var cx = size / 2;
+    var disp = isNaN(Number(pct)) ? "—" : String(Math.round(n));
+    return (
+      '<svg class="consult-mini-donut" width="' +
+      size +
+      '" height="' +
+      size +
+      '" viewBox="0 0 ' +
+      size +
+      " " +
+      size +
+      '" aria-hidden="true">' +
+      '<circle cx="' +
+      cx +
+      '" cy="' +
+      cx +
+      '" r="' +
+      r +
+      '" fill="#f4f7f6" stroke="#e8eeec" stroke-width="1"/>' +
+      '<circle cx="' +
+      cx +
+      '" cy="' +
+      cx +
+      '" r="' +
+      r +
+      '" fill="none" stroke="#e8eeec" stroke-width="5"/>' +
+      '<circle cx="' +
+      cx +
+      '" cy="' +
+      cx +
+      '" r="' +
+      r +
+      '" fill="none" stroke="' +
+      col +
+      '" stroke-width="5" stroke-dasharray="' +
+      dash +
+      " " +
+      cLen +
+      '" stroke-linecap="round" transform="rotate(-90 ' +
+      cx +
+      " " +
+      cx +
+      ')"/>' +
+      '<text x="' +
+      cx +
+      '" y="' +
+      (cx + 4) +
+      '" text-anchor="middle" font-size="11" font-weight="700" fill="#2d4a42">' +
+      disp +
+      "</text></svg>"
+    );
+  }
+
+  function renderMainDonutSvg(pct, caption) {
+    var n = Math.max(0, Math.min(100, Number(pct) || 0));
+    var r = 36;
+    var cLen = 2 * Math.PI * r;
+    var dash = cLen * n / 100;
+    var col = consultScoreBarColor(n);
+    var disp = isNaN(Number(pct)) ? "—" : Math.round(n) + "%";
+    var ver = consultScoreVerdict(pct);
+    return (
+      '<div class="consult-main-donut">' +
+      '<svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="' +
+      escapeHtml(caption + ": " + disp) +
+      '">' +
+      '<circle cx="48" cy="48" r="42" fill="#f8fbfa" stroke="#e8f0ed"/>' +
+      '<circle cx="48" cy="48" r="' +
+      r +
+      '" fill="none" stroke="#eef2f7" stroke-width="9"/>' +
+      '<circle cx="48" cy="48" r="' +
+      r +
+      '" fill="none" stroke="' +
+      col +
+      '" stroke-width="9" stroke-dasharray="' +
+      dash +
+      " " +
+      cLen +
+      '" stroke-linecap="round" transform="rotate(-90 48 48)"/>' +
+      '<text x="48" y="44" text-anchor="middle" font-size="19" font-weight="800" fill="#1e3d34">' +
+      (isNaN(Number(pct)) ? "—" : Math.round(n)) +
+      "</text>" +
+      '<text x="48" y="58" text-anchor="middle" font-size="9" fill="#6b7f78" font-weight="600">%</text>' +
+      "</svg>" +
+      '<span class="consult-verdict ' +
+      ver.cls +
+      '">' +
+      escapeHtml(ver.label) +
+      "</span>" +
+      '<span class="consult-main-donut__label">' +
+      escapeHtml(caption) +
+      "</span></div>"
+    );
+  }
+
+  var CONSULT_STRUCT_SCORE_ROWS = [
+    { key: "documentation_score", fallbacks: ["structural_score", "documentation_quality_score"], label: "Оформление КЗ" },
+    { key: "patient_data_score", fallbacks: [], label: "Данные пациента" },
+    { key: "protocol_applicability_score", fallbacks: ["protocol_match_score"], label: "Применимость протокола" },
+    { key: "diagnosis_score", fallbacks: [], label: "Диагноз" },
+    { key: "required_exams_score", fallbacks: [], label: "Обследования" },
+    { key: "treatment_score", fallbacks: [], label: "Лечение" },
+    { key: "safety_score", fallbacks: [], label: "Безопасность" },
+    { key: "follow_up_score", fallbacks: [], label: "Контроль" }
+  ];
+
+  function scoreFromBreakdown(bd, key, fallbacks) {
+    if (!bd) return null;
+    var keys = [key].concat(fallbacks || []);
+    for (var i = 0; i < keys.length; i++) {
+      var v = bd[keys[i]];
+      if (typeof v === "number" && !isNaN(v)) return v;
+    }
+    return null;
+  }
+
+  function appendScoreTableRow(tbody, name, score) {
+    if (score == null || isNaN(Number(score))) return;
+    var n = Number(score);
+    var ver = consultScoreVerdict(n);
+    var col = consultScoreBarColor(n);
+    var tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" +
+      escapeHtml(name) +
+      '</td><td class="td-donut">' +
+      renderMiniDonutSvg(n) +
+      '</td><td class="td-bar" colspan="2"><div class="td-bar-track"><div class="td-bar-fill" style="width:' +
+      Math.round(n) +
+      "%;background:" +
+      col +
+      '"></div></div></td><td><span class="consult-verdict ' +
+      ver.cls +
+      '">' +
+      escapeHtml(ver.label) +
+      "</span></td>";
+    tbody.appendChild(tr);
+  }
+
+  function renderConsultScoreOverview(data, rev) {
+    var panel = document.getElementById("consult-score-overview");
+    var donutsEl = document.getElementById("consult-main-donuts");
+    var structTb = document.querySelector("#consult-struct-scores-table tbody");
+    var llmTb = document.querySelector("#consult-llm-scores-table tbody");
+    if (!panel || !donutsEl) return;
+
+    var comp = rev.overall_compliance_components || {};
+    var sa = data && data.structured_analysis;
+    var saComp = sa && sa.compliance ? sa.compliance : {};
+    var headlinePct = rev.overall_compliance_pct;
+    var structPct = saComp.overall_score;
+    if (structPct == null && typeof comp.structured === "number") structPct = comp.structured;
+
+    var criteria = rev.criteria || [];
+    var llmScores = criteria
+      .map(function (c) { return Number(c.score_pct); })
+      .filter(function (n) { return !isNaN(n); });
+    var llmAvg =
+      llmScores.length > 0
+        ? Math.round(llmScores.reduce(function (a, b) { return a + b; }, 0) / llmScores.length)
+        : null;
+
+    var sg =
+      (data && data.send_gate) ||
+      (sa && saComp.send_gate);
+    var cisz = (data && data.cisz_readiness) || (sg && sg.cisz_readiness);
+    var ciszPct = cisz && typeof cisz.overall_score === "number" ? cisz.overall_score : null;
+
+    donutsEl.innerHTML =
+      renderMainDonutSvg(headlinePct, "Итог (гибрид)") +
+      (typeof structPct === "number" ? renderMainDonutSvg(structPct, "Структурный") : "") +
+      (llmAvg != null ? renderMainDonutSvg(llmAvg, "Среднее LLM") : "") +
+      (ciszPct != null ? renderMainDonutSvg(ciszPct, "ЦИСЗ") : "");
+
+    if (structTb) {
+      structTb.innerHTML = "";
+      var bd = saComp.score_breakdown || {};
+      CONSULT_STRUCT_SCORE_ROWS.forEach(function (row) {
+        appendScoreTableRow(structTb, row.label, scoreFromBreakdown(bd, row.key, row.fallbacks));
+      });
+    }
+
+    if (llmTb) {
+      llmTb.innerHTML = "";
+      criteria.forEach(function (c) {
+        appendScoreTableRow(llmTb, c.name_ru || c.name || "Критерий", c.score_pct);
+      });
+    }
+
+    var ciszBlock = document.getElementById("consult-cisz-table-block");
+    var ciszTb = document.querySelector("#consult-cisz-scores-table tbody");
+    var ciszDisc = document.getElementById("consult-cisz-disclaimer");
+    var ciszTitle = document.getElementById("consult-cisz-table-title");
+    if (ciszBlock && ciszTb && cisz && Array.isArray(cisz.checks) && cisz.checks.length) {
+      ciszBlock.hidden = false;
+      if (ciszTitle && cisz.scenario_label_ru) {
+        ciszTitle.textContent = "Готовность к ЦИСЗ — " + cisz.scenario_label_ru;
+      }
+      ciszTb.innerHTML = "";
+      cisz.checks.forEach(function (chk) {
+        var tr = document.createElement("tr");
+        var tdName = document.createElement("td");
+        tdName.textContent = chk.title_ru || chk.check_id || "";
+        var tdStat = document.createElement("td");
+        tdStat.textContent = chk.passed ? "✓" : "✗";
+        tdStat.style.color = chk.passed ? "#1a8a72" : "#c45c4a";
+        var tdVer = document.createElement("td");
+        var vcls = chk.verdict_class === "ok" ? "good" : chk.verdict_class === "fail" ? "bad" : "mid";
+        tdVer.innerHTML =
+          '<span class="consult-verdict consult-verdict--' +
+          vcls +
+          '">' +
+          escapeHtml(chk.verdict_ru || (chk.passed ? "Хорошо" : "Доработать")) +
+          "</span>";
+        tr.appendChild(tdName);
+        tr.appendChild(tdStat);
+        tr.appendChild(tdVer);
+        ciszTb.appendChild(tr);
+      });
+      if (ciszDisc) ciszDisc.textContent = cisz.disclaimer_ru || "";
+    } else if (ciszBlock) {
+      ciszBlock.hidden = true;
+    }
+
+    var hasStruct = structTb && structTb.children.length > 0;
+    var hasLlm = llmTb && llmTb.children.length > 0;
+    var hasCisz = ciszBlock && !ciszBlock.hidden;
+    panel.hidden = !(hasStruct || hasLlm || hasCisz || typeof headlinePct === "number");
+  }
+
+  function renderConsultCiszPanel(data) {
+    var panel = document.getElementById("consult-cisz-panel");
+    var sumEl = document.getElementById("consult-cisz-summary");
+    var detEl = document.getElementById("consult-cisz-detail");
+    var card = document.getElementById("consult-score-cisz-card");
+    var pctEl = document.getElementById("consult-cisz-pct");
+    var metaEl = document.getElementById("consult-cisz-meta");
+    if (!panel) return;
+    var sg = data && data.send_gate;
+    var cisz =
+      (data && data.cisz_readiness) ||
+      (sg && sg.cisz_readiness) ||
+      (data &&
+        data.structured_analysis &&
+        data.structured_analysis.compliance &&
+        data.structured_analysis.compliance.cisz_readiness);
+    if (!cisz || cisz.overall_score == null) {
+      panel.hidden = true;
+      if (card) card.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    panel.classList.remove("gate-ok", "gate-warn");
+    var pct = Math.round(cisz.overall_score);
+    if (card && pctEl) {
+      card.hidden = false;
+      pctEl.textContent = pct + "%";
+      applyConsultScoreTier(card, pct);
+    }
+    if (metaEl) {
+      metaEl.textContent = cisz.scenario_label_ru || cisz.scenario || "";
+    }
+    if (sumEl) {
+      sumEl.textContent = cisz.summary_ru || "Готовность к ЦИСЗ: " + pct + "%";
+    }
+    if (detEl) {
+      detEl.textContent = cisz.disclaimer_ru || "";
+    }
+    if (cisz.critical_failures > 0) panel.classList.add("gate-warn");
+    else panel.classList.add("gate-ok");
+  }
+
   function renderConsultSendGate(data) {
     var panel = document.getElementById("consult-send-gate-panel");
     var sumEl = document.getElementById("consult-send-gate-summary");
@@ -10487,9 +11048,12 @@
         : "Подпись разрешена"
       : "Подпись заблокирована";
     if (sumEl) {
+      var ciszNote =
+        sg.cisz_score != null ? " · ЦИСЗ " + Math.round(sg.cisz_score) + "%" : "";
       sumEl.textContent =
         statusRu +
-        (gateScore != null ? " · балл gate " + Math.round(gateScore) + "%" : "");
+        (gateScore != null ? " · балл gate " + Math.round(gateScore) + "%" : "") +
+        ciszNote;
     }
     if (allowed && !override) panel.classList.add("gate-ok");
     else if (!allowed || risk === "blocked") panel.classList.add("gate-warn");
@@ -11077,6 +11641,8 @@
       llmCard.hidden = true;
     }
 
+    renderConsultCiszPanel(data);
+
     var legendEl = document.getElementById("consult-score-legend");
     if (legendEl) {
       var legendParts = [];
@@ -11132,6 +11698,7 @@
     renderConsultProtocolsSection(data, rev);
     renderConsultSendGate(data);
     renderConsultMethodologyPanel(rev);
+    renderConsultScoreOverview(data, rev);
     renderConsultStructuredAnalysis(data);
 
     var critSpoiler = document.getElementById("consult-criteria-spoiler");
@@ -11139,7 +11706,7 @@
     if (critSpoiler && critList.length) {
       var critSum = critSpoiler.querySelector("summary");
       if (critSum) {
-        critSum.textContent = "Критерии модели (" + critList.length + ")";
+        critSum.textContent = "Подробные комментарии и цитаты (" + critList.length + ")";
       }
     }
 
@@ -11154,41 +11721,28 @@
           '<span class="consult-crit-name">' + escapeHtml(c.name_ru || c.name || "") + "</span>";
         var tdPct = document.createElement("td");
         if (score != null && !isNaN(score)) {
-          tdPct.innerHTML =
-            '<span class="consult-crit-pill ' +
-            consultScoreTier(score) +
-            '">' +
-            score +
-            "%</span>";
+          tdPct.innerHTML = renderMiniDonutSvg(score, 44);
+        }
+        var tdVer = document.createElement("td");
+        if (score != null && !isNaN(score)) {
+          var ver = consultScoreVerdict(score);
+          tdVer.innerHTML =
+            '<span class="consult-verdict ' + ver.cls + '">' + escapeHtml(ver.label) + "</span>";
         }
         var tdComment = document.createElement("td");
-        var comment = c.comment_ru || c.comment || "";
-        tdComment.textContent = truncateConsultText(comment, 220);
-        if ((c.conclusion_excerpt || c.protocol_excerpt) && comment.length > 80) {
-          var det = document.createElement("details");
-          det.style.marginTop = "0.35rem";
-          var sm = document.createElement("summary");
-          sm.style.fontSize = "0.72rem";
-          sm.style.cursor = "pointer";
-          sm.textContent = "Цитаты";
-          det.appendChild(sm);
-          if (c.conclusion_excerpt) {
-            var p1 = document.createElement("p");
-            p1.className = "consult-crit-excerpt";
-            p1.textContent = "КЗ: " + truncateConsultText(c.conclusion_excerpt, 280);
-            det.appendChild(p1);
-          }
-          if (c.protocol_excerpt) {
-            var p2 = document.createElement("p");
-            p2.className = "consult-crit-excerpt";
-            p2.textContent = "Протокол: " + truncateConsultText(c.protocol_excerpt, 280);
-            det.appendChild(p2);
-          }
-          tdComment.appendChild(det);
-        }
+        tdComment.textContent = c.comment_ru || c.comment || "";
+        var tdKz = document.createElement("td");
+        tdKz.className = "consult-crit-excerpt";
+        tdKz.textContent = c.conclusion_excerpt || "";
+        var tdProto = document.createElement("td");
+        tdProto.className = "consult-crit-excerpt";
+        tdProto.textContent = c.protocol_excerpt || "";
         tr.appendChild(tdName);
         tr.appendChild(tdPct);
+        tr.appendChild(tdVer);
         tr.appendChild(tdComment);
+        tr.appendChild(tdKz);
+        tr.appendChild(tdProto);
         tb.appendChild(tr);
       });
     }

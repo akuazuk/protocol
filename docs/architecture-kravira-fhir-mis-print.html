@@ -61,7 +61,7 @@
   <header class="hero">
     <h1>Protocol: архитектура по этапам и проверка КЗ перед отправкой в Минздрав</h1>
     <p class="lead">Модуль анализа клинических протоколов и консультативных заключений – разработка МЦ «Кравира». Интеграция с МИС «Айболит» (EPAM) – следующий этап.</p>
-    <p class="footnote" style="border:0;margin:0;padding:0">Июнь 2026 · Не заменяет МЭЭ и нормативные акты Минздрава</p>
+    <p class="footnote" style="border:0;margin:0;padding:0">Июнь 2026 · Версия сборки: <code>2026-05-31-r61-consult-ui-compact</code> · Не заменяет МЭЭ и нормативные акты Минздрава</p>
   </header>
 
   <!-- ===== 1. ЗАЧЕМ ===== -->
@@ -200,20 +200,22 @@
     ├─ 5. LLM: сводка + таблица 4–7 критериев с цитатами из КЗ и протокола
     ├─ 6. Структурный разбор (парсер → 8 блоков → evidence_map, red flags)
     ├─ 7. Гибрид: headline % = 75%·структурный + 25%·правила (+ safety cap)
-    └─ 8. JSON: review + structured_analysis + send_gate (для МИС, в UI пока не везде)</div>
+    ├─ 8. gate_score = min(гибрид, структурный) → send_gate
+    └─ 9. JSON + UI: review + structured_analysis + send_gate + компактный дашборд</div>
 
-    <h3>4.9. Три разных процента на экране – не путать</h3>
+    <h3>4.9. Три процента на экране – не путать (реализовано в UI)</h3>
+    <p>На экране врача – <strong>три карточки</strong> с пастельной подсветкой по уровню (≥75 / 50–74 / &lt;50). Длинные тексты – в спойлерах (<code>&lt;details&gt;</code>).</p>
     <table class="simple">
-      <thead><tr><th>Что видит врач</th><th>Пример pl_1_f</th><th>Откуда считается</th><th>Для блокировки подписи</th></tr></thead>
+      <thead><tr><th>Карточка UI</th><th>Пример pl_1_f</th><th>Пример pl_2_d_s (СКВ)</th><th>Откуда считается</th><th>Для send_gate</th></tr></thead>
       <tbody>
-        <tr><td><strong>Ориентировочное соответствие</strong> (крупно)</td><td>50%</td><td>Гибрид: 79%×0,75 + 0%×0,25 = 59% → safety cap → 50%</td><td><em>Планируется</em> – сейчас send_gate смотрит на структурный %</td></tr>
-        <tr><td><strong>Детерминированный разбор</strong></td><td>79%</td><td>8 взвешенных блоков (оформление, диагноз, лечение…)</td><td>Используется в send_gate сейчас</td></tr>
-        <tr><td><strong>Среднее по критериям LLM</strong> (сводка методслужбы)</td><td>40%</td><td>Простое среднее 6 критериев модели (диагноз 0%, компрессия 100%…)</td><td>Нет – только пояснения</td></tr>
-        <tr><td><strong>Правила протокола</strong> (в подписи к %)</td><td>0%</td><td>Сверка назначений с извлечёнными фрагментами RAG</td><td>25% веса в гибриде</td></tr>
+        <tr><td><strong>Итог для врача (гибрид)</strong></td><td>50%</td><td>58%</td><td>75%·структурный + 25%·правила; затем safety cap</td><td>Участвует в <code>gate_score</code></td></tr>
+        <tr><td><strong>Структурный разбор</strong></td><td>79%</td><td>77%</td><td>8 взвешенных блоков (оформление, диагноз, лечение…)</td><td>Участвует в <code>gate_score</code></td></tr>
+        <tr><td><strong>Среднее LLM</strong></td><td>40%</td><td>~38%</td><td>Среднее по критериям модели (пояснения, цитаты)</td><td>Нет – только для методслужбы</td></tr>
+        <tr><td><strong>gate_score</strong> (в JSON)</td><td>50%</td><td>58%</td><td><code>min(гибрид, структурный)</code> – <code>compliance_gate.resolve_gate_score</code></td><td><strong>Да</strong> – единый порог для МИС</td></tr>
       </tbody>
     </table>
-    <div class="note note--warn">
-      <strong>Важно для «Айболит»:</strong> при pl_1_f врач видит 50%, а send_gate при hard_gate с порогом 70% опирается на структурные 79% – подпись формально разрешена. Перед интеграцией нужно <strong>единое число для gate</strong> (гибрид с cap или min(гибрид, структурный)).
+    <div class="note">
+      <strong>Для «Айболит»:</strong> при pl_1_f врач видит гибрид 50%, структурный 79%, но <code>gate_score = 50</code> – подпись при hard_gate с порогом 70% блокируется. При pl_2_d_s гибрид и структурный расходятся (58% vs 77%) – gate берёт минимум (58%).
     </div>
 
     <h3>4.10. Разбор реального примера: pl_1_f.pdf (флеботромбоз, I80.1)</h3>
@@ -239,68 +241,242 @@
       <li><strong>Профиль рубрики 8,3%</strong> – низкое совпадение с карточками «болезни системы кровообращения» из-за неверных карточек; не путать с клиническим качеством КЗ.</li>
     </ul>
 
-    <h3>4.11. Блоки интерфейса и экспорт</h3>
+    <h3>4.11. Блоки интерфейса (компактный дашборд, июнь 2026)</h3>
     <table class="simple">
-      <thead><tr><th>Блок UI</th><th>Содержание</th></tr></thead>
+      <thead><tr><th>Блок UI</th><th>Видимость</th><th>Содержание</th></tr></thead>
       <tbody>
-        <tr><td>Онко-предупреждение</td><td>Эвристика по тексту КЗ и фрагментам протоколов</td></tr>
-        <tr><td>Ориентировочное соответствие + summary_ru</td><td>Гибридный %, текст LLM, limitations_ru</td></tr>
-        <tr><td>Сводка для методслужбы</td><td>Зоны риска по критериям LLM (&lt;70%), группы ≥85% / 70–84%</td></tr>
-        <tr><td>Детерминированный разбор</td><td>HTML-отчёт: A/B/C + 8 блоков + evidence_map + источники</td></tr>
-        <tr><td>Критерии модели</td><td>Таблица с цитатами – для эксперта, не для gate</td></tr>
-        <tr><td>Протоколы по тексту</td><td>PDF, раздел, страница; пометка если МКБ не в выдержке</td></tr>
-        <tr><td>Экспорт</td><td>Печать, HTML методслужбы, JSON (в т.ч. send_gate)</td></tr>
+        <tr><td>Дашборд оценок</td><td>Сразу</td><td>3 карточки: гибрид, структурный, среднее LLM; легенда «что означает каждая цифра»</td></tr>
+        <tr><td>Краткий вывод</td><td>Спойлер (открыт)</td><td><code>summary_ru</code> от LLM</td></tr>
+        <tr><td>Ограничения оценки</td><td>Спойлер</td><td><code>limitations_ru</code> (нет КП в RAG, неполные выдержки…)</td></tr>
+        <tr><td>Допуск к подписи (МИС)</td><td>Сразу</td><td><code>send_gate</code>: статус, <code>gate_score</code>, порог 70%</td></tr>
+        <tr><td>Сводка методслужбы</td><td>Спойлер</td><td>Зоны риска &lt;70% с чипами %; группы 70–84% / ≥85%</td></tr>
+        <tr><td>Структурный отчёт</td><td>Спойлер</td><td>HTML: A/B/C, 8 блоков, диагноз/лечение, red flags, evidence_map – пастельные бейджи</td></tr>
+        <tr><td>Критерии модели</td><td>Спойлер</td><td>3 колонки; цитаты КЗ/протокола – во вложенных «Цитаты»</td></tr>
+        <tr><td>Протоколы · N PDF</td><td>Спойлер</td><td>Чипы PDF; обрезанные фрагменты разделов</td></tr>
+        <tr><td>Онко-предупреждение</td><td>Сразу (если есть)</td><td>Только по тексту КЗ, не по фрагментам протоколов</td></tr>
+        <tr><td>Экспорт</td><td>Кнопки</td><td>Печать, HTML методслужбы, JSON (<code>send_gate</code>)</td></tr>
       </tbody>
     </table>
+
+    <h3>4.12. Разбор примера: pl_2_d_s.pdf (дискоидная красная волчанка L93.0)</h3>
+    <p><strong>Клиника:</strong> мужчина 48 лет, дерматолог, предварительный диагноз «Дискоидная красная волчанка ?», гидроксихлорохин, Тридерм, УФ-защита, контроль через 2 недели.</p>
+    <ul>
+      <li><strong>Итог 58%</strong> – гибрид с учётом rules 0% (нет срабатываний по фрагментам RAG для L93.0).</li>
+      <li><strong>Структурный 77%</strong> – оформление 100%, диагноз 70% (предварительный «?», неполная структура формулировки).</li>
+      <li><strong>LLM ~38%</strong> – низко по лечению/наблюдению: в выдержках RAG нет специфического КП по L93.0, подобраны общие дерматологические PDF.</li>
+      <li><strong>gate_score 58%</strong> – ниже порога 70%; в режиме inform – предупреждение, в hard_gate – блокировка.</li>
+      <li><strong>Урок для корпуса:</strong> нужен КП по СКВ/дерматовенерологии с L93.0 в индексе; иначе клинически верное лечение получает низкий % из‑за отсутствия цитат в RAG.</li>
+    </ul>
   </section>
 
-  <!-- ===== 5. ЦИСЗ vs PDF ===== -->
+  <!-- ===== 5. FHIR BY и ЦИСЗ ===== -->
   <section class="card card--future">
-    <h2>5. Что уходит в Минздрав (ЦИСЗ) и чем это отличается от PDF КЗ</h2>
-    <p>По регламенту <a href="https://fhir.by/interactionMIS.html">FHIR BY</a> МИС «Айболит» формирует <strong>структурированный пакет</strong> (Bundle): пациент, визит, диагноз с кодом МКБ-10, показатели, назначения, текст заключения. Пакет подписывается ЭЦП и отправляется в ЦИСЗ. ЦИСЗ проверяет <em>упаковку и справочники</em>, а не клиническое соответствие протоколам лечения.</p>
+    <h2>5. FHIR BY, ЦИСЗ и место Protocol в контуре МИС</h2>
+    <p>Официальное руководство: <a href="https://fhir.by/index.html">FHIR BY</a> (пакет <strong>fhir.by#1.4.411</strong>, FHIR <strong>5.0.0</strong>, ветка release-1-4-t2-06-26-1). Регламент обмена МИС ОЗ с ЦИСЗ: <a href="https://fhir.by/interactionMIS.html">Взаимодействие между МИС ОЗ и ЦИСЗ</a>. Утверждённый протокол информационного взаимодействия – <strong>v.1.4</strong> (25.04.2026).</p>
 
+    <h3>5.1. Терминология FHIR в ЦИСЗ</h3>
+    <p>По <a href="https://fhir.by/index.html#использование-стандарта-обмена-медицинской-информацией-fhir-в-цисз">разделу «Использование стандарта FHIR в ЦИСЗ</a>:</p>
     <table class="simple">
-      <thead><tr><th>Данные</th><th>Сейчас (PDF в Protocol)</th><th>В МИС / ЦИСЗ (FHIR BY)</th><th>Будущая оценка Protocol</th></tr></thead>
+      <thead><tr><th>Термин</th><th>Смысл</th><th>Пример для КЗ</th></tr></thead>
       <tbody>
-        <tr><td>ФИО, возраст, пол</td><td>Из текста PDF (может быть неполно)</td><td>Поля Patient – точные</td><td>Из МИС – надёжнее</td></tr>
-        <tr><td>Диагноз + МКБ-10</td><td>Парсинг строки «Диагноз: …»</td><td>Condition с кодом НСИ</td><td>Код из МИС – эталон</td></tr>
-        <tr><td>Жалобы, анамнез</td><td>Свободный текст, разметка эвристическая</td><td>Секции Composition</td><td>Поля формы – без потерь</td></tr>
-        <tr><td>Объективный статус, витальные</td><td>Текстом в PDF</td><td>Observation (давление, температура…)</td><td>Структурированные значения</td></tr>
-        <tr><td>Назначения, лекарства</td><td>Парсер доз и курсов (сложно)</td><td>MedicationRequest / narrative</td><td>Точнее сверка с протоколом</td></tr>
-        <tr><td>Рекомендации, контроль</td><td>Текстовые блоки</td><td>Секции Composition + ServiceRequest</td><td>Явные поля в МИС</td></tr>
-        <tr><td>Врач, организация</td><td>Из шапки PDF</td><td>Practitioner, Organization в токене OAuth</td><td>Идентификаторы для аудита</td></tr>
-        <tr><td>Шрифты, печати, сканы</td><td>Есть в PDF</td><td>В пакет не входят</td><td>Не нужны для оценки</td></tr>
+        <tr><td><strong>Resource</strong></td><td>Единица медицинских данных</td><td>Patient, Encounter, Condition, Observation</td></tr>
+        <tr><td><strong>Profile</strong></td><td>Тип данных с фиксированной структурой</td><td>FinalDiagnosis, EncounterGeneral, CompDocument</td></tr>
+        <tr><td><strong>StructureDefinition</strong></td><td>Правила заполнения полей профиля</td><td>Обязательный ИНП у PatientWithIdentificationNumber</td></tr>
+        <tr><td><strong>ValueSet</strong></td><td>Допустимые значения из НСИ</td><td>InternClassificDiseases10 (МКБ-10), CompositionType</td></tr>
+        <tr><td><strong>Bundle</strong></td><td>Пакет медицинских данных о пациенте</td><td><code>type: "document"</code>, профиль пакета в <code>meta.profile</code></td></tr>
       </tbody>
     </table>
 
-    <div class="note">
-      <strong>Вывод:</strong> в будущем оценку нужно строить <strong>по структурированным полям «Айболит»</strong> (тем же, что пойдут в ЦИСЗ), а PDF оставить только как запасной вариант. Тогда балл перед отправкой совпадает с тем, что реально увидит государство.
-    </div>
+    <h3>5.2. Полный жизненный цикл: от ввода врача до статуса в ЦИСЗ</h3>
+    <div class="diagram">ВРАЧ в МИС «Айболит»
+    │  вводит данные приёма (жалобы, статус, диагноз, назначения…)
+    ▼
+МИС формирует Bundle (JSON) по профилю пакета
+    │  meta.profile → Bundle/MedicationDocument или иной профиль раздела ЦИСЗ
+    ▼
+┌───────────────────────────────────────────────────────────────┐
+│  PROTOCOL (до ЭЦП) – опционально, рекомендуется              │
+│  L0: POST /api/consult-compliance-screen  (&lt;2 с)            │
+│  L2: POST /api/consult-review/json          (полный конвейер)  │
+│  → send_gate, gate_score, замечания по КП Минздрава           │
+└───────────────────────────────────────────────────────────────┘
+    │  врач дорабатывает КЗ при низком gate_score
+    ▼
+МИС: Bundle → base64 → КП ЕСИФЮЛ (sign) → подписанный CMS
+    ▼
+POST импорт пакета в ЦИСЗ
+    │  Authorization: OAuth 2.0 (токен медработника)
+    │  Content-Type: application/cms
+    │  Composition.author = id врача из токена
+    │  Composition.custodian = id МО из токена
+    ▼
+ЦИСЗ: валидация профиля пакета + профилей ресурсов + кодов НСИ
+    │
+    ├─ 202 Accepted + Parameters  →  «Пакет принят»
+    └─ 4xx / OperationOutcome     →  «Пакет отклонён» (исправить и повторить)
+    ▼
+Через 10–20 с: опрос статуса (каждые ~5 с)
+    │  ProcessingStatus: Pending → InProgress → Successed | Failed | Cancelled
+    ▼
+МИС: таблица статусов пакетов для врача</div>
 
-    <h3>5.1. Маппинг FHIR BY Bundle → Protocol (пример MedicationDocument)</h3>
+    <h3>5.3. Подпись и отправка (детали регламента)</h3>
+    <p><strong>Шаг 1 – формирование.</strong> МИС собирает сведения о наблюдении и услугах в <code>Bundle</code> JSON (<a href="https://fhir.by/interactionMIS.html">interactionMIS</a>).</p>
+    <p><strong>Шаг 2 – ЭЦП.</strong> Bundle конвертируется в base64; вызывается локальный метод КП ЕСИФЮЛ <code>sign</code>; врач подписывает; ответ – base64 CMS.</p>
+    <p><strong>Шаг 3 – импорт.</strong> Метод «импорт пакета медицинских данных о пациенте в ЦИСЗ в виде электронного документа»:</p>
+    <ul>
+      <li>тело запроса – подписанный Bundle (CMS);</li>
+      <li><code>Content-Type: application/cms</code>;</li>
+      <li><code>Composition.author</code> – идентификатор авторизованного медработника (из OAuth-токена);</li>
+      <li><code>Composition.custodian</code> – идентификатор организации здравоохранения (из токена).</li>
+    </ul>
+
+    <h3>5.4. Валидация в ЦИСЗ (три уровня)</h3>
+    <ol>
+      <li>Соответствие <strong>профилю пакета</strong> медицинских данных.</li>
+      <li>Соответствие каждого ресурса <strong>профилям ЦИСЗ</strong> (StructureDefinition).</li>
+      <li>Соответствие кодов <strong>справочникам НСИ</strong> (ValueSet).</li>
+    </ol>
     <table class="simple">
-      <thead><tr><th>FHIR resource</th><th>Профиль fhir.by</th><th>Поле в Protocol / ЦИСЗ</th></tr></thead>
+      <thead><tr><th>Исход</th><th>HTTP</th><th>Ресурс</th><th>Действие МИС</th></tr></thead>
       <tbody>
-        <tr><td>Bundle</td><td>Bundle/MedicationDocument</td><td>Контейнер пакета; type=document</td></tr>
-        <tr><td>Composition</td><td>CompDocument</td><td>Заголовок документа, author, event→ссылки на Condition/Observation</td></tr>
-        <tr><td>Patient</td><td>PatientWithIdentificationNumber</td><td>patient_summary: ФИО, birthDate, gender, ИНП</td></tr>
-        <tr><td>Encounter</td><td>EncounterGeneral</td><td>Дата визита actualPeriod, участник PractitionerRole</td></tr>
-        <tr><td>Condition</td><td>FinalDiagnosis</td><td>diagnoses[]: code ICD-10 (НСИ), text</td></tr>
-        <tr><td>Observation</td><td>AnthropometricDataBy / VitalSignsBy</td><td>vitals: рост, вес, ИМТ, АД, ЧСС, температура</td></tr>
-        <tr><td>Practitioner / Organization</td><td>–</td><td>doctor_summary, custodian (МО для аудита)</td></tr>
+        <tr><td>Пакет принят в обработку</td><td><strong>202</strong> Accepted</td><td>Parameters</td><td>Показать «Пакет принят», перейти к опросу статуса</td></tr>
+        <tr><td>Ошибка контента / НСИ</td><td>4xx или 200 + OperationOutcome</td><td>OperationOutcome</td><td>«Пакет отклонён»; показать <code>issue.diagnostics</code> врачу</td></tr>
+        <tr><td>Ошибка схемы JSON</td><td><strong>400</strong> BadRequest</td><td>OperationOutcome</td><td>Исправить структуру; путь в <code>issue.expression</code></td></tr>
+        <tr><td>Сбой ЦИСЗ</td><td><strong>500</strong></td><td>–</td><td>Сообщить о временной неисправности; повторить импорт</td></tr>
       </tbody>
     </table>
-    <p>API: <code>POST /api/consult-compliance-screen</code> (L0, bundle или text), <code>POST /api/consult-review/json</code> (полный конвейер). Адаптер: <code>fhir_bundle_adapter.py</code>.</p>
+    <p><strong>OperationOutcome</strong> (для разработчика МИС vs врача):</p>
+    <ul>
+      <li><code>issue.details.text</code> – причина для разработчика;</li>
+      <li><code>issue.diagnostics</code> – текст для медработника (в т.ч. несовпадение кодов НСИ, версия FHIR-пакета);</li>
+      <li><code>issue.expression</code> – путь к полю с ошибкой в ресурсе.</li>
+    </ul>
 
-    <h3>5.2. Два разных контроля – не смешивать</h3>
+    <h3>5.5. Опрос статуса обработки пакета</h3>
+    <p>Метод «получение статуса обработки пакета данных» – в фоне, ~10–20 с после импорта, затем каждые ~5 с до финала. Врач продолжает работу в МИС.</p>
+    <table class="simple">
+      <thead><tr><th>ProcessingStatus</th><th>Описание</th><th>UI МИС</th></tr></thead>
+      <tbody>
+        <tr><td>Pending</td><td>Пакет сохранён, ещё не в обработке</td><td>«В очереди»</td></tr>
+        <tr><td>InProgress</td><td>Декомпозиция и обработка частей</td><td>«Обрабатывается» – повторить запрос</td></tr>
+        <tr><td>Successed</td><td>Все обработчики успешны</td><td><strong>«Пакет обработан»</strong></td></tr>
+        <tr><td>Failed</td><td>Ошибка хотя бы одного обработчика; пакет отменён</td><td>«Пакет отклонён» + OperationOutcome</td></tr>
+        <tr><td>Cancelled</td><td>Импорт отменён</td><td>«Отменён»</td></tr>
+      </tbody>
+    </table>
+    <p>Параметры ответа <code>Parameters</code>: <code>ProcessingStatus</code>, <code>OperationStatusReference</code>, <code>ResourceId</code>, <code>ResourceType</code>, <code>StatusDescription</code> (OperationOutcome при ошибке).</p>
+
+    <h3>5.6. Методы ЦИСЗ без полной авторизации</h3>
+    <p>По <a href="https://fhir.by/index.html">главной странице FHIR BY</a>, без OAuth доступны:</p>
+    <ul>
+      <li>реестр справочников и регистр организаций;</li>
+      <li>получение возможностей сервера (CapabilityStatement);</li>
+      <li><strong>проверка пакета данных без импорта</strong> – полезно для отладки Bundle до ЭЦП.</li>
+    </ul>
+    <p>Импорт, чтение данных пациента, статус пакета – только с токеном медработника (OAuth 2.0, см. «Авторизация в ЦИСЗ» на fhir.by).</p>
+
+    <h3>5.7. Пример структуры Bundle (из руководства FHIR BY)</h3>
+    <p>Учебный пример амбулаторного приёма (<a href="https://fhir.by/index.html">fhir.by</a>): пациент Иванов, врач Сидорова, диагноз E11, витальные показатели. Сокращённый фрагмент:</p>
+    <div class="diagram">{
+  "resourceType": "Bundle",
+  "meta": { "profile": [
+    "https://fhir.by/AbstractArea/StructureDefinition/Bundle/MedicationDocument"
+  ]},
+  "type": "document",
+  "timestamp": "2024-04-07T11:12:21Z",
+  "entry": [
+    { "resource": { "resourceType": "Composition",
+      "meta": { "profile": ["https://fhir.by/StructureDefinition/CompDocument"] },
+      "status": "registered",
+      "type": { "coding": [{ "system": "https://fhir.by/ValueSet/CompositionType",
+        "code": "general", "display": "Общая медицинская информация" }] },
+      "subject": [{ "reference": "Patient/PatientFullBundle" }],
+      "encounter": { "reference": "Encounter/EncounterFullBundle" },
+      "author": [{ "reference": "Practitioner/ExampleDoctor" }],
+      "custodian": { "reference": "Organization/OrganizationCISM" },
+      "event": [{ "detail": [{ "reference": { "reference": "Condition/DiagnosisrFullBundle" }}]}]
+    }},
+    { "resource": { "resourceType": "Patient",
+      "meta": { "profile": ["https://fhir.by/StructureDefinition/PatientWithIdentificationNumber"] },
+      "identifier": [{ "type": { "coding": [{ "code": "INP" }] }, "value": "7001112A009PB3" }],
+      "name": [{ "family": "Иванов", "given": ["Василий", "Васильевич"] }],
+      "gender": "male", "birthDate": "1989-01-31"
+    }},
+    { "resource": { "resourceType": "Encounter",
+      "meta": { "profile": ["https://fhir.by/StructureDefinition/EncounterGeneral"] },
+      "status": "completed",
+      "subject": { "reference": "Patient/PatientFullBundle" },
+      "actualPeriod": { "start": "2024-04-07T11:12:21Z", "end": "2024-04-07T11:25:21Z" }
+    }},
+    { "resource": { "resourceType": "Condition",
+      "meta": { "profile": ["https://fhir.by/StructureDefinition/FinalDiagnosis"] },
+      "code": { "coding": [{ "system": "https://fhir.by/ValueSet/InternClassificDiseases10",
+        "code": "E11" }], "text": "E11 - Сахарный диабет 2 типа" }
+    }},
+    { "resource": { "resourceType": "Observation",
+      "meta": { "profile": ["https://fhir.by/StructureDefinition/VitalSignsBy"] },
+      "code": { "coding": [{ "system": "https://fhir.by/ValueSet/VitalSignsCodes",
+        "code": "body-temperature" }] },
+      "valueQuantity": { "value": 36.5, "unit": "Cel", "code": "Cel" }
+    }}
+  ]
+}</div>
+    <p>Полный пример в руководстве включает также рост, вес, ИМТ, АД (component), ЧСС; <code>Composition.event</code> ссылается на все Observation и Condition.</p>
+
+    <h3>5.8. PDF КЗ vs FHIR Bundle – что проверяет Protocol</h3>
+    <table class="simple">
+      <thead><tr><th>Данные</th><th>Сейчас (PDF в UI)</th><th>МИС / ЦИСЗ (FHIR BY)</th><th>Оценка Protocol</th></tr></thead>
+      <tbody>
+        <tr><td>ФИО, возраст, пол</td><td>Парсинг PDF</td><td>Patient.birthDate, gender, identifier INP</td><td>Из Bundle – точнее (<code>fhir_bundle_adapter</code>)</td></tr>
+        <tr><td>Диагноз + МКБ-10</td><td>Строка «Диагноз: …»</td><td>Condition/FinalDiagnosis + НСИ</td><td>Код из <code>coding</code> – эталон для матчера КП</td></tr>
+        <tr><td>Жалобы, анамнез</td><td>Эвристики парсера</td><td>Composition.section (narrative div)</td><td>Синтез текста + parse_consultation</td></tr>
+        <tr><td>Витальные</td><td>Текст в PDF</td><td>Observation VitalSignsBy / AnthropometricDataBy</td><td>АД, температура, рост, вес, ИМТ, ЧСС</td></tr>
+        <tr><td>Назначения</td><td>Парсер доз</td><td>MedicationRequest, секции Composition</td><td>План: прямой разбор ресурсов (сейчас – narrative)</td></tr>
+        <tr><td>Врач, МО</td><td>Шапка PDF</td><td>Practitioner, Organization; author/custodian в Composition</td><td>Аудит; сверка с токеном OAuth при интеграции</td></tr>
+        <tr><td>Печать, скан</td><td>Есть</td><td>Не передаётся в ЦИСЗ</td><td>Не влияет на gate</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.9. Маппинг FHIR BY → ConsultationDocument (реализовано)</h3>
+    <table class="simple">
+      <thead><tr><th>FHIR resource</th><th>Профиль fhir.by</th><th>Поле Protocol</th></tr></thead>
+      <tbody>
+        <tr><td>Bundle</td><td>Bundle/MedicationDocument (и др.)</td><td>Вход адаптера; <code>source_file_type=fhir_bundle</code></td></tr>
+        <tr><td>Composition</td><td>CompDocument</td><td>Дата, секции narrative → жалобы/рекомендации</td></tr>
+        <tr><td>Patient</td><td>PatientWithIdentificationNumber</td><td>patient.*, vitals</td></tr>
+        <tr><td>Encounter</td><td>EncounterGeneral</td><td>consultation_date, actualPeriod</td></tr>
+        <tr><td>Condition</td><td>FinalDiagnosis</td><td>diagnoses[] (МКБ из InternClassificDiseases10)</td></tr>
+        <tr><td>Observation</td><td>VitalSignsBy, AnthropometricDataBy</td><td>patient.vitals, объективный статус</td></tr>
+        <tr><td>PractitionerRole</td><td>–</td><td>doctor_name (display / Practitioner)</td></tr>
+      </tbody>
+    </table>
+    <p>Модуль <code>clinical_knowledge/fhir_bundle_adapter.py</code>: <code>bundle_to_consultation_document()</code>, <code>bundle_to_consultation_text()</code> – синтетический текст для парсера и L0.</p>
+
+    <h3>5.10. API Protocol для «Айболит»</h3>
+    <table class="simple">
+      <thead><tr><th>Endpoint</th><th>Назначение</th><th>Вход</th><th>Выход (ключевое)</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST /api/consult-compliance-screen</code></td><td><strong>L0</strong> перед каждым сохранением</td><td><code>text</code> или <code>bundle</code></td><td><code>send_gate</code>, <code>cisz_readiness</code>, <code>overall_score</code>, &lt;2 с</td></tr>
+        <tr><td><code>POST /api/consult-validate-bundle</code></td><td>Только ЦИСЗ (без КП/RAG)</td><td><code>bundle</code>, <code>scenario</code></td><td><code>cisz_readiness</code> по программе испытаний v.1.3-4</td></tr>
+        <tr><td><code>POST /api/consult-review/json</code></td><td>Полный конвейер (L2)</td><td><code>text</code> или <code>bundle</code>, <code>category_slugs</code></td><td><code>review</code>, <code>structured_analysis</code>, <code>send_gate</code>, <code>cisz_readiness</code>, RAG</td></tr>
+        <tr><td><code>POST /api/consult-review</code></td><td>UI / пилот (PDF)</td><td>1–3 файла multipart</td><td>Тот же JSON + HTML-отчёт</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.11. Два независимых контроля</h3>
     <table class="simple">
       <thead><tr><th></th><th>ЦИСЗ (государство)</th><th>Protocol (Кравира)</th></tr></thead>
       <tbody>
-        <tr><td>Вопрос</td><td>Правильно ли оформлен пакет данных?</td><td>Соответствует ли смысл КЗ клиническим протоколам?</td></tr>
-        <tr><td>Когда</td><td>После подписи ЭЦП</td><td><strong>До</strong> подписи – в окне «Айболит»</td></tr>
-        <tr><td>Ошибка</td><td>«Пакет отклонён» (код НСИ, структура)</td><td>«Низкая оценка / критическое замечание»</td></tr>
+        <tr><td>Вопрос</td><td>Валиден ли FHIR-пакет и коды НСИ?</td><td>Соответствует ли клиника КП Минздрава?</td></tr>
+        <tr><td>Когда</td><td>После ЭЦП и импорта</td><td><strong>До</strong> ЭЦП – в форме МИС</td></tr>
+        <tr><td>Успех</td><td>ProcessingStatus = Successed</td><td>gate_score ≥ порога, нет critical block</td></tr>
+        <tr><td>Ошибка</td><td>OperationOutcome (НСИ, схема)</td><td>Низкий %, red flags, пробелы в диагнозе</td></tr>
       </tbody>
     </table>
+    <div class="note">
+      <strong>Вывод:</strong> Protocol не заменяет валидацию ЦИСЗ и не импортирует пакеты. Он проверяет <em>клиническое</em> соответствие до подписи, используя те же структурированные поля, которые МИС положит в Bundle.
+    </div>
   </section>
 
   <!-- ===== 6. GATE ===== -->
@@ -308,16 +484,21 @@
     <h2>6. Блокировка отправки при низкой оценке (send_gate)</h2>
     <p>Риск для медцентра: врач подписал слабое КЗ → данные в ЦИСЗ → при проверке методслужбой Минздрава видны пробелы. <strong>Protocol не отправляет данные в ЦИСЗ</strong> – он возвращает в «Айболит» рекомендацию, можно ли нажимать «Подписать».</p>
 
-    <p>В отчёт добавлен блок <code>send_gate</code> (реализовано в коде):</p>
+    <p>В отчёт и API добавлен блок <code>send_gate</code> (<code>compliance_gate.py</code>):</p>
     <table class="simple">
       <thead><tr><th>Поле</th><th>Смысл</th></tr></thead>
       <tbody>
-        <tr><td><code>gate_allowed</code></td><td>false – «Айболит» не должен вызывать ЭЦП (при жёсткой политике)</td></tr>
-        <tr><td><code>requires_override</code></td><td>true – можно подписать только после «Подписать всё равно» с записью в журнал</td></tr>
-        <tr><td><code>send_risk_level</code></td><td>low / medium / high / blocked – уровень риска для руководства</td></tr>
-        <tr><td><code>block_reason_ru</code></td><td>Текст для врача: почему заблокировано или что доработать</td></tr>
+        <tr><td><code>gate_score</code></td><td><strong>Единый балл для порога:</strong> <code>min(клинический, cisz_score)</code>, где клинический = <code>min(гибрид, структурный)</code></td></tr>
+        <tr><td><code>cisz_score</code> / <code>cisz_readiness</code></td><td>Готовность FHIR-пакета к импорту (чек-лист 3.2.1 / 3.13.1 / 3.3)</td></tr>
+        <tr><td><code>headline_score</code> / <code>structural_score</code></td><td>Компоненты для UI и аудита</td></tr>
+        <tr><td><code>gate_allowed</code></td><td>false – «Айболит» не вызывает ЭЦП (при hard_gate)</td></tr>
+        <tr><td><code>requires_override</code></td><td>true – только «Подписать всё равно» + журнал</td></tr>
+        <tr><td><code>send_risk_level</code></td><td>low / medium / high / blocked</td></tr>
+        <tr><td><code>block_reason_ru</code></td><td>Текст для врача (порог 70%, критические замечания)</td></tr>
+        <tr><td><code>disclaimer_ru</code></td><td>Не МЭЭ, не юридическое заключение</td></tr>
       </tbody>
     </table>
+    <p>Переменные окружения: <code>COMPLIANCE_GATE_MODE</code> (inform | soft_gate | hard_gate | critical_only), <code>COMPLIANCE_GATE_MIN_SCORE</code> (по умолчанию 70), <code>COMPLIANCE_GATE_SOFT_MIN_SCORE</code> (55).</p>
 
     <h3>6.1. Режимы политики (настраивает учреждение в «Айболит»)</h3>
     <table class="simple">
@@ -330,19 +511,19 @@
       </tbody>
     </table>
 
-    <div class="diagram">Врач нажал «Сохранить КЗ» в Айболит
+    <div class="diagram">Врач нажал «Сохранить» в Айболит
         │
         ▼
-Айболит → Protocol (быстрый L0 или полная проверка)
+Айболит → POST /api/consult-compliance-screen (Bundle из формы)
         │
         ▼
-Ответ: overall_score + send_gate
+Ответ: gate_score + send_gate + overall_score
         │
-        ├── gate_allowed = true  → кнопка «Подписать ЭЦП» активна
-        │
-        ├── requires_override = true → диалог + запись в журнал
-        │
-        └── gate_allowed = false → подпись недоступна, список замечаний</div>
+        ├── gate_allowed = true  → «Подписать ЭЦП» → ЕСИФЮЛ → CMS → ЦИСЗ
+        ├── requires_override    → диалог + журнал → затем ЭЦП
+        └── gate_allowed = false → подпись недоступна; врач правит КЗ
+
+(После ЭЦП путь отдельный – импорт в ЦИСЗ, см. раздел 5)</div>
 
     <div class="note note--risk">
       Формулировка для врача всегда: <em>ориентир методслужбы по клиническим протоколам</em>, не МЭЭ и не автоматическая санкция.
@@ -356,7 +537,7 @@
     <table class="simple">
       <thead><tr><th>Уровень</th><th>Охват</th><th>Содержание</th><th>Время</th></tr></thead>
       <tbody>
-        <tr><td><strong>L0</strong></td><td>100% КЗ</td><td>Только правила: оформление, МКБ, red flags, send_gate</td><td>&lt; 1 сек</td></tr>
+        <tr><td><strong>L0</strong></td><td>100% КЗ</td><td><code>/api/consult-compliance-screen</code>: структурный разбор, send_gate, без LLM/RAG</td><td>&lt; 2 сек</td></tr>
         <tr><td><strong>L1</strong></td><td>10–20%</td><td>Выборка + случаи с низким L0</td><td>секунды</td></tr>
         <tr><td><strong>L2</strong></td><td>2–5%</td><td>Полный конвейер с протоколами и LLM</td><td>1–3 мин</td></tr>
         <tr><td><strong>L3</strong></td><td>0,5–1%</td><td>Ручной разбор методслужбой</td><td>человек</td></tr>
@@ -369,48 +550,56 @@
   <section class="card card--future">
     <h2>8. Интеграция с «Айболит» – план по этапам</h2>
     <table class="simple">
-      <thead><tr><th>Этап</th><th>Срок</th><th>Protocol</th><th>Айболит</th></tr></thead>
+      <thead><tr><th>Этап</th><th>Статус</th><th>Protocol</th><th>Айболит (EPAM)</th></tr></thead>
       <tbody>
-        <tr><td>A</td><td>3–6 мес.</td><td>API приёма структуры КЗ; send_gate в JSON</td><td>Кнопка «Проверить по протоколу»; показ отчёта</td></tr>
-        <tr><td>B</td><td>6–12 мес.</td><td>Адаптер FHIR Bundle → карточка КЗ; L0 на каждое сохранение</td><td>Автовызов L0; soft_gate перед ЭЦП</td></tr>
-        <tr><td>C</td><td>12+ мес.</td><td>Сервер в контуре РБ; аналитика для Минздрава (без ПДн)</td><td>Журнал override; дашборд качества по отделениям</td></tr>
+        <tr><td>A</td><td><strong>Готово (backend)</strong></td><td><code>send_gate</code>, <code>gate_score</code>, JSON-отчёт, UI-пилот PDF</td><td>Кнопка «Проверить»; встраивание панели gate</td></tr>
+        <tr><td>B</td><td><strong>Готово (backend)</strong></td><td>FHIR-адаптер, L0/L2 API, <code>cisz_readiness</code>, validate-bundle</td><td>Автовызов L0 при сохранении; soft_gate перед ЕСИФЮЛ</td></tr>
+        <tr><td>C</td><td>План</td><td>Расширение чек-листа ЦИСЗ; сервер в РБ</td><td>Журнал override; статусы ProcessingStatus рядом с gate_score</td></tr>
+        <tr><td>D</td><td>План</td><td>Аналитика методслужбы (агрегаты без ПДн)</td><td>Дашборд качества; связка gate ↔ ProcessingStatus Failed</td></tr>
       </tbody>
     </table>
+    <p>Справочно: программы испытаний МИС v.1.3 (части 1–6: скорая, МСЭ, патология, амбулаторный, стационар, стоматология) – на <a href="https://fhir.by/interactionMIS.html">fhir.by/interactionMIS</a>; для «Айболит» релевантна <strong>часть 4 – амбулаторный профиль</strong>.</p>
   </section>
 
   <!-- ===== 9. ДОРАБОТКИ ===== -->
   <section class="card card--stage">
-    <h2>9. Что доработано в проекте сейчас и что дальше</h2>
-    <h3>Уже сделано</h3>
+    <h2>9. Состояние проекта (июнь 2026)</h2>
+    <h3>Реализовано</h3>
     <ul>
-      <li>Модуль <code>compliance_gate.py</code> – расчёт <code>send_gate</code> для МИС.</li>
-      <li>Поле <code>send_gate</code> в JSON каждого структурного отчёта (<code>report_to_json</code>).</li>
-      <li>Гибридный headline (<code>consult_overall_score.py</code>): 75% структурный + 25% правила + safety cap.</li>
-      <li>Быстрый режим проверки КЗ на сервере (меньше вызовов LLM).</li>
-      <li>Восемь блоков оценки, карта доказательств, онко-эвристика, RAG-фрагменты – в рабочем контуре.</li>
+      <li><code>compliance_gate.py</code> – <code>send_gate</code>, <code>gate_score = min(гибрид, структурный)</code>, режимы inform/soft/hard/critical_only.</li>
+      <li>API: <code>POST /api/consult-compliance-screen</code> (L0), <code>POST /api/consult-review/json</code> (полный конвейер из text/bundle).</li>
+      <li><code>fhir_bundle_adapter.py</code> – Bundle → ConsultationDocument и синтетический текст (Subjective/Objective, ServiceRequest, MedicationRequest, AllergyIntolerance…).</li>
+      <li><code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code> – чек-лист программы испытаний МИС v.1.3-4 (амбулаторный профиль).</li>
+      <li><code>consult_screen.py</code> – L0 без RAG/LLM-критериев + <code>cisz_readiness</code>.</li>
+      <li>Гибридный headline: 75% структурный + 25% правила + safety cap.</li>
+      <li>Матчер протоколов: приоритет венозных КП при I80–I89; штраф КП по СН при флеботромбозе.</li>
+      <li>Онко-скан – только по тексту КЗ, не по фрагментам RAG.</li>
+      <li>UI: дашборд (гибрид / структурный / LLM / ЦИСЗ), таблицы оценок, панели send_gate и готовности к ЦИСЗ.</li>
+      <li>HTML-отчёт структурного разбора – спойлеры, пастельные бейджи (<code>consult_report.py</code>).</li>
+      <li>Тесты: <code>test_cisz_readiness</code>, <code>test_compliance_gate</code>, <code>test_fhir_bundle_adapter</code>, <code>test_consult_screen</code>.</li>
     </ul>
-    <h3>Выявлено на примере pl_1_f – доработать</h3>
+    <h3>В работе / следующий приоритет</h3>
     <ol>
-      <li><strong>Единый балл для gate</strong> – min(гибрид, структурный) или только гибрид с cap; показать send_gate в UI.</li>
-      <li><strong>Матчер карточек протоколов</strong> – при I80.1 + флеболог не подтягивать КП сердечной недостаточности.</li>
-      <li><strong>Правила структуры диагноза</strong> – отдельный профиль для ТГВ/флеботромбоза (локализация, стадия, срок).</li>
-      <li><strong>Онко-скан</strong> – не учитывать маркеры из текста PDF протоколов, только из КЗ.</li>
-      <li><strong>RAG для правил</strong> – подтягивать фрагменты с дозами антикоагулянтов, чтобы rules_compliance_pct не был 0% при полном КЗ.</li>
+      <li><strong>Интеграция в «Айболит»</strong> – вызов L0 при сохранении формы; блокировка ЕСИФЮЛ по <code>gate_allowed</code>.</li>
+      <li><strong>Расширение чек-листа ЦИСЗ</strong> – сценарии стационара и стоматологии (части 5–6 программы испытаний).</li>
+      <li><strong>Корпус L93.0 / дерматовенерология</strong> – специфические КП в RAG (пример pl_2_d_s: rules 0% из‑за отсутствия выдержек).</li>
+      <li><strong>Правила структуры диагноза</strong> – профили для ТГВ (локализация, стадия) и дерматологии (форма, локализация без «?»).</li>
+      <li><strong>Журнал override</strong> в МИС – кто подписал при gate_score &lt; порога.</li>
+      <li><strong>Связка с ЦИСЗ</strong> – после импорта показывать ProcessingStatus рядом с результатом Protocol (разные оси качества).</li>
+      <li><strong>Валидация Bundle без импорта</strong> – опционально проксировать метод ЦИСЗ для отладки до ЭЦП (на стороне МИС).</li>
     </ol>
-    <h3>Рекомендуется следующим шагом</h3>
-    <ol>
-      <li><strong>POST /api/consult-compliance-screen</strong> – только L0 + send_gate (&lt; 1 с) для «Айболит» перед каждой подписью.</li>
-      <li><strong>POST /api/consult-review/json</strong> – приём структуры КЗ из формы МИС (без PDF).</li>
-      <li><strong>Адаптер FHIR</strong> – преобразование Bundle «Айболит» в карточку заключения (те же поля, что уйдут в ЦИСЗ).</li>
-      <li><strong>Единый порог</strong> в конфиге учреждения: <code>COMPLIANCE_GATE_MODE</code>, <code>COMPLIANCE_GATE_MIN_SCORE</code>.</li>
-      <li><strong>Журнал в «Айболит»</strong>: кто подписал с override, при каком балле – для защиты медцентра.</li>
-    </ol>
+    <h3>Ограничения (явно)</h3>
+    <ul>
+      <li>Protocol <strong>не подписывает</strong> Bundle и <strong>не импортирует</strong> в ЦИСЗ.</li>
+      <li>Оценка по протоколам Минздрава – ориентир методслужбы, не замена МЭЭ.</li>
+      <li>При отсутствии КП в корпусе низкий % LLM/rules не всегда означает ошибку врача (см. pl_2_d_s).</li>
+    </ul>
   </section>
 
   <section class="card">
     <h2>10. Заключение</h2>
     <p>Архитектура Protocol – это <strong>конвейер от официальных протоколов Минздрава до понятной оценки КЗ</strong> с прозрачными цитатами и решением о допуске к подписи. Государственный контур (ЦИСЗ) и клинический контур (протоколы лечения) дополняют друг друга; медцентр защищён, если проверка Protocol встроена в «Айболит» <strong>до ЭЦП</strong> и опирается на те же структурированные данные, что отправляются в Минздрав.</p>
-    <p class="footnote">МЦ «Кравира» · Protocol · МИС «Айболит» (EPAM) · Нормативная база: <a href="https://fhir.by/index.html">fhir.by</a>, <a href="https://fhir.by/interactionMIS.html">регламент МИС–ЦИСЗ</a></p>
+    <p class="footnote">МЦ «Кравира» · Protocol · МИС «Айболит» (EPAM) · Нормативная база: <a href="https://fhir.by/index.html">FHIR BY v1.4.411</a>, <a href="https://fhir.by/interactionMIS.html">регламент МИС ОЗ–ЦИСЗ v1.4</a>, протоколы КП Минздрава РБ</p>
   </section>
 </div>
 </body>

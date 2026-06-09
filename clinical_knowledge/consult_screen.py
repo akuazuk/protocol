@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .cisz_readiness import attach_cisz_readiness
 from .consult_analysis import analyze_consultation_text
 from .compliance_gate import evaluate_send_gate_from_compliance
 from .fhir_bundle_adapter import bundle_to_consultation_text
@@ -31,8 +32,7 @@ def run_compliance_screen(
     comp = sa.get("compliance") or {}
     send_gate = evaluate_send_gate_from_compliance(comp)
     comp["send_gate"] = send_gate
-
-    return {
+    out = {
         "ok": True,
         "screen_level": "L0",
         "consultation_id": comp.get("consultation_id"),
@@ -44,3 +44,4 @@ def run_compliance_screen(
         "matched_protocols_count": len(sa.get("matches") or []),
         "source": "fhir_bundle" if bundle else "text",
     }
+    return attach_cisz_readiness(out, bundle=bundle, text=raw if not bundle else None)

@@ -19,3 +19,5 @@ def test_compliance_screen_returns_send_gate():
     assert out["screen_level"] == "L0"
     assert "send_gate" in out
     assert "gate_allowed" in out["send_gate"]
+    assert "cisz_readiness" in out
+    assert out["cisz_readiness"]["overall_score"] is not None

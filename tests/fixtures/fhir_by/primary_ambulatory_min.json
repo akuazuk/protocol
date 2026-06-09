@@ -1,0 +1,108 @@
+{
+  "resourceType": "Bundle",
+  "type": "document",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "p1",
+        "birthDate": "1989-01-31",
+        "gender": "male",
+        "name": [{ "family": "Иванов", "given": ["Василий", "Васильевич"] }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "e1",
+        "status": "completed",
+        "subject": { "reference": "Patient/p1" },
+        "actualPeriod": { "start": "2024-04-07T11:12:21Z" },
+        "participant": [{ "actor": { "display": "Врач-терапевт" } }],
+        "diagnosis": [{ "condition": { "reference": "Condition/c1" } }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "c1",
+        "subject": { "reference": "Patient/p1" },
+        "clinicalStatus": { "coding": [{ "code": "active" }] },
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/FinalDiagnosis"]
+        },
+        "extension": [
+          {
+            "url": "https://fhir.by/StructureDefinition/KindOfDiagnosis",
+            "valueCodeableConcept": {
+              "coding": [{ "code": "final", "display": "Заключительный" }]
+            }
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "https://fhir.by/ValueSet/InternClassificDiseases10",
+              "code": "E11"
+            }
+          ],
+          "text": "E11 - Сахарный диабет 2 типа"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/ObservationSubjective"]
+        },
+        "valueString": "Жалобы на слабость, жажду, сухость во рту"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/VitalSignsBy"]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "https://fhir.by/ValueSet/VitalSignsCodes",
+              "code": "heart-rate"
+            }
+          ]
+        },
+        "valueQuantity": { "value": 80, "unit": "/min" }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/AnthropometricDataBy"]
+        },
+        "code": { "coding": [{ "code": "body-weight" }] },
+        "valueQuantity": { "value": 75, "unit": "kg" }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "profile": ["https://fhir.by/StructureDefinition/ObservationObjective"]
+        },
+        "component": [
+          {
+            "code": { "coding": [{ "code": "skin" }] },
+            "valueString": "Кожные покровы чистые"
+          },
+          {
+            "code": { "coding": [{ "code": "lungs" }] },
+            "valueString": "Дыхание везикулярное"
+          }
+        ]
+      }
+    }
+  ]
+}

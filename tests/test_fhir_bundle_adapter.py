@@ -66,3 +66,32 @@ def test_bundle_to_document_patient_fields():
     assert doc.patient.sex == "male"
     assert doc.patient.birth_date is not None
     assert doc.source_file_type == "fhir_bundle"
+
+
+def test_bundle_with_subjective_and_medication_in_text():
+    bundle = {
+        **SAMPLE_BUNDLE,
+        "entry": list(SAMPLE_BUNDLE["entry"])
+        + [
+            {
+                "resource": {
+                    "resourceType": "Observation",
+                    "meta": {
+                        "profile": ["https://fhir.by/StructureDefinition/ObservationSubjective"]
+                    },
+                    "valueString": "Жалобы на жажду",
+                }
+            },
+            {
+                "resource": {
+                    "resourceType": "MedicationRequest",
+                    "encounter": {"reference": "Encounter/1"},
+                    "medication": {"concept": {"text": "Метформин 500 мг"}},
+                    "dosageInstruction": [{"text": "1 таблетка утром"}],
+                }
+            },
+        ],
+    }
+    text = bundle_to_consultation_text(bundle)
+    assert "жалоб" in text.lower()
+    assert "метформин" in text.lower()

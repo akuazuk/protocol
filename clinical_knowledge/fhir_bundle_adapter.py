@@ -155,16 +155,30 @@ def bundle_to_consultation_document(
         "heart-rate": "ЧСС",
         "body-temperature": "Температура",
     }
+    complaints: list[str] = []
     for obs in observations:
         code = _obs_code(obs)
         val = _observation_value(obs)
+        vs = obs.get("valueString")
+        if isinstance(vs, str) and vs.strip():
+            prof = " ".join(str(p) for p in (obs.get("meta") or {}).get("profile") or []).lower()
+            if "subjective" in prof or not val:
+                complaints.append(vs.strip())
+                continue
         if not val:
             continue
         label = _OBS_RU.get(code, code)
         obj_parts.append(f"{label}: {val}")
         vitals[code or label] = val
 
-    text = _synthesize_bundle_text(bundle, doc_diagnoses=diag_lines, vitals=vitals, doctor_name=doctor_name)
+    text = _synthesize_bundle_text(
+        bundle,
+        doc_diagnoses=diag_lines,
+        vitals=vitals,
+        doctor_name=doctor_name,
+        complaints=complaints,
+        objective_parts=obj_parts,
+    )
     doc = parse_consultation(
         text,
         consultation_id=consultation_id,
@@ -192,12 +206,51 @@ def bundle_to_consultation_document(
     return doc
 
 
+def _medication_line(mr: dict[str, Any]) -> str | None:
+    med = mr.get("medication") or {}
+    concept = med.get("concept") or {}
+    text = str(concept.get("text") or "").strip()
+    if not text:
+        for c in (concept.get("coding") or []):
+            if isinstance(c, dict) and c.get("display"):
+                text = str(c["display"]).strip()
+                break
+    dose = ""
+    di = mr.get("dosageInstruction") or []
+    if di and isinstance(di[0], dict):
+        dose = str(di[0].get("text") or "").strip()
+    if text and dose:
+        return f"{text}: {dose}"
+    return text or dose or None
+
+
+def _allergy_line(ai: dict[str, Any]) -> str | None:
+    code = ai.get("code") or {}
+    text = str(code.get("text") or "").strip()
+    if not text:
+        for c in code.get("coding") or []:
+            if isinstance(c, dict) and c.get("display"):
+                text = str(c["display"]).strip()
+                break
+    return text or None
+
+
+def _service_request_line(sr: dict[str, Any]) -> str | None:
+    code = sr.get("code") or {}
+    for c in code.get("coding") or []:
+        if isinstance(c, dict) and c.get("display"):
+            return str(c["display"]).strip()
+    return str(code.get("text") or "").strip() or None
+
+
 def _synthesize_bundle_text(
     bundle: dict[str, Any],
     *,
     doc_diagnoses: list[str] | None = None,
     vitals: dict[str, str] | None = None,
     doctor_name: str | None = None,
+    complaints: list[str] | None = None,
+    objective_parts: list[str] | None = None,
 ) -> str:
     by_type = _resources_by_type(bundle)
     patients = by_type.get("Patient") or [{}]
@@ -237,14 +290,40 @@ def _synthesize_bundle_text(
         if fn:
             lines.append(f"Пациент: {fn}")
 
+    for c in complaints or []:
+        lines.append(f"Жалобы: {c}")
     vit = vitals or {}
     for obs in by_type.get("Observation") or []:
         code = _obs_code(obs)
         val = _observation_value(obs)
+        vs = obs.get("valueString")
+        if isinstance(vs, str) and vs.strip() and vs.strip() not in (complaints or []):
+            prof = " ".join(str(p) for p in (obs.get("meta") or {}).get("profile") or []).lower()
+            if "subjective" in prof:
+                lines.append(f"Жалобы: {vs.strip()}")
+                continue
         if val and code not in vit:
             lines.append(f"Показатель ({code}): {val}")
-    if vit:
+    obj = objective_parts or []
+    if obj:
+        lines.append("Объективный статус: " + "; ".join(obj))
+    elif vit:
         lines.append("Объективный статус: " + "; ".join(f"{k} {v}" for k, v in vit.items()))
+
+    for sr in by_type.get("ServiceRequest") or []:
+        sline = _service_request_line(sr)
+        if sline:
+            lines.append(f"Направление: {sline}")
+
+    for mr in by_type.get("MedicationRequest") or []:
+        mline = _medication_line(mr)
+        if mline:
+            lines.append(f"Назначение: {mline}")
+
+    for ai in by_type.get("AllergyIntolerance") or []:
+        aline = _allergy_line(ai)
+        if aline:
+            lines.append(f"Аллергия: {aline}")
 
     diag_lines = list(doc_diagnoses or [])
     for cond in by_type.get("Condition") or []:
