@@ -265,9 +265,9 @@
     <section class="print-module print-module--accent">
       <h2>5. Этап 3. Runtime: rag_server.py (FastAPI)</h2>
       <h3>5.1. Стек</h3>
-      <p>Python 3.11+, FastAPI, uvicorn. Ключ API языковой модели хранится на сервере (<code>GOOGLE_API_KEY</code> / аналог в .env - в документации обозначается как <strong>LLM API</strong>). Фронтенд ключ не получает.</p>
+      <p>Python 3.11+, FastAPI, uvicorn. Учётные данные для вызова языковой модели задаются только в конфигурации сервера (переменные окружения или защищённое хранилище секретов) и не передаются в браузер.</p>
       <h3>5.2. Загрузка при старте</h3>
-      <p>Фоновый поток <code>load_data()</code>: JSONL-чанки, protocols, meta, summary chunks, BM25. Endpoint <code>/health</code> отвечает до полной готовности RAG (важно для Render/K8s).</p>
+      <p>Фоновый поток <code>load_data()</code>: JSONL-чанки, protocols, meta, summary chunks, BM25. Endpoint <code>/health</code> отвечает до полной готовности RAG (важно для health-check при облачном развёртывании и в Kubernetes).</p>
       <h3>5.3. Гибридный retrieve</h3>
       <p>Функция <code>retrieve()</code>: лексика + BM25 + routing boost + фильтр аудитории + опциональный embed-rerank через LLM. Результат - топ фрагментов по протоколам.</p>
       <h3>5.4. Группы API</h3>
