@@ -72,7 +72,7 @@
     <h1>Protocol: архитектура по этапам и проверка КЗ перед отправкой в Минздрав</h1>
     <p class="lead">Модуль анализа клинических протоколов и консультативных заключений – разработка МЦ «Кравира». Интеграция с МИС «Айболит» (EPAM) – следующий этап.</p>
     <p class="footnote" style="border:0;margin:0;padding:0">
-      Июнь 2026 · Версия сборки: <code>2026-05-31-r68-pre-sign-checklist</code> ·
+      Июнь 2026 · Версия сборки: <code>2026-05-31-r73-architecture-doc</code> ·
       API: <code>GET /api/version</code> ·
       Нормативная база: FHIR BY 5.0, Протокол МИС ОЗ–ЦИСЗ v.1.4, программа испытаний МИС v.1.3-4 (амбулаторный профиль)
     </p>
@@ -221,6 +221,8 @@
     ├─ 2. Демография, специальность врача, блок «Диагноз», коды МКБ
     ├─ 3. RAG-отбор: BM25 + эмбеддинги → 4–8 PDF протоколов + фрагменты со страницами
     ├─ 4. Правила по фрагментам (rules_compliance_pct) – детерминированно
+    ├─ 4b. Summary-fallback по МКБ (если каталог дал 0%) – <strong>после RAG</strong>, ~0,1 с
+    │      (<code>rules_summary_fallback</code> + лёгкий <code>icd_index</code>, не полный корпус summary)
     ├─ 5. LLM: сводка + таблица 4–7 критериев с цитатами из КЗ и протокола
     ├─ 6. Структурный разбор (парсер → 8 блоков → evidence_map, red flags)
     ├─ 7. Гибрид: headline % = 75%·структурный + 25%·правила (+ safety cap)
@@ -260,7 +262,7 @@
       <li><strong>«Подобранные протоколы»</strong> (карточки каталога) – попали КП по сердечной недостаточности: матчер карточек по рубрике I80 шире, чем RAG-отбор. Врачу ориентир – блок «Протоколы по тексту заключения» (PDF со страницами).</li>
       <li><strong>Диагноз 0% у LLM vs 80% структурно</strong> – разные движки: модель учла жёсткие правила структуры диагноза из чужого КП (сердечная недостаточность: «нозология, функциональный класс»); в КЗ флеботромбоза локализация и стадия реканализации уже есть.</li>
       <li><strong>Фармакотерапия и наблюдение 0% у LLM</strong> – в переданных <em>выдержках</em> RAG нет доз антикоагулянтов и графика УЗИ; это ограничение объёма контекста, не обязательно ошибка врача.</li>
-      <li><strong>Правила протокола 0%</strong> – rule_checker не нашёл срабатываний по извлечённым правилам; гибрид тянет headline вниз.</li>
+      <li><strong>Правила протокола 0%</strong> – rule_checker не нашёл срабатываний по каталогу; при наличии МКБ может подтянуться summary-fallback (до 1–2 карточек). Иначе гибрид тянет headline вниз.</li>
       <li><strong>Красные флаги</strong> – «флеботромбоз» и «ривароксабан» помечены как частично учтённые (ожидаемо для данного диагноза).</li>
       <li><strong>Профиль рубрики 8,3%</strong> – низкое совпадение с карточками «болезни системы кровообращения» из-за неверных карточек; не путать с клиническим качеством КЗ.</li>
     </ul>
@@ -269,8 +271,9 @@
     <table class="simple">
       <thead><tr><th>Блок UI</th><th>Видимость</th><th>Содержание</th></tr></thead>
       <tbody>
-        <tr><td>Дашборд оценок</td><td>Сразу</td><td>4 карточки: гибрид, структурный, LLM, <strong>Готовность к ЦИСЗ</strong>; донаты и таблицы блоков</td></tr>
-        <tr><td>Готовность к ЦИСЗ</td><td>Сразу + спойлер</td><td><code>cisz_readiness</code>: чек-лист слоёв A–C, сценарий 3.2.1/3.13.1</td></tr>
+        <tr><td>Дашборд оценок</td><td>Сразу</td><td>3 карточки: гибрид, структурный, LLM; донаты и таблицы блоков (без ЦИСЗ)</td></tr>
+        <tr><td>Решение о подписи</td><td>Сразу</td><td><code>sign_decision</code> / <code>sign_decision_ru</code> – одна рекомендация врачу (подписать / доработать / override)</td></tr>
+        <tr><td><strong>Готовность к ЦИСЗ</strong></td><td><strong>Сразу (отдельный блок)</strong></td><td>Чек-лист «Готовность к ЦИСЗ — Первичный приём (3.2.1)»: ✓/✗ по проверкам, критические пробелы, спойлер «Полная расшифровка» (<code>cisz_readiness</code>, слои A–C)</td></tr>
         <tr><td>Краткий вывод</td><td>Спойлер (открыт)</td><td><code>summary_ru</code> от LLM</td></tr>
         <tr><td>Ограничения оценки</td><td>Спойлер</td><td><code>limitations_ru</code> (нет КП в RAG, неполные выдержки…)</td></tr>
         <tr><td>Допуск к подписи (МИС)</td><td>Сразу</td><td><code>send_gate</code>: статус, <code>gate_score</code>, порог 70%</td></tr>
@@ -792,7 +795,7 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <tbody>
         <tr><td><strong>L0</strong></td><td>100% КЗ</td><td><code>/api/consult-compliance-screen</code>: структурный разбор, send_gate, без LLM/RAG</td><td>&lt; 2 сек</td></tr>
         <tr><td><strong>L1</strong></td><td>10–20%</td><td>Выборка + случаи с низким L0</td><td>секунды</td></tr>
-        <tr><td><strong>L2</strong></td><td>2–5%</td><td>Полный конвейер с протоколами и LLM</td><td>1–3 мин</td></tr>
+        <tr><td><strong>L2</strong></td><td>2–5%</td><td>Полный конвейер с протоколами и LLM</td><td>~30–90 с (раньше до +30 с на summary-fallback; с <code>r71</code> убрано)</td></tr>
         <tr><td><strong>L3</strong></td><td>0,5–1%</td><td>Ручной разбор методслужбой</td><td>человек</td></tr>
       </tbody>
     </table>
@@ -826,15 +829,17 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <li><code>consult_screen.py</code> – L0 без RAG/LLM-критериев + <code>cisz_readiness</code>.</li>
       <li>Гибридный headline: 75% структурный + 25% правила + safety cap.</li>
       <li>Матчер протоколов: приоритет венозных КП при I80–I89; штраф КП по СН при флеботромбозе.</li>
-      <li>Онко-скан – только по тексту КЗ, не по фрагментам RAG.</li>
-      <li>UI: дашборд (гибрид / структурный / LLM / ЦИСЗ), таблицы оценок, панели send_gate и готовности к ЦИСЗ.</li>
+      <li>Онко-скан – только по тексту КЗ (<code>CONSULT_ONCO_SCAN_SOURCE=kz_only</code>), не по фрагментам RAG.</li>
+      <li>Summary-fallback по МКБ (<code>rules_summary_fallback.py</code>, <code>protocol_summary/icd_index.py</code>) – после RAG, прогрев индекса при старте; ~0,1 с вместо ~30 с на полный корпус.</li>
+      <li><code>sign_decision</code> – единое решение о подписи для врача (<code>compliance_gate.py</code>).</li>
+      <li>UI: дашборд (гибрид / структурный / LLM), отдельный чек-лист ЦИСЗ 3.2.1, карточка «Решение о подписи», <code>send_gate</code>.</li>
       <li>HTML-отчёт структурного разбора – спойлеры, пастельные бейджи (<code>consult_report.py</code>).</li>
       <li>Тесты: <code>test_cisz_readiness</code>, <code>test_compliance_gate</code>, <code>test_fhir_bundle_adapter</code>, <code>test_consult_screen</code>.</li>
     </ul>
     <h3>В работе / следующий приоритет</h3>
     <ol>
       <li><strong>Интеграция в «Айболит»</strong> – вызов L0 при сохранении формы; блокировка ЕСИФЮЛ по <code>gate_allowed</code>.</li>
-      <li><strong>Чек-лист ЦИСЗ</strong> – стационар/стоматология (программа испытаний ч.5–6); прокси <code>Bundle/$validate</code> на стороне МИС.</li>
+      <li><strong>Сценарии ЦИСЗ</strong> – стационар/стоматология (программа испытаний ч.5–6); амбулаторный 3.2.1 уже в UI-чек-листе.</li>
       <li><strong>Сверка author/custodian с OAuth-токеном</strong> – в МИС перед импортом (Protocol проверяет только наличие ссылок).</li>
       <li><strong>Корпус L93.0 / дерматовенерология</strong> – специфические КП в RAG (пример pl_2_d_s: rules 0% из‑за отсутствия выдержек).</li>
       <li><strong>Правила структуры диагноза</strong> – профили для ТГВ (локализация, стадия) и дерматологии (форма, локализация без «?»).</li>
@@ -856,7 +861,9 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <thead><tr><th>Модуль</th><th>Назначение</th><th>Вход</th><th>Выход</th></tr></thead>
       <tbody>
         <tr><td><code>rag_server.py</code></td><td>HTTP API, версия <code>BUILD_VERSION</code></td><td>REST / multipart</td><td>JSON, SSE stream</td></tr>
-        <tr><td><code>consult_review_pipeline.py</code></td><td>L2 конвейер с прогрессом</td><td>text / bundle meta</td><td>review + structured_analysis + cisz</td></tr>
+        <tr><td><code>consult_review_pipeline.py</code></td><td>L2 конвейер с прогрессом</td><td>text / bundle meta</td><td>review + structured_analysis + cisz; summary-fallback после RAG</td></tr>
+        <tr><td><code>rules_summary_fallback.py</code></td><td>Доп. правила из summary по МКБ</td><td>rules_check, ICD</td><td>обновлённый <code>rules_compliance_pct</code></td></tr>
+        <tr><td><code>protocol_summary/icd_index.py</code></td><td>Быстрый индекс МКБ → summary</td><td>ICD-10</td><td>refs для fallback; prewarm при старте</td></tr>
         <tr><td><code>consult_screen.py</code></td><td>L0 скрининг (&lt;2 с)</td><td>text | bundle</td><td>send_gate + cisz_readiness</td></tr>
         <tr><td><code>compliance_engine.py</code></td><td>8 блоков vs КП</td><td>ConsultationDocument</td><td>ComplianceReport</td></tr>
         <tr><td><code>compliance_gate.py</code></td><td>Политика подписи</td><td>ComplianceReport</td><td>send_gate, gate_score</td></tr>
@@ -869,7 +876,8 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
     </table>
     <h3>10.1. Автотесты (pytest)</h3>
     <ul>
-      <li><code>tests/test_cisz_readiness.py</code> – слои v1.4 + сценарий 3.2.1, merge gate</li>
+      <li><code>tests/test_cisz_readiness.py</code> – слои v1.4 + сценарий 3.2.1, merge gate, расшифровка</li>
+      <li><code>tests/test_icd_summary_index.py</code>, <code>tests/test_rules_summary_fallback.py</code> – быстрый fallback</li>
       <li><code>tests/test_compliance_gate.py</code> – режимы inform/soft/hard/critical_only</li>
       <li><code>tests/test_fhir_bundle_adapter.py</code> – маппинг Bundle → КЗ</li>
       <li><code>tests/test_consult_screen.py</code> – L0 API-логика</li>
@@ -893,7 +901,7 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
     <p>Итоговый <code>gate_score = min(клинический балл, cisz_score)</code> даёт МИС единый порог для политики подписи. Система <strong>прозрачна</strong>: каждая оценка раскладывается на проверки с весами; критические пробелы по ЦИСЗ и red flags по безопасности учитываются отдельно.</p>
     <p>Protocol <strong>не подменяет</strong> ЦИСЗ: серверная валидация НСИ, OperationOutcome и ProcessingStatus остаются на стороне государственного контура. Задача модуля – снизить долю отклонённых пакетов и клинически слабых КЗ <em>до</em> вызова ЕСИФЮЛ и <code>Bundle/$import</code>.</p>
     <p class="footnote">
-      МЦ «Кравира» · Protocol <code>2026-05-31-r68-pre-sign-checklist</code> · МИС «Айболит» (EPAM) ·
+      МЦ «Кравира» · Protocol <code>2026-05-31-r73-architecture-doc</code> · МИС «Айболит» (EPAM) ·
       <a href="https://fhir.by/index.html">FHIR BY</a> ·
       Протокол МИС ОЗ–ЦИСЗ v.1.4 · Программа испытаний МИС v.1.3-4 (амбулаторный) · КП Минздрава РБ
     </p>
