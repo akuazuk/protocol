@@ -715,6 +715,14 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                         slim["lex_text"] = ert
                 elif lex_cap > 0 and len(text) > lex_cap:
                     slim["lex_text"] = text[:lex_cap]
+                emb = row.get("embedding")
+                if isinstance(emb, list) and len(emb) >= 8 and isinstance(emb[0], (int, float)):
+                    slim["embedding"] = [float(x) for x in emb]
+                    em = (row.get("embedding_model") or "").strip()
+                    if em:
+                        slim["embedding_model"] = em
+                    if row.get("embedding_dim"):
+                        slim["embedding_dim"] = int(row["embedding_dim"])
                 by_path.setdefault(p, []).append(slim)
     out: list[dict] = []
     for p in sorted(by_path.keys()):
@@ -746,6 +754,12 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                 rec["page_from"] = row["page_from"]
             if row.get("page_to"):
                 rec["page_to"] = row["page_to"]
+            if isinstance(row.get("embedding"), list):
+                rec["embedding"] = row["embedding"]
+                if row.get("embedding_model"):
+                    rec["embedding_model"] = row["embedding_model"]
+                if row.get("embedding_dim"):
+                    rec["embedding_dim"] = row["embedding_dim"]
             out.append(rec)
     return out
 
@@ -845,6 +859,13 @@ def load_data() -> None:
 
     global _lex_inverted_index
     _lex_inverted_index = _build_lex_inverted_index(_chunks)
+
+    try:
+        from clinical_knowledge.vector_index import load_index_from_env
+
+        load_index_from_env(_chunks)
+    except Exception:
+        pass
 
 
 def _run_load_data_background() -> None:
@@ -2633,6 +2654,29 @@ def retrieve(
             cand |= set(_lex_inverted_index.get(t, ()))
         if cand:
             candidate_indices = cand
+    try:
+        from clinical_knowledge.vector_index import index_stats, search, vector_index_enabled
+
+        if vector_index_enabled() and index_stats().get("loaded"):
+            v_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+            if v_key:
+                q_embed_vec = (query + "\n" + " ".join(icd_codes_for_lex or [])).strip()[:8000]
+                ex_emb_v = _extra_clinical_tokens(rq)
+                if ex_emb_v:
+                    q_embed_vec = (q_embed_vec + " " + " ".join(sorted(ex_emb_v))).strip()[:8000]
+                v_model = os.environ.get(
+                    "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
+                ).strip()
+                q_vec = _gemini_embed_one(v_model, q_embed_vec, "retrieval_query")
+                v_top = int(os.environ.get("RAG_VECTOR_TOP_K", "200"))
+                vector_hits = search(q_vec, top_k=v_top)
+                if vector_hits:
+                    if candidate_indices is not None:
+                        candidate_indices |= vector_hits
+                    else:
+                        candidate_indices = set(vector_hits)
+    except Exception:
+        pass
     chunk_source = (
         (_chunks[i] for i in sorted(candidate_indices))
         if candidate_indices is not None
@@ -5580,6 +5624,21 @@ class ConsultReviewJsonIn(BaseModel):
     text: str | None = Field(default=None, max_length=200000)
     bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
     category_slugs: str = Field(default="", max_length=400)
+    tier: str = Field(
+        default="L2",
+        max_length=8,
+        description="Уровень проверки: L0 (скрининг), L1 (structured), L2 (полный RAG+LLM)",
+    )
+
+
+class ConsultReviewTierIn(BaseModel):
+    """Явный выбор уровня L0/L1/L2 для массового потока КЗ."""
+
+    tier: str = Field(default="L0", max_length=8)
+    text: str | None = Field(default=None, max_length=200000)
+    bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
+    consultation_id: str = Field(default="tier", max_length=64)
+    category_slugs: str = Field(default="", max_length=400)
 
 
 class ConsultValidateBundleIn(BaseModel):
@@ -5740,6 +5799,15 @@ def api_corpus_stats() -> dict:
         out["chunks_loaded"] = len(_chunks)
         out["protocols_loaded"] = len(_protocols_by_path)
         out["protocol_meta_entries"] = len(_protocol_meta)
+        out["chunks_with_embedding"] = sum(
+            1 for c in _chunks if isinstance(c.get("embedding"), list)
+        )
+        try:
+            from clinical_knowledge.vector_index import index_stats
+
+            out["vector_index"] = index_stats()
+        except Exception:
+            out["vector_index"] = {"loaded": False}
     else:
         out["chunks_loaded"] = None
         out["protocols_loaded"] = None
@@ -6957,31 +7025,85 @@ def api_consult_compliance_screen(body: ConsultComplianceScreenIn) -> dict:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
 
-@app.post("/api/consult-review/json")
-def api_consult_review_json(body: ConsultReviewJsonIn) -> dict:
-    """Полный конвейер проверки КЗ из текста или FHIR BY Bundle (интеграция «Айболит»)."""
+def _consult_review_from_tier_or_pipeline(
+    *,
+    tier: str,
+    text: str | None,
+    bundle: dict | None,
+    consultation_id: str,
+    category_slugs: str,
+    require_rag_for_l2: bool = True,
+) -> dict:
+    from clinical_knowledge.consult_tiering import run_consult_by_tier
     from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
     from consult_review_pipeline import run_consult_review_pipeline
 
-    _require_rag_loaded()
-    if body.bundle:
-        full_text = bundle_to_consultation_text(body.bundle)
-        meta = [{"filename": "fhir_bundle.json", "source": "fhir"}]
-    elif (body.text or "").strip():
-        full_text = body.text.strip()
-        meta = [{"filename": "mis_text.txt", "source": "json"}]
-    else:
-        raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
-
-    return run_consult_review_pipeline(
+    routed = run_consult_by_tier(
+        tier=tier,
+        text=text,
+        bundle=bundle,
+        consultation_id=consultation_id,
+        category_slugs=category_slugs,
+    )
+    if not routed.get("delegate_full_pipeline"):
+        return routed
+    if require_rag_for_l2:
+        _require_rag_loaded()
+    full_text = routed.get("text") or ""
+    if not full_text and bundle:
+        full_text = bundle_to_consultation_text(bundle)
+    meta = (
+        [{"filename": "fhir_bundle.json", "source": "fhir"}]
+        if bundle
+        else [{"filename": "mis_text.txt", "source": "json"}]
+    )
+    result = run_consult_review_pipeline(
         full_text=full_text,
         n_files=1,
         consult_docs_meta=meta,
         pdf_warnings=[],
         content_signature=full_text[:8000],
-        category_slugs=body.category_slugs,
-        fhir_bundle=body.bundle if body.bundle else None,
+        category_slugs=category_slugs,
+        fhir_bundle=bundle if bundle else None,
     )
+    result["review_tier"] = "L2"
+    return result
+
+
+@app.post("/api/consult-review/tier")
+def api_consult_review_tier(body: ConsultReviewTierIn) -> dict:
+    """L0/L1/L2: скрининг, structured или полный pipeline (МИС, массовый поток)."""
+    if not (body.text or "").strip() and not body.bundle:
+        raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
+    try:
+        return _consult_review_from_tier_or_pipeline(
+            tier=body.tier,
+            text=body.text,
+            bundle=body.bundle,
+            consultation_id=body.consultation_id,
+            category_slugs=body.category_slugs,
+            require_rag_for_l2=True,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@app.post("/api/consult-review/json")
+def api_consult_review_json(body: ConsultReviewJsonIn) -> dict:
+    """Полный конвейер проверки КЗ из текста или FHIR BY Bundle (интеграция «Айболит»)."""
+    if not (body.text or "").strip() and not body.bundle:
+        raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
+    try:
+        return _consult_review_from_tier_or_pipeline(
+            tier=body.tier,
+            text=body.text,
+            bundle=body.bundle,
+            consultation_id="json",
+            category_slugs=body.category_slugs,
+            require_rag_for_l2=True,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @app.post("/api/consult-validate-bundle")

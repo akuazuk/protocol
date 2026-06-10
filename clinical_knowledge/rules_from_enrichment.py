@@ -62,6 +62,40 @@ def enrichment_payload_to_rules(payload: dict[str, Any]) -> list[dict[str, Any]]
                 "extraction_method": "llm_enrichment",
             }
         )
+    for i, exam in enumerate(enrich.get("required_exams") or []):
+        exam_s = str(exam).strip()
+        if not exam_s:
+            continue
+        rules.append(
+            {
+                "rule_id": f"llm_{_slug(cid)}_{payload.get('text_hash', 'x')[:8]}_exam_{i}",
+                "rule_type": "required_exam",
+                "exam": exam_s,
+                "severity": "warning",
+                "description_ru": f"LLM-enrich: обязательное обследование ({cid}).",
+                "source": {"llm_enriched": True, "source_path": src_path},
+                "auto_extracted": True,
+                "extraction_method": "llm_enrichment",
+                "semantic_aliases": [exam_s],
+            }
+        )
+    for i, kw in enumerate(enrich.get("red_flags") or []):
+        kw_s = str(kw).strip()
+        if not kw_s:
+            continue
+        rules.append(
+            {
+                "rule_id": f"llm_{_slug(cid)}_{payload.get('text_hash', 'x')[:8]}_rf_{i}",
+                "rule_type": "keyword_presence",
+                "keyword": kw_s,
+                "severity": "critical",
+                "message_ru": f"Красный флаг протокола не отражён в КЗ: {kw_s}",
+                "source": {"llm_enriched": True, "source_path": src_path},
+                "auto_extracted": True,
+                "extraction_method": "llm_enrichment",
+                "semantic_aliases": [kw_s],
+            }
+        )
     return rules
 
 

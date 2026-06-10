@@ -507,6 +507,16 @@ def main() -> int:
     )
     ap.add_argument("--embed-off", action="store_true", help="принудительно выключить embed-rerank")
     ap.add_argument(
+        "--precomputed-on",
+        action="store_true",
+        help="RAG_PRECOMPUTED_CHUNK_EMBED=1 (эмбеддинги из JSONL, один API-вызов на запрос)",
+    )
+    ap.add_argument(
+        "--vector-on",
+        action="store_true",
+        help="RAG_VECTOR_INDEX=1 (FAISS/numpy prefilter top-K перед lex/BM25)",
+    )
+    ap.add_argument(
         "--gemini-advice",
         action="store_true",
         help="запросить у модели краткий анализ и шаги (по каждому кейсу / одному запросу)",
@@ -526,6 +536,10 @@ def main() -> int:
         os.environ["RAG_GEMINI_EMBED_RERANK"] = "0"
     else:
         os.environ.setdefault("RAG_GEMINI_EMBED_RERANK", "1")
+    if args.precomputed_on:
+        os.environ["RAG_PRECOMPUTED_CHUNK_EMBED"] = "1"
+    if args.vector_on:
+        os.environ["RAG_VECTOR_INDEX"] = "1"
 
     _ensure_repo_path()
     from rag_server import retrieve  # noqa: E402

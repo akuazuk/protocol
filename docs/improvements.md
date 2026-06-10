@@ -433,12 +433,16 @@ python3 split_chunks_jsonl.py
 - **8.4 a11y** — инкремент в фазе 7 (skip-link, tabs, focus-trap).
 - **8.7 фронтенд-перф** — инкремент в фазе 7.
 - **Consult SSE** — `POST /api/consult-review/stream`: прогресс в % и partial results (протоколы, правила, МКБ до финальной модели).
-- **3.3 офлайн-эмбеддинги (инкремент)** — `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query).
+- **3.3 офлайн-эмбеддинги** — `scripts/build_chunk_embeddings.py`, `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query); `scripts/corpus_manifest.py` для coverage.
+- **Vector index (фаза 2)** — `clinical_knowledge/vector_index.py`, `scripts/build_vector_index.py`, `RAG_VECTOR_INDEX=1`: prefilter top-K перед lex/BM25.
+- **Semantic rules (фаза 3)** — `semantic_rule_fallback.py`, `RULE_SEMANTIC_FALLBACK=1`.
+- **L0/L1/L2 tiering (фаза 4)** — `consult_tiering.py`, `POST /api/consult-review/tier`.
+- **Batch LLM rules (фаза 5)** — `scripts/enrich_protocol_rules_batch.py`, `required_exams`/`red_flags` в enrichment → rule_checker.
 - **Каталог нозологий** — `clinical_knowledge/condition_registry.py`; скрипты `scripts/catalog_rules_coverage_report.py`, `scripts/build_catalog_llm_enrichment.py`.
 - **Правила по всему каталогу (r23)** — `clinical_knowledge/catalog_build.py`, `scripts/build_catalog_rules.py` → `data/catalog/rules/` + `rules_coverage_report.json` (478 PDF, 24 рубрики); loader мержит gastro + catalog; rule_checker v3 с runtime path-правилами и `condition_registry`; consult pipeline без жёсткой привязки к одной рубрике (scope `all_catalog`).
 - **Полная структуризация как gastro (r25)** — `catalog_full_build.py`, `condition_builder.py`, `scripts/build_catalog_full.py` → `data/catalog/conditions/` (JSON нозологий), прогресс % в CLI/SSE; `/api/clinical-knowledge/build-status`; generic corpus «формулировка диагноза» + path-шаблоны всех рубрик.
 - **Надёжный consult-review (r27)** — строгий RAG по МКБ/matched PDF (`CONSULT_REVIEW_STRICT_PROTOCOLS`), fallback на `/api/consult-review` при обрыве SSE, компактный прогресс в одной строке, отдельный таймаут синтеза модели.
-- 3.3 полный offline corpus embed (build_semantic_embeddings) — отложено.
+- Legacy `build_semantic_embeddings.py` (e5 для браузера) — отдельный контур; prod-RAG использует per-chunk Gemini через `build_chunk_embeddings.py`.
 
 ### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)
 - 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).

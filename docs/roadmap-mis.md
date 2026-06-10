@@ -19,7 +19,10 @@ flowchart LR
 | `POST /api/assist` | Уже есть: подбор протоколов |
 | `POST /api/icd-suggest` | Уже есть: МКБ по жалобе |
 | `POST /api/consult-review` | Уже есть: сверка КЗ (PDF) |
-| `GET /api/corpus-stats` | Версия корпуса для отображения в МИС |
+| `POST /api/consult-review/json` | КЗ из текста/FHIR; поле `tier`: L0/L1/L2 |
+| `POST /api/consult-review/tier` | Явный уровень L0 (скрининг), L1 (structured), L2 (полный RAG+LLM) |
+| `POST /api/consult-compliance-screen` | L0 без LLM (alias для tier=L0) |
+| `GET /api/corpus-stats` | Версия корпуса, embedding coverage, vector index |
 
 ## Польза для системы здравоохранения
 

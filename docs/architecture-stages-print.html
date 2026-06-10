@@ -399,35 +399,60 @@
     </section>
 
     <section class="print-module print-module--opt">
-      <h2>11. Методика выборочного контроля качества КЗ</h2>
+      <h2>11. Семантический RAG и пять фаз ускорения (реализовано)</h2>
+      <p>Аддитивный контур поверх существующего lex+BM25+rules. Детерминированный scoring не заменяется.</p>
+      <table class="data">
+        <thead><tr><th>Фаза</th><th>Модули / скрипты</th><th>Эффект</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td><code>scripts/build_chunk_embeddings.py</code>, <code>scripts/corpus_manifest.py</code>, <code>RAG_PRECOMPUTED_CHUNK_EMBED</code></td><td>Офлайн-эмбеддинги чанков; один API-вызов на запрос вместо пула ~44</td></tr>
+          <tr><td><strong>2</strong></td><td><code>clinical_knowledge/vector_index.py</code>, <code>scripts/build_vector_index.py</code>, <code>RAG_VECTOR_INDEX</code></td><td>Vector top-200 → lex/BM25 → embed-rerank top-44; FAISS или numpy</td></tr>
+          <tr><td><strong>3</strong></td><td><code>semantic_rule_fallback.py</code>, <code>RULE_SEMANTIC_FALLBACK</code></td><td>Синонимы/токены для <code>required_exam</code> и <code>keyword_presence</code> после substring</td></tr>
+          <tr><td><strong>4</strong></td><td><code>consult_tiering.py</code>, <code>POST /api/consult-review/tier</code></td><td>L0/L1/L2 для массового потока МИС без полного LLM на 100% КЗ</td></tr>
+          <tr><td><strong>5</strong></td><td><code>scripts/enrich_protocol_rules_batch.py</code>, <code>data/catalog/enrichment/</code></td><td>Batch LLM → structured rules (<code>required_exam</code>, red flags) в rule_checker</td></tr>
+        </tbody>
+      </table>
+      <h3>11.1. Порядок развёртывания корпуса</h3>
+      <ol>
+        <li>Собрать смысловые чанки: <code>corpus_pipeline/run_pipeline.py</code> → <code>split_chunks_jsonl.py</code></li>
+        <li>Офлайн embeddings: <code>python3 scripts/build_chunk_embeddings.py</code></li>
+        <li>Индекс: <code>python3 scripts/build_vector_index.py</code> (опционально <code>pip install -r requirements-vector.txt</code>)</li>
+        <li>Манифест: <code>python3 scripts/corpus_manifest.py</code></li>
+        <li>Prod env: <code>RAG_PRECOMPUTED_CHUNK_EMBED=1</code>, <code>RAG_VECTOR_INDEX=1</code></li>
+      </ol>
+      <h3>11.2. Eval</h3>
+      <p><code>eval/search_quality_eval.py --embed-on --precomputed-on --vector-on</code> - сравнение с golden queries.</p>
+    </section>
+
+    <section class="print-module print-module--opt">
+      <h2>12. Методика выборочного контроля качества КЗ</h2>
       <p>Цель: выявить врачей/подразделения с систематически слабыми КЗ без проверки каждого документа LLM.</p>
-      <h3>11.1. Уровни выборки</h3>
+      <h3>12.1. Уровни выборки</h3>
       <table class="data">
         <thead><tr><th>Уровень</th><th>Охват</th><th>Метод</th></tr></thead>
         <tbody>
-          <tr><td>L0 - скрининг</td><td>100% КЗ</td><td>Только детерминированный скоринг (без LLM): оформление, МКБ, обязательные поля, red flags. &lt; 1 с на документ.</td></tr>
-          <tr><td>L1 - выборка</td><td>10-20% КЗ</td><td>Случайная + стратифицированная по врачу, рубрике, итоговому L0-баллу.</td></tr>
-          <tr><td>L2 - углублённо</td><td>2-5% КЗ</td><td>Полный pipeline с RAG + LLM; эталон для методслужбы.</td></tr>
+          <tr><td>L0 - скрининг</td><td>100% КЗ</td><td><code>POST /api/consult-review/tier</code> tier=L0 или <code>/api/consult-compliance-screen</code>. &lt; 1 с, без LLM/RAG.</td></tr>
+          <tr><td>L1 - выборка</td><td>10-20% КЗ</td><td><code>tier=L1</code>: полный <code>analyze_consultation_text</code> + compliance, без LLM-критериев.</td></tr>
+          <tr><td>L2 - углублённо</td><td>2-5% КЗ</td><td><code>tier=L2</code> или <code>/api/consult-review</code>: RAG + LLM + structured hybrid score.</td></tr>
           <tr><td>L3 - ручной аудит</td><td>0.5-1%</td><td>Эксперт методслужбы по списку «красных» врачей из L0-L2.</td></tr>
         </tbody>
       </table>
-      <h3>11.2. Критерии отбора «проблемных» врачей</h3>
+      <h3>12.2. Критерии отбора «проблемных» врачей</h3>
       <ul>
         <li>Средний балл L0 за месяц &lt; 70% при n ≥ 10 КЗ.</li>
         <li>Доля КЗ с критическими issues (red flags) &gt; 15%.</li>
         <li>Тренд: снижение балла 3 месяца подряд.</li>
         <li>Выбросы: единичные КЗ &lt; 50% при обычно нормальном профиле - в L2, не автоматическая санкция.</li>
       </ul>
-      <h3>11.3. Агрегаты для Минздрава (без ПДн)</h3>
+      <h3>12.3. Агрегаты для Минздрава (без ПДн)</h3>
       <p>Учреждение, рубрика, период, средний % по блокам, доля «зелёных/жёлтых/красных» зон. Без ФИО пациентов; идентификатор врача - только внутри контура учреждения.</p>
-      <h3>11.4. Хранение результатов</h3>
+      <h3>12.4. Хранение результатов</h3>
       <p>Таблица <code>kz_quality_scores</code>: hash текста, author_id (из токена МИС), timestamp, L0_score, flags, optional L2_job_id. Retention по политике ИБ.</p>
     </section>
 
     <section class="print-module print-module--opt">
-      <h2>12. Вариант: блокировка ЭЦП до нормы соответствия</h2>
+      <h2>13. Вариант: блокировка ЭЦП до нормы соответствия</h2>
       <p><span class="tag tag--future">Опция для МИС</span> Не юридическое требование Protocol, а <strong>настраиваемая политика учреждения</strong>, согласуемая с Минздравом и юристами.</p>
-      <h3>12.1. Режимы (config в МИС)</h3>
+      <h3>13.1. Режимы (config в МИС)</h3>
       <table class="data">
         <thead><tr><th>Режим</th><th>Поведение</th></tr></thead>
         <tbody>
@@ -437,14 +462,14 @@
           <tr><td><strong>critical_only</strong></td><td>Блок только при critical red flags (безопасность, противопоказания).</td></tr>
         </tbody>
       </table>
-      <h3>12.2. Техническая реализация в МИС</h3>
+      <h3>13.2. Техническая реализация в МИС</h3>
       <ol>
         <li>МИС вызывает <code>POST /api/consult-review?mode=fast</code> или лёгкий <code>POST /api/consult-compliance-screen</code> (только L0).</li>
         <li>Ответ: <code>overall_compliance_pct</code>, <code>blocks</code>, <code>critical_issues[]</code>, <code>gate_allowed: bool</code>.</li>
         <li>МИС применяет локальную политику → разрешает/блокирует вызов ЕСИФЮЛ.</li>
         <li>При override - запись в audit log (врач, время, причина).</li>
       </ol>
-      <h3>12.3. Риски и смягчение</h3>
+      <h3>13.3. Риски и смягчение</h3>
       <ul>
         <li><strong>Ложные срабатывания</strong> - порог только по L0; спорные случаи - soft_gate.</li>
         <li><strong>Юридическая нагрузка</strong> - формулировка «ориентир методслужбы», не МЭЭ.</li>
@@ -453,7 +478,7 @@
     </section>
 
     <section class="print-module">
-      <h2>13. Тестирование и качество</h2>
+      <h2>14. Тестирование и качество</h2>
       <ul>
         <li><strong>CI:</strong> Ruff + pytest (~55 модулей), миникорпус <code>tests/fixtures/chunks.mini.jsonl</code>.</li>
         <li><strong>Eval:</strong> <code>eval/golden_queries.jsonl</code> → <code>data/quality_benchmark.json</code> для UI.</li>
@@ -462,7 +487,7 @@
     </section>
 
     <section class="print-module">
-      <h2>14. Заключение</h2>
+      <h2>15. Заключение</h2>
       <p>Protocol сегодня - монолитный MVP с двумя контурами: <strong>LLM</strong> для поиска и синтеза и <strong>детерминированный clinical_knowledge</strong> для воспроизводимой проверки КЗ. Корпус привязан к официальным PDF Минздрава РБ.</p>
       <p>Интеграция с МИС через FHIR BY логична <em>до подписи ЭЦП</em>: ЦИСЗ проверяет упаковку данных, Protocol - клиническое соответствие протоколам. Масштаб на тысячи КЗ достижим за счёт L0-скрининга, выборочного L2 и очередей; блокировка ЭЦП - опциональная политика учреждения, не обязательная часть MVP.</p>
       <p class="footnote">Protocol · Kravira · Документ сгенерирован для внутреннего использования и презентаций Минздраву/МИС. Ссылки: fhir.by, minzdrav.gov.by, репозиторий protocol (docs/roadmap-mis.md, deployment-belarus.md).</p>

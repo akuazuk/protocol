@@ -192,17 +192,46 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
         return finding
 
     if rule_type == "required_exam":
-        exam = _norm(str(rule.get("exam") or ""))
+        exam_raw = str(rule.get("exam") or "")
+        exam = _norm(exam_raw)
         if exam and exam not in _norm(text):
-            finding["passed"] = False
-            finding["message_ru"] = f"В КЗ не упомянуто обязательное обследование: {rule.get('exam')}."
+            from .semantic_rule_fallback import semantic_presence_check
+
+            sem = semantic_presence_check(text, exam_raw, rule=rule)
+            if sem.get("matched"):
+                finding["semantic_match"] = True
+                finding["semantic_method"] = sem.get("method")
+                finding["semantic_confidence"] = sem.get("confidence")
+                finding["message_ru"] = (
+                    f"Обследование найдено семантически ({sem.get('method')}): {rule.get('exam')}."
+                )
+            else:
+                finding["passed"] = False
+                finding["message_ru"] = (
+                    f"В КЗ не упомянуто обязательное обследование: {rule.get('exam')}."
+                )
         return finding
 
     if rule_type == "keyword_presence":
-        kw = _norm(str(rule.get("keyword") or ""))
+        kw_raw = str(rule.get("keyword") or "")
+        kw = _norm(kw_raw)
         if kw and kw not in _norm(text):
-            finding["passed"] = False
-            finding["message_ru"] = rule.get("message_ru") or f"Ожидалось упоминание: {rule.get('keyword')}."
+            from .semantic_rule_fallback import semantic_presence_check
+
+            sem = semantic_presence_check(text, kw_raw, rule=rule)
+            if sem.get("matched"):
+                finding["semantic_match"] = True
+                finding["semantic_method"] = sem.get("method")
+                finding["semantic_confidence"] = sem.get("confidence")
+                finding["message_ru"] = (
+                    rule.get("message_ru")
+                    or f"Упоминание найдено семантически ({sem.get('method')}): {rule.get('keyword')}."
+                )
+            else:
+                finding["passed"] = False
+                finding["message_ru"] = (
+                    rule.get("message_ru") or f"Ожидалось упоминание: {rule.get('keyword')}."
+                )
         return finding
 
     if rule_type == "red_flag_rule":
