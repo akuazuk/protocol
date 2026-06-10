@@ -606,7 +606,7 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
         <tr><td><code>disclaimer_ru</code></td><td>Не МЭЭ, не юридическое заключение</td></tr>
       </tbody>
     </table>
-    <p>Переменные окружения: <code>COMPLIANCE_GATE_MODE</code> (inform | soft_gate | hard_gate | critical_only), <code>COMPLIANCE_GATE_MIN_SCORE</code> (по умолчанию 70), <code>COMPLIANCE_GATE_SOFT_MIN_SCORE</code> (55).</p>
+    <p>Переменные окружения: <code>COMPLIANCE_GATE_MODE</code> (по умолчанию <strong>soft_gate</strong>; также inform | hard_gate | critical_only), <code>COMPLIANCE_GATE_MIN_SCORE</code> (70), <code>COMPLIANCE_GATE_SOFT_MIN_SCORE</code> (55). Критические пробелы <code>cisz_readiness</code> в soft_gate требуют подтверждения врача; в hard_gate блокируют подпись.</p>
 
     <h3>6.1. Режимы политики (настраивает учреждение в «Айболит»)</h3>
     <table class="simple">

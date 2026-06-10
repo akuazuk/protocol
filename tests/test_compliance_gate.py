@@ -57,10 +57,26 @@ def test_gate_uses_min_of_headline_and_structural():
     assert g["structural_score"] == 79.0
 
 
+def test_default_mode_is_soft_gate():
+    g = evaluate_send_gate(_report(60.0), min_score_hard=70.0)
+    assert g["gate_mode"] == "soft_gate"
+    assert g["requires_override"] is True
+    assert g["sign_decision"] == "review_required"
+
+
 def test_sign_decision_allowed_inform():
     g = evaluate_send_gate(_report(85.0), mode="inform")
     assert g["sign_decision"] == "allowed"
-    assert "Можно подписывать" in g["sign_decision_ru"]
+    assert g["sign_decision_ru"] == "Можно подписывать"
+
+
+def test_sign_decision_inform_with_warnings():
+    g = evaluate_send_gate(_report(65.0), mode="inform", min_score_hard=70.0)
+    assert g["gate_allowed"] is True
+    assert g["sign_decision"] == "allowed_with_warnings"
+    assert g["sign_decision_ru"] == "Можно подписывать с замечаниями"
+    assert "69" not in g["sign_decision_detail_ru"]  # score is 65
+    assert "65%" in g["sign_decision_detail_ru"]
 
 
 def test_sign_decision_blocked_hard_gate():

@@ -433,6 +433,7 @@ def report_to_html(
     sd_det = _e(sg.get("sign_decision_detail_ru") or "")
     sd_colors = {
         "allowed": ("#1a6b52", "#e8f5f1"),
+        "allowed_with_warnings": ("#8a5a12", "#faf5eb"),
         "review_required": ("#8a5a12", "#faf5eb"),
         "blocked": ("#9a3030", "#faf0f0"),
     }

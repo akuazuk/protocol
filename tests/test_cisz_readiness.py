@@ -88,12 +88,31 @@ def test_evaluate_cisz_readiness_text_has_source_note():
 
 def test_merge_send_gate_with_cisz_lowers_gate_score():
     sg = {"gate_score": 90.0, "gate_allowed": True, "gate_mode": "hard_gate"}
-    cisz = {"overall_score": 55.0, "critical_failures": 1}
+    cisz = {"overall_score": 55.0, "critical_failures": 1, "critical_gaps": [{"title_ru": "Тест"}]}
     merged = merge_send_gate_with_cisz(sg, cisz)
     assert merged["gate_score"] == 55.0
     assert merged["cisz_score"] == 55.0
     assert merged["clinical_gate_score"] == 90.0
     assert not merged["gate_allowed"]
+
+
+def test_merge_send_gate_with_cisz_soft_gate_requires_override():
+    sg = {
+        "gate_score": 90.0,
+        "gate_allowed": True,
+        "gate_mode": "soft_gate",
+        "requires_override": False,
+    }
+    cisz = {
+        "overall_score": 44.0,
+        "critical_failures": 4,
+        "critical_gaps": [{"title_ru": "Визит (EncounterGeneral)"}],
+    }
+    merged = merge_send_gate_with_cisz(sg, cisz)
+    assert merged["gate_allowed"] is True
+    assert merged["requires_override"] is True
+    assert merged["sign_decision"] == "review_required"
+    assert "ЦИСЗ" in merged["sign_decision_detail_ru"]
 
 
 def test_attach_cisz_readiness_adds_block_to_payload():

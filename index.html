@@ -11437,7 +11437,7 @@
     panel.classList.remove("sign-allowed", "sign-review", "sign-blocked");
     var sd = sg.sign_decision || "allowed";
     if (sd === "blocked") panel.classList.add("sign-blocked");
-    else if (sd === "review_required") panel.classList.add("sign-review");
+    else if (sd === "review_required" || sd === "allowed_with_warnings") panel.classList.add("sign-review");
     else panel.classList.add("sign-allowed");
     if (titleEl) titleEl.textContent = sg.sign_decision_ru;
     if (detEl) {

@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from .cisz_check_hints import build_critical_gaps, build_decode_ru, enrich_check_item
-from .compliance_gate import enrich_sign_decision
+from .compliance_gate import _env_mode, enrich_sign_decision
 from .fhir_bundle_inspect import detect_bundle_scenario, inspect_bundle_checks, inspect_text_checks
 from .fhir_mis_test_matrix import MisCheckDef, checks_for_scenario
 
@@ -215,9 +215,15 @@ def merge_send_gate_with_cisz(
                         cisz_note += f" (+{len(gap_titles) - 3})"
                 cisz_note += "."
                 out["block_reason_ru"] = f"{prev} {cisz_note}".strip() if prev else cisz_note
-                if out.get("gate_mode") == "hard_gate":
+                mode = out.get("gate_mode") or _env_mode()
+                out["gate_mode"] = mode
+                if mode == "hard_gate":
                     out["gate_allowed"] = False
                     out["send_risk_level"] = "blocked"
+                elif mode == "soft_gate":
+                    out["requires_override"] = True
+                    if out.get("send_risk_level") != "blocked":
+                        out["send_risk_level"] = "high"
         elif isinstance(cisz_score, (int, float)):
             out["gate_score"] = cisz_score
             out["overall_score"] = cisz_score

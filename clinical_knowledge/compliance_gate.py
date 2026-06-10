@@ -13,7 +13,7 @@ from .consult_schema import ComplianceReport
 
 GateMode = Literal["inform", "soft_gate", "hard_gate", "critical_only"]
 SendRiskLevel = Literal["low", "medium", "high", "blocked"]
-SignDecision = Literal["allowed", "blocked", "review_required"]
+SignDecision = Literal["allowed", "allowed_with_warnings", "blocked", "review_required"]
 
 
 def _env_float(name: str, default: float) -> float:
@@ -27,10 +27,20 @@ def _env_float(name: str, default: float) -> float:
 
 
 def _env_mode() -> GateMode:
-    raw = (os.environ.get("COMPLIANCE_GATE_MODE") or "inform").strip().lower()
+    raw = (os.environ.get("COMPLIANCE_GATE_MODE") or "soft_gate").strip().lower()
     if raw in ("inform", "soft_gate", "hard_gate", "critical_only"):
         return raw  # type: ignore[return-value]
-    return "inform"
+    return "soft_gate"
+
+
+def _gate_has_warnings(gate: dict[str, Any]) -> bool:
+    if gate.get("block_reason_ru"):
+        return True
+    cisz = gate.get("cisz_readiness") if isinstance(gate.get("cisz_readiness"), dict) else {}
+    if cisz.get("critical_failures", 0) > 0:
+        return True
+    gaps = cisz.get("critical_gaps") or []
+    return any(isinstance(g, dict) and g.get("title_ru") for g in gaps)
 
 
 def _has_blocking_critical(report: ComplianceReport) -> bool:
@@ -51,9 +61,16 @@ def enrich_sign_decision(gate: dict[str, Any]) -> dict[str, Any]:
     allowed = bool(gate.get("gate_allowed"))
     override = bool(gate.get("requires_override"))
 
+    mode = str(gate.get("gate_mode") or "")
+    has_warnings = _gate_has_warnings(gate)
+
     if allowed and not override:
-        status: SignDecision = "allowed"
-        title_ru = "Можно подписывать"
+        if mode == "inform" and has_warnings:
+            status: SignDecision = "allowed_with_warnings"
+            title_ru = "Можно подписывать с замечаниями"
+        else:
+            status = "allowed"
+            title_ru = "Можно подписывать"
     elif allowed and override:
         status = "review_required"
         title_ru = "Нужно подтверждение врача"
@@ -74,15 +91,19 @@ def enrich_sign_decision(gate: dict[str, Any]) -> dict[str, Any]:
                 line += f" ({fix})"
             detail_parts.append(line)
 
-    if status == "allowed" and not detail_parts:
-        detail_ru = "Критических препятствий к подписи не выявлено."
+    if status in ("allowed", "allowed_with_warnings") and not detail_parts:
+        detail_ru = (
+            "Критических препятствий к подписи не выявлено."
+            if status == "allowed"
+            else "Есть замечания – рекомендуется доработать КЗ перед отправкой в ЦИСЗ."
+        )
     elif status == "review_required" and not detail_parts:
         detail_ru = "Оценка ниже порога - подтвердите подпись осознанно."
     else:
         detail_ru = " ".join(detail_parts).strip()
 
     gate_score = gate.get("gate_score")
-    if gate_score is not None and status != "allowed":
+    if gate_score is not None and status not in ("allowed", "allowed_with_warnings"):
         detail_ru = (detail_ru + f" Балл gate: {float(gate_score):.0f}%.").strip()
 
     gate["sign_decision"] = status
