@@ -2,6 +2,7 @@
 """Сборка PDF из print-ready HTML (Chrome headless).
 
 Пример:
+  python3 scripts/build_architecture_pdf.py --all
   python3 scripts/build_architecture_pdf.py
   python3 scripts/build_architecture_pdf.py docs/architecture-stages-print.html
 """
@@ -16,6 +17,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULT_HTML = ROOT / "docs" / "architecture-kravira-fhir-mis-print.html"
+
+ARCHITECTURE_HTML = (
+    ROOT / "docs" / "architecture-kravira-fhir-mis-print.html",
+    ROOT / "docs" / "architecture-stages-print.html",
+)
 
 
 def _chrome_bin() -> str | None:
@@ -56,30 +62,45 @@ def html_to_pdf(html_path: Path, pdf_path: Path) -> None:
     print(f"OK: {pdf_path} ({pdf_path.stat().st_size // 1024} KiB)")
 
 
+def pdf_path_for_html(html_path: Path) -> Path:
+    pdf_path = html_path.with_suffix(".pdf")
+    if pdf_path.name.endswith("-print.pdf"):
+        pdf_path = pdf_path.with_name(pdf_path.name.replace("-print.pdf", ".pdf"))
+    return pdf_path
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="HTML print → PDF через Chrome headless")
     parser.add_argument(
         "html",
         nargs="?",
-        default=str(DEFAULT_HTML),
-        help="Путь к HTML (по умолчанию architecture-kravira-fhir-mis-print.html)",
+        default="",
+        help="Путь к HTML (по умолчанию: kravira, если не указан --all)",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Собрать оба архитектурных PDF (kravira + stages)",
     )
     parser.add_argument(
         "--output",
         "-o",
         default="",
-        help="PDF (по умолчанию: рядом с HTML, имя .pdf)",
+        help="PDF (по умолчанию: рядом с HTML, имя .pdf; только для одного файла)",
     )
     args = parser.parse_args()
-    html_path = Path(args.html)
+    if args.all:
+        if args.output:
+            raise SystemExit("--output несовместим с --all")
+        for html_path in ARCHITECTURE_HTML:
+            if not html_path.is_file():
+                raise SystemExit(f"Нет файла: {html_path}")
+            html_to_pdf(html_path, pdf_path_for_html(html_path))
+        return 0
+    html_path = Path(args.html or DEFAULT_HTML)
     if not html_path.is_file():
         raise SystemExit(f"Нет файла: {html_path}")
-    if args.output:
-        pdf_path = Path(args.output)
-    else:
-        pdf_path = html_path.with_suffix(".pdf")
-        if pdf_path.name.endswith("-print.pdf"):
-            pdf_path = pdf_path.with_name(pdf_path.name.replace("-print.pdf", ".pdf"))
+    pdf_path = Path(args.output) if args.output else pdf_path_for_html(html_path)
     html_to_pdf(html_path, pdf_path)
     return 0
 
