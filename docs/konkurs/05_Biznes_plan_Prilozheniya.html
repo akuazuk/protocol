@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Protocol - приложения к бизнес-плану (Белинфонд 2026)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <style>
+    :root {
+      --green-700: #126b5c;
+      --green-600: #1a8a72;
+      --green-100: #e8f5f1;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+      --amber: #d97706;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(185deg, #fbfffd 0%, #eef6f1 100%);
+      line-height: 1.55;
+      font-size: 15px;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+    h1, h2 { font-family: Outfit, sans-serif; color: var(--green-700); }
+    h1 { font-size: 1.65rem; margin-bottom: 0.25rem; }
+    .sub { color: var(--muted); margin-bottom: 1.5rem; }
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid rgba(18, 107, 92, 0.18);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.06);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { padding: 0.55rem 0.65rem; text-align: left; border-bottom: 1px solid #e2ece8; }
+    th { background: var(--green-700); color: #fff; font-weight: 600; }
+    tr:nth-child(even) td { background: var(--green-100); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+    .chart-box { position: relative; height: 260px; }
+    .stat-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+    .stat {
+      flex: 1 1 140px;
+      background: var(--green-100);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(18, 107, 92, 0.15);
+    }
+    .stat b { display: block; font-size: 1.35rem; color: var(--green-700); }
+    .btn-print {
+      font-family: Outfit, sans-serif;
+      font-weight: 700;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: var(--green-600);
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    @media print {
+      .btn-print { display: none; }
+      body { background: #fff; }
+      .card { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <button class="btn-print" type="button" onclick="window.print()">Печать / PDF</button>
+    <h1>Protocol - приложения к бизнес-плану</h1>
+    <p class="sub">ОДО «Медицинский центр «Кравира»» · конкурс Белинфонд 2026 · рекомендуемый объём БП 10-40 стр., расчёты в приложениях</p>
+
+    <div class="stat-row">
+      <div class="stat"><b>478</b>клинических протоколов Минздрава</div>
+      <div class="stat"><b>25 000</b>КЗ/мес в Кравире</div>
+      <div class="stat"><b>0,69 BYN</b>пакет «Сеть» L0</div>
+      <div class="stat"><b>4,99 BYN</b>B2C базовая проверка</div>
+    </div>
+
+    <div class="card">
+      <h2>Приложение А. Сводный прайс B2B/B2C</h2>
+      <table>
+        <thead><tr><th>Канал</th><th>Продукт</th><th>Цена</th><th>Примечание</th></tr></thead>
+        <tbody>
+          <tr><td>B2B</td><td>L0 Старт</td><td>0,99 BYN/КЗ</td><td>до 1 000 КЗ/мес</td></tr>
+          <tr><td>B2B</td><td>L0 Клиника</td><td>0,79 BYN/КЗ</td><td>до 10 000 КЗ/мес</td></tr>
+          <tr><td>B2B</td><td>L0 Сеть</td><td>0,69 BYN/КЗ</td><td>25 000+ КЗ/мес</td></tr>
+          <tr><td>B2B</td><td>API МИС</td><td>индивид.</td><td>15-40 тыс. BYN внедрение</td></tr>
+          <tr><td>B2C</td><td>L1 Базовая</td><td>4,99 BYN</td><td>физическое лицо</td></tr>
+          <tr><td>B2C</td><td>L2 Подробная</td><td>9,99 BYN</td><td>с пояснениями</td></tr>
+          <tr><td>B2C</td><td>Абонемент</td><td>12,99 BYN/мес</td><td>3 проверки</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Приложение Б. Рынок TAM/SAM/SOM</h2>
+        <div class="chart-box"><canvas id="chartMarket"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Тарифная лестница B2B</h2>
+        <div class="chart-box"><canvas id="chartPricing"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Приложение В. Финансовый план (тыс. BYN)</h2>
+      <table>
+        <thead>
+          <tr><th>Показатель</th><th>2027</th><th>2028</th><th>2029</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Клиенты (ОЗ)</td><td>1</td><td>3</td><td>8</td></tr>
+          <tr><td>КЗ/мес</td><td>25 000</td><td>75 000</td><td>200 000</td></tr>
+          <tr><td>Выручка B2B</td><td>207</td><td>675</td><td>1 800</td></tr>
+          <tr><td>Выручка B2C</td><td>50</td><td>180</td><td>450</td></tr>
+          <tr><td>OPEX</td><td>300</td><td>450</td><td>700</td></tr>
+        </tbody>
+      </table>
+      <div class="chart-box" style="margin-top:1rem;height:280px"><canvas id="chartRevenue"></canvas></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Приложение Г. Дорожная карта</h2>
+        <table>
+          <thead><tr><th>Этап</th><th>Срок</th></tr></thead>
+          <tbody>
+            <tr><td>Пилот L0 Кравира</td><td>2025-Q2 2026</td></tr>
+            <tr><td>API МИС Айболит</td><td>Q3 2026-Q1 2027</td></tr>
+            <tr><td>B2C beta</td><td>Q4 2026</td></tr>
+            <tr><td>3-5 B2B клиентов</td><td>2027</td></tr>
+            <tr><td>5-15% рынка</td><td>2028-2029</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>KPI пилота (целевые)</h2>
+        <table>
+          <thead><tr><th>KPI</th><th>Цель</th></tr></thead>
+          <tbody>
+            <tr><td>Время L0</td><td>&lt; 2 с</td></tr>
+            <tr><td>Покрытие потока</td><td>100% КЗ</td></tr>
+            <tr><td>gate_score &lt; 70</td><td>снижение vs база</td></tr>
+            <tr><td>ЦИСЗ critical gaps</td><td>снижение</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Приложение Д. Структура выручки (год 3)</h2>
+      <div class="chart-box" style="max-width:360px;margin:0 auto"><canvas id="chartChannels"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Приложение Е. Архитектура и презентация</h2>
+      <p>К пакету заявки прилагаются:</p>
+      <ul>
+        <li><code>architecture-kravira-fhir-mis.pdf</code> - двухконтурная архитектура (клиника + ЦИСЗ)</li>
+        <li><code>mvp-presentation.html</code> - интерактивная презентация MVP</li>
+        <li>графики в <code>docs/konkurs/_assets/</code> (встроены в .docx бизнес-плана)</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const g = '#126b5c', g2 = '#1a8a72', g3 = '#3cb89a', amber = '#d97706';
+      new Chart(document.getElementById('chartMarket'), {
+        type: 'bar',
+        data: {
+          labels: ['TAM 30 млн КЗ/год', 'SAM 5%', 'SOM год 3'],
+          datasets: [{ label: 'млн КЗ/год', data: [30, 1.5, 2.4], backgroundColor: [g3, g2, g] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartPricing'), {
+        type: 'bar',
+        data: {
+          labels: ['Старт', 'Клиника 10k', 'Сеть 25k+'],
+          datasets: [{ label: 'BYN/КЗ', data: [0.99, 0.79, 0.69], backgroundColor: [g, g2, g3] }]
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartRevenue'), {
+        type: 'bar',
+        data: {
+          labels: ['2027', '2028', '2029'],
+          datasets: [
+            { label: 'B2B, тыс.', data: [207, 675, 1800], backgroundColor: g },
+            { label: 'B2C, тыс.', data: [50, 180, 450], backgroundColor: amber }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+      new Chart(document.getElementById('chartChannels'), {
+        type: 'doughnut',
+        data: {
+          labels: ['B2B клиники', 'B2C', 'B2B API'],
+          datasets: [{ data: [72, 20, 8], backgroundColor: [g, amber, g2] }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    });
+  </script>
+</body>
+</html>
