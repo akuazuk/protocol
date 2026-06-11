@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>Стратегия - Protocol</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap');
+:root {
+  --g700: #0d5c4d; --g600: #126b5c; --g500: #1a8a72; --g100: #e8f5f1;
+  --text: #142824; --muted: #4a635e; --amber: #b45309; --border: rgba(13,92,77,.16);
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--text);
+  font-size: 10.5pt; line-height: 1.55; background: #f4faf8; }
+.wrap { max-width: 210mm; margin: 0 auto; padding: 0; }
+h1,h2,h3 { font-family: Outfit, sans-serif; color: var(--g700); page-break-after: avoid; }
+h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .02em; }
+h2 { font-size: 14pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--g500); }
+h3 { font-size: 11.5pt; margin: 5mm 0 2mm; color: var(--g600); }
+p { margin: 0 0 3mm; text-align: justify; hyphens: auto; }
+ul { margin: 2mm 0 4mm; padding-left: 5mm; }
+li { margin-bottom: 1.5mm; }
+.muted { color: var(--muted); font-size: 9pt; }
+.cover {
+  min-height: 267mm; display: flex; flex-direction: column; justify-content: center;
+  text-align: center; padding: 20mm 18mm; page-break-after: always;
+  background: linear-gradient(165deg, #fff 0%, var(--g100) 55%, #fff 100%);
+  border-bottom: 4px solid var(--g600);
+}
+.cover .badge { display: inline-block; font-size: 9pt; color: var(--muted); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 6mm; }
+.cover .title { font-size: 28pt; font-weight: 700; color: var(--g700); margin: 4mm 0; }
+.cover .subtitle { font-size: 13pt; color: var(--muted); margin-bottom: 8mm; }
+.cover .project { font-size: 12pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
+.cover .meta { text-align: left; max-width: 150mm; margin: 10mm auto 0; font-size: 10pt; line-height: 1.65;
+  background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
+.cover hr { border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--g500), transparent);
+  margin: 8mm auto; width: 70%; }
+.mission {
+  page-break-after: always; padding: 14mm 16mm; background: var(--g700); color: #fff;
+}
+.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.35); font-size: 16pt; }
+.mission p { text-align: left; opacity: .95; }
+.section { padding: 10mm 16mm 4mm; page-break-inside: avoid; }
+.section-body { padding: 0 16mm 6mm; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm;
+  margin-bottom: 4mm; box-shadow: 0 1px 4px rgba(13,92,77,.06); page-break-inside: avoid; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.stake { border-left: 4px solid var(--g600); padding-left: 4mm; }
+.stake .icon { font-size: 16pt; float: left; margin-right: 3mm; }
+.stake h3 { margin-top: 0; }
+.stake .tag { font-size: 9pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
+table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 3mm 0 5mm; page-break-inside: avoid; }
+th, td { padding: 2.2mm 2.5mm; border: 1px solid #d8ebe6; text-align: left; vertical-align: top; }
+th { background: var(--g600); color: #fff; font-weight: 600; }
+tr:nth-child(even) td { background: var(--g100); }
+.caption { font-size: 9pt; font-weight: 600; color: var(--g700); margin: 4mm 0 2mm; }
+.chart { text-align: center; margin: 4mm 0 6mm; page-break-inside: avoid; }
+.chart img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 2mm; }
+.toc { padding: 12mm 16mm; page-break-after: always; }
+.toc pre { font-family: "DM Sans", sans-serif; font-size: 10pt; line-height: 1.7; white-space: pre-wrap;
+  background: #fff; padding: 6mm; border-radius: 3mm; border: 1px solid var(--border); }
+.highlight { background: #fffbeb; border-left: 4px solid var(--amber); padding: 4mm 5mm; margin: 4mm 0;
+  border-radius: 0 2mm 2mm 0; font-size: 10pt; }
+.stats { display: flex; flex-wrap: wrap; gap: 3mm; margin: 4mm 0 6mm; }
+.stat { flex: 1 1 40mm; background: var(--g100); border: 1px solid var(--border); border-radius: 2mm;
+  padding: 3mm 4mm; text-align: center; }
+.stat b { display: block; font-size: 13pt; color: var(--g700); }
+.form-table td:first-child { width: 38%; font-weight: 600; background: var(--g100); }
+@media print {
+  body { background: #fff; }
+  .section, .section-body { padding-left: 12mm; padding-right: 12mm; }
+  .no-print { display: none !important; }
+}
+@page { size: A4; margin: 12mm 10mm; }
+</style>
+</head><body><div class="wrap">
+<div class="cover">
+  <div class="badge">Белинфонд · 2026 · Лучший инновационный проект</div>
+  <div class="title">СТРАТЕГИЯ</div>
+  <div class="subtitle">коммерциализации инновационного проекта</div>
+  <hr/>
+  <div class="project">Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</div>
+  <hr/>
+  <div class="meta">
+    <strong>Участник:</strong> Общество с дополнительной ответственностью «Медицинский центр «Кравира»» (МЦ «Кравира»)<br/>
+    г. Минск, проспект Победителей, 45, пом. 25 · УНП 101477932<br/>
+    <strong>Руководитель:</strong> Касацкая Мария Геннадьевна, директор<br/><br/>
+    <strong>Контакт:</strong> Кузавка Павел Леонидович, заместитель директора по цифровой трансформации бизнеса и информационным технологиям<br/>
+    +375 29 608-75-95 · akuazuk@gmail.com · https://kravira.by<br/><br/>
+    <span class="muted">Минск · 2026</span>
+  </div>
+</div><div class="section"><h2>Проект и организация</h2></div><div class="section-body"><p><strong>Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</strong></p><p>Общество с дополнительной ответственностью «Медицинский центр «Кравира»»</p></div><div class="section"><h2>Уровень коммерциализации</h2></div><div class="section-body"><p>отмечены: определены способы монетизации (B2B микроплатёж + B2C для физлиц), ценовая политика, каналы продаж (МИС, клиники, веб-витрина); определён потенциальный заказчик - МЦ «Кравира»; предварительный вывод на рынок - письма заинтересованности оформляются до 01.08.2026.</p><p>Опытный образец, B2B-пилот в Кравире, beta B2C (2027).</p></div><div class="section"><h2>Способы коммерциализации</h2></div><div class="section-body"><p>реализация услуг (B2B проверка КЗ, B2C самопроверка для физлиц); предоставление права использования (лицензия API для МИС); заинтересованность (письма клиник и интегратора МИС).</p></div><div class="section"><h2>План на ближайший год</h2></div><div class="section-body"><p>1) Завершить пилот L0 в Кравире и метрики B2B. 2) Запустить beta B2C: загрузка КЗ физлицом, оплата 4,99/9,99 BYN, дисклеймер и политика ПДн. 3) Интегрировать API в МИС «Айболит». 4) QR-кампания «Проверьте своё заключение» в Кравире. 5) Подключить 2 внешние клиники B2B.</p></div><div class="section"><h2>Стратегия на 5 лет</h2></div><div class="section-body"><p>2027: Кравира B2B + B2C beta. 2028: 5-10 ОЗ B2B, 30-50k B2C проверок/год. 2029: white-label МИС, 5% рынка B2B. 2030: госсектор/сети. 2031: регион ЕАЭС, адаптация корпуса КП.</p></div></div></body></html>

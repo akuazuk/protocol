@@ -1,4 +1,4 @@
-# Чек-лист: что проверить в .docx перед печатью и подачей
+# Чек-лист: что проверить перед подачей (PDF / docx)
 
 **Срок:** до **01.08.2026** · [konkurs.belinfund.by/participants](https://konkurs.belinfund.by/participants)
 

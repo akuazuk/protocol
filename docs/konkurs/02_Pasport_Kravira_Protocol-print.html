@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<title>Паспорт - Protocol</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap');
+:root {
+  --g700: #0d5c4d; --g600: #126b5c; --g500: #1a8a72; --g100: #e8f5f1;
+  --text: #142824; --muted: #4a635e; --amber: #b45309; --border: rgba(13,92,77,.16);
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--text);
+  font-size: 10.5pt; line-height: 1.55; background: #f4faf8; }
+.wrap { max-width: 210mm; margin: 0 auto; padding: 0; }
+h1,h2,h3 { font-family: Outfit, sans-serif; color: var(--g700); page-break-after: avoid; }
+h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .02em; }
+h2 { font-size: 14pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--g500); }
+h3 { font-size: 11.5pt; margin: 5mm 0 2mm; color: var(--g600); }
+p { margin: 0 0 3mm; text-align: justify; hyphens: auto; }
+ul { margin: 2mm 0 4mm; padding-left: 5mm; }
+li { margin-bottom: 1.5mm; }
+.muted { color: var(--muted); font-size: 9pt; }
+.cover {
+  min-height: 267mm; display: flex; flex-direction: column; justify-content: center;
+  text-align: center; padding: 20mm 18mm; page-break-after: always;
+  background: linear-gradient(165deg, #fff 0%, var(--g100) 55%, #fff 100%);
+  border-bottom: 4px solid var(--g600);
+}
+.cover .badge { display: inline-block; font-size: 9pt; color: var(--muted); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 6mm; }
+.cover .title { font-size: 28pt; font-weight: 700; color: var(--g700); margin: 4mm 0; }
+.cover .subtitle { font-size: 13pt; color: var(--muted); margin-bottom: 8mm; }
+.cover .project { font-size: 12pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
+.cover .meta { text-align: left; max-width: 150mm; margin: 10mm auto 0; font-size: 10pt; line-height: 1.65;
+  background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
+.cover hr { border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--g500), transparent);
+  margin: 8mm auto; width: 70%; }
+.mission {
+  page-break-after: always; padding: 14mm 16mm; background: var(--g700); color: #fff;
+}
+.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.35); font-size: 16pt; }
+.mission p { text-align: left; opacity: .95; }
+.section { padding: 10mm 16mm 4mm; page-break-inside: avoid; }
+.section-body { padding: 0 16mm 6mm; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm;
+  margin-bottom: 4mm; box-shadow: 0 1px 4px rgba(13,92,77,.06); page-break-inside: avoid; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.stake { border-left: 4px solid var(--g600); padding-left: 4mm; }
+.stake .icon { font-size: 16pt; float: left; margin-right: 3mm; }
+.stake h3 { margin-top: 0; }
+.stake .tag { font-size: 9pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
+table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 3mm 0 5mm; page-break-inside: avoid; }
+th, td { padding: 2.2mm 2.5mm; border: 1px solid #d8ebe6; text-align: left; vertical-align: top; }
+th { background: var(--g600); color: #fff; font-weight: 600; }
+tr:nth-child(even) td { background: var(--g100); }
+.caption { font-size: 9pt; font-weight: 600; color: var(--g700); margin: 4mm 0 2mm; }
+.chart { text-align: center; margin: 4mm 0 6mm; page-break-inside: avoid; }
+.chart img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 2mm; }
+.toc { padding: 12mm 16mm; page-break-after: always; }
+.toc pre { font-family: "DM Sans", sans-serif; font-size: 10pt; line-height: 1.7; white-space: pre-wrap;
+  background: #fff; padding: 6mm; border-radius: 3mm; border: 1px solid var(--border); }
+.highlight { background: #fffbeb; border-left: 4px solid var(--amber); padding: 4mm 5mm; margin: 4mm 0;
+  border-radius: 0 2mm 2mm 0; font-size: 10pt; }
+.stats { display: flex; flex-wrap: wrap; gap: 3mm; margin: 4mm 0 6mm; }
+.stat { flex: 1 1 40mm; background: var(--g100); border: 1px solid var(--border); border-radius: 2mm;
+  padding: 3mm 4mm; text-align: center; }
+.stat b { display: block; font-size: 13pt; color: var(--g700); }
+.form-table td:first-child { width: 38%; font-weight: 600; background: var(--g100); }
+@media print {
+  body { background: #fff; }
+  .section, .section-body { padding-left: 12mm; padding-right: 12mm; }
+  .no-print { display: none !important; }
+}
+@page { size: A4; margin: 12mm 10mm; }
+</style>
+</head><body><div class="wrap">
+<div class="cover">
+  <div class="badge">Белинфонд · 2026 · Лучший инновационный проект</div>
+  <div class="title">ПАСПОРТ</div>
+  <div class="subtitle">инновационного проекта</div>
+  <hr/>
+  <div class="project">Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</div>
+  <hr/>
+  <div class="meta">
+    <strong>Участник:</strong> Общество с дополнительной ответственностью «Медицинский центр «Кравира»» (МЦ «Кравира»)<br/>
+    г. Минск, проспект Победителей, 45, пом. 25 · УНП 101477932<br/>
+    <strong>Руководитель:</strong> Касацкая Мария Геннадьевна, директор<br/><br/>
+    <strong>Контакт:</strong> Кузавка Павел Леонидович, заместитель директора по цифровой трансформации бизнеса и информационным технологиям<br/>
+    +375 29 608-75-95 · akuazuk@gmail.com · https://kravira.by<br/><br/>
+    <span class="muted">Минск · 2026</span>
+  </div>
+</div><div class="section"><h2>Наименование</h2></div><div class="section-body"><p>Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</p></div><div class="section"><h2>Описание проекта</h2></div><div class="section-body"><p>В Республике Беларусь действует порядка 478 официальных клинических протоколов Минздрава; частная амбулатория обязана вести консультативные заключения (КЗ) по стандартам и передавать данные в ЦИСЗ (FHIR BY). Врач не может держать в памяти все протоколы; методслужба не проверяет каждое КЗ до подписи ЭЦП. Пациенты не имеют прозрачного инструмента оценки качества оказанной помощи по их заключению.</p><p>Protocol - отечественный продукт МЦ «Кравира»: (1) подбор клинических протоколов по МКБ-10; (2) детерминированная оценка КЗ (8 блоков, 482+ правил, цитаты из PDF Минздрава); (3) готовность к ЦИСЗ; (4) решение send_gate для МИС. LLM - только пояснения; итог для блокировки - по правилам.</p><p>Три канала монетизации: B2B - от 0,99 BYN за проверку КЗ в клинике (пакеты для потока ~25 000 КЗ/мес в Кравире); B2B API в МИС «Айболит»; B2C - для физических лиц: загрузка своего КЗ и отчёт «соответствует ли помощь клиническим протоколам» (от 4,99 BYN). Рабочий прототип развёрнут. Не заменяет врача, МЭЭ и валидацию ЦИСЗ.</p></div><div class="section"><h2>Направления</h2></div><div class="section-body"><p>Медицинские науки и технологии; Информатика и информатизация</p></div><div class="section"><h2>Новизна</h2></div><div class="section-body"><p>Нет аналогов в стране, есть за рубежом</p></div><div class="section"><h2>Стадия</h2></div><div class="section-body"><p>Работающий прототип</p></div><div class="section"><h2>Потребители</h2></div><div class="section-body"><p>B2B: частные ОЗ и сети клиник РБ, методслужбы, разработчики МИС (Айболит/EPAM). Якорь - МЦ «Кравира» (~25 000 КЗ/мес, ~1% рынка частных ОЗ). B2C: физические лица - пациенты, проверяющие своё КЗ и качество оказанной услуги. Государственный сектор - перспектива после пилота.</p></div><div class="section"><h2>Преимущества</h2></div><div class="section-body"><p>1) Корпус ~478 КП Минздрава с цитатами. 2) Детерминированный scoring и send_gate. 3) Клиника + ЦИСЗ в одном контуре. 4) L0 &lt;2 с для МИС. 5) Три канала дохода: клиники, МИС, физлица. 6) Пилот на потоке Кравиры. 7) On-prem в РБ, защита ПДн.</p></div><div class="section"><h2>ИС</h2></div><div class="section-body"><p>Используются объекты ИС участника. Исходный код и база правил - исключительные права МЦ «Кравира» (договоры с разработчиками). Регистрация программы для ЭВМ в НЦИС (БелГИСС). Режим коммерческой тайны для каталога правил и конфигураций gate. Патентная чистота: открытые PDF Минздрава, FHIR BY, собственная реализация scoring и send_gate. Лицензирование B2B - договор оказания услуг / лицензионный договор на API.</p></div><div class="section"><h2>Сроки</h2></div><div class="section-body"><p>2025-Q2 2026: пилот L0 в Кравире. Q3 2026-Q1 2027: API в МИС Айболит. 2027: B2B 3-5 ОЗ, запуск B2C-витрины для физлиц. 2028-2029: 5-15% рынка частных ОЗ, масштабирование B2C.</p></div><div class="section"><h2>Сертификация</h2></div><div class="section-body"><p>Услуга и ПО Protocol: предимпортная экспертиза КЗ для клиник (B2B) и сервис самопроверки КЗ для физических лиц (B2C) с отчётом по клиническим протоколам Минздрава РБ.</p></div><div class="section"><h2>Достижения</h2></div><div class="section-body"><p>Веб-сервис и API (FastAPI); корпус ~478 протоколов Минздрава, 482+ правил; tiering L0/L1/L2; чек-лист ЦИСЗ 3.2.1; документация architecture-kravira-fhir-mis.pdf. Пилот на площадке МЦ «Кравира» (приказ директора о пилоте - оформляется до 01.08.2026). Переговоры с EPAM о интеграции L0 API в МИС «Айболит» (письмо о намерениях - до 01.08.2026).</p></div><div class="section"><h2>Приложения</h2></div><div class="section-body"><p>Приложения: architecture-kravira-fhir-mis.pdf, mvp-presentation.html, pre-sign-checklist. Демо: веб-интерфейс проверки КЗ.</p></div></div></body></html>
