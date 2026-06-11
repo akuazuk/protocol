@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from konkurs_chart_style import BG_FIG, COLOR_NEGATIVE, COLORS, TEXT
+from konkurs_chart_style import BG_AX, BG_FIG, COLOR_NEGATIVE, COLORS, TEXT
 from konkurs_finance import (
     B2C_AVG_PRICE,
     B2C_TIERS,
@@ -50,16 +50,16 @@ _FONT = "Arial, Helvetica, DejaVu Sans, sans-serif"
 
 def _layout(title: str, *, barmode: str | None = None, legend_y: float = 1.02) -> dict:
     lo = dict(
-        title=dict(text=title, font=dict(size=14, color="#3d5c52"), x=0.02, xanchor="left"),
+        title=dict(text=title, font=dict(size=14, color=TEXT), x=0.02, xanchor="left"),
         paper_bgcolor=BG_FIG,
-        plot_bgcolor="#f7f5f2",
+        plot_bgcolor=BG_AX,
         font=dict(family=_FONT, color=TEXT, size=11),
         margin=dict(l=56, r=36, t=62, b=52),
         height=_H,
         width=_W,
         legend=dict(orientation="h", yanchor="bottom", y=legend_y, x=0, font=dict(size=10)),
-        xaxis=dict(showgrid=False, zeroline=False, linecolor="#d8e4de"),
-        yaxis=dict(gridcolor="#e8eeea", gridwidth=1, zerolinecolor="#d0ddd6", linecolor="#d8e4de"),
+        xaxis=dict(showgrid=False, zeroline=False, linecolor="#b8c8c0"),
+        yaxis=dict(gridcolor="#b8c8c0", gridwidth=1, zerolinecolor="#a8b8b0", linecolor="#b8c8c0"),
     )
     if barmode:
         lo["barmode"] = barmode
@@ -82,9 +82,9 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     # --- Выручка B2B/B2C ---
     fig = go.Figure()
     fig.add_trace(go.Bar(name="B2B", x=years, y=[FIN_Y1["b2b_k"], FIN_Y2["b2b_k"], FIN_Y3["b2b_k"]],
-                         marker_color=c[0], marker_line_width=0, opacity=0.92))
+                         marker_color=c[0], marker_line=dict(color="#3d6b55", width=0.8), opacity=0.95))
     fig.add_trace(go.Bar(name="B2C", x=years, y=[FIN_Y1["b2c_k"], FIN_Y2["b2c_k"], FIN_Y3["b2c_k"]],
-                         marker_color=c[3], marker_line_width=0, opacity=0.92))
+                         marker_color=c[3], marker_line=dict(color="#9a7058", width=0.8), opacity=0.95))
     fig.update_layout(**_layout(f"Выручка по годам · SOM {Y3_MARKET_SHARE:.0%} TAM", barmode="group"))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_revenue.png"

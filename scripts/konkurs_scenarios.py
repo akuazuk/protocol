@@ -20,7 +20,7 @@ from konkurs_finance import (
     total_rev_k,
 )
 
-# Доля B2C без rev-share (прямой SEO / protocol.by) — Protocol получает 100% цены
+# Доля B2C без rev-share (прямой SEO / protocol.by) - Protocol получает 100% цены
 B2C_DIRECT_SHARE = 0.20
 
 
@@ -70,14 +70,14 @@ CHANNEL_OUTLOOK = [
         "channel": "B2C SMS/QR rev-share",
         "prob": 0.68,
         "y3_k": int(FIN_Y3["b2c_k"] * 0.75),
-        "driver": "30% клинике — мотивация рассылать ссылку после приёма",
+        "driver": "30% клинике - мотивация рассылать ссылку после приёма",
         "rank": 3,
     },
     {
         "channel": "B2B API / OEM (Айболит)",
         "prob": 0.52,
         "y3_k": FIN_Y3["api_k"],
-        "driver": "Масштаб через вендора МИС; цикл продаж 12–18 мес",
+        "driver": "Масштаб через вендора МИС; цикл продаж 12-18 мес",
         "rank": 4,
     },
     {
@@ -155,16 +155,16 @@ SCENARIO_BASE = build_scenario_y3("base")
 SCENARIO_OPTIMISTIC = build_scenario_y3("optimistic")
 ALL_SCENARIOS_Y3 = [SCENARIO_CAUTIOUS, SCENARIO_BASE, SCENARIO_OPTIMISTIC]
 
-# Теоретический потолок (100% TAM) — для графика, не план
+# Теоретический потолок (100% TAM) - для графика, не план
 TAM_CEILING_B2B_YEAR_K = int(MARKET_KZ_YEAR * PRICE_BLEND_Y2Y3 / 1000)  # ~22 500
 TAM_CEILING_B2C_YEAR_K = b2c_protocol_k(int(B2C_TAM_TOUCHES_YEAR * 0.01))  # 1% conv
 
 
 # TAM → SAM → SOM → выручка (мост для графика)
 TAM_BRIDGE = [
-    ("TAM — весь рынок", MARKET_KZ_YEAR, TAM_CEILING_B2B_YEAR_K, "30 млн КЗ/год · теор. B2B 22 500 тыс. BYN/год"),
-    ("SAM — крупные ОЗ 5%", SAM_KZ_YEAR, int(SAM_KZ_YEAR * PRICE_BLEND_Y2Y3 / 1000), "1,5 млн КЗ/год · целевой B2B-сегмент"),
-    ("SOM — план 2029 (8%)", SOM_Y3_KZ_YEAR, SCENARIO_CAUTIOUS["b2b_k"], "2,4 млн КЗ/год · 200 тыс. КЗ/мес B2B"),
+    ("TAM - весь рынок", MARKET_KZ_YEAR, TAM_CEILING_B2B_YEAR_K, "30 млн КЗ/год · теор. B2B 22 500 тыс. BYN/год"),
+    ("SAM - крупные ОЗ 5%", SAM_KZ_YEAR, int(SAM_KZ_YEAR * PRICE_BLEND_Y2Y3 / 1000), "1,5 млн КЗ/год · целевой B2B-сегмент"),
+    ("SOM - план 2029 (8%)", SOM_Y3_KZ_YEAR, SCENARIO_CAUTIOUS["b2b_k"], "2,4 млн КЗ/год · 200 тыс. КЗ/мес B2B"),
     ("B2C + API 2029", SCENARIO_CAUTIOUS["b2c_checks"], SCENARIO_CAUTIOUS["b2c_k"] + SCENARIO_CAUTIOUS["api_k"], "69,6 тыс. проверок · 0,23% TAM"),
     ("Выручка Protocol", 0, SCENARIO_CAUTIOUS["total_rev_k"], "осторожный сценарий · 2 315 тыс. BYN/год"),
 ]

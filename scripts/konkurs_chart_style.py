@@ -3,27 +3,27 @@ from __future__ import annotations
 
 from pathlib import Path
 
-# Пастельные тона (неяркие, спокойные)
+# Пастель с чуть большим контрастом
 COLORS = [
-    "#8fbc9f",  # шалфей
-    "#9eb8d4",  # пыльная голубая
-    "#c4b5d8",  # лаванда
-    "#e8d0c4",  # персик
-    "#b5d4c8",  # мята
-    "#d4b5c4",  # пыльная роза
+    "#4d8f73",  # шалфей
+    "#5a85b5",  # голубой
+    "#7a68a8",  # лаванда
+    "#c4957a",  # персик
+    "#5a9e82",  # мята
+    "#a86b88",  # роза
 ]
 
 COLOR_PRIMARY = COLORS[0]
 COLOR_SECONDARY = COLORS[1]
 COLOR_ACCENT = COLORS[3]
-COLOR_NEGATIVE = "#d4a8a8"
+COLOR_NEGATIVE = "#c47878"
 COLOR_HIGHLIGHT = COLORS[4]
 
 BG_FIG = "#ffffff"
-BG_AX = "#f9f7f4"
-GRID = "#e4ebe6"
-TEXT = "#3d4f48"
-MUTED = "#6b7c75"
+BG_AX = "#f3f1ee"
+GRID = "#c5d1cb"
+TEXT = "#24332f"
+MUTED = "#4d5e58"
 
 
 def apply_rc(plt) -> None:

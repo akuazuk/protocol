@@ -423,7 +423,7 @@ def _generate_charts_matplotlib(assets_dir: Path) -> dict[str, Path]:
     plt.close(fig)
     paths["roi"] = p9
 
-    # B2C воронка — согласована с FIN_Y3 (69,6 тыс. оплат в осторожном сценарии)
+    # B2C воронка - согласована с FIN_Y3 (69,6 тыс. оплат в осторожном сценарии)
     fig, ax = plt.subplots(figsize=(7, 3.2))
     funnel = ["КЗ/год\n30 млн TAM", "Увидели QR/SMS\n2%", "Landing\n40%", "Оплата\n29%"]
     funnel_vals = [30_000_000, 600_000, 240_000, FIN_Y3["b2c_checks"]]

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 # Якорь рынка: 25 000 КЗ/мес в Кравире = 1% платных КЗ частного сектора РБ
-# Адресуемый рынок — ВСЕ частные ОЗ Беларуси (~2,5 млн КЗ/мес), не только Кравира
+# Адресуемый рынок - ВСЕ частные ОЗ Беларуси (~2,5 млн КЗ/мес), не только Кравира
 KRAVIRA_KZ_MONTH = 25_000
 KRAVIRA_MARKET_SHARE = 0.01
 MARKET_KZ_MONTH = int(KRAVIRA_KZ_MONTH / KRAVIRA_MARKET_SHARE)  # 2_500_000
@@ -60,7 +60,7 @@ def clinic_revshare_byn(patient_price: float) -> tuple[float, float]:
     return clinic, protocol
 
 
-# Финплан 3 года (тыс. BYN) — b2c_k пересчитывается в konkurs_scenarios (rev-share + 20% direct)
+# Финплан 3 года (тыс. BYN) - b2c_k пересчитывается в konkurs_scenarios (rev-share + 20% direct)
 FIN_Y1 = {
     "clients": 1,
     "kz_month": 25_000,
