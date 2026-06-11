@@ -2,13 +2,15 @@
 
 **Срок:** до **01.08.2026** · [konkurs.belinfund.by/participants](https://konkurs.belinfund.by/participants)
 
-Пересборка форм из шаблонов:
+**Основной формат - PDF:**
 
 ```bash
-python3 scripts/fill_konkurs_docx.py
+python3 scripts/build_konkurs_pdf.py
 ```
 
-Печать: **4 комплекта** (заявка, паспорт, бизнес-план, стратегия) + приложения PDF/HTML.
+Опционально docx: `python3 scripts/build_konkurs_pdf.py --with-docx`
+
+Печать: **4 комплекта PDF** + ROI PDF + architecture-kravira-fhir-mis.pdf.
 
 ---
 
