@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 from typing import Iterable, Sequence
 
@@ -11,6 +12,26 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 from docx.text.paragraph import Paragraph
+
+_SCRIPTS = Path(__file__).resolve().parent
+if str(_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS))
+
+from konkurs_finance import (  # noqa: E402
+    FIN_Y1,
+    FIN_Y2,
+    FIN_Y3,
+    KRAVIRA_B2B_YEAR,
+    KRAVIRA_KZ_MONTH,
+    MARKET_KZ_MONTH,
+    MARKET_KZ_YEAR,
+    SAM_KZ_YEAR,
+    SOM_Y3_KZ_YEAR,
+    TAM_REVENUE_YEAR,
+    Y2_MARKET_SHARE,
+    Y3_MARKET_SHARE,
+    ebitda_k,
+)
 
 GREEN = "126B5C"
 GREEN_LIGHT = "E8F5F1"
@@ -165,8 +186,8 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     # Выручка по годам (B2B + B2C)
     fig, ax = plt.subplots(figsize=(7, 3.8))
     years = ["2027", "2028", "2029"]
-    b2b = [207, 675, 1800]
-    b2c = [50, 180, 450]
+    b2b = [FIN_Y1["b2b_k"], FIN_Y2["b2b_k"], FIN_Y3["b2b_k"]]
+    b2c = [FIN_Y1["b2c_k"], FIN_Y2["b2c_k"], FIN_Y3["b2c_k"]]
     x = range(len(years))
     w = 0.35
     ax.bar([i - w / 2 for i in x], b2b, width=w, label="B2B, тыс. BYN", color=colors[0])
@@ -185,8 +206,12 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
 
     # TAM / SAM / SOM
     fig, ax = plt.subplots(figsize=(7, 3.8))
-    labels = ["TAM\n30 млн КЗ/год", "SAM 5%\n1,5 млн КЗ", "SOM год 3\n2,4 млн КЗ"]
-    values = [30, 1.5, 2.4]
+    labels = [
+        f"TAM\n{MARKET_KZ_YEAR // 1_000_000} млн КЗ/год",
+        f"SAM 5%\n{SAM_KZ_YEAR // 1_000_000:,} млн КЗ".replace(",", " "),
+        f"SOM год 3\n{SOM_Y3_KZ_YEAR // 1_000_000:,} млн КЗ".replace(",", " "),
+    ]
+    values = [MARKET_KZ_YEAR / 1_000_000, SAM_KZ_YEAR / 1_000_000, SOM_Y3_KZ_YEAR / 1_000_000]
     bars = ax.bar(labels, values, color=[colors[2], colors[1], colors[0]])
     ax.set_ylabel("млн КЗ / год")
     ax.set_title("Рынок частных ОЗ РБ: TAM - SAM - SOM")
@@ -240,12 +265,13 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             p6,
             ["Показатель", "Значение", "Источник / допущение"],
             [
-                ["КЗ/мес в МЦ «Кравира»", "25 000", "данные участника"],
-                ["Доля Кравиры на рынке частных ОЗ", "~1%", "оценка участника"],
-                ["КЗ/мес, сегмент частных ОЗ", "~2 500 000", "25 000 / 0,01"],
-                ["КЗ/год, сегмент", "~30 млн", "расчёт"],
-                ["TAM @ 0,99 BYN/КЗ", "~29,7 млн BYN/год", "30 млн x 0,99"],
-                ["Цель год 3 (5% рынка)", "~125 000 КЗ/мес", "допущение БП"],
+                ["КЗ/мес в МЦ «Кравира»", f"{KRAVIRA_KZ_MONTH:,}".replace(",", " "), "данные участника"],
+                ["Доля Кравиры на рынке платных КЗ частных ОЗ РБ", "1%", "оценка участника"],
+                ["КЗ/мес, сегмент частных ОЗ РБ", f"{MARKET_KZ_MONTH:,}".replace(",", " "), "25 000 / 0,01"],
+                ["КЗ/год, сегмент", f"{MARKET_KZ_YEAR:,}".replace(",", " "), "× 12"],
+                ["TAM @ 0,99 BYN/КЗ", f"~{TAM_REVENUE_YEAR:,} BYN/год".replace(",", " "), "30 млн × 0,99"],
+                ["Цель год 3 (8% рынка)", f"{FIN_Y3['kz_month']:,} КЗ/мес".replace(",", " "), f"{Y3_MARKET_SHARE:.0%} TAM"],
+                ["Цель год 2 (3% рынка)", f"{FIN_Y2['kz_month']:,} КЗ/мес".replace(",", " "), f"{Y2_MARKET_SHARE:.0%} TAM"],
             ],
             caption="Таблица 1. Оценка объёма рынка консультативных заключений",
         )
@@ -347,11 +373,13 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             ["Показатель", "2027", "2028", "2029"],
             [
                 ["Клиенты (ОЗ экв.)", "1 (Кравира)", "3", "8"],
-                ["КЗ/мес, всего", "25 000", "75 000", "200 000"],
-                ["Выручка B2B, тыс. BYN", "207", "675", "1 800"],
-                ["Выручка B2C, тыс. BYN", "50", "180", "450"],
-                ["OPEX, тыс. BYN", "300", "450", "700"],
-                ["EBITDA, тыс. BYN", "отриц.", "~+105", "~+1 550"],
+                ["КЗ/мес, всего", f"{FIN_Y1['kz_month']:,}".replace(",", " "), f"{FIN_Y2['kz_month']:,}".replace(",", " "), f"{FIN_Y3['kz_month']:,}".replace(",", " ")],
+                ["Доля рынка РБ", "1%", "3%", "8%"],
+                ["Выручка B2B, тыс. BYN", str(FIN_Y1["b2b_k"]), str(FIN_Y2["b2b_k"]), str(FIN_Y3["b2b_k"])],
+                ["Выручка B2C, тыс. BYN", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])],
+                ["Выручка API/МИС, тыс. BYN", str(FIN_Y1["api_k"]), str(FIN_Y2["api_k"]), str(FIN_Y3["api_k"])],
+                ["OPEX, тыс. BYN", str(FIN_Y1["opex_k"]), str(FIN_Y2["opex_k"]), str(FIN_Y3["opex_k"])],
+                ["EBITDA, тыс. BYN", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"],
             ],
             caption="Таблица 8. Финансовый план на 3 года (тыс. BYN)",
         )

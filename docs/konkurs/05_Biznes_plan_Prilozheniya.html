@@ -79,10 +79,24 @@
     <p class="sub">ОДО «Медицинский центр «Кравира»» · конкурс Белинфонд 2026 · рекомендуемый объём БП 10-40 стр., расчёты в приложениях</p>
 
     <div class="stat-row">
-      <div class="stat"><b>478</b>клинических протоколов Минздрава</div>
-      <div class="stat"><b>25 000</b>КЗ/мес в Кравире</div>
-      <div class="stat"><b>0,69 BYN</b>пакет «Сеть» L0</div>
-      <div class="stat"><b>4,99 BYN</b>B2C базовая проверка</div>
+      <div class="stat"><b>25 000</b>КЗ/мес в Кравире (1% рынка РБ)</div>
+      <div class="stat"><b>2,5 млн</b>КЗ/мес частный сектор РБ</div>
+      <div class="stat"><b>207 000</b>BYN/год B2B (якорь)</div>
+      <div class="stat"><b>0,69 BYN</b>тариф «Сеть» L0</div>
+    </div>
+
+    <div class="card">
+      <h2>Рынок: якорь 1% → масштаб по РБ</h2>
+      <table>
+        <thead><tr><th>Показатель</th><th>Значение</th><th>Формула</th></tr></thead>
+        <tbody>
+          <tr><td>КЗ/мес, Кравира</td><td>25 000</td><td>данные участника</td></tr>
+          <tr><td>Доля рынка платных КЗ частных ОЗ</td><td>1%</td><td>допущение для РБ</td></tr>
+          <tr><td>Сегмент частных ОЗ РБ</td><td>2 500 000 / мес</td><td>25 000 ÷ 0,01</td></tr>
+          <tr><td>TAM / год @ 0,99</td><td>29,7 млн BYN</td><td>30 млн × 0,99</td></tr>
+          <tr><td>Цель 2029 (8% рынка)</td><td>200 000 / мес</td><td>2,4 млн КЗ/год</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="card">
@@ -120,10 +134,13 @@
         </thead>
         <tbody>
           <tr><td>Клиенты (ОЗ)</td><td>1</td><td>3</td><td>8</td></tr>
-          <tr><td>КЗ/мес</td><td>25 000</td><td>75 000</td><td>200 000</td></tr>
+          <tr><td>КЗ/мес (доля рынка)</td><td>25 000 (1%)</td><td>75 000 (3%)</td><td>200 000 (8%)</td></tr>
           <tr><td>Выручка B2B</td><td>207</td><td>675</td><td>1 800</td></tr>
           <tr><td>Выручка B2C</td><td>50</td><td>180</td><td>450</td></tr>
-          <tr><td>OPEX</td><td>300</td><td>450</td><td>700</td></tr>
+          <tr><td>Выручка API/МИС</td><td>0</td><td>25</td><td>75</td></tr>
+          <tr><td>Выручка итого</td><td>257</td><td>880</td><td>2 325</td></tr>
+          <tr><td>OPEX</td><td>280</td><td>420</td><td>650</td></tr>
+          <tr><td>EBITDA</td><td>-23</td><td>+460</td><td>+1 675</td></tr>
         </tbody>
       </table>
       <div class="chart-box" style="margin-top:1rem;height:280px"><canvas id="chartRevenue"></canvas></div>
@@ -139,7 +156,7 @@
             <tr><td>API МИС Айболит</td><td>Q3 2026-Q1 2027</td></tr>
             <tr><td>B2C beta</td><td>Q4 2026</td></tr>
             <tr><td>3-5 B2B клиентов</td><td>2027</td></tr>
-            <tr><td>5-15% рынка</td><td>2028-2029</td></tr>
+            <tr><td>5-8% рынка РБ</td><td>2028-2029</td></tr>
           </tbody>
         </table>
       </div>
@@ -163,6 +180,11 @@
     </div>
 
     <div class="card">
+      <h2>Приложение Ж. ROI якорного клиента</h2>
+      <p>Одностраничный расчёт для МЦ «Кравира»: <a href="06_ROI_Kravira.html">06_ROI_Kravira.html</a> (печать в PDF).</p>
+    </div>
+
+    <div class="card">
       <h2>Приложение Е. Архитектура и презентация</h2>
       <p>К пакету заявки прилагаются:</p>
       <ul>
@@ -178,7 +200,7 @@
       new Chart(document.getElementById('chartMarket'), {
         type: 'bar',
         data: {
-          labels: ['TAM 30 млн КЗ/год', 'SAM 5%', 'SOM год 3'],
+          labels: ['TAM 30 млн КЗ/год', 'SAM 5% (1,5 млн)', 'SOM год 3 (2,4 млн)'],
           datasets: [{ label: 'млн КЗ/год', data: [30, 1.5, 2.4], backgroundColor: [g3, g2, g] }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
@@ -197,7 +219,8 @@
           labels: ['2027', '2028', '2029'],
           datasets: [
             { label: 'B2B, тыс.', data: [207, 675, 1800], backgroundColor: g },
-            { label: 'B2C, тыс.', data: [50, 180, 450], backgroundColor: amber }
+            { label: 'B2C, тыс.', data: [50, 180, 450], backgroundColor: amber },
+            { label: 'API, тыс.', data: [0, 25, 75], backgroundColor: g2 }
           ]
         },
         options: { responsive: true, maintainAspectRatio: false }

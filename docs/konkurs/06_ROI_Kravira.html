@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Protocol - ROI якорного клиента (Кравira)</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --g: #126b5c; --g1: #e8f5f1; --text: #1a2e2a; --muted: #5a6f6a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--text); background: #fbfffd; font-size: 14px; line-height: 1.5; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 1rem 1.25rem 2rem; }
+    h1 { font-family: Outfit, sans-serif; color: var(--g); font-size: 1.45rem; margin: 0 0 0.25rem; }
+    .sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 1rem; }
+    .btn { font-family: Outfit, sans-serif; font-weight: 700; padding: 0.4rem 1rem; border-radius: 999px; border: none; cursor: pointer; background: var(--g); color: #fff; margin-bottom: 0.75rem; }
+    .card { background: #fff; border: 1px solid rgba(18,107,92,.2); border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 0.85rem; }
+    h2 { font-family: Outfit, sans-serif; color: var(--g); font-size: 1rem; margin: 0 0 0.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 0.45rem 0.55rem; border-bottom: 1px solid #e2ece8; text-align: left; }
+    th { background: var(--g); color: #fff; font-weight: 600; }
+    tr:nth-child(even) td { background: var(--g1); }
+    .num { text-align: right; white-space: nowrap; }
+    .highlight { background: #fef3c7; padding: 0.65rem 0.85rem; border-radius: 8px; font-size: 0.88rem; border-left: 4px solid #d97706; }
+    .foot { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; }
+    @media print { .btn { display: none; } body { background: #fff; } .card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <button class="btn" type="button" onclick="window.print()">Печать / PDF</button>
+    <h1>Приложение Ж. ROI для якорного клиента</h1>
+    <p class="sub">ОДО «Медицинский центр «Кравira»» · Protocol L0 · допущение: 25 000 КЗ/мес = 1% платных КЗ частного сектора РБ</p>
+
+    <div class="card">
+      <h2>1. Базовые допущения</h2>
+      <table>
+        <tbody>
+          <tr><td>Поток КЗ в Кравире</td><td class="num"><strong>25 000</strong> / мес</td></tr>
+          <tr><td>Доля рынка частных ОЗ РБ</td><td class="num"><strong>1%</strong></td></tr>
+          <tr><td>Адресуемый рынок РБ (экстраполяция)</td><td class="num"><strong>2 500 000</strong> КЗ/мес</td></tr>
+          <tr><td>Тариф L0 «Сеть»</td><td class="num"><strong>0,69 BYN</strong> / КЗ</td></tr>
+          <tr><td>Стоимость Protocol для Кравиры</td><td class="num"><strong>17 250 BYN</strong> / мес · <strong>207 000 BYN</strong> / год</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>2. Сравнение: 100% L0 vs выборочный контроль методслужбы</h2>
+      <table>
+        <thead><tr><th>Подход</th><th>Охват потока</th><th>Экв. стоимость контроля</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Методслужба (0,5 FTE, ~500 КЗ/мес глубоко)</td>
+            <td class="num">~2% потока</td>
+            <td class="num">~34 BYN / проверенное КЗ*</td>
+          </tr>
+          <tr>
+            <td><strong>Protocol L0</strong> (каждое сохранение в МИС)</td>
+            <td class="num"><strong>100%</strong></td>
+            <td class="num"><strong>0,69 BYN / КЗ</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="foot">* 17 250 BYN (половина FTE 3 200 BYN) ÷ 500 ≈ 34 BYN на глубоко проверенное заключение при охвате 2%.</p>
+    </div>
+
+    <div class="card">
+      <h2>3. Прямая экономия (BYN/мес, осторожный сценарий)</h2>
+      <table>
+        <thead><tr><th>Статья</th><th>Расчёт</th><th class="num">BYN/мес</th></tr></thead>
+        <tbody>
+          <tr><td>Освобождение времени методслужбы</td><td>0,35 FTE × 3 200 BYN</td><td class="num">+1 120</td></tr>
+          <tr><td>Меньше доработок ЦИСЗ</td><td>1,5 п.п. × 25 000 × 15 BYN/случай</td><td class="num">+5 625</td></tr>
+          <tr><td>Меньше повторных визитов врача (оценка)</td><td>0,5 п.п. × 25 000 × 8 BYN</td><td class="num">+1 000</td></tr>
+          <tr><td><strong>Сумма экономии</strong></td><td></td><td class="num"><strong>+7 745</strong></td></tr>
+          <tr><td>Стоимость Protocol L0</td><td>25 000 × 0,69</td><td class="num">−17 250</td></tr>
+          <tr><td><strong>Баланс (операционный)</strong></td><td></td><td class="num"><strong>−9 505</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>4. Сценарий выхода в плюс (для одной площадки)</h2>
+      <table>
+        <thead><tr><th>Сценарий</th><th>Условие</th><th class="num">Эффект</th></tr></thead>
+        <tbody>
+          <tr><td>Базовый+</td><td>снижение отказов ЦИСЗ на 2,5 п.п. + 0,5 FTE методиста</td><td class="num">≈ +1 600 / −5 625 → <strong>≈ 0</strong></td></tr>
+          <tr><td>Масштаб B2B</td><td>+2 клиники по 10k КЗ @ 0,79</td><td class="num"><strong>+189 600 BYN/год</strong> валовой B2B</td></tr>
+          <tr><td>API МИС</td><td>лицензия «Айболит» + внедрение</td><td class="num"><strong>15–40 тыс. BYN</strong> разово</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight">
+      <strong>Вывод для бизнес-плана:</strong> для Кравиры Protocol L0 - это не замена врача, а <em>массовый предимпортный фильтр</em> на весь поток 25 000 КЗ/мес по цене <strong>0,69 BYN</strong> (в 50× дешевле эквивалента выборочного аудита 2% потока). Коммерческая окупаемость направления достигается при подключении <strong>2–3 клиник</strong> уровня «Клиника» (10k КЗ) или OEM-контракте с МИС. Национальный потенциал при 1%→8% рынка: от <strong>207 тыс.</strong> до <strong>~1,8 млн BYN/год</strong> B2B (см. financial_assumptions.md).
+    </div>
+
+    <p class="foot">Нефинансовые эффекты: снижение репутационных рисков перед Минздравом, единый send_gate, чек-лист ЦИСЗ 3.2.1, прозрачность для пациента (B2C). Дисклеймер: не МЭЭ, не юридическое заключение.</p>
+  </div>
+</body>
+</html>
