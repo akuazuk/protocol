@@ -3,19 +3,20 @@
 <meta charset="utf-8"/>
 <title>Бизнес-план Protocol - Кравира</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
 :root {
-  --g700: #0d5c4d; --g600: #126b5c; --g500: #1a8a72; --g100: #e8f5f1;
-  --text: #142824; --muted: #4a635e; --amber: #b45309; --border: rgba(13,92,77,.16);
+  --sage: #7a9e8e; --sage-light: #d4e8de; --sage-pale: #eef5f1;
+  --blue-pale: #dce8f0; --lavender: #e8e0f0; --peach: #f5ebe4;
+  --text: #2d3d38; --muted: #5c6f68; --border: rgba(122,158,142,.22);
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--text);
-  font-size: 10.5pt; line-height: 1.55; background: #f4faf8; }
+  font-size: 10.5pt; line-height: 1.58; background: #f7f5f2; }
 .wrap { max-width: 210mm; margin: 0 auto; padding: 0; }
-h1,h2,h3 { font-family: Outfit, sans-serif; color: var(--g700); page-break-after: avoid; }
-h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .02em; }
-h2 { font-size: 14pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--g500); }
-h3 { font-size: 11.5pt; margin: 5mm 0 2mm; color: var(--g600); }
+h1,h2,h3 { font-family: Outfit, sans-serif; color: #3d5c52; page-break-after: avoid; font-weight: 600; }
+h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .01em; }
+h2 { font-size: 13.5pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--sage-light); }
+h3 { font-size: 11pt; margin: 5mm 0 2mm; color: var(--sage); }
 p { margin: 0 0 3mm; text-align: justify; hyphens: auto; }
 ul { margin: 2mm 0 4mm; padding-left: 5mm; }
 li { margin-bottom: 1.5mm; }
@@ -23,61 +24,62 @@ li { margin-bottom: 1.5mm; }
 .cover {
   min-height: 267mm; display: flex; flex-direction: column; justify-content: center;
   text-align: center; padding: 20mm 18mm; page-break-after: always;
-  background: linear-gradient(165deg, #fff 0%, var(--g100) 55%, #fff 100%);
-  border-bottom: 4px solid var(--g600);
+  background: linear-gradient(165deg, #fff 0%, var(--sage-pale) 50%, #fff 100%);
+  border-bottom: 3px solid var(--sage-light);
 }
 .cover .badge { display: inline-block; font-size: 9pt; color: var(--muted); letter-spacing: .08em;
   text-transform: uppercase; margin-bottom: 6mm; }
-.cover .title { font-size: 28pt; font-weight: 700; color: var(--g700); margin: 4mm 0; }
-.cover .subtitle { font-size: 13pt; color: var(--muted); margin-bottom: 8mm; }
-.cover .project { font-size: 12pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
+.cover .title { font-size: 26pt; font-weight: 600; color: #3d5c52; margin: 4mm 0; }
+.cover .subtitle { font-size: 12.5pt; color: var(--muted); margin-bottom: 8mm; }
+.cover .project { font-size: 11.5pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
 .cover .meta { text-align: left; max-width: 150mm; margin: 10mm auto 0; font-size: 10pt; line-height: 1.65;
   background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
-.cover hr { border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--g500), transparent);
+.cover hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--sage-light), transparent);
   margin: 8mm auto; width: 70%; }
 .mission {
-  page-break-after: always; padding: 14mm 16mm; background: var(--g700); color: #fff;
+  page-break-after: always; padding: 14mm 16mm;
+  background: linear-gradient(135deg, #6b9080 0%, #7a9e8e 100%); color: #fff;
 }
-.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.35); font-size: 16pt; }
-.mission p { text-align: left; opacity: .95; }
+.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.3); font-size: 15pt; }
+.mission p { text-align: left; opacity: .96; }
+.glossary-block { page-break-inside: avoid; }
+.glossary-block .abbr { font-weight: 700; color: var(--sage); white-space: nowrap; }
 .section { padding: 10mm 16mm 4mm; page-break-inside: avoid; }
 .section-body { padding: 0 16mm 6mm; }
-.card { background: #fff; border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm;
-  margin-bottom: 4mm; box-shadow: 0 1px 4px rgba(13,92,77,.06); page-break-inside: avoid; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 4mm; padding: 4mm 5mm;
+  margin-bottom: 4mm; box-shadow: 0 1px 3px rgba(61,92,82,.05); page-break-inside: avoid; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
-.grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
-.stake { border-left: 4px solid var(--g600); padding-left: 4mm; }
-.stake .icon { font-size: 16pt; float: left; margin-right: 3mm; }
+.stake { border-left: 3px solid var(--sage-light); padding-left: 4mm; background: var(--sage-pale); border-radius: 0 3mm 3mm 0; }
 .stake h3 { margin-top: 0; }
-.stake .tag { font-size: 9pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
+.stake .tag { font-size: 9pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
 table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 3mm 0 5mm; page-break-inside: avoid; }
-th, td { padding: 2.2mm 2.5mm; border: 1px solid #d8ebe6; text-align: left; vertical-align: top; }
-th { background: var(--g600); color: #fff; font-weight: 600; }
-tr:nth-child(even) td { background: var(--g100); }
-.caption { font-size: 9pt; font-weight: 600; color: var(--g700); margin: 4mm 0 2mm; }
-.chart { text-align: center; margin: 4mm 0 6mm; page-break-inside: avoid; }
-.chart img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 2mm; }
+th, td { padding: 2.4mm 3mm; border: 1px solid #e0ebe6; text-align: left; vertical-align: top; }
+th { background: var(--sage-light); color: #2d4a3e; font-weight: 600; }
+tr:nth-child(even) td { background: var(--sage-pale); }
+.caption { font-size: 9pt; font-weight: 600; color: #3d5c52; margin: 4mm 0 2mm; }
+.chart { text-align: center; margin: 5mm 0 7mm; page-break-inside: avoid; padding: 3mm;
+  background: #fff; border-radius: 3mm; border: 1px solid var(--border); }
+.chart img { max-width: 100%; height: auto; border-radius: 2mm; }
 .toc { padding: 12mm 16mm; page-break-after: always; }
 .toc pre { font-family: "DM Sans", sans-serif; font-size: 10pt; line-height: 1.7; white-space: pre-wrap;
-  background: #fff; padding: 6mm; border-radius: 3mm; border: 1px solid var(--border); }
-.highlight { background: #fffbeb; border-left: 4px solid var(--amber); padding: 4mm 5mm; margin: 4mm 0;
-  border-radius: 0 2mm 2mm 0; font-size: 10pt; }
+  background: #fff; padding: 6mm; border-radius: 4mm; border: 1px solid var(--border); }
+.highlight { background: var(--peach); border-left: 3px solid #c9a88a; padding: 4mm 5mm; margin: 4mm 0;
+  border-radius: 0 3mm 3mm 0; font-size: 10pt; }
 .stats { display: flex; flex-wrap: wrap; gap: 3mm; margin: 4mm 0 6mm; }
-.stat { flex: 1 1 40mm; background: var(--g100); border: 1px solid var(--border); border-radius: 2mm;
+.stat { flex: 1 1 38mm; background: #fff; border: 1px solid var(--border); border-radius: 3mm;
   padding: 3mm 4mm; text-align: center; }
-.stat b { display: block; font-size: 13pt; color: var(--g700); }
-.form-table td:first-child { width: 38%; font-weight: 600; background: var(--g100); }
+.stat b { display: block; font-size: 12.5pt; color: #3d5c52; }
+.form-table td:first-child { width: 38%; font-weight: 600; background: var(--sage-pale); }
 @media print {
   body { background: #fff; }
   .section, .section-body { padding-left: 12mm; padding-right: 12mm; }
-  .no-print { display: none !important; }
 }
 @page { size: A4; margin: 12mm 10mm; }
-.scenario { border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm; margin-bottom: 5mm;
+.scenario { border: 1px solid var(--border); border-radius: 4mm; padding: 4mm 5mm; margin-bottom: 5mm;
   page-break-inside: avoid; background: #fff; }
-.scenario h3 { margin-top: 0; color: var(--g700); }
-.scenario .tag { font-size: 8.5pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
-.flow { font-family: monospace; font-size: 8.5pt; background: var(--g100); padding: 3mm 4mm;
+.scenario h3 { margin-top: 0; color: #3d5c52; }
+.scenario .tag { font-size: 8.5pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
+.flow { font-family: monospace; font-size: 8.5pt; background: var(--sage-pale); padding: 3mm 4mm;
   border-radius: 2mm; margin: 2mm 0 3mm; word-break: break-word; }
 </style>
 </head><body><div class="wrap">
@@ -124,6 +126,7 @@ tr:nth-child(even) td { background: var(--g100); }
 16. Иные сведения .......................................... 36
 
 Приложения А-Ж: прайс, дорожная карта, KPI, графики, ROI, рынок РБ
+Глоссарий: TAM, SAM, SOM, B2B, B2C, EBITDA — расшифровки и сверка формул
 Электронные приложения: 05_Biznes_plan_Prilozheniya.html, 06_ROI_Kravira.html
 
 Рекомендуемый объём: 10-40 страниц основного текста; детальные расчёты - в приложениях.</pre></div><div class="section"><h2>3. Резюме</h2></div><div class="section-body"><p>Идея проекта. Автоматизировать предимпортную экспертизу консультативных заключений (КЗ) до подписи ЭЦП в частных медицинских организациях Республики Беларусь и предоставить всем пациентам частного сектора сервис проверки своего КЗ по официальным клиническим протоколам Минздрава (478 документов).</p><p>Масштаб рынка. МЦ «Кравира» (25 000 КЗ/мес) — якорь и пилот (~1% рынка), но продукт адресован всему сегменту частных ОЗ РБ: ~2,5 млн КЗ/мес, 30 млн/год, ~2,7 млрд BYN платных медуслуг (2025). B2B масштабируется на 3–8 клиник к 2029 г.; B2C — на любого пациента, получившего КЗ в партнёрской или любой частной ОЗ.</p><p>Решение. Protocol: scoring 482+ правил, ЦИСЗ FHIR BY, send_gate для МИС. Три канала: B2B (0,69–0,99 BYN/КЗ), API МИС, B2C с tier-ценами 4,99–14,99 BYN (терапия → онкология/pre-op) и rev-share 30% клинике при оплате по ссылке.</p><p>Финансовый вывод. TAM 2,5 млн КЗ/мес — весь рынок; в осторожном плане 2029 захват 8% B2B (200 тыс. КЗ/мес) + 0,23% B2C. Выручка ~2,32 млн BYN/год (B2B 1,8 + B2C 0,44 + API 0,075), EBITDA ~+1,67 млн/год (~139 тыс./мес). Базовый сценарий (10% TAM): EBITDA ~+2,26 млн/год; оптимистичный (12%): ~+2,95 млн/год.</p><p>Запрос. Сертификат ГКНТ (~24 тыс. BYN) на интеграцию МИС и масштабирование на сеть частных ОЗ РБ.</p></div>
@@ -212,6 +215,14 @@ tr:nth-child(even) td { background: var(--g100); }
 Rev-share 30% мотивирует клиники рассылать ссылку — доп. доход ~138 тыс. BYN/год к 2029 (осторожный сценарий, B2C 440 тыс. Protocol).</div>
 <p><strong>Вне scope (не делаем в 2026–2027):</strong></p><ul><li>Личный кабинет и история проверок</li><li>Регистрация до оплаты</li><li>Сравнение врачей между клиниками</li><li>Отдельное мобильное приложение</li></ul>
 </div><div class="section"><h2>9. Ценообразование</h2></div><div class="section-body"><p>Ценовая политика основана на микроплатеже за одну проверку КЗ (модель pay-per-use), что снижает барьер входа для клиник по сравнению с крупными лицензиями МИС.</p><p>B2B (за 1 проверку КЗ, уровень L0): - Розница: 0,99 BYN - Пакет 10 000/мес: 0,79 BYN (мин. 5 000 BYN/мес) - Пакет 25 000+/мес: 0,69 BYN (мин. 12 000 BYN/мес, тариф МЦ «Кравира») - L2 для методиста: +0,50 BYN - Внедрение API в МИС: 15-40 тыс. BYN разово + поддержка 3-5 тыс. BYN/год</p><p>Себестоимость L0 B2B: ~0,06–0,12 BYN/КЗ (маржа 85–94% при 0,99 BYN; 83–91% при 0,69 BYN).</p><p>B2C (физические лица, tier по specialty): - Базовый L1 (терапия, простой приём): 4,99 BYN - Расширенный L1+ (специалист + анализы в КЗ): 6,99 BYN - Стандарт L2 (подробный разбор): 9,99 BYN - Онкология L2 (онко, ЗНО, хроника): 14,99 BYN - Предоперационный L2 (pre-op, высокий риск): 12,99 BYN - Промо по ссылке клиники (SMS/QR): 2,99 BYN → upsell на tier - Rev-share: 30% оплаты — клинике-партнёру, 70% — Protocol</p><p>Средний чек B2C (микс tier): ~8,33 BYN. Выручка Protocol с проверки ~6,33 BYN (80% канал rev-share × 70% + 20% прямой). Пример: онко 14,99 → клинике 4,50 BYN, Protocol 10,49 BYN.</p><p>Себестоимость B2C L1: ~0,15–0,25 BYN (PDF, без хранения ПДн). Валовая маржа Protocol после rev-share: 65–85% в зависимости от tier.</p><p>Обоснование цены: ручной аудит методистом - эквивалент ~34 BYN/проверенное КЗ при охвате 2-5% потока; Protocol L0 - 0,69 BYN при 100% охвате.</p><p>Прайс-листы, таблица себестоимости, маржа по тарифам и график тарифной лестницы - таблицы 2-4, 9 и приложение А.</p></div><div class="section"><h2>10. Конкуренты</h2></div><div class="section-body"><p>Конкурентный анализ показывает отсутствие в Республике Беларусь готового продукта «корпус КП Минздрава + предпроверка Bundle до ЭЦП + B2C для пациентов».</p><p>Основные альтернативы: ручной аудит методслужбы (2-5% потока, ~34 BYN/КЗ); зарубежные CDSS без КП РБ; свободные LLM-чаты (риск ПДн, нет send_gate); встроенные шаблоны МИС без evidence_map.</p><p>Конкурентные преимущества Protocol: 100% охват потока L0; локальный корпус КП; интеграция ЦИСЗ; прозрачный детерминированный scoring; три канала монетизации.</p><p>Подробная сравнительная таблица с оценкой по 5 критериям - таблица 5.</p></div><div class="section"><h2>11. Поставщики</h2></div><div class="section-body"><p>Поставщики и контрагенты: - хостинг / виртуальные машины в дата-центре РБ (on-prem площадка клиники или облако РБ); - платёжные агрегаторы для B2C (ERIP, эквайринг банков РБ); - опционально API языковой модели (Gemini) или on-prem LLM для уровня L2; - НЦИС (БелГИСС) - регистрация программы для ЭВМ; - EPAM / вендор МИС «Айболит» - интеграционные работы; - юридическое сопровождение договоров B2B/B2C и политики ПДн.</p><p>Материалы: не требуются (программный продукт). Сервер 2-4 GB RAM на площадку. Лицензии ПО - open source (Python, FastAPI) + собственная разработка.</p><p>План закупок на 2026-2027: серверное оборудование ~10 тыс. BYN; интеграция МИС ~40 тыс. BYN; маркетинг пилота ~20 тыс. BYN (см. таблицу инвестиций).</p></div><div class="section"><h2>12. Производственный план</h2></div><div class="section-body"><p>Производственный процесс - тиражирование экземпляров ПО и сопровождение: 1. Развёртывание Docker/on-prem на площадке заказчика (1-2 недели). 2. Еженедельная синхронизация корпуса PDF Минздрава. 3. Обновление каталога правил и конфигураций gate (релизы). 4. Для B2C - изолированный публичный контур с удалением загруженных файлов после сессии. 5. Мониторинг SLA L0 &lt;2 с, uptime 99,5%.</p><p>Материально-техническая база: серверная инфраструктура МЦ «Кравира»; рабочий прототип развёрнут. Потребность в новом оборудовании - умеренная (1 сервер на площадку, ~3-5 тыс. BYN).</p><p>Производственная мощность: один сервер L0 обрабатывает до 500 000 КЗ/мес; масштабирование горизонтальное.</p></div><div class="section"><h2>13. Организационный план</h2></div><div class="section-body"><p>Организация-исполнитель: ОДО «Медицинский центр «Кравира»». Кадровая структура проекта - таблица 6.</p><p>График работ (ключевые вехи): - Q3-Q4 2026: production L0 on-prem, подготовка B2C beta, регистрация ПО; - Q1-Q2 2027: API в МИС «Айболит», метрики пилота, ROI-отчёт; - Q3-Q4 2027: коммерческие договоры с 2-3 внешними ОЗ, B2C ERIP; - 2028: масштабирование на 5-10 клиник, 3% рынка; - 2029: 8% рынка, white-label МИС.</p><p>Ответственный по проекту: Кузавка П.Л. (цифровая трансформация и ИТ). Методологическое руководство: главврач / методслужба Кравиры.</p><p>ФОТ проекта (оценка): ~180 тыс. BYN в год 1, рост до 420 тыс. BYN в год 3 (см. таблицу OPEX).</p></div><div class="section"><h2>14. Риски</h2></div><div class="section-body"><p>Финансовые и иные риски проекта систематизированы в таблице 7.</p><p>Ключевые риски: обработка ПДн в B2C; изменение клинических протоколов Минздрава; низкая готовность платить малыми клиниками; регуляторная квалификация продукта; задержка интеграции МИС; конкуренция со стороны вендоров МИС.</p><p>Митигация: on-prem L0 без выноса ПДн; автосинхронизация корпуса КП; ROI через снижение отказов ЦИСЗ (см. 06_ROI_Kravira.html); позиционирование как СПО/ИС; пилот с EPAM; QR-кампании для B2C через партнёрские клиники; резерв на юридическое сопровождение 30 тыс. BYN.</p><p>Страховые меры: договоры SLA с клиентами B2B; политика обработки ПДн; регистрация ПО в НЦИС.</p></div><div class="section"><h2>15. Финансовый план</h2></div><div class="section-body"><p>Финансовый план на 3 года (осторожный сценарий) представлен в таблицах 8, 10-12 и на графиках в приложениях Г, З, И.</p><p>Исходное допущение рынка: 25 000 КЗ/мес в Кравире = 1% платных КЗ частного сектора РБ, адресуемый рынок 2,5 млн КЗ/мес (30 млн/год).</p><p>Доходы год 1 (2027): B2B Кравира 207 + B2C 42 = 249 тыс. BYN; OPEX 280 тыс.; EBITDA −31 тыс. (~−2,6 тыс./мес).</p><p>Доходы год 2 (2028): B2B 675 + B2C 152 + API 25 = 852 тыс. BYN; OPEX 420 тыс.; EBITDA +432 тыс. (~+36 тыс./мес, 3% TAM B2B).</p><p>Доходы год 3 (2029), осторожный: B2B 1 800 + B2C 440 + API 75 = 2 315 тыс. BYN; OPEX 650 тыс.; EBITDA +1 665 тыс. (~+139 тыс./мес, 8% TAM B2B = 200 тыс. КЗ/мес из 2,5 млн). Базовый (10% TAM): EBITDA ~+2 256 тыс.; оптимистичный (12%): ~+2 949 тыс.</p><p>Пояснение TAM vs EBITDA: теоретический потолок B2B при 100% TAM — ~22,5 млн BYN/год; план 2029 использует 8% проникновения — это сознательно осторожная модель, не недооценка рынка.</p><p>Структура OPEX: ФОТ 64%, инфраструктура 13%, маркетинг 13%, прочее 10% (см. таблицу 11 и график OPEX).</p><p>Инвестиции 2026-2027: интеграция МИС 40 тыс.; B2C-витрина 25 тыс.; регистрация ПО 15 тыс.; сервер 10 тыс.; маркетинг 20 тыс. Итого ~110 тыс. BYN. Источники: сертификат ГКНТ (571 б.в. × 42 BYN ≈ 24 тыс. BYN), собственные средства Кравиры, reinvest EBITDA с 2028 г.</p><p>ROI якорного клиента - приложение Ж (06_ROI_Kravira.html): экономия ~3,5 тыс. BYN/мес vs затраты 17,25 тыс. BYN/мес на Protocol при полном охвате - окупаемость через снижение доработок ЦИСЗ и высвобождение методиста.</p><p>Cash flow: отрицательный в 2027 (−31 тыс. EBITDA), положительный с 2028 (+432 тыс., +1 665 тыс. осторожный / до +2 949 тыс. оптимистичный).</p></div><div class="section"><h2>16. Иные сведения</h2></div><div class="section-body"><p>Иные сведения: бизнес-план дополнен приложениями А-Ж в соответствии с рекомендациями Белинфонда (объём 10-40 страниц, расчёты в приложениях).</p><p>Электронная версия приложений: 05_Biznes_plan_Prilozheniya.html (графики Chart.js, таблицы рынка РБ, P&amp;L, cash flow), ROI: 06_ROI_Kravira.html, чек-лист: docx-preprint-checklist.md.</p><p>Архитектура: architecture-kravira-fhir-mis.pdf. Презентация MVP: mvp-presentation.html.</p><p>Источники рыночных данных: отраслевые обзоры платной медицины РБ (Uniter, SmartPress, КОЛЛIЕРЗ); данные Минздрава РБ; внутренние метрики МЦ «Кравира» (25 000 КЗ/мес).</p><p>Контакт для уточнений: Кузавка П.Л., akuazuk@gmail.com, +375 29 608-75-95.</p></div>
+<div class="section glossary-block"><h2>Глоссарий, формулы и сверка расчётов</h2></div>
+<div class="section-body glossary-block">
+<p>В документе используются отраслевые и финансовые сокращения. Ниже — полный глоссарий и ключевые формулы расчёта.
+Все цифры финплана сверены по единому модулю konkurs_finance.py и konkurs_scenarios.py (осторожный сценарий — базовый для таблиц).</p>
+<div class="caption">Термины: TAM, SAM, SOM, B2B, B2C, EBITDA и др.</div><table><thead><tr><th>Сокращение</th><th>English</th><th>Расшифровка</th></tr></thead><tbody><tr><td>TAM</td><td>Total Addressable Market</td><td>Весь рынок: 2,5 млн КЗ/мес (30 млн/год) в частных ОЗ РБ</td></tr><tr><td>SAM</td><td>Serviceable Addressable Market</td><td>Доступный сегмент: ~5% TAM — крупные ОЗ с ЦИСЗ и потоком &gt;5 000 КЗ/мес</td></tr><tr><td>SOM</td><td>Serviceable Obtainable Market</td><td>Реалистичная доля к 2029: 8% TAM B2B = 200 тыс. КЗ/мес</td></tr><tr><td>КЗ</td><td>Консультативное заключение</td><td>Документ врача после приёма; единица учёта B2B</td></tr><tr><td>B2B</td><td>Business-to-Business</td><td>Продажа клиникам и сетям ОЗ: проверка каждого КЗ в МИС (L0)</td></tr><tr><td>B2C</td><td>Business-to-Consumer</td><td>Продажа пациентам: загрузка PDF своего КЗ на protocol.by</td></tr><tr><td>B2B2C</td><td>Клиника → пациент</td><td>SMS/QR-ссылка от клиники; rev-share 30% клинике, 70% Protocol</td></tr><tr><td>L0 / L1 / L2</td><td>Уровни проверки</td><td>L0 — быстрый scoring &lt;2 с; L1 — базовый отчёт; L2 — разбор с LLM</td></tr><tr><td>EBITDA</td><td>Earnings Before Interest, Taxes, Depreciation, Amortization</td><td>Операционная прибыль до процентов и амортизации</td></tr><tr><td>OPEX</td><td>Operating Expenditure</td><td>Операционные расходы: ФОТ, инфра, маркетинг, поддержка</td></tr><tr><td>ЦИСЗ</td><td>Централизованная ИСЗ</td><td>Гос. контур здравоохранения РБ; передача FHIR Bundle</td></tr><tr><td>FHIR BY</td><td>Fast Healthcare Interoperability Resources</td><td>Профиль обмена медданными в РБ (версия 5.0)</td></tr><tr><td>МИС</td><td>Медицинская информационная система</td><td>«Айболит» и др.; интеграция через REST API</td></tr><tr><td>КП</td><td>Клинический протокол</td><td>Официальный документ Минздрава РБ (~478 в корпусе Protocol)</td></tr><tr><td>ЭЦП</td><td>Электронная цифровая подпись</td><td>Подпись КЗ врачом; send_gate до ЭЦП</td></tr><tr><td>ROI</td><td>Return on Investment</td><td>Окупаемость для клиники: экономия методиста + снижение доработок ЦИСЗ</td></tr><tr><td>Rev-share</td><td>Revenue sharing</td><td>Разделение выручки B2C: 30% клинике-партнёру, 70% Protocol</td></tr><tr><td>OEM / API</td><td>Original Equipment Manufacturer</td><td>Лицензия вендору МИС; масштаб без прямых продаж в каждую ОЗ</td></tr><tr><td>ГКНТ</td><td>Гос. комитет по науке и технологиям</td><td>Сертификат конкурса: 571 б.в. × 42 BYN ≈ 24 тыс. BYN</td></tr><tr><td>ОЗ</td><td>Организация здравоохранения</td><td>Клиника, медцентр, поликлиника</td></tr></tbody></table>
+<div class="caption">Ключевые формулы финмодели</div><table><thead><tr><th>Показатель</th><th>Формула</th><th>Результат</th></tr></thead><tbody><tr><td>TAM КЗ/год</td><td>25 000 / 1% × 12</td><td>30 000 000 КЗ</td></tr><tr><td>TAM B2B потолок</td><td>30 млн × 0,75 BYN</td><td>22 500 тыс. BYN/год (теория, не план)</td></tr><tr><td>B2B якорь Кравира</td><td>25 000 × 0,69 × 12</td><td>207 тыс. BYN/год</td></tr><tr><td>B2B итого (blend)</td><td>КЗ/мес × 12 × 0,75</td><td>Средний тариф L0 по пакетам</td></tr><tr><td>B2C чек пациента</td><td>Σ (цена tier × доля микса)</td><td>8,33 BYN (микс tier)</td></tr><tr><td>B2C Protocol/проверка</td><td>80%×8,33×70% + 20%×8,33</td><td>6,33 BYN (rev-share + прямой)</td></tr><tr><td>EBITDA</td><td>B2B + B2C + API − OPEX</td><td>тыс. BYN/год</td></tr><tr><td>EBITDA/мес</td><td>EBITDA год / 12</td><td>при 8% TAM ≈ 139 тыс. BYN/мес</td></tr><tr><td>Доля TAM B2B Y3</td><td>200 000 / 2 500 000</td><td>8%</td></tr><tr><td>B2C конверсия Y3</td><td>69 600 / 30 000 000</td><td>0,23%</td></tr></tbody></table>
+<div class="caption">Автоматическая сверка показателей (скрипт финмодели)</div><table><thead><tr><th>Проверка</th><th>Значение</th><th>Расчёт</th><th>Статус</th></tr></thead><tbody><tr><td>TAM КЗ/год</td><td>30 000 000</td><td>25 000 / 1% × 12</td><td>OK</td></tr><tr><td>TAM B2B потолок, тыс.</td><td>22 500</td><td>30 млн × 0,75 / 1000</td><td>OK</td></tr><tr><td>Кравира B2B, тыс.</td><td>207</td><td>25k×0,69×12/1000</td><td>OK</td></tr><tr><td>B2C Protocol/проверка</td><td>6.331 BYN</td><td>микс tier + rev-share</td><td>OK</td></tr><tr><td>Выручка 2027, тыс.</td><td>249</td><td>B2B 207 + B2C 42 + API 0</td><td>OK</td></tr><tr><td>EBITDA 2027, тыс./мес</td><td>-31 / -2.6</td><td>выручка − OPEX 280</td><td>OK</td></tr><tr><td>Выручка 2028, тыс.</td><td>852</td><td>B2B 675 + B2C 152 + API 25</td><td>OK</td></tr><tr><td>EBITDA 2028, тыс./мес</td><td>432 / 36.0</td><td>выручка − OPEX 420</td><td>OK</td></tr><tr><td>Выручка 2029, тыс.</td><td>2315</td><td>B2B 1800 + B2C 440 + API 75</td><td>OK</td></tr><tr><td>EBITDA 2029, тыс./мес</td><td>1665 / 138.8</td><td>выручка − OPEX 650</td><td>OK</td></tr><tr><td>Доля TAM B2B Y3</td><td>200 000 / 2 500 000</td><td>8%</td><td>OK</td></tr></tbody></table>
+</div>
 <div class="section"><h2>Финансовые приложения и графики</h2></div>
 <div class="section-body">
 
@@ -227,8 +238,8 @@ Rev-share 30% мотивирует клиники рассылать ссылк�
 <strong>200 тыс. КЗ/мес B2B (8%)</strong> и <strong>69,600 B2C-проверок/год (0,23%)</strong> — поэтому EBITDA
 <strong>+1665 тыс./год (~138.8 тыс./мес)</strong>, а не выручка от полного TAM
 (теор. потолок B2B ~22,500 тыс./год). Средняя выручка Protocol с B2C: ~6.331 BYN/проверка (чек пациента 8.33 BYN, rev-share 30% на 80% потока).</div>
-<div class="caption">Мост TAM → SAM → SOM → выручка Protocol</div><table><thead><tr><th>Этап</th><th>КЗ/год</th><th>Выручка тыс.</th><th>Пояснение</th></tr></thead><tbody><tr><td>TAM (все частные КЗ)</td><td>30 000 000</td><td>29 700</td><td>2,5 млн КЗ/мес · теор. B2B @0,75</td></tr><tr><td>SAM (крупные ОЗ 5%)</td><td>1 500 000</td><td>1 125</td><td>целевой B2B-сегмент</td></tr><tr><td>SOM год 3 (8%)</td><td>2 400 000</td><td>1 800</td><td>фактический B2B-план</td></tr><tr><td>+ B2C + API год 3</td><td>69 600</td><td>515</td><td>не весь TAM — конверсия 0,23%</td></tr><tr><td>Итого выручка Protocol</td><td>—</td><td>2 315</td><td>осторожный сценарий 2029</td></tr></tbody></table>
-<div class="caption">TAM / SAM / SOM — различие рынка и плана</div><table><thead><tr><th>Показатель</th><th>Значение</th><th>Комментарий</th></tr></thead><tbody><tr><td>TAM: КЗ/мес частные ОЗ РБ</td><td>2 500 000</td><td>2,5 млн — весь рынок</td></tr><tr><td>TAM: теор. B2B @0,75 BYN/год</td><td>~22 500 тыс.</td><td>потолок, не план</td></tr><tr><td>SAM 5% крупные ОЗ</td><td>1 500 000 КЗ/год</td><td>целевой B2B-сегмент</td></tr><tr><td>SOM год 3: B2B 8% TAM</td><td>200 000 КЗ/мес</td><td>8% от TAM</td></tr><tr><td>B2C конверсия год 3</td><td>69 600 проверок</td><td>0.23% TAM</td></tr></tbody></table>
+<div class="caption">Мост TAM → SAM → SOM → выручка Protocol</div><table><thead><tr><th>Этап</th><th>КЗ/год</th><th>Выручка тыс.</th><th>Пояснение</th></tr></thead><tbody><tr><td>TAM — весь рынок</td><td>30 000 000</td><td>22 500</td><td>30 млн КЗ/год · теор. B2B 22 500 тыс. BYN/год</td></tr><tr><td>SAM — крупные ОЗ 5%</td><td>1 500 000</td><td>1 125</td><td>1,5 млн КЗ/год · целевой B2B-сегмент</td></tr><tr><td>SOM — план 2029 (8%)</td><td>2 400 000</td><td>1 800</td><td>2,4 млн КЗ/год · 200 тыс. КЗ/мес B2B</td></tr><tr><td>B2C + API 2029</td><td>69 600</td><td>515</td><td>69,6 тыс. проверок · 0,23% TAM</td></tr><tr><td>Выручка Protocol</td><td>—</td><td>2 315</td><td>осторожный сценарий · 2 315 тыс. BYN/год</td></tr></tbody></table>
+<div class="caption">TAM / SAM / SOM — различие рынка и плана</div><table><thead><tr><th>Показатель</th><th>Значение</th><th>Комментарий</th></tr></thead><tbody><tr><td>TAM — весь рынок</td><td>2 500 000 КЗ/мес</td><td>2,5 млн — все частные ОЗ РБ</td></tr><tr><td>TAM B2B потолок</td><td>22 500 тыс. BYN/год</td><td>30 млн КЗ × 0,75 BYN (теория)</td></tr><tr><td>SAM — крупные ОЗ 5%</td><td>1 500 000 КЗ/год</td><td>целевой B2B-сегмент</td></tr><tr><td>SOM — план B2B 2029</td><td>200 000 КЗ/мес (8% TAM)</td><td>осторожный сценарий</td></tr><tr><td>B2C конверсия 2029</td><td>69 600 проверок/год</td><td>0.23% от TAM</td></tr></tbody></table>
 <div class="caption">Финансовый план · осторожный сценарий (тыс. BYN)</div><table><thead><tr><th>Показатель</th><th>2027</th><th>2028</th><th>2029</th></tr></thead><tbody><tr><td>Доля TAM B2B</td><td>1%</td><td>3%</td><td>8%</td></tr><tr><td>Клиенты (ОЗ)</td><td>1</td><td>3</td><td>8</td></tr><tr><td>КЗ/мес B2B (не весь TAM)</td><td>25 000</td><td>75 000</td><td>200 000</td></tr><tr><td>B2B Кравира, тыс.</td><td>207</td><td>207</td><td>207</td></tr><tr><td>B2B другие ОЗ, тыс.</td><td>0</td><td>468</td><td>1593</td></tr><tr><td>B2C Protocol, тыс.</td><td>42</td><td>152</td><td>440</td></tr><tr><td>Rev-share клиникам, тыс.</td><td>13</td><td>48</td><td>138</td></tr><tr><td>API/МИС, тыс.</td><td>0</td><td>25</td><td>75</td></tr><tr><td>Итого выручка, тыс.</td><td>249</td><td>852</td><td>2315</td></tr><tr><td>OPEX, тыс.</td><td>280</td><td>420</td><td>650</td></tr><tr><td>EBITDA год, тыс.</td><td>-31</td><td>+432</td><td>+1665</td></tr><tr><td>EBITDA мес, тыс.</td><td>-2.6</td><td>+36.0</td><td>+138.8</td></tr></tbody></table>
 <div class="caption">Три сценария года 3: осторожный · базовый · оптимистичный</div><table><thead><tr><th>Сценарий 2029</th><th>B2B TAM</th><th>B2C conv</th><th>Выручка</th><th>EBITDA/год</th><th>EBITDA/мес</th></tr></thead><tbody><tr><td>Осторожный (базовый план)</td><td>8%</td><td>0,23%</td><td>2 315</td><td>+1 665</td><td>+139</td></tr><tr><td>Базовый (вероятный)</td><td>10%</td><td>0,33%</td><td>2 976</td><td>+2 256</td><td>+188</td></tr><tr><td>Оптимистичный (upside)</td><td>12%</td><td>0,50%</td><td>3 799</td><td>+2 949</td><td>+246</td></tr></tbody></table>
 <div class="caption">Какой канал с большей вероятностью даст выручку</div><table><thead><tr><th>Канал</th><th>Вероятность</th><th>План тыс.</th><th>Драйвер</th></tr></thead><tbody><tr><td>B2B якорь (Кравира)</td><td>95%</td><td>207</td><td>Пилот уже в production; фикс. контракт 0,69 BYN/КЗ</td></tr><tr><td>B2B прямые клиники</td><td>72%</td><td>1 593</td><td>Давление ЦИСЗ + ROI кейс; 7 ОЗ кроме якоря</td></tr><tr><td>B2C SMS/QR rev-share</td><td>68%</td><td>330</td><td>30% клинике — мотивация рассылать ссылку после приёма</td></tr><tr><td>B2B API / OEM (Айболит)</td><td>52%</td><td>75</td><td>Масштаб через вендора МИС; цикл продаж 12–18 мес</td></tr><tr><td>B2C SEO / прямой вход</td><td>41%</td><td>110</td><td>Длинный хвост; без rev-share, выше маржа Protocol</td></tr></tbody></table>

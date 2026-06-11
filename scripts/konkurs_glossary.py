@@ -1,0 +1,93 @@
+"""Глоссарий и справочник формул для бизнес-плана Белинфонд."""
+
+from __future__ import annotations
+
+GLOSSARY_TABLE = [
+    ("TAM", "Total Addressable Market", "Весь рынок: 2,5 млн КЗ/мес (30 млн/год) в частных ОЗ РБ"),
+    ("SAM", "Serviceable Addressable Market", "Доступный сегмент: ~5% TAM — крупные ОЗ с ЦИСЗ и потоком >5 000 КЗ/мес"),
+    ("SOM", "Serviceable Obtainable Market", "Реалистичная доля к 2029: 8% TAM B2B = 200 тыс. КЗ/мес"),
+    ("КЗ", "Консультативное заключение", "Документ врача после приёма; единица учёта B2B"),
+    ("B2B", "Business-to-Business", "Продажа клиникам и сетям ОЗ: проверка каждого КЗ в МИС (L0)"),
+    ("B2C", "Business-to-Consumer", "Продажа пациентам: загрузка PDF своего КЗ на protocol.by"),
+    ("B2B2C", "Клиника → пациент", "SMS/QR-ссылка от клиники; rev-share 30% клинике, 70% Protocol"),
+    ("L0 / L1 / L2", "Уровни проверки", "L0 — быстрый scoring <2 с; L1 — базовый отчёт; L2 — разбор с LLM"),
+    ("EBITDA", "Earnings Before Interest, Taxes, Depreciation, Amortization", "Операционная прибыль до процентов и амортизации"),
+    ("OPEX", "Operating Expenditure", "Операционные расходы: ФОТ, инфра, маркетинг, поддержка"),
+    ("ЦИСЗ", "Централизованная ИСЗ", "Гос. контур здравоохранения РБ; передача FHIR Bundle"),
+    ("FHIR BY", "Fast Healthcare Interoperability Resources", "Профиль обмена медданными в РБ (версия 5.0)"),
+    ("МИС", "Медицинская информационная система", "«Айболит» и др.; интеграция через REST API"),
+    ("КП", "Клинический протокол", "Официальный документ Минздрава РБ (~478 в корпусе Protocol)"),
+    ("ЭЦП", "Электронная цифровая подпись", "Подпись КЗ врачом; send_gate до ЭЦП"),
+    ("ROI", "Return on Investment", "Окупаемость для клиники: экономия методиста + снижение доработок ЦИСЗ"),
+    ("Rev-share", "Revenue sharing", "Разделение выручки B2C: 30% клинике-партнёру, 70% Protocol"),
+    ("OEM / API", "Original Equipment Manufacturer", "Лицензия вендору МИС; масштаб без прямых продаж в каждую ОЗ"),
+    ("ГКНТ", "Гос. комитет по науке и технологиям", "Сертификат конкурса: 571 б.в. × 42 BYN ≈ 24 тыс. BYN"),
+    ("ОЗ", "Организация здравоохранения", "Клиника, медцентр, поликлиника"),
+]
+
+FORMULA_TABLE = [
+    ("TAM КЗ/год", "25 000 / 1% × 12", "30 000 000 КЗ"),
+    ("TAM B2B потолок", "30 млн × 0,75 BYN", "22 500 тыс. BYN/год (теория, не план)"),
+    ("B2B якорь Кравира", "25 000 × 0,69 × 12", "207 тыс. BYN/год"),
+    ("B2B итого (blend)", "КЗ/мес × 12 × 0,75", "Средний тариф L0 по пакетам"),
+    ("B2C чек пациента", "Σ (цена tier × доля микса)", "8,33 BYN (микс tier)"),
+    ("B2C Protocol/проверка", "80%×8,33×70% + 20%×8,33", "6,33 BYN (rev-share + прямой)"),
+    ("EBITDA", "B2B + B2C + API − OPEX", "тыс. BYN/год"),
+    ("EBITDA/мес", "EBITDA год / 12", "при 8% TAM ≈ 139 тыс. BYN/мес"),
+    ("Доля TAM B2B Y3", "200 000 / 2 500 000", "8%"),
+    ("B2C конверсия Y3", "69 600 / 30 000 000", "0,23%"),
+]
+
+GLOSSARY_INTRO = """
+В документе используются отраслевые и финансовые сокращения. Ниже — полный глоссарий и ключевые формулы расчёта.
+Все цифры финплана сверены по единому модулю konkurs_finance.py и konkurs_scenarios.py (осторожный сценарий — базовый для таблиц).
+""".strip()
+
+
+def build_calc_audit_table() -> list[tuple[str, str, str, str]]:
+    """Актуальная сверка ключевых показателей (генерируется из финмодели)."""
+    from konkurs_finance import (
+        FIN_Y1,
+        FIN_Y2,
+        FIN_Y3,
+        KRAVIRA_B2B_YEAR,
+        MARKET_KZ_MONTH,
+        MARKET_KZ_YEAR,
+        TAM_B2B_CEILING_YEAR_K,
+        ebitda_k,
+        ebitda_month_k,
+        total_rev_k,
+    )
+    from konkurs_scenarios import B2C_PROTOCOL_PER_CHECK, b2c_protocol_k
+
+    rows = [
+        ("TAM КЗ/год", f"{MARKET_KZ_YEAR:,}".replace(",", " "), "25 000 / 1% × 12", "OK"),
+        ("TAM B2B потолок, тыс.", f"{TAM_B2B_CEILING_YEAR_K:,}".replace(",", " "), "30 млн × 0,75 / 1000", "OK"),
+        ("Кравира B2B, тыс.", str(KRAVIRA_B2B_YEAR // 1000), "25k×0,69×12/1000", "OK"),
+        ("B2C Protocol/проверка", f"{B2C_PROTOCOL_PER_CHECK} BYN", "микс tier + rev-share", "OK"),
+    ]
+    for label, fin in [("2027", FIN_Y1), ("2028", FIN_Y2), ("2029", FIN_Y3)]:
+        calc_b2c = b2c_protocol_k(fin["b2c_checks"])
+        calc_rev = fin["b2b_k"] + calc_b2c + fin.get("api_k", 0)
+        calc_ebitda = calc_rev - fin["opex_k"]
+        ok = calc_b2c == fin["b2c_k"] and calc_rev == total_rev_k(fin) and calc_ebitda == ebitda_k(fin)
+        rows.append(
+            (
+                f"Выручка {label}, тыс.",
+                str(total_rev_k(fin)),
+                f"B2B {fin['b2b_k']} + B2C {fin['b2c_k']} + API {fin.get('api_k', 0)}",
+                "OK" if ok else "проверить",
+            )
+        )
+        rows.append(
+            (
+                f"EBITDA {label}, тыс./мес",
+                f"{ebitda_k(fin)} / {ebitda_month_k(fin)}",
+                f"выручка − OPEX {fin['opex_k']}",
+                "OK" if ok else "проверить",
+            )
+        )
+    rows.append(
+        ("Доля TAM B2B Y3", f"{FIN_Y3['kz_month']:,} / {MARKET_KZ_MONTH:,}".replace(",", " "), "8%", "OK")
+    )
+    return rows

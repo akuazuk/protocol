@@ -3,19 +3,20 @@
 <meta charset="utf-8"/>
 <title>Стратегия - Protocol</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
 :root {
-  --g700: #0d5c4d; --g600: #126b5c; --g500: #1a8a72; --g100: #e8f5f1;
-  --text: #142824; --muted: #4a635e; --amber: #b45309; --border: rgba(13,92,77,.16);
+  --sage: #7a9e8e; --sage-light: #d4e8de; --sage-pale: #eef5f1;
+  --blue-pale: #dce8f0; --lavender: #e8e0f0; --peach: #f5ebe4;
+  --text: #2d3d38; --muted: #5c6f68; --border: rgba(122,158,142,.22);
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--text);
-  font-size: 10.5pt; line-height: 1.55; background: #f4faf8; }
+  font-size: 10.5pt; line-height: 1.58; background: #f7f5f2; }
 .wrap { max-width: 210mm; margin: 0 auto; padding: 0; }
-h1,h2,h3 { font-family: Outfit, sans-serif; color: var(--g700); page-break-after: avoid; }
-h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .02em; }
-h2 { font-size: 14pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--g500); }
-h3 { font-size: 11.5pt; margin: 5mm 0 2mm; color: var(--g600); }
+h1,h2,h3 { font-family: Outfit, sans-serif; color: #3d5c52; page-break-after: avoid; font-weight: 600; }
+h1 { font-size: 22pt; margin: 0 0 4mm; letter-spacing: .01em; }
+h2 { font-size: 13.5pt; margin: 8mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--sage-light); }
+h3 { font-size: 11pt; margin: 5mm 0 2mm; color: var(--sage); }
 p { margin: 0 0 3mm; text-align: justify; hyphens: auto; }
 ul { margin: 2mm 0 4mm; padding-left: 5mm; }
 li { margin-bottom: 1.5mm; }
@@ -23,61 +24,62 @@ li { margin-bottom: 1.5mm; }
 .cover {
   min-height: 267mm; display: flex; flex-direction: column; justify-content: center;
   text-align: center; padding: 20mm 18mm; page-break-after: always;
-  background: linear-gradient(165deg, #fff 0%, var(--g100) 55%, #fff 100%);
-  border-bottom: 4px solid var(--g600);
+  background: linear-gradient(165deg, #fff 0%, var(--sage-pale) 50%, #fff 100%);
+  border-bottom: 3px solid var(--sage-light);
 }
 .cover .badge { display: inline-block; font-size: 9pt; color: var(--muted); letter-spacing: .08em;
   text-transform: uppercase; margin-bottom: 6mm; }
-.cover .title { font-size: 28pt; font-weight: 700; color: var(--g700); margin: 4mm 0; }
-.cover .subtitle { font-size: 13pt; color: var(--muted); margin-bottom: 8mm; }
-.cover .project { font-size: 12pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
+.cover .title { font-size: 26pt; font-weight: 600; color: #3d5c52; margin: 4mm 0; }
+.cover .subtitle { font-size: 12.5pt; color: var(--muted); margin-bottom: 8mm; }
+.cover .project { font-size: 11.5pt; font-weight: 600; max-width: 140mm; margin: 0 auto 10mm; line-height: 1.45; }
 .cover .meta { text-align: left; max-width: 150mm; margin: 10mm auto 0; font-size: 10pt; line-height: 1.65;
   background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
-.cover hr { border: none; height: 2px; background: linear-gradient(90deg, transparent, var(--g500), transparent);
+.cover hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--sage-light), transparent);
   margin: 8mm auto; width: 70%; }
 .mission {
-  page-break-after: always; padding: 14mm 16mm; background: var(--g700); color: #fff;
+  page-break-after: always; padding: 14mm 16mm;
+  background: linear-gradient(135deg, #6b9080 0%, #7a9e8e 100%); color: #fff;
 }
-.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.35); font-size: 16pt; }
-.mission p { text-align: left; opacity: .95; }
+.mission h2 { color: #fff; border-bottom-color: rgba(255,255,255,.3); font-size: 15pt; }
+.mission p { text-align: left; opacity: .96; }
+.glossary-block { page-break-inside: avoid; }
+.glossary-block .abbr { font-weight: 700; color: var(--sage); white-space: nowrap; }
 .section { padding: 10mm 16mm 4mm; page-break-inside: avoid; }
 .section-body { padding: 0 16mm 6mm; }
-.card { background: #fff; border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm;
-  margin-bottom: 4mm; box-shadow: 0 1px 4px rgba(13,92,77,.06); page-break-inside: avoid; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 4mm; padding: 4mm 5mm;
+  margin-bottom: 4mm; box-shadow: 0 1px 3px rgba(61,92,82,.05); page-break-inside: avoid; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
-.grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
-.stake { border-left: 4px solid var(--g600); padding-left: 4mm; }
-.stake .icon { font-size: 16pt; float: left; margin-right: 3mm; }
+.stake { border-left: 3px solid var(--sage-light); padding-left: 4mm; background: var(--sage-pale); border-radius: 0 3mm 3mm 0; }
 .stake h3 { margin-top: 0; }
-.stake .tag { font-size: 9pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
+.stake .tag { font-size: 9pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
 table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 3mm 0 5mm; page-break-inside: avoid; }
-th, td { padding: 2.2mm 2.5mm; border: 1px solid #d8ebe6; text-align: left; vertical-align: top; }
-th { background: var(--g600); color: #fff; font-weight: 600; }
-tr:nth-child(even) td { background: var(--g100); }
-.caption { font-size: 9pt; font-weight: 600; color: var(--g700); margin: 4mm 0 2mm; }
-.chart { text-align: center; margin: 4mm 0 6mm; page-break-inside: avoid; }
-.chart img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 2mm; }
+th, td { padding: 2.4mm 3mm; border: 1px solid #e0ebe6; text-align: left; vertical-align: top; }
+th { background: var(--sage-light); color: #2d4a3e; font-weight: 600; }
+tr:nth-child(even) td { background: var(--sage-pale); }
+.caption { font-size: 9pt; font-weight: 600; color: #3d5c52; margin: 4mm 0 2mm; }
+.chart { text-align: center; margin: 5mm 0 7mm; page-break-inside: avoid; padding: 3mm;
+  background: #fff; border-radius: 3mm; border: 1px solid var(--border); }
+.chart img { max-width: 100%; height: auto; border-radius: 2mm; }
 .toc { padding: 12mm 16mm; page-break-after: always; }
 .toc pre { font-family: "DM Sans", sans-serif; font-size: 10pt; line-height: 1.7; white-space: pre-wrap;
-  background: #fff; padding: 6mm; border-radius: 3mm; border: 1px solid var(--border); }
-.highlight { background: #fffbeb; border-left: 4px solid var(--amber); padding: 4mm 5mm; margin: 4mm 0;
-  border-radius: 0 2mm 2mm 0; font-size: 10pt; }
+  background: #fff; padding: 6mm; border-radius: 4mm; border: 1px solid var(--border); }
+.highlight { background: var(--peach); border-left: 3px solid #c9a88a; padding: 4mm 5mm; margin: 4mm 0;
+  border-radius: 0 3mm 3mm 0; font-size: 10pt; }
 .stats { display: flex; flex-wrap: wrap; gap: 3mm; margin: 4mm 0 6mm; }
-.stat { flex: 1 1 40mm; background: var(--g100); border: 1px solid var(--border); border-radius: 2mm;
+.stat { flex: 1 1 38mm; background: #fff; border: 1px solid var(--border); border-radius: 3mm;
   padding: 3mm 4mm; text-align: center; }
-.stat b { display: block; font-size: 13pt; color: var(--g700); }
-.form-table td:first-child { width: 38%; font-weight: 600; background: var(--g100); }
+.stat b { display: block; font-size: 12.5pt; color: #3d5c52; }
+.form-table td:first-child { width: 38%; font-weight: 600; background: var(--sage-pale); }
 @media print {
   body { background: #fff; }
   .section, .section-body { padding-left: 12mm; padding-right: 12mm; }
-  .no-print { display: none !important; }
 }
 @page { size: A4; margin: 12mm 10mm; }
-.scenario { border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm; margin-bottom: 5mm;
+.scenario { border: 1px solid var(--border); border-radius: 4mm; padding: 4mm 5mm; margin-bottom: 5mm;
   page-break-inside: avoid; background: #fff; }
-.scenario h3 { margin-top: 0; color: var(--g700); }
-.scenario .tag { font-size: 8.5pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
-.flow { font-family: monospace; font-size: 8.5pt; background: var(--g100); padding: 3mm 4mm;
+.scenario h3 { margin-top: 0; color: #3d5c52; }
+.scenario .tag { font-size: 8.5pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
+.flow { font-family: monospace; font-size: 8.5pt; background: var(--sage-pale); padding: 3mm 4mm;
   border-radius: 2mm; margin: 2mm 0 3mm; word-break: break-word; }
 </style>
 </head><body><div class="wrap">

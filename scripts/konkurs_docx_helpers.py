@@ -59,6 +59,7 @@ from konkurs_scenarios import (  # noqa: E402
     TAM_CEILING_B2B_YEAR_K,
     b2c_protocol_k,
 )
+from konkurs_chart_style import BG_FIG, COLOR_NEGATIVE, COLORS, apply_rc, style_ax  # noqa: E402
 from konkurs_market import (  # noqa: E402
     CISZ_DRIVERS,
     COMPETITOR_MATRIX,
@@ -230,16 +231,13 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
 
     assets_dir.mkdir(parents=True, exist_ok=True)
     paths: dict[str, Path] = {}
-    colors = ["#126b5c", "#1a8a72", "#3cb89a", "#0c6b94", "#d97706", "#be185d"]
-    plt.rcParams.update(
-        {
-            "font.family": "DejaVu Sans",
-            "axes.titlesize": 11,
-            "axes.labelsize": 9,
-            "xtick.labelsize": 8,
-            "ytick.labelsize": 8,
-        }
-    )
+    colors = COLORS
+    apply_rc(plt)
+
+    def _save(fig, path: Path) -> None:
+        fig.tight_layout()
+        fig.savefig(path, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
+        plt.close(fig)
 
     # Выручка по годам (B2B + B2C)
     fig, ax = plt.subplots(figsize=(7, 3.8))
@@ -255,11 +253,9 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.set_ylabel("тыс. BYN / год")
     ax.set_title(f"Прогноз выручки Protocol · осторожный сценарий (SOM {Y3_MARKET_SHARE:.0%} TAM)")
     ax.legend(loc="upper left", fontsize=8)
-    ax.grid(axis="y", alpha=0.3)
-    fig.tight_layout()
+    style_ax(ax)
     p1 = assets_dir / "chart_revenue.png"
-    fig.savefig(p1, dpi=160, bbox_inches="tight", facecolor="white")
-    plt.close(fig)
+    _save(fig, p1)
     paths["revenue"] = p1
 
     # TAM / SAM / SOM
@@ -278,7 +274,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p2 = assets_dir / "chart_market.png"
-    fig.savefig(p2, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p2, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["market"] = p2
 
@@ -295,7 +291,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
     p3 = assets_dir / "chart_pricing.png"
-    fig.savefig(p3, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p3, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["pricing"] = p3
 
@@ -311,7 +307,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.set_title(f"Структура выручки 2029 · SOM 8% TAM ({rev3} тыс. BYN/год)")
     fig.tight_layout()
     p4 = assets_dir / "chart_channels.png"
-    fig.savefig(p4, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p4, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["channels"] = p4
 
@@ -319,7 +315,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig, ax = plt.subplots(figsize=(7, 3.5))
     years = ["2027", "2028", "2029"]
     ebitda_vals = [ebitda_k(FIN_Y1), ebitda_k(FIN_Y2), ebitda_k(FIN_Y3)]
-    bar_colors = [colors[5] if v < 0 else colors[0] for v in ebitda_vals]
+    bar_colors = [COLOR_NEGATIVE if v < 0 else colors[0] for v in ebitda_vals]
     bars = ax.bar(years, ebitda_vals, color=bar_colors)
     ax.axhline(0, color="#666", linewidth=0.8)
     ax.set_ylabel("тыс. BYN")
@@ -333,7 +329,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p5 = assets_dir / "chart_ebitda.png"
-    fig.savefig(p5, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p5, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["ebitda"] = p5
 
@@ -356,7 +352,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax1.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p6 = assets_dir / "chart_market_share.png"
-    fig.savefig(p6, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p6, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["market_share"] = p6
 
@@ -380,7 +376,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p7 = assets_dir / "chart_opex.png"
-    fig.savefig(p7, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p7, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["opex"] = p7
 
@@ -399,7 +395,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p8 = assets_dir / "chart_margin.png"
-    fig.savefig(p8, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p8, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["margin"] = p8
 
@@ -407,7 +403,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig, ax = plt.subplots(figsize=(6.5, 3.5))
     roi_labels = ["Затраты\nProtocol", "Экономия\nметодист", "Экономия\nЦИСЗ", "Итого\nэкономия"]
     roi_vals = [ROI_PROTOCOL_COST / 1000, ROI_METHODIST_SAVING / 1000, (ROI_TOTAL_SAVING - ROI_METHODIST_SAVING) / 1000, ROI_TOTAL_SAVING / 1000]
-    bar_c = [colors[5], colors[0], colors[1], colors[3]]
+    bar_c = [COLOR_NEGATIVE, colors[0], colors[1], colors[2]]
     bars = ax.bar(roi_labels, roi_vals, color=bar_c)
     ax.set_ylabel("BYN/мес, тыс.")
     ax.set_title(f"ROI якорного клиента (нетто {ROI_NET / 1000:+.1f} тыс. BYN/мес)")
@@ -416,7 +412,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p9 = assets_dir / "chart_roi.png"
-    fig.savefig(p9, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p9, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["roi"] = p9
 
@@ -435,7 +431,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.set_xlim(0, 110)
     fig.tight_layout()
     p10 = assets_dir / "chart_b2c_funnel.png"
-    fig.savefig(p10, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p10, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["b2c_funnel"] = p10
 
@@ -455,7 +451,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p11 = assets_dir / "chart_b2b_split.png"
-    fig.savefig(p11, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p11, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["b2b_split"] = p11
 
@@ -464,7 +460,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     tier_names = [t["name"].replace(" ", "\n") for t in B2C_TIERS]
     tier_prices = [t["price"] for t in B2C_TIERS]
     bars = ax.bar(tier_names, tier_prices, color=colors[: len(B2C_TIERS)])
-    ax.axhline(B2C_AVG_PRICE, color=colors[5], linestyle="--", linewidth=1, label=f"Средний ~{B2C_AVG_PRICE} BYN")
+    ax.axhline(B2C_AVG_PRICE, color=colors[5], linestyle="--", linewidth=1, label=f"Средний {B2C_AVG_PRICE} BYN")
     ax.set_ylabel("BYN за проверку")
     ax.set_title("Tier-цены B2C по specialty / сложности приёма")
     for bar, val in zip(bars, tier_prices):
@@ -473,7 +469,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p12 = assets_dir / "chart_b2c_tiers.png"
-    fig.savefig(p12, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p12, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["b2c_tiers"] = p12
 
@@ -494,7 +490,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p13 = assets_dir / "chart_b2c_revshare.png"
-    fig.savefig(p13, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p13, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["b2c_revshare"] = p13
 
@@ -517,7 +513,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p14 = assets_dir / "chart_b2c_growth.png"
-    fig.savefig(p14, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p14, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["b2c_growth"] = p14
 
@@ -540,7 +536,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p15 = assets_dir / "chart_tam_bridge.png"
-    fig.savefig(p15, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p15, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["tam_bridge"] = p15
 
@@ -557,7 +553,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p16 = assets_dir / "chart_scenarios_ebitda.png"
-    fig.savefig(p16, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p16, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["scenarios_ebitda"] = p16
 
@@ -575,7 +571,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p17 = assets_dir / "chart_penetration.png"
-    fig.savefig(p17, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p17, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["penetration"] = p17
 
@@ -596,7 +592,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="x", alpha=0.3)
     fig.tight_layout()
     p18 = assets_dir / "chart_channel_outlook.png"
-    fig.savefig(p18, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p18, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["channel_outlook"] = p18
 
@@ -618,7 +614,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p19 = assets_dir / "chart_scenarios_revenue.png"
-    fig.savefig(p19, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p19, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["scenarios_revenue"] = p19
 
@@ -640,7 +636,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     p20 = assets_dir / "chart_ebitda_monthly.png"
-    fig.savefig(p20, dpi=160, bbox_inches="tight", facecolor="white")
+    fig.savefig(p20, dpi=170, bbox_inches="tight", facecolor=BG_FIG, edgecolor="none")
     plt.close(fig)
     paths["ebitda_monthly"] = p20
 
