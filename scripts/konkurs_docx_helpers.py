@@ -18,6 +18,7 @@ if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
 
 from konkurs_finance import (  # noqa: E402
+    CERTIFICATE_BYN,
     FIN_Y1,
     FIN_Y2,
     FIN_Y3,
@@ -25,12 +26,23 @@ from konkurs_finance import (  # noqa: E402
     KRAVIRA_KZ_MONTH,
     MARKET_KZ_MONTH,
     MARKET_KZ_YEAR,
+    ROI_METHODIST_SAVING,
+    ROI_NET,
+    ROI_PROTOCOL_COST,
+    ROI_TOTAL_SAVING,
     SAM_KZ_YEAR,
     SOM_Y3_KZ_YEAR,
     TAM_REVENUE_YEAR,
     Y2_MARKET_SHARE,
     Y3_MARKET_SHARE,
     ebitda_k,
+)
+from konkurs_market import (  # noqa: E402
+    CISZ_DRIVERS,
+    COMPETITOR_MATRIX,
+    INVESTMENT_PLAN,
+    OPEX_BREAKDOWN,
+    RB_MARKET_TABLE,
 )
 
 GREEN = "126B5C"
@@ -147,6 +159,30 @@ def add_picture_after(paragraph: Paragraph, image_path: Path, width_inches: floa
     return tail
 
 
+def format_title_page(
+    paragraph: Paragraph,
+    lines: Sequence[tuple[str, bool, int, str]],
+) -> None:
+    """Оформить титульный лист: центрирование заголовков, размеры шрифта."""
+    paragraph.clear()
+    anchor = paragraph
+    for idx, (text, bold, size, align) in enumerate(lines):
+        if idx == 0:
+            p = anchor
+        else:
+            p = add_paragraph_after(anchor, "", space_before=2, space_after=2)
+            anchor = p
+        if not text:
+            continue
+        run = p.add_run(dash(text))
+        run.bold = bold
+        run.font.size = Pt(size)
+        if align == "center":
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        elif align == "left":
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+
 def find_section_body(doc: Document, section_num: str) -> Paragraph | None:
     """Абзац с текстом раздела сразу после заголовка «N. …»."""
     want = re.compile(rf"^{re.escape(section_num)}\s*\.")
@@ -253,6 +289,126 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     plt.close(fig)
     paths["channels"] = p4
 
+    # EBITDA по годам
+    fig, ax = plt.subplots(figsize=(7, 3.5))
+    years = ["2027", "2028", "2029"]
+    ebitda_vals = [ebitda_k(FIN_Y1), ebitda_k(FIN_Y2), ebitda_k(FIN_Y3)]
+    bar_colors = [colors[5] if v < 0 else colors[0] for v in ebitda_vals]
+    bars = ax.bar(years, ebitda_vals, color=bar_colors)
+    ax.axhline(0, color="#666", linewidth=0.8)
+    ax.set_ylabel("тыс. BYN")
+    ax.set_title("EBITDA Protocol (осторожный сценарий)")
+    for bar, val in zip(bars, ebitda_vals):
+        label = f"{val:+d}" if val != 0 else "0"
+        y = val + (30 if val >= 0 else -40)
+        ax.text(bar.get_x() + bar.get_width() / 2, y, label, ha="center", fontsize=9)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p5 = assets_dir / "chart_ebitda.png"
+    fig.savefig(p5, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["ebitda"] = p5
+
+    # Доля рынка и КЗ/мес
+    fig, ax1 = plt.subplots(figsize=(7, 3.8))
+    shares = [1, Y2_MARKET_SHARE * 100, Y3_MARKET_SHARE * 100]
+    kz = [FIN_Y1["kz_month"] / 1000, FIN_Y2["kz_month"] / 1000, FIN_Y3["kz_month"] / 1000]
+    x = range(3)
+    ax1.bar([i - 0.2 for i in x], shares, width=0.35, label="Доля рынка, %", color=colors[3])
+    ax2 = ax1.twinx()
+    ax2.plot(list(x), kz, "o-", color=colors[4], linewidth=2, markersize=8, label="КЗ/мес, тыс.")
+    ax1.set_xticks(list(x))
+    ax1.set_xticklabels(years)
+    ax1.set_ylabel("Доля рынка, %")
+    ax2.set_ylabel("КЗ/мес, тыс.")
+    ax1.set_title("Рост доли рынка и объёма проверок")
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left", fontsize=8)
+    ax1.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p6 = assets_dir / "chart_market_share.png"
+    fig.savefig(p6, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["market_share"] = p6
+
+    # OPEX breakdown year 3 (stacked concept - grouped bars per year)
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    categories = ["ФОТ", "Инфра", "Маркетинг", "Прочее"]
+    y1 = [180, 35, 35, 30]
+    y2 = [270, 55, 55, 40]
+    y3 = [420, 85, 85, 60]
+    w = 0.25
+    x = range(len(categories))
+    for i, (vals, label, col) in enumerate(
+        zip([y1, y2, y3], years, colors[:3])
+    ):
+        ax.bar([xi + (i - 1) * w for xi in x], vals, width=w, label=label, color=col)
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(categories)
+    ax.set_ylabel("тыс. BYN")
+    ax.set_title("Структура OPEX по статьям (тыс. BYN)")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p7 = assets_dir / "chart_opex.png"
+    fig.savefig(p7, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["opex"] = p7
+
+    # Маржа по тарифам B2B
+    fig, ax = plt.subplots(figsize=(6.5, 3.5))
+    tiers = ["0,99\nСтарт", "0,79\nКлиника", "0,69\nСеть"]
+    prices = [0.99, 0.79, 0.69]
+    cost_mid = 0.09
+    margins = [(p - cost_mid) / p * 100 for p in prices]
+    bars = ax.bar(tiers, margins, color=colors[:3])
+    ax.set_ylabel("Валовая маржа L0, %")
+    ax.set_title(f"Маржа L0 при себестоимости ~{cost_mid} BYN/КЗ")
+    ax.set_ylim(0, 100)
+    for bar, val in zip(bars, margins):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 1, f"{val:.0f}%", ha="center", fontsize=9)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p8 = assets_dir / "chart_margin.png"
+    fig.savefig(p8, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["margin"] = p8
+
+    # ROI якорного клиента
+    fig, ax = plt.subplots(figsize=(6.5, 3.5))
+    roi_labels = ["Затраты\nProtocol", "Экономия\nметодист", "Экономия\nЦИСЗ", "Итого\nэкономия"]
+    roi_vals = [ROI_PROTOCOL_COST / 1000, ROI_METHODIST_SAVING / 1000, (ROI_TOTAL_SAVING - ROI_METHODIST_SAVING) / 1000, ROI_TOTAL_SAVING / 1000]
+    bar_c = [colors[5], colors[0], colors[1], colors[3]]
+    bars = ax.bar(roi_labels, roi_vals, color=bar_c)
+    ax.set_ylabel("BYN/мес, тыс.")
+    ax.set_title(f"ROI якорного клиента (нетто {ROI_NET / 1000:+.1f} тыс. BYN/мес)")
+    for bar, val in zip(bars, roi_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.2, f"{val:.1f}", ha="center", fontsize=9)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p9 = assets_dir / "chart_roi.png"
+    fig.savefig(p9, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["roi"] = p9
+
+    # B2C воронка (конверсии)
+    fig, ax = plt.subplots(figsize=(7, 3.2))
+    funnel = ["КЗ/год\n30 млн", "QR scan\n1%", "Landing\n30%", "Оплата\n5%"]
+    funnel_vals = [30_000_000, 300_000, 90_000, 4_500]
+    display = [100, 1, 0.3, 0.015]
+    ax.barh(funnel, display, color=[colors[2], colors[1], colors[4], colors[0]])
+    ax.set_xlabel("Относительный объём (лог. шкала условная)")
+    ax.set_title("B2C-воронка (консервативный сценарий, ~4 500 платных/год)")
+    for i, (bar, raw) in enumerate(zip(ax.patches, funnel_vals)):
+        ax.text(bar.get_width() + 0.02, bar.get_y() + bar.get_height() / 2, f"{raw:,}".replace(",", " "), va="center", fontsize=8)
+    ax.set_xlim(0, 110)
+    fig.tight_layout()
+    p10 = assets_dir / "chart_b2c_funnel.png"
+    fig.savefig(p10, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["b2c_funnel"] = p10
+
     return paths
 
 
@@ -276,6 +432,36 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             caption="Таблица 1. Оценка объёма рынка консультативных заключений",
         )
         anchor = add_picture_after(anchor, charts["market"])
+
+        anchor = add_table_after(
+            anchor,
+            ["Показатель рынка РБ", "Значение", "Источник"],
+            RB_MARKET_TABLE,
+            caption="Таблица 1а. Контекст рынка платных медуслуг Республики Беларусь",
+        )
+        anchor = add_table_after(
+            anchor,
+            ["Драйвер спроса на Protocol", "Пояснение"],
+            list(CISZ_DRIVERS),
+            caption="Таблица 9. Факторы роста спроса",
+        )
+        add_picture_after(anchor, charts["market_share"])
+
+    # Раздел 8 - маркетинг
+    p8sec = find_section_body(doc, "8")
+    if p8sec:
+        add_table_after(
+            p8sec,
+            ["Канал", "Целевая аудитория", "KPI", "Бюджет/год"],
+            [
+                ["Прямые продажи B2B", "частные ОЗ >5k КЗ/мес", "3 договора/год", "40 тыс. BYN"],
+                ["OEM API Айболит", "все клиенты МИС", "1 интеграция", "в CAPEX"],
+                ["QR B2C в Кравире", "пациенты", "0,1% конверсия", "15 тыс. BYN"],
+                ["Конференции ЦИСЗ", "методслужбы", "2 выступления", "10 тыс. BYN"],
+                ["Контент SEO", "физлица", "5k визитов/мес", "20 тыс. BYN"],
+            ],
+            caption="Таблица 1б. Маркетинговый план",
+        )
 
     # Раздел 9 - цены
     p9 = find_section_body(doc, "9")
@@ -315,22 +501,39 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             ],
             caption="Таблица 4. Себестоимость проверки L0",
         )
-        add_picture_after(anchor, charts["pricing"])
+        anchor = add_table_after(
+            anchor,
+            ["Тариф", "Цена", "Себест.", "Маржа L0"],
+            [
+                ["Старт", "0,99", "0,09", "~91%"],
+                ["Клиника", "0,79", "0,09", "~89%"],
+                ["Сеть", "0,69", "0,09", "~87%"],
+            ],
+            caption="Таблица 9. Маржа по тарифам B2B",
+        )
+        anchor = add_picture_after(anchor, charts["pricing"])
+        add_picture_after(anchor, charts["margin"])
 
     # Раздел 10 - конкуренты
     p10 = find_section_body(doc, "10")
     if p10:
-        add_table_after(
+        anchor = add_table_after(
             p10,
-            ["Конкурент / альтернатива", "Слабость vs Protocol"],
+            ["Альтернатива", "Охват", "Слабость", "Стоимость"],
+            COMPETITOR_MATRIX,
+            caption="Таблица 5. Конкурентный анализ (детально)",
+        )
+        add_table_after(
+            anchor,
+            ["Критерий", "Protocol", "Ручной аудит", "LLM-чат", "Шаблон МИС"],
             [
-                ["Ручной аудит методслужбы", "не масштабируется на 25k КЗ/мес"],
-                ["Зарубежные CDSS", "нет КП Минздрава РБ и FHIR BY"],
-                ["ChatGPT в свободной форме", "нет send_gate, риск ПДн"],
-                ["Шаблоны МИС", "нет evidence_map и актуального корпуса КП"],
-                ["B2C «проверь КЗ»", "аналогов по КП Минздрава в РБ нет"],
+                ["КП Минздрава РБ", "5", "4", "1", "2"],
+                ["100% потока", "5", "1", "2", "5"],
+                ["ЦИСЗ / FHIR BY", "5", "3", "0", "3"],
+                ["Evidence map", "5", "4", "1", "1"],
+                ["B2C для пациента", "5", "0", "2", "0"],
             ],
-            caption="Таблица 5. Конкурентный анализ",
+            caption="Таблица 5а. Оценка по 5-балльной шкале",
         )
 
     # Раздел 13 - команда
@@ -378,12 +581,43 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
                 ["Выручка B2B, тыс. BYN", str(FIN_Y1["b2b_k"]), str(FIN_Y2["b2b_k"]), str(FIN_Y3["b2b_k"])],
                 ["Выручка B2C, тыс. BYN", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])],
                 ["Выручка API/МИС, тыс. BYN", str(FIN_Y1["api_k"]), str(FIN_Y2["api_k"]), str(FIN_Y3["api_k"])],
+                ["Выручка итого, тыс. BYN", str(FIN_Y1["b2b_k"] + FIN_Y1["b2c_k"] + FIN_Y1["api_k"]), str(FIN_Y2["b2b_k"] + FIN_Y2["b2c_k"] + FIN_Y2["api_k"]), str(FIN_Y3["b2b_k"] + FIN_Y3["b2c_k"] + FIN_Y3["api_k"])],
                 ["OPEX, тыс. BYN", str(FIN_Y1["opex_k"]), str(FIN_Y2["opex_k"]), str(FIN_Y3["opex_k"])],
                 ["EBITDA, тыс. BYN", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"],
             ],
             caption="Таблица 8. Финансовый план на 3 года (тыс. BYN)",
         )
-        add_picture_after(anchor, charts["revenue"])
+        anchor = add_table_after(
+            anchor,
+            ["Статья OPEX", "2027", "2028", "2029"],
+            [
+                ["ФОТ", "180", "270", "420"],
+                ["Инфраструктура", "35", "55", "85"],
+                ["Маркетинг", "35", "55", "85"],
+                ["Прочее", "30", "40", "60"],
+                ["Итого", "280", "420", "650"],
+            ],
+            caption="Таблица 11. Структура OPEX (тыс. BYN)",
+        )
+        anchor = add_table_after(
+            anchor,
+            ["Статья инвестиций", "Сумма, BYN", "Срок"],
+            INVESTMENT_PLAN,
+            caption="Таблица 10. План инвестиций 2026-2027",
+        )
+        anchor = add_table_after(
+            anchor,
+            ["Показатель", "2027", "2028", "2029"],
+            [
+                ["EBITDA, тыс. BYN", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"],
+                ["Накопленный CF, тыс. BYN", str(ebitda_k(FIN_Y1)), str(ebitda_k(FIN_Y1) + ebitda_k(FIN_Y2)), str(ebitda_k(FIN_Y1) + ebitda_k(FIN_Y2) + ebitda_k(FIN_Y3))],
+                ["Сертификат ГКНТ", f"{CERTIFICATE_BYN:,} BYN".replace(",", " "), "-", "-"],
+            ],
+            caption="Таблица 12. Cash flow (упрощённо, тыс. BYN)",
+        )
+        anchor = add_picture_after(anchor, charts["revenue"])
+        anchor = add_picture_after(anchor, charts["ebitda"])
+        add_picture_after(anchor, charts["opex"])
 
     # Раздел 16 - иные сведения + ссылка на приложения
     p16 = find_section_body(doc, "16")
@@ -469,6 +703,24 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             "Доля выручки по каналам.",
             None,
             "channels",
+        ),
+        (
+            "Приложение Е. EBITDA и рост доли рынка",
+            "Финансовая динамика и масштабирование.",
+            None,
+            "ebitda",
+        ),
+        (
+            "Приложение Ж. ROI якорного клиента (МЦ «Кравира»)",
+            "Сравнение затрат Protocol и экономии методиста + ЦИСЗ.",
+            None,
+            "roi",
+        ),
+        (
+            "Приложение З. B2C-воронка и OPEX",
+            "Консервативная модель конверсии физлиц и структура расходов.",
+            None,
+            "b2c_funnel",
         ),
     ]
 

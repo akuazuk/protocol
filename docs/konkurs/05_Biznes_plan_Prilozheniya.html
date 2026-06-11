@@ -27,7 +27,7 @@
       font-size: 15px;
     }
     .wrap { max-width: 960px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
-    h1, h2 { font-family: Outfit, sans-serif; color: var(--green-700); }
+    h1, h2, h3 { font-family: Outfit, sans-serif; color: var(--green-700); }
     h1 { font-size: 1.65rem; margin-bottom: 0.25rem; }
     .sub { color: var(--muted); margin-bottom: 1.5rem; }
     .card {
@@ -65,38 +65,98 @@
       color: #fff;
       margin-bottom: 1rem;
     }
+    .title-page {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      margin-bottom: 2rem;
+      background: #fff;
+      border-radius: var(--radius);
+      border: 2px solid var(--green-700);
+    }
+    .title-page h1 { font-size: 2rem; letter-spacing: 0.04em; margin: 0.5rem 0; }
+    .title-page .project { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0; color: var(--text); }
+    .title-page .meta { text-align: left; max-width: 520px; margin: 2rem auto 0; font-size: 0.95rem; line-height: 1.7; }
+    .title-page .divider { height: 2px; background: linear-gradient(90deg, transparent, var(--green-600), transparent); margin: 1.25rem auto; max-width: 400px; }
+    .sources { font-size: 0.85rem; color: var(--muted); }
     @media print {
       .btn-print { display: none; }
       body { background: #fff; }
-      .card { break-inside: avoid; box-shadow: none; }
+      .card, .title-page { break-inside: avoid; box-shadow: none; }
+      .title-page { page-break-after: always; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <button class="btn-print" type="button" onclick="window.print()">Печать / PDF</button>
+
+    <section class="title-page">
+      <p style="font-size:0.9rem;color:var(--muted);margin:0">Республиканский конкурс инновационных проектов · Белинфонд · 2026</p>
+      <h1>БИЗНЕС-ПЛАН</h1>
+      <p style="margin:0;color:var(--muted)">инновационного проекта</p>
+      <div class="divider"></div>
+      <p><strong>«Лучший инновационный проект»</strong></p>
+      <p class="project">Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</p>
+      <div class="divider"></div>
+      <div class="meta">
+        <p><strong>Участник:</strong> ОДО «Медицинский центр «Кравира»» (МЦ «Кравира»)<br />
+        г. Минск, проспект Победителей, 45, пом. 25 · УНП 101477932<br />
+        <strong>Руководитель:</strong> Касацкая Мария Геннадьевна, директор</p>
+        <p><strong>Контакт по проекту:</strong> Кузавка Павел Леонидович<br />
+        +375 29 608-75-95 · akuazuk@gmail.com · kravira.by</p>
+        <p style="text-align:center;margin-top:1.5rem">Минск · 2026</p>
+      </div>
+    </section>
+
     <h1>Protocol - приложения к бизнес-плану</h1>
     <p class="sub">ОДО «Медицинский центр «Кравира»» · конкурс Белинфонд 2026 · рекомендуемый объём БП 10-40 стр., расчёты в приложениях</p>
 
     <div class="stat-row">
-      <div class="stat"><b>25 000</b>КЗ/мес в Кравире (1% рынка РБ)</div>
+      <div class="stat"><b>~2,7 млрд</b>BYN рынок платных медуслуг РБ, 2025</div>
+      <div class="stat"><b>25 000</b>КЗ/мес в Кравире (1% рынка)</div>
       <div class="stat"><b>2,5 млн</b>КЗ/мес частный сектор РБ</div>
       <div class="stat"><b>207 000</b>BYN/год B2B (якорь)</div>
-      <div class="stat"><b>0,69 BYN</b>тариф «Сеть» L0</div>
+      <div class="stat"><b>+1 675</b>тыс. BYN EBITDA, 2029</div>
     </div>
 
     <div class="card">
-      <h2>Рынок: якорь 1% → масштаб по РБ</h2>
+      <h2>Рынок платных медуслуг Республики Беларусь</h2>
+      <p class="sources">Источники: отраслевые обзоры (Uniter, SmartPress, КОЛЛIЕРЗ); данные Минздрава РБ; оценка участника по потоку КЗ.</p>
+      <table>
+        <thead><tr><th>Показатель</th><th>Значение</th><th>Комментарий</th></tr></thead>
+        <tbody>
+          <tr><td>Рынок платных медуслуг, 2025</td><td>~2,7 млрд BYN</td><td>рост ~24% г/г</td></tr>
+          <tr><td>Доля частного сектора</td><td>70-81%</td><td>платный сегмент</td></tr>
+          <tr><td>Доля Минска</td><td>~56%</td><td>концентрация спроса</td></tr>
+          <tr><td>АПО в системе ОЗ РБ</td><td>1 394</td><td>Минздрав</td></tr>
+          <tr><td>Рост частных центров (Минск)</td><td>~20%/год</td><td>2018-2023</td></tr>
+          <tr><td>КЗ/мес, Кравира → TAM</td><td>25 000 → 2,5 млн</td><td>1% допущение</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Рынок КЗ: TAM / SAM / SOM</h2>
       <table>
         <thead><tr><th>Показатель</th><th>Значение</th><th>Формула</th></tr></thead>
         <tbody>
-          <tr><td>КЗ/мес, Кравира</td><td>25 000</td><td>данные участника</td></tr>
-          <tr><td>Доля рынка платных КЗ частных ОЗ</td><td>1%</td><td>допущение для РБ</td></tr>
-          <tr><td>Сегмент частных ОЗ РБ</td><td>2 500 000 / мес</td><td>25 000 ÷ 0,01</td></tr>
-          <tr><td>TAM / год @ 0,99</td><td>29,7 млн BYN</td><td>30 млн × 0,99</td></tr>
-          <tr><td>Цель 2029 (8% рынка)</td><td>200 000 / мес</td><td>2,4 млн КЗ/год</td></tr>
+          <tr><td>TAM (КЗ/год)</td><td>30 000 000</td><td>2,5 млн × 12</td></tr>
+          <tr><td>TAM @ 0,99 BYN</td><td>29,7 млн BYN/год</td><td>30 млн × 0,99</td></tr>
+          <tr><td>SAM (5% TAM)</td><td>1 500 000 КЗ/год</td><td>крупные частные ОЗ</td></tr>
+          <tr><td>SOM год 3 (8%)</td><td>2 400 000 КЗ/год</td><td>200 000/мес</td></tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>TAM / SAM / SOM</h2>
+        <div class="chart-box"><canvas id="chartMarket"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Доля рынка и КЗ/мес</h2>
+        <div class="chart-box"><canvas id="chartMarketShare"></canvas></div>
+      </div>
     </div>
 
     <div class="card">
@@ -117,21 +177,19 @@
 
     <div class="grid2">
       <div class="card">
-        <h2>Приложение Б. Рынок TAM/SAM/SOM</h2>
-        <div class="chart-box"><canvas id="chartMarket"></canvas></div>
-      </div>
-      <div class="card">
         <h2>Тарифная лестница B2B</h2>
         <div class="chart-box"><canvas id="chartPricing"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Маржа L0 по тарифам</h2>
+        <div class="chart-box"><canvas id="chartMargin"></canvas></div>
       </div>
     </div>
 
     <div class="card">
       <h2>Приложение В. Финансовый план (тыс. BYN)</h2>
       <table>
-        <thead>
-          <tr><th>Показатель</th><th>2027</th><th>2028</th><th>2029</th></tr>
-        </thead>
+        <thead><tr><th>Показатель</th><th>2027</th><th>2028</th><th>2029</th></tr></thead>
         <tbody>
           <tr><td>Клиенты (ОЗ)</td><td>1</td><td>3</td><td>8</td></tr>
           <tr><td>КЗ/мес (доля рынка)</td><td>25 000 (1%)</td><td>75 000 (3%)</td><td>200 000 (8%)</td></tr>
@@ -141,9 +199,37 @@
           <tr><td>Выручка итого</td><td>257</td><td>880</td><td>2 325</td></tr>
           <tr><td>OPEX</td><td>280</td><td>420</td><td>650</td></tr>
           <tr><td>EBITDA</td><td>-23</td><td>+460</td><td>+1 675</td></tr>
+          <tr><td>Накопленный CF</td><td>-23</td><td>+437</td><td>+2 112</td></tr>
         </tbody>
       </table>
       <div class="chart-box" style="margin-top:1rem;height:280px"><canvas id="chartRevenue"></canvas></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>EBITDA по годам</h2>
+        <div class="chart-box"><canvas id="chartEbitda"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>Структура OPEX (тыс. BYN)</h2>
+        <div class="chart-box"><canvas id="chartOpex"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>План инвестиций 2026-2027</h2>
+      <table>
+        <thead><tr><th>Статья</th><th>Сумма, BYN</th><th>Срок</th></tr></thead>
+        <tbody>
+          <tr><td>Интеграция API в МИС «Айболит»</td><td>40 000</td><td>Q3 2026 - Q1 2027</td></tr>
+          <tr><td>B2C-витрина, ERIP, политика ПДн</td><td>25 000</td><td>Q4 2026</td></tr>
+          <tr><td>Регистрация программы для ЭВМ (НЦИС)</td><td>15 000</td><td>Q3 2026</td></tr>
+          <tr><td>Серверная инфраструктура якоря</td><td>10 000</td><td>Q4 2026</td></tr>
+          <tr><td>Маркетинг пилота (кейс Кравира)</td><td>20 000</td><td>2027</td></tr>
+          <tr><td><strong>Итого</strong></td><td><strong>110 000</strong></td><td></td></tr>
+          <tr><td>Сертификат ГКНТ (571 б.в. × 42 BYN)</td><td>23 982</td><td>конкурс 2026</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="grid2">
@@ -174,9 +260,35 @@
       </div>
     </div>
 
+    <div class="grid2">
+      <div class="card">
+        <h2>Структура выручки (год 3)</h2>
+        <div class="chart-box"><canvas id="chartChannels"></canvas></div>
+      </div>
+      <div class="card">
+        <h2>ROI якорного клиента (BYN/мес)</h2>
+        <div class="chart-box"><canvas id="chartRoi"></canvas></div>
+      </div>
+    </div>
+
     <div class="card">
-      <h2>Приложение Д. Структура выручки (год 3)</h2>
-      <div class="chart-box" style="max-width:360px;margin:0 auto"><canvas id="chartChannels"></canvas></div>
+      <h2>B2C-воронка (консервативный сценарий)</h2>
+      <div class="chart-box" style="height:220px"><canvas id="chartB2c"></canvas></div>
+      <p class="sources">30 млн КЗ/год → QR 1% → landing 30% → оплата 5% ≈ 4 500 платных проверок/год × 4,99 BYN ≈ 22,5 тыс. BYN (ниже заложенных 50 тыс. в 2027 - запас консерватизма).</p>
+    </div>
+
+    <div class="card">
+      <h2>Конкурентный анализ (5-балльная шкала)</h2>
+      <table>
+        <thead><tr><th>Критерий</th><th>Protocol</th><th>Ручной аудит</th><th>LLM-чат</th><th>Шаблон МИС</th></tr></thead>
+        <tbody>
+          <tr><td>КП Минздрава РБ</td><td>5</td><td>4</td><td>1</td><td>2</td></tr>
+          <tr><td>100% потока</td><td>5</td><td>1</td><td>2</td><td>5</td></tr>
+          <tr><td>ЦИСЗ / FHIR BY</td><td>5</td><td>3</td><td>0</td><td>3</td></tr>
+          <tr><td>Evidence map</td><td>5</td><td>4</td><td>1</td><td>1</td></tr>
+          <tr><td>B2C для пациента</td><td>5</td><td>0</td><td>2</td><td>0</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="card">
@@ -186,24 +298,41 @@
 
     <div class="card">
       <h2>Приложение Е. Архитектура и презентация</h2>
-      <p>К пакету заявки прилагаются:</p>
       <ul>
         <li><code>architecture-kravira-fhir-mis.pdf</code> - двухконтурная архитектура (клиника + ЦИСЗ)</li>
         <li><code>mvp-presentation.html</code> - интерактивная презентация MVP</li>
-        <li>графики в <code>docs/konkurs/_assets/</code> (встроены в .docx бизнес-плана)</li>
+        <li>графики PNG в <code>docs/konkurs/_assets/</code> (встроены в .docx бизнес-плана)</li>
       </ul>
     </div>
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const g = '#126b5c', g2 = '#1a8a72', g3 = '#3cb89a', amber = '#d97706';
+      const g = '#126b5c', g2 = '#1a8a72', g3 = '#3cb89a', amber = '#d97706', rose = '#be185d', ocean = '#0c6b94';
+      const opts = { responsive: true, maintainAspectRatio: false };
       new Chart(document.getElementById('chartMarket'), {
         type: 'bar',
         data: {
-          labels: ['TAM 30 млн КЗ/год', 'SAM 5% (1,5 млн)', 'SOM год 3 (2,4 млн)'],
+          labels: ['TAM 30 млн', 'SAM 1,5 млн', 'SOM 2,4 млн'],
           datasets: [{ label: 'млн КЗ/год', data: [30, 1.5, 2.4], backgroundColor: [g3, g2, g] }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        options: { ...opts, plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartMarketShare'), {
+        type: 'bar',
+        data: {
+          labels: ['2027', '2028', '2029'],
+          datasets: [
+            { label: 'Доля рынка, %', data: [1, 3, 8], backgroundColor: ocean, yAxisID: 'y' },
+            { label: 'КЗ/мес, тыс.', data: [25, 75, 200], type: 'line', borderColor: amber, backgroundColor: amber, yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          ...opts,
+          scales: {
+            y: { position: 'left', title: { display: true, text: '%' } },
+            y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'тыс.' } }
+          }
+        }
       });
       new Chart(document.getElementById('chartPricing'), {
         type: 'bar',
@@ -211,7 +340,15 @@
           labels: ['Старт', 'Клиника 10k', 'Сеть 25k+'],
           datasets: [{ label: 'BYN/КЗ', data: [0.99, 0.79, 0.69], backgroundColor: [g, g2, g3] }]
         },
-        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        options: { ...opts, indexAxis: 'y', plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartMargin'), {
+        type: 'bar',
+        data: {
+          labels: ['0,99', '0,79', '0,69'],
+          datasets: [{ label: 'Маржа %', data: [91, 89, 87], backgroundColor: [g, g2, g3] }]
+        },
+        options: { ...opts, plugins: { legend: { display: false } }, scales: { y: { max: 100 } } }
       });
       new Chart(document.getElementById('chartRevenue'), {
         type: 'bar',
@@ -223,7 +360,27 @@
             { label: 'API, тыс.', data: [0, 25, 75], backgroundColor: g2 }
           ]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: opts
+      });
+      new Chart(document.getElementById('chartEbitda'), {
+        type: 'bar',
+        data: {
+          labels: ['2027', '2028', '2029'],
+          datasets: [{ label: 'EBITDA, тыс.', data: [-23, 460, 1675], backgroundColor: [rose, g, g2] }]
+        },
+        options: { ...opts, plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartOpex'), {
+        type: 'bar',
+        data: {
+          labels: ['ФОТ', 'Инфра', 'Маркетинг', 'Прочее'],
+          datasets: [
+            { label: '2027', data: [180, 35, 35, 30], backgroundColor: g3 },
+            { label: '2028', data: [270, 55, 55, 40], backgroundColor: g2 },
+            { label: '2029', data: [420, 85, 85, 60], backgroundColor: g }
+          ]
+        },
+        options: opts
       });
       new Chart(document.getElementById('chartChannels'), {
         type: 'doughnut',
@@ -231,7 +388,23 @@
           labels: ['B2B клиники', 'B2C', 'B2B API'],
           datasets: [{ data: [72, 20, 8], backgroundColor: [g, amber, g2] }]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: opts
+      });
+      new Chart(document.getElementById('chartRoi'), {
+        type: 'bar',
+        data: {
+          labels: ['Protocol', 'Методист', 'ЦИСЗ', 'Итого'],
+          datasets: [{ label: 'BYN/мес, тыс.', data: [17.25, 1.12, 2.34, 3.46], backgroundColor: [rose, g, g2, ocean] }]
+        },
+        options: { ...opts, plugins: { legend: { display: false } } }
+      });
+      new Chart(document.getElementById('chartB2c'), {
+        type: 'bar',
+        data: {
+          labels: ['КЗ/год', 'QR 1%', 'Landing 30%', 'Оплата 5%'],
+          datasets: [{ label: 'шт.', data: [30000000, 300000, 90000, 4500], backgroundColor: [g3, g2, amber, g] }]
+        },
+        options: { ...opts, plugins: { legend: { display: false } }, scales: { y: { type: 'logarithmic' } } }
       });
     });
   </script>
