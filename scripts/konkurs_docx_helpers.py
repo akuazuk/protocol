@@ -18,7 +18,11 @@ if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
 
 from konkurs_finance import (  # noqa: E402
+    B2C_AVG_PRICE,
+    B2C_TIERS,
+    B2C_UPSIDE_YEAR3_K,
     CERTIFICATE_BYN,
+    CLINIC_B2C_REVSHARE,
     FIN_Y1,
     FIN_Y2,
     FIN_Y3,
@@ -35,7 +39,9 @@ from konkurs_finance import (  # noqa: E402
     TAM_REVENUE_YEAR,
     Y2_MARKET_SHARE,
     Y3_MARKET_SHARE,
+    clinic_revshare_byn,
     ebitda_k,
+    total_rev_k,
 )
 from konkurs_market import (  # noqa: E402
     CISZ_DRIVERS,
@@ -279,10 +285,14 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
 
     # Структура каналов выручки год 3
     fig, ax = plt.subplots(figsize=(5.5, 4))
-    labels = ["B2B клиники", "B2C физлица", "B2B API/МИС"]
-    sizes = [72, 20, 8]
+    rev3 = total_rev_k(FIN_Y3)
+    b2b_pct = FIN_Y3["b2b_k"] / rev3 * 100
+    b2c_pct = FIN_Y3["b2c_k"] / rev3 * 100
+    api_pct = FIN_Y3["api_k"] / rev3 * 100
+    labels = ["B2B клиники", "B2C Protocol", "B2B API/МИС"]
+    sizes = [b2b_pct, b2c_pct, api_pct]
     ax.pie(sizes, labels=labels, autopct="%1.0f%%", colors=colors[:3], startangle=140, textprops={"fontsize": 8})
-    ax.set_title("Структура выручки, год 3 (оценка)")
+    ax.set_title(f"Структура выручки, год 3 ({rev3} тыс. BYN)")
     fig.tight_layout()
     p4 = assets_dir / "chart_channels.png"
     fig.savefig(p4, dpi=160, bbox_inches="tight", facecolor="white")
@@ -408,6 +418,82 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.savefig(p10, dpi=160, bbox_inches="tight", facecolor="white")
     plt.close(fig)
     paths["b2c_funnel"] = p10
+
+    # B2B split: Кравира vs другие клиники
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    years = ["2027", "2028", "2029"]
+    krav = [FIN_Y1["b2b_kravira_k"], FIN_Y2["b2b_kravira_k"], FIN_Y3["b2b_kravira_k"]]
+    other = [FIN_Y1["b2b_other_k"], FIN_Y2["b2b_other_k"], FIN_Y3["b2b_other_k"]]
+    x = range(len(years))
+    ax.bar(x, krav, label="Кравира (якорь)", color=colors[0])
+    ax.bar(x, other, bottom=krav, label="Другие ОЗ РБ", color=colors[4])
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(years)
+    ax.set_ylabel("тыс. BYN / год")
+    ax.set_title("B2B: якорь vs масштаб на частные клиники РБ")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p11 = assets_dir / "chart_b2b_split.png"
+    fig.savefig(p11, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["b2b_split"] = p11
+
+    # B2C tier prices
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    tier_names = [t["name"].replace(" ", "\n") for t in B2C_TIERS]
+    tier_prices = [t["price"] for t in B2C_TIERS]
+    bars = ax.bar(tier_names, tier_prices, color=colors[: len(B2C_TIERS)])
+    ax.axhline(B2C_AVG_PRICE, color=colors[5], linestyle="--", linewidth=1, label=f"Средний ~{B2C_AVG_PRICE} BYN")
+    ax.set_ylabel("BYN за проверку")
+    ax.set_title("Tier-цены B2C по specialty / сложности приёма")
+    for bar, val in zip(bars, tier_prices):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.2, f"{val:.2f}", ha="center", fontsize=8)
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p12 = assets_dir / "chart_b2c_tiers.png"
+    fig.savefig(p12, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["b2c_tiers"] = p12
+
+    # B2C rev-share examples
+    fig, ax = plt.subplots(figsize=(7, 3.5))
+    examples = ["Промо\n2,99", "L2\n9,99", "Онко\n14,99", "Pre-op\n12,99"]
+    ex_prices = [2.99, 9.99, 14.99, 12.99]
+    clinic_shares = [clinic_revshare_byn(p)[0] for p in ex_prices]
+    protocol_shares = [clinic_revshare_byn(p)[1] for p in ex_prices]
+    x = range(len(examples))
+    ax.bar(x, clinic_shares, label=f"Клинике {int(CLINIC_B2C_REVSHARE * 100)}%", color=colors[4])
+    ax.bar(x, protocol_shares, bottom=clinic_shares, label="Protocol 70%", color=colors[0])
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(examples)
+    ax.set_ylabel("BYN с проверки")
+    ax.set_title("Rev-share B2B2C: SMS/QR-ссылка от клиники")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p13 = assets_dir / "chart_b2c_revshare.png"
+    fig.savefig(p13, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["b2c_revshare"] = p13
+
+    # B2C growth + upside
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    b2c_labels = ["2027", "2028", "2029", "2029\nupside"]
+    b2c_vals = [FIN_Y1["b2c_k"], FIN_Y2["b2c_k"], FIN_Y3["b2c_k"], B2C_UPSIDE_YEAR3_K]
+    bar_cols = [colors[0], colors[0], colors[0], colors[4]]
+    bars = ax.bar(b2c_labels, b2c_vals, color=bar_cols)
+    ax.set_ylabel("тыс. BYN / год (Protocol 70%)")
+    ax.set_title("Рост B2C на национальном рынке (все пациенты частных ОЗ)")
+    for bar, val in zip(bars, b2c_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 8, str(val), ha="center", fontsize=9)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p14 = assets_dir / "chart_b2c_growth.png"
+    fig.savefig(p14, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["b2c_growth"] = p14
 
     return paths
 
@@ -660,9 +746,12 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
                 ("B2B", "L0 Клиника", "0,79 BYN/КЗ", "от 10k КЗ/мес"),
                 ("B2B", "L0 Сеть", "0,69 BYN/КЗ", "Кравира, 25k+"),
                 ("B2B", "API МИС", "индивид.", "15-40k внедрение"),
-                ("B2C", "L1 Базовая", "4,99 BYN", "физлицо"),
-                ("B2C", "L2 Подробная", "9,99 BYN", "физлицо"),
-                ("B2C", "Абонемент", "12,99 BYN/мес", "3 проверки"),
+                ("B2C", "L1 Базовый", "4,99 BYN", "терапия"),
+                ("B2C", "L1+ Расширенный", "6,99 BYN", "специалист+анализы"),
+                ("B2C", "L2 Стандарт", "9,99 BYN", "подробный разбор"),
+                ("B2C", "L2 Онкология", "14,99 BYN", "онко, ЗНО"),
+                ("B2C", "L2 Pre-op", "12,99 BYN", "предоперационный"),
+                ("B2C", "Промо SMS/QR", "2,99 BYN", "rev-share 30% клинике"),
             ],
             None,
         ),

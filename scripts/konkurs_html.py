@@ -26,7 +26,14 @@ from fill_konkurs_docx import (  # noqa: E402
 )
 from konkurs_bp_sections import RESUME, SECTIONS, TOC  # noqa: E402
 from konkurs_finance import (  # noqa: E402
+    B2C_AVG_PRICE,
+    B2C_TIERS,
+    B2C_UPSIDE_YEAR3_K,
     CERTIFICATE_BYN,
+    CLINIC_B2C_REV_Y1_K,
+    CLINIC_B2C_REV_Y2_K,
+    CLINIC_B2C_REV_Y3_K,
+    CLINIC_B2C_REVSHARE,
     FIN_Y1,
     FIN_Y2,
     FIN_Y3,
@@ -41,6 +48,7 @@ from konkurs_finance import (  # noqa: E402
     SOM_Y3_KZ_YEAR,
     TAM_REVENUE_YEAR,
     ebitda_k,
+    total_rev_k,
 )
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
@@ -50,9 +58,12 @@ from konkurs_impact import (  # noqa: E402
 )
 from konkurs_b2c_ux import (  # noqa: E402
     B2C_OUT_OF_SCOPE,
+    B2C_PRICING_TABLE,
     B2C_REPORT_TABLE,
+    B2C_REVSHARE_EXAMPLES,
     B2C_SCENARIOS,
     B2C_UX_INTRO,
+    MARKET_SCOPE_NOTE,
 )
 from konkurs_market import CISZ_DRIVERS, COMPETITOR_MATRIX, INVESTMENT_PLAN, RB_MARKET_TABLE  # noqa: E402
 from konkurs_org import (  # noqa: E402
@@ -259,6 +270,22 @@ SECTION_TITLES = {
 }
 
 
+def _market_scope_html() -> str:
+    tier_rows = [(t["name"], t["specialty"], f'{t["price"]:.2f}'.replace(".", ","), f'{t["mix"] * 100:.0f}%') for t in B2C_TIERS]
+    return f"""
+<div class="section"><h2>Масштаб рынка: все частные ОЗ и все пациенты РБ</h2></div>
+<div class="section-body">
+<p>{_e(MARKET_SCOPE_NOTE.replace(chr(10), ' '))}</p>
+<div class="stats">
+  <div class="stat"><b>1%</b><span class="muted">Кравира от TAM</span></div>
+  <div class="stat"><b>{MARKET_KZ_MONTH:,}</b><span class="muted">КЗ/мес частный сектор</span></div>
+  <div class="stat"><b>8</b><span class="muted">клиник B2B к 2029</span></div>
+  <div class="stat"><b>{CLINIC_B2C_REV_Y3_K}</b><span class="muted">тыс. BYN rev-share клиникам</span></div>
+</div>
+{_table(['Tier B2C', 'Specialty', 'BYN', 'Микс'], tier_rows, caption='Tier-цены B2C (средний чек ~7,47 BYN)')}
+</div>"""
+
+
 def _sections_html() -> str:
     out = []
     for key, title in SECTION_TITLES.items():
@@ -286,18 +313,20 @@ def _b2c_ux_html() -> str:
 </div>""")
     oos = "".join(f"<li>{_e(x)}</li>" for x in B2C_OUT_OF_SCOPE)
     return f"""
-<div class="section"><h2>8.1. B2C: UX-сценарии повышения конверсии (пилот Кравира)</h2></div>
+<div class="section"><h2>8.1. B2C: UX, tier-цены и rev-share (национальный рынок)</h2></div>
 <div class="section-body">
 <p>{_e(B2C_UX_INTRO.replace(chr(10), ' '))}</p>
 {''.join(scenarios_html)}
-{_table(['Блок отчёта', 'Содержание', 'Зачем'], B2C_REPORT_TABLE, caption='Таблица. Patient view отчёта L1/L2 (единый шаблон)')}
+{_table(['Tier', 'Specialty / приём', 'BYN', 'Микс'], B2C_PRICING_TABLE, caption='Tier-цены B2C по сложности приёма')}
+{_table(['Продукт', 'Оплата пациента', 'Клинике 30%', 'Protocol 70%'], B2C_REVSHARE_EXAMPLES, caption='Rev-share при оплате по SMS/QR-ссылке клиники')}
+{_table(['Блок отчёта', 'Содержание', 'Зачем'], B2C_REPORT_TABLE, caption='Patient view отчёта L1/L2')}
 {_table(['Сценарий', 'Конверсия', 'Сложность'], [
-  ('1. QR после визита', 'Средняя', 'Минимальная — старт пилота'),
-  ('3. Ссылка от клиники', 'Высокая', 'Низкая (+ промо 2,99 BYN)'),
-  ('2. Тревожный визит', 'Средняя–высокая', 'Низкая (+ тексты ?topic=)'),
+  ('1. QR после визита', 'Средняя', 'Минимальная — любая ОЗ-партнёр'),
+  ('2. SMS/email rev-share', 'Высокая', 'Основной канал масштаба'),
+  ('3. Национальный SEO', 'Средняя', '2028+, без rev-share'),
 ], caption='Приоритет запуска B2C')}
-<div class="highlight">Пилот Q4 2026: QR на чеке/КЗ (сценарий 1) + SMS со ссылкой promo 2,99 BYN (сценарий 3).
-Сценарий 2 — 2–3 SEO-landing без новой разработки. Целевая конверсия пилота: 0,1% от потока КЗ Кравиры (~25 проверок/мес).</div>
+<div class="highlight">Пилот Q4 2026: QR + SMS rev-share в Кравире; масштаб 2027+ на сеть частных ОЗ РБ.
+Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники рассылать ссылку — доп. доход ~{CLINIC_B2C_REV_Y3_K} тыс. BYN/год к 2029 при осторожном сценарии.</div>
 <p><strong>Вне scope (не делаем в 2026–2027):</strong></p><ul>{oos}</ul>
 </div>"""
 
@@ -334,12 +363,20 @@ def _finance_block(assets_rel: str) -> str:
     ]
     fin_rows = [
         ("Клиенты (ОЗ)", "1", "3", "8"),
-        ("КЗ/мес", f"{FIN_Y1['kz_month']:,}".replace(",", " "), f"{FIN_Y2['kz_month']:,}".replace(",", " "), f"{FIN_Y3['kz_month']:,}".replace(",", " ")),
-        ("Выручка B2B, тыс.", str(FIN_Y1["b2b_k"]), str(FIN_Y2["b2b_k"]), str(FIN_Y3["b2b_k"])),
-        ("Выручка B2C, тыс.", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])),
+        ("КЗ/мес B2B", f"{FIN_Y1['kz_month']:,}".replace(",", " "), f"{FIN_Y2['kz_month']:,}".replace(",", " "), f"{FIN_Y3['kz_month']:,}".replace(",", " ")),
+        ("B2B Кравира, тыс.", str(FIN_Y1["b2b_kravira_k"]), str(FIN_Y2["b2b_kravira_k"]), str(FIN_Y3["b2b_kravira_k"])),
+        ("B2B другие ОЗ, тыс.", str(FIN_Y1["b2b_other_k"]), str(FIN_Y2["b2b_other_k"]), str(FIN_Y3["b2b_other_k"])),
+        ("Выручка B2C Protocol, тыс.", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])),
+        ("Rev-share клиникам, тыс.", str(CLINIC_B2C_REV_Y1_K), str(CLINIC_B2C_REV_Y2_K), str(CLINIC_B2C_REV_Y3_K)),
         ("Выручка API, тыс.", str(FIN_Y1["api_k"]), str(FIN_Y2["api_k"]), str(FIN_Y3["api_k"])),
+        ("Итого выручка, тыс.", str(total_rev_k(FIN_Y1)), str(total_rev_k(FIN_Y2)), str(total_rev_k(FIN_Y3))),
         ("OPEX, тыс.", str(FIN_Y1["opex_k"]), str(FIN_Y2["opex_k"]), str(FIN_Y3["opex_k"])),
         ("EBITDA, тыс.", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"),
+    ]
+    b2c_scenario_rows = [
+        ("Осторожный (модель)", f"{FIN_Y3['b2c_checks']:,}".replace(",", " "), f"{FIN_Y3['b2c_k']} тыс.", "базовый план"),
+        ("Upside 0,3% TAM", "~90 000", f"~{B2C_UPSIDE_YEAR3_K} тыс.", "SEO + SMS rev-share"),
+        ("Средний чек", "—", f"{B2C_AVG_PRICE} BYN", "микс tier"),
     ]
     return f"""
 <div class="section"><h2>Финансовые приложения и графики</h2></div>
@@ -348,6 +385,11 @@ def _finance_block(assets_rel: str) -> str:
 {_table(['Показатель рынка РБ', 'Значение', 'Источник'], RB_MARKET_TABLE, caption='Контекст рынка платных медуслуг РБ')}
 {_table(['Показатель', 'Значение', 'Комментарий'], tam_rows, caption='TAM / SAM / SOM')}
 {_table(['Показатель', '2027', '2028', '2029'], fin_rows, caption='Финансовый план (тыс. BYN)')}
+{_table(['Сценарий B2C', 'Проверок/год', 'Protocol', 'Комментарий'], b2c_scenario_rows, caption='B2C: осторожный vs upside')}
+{img('chart_b2b_split.png', 'B2B: Кравира vs другие клиники РБ')}
+{img('chart_b2c_tiers.png', 'Tier-цены B2C по specialty')}
+{img('chart_b2c_revshare.png', 'Rev-share 30/70: примеры по tier')}
+{img('chart_b2c_growth.png', 'Рост B2C и сценарий upside')}
 {_table(['Статья инвестиций', 'BYN', 'Срок'], INVESTMENT_PLAN, caption='Инвестиции 2026-2027')}
 {_table(['Драйвер', 'Пояснение'], list(CISZ_DRIVERS))}
 {_table(['Альтернатива', 'Охват', 'Слабость', 'Стоимость'], COMPETITOR_MATRIX, caption='Конкуренты')}
@@ -373,6 +415,7 @@ def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
         + f'<div class="toc"><h2>Содержание</h2><pre>{_e(TOC)}</pre></div>'
         + '<div class="section"><h2>3. Резюме</h2></div>'
         + f'<div class="section-body">{_ps(RESUME)}</div>'
+        + _market_scope_html()
         + _stakeholders_html()
         + _analogues_html()
         + _sections_html_with_b2c()
