@@ -48,6 +48,12 @@ from konkurs_impact import (  # noqa: E402
     MARKET_CONTEXT,
     STAKEHOLDER_BENEFITS,
 )
+from konkurs_b2c_ux import (  # noqa: E402
+    B2C_OUT_OF_SCOPE,
+    B2C_REPORT_TABLE,
+    B2C_SCENARIOS,
+    B2C_UX_INTRO,
+)
 from konkurs_market import CISZ_DRIVERS, COMPETITOR_MATRIX, INVESTMENT_PLAN, RB_MARKET_TABLE  # noqa: E402
 from konkurs_org import (  # noqa: E402
     CONTACT_PERSON,
@@ -138,6 +144,12 @@ tr:nth-child(even) td { background: var(--g100); }
   .no-print { display: none !important; }
 }
 @page { size: A4; margin: 12mm 10mm; }
+.scenario { border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm; margin-bottom: 5mm;
+  page-break-inside: avoid; background: #fff; }
+.scenario h3 { margin-top: 0; color: var(--g700); }
+.scenario .tag { font-size: 8.5pt; color: var(--g500); font-weight: 600; margin-bottom: 2mm; }
+.flow { font-family: monospace; font-size: 8.5pt; background: var(--g100); padding: 3mm 4mm;
+  border-radius: 2mm; margin: 2mm 0 3mm; word-break: break-word; }
 """
 
 
@@ -256,6 +268,51 @@ def _sections_html() -> str:
     return "".join(out)
 
 
+def _b2c_ux_html() -> str:
+    scenarios_html = []
+    for s in B2C_SCENARIOS:
+        landing = "".join(f"<li>{_e(x)}</li>" for x in s["landing"])
+        l1 = "".join(f"<li>{_e(x)}</li>" for x in s["report_l1"])
+        scenarios_html.append(f"""
+<div class="scenario">
+  <div class="tag">Сценарий {s['id']} · {_e(s['priority'])}</div>
+  <h3>{_e(s['title'])}</h3>
+  <p><strong>Триггер:</strong> {_e(s['trigger'])}</p>
+  <div class="flow">{_e(s['path'])}</div>
+  <p><strong>Landing:</strong></p><ul>{landing}</ul>
+  <p><strong>Отчёт L1:</strong></p><ul>{l1}</ul>
+  <p><strong>L2:</strong> {_e(s['report_l2'])}</p>
+  <p class="muted"><strong>Scope:</strong> {_e(s['scope'])}</p>
+</div>""")
+    oos = "".join(f"<li>{_e(x)}</li>" for x in B2C_OUT_OF_SCOPE)
+    return f"""
+<div class="section"><h2>8.1. B2C: UX-сценарии повышения конверсии (пилот Кравира)</h2></div>
+<div class="section-body">
+<p>{_e(B2C_UX_INTRO.replace(chr(10), ' '))}</p>
+{''.join(scenarios_html)}
+{_table(['Блок отчёта', 'Содержание', 'Зачем'], B2C_REPORT_TABLE, caption='Таблица. Patient view отчёта L1/L2 (единый шаблон)')}
+{_table(['Сценарий', 'Конверсия', 'Сложность'], [
+  ('1. QR после визита', 'Средняя', 'Минимальная — старт пилота'),
+  ('3. Ссылка от клиники', 'Высокая', 'Низкая (+ промо 2,99 BYN)'),
+  ('2. Тревожный визит', 'Средняя–высокая', 'Низкая (+ тексты ?topic=)'),
+], caption='Приоритет запуска B2C')}
+<div class="highlight">Пилот Q4 2026: QR на чеке/КЗ (сценарий 1) + SMS со ссылкой promo 2,99 BYN (сценарий 3).
+Сценарий 2 — 2–3 SEO-landing без новой разработки. Целевая конверсия пилота: 0,1% от потока КЗ Кравиры (~25 проверок/мес).</div>
+<p><strong>Вне scope (не делаем в 2026–2027):</strong></p><ul>{oos}</ul>
+</div>"""
+
+
+def _sections_html_with_b2c() -> str:
+    out = []
+    for key, title in SECTION_TITLES.items():
+        body = SECTIONS.get(key, "")
+        out.append(f'<div class="section"><h2>{_e(title)}</h2></div>')
+        out.append(f'<div class="section-body">{_ps(body)}</div>')
+        if key == "8.":
+            out.append(_b2c_ux_html())
+    return "".join(out)
+
+
 def _finance_block(assets_rel: str) -> str:
     def img(name: str, cap: str) -> str:
         return f'<div class="chart"><div class="caption">{_e(cap)}</div><img src="{assets_rel}/{name}" alt=""/></div>'
@@ -318,7 +375,7 @@ def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
         + f'<div class="section-body">{_ps(RESUME)}</div>'
         + _stakeholders_html()
         + _analogues_html()
-        + _sections_html()
+        + _sections_html_with_b2c()
         + _finance_block(assets_rel)
     )
     path.write_text(_page("Бизнес-план Protocol - Кравира", body), encoding="utf-8")
