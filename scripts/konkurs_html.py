@@ -79,6 +79,13 @@ from konkurs_b2c_ux import (  # noqa: E402
     MARKET_SCOPE_NOTE,
 )
 from konkurs_market import CISZ_DRIVERS, COMPETITOR_MATRIX, INVESTMENT_PLAN, RB_MARKET_TABLE  # noqa: E402
+from konkurs_monetization import (  # noqa: E402
+    ALL_REVENUE_SCENARIOS_Y3,
+    EXPANDED_Y3,
+    MONETIZATION_INTRO,
+    MONETIZATION_TABLE,
+    WEIGHTED_EXTRA_Y3_K,
+)
 from konkurs_glossary import (  # noqa: E402
     FORMULA_TABLE,
     GLOSSARY_INTRO,
@@ -360,7 +367,33 @@ def _sections_html_with_b2c() -> str:
         out.append(f'<div class="section-body">{_ps(body)}</div>')
         if key == "8.":
             out.append(_b2c_ux_html())
+        if key == "9.":
+            out.append(_monetization_html())
     return "".join(out)
+
+
+def _monetization_html() -> str:
+    scen_rows = [
+        (name, f"{rev:,}".replace(",", " "), f"+{ebitda:,}".replace(",", " "), note)
+        for name, rev, ebitda, note in ALL_REVENUE_SCENARIOS_Y3
+    ]
+    base_rev = total_rev_k(FIN_Y3)
+    return f"""
+<div class="section"><h2>9.2. Дополнительная монетизация (рост выручки и прибыли)</h2></div>
+<div class="section-body">
+<p>{_e(MONETIZATION_INTRO.replace(chr(10), ' '))}</p>
+<div class="stats">
+  <div class="stat"><b>{base_rev}</b><span class="muted">тыс. BYN базовый 2029</span></div>
+  <div class="stat"><b>+{EXPANDED_Y3['extra_rev_k']}</b><span class="muted">тыс. доп. каналы</span></div>
+  <div class="stat"><b>{EXPANDED_Y3['total_rev_k']}</b><span class="muted">тыс. выручка расширен.</span></div>
+  <div class="stat"><b>+{EXPANDED_Y3['ebitda_month_k']}</b><span class="muted">тыс. EBITDA/мес расшир.</span></div>
+</div>
+{_table(['Канал', 'Цена', 'План тыс.', 'Драйвер', 'Вероятн.', 'Старт'], MONETIZATION_TABLE, caption='8 дополнительных потоков дохода к 2029')}
+{_table(['Сценарий 2029', 'Выручка', 'EBITDA', 'Комментарий'], scen_rows, caption='Сравнение сценариев: осторожный → расширенный')}
+<div class="highlight"><strong>Расширенный сценарий:</strong> базовый план + L2 для методистов, подписка «Методслужба Pro»,
+обучение врачей, OEM/API, медтуризм B2C, корпоративные аудиты, white-label Enterprise, аналитика для руководства ОЗ.
+Взвешенный прогноз доп. каналов: ~{WEIGHTED_EXTRA_Y3_K} тыс. BYN/год (вероятность × план).</div>
+</div>"""
 
 
 def _glossary_html() -> str:
@@ -427,7 +460,10 @@ def _finance_block(assets_rel: str) -> str:
 {_table(['Сценарий 2029', 'B2B TAM', 'B2C conv', 'Выручка', 'EBITDA/год', 'EBITDA/мес'], SCENARIO_COMPARE_TABLE, caption='Три сценария года 3: осторожный · базовый · оптимистичный')}
 {_table(['Канал', 'Вероятность', 'План тыс.', 'Драйвер'], CHANNEL_TABLE, caption='Какой канал с большей вероятностью даст выручку')}
 {_table(['Проникновение B2B', 'EBITDA тыс./год', 'КЗ/мес'], pen_rows, caption='Чувствительность EBITDA к доле TAM (B2C фикс.)')}
-{img('chart_tam_bridge.png', 'TAM 2,5 млн КЗ/мес ≠ выручка: захват 8% + 0,23% B2C')}
+{img('chart_revenue_ebitda.png', 'Выручка и EBITDA по годам (Plotly)')}
+{img('chart_monetization.png', '8 дополнительных каналов монетизации 2029')}
+{img('chart_all_scenarios.png', 'Все сценарии 2029: до 3,5 млн выручки')}
+{img('chart_expanded_potential.png', 'Базовый vs расширенный потенциал 2029')}
 {img('chart_scenarios_ebitda.png', 'EBITDA 2029: три сценария (год и месяц)')}
 {img('chart_scenarios_revenue.png', 'Структура выручки 2029 по сценариям B2B/B2C/API')}
 {img('chart_penetration.png', 'Чувствительность EBITDA к проникновению B2B')}

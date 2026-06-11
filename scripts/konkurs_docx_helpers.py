@@ -224,6 +224,13 @@ def find_section_body(doc: Document, section_num: str) -> Paragraph | None:
 
 
 def generate_charts(assets_dir: Path) -> dict[str, Path]:
+    """Графики для PDF: Plotly + Kaleido (пастельная палитра)."""
+    from konkurs_charts_plotly import generate_charts as _plotly
+
+    return _plotly(assets_dir)
+
+
+def _generate_charts_matplotlib(assets_dir: Path) -> dict[str, Path]:
     import matplotlib
 
     matplotlib.use("Agg")
