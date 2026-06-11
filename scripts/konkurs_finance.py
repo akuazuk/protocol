@@ -26,6 +26,8 @@ SOM_Y3_MARKET_SHARE = SOM_Y3_KZ_MONTH / MARKET_KZ_MONTH  # 8%
 
 TAM_REVENUE_B2B_YEAR = int(TAM_KZ_YEAR * PRICE_START)  # 29_700_000
 TAM_REVENUE_YEAR = TAM_REVENUE_B2B_YEAR  # alias
+# Теор. потолок B2B при 100% TAM и blend 0,75 BYN/КЗ (не план, для графика)
+TAM_B2B_CEILING_YEAR_K = int(MARKET_KZ_YEAR * PRICE_BLEND_Y2Y3 / 1000)  # 22_500
 
 # --- B2C: все пациенты частных ОЗ РБ (30 млн касаний/год) ---
 B2C_TAM_TOUCHES_YEAR = MARKET_KZ_YEAR
@@ -45,28 +47,27 @@ def _b2c_avg_price() -> float:
     return sum(t["price"] * t["mix"] for t in B2C_TIERS)
 
 
-B2C_AVG_PRICE = round(_b2c_avg_price(), 2)  # ~7,47 BYN
+B2C_AVG_PRICE = round(_b2c_avg_price(), 2)  # ~8,33 BYN
 
 # Rev-share: клиника получает долю при оплате пациентом по ссылке/SMS
 CLINIC_B2C_REVSHARE = 0.30  # 30% пациенту видимая скидка / клинике
 PROTOCOL_B2C_NET_SHARE = 1.0 - CLINIC_B2C_REVSHARE  # 70% Protocol
 
-# Пример: онкология 14,99 → клинике 4,50, Protocol 10,49
+
 def clinic_revshare_byn(patient_price: float) -> tuple[float, float]:
     clinic = round(patient_price * CLINIC_B2C_REVSHARE, 2)
     protocol = round(patient_price - clinic, 2)
     return clinic, protocol
 
 
-# Финплан 3 года (тыс. BYN)
-# b2b_k включает Кравиру (207) + другие клиники; b2c_k — национальный B2C-поток
+# Финплан 3 года (тыс. BYN) — b2c_k пересчитывается в konkurs_scenarios (rev-share + 20% direct)
 FIN_Y1 = {
     "clients": 1,
     "kz_month": 25_000,
     "b2b_k": 207,
     "b2b_kravira_k": 207,
     "b2b_other_k": 0,
-    "b2c_k": 50,
+    "b2c_k": 42,
     "b2c_checks": 6_700,
     "opex_k": 280,
     "api_k": 0,
@@ -77,7 +78,7 @@ FIN_Y2 = {
     "b2b_k": 675,
     "b2b_kravira_k": 207,
     "b2b_other_k": 468,
-    "b2c_k": 180,
+    "b2c_k": 152,
     "b2c_checks": 24_100,
     "opex_k": 420,
     "api_k": 25,
@@ -88,28 +89,24 @@ FIN_Y3 = {
     "b2b_k": 1_800,
     "b2b_kravira_k": 207,
     "b2b_other_k": 1_593,
-    "b2c_k": 520,
+    "b2c_k": 440,
     "b2c_checks": 69_600,
     "opex_k": 650,
     "api_k": 75,
 }
 
-# B2C upside при конверсии 0,3% TAM (~90k проверок/год × ~7,5 BYN ≈ 675k BYN) — в таблице сценариев
-B2C_UPSIDE_YEAR3_K = 675
-
 # year 2: 3% рынка; year 3: 8% рынка (B2B поток)
 Y2_MARKET_SHARE = FIN_Y2["kz_month"] / MARKET_KZ_MONTH
 Y3_MARKET_SHARE = FIN_Y3["kz_month"] / MARKET_KZ_MONTH
 
-# B2C конверсия от TAM
 B2C_CONV_Y1 = FIN_Y1["b2c_checks"] / B2C_TAM_TOUCHES_YEAR
 B2C_CONV_Y3 = FIN_Y3["b2c_checks"] / B2C_TAM_TOUCHES_YEAR
 
-# Доход клиник-партнёров от rev-share B2C (тыс. BYN) — доп. мотивация для ОЗ
+
 def clinic_b2c_revshare_k(b2c_protocol_k: int) -> int:
-    """Если b2c_k — выручка Protocol (70%), gross patient = b2c / 0.7, clinic share 30%."""
-    gross = b2c_protocol_k / PROTOCOL_B2C_NET_SHARE
-    return int(gross * CLINIC_B2C_REVSHARE)
+    """Gross patient = protocol / (1-share_direct_weighted); упрощённо для rev-share канала."""
+    gross = b2c_protocol_k / (0.8 * PROTOCOL_B2C_NET_SHARE + 0.2)  # blend 80% rev-share
+    return int(gross * CLINIC_B2C_REVSHARE * 0.8)
 
 
 CLINIC_B2C_REV_Y1_K = clinic_b2c_revshare_k(FIN_Y1["b2c_k"])
@@ -147,3 +144,7 @@ def ebitda_k(year: dict) -> int:
 
 def total_rev_k(year: dict) -> int:
     return year["b2b_k"] + year["b2c_k"] + year.get("api_k", 0)
+
+
+def ebitda_month_k(year: dict) -> float:
+    return round(ebitda_k(year) / 12, 1)

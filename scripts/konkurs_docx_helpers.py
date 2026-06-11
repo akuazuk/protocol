@@ -20,7 +20,7 @@ if str(_SCRIPTS) not in sys.path:
 from konkurs_finance import (  # noqa: E402
     B2C_AVG_PRICE,
     B2C_TIERS,
-    B2C_UPSIDE_YEAR3_K,
+    B2C_TAM_TOUCHES_YEAR,
     CERTIFICATE_BYN,
     CLINIC_B2C_REVSHARE,
     FIN_Y1,
@@ -36,12 +36,28 @@ from konkurs_finance import (  # noqa: E402
     ROI_TOTAL_SAVING,
     SAM_KZ_YEAR,
     SOM_Y3_KZ_YEAR,
+    TAM_B2B_CEILING_YEAR_K,
     TAM_REVENUE_YEAR,
     Y2_MARKET_SHARE,
     Y3_MARKET_SHARE,
     clinic_revshare_byn,
     ebitda_k,
+    ebitda_month_k,
     total_rev_k,
+)
+from konkurs_scenarios import (  # noqa: E402
+    ALL_SCENARIOS_Y3,
+    B2C_PROTOCOL_PER_CHECK,
+    CHANNEL_OUTLOOK,
+    FIN_Y3_SYNC,
+    MONTHLY_Y3_CAUTIOUS,
+    PENETRATION_SENSITIVITY,
+    SCENARIO_CAUTIOUS,
+    SCENARIO_BASE,
+    SCENARIO_OPTIMISTIC,
+    TAM_BRIDGE,
+    TAM_CEILING_B2B_YEAR_K,
+    b2c_protocol_k,
 )
 from konkurs_market import (  # noqa: E402
     CISZ_DRIVERS,
@@ -237,7 +253,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.set_xticks(list(x))
     ax.set_xticklabels(years)
     ax.set_ylabel("тыс. BYN / год")
-    ax.set_title("Прогноз выручки Protocol (осторожный сценарий)")
+    ax.set_title(f"Прогноз выручки Protocol · осторожный сценарий (SOM {Y3_MARKET_SHARE:.0%} TAM)")
     ax.legend(loc="upper left", fontsize=8)
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
@@ -256,7 +272,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     values = [MARKET_KZ_YEAR / 1_000_000, SAM_KZ_YEAR / 1_000_000, SOM_Y3_KZ_YEAR / 1_000_000]
     bars = ax.bar(labels, values, color=[colors[2], colors[1], colors[0]])
     ax.set_ylabel("млн КЗ / год")
-    ax.set_title("Рынок частных ОЗ РБ: TAM - SAM - SOM")
+    ax.set_title(f"Рынок частных ОЗ РБ: TAM 30 млн → SAM → SOM 8% = {SOM_Y3_KZ_YEAR // 1_000_000} млн КЗ/год")
     for bar, val in zip(bars, values):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.3, f"{val}", ha="center", fontsize=9)
     ax.grid(axis="y", alpha=0.3)
@@ -292,7 +308,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     labels = ["B2B клиники", "B2C Protocol", "B2B API/МИС"]
     sizes = [b2b_pct, b2c_pct, api_pct]
     ax.pie(sizes, labels=labels, autopct="%1.0f%%", colors=colors[:3], startangle=140, textprops={"fontsize": 8})
-    ax.set_title(f"Структура выручки, год 3 ({rev3} тыс. BYN)")
+    ax.set_title(f"Структура выручки 2029 · SOM 8% TAM ({rev3} тыс. BYN/год)")
     fig.tight_layout()
     p4 = assets_dir / "chart_channels.png"
     fig.savefig(p4, dpi=160, bbox_inches="tight", facecolor="white")
@@ -307,7 +323,9 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     bars = ax.bar(years, ebitda_vals, color=bar_colors)
     ax.axhline(0, color="#666", linewidth=0.8)
     ax.set_ylabel("тыс. BYN")
-    ax.set_title("EBITDA Protocol (осторожный сценарий)")
+    ax.set_title(
+        f"EBITDA год/мес · осторожный сценарий (8% TAM = {FIN_Y3['kz_month']:,} КЗ/мес)".replace(",", " ")
+    )
     for bar, val in zip(bars, ebitda_vals):
         label = f"{val:+d}" if val != 0 else "0"
         y = val + (30 if val >= 0 else -40)
@@ -331,7 +349,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax1.set_xticklabels(years)
     ax1.set_ylabel("Доля рынка, %")
     ax2.set_ylabel("КЗ/мес, тыс.")
-    ax1.set_title("Рост доли рынка и объёма проверок")
+    ax1.set_title(f"Доля от TAM 2,5 млн КЗ/мес · не весь рынок в год 3")
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left", fontsize=8)
@@ -402,14 +420,16 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     plt.close(fig)
     paths["roi"] = p9
 
-    # B2C воронка (конверсии)
+    # B2C воронка — согласована с FIN_Y3 (69,6 тыс. оплат в осторожном сценарии)
     fig, ax = plt.subplots(figsize=(7, 3.2))
-    funnel = ["КЗ/год\n30 млн", "QR scan\n1%", "Landing\n30%", "Оплата\n5%"]
-    funnel_vals = [30_000_000, 300_000, 90_000, 4_500]
-    display = [100, 1, 0.3, 0.015]
+    funnel = ["КЗ/год\n30 млн TAM", "Увидели QR/SMS\n2%", "Landing\n40%", "Оплата\n29%"]
+    funnel_vals = [30_000_000, 600_000, 240_000, FIN_Y3["b2c_checks"]]
+    display = [100, 2, 0.8, funnel_vals[3] / 300_000 * 100]
     ax.barh(funnel, display, color=[colors[2], colors[1], colors[4], colors[0]])
-    ax.set_xlabel("Относительный объём (лог. шкала условная)")
-    ax.set_title("B2C-воронка (консервативный сценарий, ~4 500 платных/год)")
+    ax.set_xlabel("Условная шкала (%)")
+    ax.set_title(
+        f"B2C-воронка → {FIN_Y3['b2c_checks']:,} платных/год (0,23% TAM, не 100%)".replace(",", " ")
+    )
     for i, (bar, raw) in enumerate(zip(ax.patches, funnel_vals)):
         ax.text(bar.get_width() + 0.02, bar.get_y() + bar.get_height() / 2, f"{raw:,}".replace(",", " "), va="center", fontsize=8)
     ax.set_xlim(0, 110)
@@ -430,7 +450,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ax.set_xticks(list(x))
     ax.set_xticklabels(years)
     ax.set_ylabel("тыс. BYN / год")
-    ax.set_title("B2B: якорь vs масштаб на частные клиники РБ")
+    ax.set_title("B2B: якорь Кравира vs другие ОЗ (осторожный план)")
     ax.legend(fontsize=8)
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
@@ -478,15 +498,21 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     plt.close(fig)
     paths["b2c_revshare"] = p13
 
-    # B2C growth + upside
+    # B2C growth: три сценария Y3
     fig, ax = plt.subplots(figsize=(7, 3.8))
-    b2c_labels = ["2027", "2028", "2029", "2029\nupside"]
-    b2c_vals = [FIN_Y1["b2c_k"], FIN_Y2["b2c_k"], FIN_Y3["b2c_k"], B2C_UPSIDE_YEAR3_K]
-    bar_cols = [colors[0], colors[0], colors[0], colors[4]]
-    bars = ax.bar(b2c_labels, b2c_vals, color=bar_cols)
-    ax.set_ylabel("тыс. BYN / год (Protocol 70%)")
-    ax.set_title("Рост B2C на национальном рынке (все пациенты частных ОЗ)")
-    for bar, val in zip(bars, b2c_vals):
+    scen_labels = ["2027", "2028", "2029\nостор.", "2029\nбазов.", "2029\nоптим."]
+    scen_vals = [
+        FIN_Y1["b2c_k"],
+        FIN_Y2["b2c_k"],
+        SCENARIO_CAUTIOUS["b2c_k"],
+        SCENARIO_BASE["b2c_k"],
+        SCENARIO_OPTIMISTIC["b2c_k"],
+    ]
+    bar_cols = [colors[0], colors[0], colors[0], colors[1], colors[4]]
+    bars = ax.bar(scen_labels, scen_vals, color=bar_cols)
+    ax.set_ylabel("тыс. BYN / год (Protocol, rev-share учтён)")
+    ax.set_title(f"B2C: ~{B2C_PROTOCOL_PER_CHECK} BYN/проверка Protocol (микс tier + 30% клинике)")
+    for bar, val in zip(bars, scen_vals):
         ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 8, str(val), ha="center", fontsize=9)
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
@@ -494,6 +520,129 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.savefig(p14, dpi=160, bbox_inches="tight", facecolor="white")
     plt.close(fig)
     paths["b2c_growth"] = p14
+
+    # TAM → выручка (мост): показывает почему EBITDA << TAM
+    fig, ax = plt.subplots(figsize=(7.5, 4))
+    bridge_labels = ["TAM\nB2B теор.", "SAM\n5%", "SOM 8%\nB2B план", "B2C+API\n2029", "Выручка\nProtocol"]
+    bridge_rev = [
+        TAM_B2B_CEILING_YEAR_K,
+        int(SAM_KZ_YEAR * 0.75 / 1000),
+        FIN_Y3["b2b_k"],
+        FIN_Y3["b2c_k"] + FIN_Y3["api_k"],
+        total_rev_k(FIN_Y3),
+    ]
+    bar_c = [colors[2], colors[1], colors[0], colors[4], colors[3]]
+    bars = ax.bar(bridge_labels, bridge_rev, color=bar_c)
+    ax.set_ylabel("тыс. BYN / год")
+    ax.set_title("TAM 2,5 млн КЗ/мес ≠ выручка: захват 8% B2B + 0,23% B2C")
+    for bar, val in zip(bars, bridge_rev):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 200, f"{val:,}".replace(",", " "), ha="center", fontsize=7)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p15 = assets_dir / "chart_tam_bridge.png"
+    fig.savefig(p15, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["tam_bridge"] = p15
+
+    # EBITDA по сценариям Y3
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    scen_names = [s["label"].split("(")[0].strip() for s in ALL_SCENARIOS_Y3]
+    ebitda_scen = [s["ebitda_k"] for s in ALL_SCENARIOS_Y3]
+    ebitda_mo = [s["ebitda_month_k"] for s in ALL_SCENARIOS_Y3]
+    bars = ax.bar(scen_names, ebitda_scen, color=[colors[0], colors[1], colors[4]])
+    ax.set_ylabel("тыс. BYN / год")
+    ax.set_title("EBITDA 2029: три сценария (подпись: год и ~месяц)")
+    for bar, val, mo in zip(bars, ebitda_scen, ebitda_mo):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 30, f"+{val}\n(~{mo}/мес)", ha="center", fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p16 = assets_dir / "chart_scenarios_ebitda.png"
+    fig.savefig(p16, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["scenarios_ebitda"] = p16
+
+    # Чувствительность EBITDA к доле рынка B2B
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    pen_labels = [f"{p[0]}%" for p in PENETRATION_SENSITIVITY]
+    pen_vals = [p[1] for p in PENETRATION_SENSITIVITY]
+    bar_cols = [colors[0] if p[0] == 8 else (colors[1] if p[0] == 10 else colors[2]) for p in PENETRATION_SENSITIVITY]
+    bars = ax.bar(pen_labels, pen_vals, color=bar_cols)
+    ax.axhline(ebitda_k(FIN_Y3), color=colors[5], linestyle="--", linewidth=1, label=f"План 8% = {ebitda_k(FIN_Y3)}")
+    ax.set_xlabel("Доля TAM B2B (2,5 млн КЗ/мес)")
+    ax.set_ylabel("EBITDA, тыс. BYN/год")
+    ax.set_title("Чувствительность EBITDA к проникновению B2B (B2C фикс.)")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p17 = assets_dir / "chart_penetration.png"
+    fig.savefig(p17, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["penetration"] = p17
+
+    # Вероятность успеха каналов
+    fig, ax = plt.subplots(figsize=(7, 3.8))
+    ch_names = [c["channel"] for c in CHANNEL_OUTLOOK]
+    ch_prob = [c["prob"] * 100 for c in CHANNEL_OUTLOOK]
+    ch_rev = [c["y3_k"] for c in CHANNEL_OUTLOOK]
+    y_pos = range(len(ch_names))
+    ax.barh(y_pos, ch_prob, color=colors[0], alpha=0.85)
+    ax.set_yticks(list(y_pos))
+    ax.set_yticklabels(ch_names, fontsize=8)
+    ax.set_xlabel("Вероятность достижения плана к 2029, %")
+    ax.set_title("Прогноз каналов: что с большей вероятностью «выстрелит»")
+    for i, (p, r) in enumerate(zip(ch_prob, ch_rev)):
+        ax.text(p + 1, i, f"{r} тыс. BYN", va="center", fontsize=7)
+    ax.set_xlim(0, 105)
+    ax.grid(axis="x", alpha=0.3)
+    fig.tight_layout()
+    p18 = assets_dir / "chart_channel_outlook.png"
+    fig.savefig(p18, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["channel_outlook"] = p18
+
+    # Смешанная выручка по сценариям Y3
+    fig, ax = plt.subplots(figsize=(7, 4))
+    x = range(len(ALL_SCENARIOS_Y3))
+    b2b_s = [s["b2b_k"] for s in ALL_SCENARIOS_Y3]
+    b2c_s = [s["b2c_k"] for s in ALL_SCENARIOS_Y3]
+    api_s = [s["api_k"] for s in ALL_SCENARIOS_Y3]
+    labels_s = ["Осторожн.", "Базовый", "Оптимист."]
+    ax.bar(x, b2b_s, label="B2B", color=colors[0])
+    ax.bar(x, b2c_s, bottom=b2b_s, label="B2C", color=colors[4])
+    ax.bar(x, api_s, bottom=[b + c for b, c in zip(b2b_s, b2c_s)], label="API", color=colors[3])
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(labels_s)
+    ax.set_ylabel("тыс. BYN / год")
+    ax.set_title("Структура выручки 2029 по сценариям")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p19 = assets_dir / "chart_scenarios_revenue.png"
+    fig.savefig(p19, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["scenarios_revenue"] = p19
+
+    # EBITDA помесячно 2027-2029
+    fig, ax = plt.subplots(figsize=(7, 3.5))
+    months = ["2027", "2028", "2029"]
+    ebitda_annual = [ebitda_k(FIN_Y1), ebitda_k(FIN_Y2), ebitda_k(FIN_Y3)]
+    ebitda_monthly = [round(v / 12, 1) for v in ebitda_annual]
+    w = 0.35
+    x = range(3)
+    ax.bar([i - w / 2 for i in x], ebitda_annual, width=w, label="EBITDA год, тыс.", color=colors[0])
+    ax.bar([i + w / 2 for i in x], ebitda_monthly, width=w, label="EBITDA мес, тыс.", color=colors[4])
+    ax.axhline(0, color="#666", linewidth=0.8)
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(months)
+    ax.set_ylabel("тыс. BYN")
+    ax.set_title(f"EBITDA год vs месяц · 2029: {ebitda_month_k(FIN_Y3)} тыс./мес при 8% TAM")
+    ax.legend(fontsize=8)
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    p20 = assets_dir / "chart_ebitda_monthly.png"
+    fig.savefig(p20, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    paths["ebitda_monthly"] = p20
 
     return paths
 

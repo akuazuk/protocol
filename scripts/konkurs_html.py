@@ -28,7 +28,6 @@ from konkurs_bp_sections import RESUME, SECTIONS, TOC  # noqa: E402
 from konkurs_finance import (  # noqa: E402
     B2C_AVG_PRICE,
     B2C_TIERS,
-    B2C_UPSIDE_YEAR3_K,
     CERTIFICATE_BYN,
     CLINIC_B2C_REV_Y1_K,
     CLINIC_B2C_REV_Y2_K,
@@ -46,9 +45,23 @@ from konkurs_finance import (  # noqa: E402
     ROI_TOTAL_SAVING,
     SAM_KZ_YEAR,
     SOM_Y3_KZ_YEAR,
+    TAM_B2B_CEILING_YEAR_K,
     TAM_REVENUE_YEAR,
+    Y3_MARKET_SHARE,
     ebitda_k,
+    ebitda_month_k,
     total_rev_k,
+)
+from konkurs_scenarios import (  # noqa: E402
+    B2C_PROTOCOL_PER_CHECK,
+    CHANNEL_TABLE,
+    MONTHLY_Y3_CAUTIOUS,
+    PENETRATION_SENSITIVITY,
+    SCENARIO_BASE,
+    SCENARIO_CAUTIOUS,
+    SCENARIO_COMPARE_TABLE,
+    SCENARIO_OPTIMISTIC,
+    TAM_BRIDGE,
 )
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
@@ -282,7 +295,7 @@ def _market_scope_html() -> str:
   <div class="stat"><b>8</b><span class="muted">клиник B2B к 2029</span></div>
   <div class="stat"><b>{CLINIC_B2C_REV_Y3_K}</b><span class="muted">тыс. BYN rev-share клиникам</span></div>
 </div>
-{_table(['Tier B2C', 'Specialty', 'BYN', 'Микс'], tier_rows, caption='Tier-цены B2C (средний чек ~7,47 BYN)')}
+{_table(['Tier B2C', 'Specialty', 'BYN', 'Микс'], tier_rows, caption='Tier-цены B2C (средний чек пациента ~8,33 BYN)')}
 </div>"""
 
 
@@ -326,7 +339,7 @@ def _b2c_ux_html() -> str:
   ('3. Национальный SEO', 'Средняя', '2028+, без rev-share'),
 ], caption='Приоритет запуска B2C')}
 <div class="highlight">Пилот Q4 2026: QR + SMS rev-share в Кравире; масштаб 2027+ на сеть частных ОЗ РБ.
-Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники рассылать ссылку — доп. доход ~{CLINIC_B2C_REV_Y3_K} тыс. BYN/год к 2029 при осторожном сценарии.</div>
+Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники рассылать ссылку — доп. доход ~{CLINIC_B2C_REV_Y3_K} тыс. BYN/год к 2029 (осторожный сценарий, B2C {FIN_Y3['b2c_k']} тыс. Protocol).</div>
 <p><strong>Вне scope (не делаем в 2026–2027):</strong></p><ul>{oos}</ul>
 </div>"""
 
@@ -351,41 +364,54 @@ def _finance_block(assets_rel: str) -> str:
   <div class="stat"><b>2,7 млрд</b><span class="muted">BYN рынок платных услуг</span></div>
   <div class="stat"><b>{MARKET_KZ_MONTH:,}</b><span class="muted">КЗ/мес TAM</span></div>
   <div class="stat"><b>{KRAVIRA_B2B_YEAR:,}</b><span class="muted">BYN/год якорь</span></div>
-  <div class="stat"><b>+{ebitda_k(FIN_Y3)}</b><span class="muted">тыс. BYN EBITDA 2029</span></div>
+  <div class="stat"><b>+{ebitda_k(FIN_Y3)}</b><span class="muted">тыс. BYN EBITDA/год 2029</span></div>
+  <div class="stat"><b>+{ebitda_month_k(FIN_Y3)}</b><span class="muted">тыс. BYN EBITDA/мес (8% TAM)</span></div>
 </div>""".replace(",", " ")
 
     tam_rows = [
-        ("КЗ/мес, Кравира", f"{KRAVIRA_KZ_MONTH:,}".replace(",", " "), "1% рынка"),
-        ("КЗ/мес, частные ОЗ РБ", f"{MARKET_KZ_MONTH:,}".replace(",", " "), "экстраполяция"),
-        ("TAM @ 0,99 BYN/год", f"~{TAM_REVENUE_YEAR:,} BYN".replace(",", " "), "30 млн × 0,99"),
-        ("SAM 5%", f"{SAM_KZ_YEAR:,} КЗ/год".replace(",", " "), "крупные ОЗ"),
-        ("SOM год 3", f"{SOM_Y3_KZ_YEAR:,} КЗ/год".replace(",", " "), "8% TAM"),
+        ("TAM: КЗ/мес частные ОЗ РБ", f"{MARKET_KZ_MONTH:,}".replace(",", " "), "2,5 млн — весь рынок"),
+        ("TAM: теор. B2B @0,75 BYN/год", f"~{TAM_B2B_CEILING_YEAR_K:,} тыс.".replace(",", " "), "потолок, не план"),
+        ("SAM 5% крупные ОЗ", f"{SAM_KZ_YEAR:,} КЗ/год".replace(",", " "), "целевой B2B-сегмент"),
+        ("SOM год 3: B2B 8% TAM", f"{FIN_Y3['kz_month']:,} КЗ/мес".replace(",", " "), f"{Y3_MARKET_SHARE:.0%} от TAM"),
+        ("B2C конверсия год 3", f"{FIN_Y3['b2c_checks']:,} проверок".replace(",", " "), f"{FIN_Y3['b2c_checks']/MARKET_KZ_YEAR:.2%} TAM"),
     ]
     fin_rows = [
+        ("Доля TAM B2B", "1%", "3%", "8%"),
         ("Клиенты (ОЗ)", "1", "3", "8"),
-        ("КЗ/мес B2B", f"{FIN_Y1['kz_month']:,}".replace(",", " "), f"{FIN_Y2['kz_month']:,}".replace(",", " "), f"{FIN_Y3['kz_month']:,}".replace(",", " ")),
+        ("КЗ/мес B2B (не весь TAM)", f"{FIN_Y1['kz_month']:,}".replace(",", " "), f"{FIN_Y2['kz_month']:,}".replace(",", " "), f"{FIN_Y3['kz_month']:,}".replace(",", " ")),
         ("B2B Кравира, тыс.", str(FIN_Y1["b2b_kravira_k"]), str(FIN_Y2["b2b_kravira_k"]), str(FIN_Y3["b2b_kravira_k"])),
         ("B2B другие ОЗ, тыс.", str(FIN_Y1["b2b_other_k"]), str(FIN_Y2["b2b_other_k"]), str(FIN_Y3["b2b_other_k"])),
-        ("Выручка B2C Protocol, тыс.", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])),
+        ("B2C Protocol, тыс.", str(FIN_Y1["b2c_k"]), str(FIN_Y2["b2c_k"]), str(FIN_Y3["b2c_k"])),
         ("Rev-share клиникам, тыс.", str(CLINIC_B2C_REV_Y1_K), str(CLINIC_B2C_REV_Y2_K), str(CLINIC_B2C_REV_Y3_K)),
-        ("Выручка API, тыс.", str(FIN_Y1["api_k"]), str(FIN_Y2["api_k"]), str(FIN_Y3["api_k"])),
+        ("API/МИС, тыс.", str(FIN_Y1["api_k"]), str(FIN_Y2["api_k"]), str(FIN_Y3["api_k"])),
         ("Итого выручка, тыс.", str(total_rev_k(FIN_Y1)), str(total_rev_k(FIN_Y2)), str(total_rev_k(FIN_Y3))),
         ("OPEX, тыс.", str(FIN_Y1["opex_k"]), str(FIN_Y2["opex_k"]), str(FIN_Y3["opex_k"])),
-        ("EBITDA, тыс.", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"),
+        ("EBITDA год, тыс.", str(ebitda_k(FIN_Y1)), f"+{ebitda_k(FIN_Y2)}", f"+{ebitda_k(FIN_Y3)}"),
+        ("EBITDA мес, тыс.", f"{ebitda_month_k(FIN_Y1)}", f"+{ebitda_month_k(FIN_Y2)}", f"+{ebitda_month_k(FIN_Y3)}"),
     ]
-    b2c_scenario_rows = [
-        ("Осторожный (модель)", f"{FIN_Y3['b2c_checks']:,}".replace(",", " "), f"{FIN_Y3['b2c_k']} тыс.", "базовый план"),
-        ("Upside 0,3% TAM", "~90 000", f"~{B2C_UPSIDE_YEAR3_K} тыс.", "SEO + SMS rev-share"),
-        ("Средний чек", "—", f"{B2C_AVG_PRICE} BYN", "микс tier"),
-    ]
+    bridge_rows = [(name, f"{kz:,}".replace(",", " ") if kz else "—", f"{rev:,}".replace(",", " "), note) for name, kz, rev, note in TAM_BRIDGE]
+    pen_rows = [(f"{p}% TAM B2B", f"{e:,}".replace(",", " "), f"~{int(MARKET_KZ_MONTH*p/100):,} КЗ/мес".replace(",", " ")) for p, e in PENETRATION_SENSITIVITY]
     return f"""
 <div class="section"><h2>Финансовые приложения и графики</h2></div>
 <div class="section-body">
 {stats}
 {_table(['Показатель рынка РБ', 'Значение', 'Источник'], RB_MARKET_TABLE, caption='Контекст рынка платных медуслуг РБ')}
-{_table(['Показатель', 'Значение', 'Комментарий'], tam_rows, caption='TAM / SAM / SOM')}
-{_table(['Показатель', '2027', '2028', '2029'], fin_rows, caption='Финансовый план (тыс. BYN)')}
-{_table(['Сценарий B2C', 'Проверок/год', 'Protocol', 'Комментарий'], b2c_scenario_rows, caption='B2C: осторожный vs upside')}
+<div class="highlight"><strong>Важно:</strong> TAM 2,5 млн КЗ/мес — весь частный рынок РБ. В осторожном плане 2029 Protocol обрабатывает
+<strong>200 тыс. КЗ/мес B2B (8%)</strong> и <strong>{FIN_Y3['b2c_checks']:,} B2C-проверок/год (0,23%)</strong> — поэтому EBITDA
+<strong>+{ebitda_k(FIN_Y3)} тыс./год (~{ebitda_month_k(FIN_Y3)} тыс./мес)</strong>, а не выручка от полного TAM
+(теор. потолок B2B ~{TAM_B2B_CEILING_YEAR_K:,} тыс./год). Средняя выручка Protocol с B2C: ~{B2C_PROTOCOL_PER_CHECK} BYN/проверка (чек пациента {B2C_AVG_PRICE} BYN, rev-share 30% на 80% потока).</div>
+{_table(['Этап', 'КЗ/год', 'Выручка тыс.', 'Пояснение'], bridge_rows, caption='Мост TAM → SAM → SOM → выручка Protocol')}
+{_table(['Показатель', 'Значение', 'Комментарий'], tam_rows, caption='TAM / SAM / SOM — различие рынка и плана')}
+{_table(['Показатель', '2027', '2028', '2029'], fin_rows, caption='Финансовый план · осторожный сценарий (тыс. BYN)')}
+{_table(['Сценарий 2029', 'B2B TAM', 'B2C conv', 'Выручка', 'EBITDA/год', 'EBITDA/мес'], SCENARIO_COMPARE_TABLE, caption='Три сценария года 3: осторожный · базовый · оптимистичный')}
+{_table(['Канал', 'Вероятность', 'План тыс.', 'Драйвер'], CHANNEL_TABLE, caption='Какой канал с большей вероятностью даст выручку')}
+{_table(['Проникновение B2B', 'EBITDA тыс./год', 'КЗ/мес'], pen_rows, caption='Чувствительность EBITDA к доле TAM (B2C фикс.)')}
+{img('chart_tam_bridge.png', 'TAM 2,5 млн КЗ/мес ≠ выручка: захват 8% + 0,23% B2C')}
+{img('chart_scenarios_ebitda.png', 'EBITDA 2029: три сценария (год и месяц)')}
+{img('chart_scenarios_revenue.png', 'Структура выручки 2029 по сценариям B2B/B2C/API')}
+{img('chart_penetration.png', 'Чувствительность EBITDA к проникновению B2B')}
+{img('chart_channel_outlook.png', 'Вероятность успеха каналов монетизации')}
+{img('chart_ebitda_monthly.png', 'EBITDA: год vs месяц · подпись 8% TAM')}
 {img('chart_b2b_split.png', 'B2B: Кравира vs другие клиники РБ')}
 {img('chart_b2c_tiers.png', 'Tier-цены B2C по specialty')}
 {img('chart_b2c_revshare.png', 'Rev-share 30/70: примеры по tier')}

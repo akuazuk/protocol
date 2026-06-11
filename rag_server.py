@@ -5950,7 +5950,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r84-national-bp-b2c"
+BUILD_VERSION = "2026-06-01-r85-scenarios-tam-bridge"
 
 
 def _app_version() -> str:
