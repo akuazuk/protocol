@@ -5592,8 +5592,76 @@
       display: none !important;
     }
 
-    body.methodist-mode #consult-send-gate-panel {
+    body.methodist-mode #consult-send-gate-panel,
+    body.methodist-mode #consult-sign-decision-panel,
+    body.methodist-mode #consult-cisz-checklist {
       display: none !important;
+    }
+
+    .methodist-focus-note {
+      margin: 0 0 0.55rem;
+      font-size: 0.76rem;
+      color: #5a6f6a;
+      line-height: 1.45;
+    }
+
+    .methodist-kz-text-wrap {
+      margin: 0.45rem 0 0.65rem;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .methodist-kz-text-wrap summary {
+      cursor: pointer;
+      font-weight: 650;
+      font-size: 0.78rem;
+      padding: 0.45rem 0.55rem;
+      color: var(--green-900);
+    }
+
+    .methodist-kz-text {
+      margin: 0;
+      padding: 0.55rem 0.65rem;
+      max-height: 16rem;
+      overflow: auto;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #1f2937;
+      border-top: 1px solid rgba(26, 138, 114, 0.12);
+      font-family: "IBM Plex Sans", "DM Sans", system-ui, sans-serif;
+    }
+
+    .methodist-block-scores-table,
+    .methodist-llm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      margin: 0.35rem 0 0.5rem;
+    }
+
+    .methodist-block-scores-table th,
+    .methodist-block-scores-table td,
+    .methodist-llm-table th,
+    .methodist-llm-table td {
+      border: 1px solid rgba(26, 138, 114, 0.15);
+      padding: 0.32rem 0.4rem;
+      text-align: left;
+    }
+
+    .methodist-block-scores-table th,
+    .methodist-llm-table th {
+      background: #f0faf6;
+      font-weight: 650;
+    }
+
+    .methodist-compliance-subtitle {
+      margin: 0.45rem 0 0.25rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green-950);
     }
 
     .methodist-eval-dashboard {
@@ -7322,40 +7390,78 @@
           </details>
 
           <div id="methodist-workbench-wrap" class="methodist-workbench-wrap consult-hide-print" hidden>
-          <section id="methodist-eval-dashboard" class="methodist-eval-dashboard consult-hide-print" hidden aria-label="Параметры для оценки методиста">
+          <section id="methodist-eval-dashboard" class="methodist-eval-dashboard consult-hide-print" hidden aria-label="Сверка КЗ с протоколами">
             <div class="methodist-eval-dashboard__head">
-              <h3>Что проверила система</h3>
+              <h3>Сверка КЗ с клиническими протоколами</h3>
               <span class="methodist-eval-tier-line" id="methodist-eval-tier-line"></span>
             </div>
+            <p class="methodist-focus-note">Оцениваем содержание заключения врача по протоколам. Подпись, send gate и ЦИСЗ здесь не размечаются.</p>
+            <details class="methodist-kz-text-wrap consult-hide-print" id="methodist-kz-text-wrap" open>
+              <summary>Текст КЗ для сверки (ФИО скрыты)</summary>
+              <pre id="methodist-kz-text" class="methodist-kz-text"></pre>
+            </details>
+            <p class="methodist-compliance-subtitle">Оценка системы — те же параметры, что в обычном режиме</p>
             <div class="methodist-eval-grid" id="methodist-eval-metrics"></div>
-            <ul class="methodist-eval-checks" id="methodist-eval-checks"></ul>
+            <div style="overflow-x:auto">
+              <table class="methodist-block-scores-table" id="methodist-block-scores-table">
+                <thead>
+                  <tr>
+                    <th>Блок (8 параметров)</th>
+                    <th>% системы</th>
+                  </tr>
+                </thead>
+                <tbody id="methodist-block-scores-tbody"></tbody>
+              </table>
+            </div>
+            <details id="methodist-llm-wrap" class="consult-hide-print" hidden>
+              <summary>Критерии LLM (L2, справочно)</summary>
+              <div style="overflow-x:auto">
+                <table class="methodist-llm-table" id="methodist-llm-table">
+                  <thead>
+                    <tr><th>Критерий</th><th>%</th></tr>
+                  </thead>
+                  <tbody id="methodist-llm-tbody"></tbody>
+                </table>
+              </div>
+            </details>
             <div class="methodist-eval-failed" id="methodist-eval-failed" hidden>
-              <strong>Невыполненные правила</strong>
+              <strong>Замечания по правилам протокола</strong>
               <ul id="methodist-eval-failed-list"></ul>
             </div>
             <p class="consult-hint-small" id="methodist-eval-protocols" style="margin:0.25rem 0;font-size:0.72rem;color:#5a6f6a"></p>
             <details class="methodist-guide consult-hide-print" id="methodist-guide-details">
-              <summary>Памятка: как оценивать точнее</summary>
+              <summary>Памятка методиста</summary>
               <ol>
-                <li><strong>Рейтинг 1–5</strong> — насколько система в целом помогла методисту: 5 = можно опираться, 1 = вводит в заблуждение.</li>
-                <li><strong>Вердикт</strong> — «Верно» только если gate, правила и (на L2) RAG/LLM согласуются с вашей экспертизой.</li>
-                <li><strong>Теги</strong> — отметьте тип ошибки (ложное правило, пропуск, неверный КП, ЦИСЗ, вводящий %).</li>
-                <li><strong>Разметка правил</strong> — если система ошиблась по конкретному правилу, укажите «Не согласен» и короткий комментарий (≤280 симв.).</li>
-                <li><strong>RAG (L2)</strong> — если протокол подобран неверно, укажите ошибочный путь из топ-5 и правильный путь к PDF.</li>
-                <li><strong>Уровни:</strong> L0 — быстро gate+правила; L1 — полный structured; L2 — + RAG и LLM. Сравнивайте время и состав проверок по строке уровня выше.</li>
+                <li><strong>Текст КЗ</strong> — сверьте с протоколом; ФИО скрыты, клинический текст сохранён.</li>
+                <li><strong>8 блоков + правила</strong> — это то, что система оценила (75% структура + 25% правила).</li>
+                <li><strong>Экспертная оценка КЗ</strong> — ваша gold-метка: соответствует протоколам или нет.</li>
+                <li><strong>Рейтинг и вердикт</strong> — насколько <em>система</em> верно оценила это КЗ (для обучения модели).</li>
+                <li><strong>Блоки и правила</strong> — отметьте, где система ошиблась; это попадёт в <code>block_overrides</code> и <code>methodist_override</code>.</li>
+                <li><strong>RAG (L2)</strong> — если неверный протокол в топ-5, укажите правильный путь.</li>
               </ol>
             </details>
           </section>
 
-          <section id="methodist-review-panel" class="methodist-review-panel consult-hide-print" hidden aria-label="Оценка методиста">
-            <h3>Оценка качества анализа</h3>
+          <section id="methodist-review-panel" class="methodist-review-panel consult-hide-print" hidden aria-label="Разметка для обучения">
+            <h3>Разметка для обучения модели</h3>
             <p id="methodist-review-status" class="consult-hint-small" style="margin: 0 0 0.35rem; color: #8a6914">Оценка не сохранена</p>
-            <div class="methodist-rating-row" id="methodist-rating-row" role="group" aria-label="Рейтинг 1-5">
-              <span style="font-size:0.76rem;font-weight:600">Рейтинг:</span>
+            <div class="methodist-rating-row" id="methodist-rating-row" role="group" aria-label="Точность оценки системы 1-5">
+              <span style="font-size:0.76rem;font-weight:600">Точность системы (1–5):</span>
             </div>
             <div class="methodist-review-grid">
               <div>
-                <label for="methodist-verdict-select">Вердикт</label>
+                <label for="methodist-kz-gold-select">Экспертная оценка КЗ по протоколам</label>
+                <select id="methodist-kz-gold-select">
+                  <option value="">Выберите…</option>
+                  <option value="compliant">Соответствует протоколам</option>
+                  <option value="mostly_compliant">В основном соответствует</option>
+                  <option value="partially_compliant">Частично соответствует</option>
+                  <option value="non_compliant">Не соответствует</option>
+                  <option value="insufficient_data">Недостаточно данных в КЗ</option>
+                </select>
+              </div>
+              <div>
+                <label for="methodist-verdict-select">Насколько верно система оценила КЗ?</label>
                 <select id="methodist-verdict-select">
                   <option value="">Выберите…</option>
                   <option value="correct">Верно</option>
@@ -7379,6 +7485,22 @@
                 <input type="text" id="methodist-chosen-path" placeholder="gastroenterologiya/…" />
               </div>
             </div>
+            <details id="methodist-blocks-details" open>
+              <summary>8 блоков — согласие с оценкой системы</summary>
+              <div style="overflow-x:auto">
+                <table class="methodist-findings-table">
+                  <thead>
+                    <tr>
+                      <th>Блок</th>
+                      <th>Система %</th>
+                      <th>Методист</th>
+                      <th>Комментарий</th>
+                    </tr>
+                  </thead>
+                  <tbody id="methodist-blocks-tbody"></tbody>
+                </table>
+              </div>
+            </details>
             <details id="methodist-findings-details" hidden open>
               <summary>Разметка по правилам (<span id="methodist-findings-count">0</span>)</summary>
               <div style="overflow-x:auto">
@@ -7398,7 +7520,7 @@
             <details class="methodist-ml-record consult-hide-print" id="methodist-ml-record-details" open>
               <summary>Что сохраняется для обучения ML</summary>
               <div class="methodist-ml-record__body">
-                <p class="methodist-ml-record__lead">При анализе КЗ сервер уже пишет событие <code>kz_analysis</code> (текст КЗ — в защищённом хранилище on-prem, не в git).</p>
+                <p class="methodist-ml-record__lead">Собираем пары «система → эксперт» для улучшения оценки КЗ по протоколам. Полный текст КЗ хранится on-prem по hash (без ФИО в UI).</p>
                 <h4 class="methodist-ml-record__subtitle">Уже записано при анализе</h4>
                 <ul class="methodist-ml-record__list" id="methodist-autolog-list"></ul>
                 <h4 class="methodist-ml-record__subtitle">Добавится при «Сохранить оценку»</h4>
@@ -11076,7 +11198,8 @@
     { id: "false_positive_rule", label: "Ложное замечание правила" },
     { id: "missed_issue", label: "Пропущена ошибка в КЗ" },
     { id: "wrong_population", label: "Ошибка популяции" },
-    { id: "cisz_wrong", label: "Неверно по ЦИСЗ" },
+    { id: "wrong_diagnosis_block", label: "Неверно оценён блок «Диагноз»" },
+    { id: "wrong_treatment_block", label: "Неверно оценён блок «Лечение»" },
     { id: "score_misleading", label: "Итоговый % вводит в заблуждение" },
     { id: "other", label: "Прочее" },
   ];
@@ -11131,6 +11254,41 @@
       });
     });
     return out;
+  }
+
+  function collectMethodistBlockOverrides() {
+    var rows = document.querySelectorAll("#methodist-blocks-tbody tr[data-block-key]");
+    var out = [];
+    rows.forEach(function (tr) {
+      var sel = tr.querySelector(".methodist-block-verdict");
+      if (!sel || !sel.value || sel.value === "agree") return;
+      var sysScore = tr.getAttribute("data-system-score");
+      var noteEl = tr.querySelector(".methodist-block-note");
+      out.push({
+        block_key: tr.getAttribute("data-block-key"),
+        block_label_ru: tr.getAttribute("data-block-label") || "",
+        system_score: sysScore !== "" && sysScore != null ? Number(sysScore) : null,
+        human_agrees: false,
+        note: noteEl ? String(noteEl.value || "").slice(0, 280) : "",
+      });
+    });
+    return out;
+  }
+
+  function methodistReviewContext(data) {
+    if (data && data.methodist_review_context) return data.methodist_review_context;
+    return null;
+  }
+
+  function methodistGoldStatusRu(code) {
+    var map = {
+      compliant: "Соответствует",
+      mostly_compliant: "В основном соответствует",
+      partially_compliant: "Частично соответствует",
+      non_compliant: "Не соответствует",
+      insufficient_data: "Недостаточно данных",
+    };
+    return map[code] || code || "—";
   }
 
   function methodistFindingTitle(f) {
@@ -11193,26 +11351,27 @@
 
     var tier = (data.review_tier || (data.model_info && data.model_info.tier) || "L2").toUpperCase();
     var meta = data.methodist_tier_meta || {};
+    var ctx = methodistReviewContext(data);
+    var comp = (ctx && ctx.compliance) || {};
     var cr = data.clinical_rules || {};
     var rc = cr.rules_check || {};
-    var failed = (rc.findings || []).filter(function (f) {
+    var failed = (ctx && ctx.rules_findings) || (rc.findings || []).filter(function (f) {
       return f && !f.skipped && f.passed === false;
     });
-    var paths = (data.retrieval_paths || []).slice(0, 5);
-    var sg = data.send_gate || {};
-    if (!sg.send_decision && data.structured_analysis && data.structured_analysis.compliance) {
-      sg = data.structured_analysis.compliance.send_gate || sg;
-    }
 
     var autologItems = [
+      "event: kz_analysis · focus: protocol_compliance",
       "analysis_id: " + (data.analysis_id || "—"),
       "text_hash: " + (data.text_hash ? data.text_hash.slice(0, 28) + "…" : "—"),
       "tier: " + tier + (meta.latency_label_ru ? " · " + meta.latency_label_ru : ""),
-      "gate_score: " + (sg.gate_score != null ? Math.round(sg.gate_score) + "%" : "—"),
-      "send_decision: " + (sg.sign_decision || sg.send_decision || methodistSendGateSummary(data)),
-      "rules_compliance: " + (rc.rules_compliance_pct != null ? Math.round(rc.rules_compliance_pct) + "%" : "—"),
-      "failed_rules: " + failed.length,
+      "compliance_overall: " + (comp.overall_pct != null ? Math.round(comp.overall_pct) + "%" : "—"),
+      "structured: " + (comp.structured_pct != null ? Math.round(comp.structured_pct) + "%" : "—"),
+      "rules: " + (comp.rules_pct != null ? Math.round(comp.rules_pct) + "%" : "—"),
+      "status: " + (comp.overall_status || "—"),
+      "failed_rules: " + (failed.length || 0),
+      "8_blocks: " + ((comp.blocks || []).filter(function (b) { return b.score_pct != null; }).length || 0),
     ];
+    var paths = (ctx && ctx.retrieval_top_paths) || (data.retrieval_paths || []).slice(0, 5);
     if (paths.length) autologItems.push("retrieval_top: " + paths.join(", "));
     autologEl.innerHTML = autologItems
       .map(function (t) {
@@ -11223,19 +11382,24 @@
     var rating = methodistRatingValue();
     var verdictEl = document.getElementById("methodist-verdict-select");
     var verdict = verdictEl ? verdictEl.value : "";
+    var goldEl = document.getElementById("methodist-kz-gold-select");
+    var gold = goldEl ? goldEl.value : "";
     var tags = collectMethodistTags();
     var overrides = collectMethodistOverrides();
+    var blockOverrides = collectMethodistBlockOverrides();
     var note = (document.getElementById("methodist-note-input") || {}).value || "";
     var chosen = (document.getElementById("methodist-chosen-path") || {}).value || "";
     var rejected = (document.getElementById("methodist-rejected-path") || {}).value || "";
 
     var saveItems = [
-      "event_type: analysis_review",
-      "rating: " + (rating != null ? rating : "—"),
-      "verdict: " + (verdict ? methodistVerdictRu(verdict) : "—"),
+      "event: analysis_review",
+      "kz_compliance_gold: " + (gold ? methodistGoldStatusRu(gold) : "—"),
+      "system_accuracy_rating: " + (rating != null ? rating : "—"),
+      "system_accuracy_verdict: " + (verdict ? methodistVerdictRu(verdict) : "—"),
       "tags: " + (tags.length ? tags.map(methodistTagLabel).join("; ") : "нет"),
+      "block_overrides: " + (blockOverrides.length ? blockOverrides.length + " блоков" : "нет"),
+      "rule_overrides: " + (overrides.length ? overrides.length + " правил" : "нет"),
       "note: " + (note.trim() ? note.trim().slice(0, 120) + (note.length > 120 ? "…" : "") : "нет"),
-      "overrides: " + (overrides.length ? overrides.length + " правил" : "нет"),
     ];
     if (chosen.trim()) {
       saveItems.push("retrieval_fix: «" + rejected + "» → «" + chosen.trim() + "»");
@@ -11255,7 +11419,7 @@
         renderMethodistMlRecordPreview(window.__consultReviewLastPayload);
       }
     };
-    ["methodist-verdict-select", "methodist-note-input", "methodist-chosen-path", "methodist-rejected-path"].forEach(
+    ["methodist-verdict-select", "methodist-kz-gold-select", "methodist-note-input", "methodist-chosen-path", "methodist-rejected-path"].forEach(
       function (id) {
         var el = document.getElementById(id);
         if (el) el.addEventListener("input", refresh);
@@ -11270,6 +11434,11 @@
     if (tbody) {
       tbody.addEventListener("change", refresh);
       tbody.addEventListener("input", refresh);
+    }
+    var blocksTb = document.getElementById("methodist-blocks-tbody");
+    if (blocksTb) {
+      blocksTb.addEventListener("change", refresh);
+      blocksTb.addEventListener("input", refresh);
     }
   }
 
@@ -11317,8 +11486,17 @@
     if (!panel) return;
     panel.hidden = false;
 
+    var ctx = methodistReviewContext(data);
     var meta = data.methodist_tier_meta || {};
     var tier = (data.review_tier || (data.model_info && data.model_info.tier) || "L2").toUpperCase();
+    var comp = (ctx && ctx.compliance) || {};
+    var saComp =
+      data.structured_analysis && data.structured_analysis.compliance
+        ? data.structured_analysis.compliance
+        : {};
+    var rev = data.review || {};
+    var compParts = rev.overall_compliance_components || {};
+
     var tierLine = document.getElementById("methodist-eval-tier-line");
     if (tierLine) {
       var bits = [meta.label_ru || tier];
@@ -11327,67 +11505,104 @@
       tierLine.textContent = bits.join(" · ");
     }
 
-    var saComp =
-      data.structured_analysis && data.structured_analysis.compliance
-        ? data.structured_analysis.compliance
-        : {};
-    var gateScore =
-      (data.send_gate && data.send_gate.gate_score != null
-        ? data.send_gate.gate_score
-        : saComp.overall_score != null
-          ? saComp.overall_score
-          : data.overall_score) || null;
-    var cr = data.clinical_rules || {};
-    var rc = cr.rules_check || {};
-    var rulesPct = rc.rules_compliance_pct;
-    var failed = (rc.findings || []).filter(function (f) {
-      return f && !f.skipped && f.passed === false;
-    });
+    var kzEl = document.getElementById("methodist-kz-text");
+    if (kzEl) {
+      kzEl.textContent = (ctx && ctx.kz_text_display) || "Текст КЗ недоступен (обновите сервер).";
+    }
+
+    var overallPct = comp.overall_pct != null ? comp.overall_pct : rev.overall_compliance_pct;
+    var structPct = comp.structured_pct != null ? comp.structured_pct : compParts.structured || saComp.overall_score;
+    var rulesPct =
+      comp.rules_pct != null
+        ? comp.rules_pct
+        : (data.clinical_rules && data.clinical_rules.rules_check
+            ? data.clinical_rules.rules_check.rules_compliance_pct
+            : null);
+
     var metricsEl = document.getElementById("methodist-eval-metrics");
     if (metricsEl) {
-      var cards = [
-        methodistMetricCard("Send gate", methodistSendGateSummary(data)),
+      metricsEl.innerHTML = [
         methodistMetricCard(
-          "Балл gate",
-          gateScore != null ? Math.round(Number(gateScore)) + "%" : "—"
+          "Итог (гибрид)",
+          overallPct != null ? Math.round(Number(overallPct)) + "%" : "—"
+        ),
+        methodistMetricCard(
+          "Структурный (8 блоков)",
+          structPct != null ? Math.round(Number(structPct)) + "%" : "—"
         ),
         methodistMetricCard(
           "Правила протокола",
           rulesPct != null ? Math.round(Number(rulesPct)) + "%" : "—"
         ),
-        methodistMetricCard("Не выполнено правил", String(failed.length)),
-      ];
-      if (tier === "L2") {
-        cards.push(
-          methodistMetricCard(
-            "RAG PDF",
-            String((data.retrieval_paths || []).length)
-          )
-        );
-      }
-      metricsEl.innerHTML = cards.join("");
+        methodistMetricCard(
+          "Статус",
+          CONSULT_STATUS_RU[comp.overall_status || saComp.overall_status] ||
+            comp.overall_status ||
+            saComp.overall_status ||
+            "—"
+        ),
+      ].join("");
     }
 
-    var checksEl = document.getElementById("methodist-eval-checks");
-    if (checksEl) {
-      var items = (meta.checks_ru || []).slice();
-      checksEl.innerHTML = items
-        .map(function (t) {
-          return "<li>" + escapeHtml(t) + "</li>";
-        })
-        .join("");
-      checksEl.classList.remove("methodist-eval-checks--muted");
-      var notIn = meta.not_included_ru || [];
-      if (notIn.length) {
-        checksEl.innerHTML +=
-          '<li class="methodist-eval-checks--muted" style="list-style:none;margin-top:0.35rem"><em>Не входит в ' +
-          escapeHtml(tier) +
-          ":</em> " +
-          escapeHtml(notIn.join("; ")) +
-          "</li>";
+    var blockTb = document.getElementById("methodist-block-scores-tbody");
+    var blocks = (comp && comp.blocks) || [];
+    if (!blocks.length && saComp.score_breakdown) {
+      CONSULT_STRUCT_SCORE_ROWS.forEach(function (row) {
+        blocks.push({
+          key: row.key,
+          label_ru: row.label,
+          score_pct: scoreFromBreakdown(saComp.score_breakdown, row.key, row.fallbacks),
+        });
+      });
+    }
+    if (blockTb) {
+      blockTb.innerHTML = "";
+      blocks.forEach(function (b) {
+        var tr = document.createElement("tr");
+        var tdName = document.createElement("td");
+        tdName.textContent = b.label_ru || b.key || "—";
+        var tdPct = document.createElement("td");
+        tdPct.textContent =
+          b.score_pct != null && !isNaN(Number(b.score_pct))
+            ? Math.round(Number(b.score_pct)) + "%"
+            : "—";
+        tr.appendChild(tdName);
+        tr.appendChild(tdPct);
+        blockTb.appendChild(tr);
+      });
+    }
+
+    var llmWrap = document.getElementById("methodist-llm-wrap");
+    var llmTb = document.getElementById("methodist-llm-tbody");
+    var llmItems = (ctx && ctx.llm_criteria) || (rev.criteria || []);
+    if (llmWrap && llmTb) {
+      llmTb.innerHTML = "";
+      if (llmItems.length) {
+        llmWrap.hidden = false;
+        llmItems.forEach(function (c) {
+          var tr = document.createElement("tr");
+          var tdN = document.createElement("td");
+          tdN.textContent = c.name_ru || c.name || "—";
+          var tdP = document.createElement("td");
+          tdP.textContent =
+            c.score_pct != null && !isNaN(Number(c.score_pct))
+              ? Math.round(Number(c.score_pct)) + "%"
+              : "—";
+          tr.appendChild(tdN);
+          tr.appendChild(tdP);
+          llmTb.appendChild(tr);
+        });
+      } else {
+        llmWrap.hidden = true;
       }
     }
 
+    var failed = (ctx && ctx.rules_findings) || [];
+    if (!failed.length && data.clinical_rules && data.clinical_rules.rules_check) {
+      failed = (data.clinical_rules.rules_check.findings || []).filter(function (f) {
+        return f && !f.skipped && f.passed === false;
+      });
+    }
     var failedWrap = document.getElementById("methodist-eval-failed");
     var failedList = document.getElementById("methodist-eval-failed-list");
     if (failedWrap && failedList) {
@@ -11407,16 +11622,18 @@
 
     var protoEl = document.getElementById("methodist-eval-protocols");
     if (protoEl) {
-      var paths = (data.retrieval_paths || []).slice(0, 5);
-      var matched = (cr.matched_protocols || [])
-        .map(function (m) {
-          return m && m.path ? m.path : "";
-        })
-        .filter(Boolean)
-        .slice(0, 5);
-      var show = paths.length ? paths : matched;
+      var paths = (ctx && ctx.retrieval_top_paths) || (data.retrieval_paths || []).slice(0, 5);
+      var matched = (ctx && ctx.matched_protocol_paths) || [];
+      if (!matched.length && data.clinical_rules && data.clinical_rules.matched_protocols) {
+        matched = data.clinical_rules.matched_protocols
+          .map(function (m) {
+            return m && m.path ? m.path : "";
+          })
+          .filter(Boolean);
+      }
+      var show = paths.length ? paths : matched.slice(0, 5);
       protoEl.textContent = show.length
-        ? "Протоколы: " + show.join(" · ")
+        ? "Протоколы для сверки: " + show.join(" · ")
         : tier === "L2"
           ? "Протоколы RAG: не подобраны"
           : "";
@@ -11476,6 +11693,8 @@
 
     var verdictSel = document.getElementById("methodist-verdict-select");
     if (verdictSel) verdictSel.value = "";
+    var goldSel = document.getElementById("methodist-kz-gold-select");
+    if (goldSel) goldSel.value = "";
 
     var tagsList = document.getElementById("methodist-tags-list");
     if (tagsList && !tagsList.getAttribute("data-built")) {
@@ -11515,11 +11734,88 @@
     }
     if (chosenInp) chosenInp.value = "";
 
+    var ctx = methodistReviewContext(data);
+    var comp = (ctx && ctx.compliance) || {};
+    var saComp =
+      data.structured_analysis && data.structured_analysis.compliance
+        ? data.structured_analysis.compliance
+        : {};
+    var blocks = (comp && comp.blocks) || [];
+    if (!blocks.length && saComp.score_breakdown) {
+      CONSULT_STRUCT_SCORE_ROWS.forEach(function (row) {
+        blocks.push({
+          key: row.key,
+          label_ru: row.label,
+          score_pct: scoreFromBreakdown(saComp.score_breakdown, row.key, row.fallbacks),
+        });
+      });
+    }
+    var blocksTb = document.getElementById("methodist-blocks-tbody");
+    var blocksDet = document.getElementById("methodist-blocks-details");
+    if (blocksTb) {
+      blocksTb.innerHTML = "";
+      blocks.forEach(function (b) {
+        var tr = document.createElement("tr");
+        tr.setAttribute("data-block-key", b.key || "");
+        tr.setAttribute("data-block-label", b.label_ru || b.key || "");
+        tr.setAttribute(
+          "data-system-score",
+          b.score_pct != null && !isNaN(Number(b.score_pct)) ? String(b.score_pct) : ""
+        );
+        var tdTitle = document.createElement("td");
+        tdTitle.textContent = b.label_ru || b.key || "—";
+        var tdSys = document.createElement("td");
+        tdSys.textContent =
+          b.score_pct != null && !isNaN(Number(b.score_pct))
+            ? Math.round(Number(b.score_pct)) + "%"
+            : "—";
+        var tdHum = document.createElement("td");
+        var sel = document.createElement("select");
+        sel.className = "methodist-block-verdict";
+        [
+          { v: "", t: "Как система" },
+          { v: "agree", t: "Согласен" },
+          { v: "disagree", t: "Не согласен" },
+        ].forEach(function (opt) {
+          var o = document.createElement("option");
+          o.value = opt.v;
+          o.textContent = opt.t;
+          sel.appendChild(o);
+        });
+        tdHum.appendChild(sel);
+        var tdNote = document.createElement("td");
+        var inp = document.createElement("input");
+        inp.type = "text";
+        inp.className = "methodist-block-note";
+        inp.maxLength = 280;
+        inp.placeholder = "Почему не согласны…";
+        tdNote.appendChild(inp);
+        tr.appendChild(tdTitle);
+        tr.appendChild(tdSys);
+        tr.appendChild(tdHum);
+        tr.appendChild(tdNote);
+        blocksTb.appendChild(tr);
+      });
+    }
+    if (blocksDet) blocksDet.hidden = blocks.length === 0;
+
     var findings = [];
     var cr = data.clinical_rules || {};
     var rc = cr.rules_check || {};
     (rc.findings || []).forEach(function (f) {
       if (f && f.rule_id && !f.skipped) findings.push(f);
+    });
+    (ctx && ctx.critical_issues ? ctx.critical_issues : saComp.critical_issues || []).forEach(function (issue) {
+      if (!issue || typeof issue !== "object") return;
+      var rid = issue.rule_id || issue.code || "";
+      if (!rid) return;
+      if (findings.some(function (f) { return f.rule_id === rid; })) return;
+      findings.push({
+        rule_id: rid,
+        title_ru: issue.title_ru || issue.message_ru || issue.code || rid,
+        message_ru: issue.message_ru || issue.detail_ru || "",
+        passed: false,
+      });
     });
     var det = document.getElementById("methodist-findings-details");
     var tbody = document.getElementById("methodist-findings-tbody");
@@ -11600,8 +11896,10 @@
     var rating = methodistRatingValue();
     var verdictEl = document.getElementById("methodist-verdict-select");
     var verdict = verdictEl ? verdictEl.value : "";
-    if (rating == null || !verdict) {
-      alert("Укажите рейтинг (1-5) и вердикт.");
+    var goldEl = document.getElementById("methodist-kz-gold-select");
+    var gold = goldEl ? goldEl.value : "";
+    if (rating == null || !verdict || !gold) {
+      alert("Укажите экспертную оценку КЗ, точность системы (1–5) и вердикт.");
       return;
     }
     var baseEl = document.getElementById("rag-base");
@@ -11612,10 +11910,12 @@
       text_hash: data.text_hash || "",
       rating: rating,
       verdict: verdict,
+      kz_compliance_gold: gold,
       tags: collectMethodistTags(),
       note: (document.getElementById("methodist-note-input") || {}).value || "",
       reviewer: window.__methodistReviewer || "methodist",
       overrides: collectMethodistOverrides(),
+      block_overrides: collectMethodistBlockOverrides(),
     };
     var rejSel = document.getElementById("methodist-rejected-path");
     var chosenInp = document.getElementById("methodist-chosen-path");

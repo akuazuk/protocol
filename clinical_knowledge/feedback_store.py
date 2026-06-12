@@ -19,9 +19,17 @@ _VALID_TAGS = frozenset({
     "false_positive_rule",
     "missed_issue",
     "wrong_population",
-    "cisz_wrong",
     "score_misleading",
+    "wrong_diagnosis_block",
+    "wrong_treatment_block",
     "other",
+})
+_VALID_KZ_COMPLIANCE_GOLD = frozenset({
+    "compliant",
+    "mostly_compliant",
+    "partially_compliant",
+    "non_compliant",
+    "insufficient_data",
 })
 
 
@@ -185,6 +193,20 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
             if len(cmt) > 280:
                 raise ValueError("override: note ≤ 280 символов")
 
+        gold = (out.get("kz_compliance_gold") or "").strip()
+        if gold and gold not in _VALID_KZ_COMPLIANCE_GOLD:
+            raise ValueError("analysis_review: неверный kz_compliance_gold")
+
+        block_overrides = out.get("block_overrides") or []
+        if not isinstance(block_overrides, list):
+            raise ValueError("analysis_review: block_overrides должен быть списком")
+        for bo in block_overrides:
+            if not (bo.get("block_key") or "").strip():
+                raise ValueError("block_override: block_key обязателен")
+            cmt = (bo.get("note") or "").strip()
+            if len(cmt) > 280:
+                raise ValueError("block_override: note ≤ 280 символов")
+
     elif et == "methodist_override":
         if not (out.get("rule_id") or "").strip():
             raise ValueError("methodist_override: rule_id обязателен")
@@ -302,6 +324,16 @@ def build_kz_analysis_event(
     if gate_score is None:
         gate_score = comp.get("overall_score") or result.get("overall_score")
 
+    from clinical_knowledge.methodist_context import (
+        build_methodist_review_context,
+        structured_block_scores_dict,
+    )
+
+    ctx = build_methodist_review_context(result, full_text)
+    comp_ctx = ctx.get("compliance") or {}
+    rev = result.get("review") or {}
+    comp_parts = rev.get("overall_compliance_components") or {}
+
     embed_used = bool(result.get("rag_used") or result.get("embed_rerank_used"))
     model_embed = (os.environ.get("GEMINI_EMBEDDING_MODEL") or "intfloat/multilingual-e5-small").strip()
 
@@ -313,9 +345,14 @@ def build_kz_analysis_event(
         "consultation_id": consultation_id or result.get("consultation_id") or "",
         "tier": (tier or result.get("review_tier") or "L2").upper(),
         "rubric": _first_rubric(result) or "",
+        "compliance_overall_pct": comp_ctx.get("overall_pct"),
+        "structured_pct": comp_ctx.get("structured_pct") or comp_parts.get("structured"),
+        "rules_pct": comp_ctx.get("rules_pct") or comp_parts.get("rules"),
+        "overall_status": comp_ctx.get("overall_status") or comp.get("overall_status") or "",
+        "structured_block_scores": structured_block_scores_dict(result),
+        "llm_criteria_count": len(ctx.get("llm_criteria") or []),
         "gate_score": gate_score,
         "send_decision": _send_decision_from_result(result),
-        "overall_status": comp.get("overall_status") or result.get("overall_status") or "",
         "rules_compliance_pct": _rules_compliance_pct(result),
         "matched_protocol_paths": matched[:12],
         "retrieval_top_paths": retrieval,
@@ -324,6 +361,7 @@ def build_kz_analysis_event(
         "embed_rerank_used": embed_used,
         "model_embed": model_embed,
         "sandbox": bool(sandbox),
+        "review_focus": "protocol_compliance",
     }
     if reviewer:
         event["reviewer"] = reviewer
@@ -381,6 +419,9 @@ def enrich_result_with_methodist_autolog(
         "model_embed": event.get("model_embed"),
         "tier": event["tier"],
     }
+    from clinical_knowledge.methodist_context import build_methodist_review_context
+
+    out["methodist_review_context"] = build_methodist_review_context(out, full_text)
     return out
 
 

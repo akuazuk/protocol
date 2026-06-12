@@ -185,6 +185,19 @@ def events_to_entailment_pairs(events: list[dict[str, Any]]) -> list[dict[str, A
                         "source": "analysis_review",
                     }
                 )
+            for bo in ev.get("block_overrides") or []:
+                block_key = (bo.get("block_key") or "").strip()
+                if not block_key or not text_hash:
+                    continue
+                out.append(
+                    {
+                        "text_hash": text_hash,
+                        "term": "block:" + block_key,
+                        "label": "contradiction",
+                        "note": (bo.get("note") or bo.get("block_label_ru") or "")[:280],
+                        "source": "block_override",
+                    }
+                )
         elif et == "l0_screen":
             # placeholder for future: block-level labels without raw text
             pass
@@ -210,6 +223,7 @@ def events_to_priority_cases(events: list[dict[str, Any]]) -> list[dict[str, Any
                 "text_hash": ev.get("text_hash"),
                 "rating": rating_n,
                 "verdict": ev.get("verdict"),
+                "kz_compliance_gold": ev.get("kz_compliance_gold"),
                 "tags": ev.get("tags") or [],
                 "ts": ev.get("ts"),
                 "source": "analysis_review",

@@ -13,6 +13,14 @@ _RE_NAME_PARTS = re.compile(
     re.UNICODE,
 )
 _RE_INITIAL = re.compile(r"^[А-ЯЁA-Z]\.?$")
+# Строки с ФИО пациента/врача в типовой шапке КЗ.
+_RE_FIO_LINE = re.compile(
+    r"(?im)^(?P<prefix>(?:ф\.?\s*и\.?\s*о\.?|фио|пациент\w*|"
+    r"врач|лечащ\w*\s+врач|консульт\w*\s+врач|зав\.?\s*отделен\w*)\s*[:\-]?\s*)"
+    r"(?P<name>[А-ЯЁ][а-яё\-]+(?:\s+[А-ЯЁ][а-яё\-]+|\s+[А-ЯЁ]\.){1,2}(?:\s+[А-ЯЁ][а-яё\-]+)?)"
+    r"(?P<tail>.*)$",
+)
+_RE_INP = re.compile(r"(?i)(инп|унp|ид\s*пациента)\s*[:\-]?\s*[\dA-Za-z\-]{8,20}")
 
 
 def name_to_initials(full_name: str | None) -> str:
@@ -35,3 +43,19 @@ def name_to_initials(full_name: str | None) -> str:
         if ch.isalpha():
             initials.append(ch + ".")
     return " ".join(initials) if initials else "—"
+
+
+def redact_kz_text_for_display(text: str) -> str:
+    """Текст КЗ для сверки методистом: ФИО → инициалы, ИНП скрыт."""
+    if not text or not str(text).strip():
+        return ""
+
+    def _line_repl(m: re.Match[str]) -> str:
+        prefix = m.group("prefix")
+        name = m.group("name")
+        tail = m.group("tail") or ""
+        return prefix + name_to_initials(name) + tail
+
+    out = _RE_FIO_LINE.sub(_line_repl, text)
+    out = _RE_INP.sub(lambda m: m.group(0).split(":")[0] + ": [скрыто]", out)
+    return out
