@@ -492,12 +492,18 @@ def build_compliance_report(
                 )
             )
     for s in safety:
-        if s.status != "handled":
-            iss = ComplianceIssue(
-                issue_type=s.issue_type, severity=s.severity, message_ru=s.finding_text,
-                field_target="safety",
-            )
-            (critical if s.severity in ("critical", "high") else warnings).append(iss)
+        if s.status == "handled":
+            continue
+        iss = ComplianceIssue(
+            issue_type=s.issue_type, severity=s.severity, message_ru=s.finding_text,
+            field_target="safety",
+        )
+        if s.severity == "critical" and s.status == "not_handled":
+            critical.append(iss)
+        elif s.severity in ("critical", "high"):
+            major_items.append(iss)
+        else:
+            warnings.append(iss)
 
     refs: list[SourceRef] = []
     for m in matches[:5]:

@@ -110,6 +110,24 @@ def test_pl_1_f_thrombosis_and_medication():
     assert doc.follow_up or doc.sections.follow_up_text
 
 
+def test_pl_1_f_hybrid_headline_not_capped_at_fifty():
+    from clinical_knowledge.consult_overall_score import apply_hybrid_overall_compliance
+
+    doc = parse_consultation(PL_1_F, consultation_id="pl_1_f")
+    rep = build_compliance_report(doc, matches=[], rules_check={"rules_compliance_pct": 40.0})
+    comp = rep.model_dump(mode="json")
+    review: dict = {}
+    apply_hybrid_overall_compliance(
+        review,
+        structured_analysis={"compliance": comp},
+        clinical_rules={"rules_check": {"rules_compliance_pct": 40.0}, "matched_protocols": []},
+    )
+    assert review["overall_compliance_pct"] > 50
+    assert review.get("overall_compliance_pct") != 50 or "_safety_cap" not in (
+        review.get("overall_compliance_method") or ""
+    )
+
+
 def test_pl_2_d_s_suspected_and_exams():
     doc = parse_consultation(PL_2_D_S, consultation_id="pl_2_d_s")
     assert any(d.certainty == "suspected" for d in doc.diagnoses)

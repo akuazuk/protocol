@@ -5957,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r95-consult-gate-protocols-cisz"
+BUILD_VERSION = "2026-06-01-r96-hybrid-score-cap-fix"
 
 
 def _app_version() -> str:

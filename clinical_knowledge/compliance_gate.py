@@ -48,10 +48,10 @@ def _has_blocking_critical(report: ComplianceReport) -> bool:
         return True
     for iss in report.critical_issues:
         sev = (iss.severity or "").lower()
-        if sev in ("critical", "high"):
+        if sev == "critical":
             return True
     for s in report.safety_assessments:
-        if s.severity == "critical" and s.status not in ("handled", "partially_handled"):
+        if s.severity == "critical" and s.status == "not_handled":
             return True
     return False
 

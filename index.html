@@ -13844,7 +13844,14 @@
     if (legendEl) {
       var legendParts = [];
       legendParts.push(
-        "<strong>Итог</strong> – детерминированный гибрид (75% структурный + 25% правила протокола), с учётом safety cap."
+        "<strong>Итог</strong> – детерминированный гибрид (75% структурный + 25% правила протокола)" +
+          (rev.overall_compliance_cap_ru
+            ? ", с ограничением: " + escapeHtml(String(rev.overall_compliance_cap_ru))
+            : rev.overall_compliance_pre_cap_pct != null &&
+                rev.overall_compliance_pre_cap_pct !== rev.overall_compliance_pct
+              ? " (до cap: " + Math.round(rev.overall_compliance_pre_cap_pct) + "%)"
+              : "") +
+          "."
       );
       if (typeof comp.structured === "number" || typeof comp.rules === "number") {
         legendParts.push(

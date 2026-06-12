@@ -102,3 +102,19 @@ def test_safety_critical_blocks_hard_gate():
     )
     g = evaluate_send_gate(r, mode="hard_gate")
     assert g["gate_allowed"] is False
+
+
+def test_partially_handled_high_safety_does_not_block_soft_gate():
+    r = _report(65.0)
+    r.safety_assessments.append(
+        SafetyAssessment(
+            issue_type="thrombosis",
+            severity="high",
+            finding_text="флеботромбоз",
+            status="partially_handled",
+        )
+    )
+    g = evaluate_send_gate(r, mode="soft_gate", min_score_hard=70.0)
+    assert g["gate_allowed"] is True
+    assert g["requires_override"] is True
+    assert g["sign_decision"] == "review_required"

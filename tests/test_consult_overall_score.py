@@ -101,3 +101,31 @@ def test_rules_zero_without_matched_protocols_not_blended() -> None:
     )
     assert out["overall_compliance_pct"] == 78
     assert out["overall_compliance_components"]["rules"] is None
+
+
+def test_partially_handled_thrombosis_no_flat_fifty_cap() -> None:
+    """Частично учтённый тромбоз не должен обрезать гибрид ровно до 50%."""
+    sa = {
+        "compliance": {
+            "overall_score": 79.0,
+            "overall_status": "mostly_compliant",
+            "safety_assessments": [
+                {
+                    "issue_type": "thrombosis",
+                    "severity": "high",
+                    "status": "partially_handled",
+                    "finding_text": "флеботромбоз",
+                }
+            ],
+            "critical_issues": [],
+            "safety_cap": {"applied": False},
+        }
+    }
+    rules = {"rules_check": {"rules_compliance_pct": 29.0}, "matched_protocols": [{"protocol_id": "p1"}]}
+    out = apply_hybrid_overall_compliance(
+        {"criteria": []},
+        structured_analysis=sa,
+        clinical_rules=rules,
+    )
+    assert out["overall_compliance_pct"] == 66  # round(0.75*79 + 0.25*29)
+    assert "_safety_cap" not in (out.get("overall_compliance_method") or "")

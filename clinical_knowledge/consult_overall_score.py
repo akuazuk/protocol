@@ -13,7 +13,7 @@ import os
 import re
 from typing import Any
 
-SCORER_VERSION = "2026-05-31.1"
+SCORER_VERSION = "2026-06-01.1"
 
 # structured : rules — при наличии обоих компонентов
 _BLEND_STRUCTURED_RULES = (0.75, 0.25)
@@ -117,22 +117,45 @@ def _llm_criteria_weighted_score(review: dict[str, Any]) -> float | None:
 def _apply_safety_cap(
     overall: float,
     structured_analysis: dict[str, Any] | None,
-) -> tuple[float, bool]:
-    """Снижение при необработанных критических safety / manual_review."""
+) -> tuple[float, bool, str | None]:
+    """Дополнительный потолок только для необработанных критических safety.
+
+    Штраф за частично учтённые red flags уже заложен в structural (safety_score).
+    Не дублируем cap=50 за каждый high/critical в critical_issues.
+    """
     if not structured_analysis:
-        return overall, False
+        return overall, False, None
     comp = structured_analysis.get("compliance") or {}
+    cap = overall
+    reason: str | None = None
+
     if comp.get("overall_status") == "manual_review_required":
-        return min(overall, 45.0), True
+        cap = min(cap, 45.0)
+        reason = "Статус manual_review_required — потолок 45%."
+
     for s in comp.get("safety_assessments") or []:
         if not isinstance(s, dict):
             continue
-        if s.get("severity") == "critical" and s.get("status") != "handled":
-            return min(overall, 35.0), True
-    for i in comp.get("critical_issues") or []:
-        if isinstance(i, dict) and i.get("severity") in ("critical", "high"):
-            return min(overall, 50.0), True
-    return overall, False
+        status = str(s.get("status") or "")
+        if status in ("handled", "partially_handled"):
+            continue
+        sev = str(s.get("severity") or "")
+        if sev == "critical":
+            cap = min(cap, 35.0)
+            reason = "Необработанный критический red flag — потолок 35%."
+        elif sev == "high":
+            cap = min(cap, 55.0)
+            reason = reason or "Необработанный red flag высокой значимости — потолок 55%."
+
+    sc = comp.get("safety_cap") if isinstance(comp.get("safety_cap"), dict) else {}
+    if sc.get("applied") and isinstance(sc.get("cap_value"), (int, float)):
+        cap_val = float(sc["cap_value"])
+        cap = min(cap, cap_val)
+        reason = str(sc.get("reason") or reason or f"Safety cap {cap_val:.0f}%.")
+
+    if cap < overall - 0.05:
+        return cap, True, reason
+    return overall, False, None
 
 
 def _blend_two(
@@ -209,11 +232,19 @@ def apply_hybrid_overall_compliance(
     if raw is None:
         return review
 
-    capped_raw, capped = _apply_safety_cap(raw, structured_analysis)
+    capped_raw, capped, cap_reason = _apply_safety_cap(raw, structured_analysis)
     overall_int = _round_int(capped_raw)
 
     review["overall_compliance_pct"] = overall_int
+    review["overall_compliance_pre_cap_pct"] = _round_int(raw)
     review["overall_compliance_method"] = method + ("_safety_cap" if capped else "")
+    if capped:
+        review["overall_compliance_cap_ru"] = cap_reason or (
+            f"Гибрид {_round_int(raw)}% ограничен до {overall_int}% (safety cap)."
+        )
+    else:
+        review.pop("overall_compliance_cap_ru", None)
+        review.pop("overall_compliance_pre_cap_pct", None)
     review["overall_compliance_components"] = {
         k: (_round_int(v) if isinstance(v, (int, float)) else None)
         for k, v in components.items()
