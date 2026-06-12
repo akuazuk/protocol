@@ -67,7 +67,36 @@ def _layout(title: str, *, barmode: str | None = None, legend_y: float = 1.02) -
 
 
 def _export(fig, path: Path) -> None:
-    fig.write_image(str(path), scale=2, engine="kaleido")
+    """PNG через Kaleido; совместимость Plotly 5.x + Kaleido 1.x."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    last_err: Exception | None = None
+    try:
+        fig.write_image(str(path), scale=2, engine="kaleido")
+        if path.is_file() and path.stat().st_size > 100:
+            return
+    except Exception as e:
+        last_err = e
+    try:
+        import asyncio
+
+        import kaleido
+
+        async def _write() -> None:
+            await kaleido.write_fig(fig, str(path))
+
+        asyncio.run(_write())
+        if path.is_file() and path.stat().st_size > 100:
+            return
+    except Exception as e:
+        last_err = e
+    msg = (
+        "Не удалось экспортировать график в PNG. "
+        "Варианты: pip install 'kaleido==0.2.1' (Plotly 5) "
+        "или pip install -U 'plotly>=6.1.1' 'kaleido>=1.3'."
+    )
+    if last_err:
+        raise RuntimeError(f"{msg} Причина: {last_err}") from last_err
+    raise RuntimeError(msg)
 
 
 def generate_charts(assets_dir: Path) -> dict[str, Path]:

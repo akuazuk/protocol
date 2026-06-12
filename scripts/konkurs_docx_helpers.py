@@ -224,10 +224,15 @@ def find_section_body(doc: Document, section_num: str) -> Paragraph | None:
 
 
 def generate_charts(assets_dir: Path) -> dict[str, Path]:
-    """Графики для PDF: Plotly + Kaleido (пастельная палитра)."""
-    from konkurs_charts_plotly import generate_charts as _plotly
+    """Графики для PDF: Plotly + Kaleido; при ошибке - matplotlib fallback."""
+    try:
+        from konkurs_charts_plotly import generate_charts as _plotly
 
-    return _plotly(assets_dir)
+        return _plotly(assets_dir)
+    except Exception as exc:
+        print(f"Plotly/Kaleido: {exc}", file=sys.stderr)
+        print("Fallback: matplotlib (scripts/konkurs_docx_helpers.py)", file=sys.stderr)
+        return _generate_charts_matplotlib(assets_dir)
 
 
 def _generate_charts_matplotlib(assets_dir: Path) -> dict[str, Path]:
@@ -864,8 +869,9 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
         run = p16.add_run(
             dash(
                 "Бизнес-план соответствует рекомендуемому объёму 10-40 страниц: основной текст - "
-                "разделы 1-16; детальные расчёты, таблицы и графики - в приложениях А-Е и в файле "
+                "разделы 1-17; детальные расчёты, таблицы и графики - в приложениях А-И и в файле "
                 "05_Biznes_plan_Prilozheniya.html (для печати в PDF). "
+                "ML-контур: ml/README.md, scripts/export_training_feedback.py. "
                 "Дополнительно прилагаются architecture-kravira-fhir-mis.pdf и mvp-presentation.html."
             )
         )
@@ -962,6 +968,20 @@ def enrich_business_plan(doc: Document, charts: dict[str, Path]) -> None:
             "Консервативная модель конверсии физлиц и структура расходов.",
             None,
             "b2c_funnel",
+        ),
+        (
+            "Приложение И. ML-контур и непрерывное дообучение",
+            "Каркас ml/, сбор feedback, export_training_feedback.py, on-prem fine-tune.",
+            [
+                ("Компонент", "Механизм", "Обучение"),
+                ("send_gate", "правила", "не обучается"),
+                ("RAG", "embedder + reranker", "LoRA ежемесячно"),
+                ("required_exam", "entailment", "метки методиста"),
+                ("Summary cards", "extractor", "approved drafts"),
+                ("Фаза 0", "2026", "feedback + export"),
+                ("Фаза 1", "Q4 2026", "local embedder on-prem"),
+            ],
+            None,
         ),
     ]
 

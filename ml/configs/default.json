@@ -1,0 +1,39 @@
+{
+  "project": "protocol-kravira",
+  "feedback_dir": "data/ml/feedback",
+  "datasets_dir": "ml/datasets",
+  "registry_path": "ml/registry/model_manifest.json",
+  "models": {
+    "embedder": {
+      "base": "intfloat/multilingual-e5-small",
+      "task": "retrieval_biencoder",
+      "train_script": "ml/train/finetune_embedder.py"
+    },
+    "reranker": {
+      "base": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+      "task": "retrieval_crossencoder",
+      "train_script": "ml/train/finetune_reranker.py"
+    },
+    "entailment": {
+      "base": "cointegrated/rubert-tiny2",
+      "task": "medical_entailment",
+      "train_script": "ml/train/finetune_entailment.py"
+    }
+  },
+  "eval": {
+    "search_golden": "eval/golden_queries.prod.jsonl",
+    "quality_benchmark_meta": "data/quality_benchmark.json",
+    "kz_gold_gastro": "data/gastro_mvp/consult_gold.jsonl",
+    "min_search_pass_rate": 0.89,
+    "min_kz_regression_pass_rate": 0.85
+  },
+  "retrain": {
+    "schedule": "monthly",
+    "method": "lora",
+    "min_new_labels": 50
+  },
+  "privacy": {
+    "store_text_hashes_only": true,
+    "max_text_snippet_chars": 0
+  }
+}

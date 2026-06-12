@@ -26,6 +26,7 @@ python3 scripts/build_konkurs_pdf.py
 |------|------------|
 | `*.docx` | Legacy-формы Word (опционально: `--with-docx`) |
 | [05_Biznes_plan_Prilozheniya.html](05_Biznes_plan_Prilozheniya.html) | Интерактивные приложения (браузер) |
+| [ml/README.md](../../ml/README.md) | ML-контур: непрерывное дообучение, MLOps |
 | [docx-preprint-checklist.md](docx-preprint-checklist.md) | Чек-лист перед подачей |
 | [financial_assumptions.md](financial_assumptions.md) | Единые допущения финмодели |
 

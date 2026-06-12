@@ -297,6 +297,21 @@
     </div>
 
     <div class="card">
+      <h2>Приложение И. ML-контур и непрерывное дообучение</h2>
+      <p>Protocol - гибрид: <strong>send_gate по правилам</strong> + дообучаемые модели (RAG, entailment, summary cards) в контуре РБ.</p>
+      <table>
+        <thead><tr><th>Компонент</th><th>Обучение</th></tr></thead>
+        <tbody>
+          <tr><td>send_gate / CISZ</td><td>не обучается (правила + FHIR BY)</td></tr>
+          <tr><td>RAG embedder + reranker</td><td>LoRA, ежемесячно</td></tr>
+          <tr><td>required_exam matcher</td><td>метки методиста</td></tr>
+          <tr><td>Summary cards</td><td>approved drafts → student model</td></tr>
+        </tbody>
+      </table>
+      <p>Каркас: <code>ml/</code> · feedback: <code>data/ml/feedback/</code> · экспорт: <code>python3 scripts/export_training_feedback.py</code></p>
+    </div>
+
+    <div class="card">
       <h2>Приложение Е. Архитектура и презентация</h2>
       <ul>
         <li><code>architecture-kravira-fhir-mis.pdf</code> - двухконтурная архитектура (клиника + ЦИСЗ)</li>

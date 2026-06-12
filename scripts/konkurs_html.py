@@ -86,6 +86,14 @@ from konkurs_monetization import (  # noqa: E402
     MONETIZATION_TABLE,
     WEIGHTED_EXTRA_Y3_K,
 )
+from konkurs_continuous_ml import (  # noqa: E402
+    CONTINUOUS_ML_INTRO,
+    ML_APPENDIX_TABLE,
+    ML_COMPETITION_NOTE,
+    ML_DATA_CYCLE,
+    ML_PRINCIPLES_TABLE,
+    ML_ROADMAP_TABLE,
+)
 from konkurs_glossary import (  # noqa: E402
     FORMULA_TABLE,
     GLOSSARY_INTRO,
@@ -295,6 +303,7 @@ SECTION_TITLES = {
     "14.": "14. Риски",
     "15.": "15. Финансовый план",
     "16.": "16. Иные сведения",
+    "17.": "17. Непрерывное дообучение моделей",
 }
 
 
@@ -356,6 +365,27 @@ def _b2c_ux_html() -> str:
 <div class="highlight">Пилот Q4 2026: QR + SMS rev-share в Кравире; масштаб 2027+ на сеть частных ОЗ РБ.
 Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники рассылать ссылку - доп. доход ~{CLINIC_B2C_REV_Y3_K} тыс. BYN/год к 2029 (осторожный сценарий, B2C {FIN_Y3['b2c_k']} тыс. Protocol).</div>
 <p><strong>Вне scope (не делаем в 2026-2027):</strong></p><ul>{oos}</ul>
+</div>"""
+
+
+def _continuous_ml_html() -> str:
+    principles = ML_PRINCIPLES_TABLE
+    roadmap = ML_ROADMAP_TABLE
+    appendix = ML_APPENDIX_TABLE
+    cycle = "".join(f"<li>{_e(step)}</li>" for step in ML_DATA_CYCLE)
+    return f"""
+<div class="section"><h2>17. Непрерывное дообучение моделей Protocol</h2></div>
+<div class="section-body">
+<p>{_e(CONTINUOUS_ML_INTRO.replace(chr(10), ' '))}</p>
+<div class="highlight">{_e(ML_COMPETITION_NOTE.replace(chr(10), ' '))}</div>
+<h3>Принцип: что обучается, а что нет</h3>
+{_table(['Компонент', 'Механизм', 'Обучение'], principles, caption='Разделение детерминированного ядра и ML')}
+<h3>Цикл MLOps</h3>
+<ol>{cycle}</ol>
+{_table(['Фаза', 'Срок', 'Deliverable', 'Эффект'], roadmap, caption='Дорожная карта ML 2026-2028')}
+{_table(['Артефакт', 'Назначение'], appendix, caption='Приложение И. ML-контур в репозитории Protocol')}
+<p class="muted">Экспорт датасетов: <code>python3 scripts/export_training_feedback.py</code> ·
+конфиг: <code>ml/configs/default.json</code></p>
 </div>"""
 
 
@@ -502,6 +532,7 @@ def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
         + _stakeholders_html()
         + _analogues_html()
         + _sections_html_with_b2c()
+        + _continuous_ml_html()
         + _glossary_html()
         + _finance_block(assets_rel)
     )

@@ -1,0 +1,25 @@
+{
+  "exported_at": "2026-06-12T04:35:37Z",
+  "seed_only": true,
+  "counts": {
+    "feedback_events": 0,
+    "retrieval_pairs": 313,
+    "entailment_pairs": 0,
+    "kz_regression": 9
+  },
+  "sources": {
+    "feedback_dir": "data/ml/feedback",
+    "golden_queries": true,
+    "structured_index": true,
+    "gastro_gold": true
+  },
+  "outputs": [
+    "ml/datasets/retrieval_pairs.jsonl",
+    "ml/datasets/entailment_pairs.jsonl",
+    "ml/datasets/kz_regression.jsonl"
+  ],
+  "next_steps": [
+    "ml/train/finetune_embedder.py --dataset ml/datasets/retrieval_pairs.jsonl",
+    "ml/eval/run_regression.py"
+  ]
+}
