@@ -48,19 +48,48 @@ _H = 440
 _FONT = "Arial, Helvetica, DejaVu Sans, sans-serif"
 
 
-def _layout(title: str, *, barmode: str | None = None, legend_y: float = 1.02) -> dict:
+def _layout(
+    title: str,
+    *,
+    barmode: str | None = None,
+    showlegend: bool = True,
+    legend_items: int = 2,
+) -> dict:
+    """Общий layout: заголовок сверху, легенда под областью графика (без наложения на маркеры)."""
+    legend_rows = max(1, (legend_items + 3) // 4) if showlegend else 0
+    bottom = 52 + legend_rows * 34
+    height = _H + legend_rows * 28
     lo = dict(
-        title=dict(text=title, font=dict(size=14, color=TEXT), x=0.02, xanchor="left"),
+        title=dict(
+            text=title,
+            font=dict(size=13, color=TEXT),
+            x=0.5,
+            xanchor="center",
+            y=0.98,
+            yanchor="top",
+        ),
         paper_bgcolor=BG_FIG,
         plot_bgcolor=BG_AX,
         font=dict(family=_FONT, color=TEXT, size=11),
-        margin=dict(l=56, r=36, t=62, b=52),
-        height=_H,
+        margin=dict(l=56, r=36, t=68, b=bottom),
+        height=height,
         width=_W,
-        legend=dict(orientation="h", yanchor="bottom", y=legend_y, x=0, font=dict(size=10)),
         xaxis=dict(showgrid=False, zeroline=False, linecolor="#b8c8c0"),
         yaxis=dict(gridcolor="#b8c8c0", gridwidth=1, zerolinecolor="#a8b8b0", linecolor="#b8c8c0"),
     )
+    if showlegend:
+        lo["legend"] = dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.14 - 0.1 * (legend_rows - 1),
+            x=0.5,
+            xanchor="center",
+            font=dict(size=10),
+            itemwidth=52,
+            tracegroupgap=16,
+            entrywidth=90,
+            bgcolor="rgba(245,250,247,0.95)",
+        )
     if barmode:
         lo["barmode"] = barmode
     return lo
@@ -114,7 +143,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
                          marker_color=c[0], marker_line=dict(color="#3d6b55", width=0.8), opacity=0.95))
     fig.add_trace(go.Bar(name="B2C", x=years, y=[FIN_Y1["b2c_k"], FIN_Y2["b2c_k"], FIN_Y3["b2c_k"]],
                          marker_color=c[3], marker_line=dict(color="#9a7058", width=0.8), opacity=0.95))
-    fig.update_layout(**_layout(f"Выручка по годам · SOM {Y3_MARKET_SHARE:.0%} TAM", barmode="group"))
+    fig.update_layout(**_layout(f"Выручка по годам · SOM {Y3_MARKET_SHARE:.0%} TAM", barmode="group", legend_items=2))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_revenue.png"
     _export(fig, p)
@@ -127,7 +156,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="Выручка", x=years, y=rev, marker_color=c[0], opacity=0.85), secondary_y=False)
     fig.add_trace(go.Scatter(name="EBITDA", x=years, y=ebit, mode="lines+markers",
                              line=dict(color=c[5], width=3), marker=dict(size=10)), secondary_y=True)
-    fig.update_layout(**_layout("Выручка и EBITDA · осторожный сценарий", legend_y=1.08))
+    fig.update_layout(**_layout("Выручка и EBITDA · осторожный сценарий", legend_items=2))
     fig.update_yaxes(title_text="Выручка, тыс.", secondary_y=False)
     fig.update_yaxes(title_text="EBITDA, тыс.", secondary_y=True)
     p = assets_dir / "chart_revenue_ebitda.png"
@@ -139,7 +168,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     vals = [MARKET_KZ_YEAR / 1e6, SAM_KZ_YEAR / 1e6, SOM_Y3_KZ_YEAR / 1e6]
     fig = go.Figure(go.Bar(x=labels, y=vals, marker_color=[c[2], c[1], c[0]],
                            text=[f"{v:.1f}" for v in vals], textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout("Рынок КЗ: TAM → SAM → SOM (млн КЗ/год)"))
+    fig.update_layout(**_layout("Рынок КЗ: TAM → SAM → SOM (млн КЗ/год)", showlegend=False))
     fig.update_yaxes(title="млн КЗ / год")
     p = assets_dir / "chart_market.png"
     _export(fig, p)
@@ -150,7 +179,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
         y=["Сеть 25k+", "Клиника 10k", "Старт до 1k"],
         x=[0.69, 0.79, 0.99], orientation="h",
         marker_color=[c[0], c[1], c[2]], text=["0,69", "0,79", "0,99"], textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout("Тарифная лестница B2B (BYN/КЗ L0)"))
+    fig.update_layout(**_layout("Тарифная лестница B2B (BYN/КЗ L0)", showlegend=False))
     fig.update_xaxes(title="BYN", range=[0, 1.15])
     p = assets_dir / "chart_pricing.png"
     _export(fig, p)
@@ -173,7 +202,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     cols = [COLOR_NEGATIVE if v < 0 else c[0] for v in ev]
     fig = go.Figure(go.Bar(x=years, y=ev, marker_color=cols, text=[f"{v:+d}" for v in ev],
                            textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout(f"EBITDA · 2029: {ebitda_month_k(FIN_Y3)} тыс./мес при 8% TAM"))
+    fig.update_layout(**_layout(f"EBITDA · 2029: {ebitda_month_k(FIN_Y3)} тыс./мес при 8% TAM", showlegend=False))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_ebitda.png"
     _export(fig, p)
@@ -186,7 +215,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="Доля TAM, %", x=years, y=shares, marker_color=c[1], opacity=0.8), secondary_y=False)
     fig.add_trace(go.Scatter(name="КЗ/мес, тыс.", x=years, y=kz, mode="lines+markers",
                              line=dict(color=c[3], width=2.5)), secondary_y=True)
-    fig.update_layout(**_layout("Проникновение B2B: от TAM 2,5 млн КЗ/мес", legend_y=1.1))
+    fig.update_layout(**_layout("Проникновение B2B: от TAM 2,5 млн КЗ/мес", legend_items=2))
     fig.update_yaxes(title_text="% TAM", secondary_y=False)
     fig.update_yaxes(title_text="тыс. КЗ/мес", secondary_y=True)
     p = assets_dir / "chart_market_share.png"
@@ -199,7 +228,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig = go.Figure()
     for i, (vals, yr, col) in enumerate(zip([y1, y2, y3], years, c[:3])):
         fig.add_trace(go.Bar(name=yr, x=cats, y=vals, marker_color=col, opacity=0.88, marker_line_width=0))
-    fig.update_layout(**_layout("Структура OPEX по статьям", barmode="group"))
+    fig.update_layout(**_layout("Структура OPEX по статьям", barmode="group", legend_items=3))
     fig.update_yaxes(title="тыс. BYN")
     p = assets_dir / "chart_opex.png"
     _export(fig, p)
@@ -210,7 +239,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     margins = [(p - 0.09) / p * 100 for p in prices]
     fig = go.Figure(go.Bar(x=["Старт", "Клиника", "Сеть"], y=margins, marker_color=c[:3],
                            text=[f"{m:.0f}%" for m in margins], textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout("Валовая маржа L0 при себестоимости ~0,09 BYN"))
+    fig.update_layout(**_layout("Валовая маржа L0 при себестоимости ~0,09 BYN", showlegend=False))
     fig.update_yaxes(title="%", range=[0, 100])
     p = assets_dir / "chart_margin.png"
     _export(fig, p)
@@ -223,7 +252,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
            (ROI_TOTAL_SAVING - ROI_METHODIST_SAVING) / 1000, ROI_TOTAL_SAVING / 1000],
         marker_color=[COLOR_NEGATIVE, c[0], c[1], c[2]], marker_line_width=0,
         text=[f"{ROI_NET/1000:+.1f} нетто/мес" if i == 0 else "" for i in range(4)], textposition="outside"))
-    fig.update_layout(**_layout(f"ROI якоря Кравира · нетто {ROI_NET/1000:+.1f} тыс. BYN/мес"))
+    fig.update_layout(**_layout(f"ROI якоря Кравира · нетто {ROI_NET/1000:+.1f} тыс. BYN/мес", showlegend=False))
     fig.update_yaxes(title="тыс. BYN / мес")
     p = assets_dir / "chart_roi.png"
     _export(fig, p)
@@ -234,7 +263,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     funnel_v = [100, 2, 0.8, FIN_Y3["b2c_checks"] / 300_000 * 100]
     fig = go.Figure(go.Funnel(y=funnel_y, x=funnel_v, textinfo="value+percent initial",
                               marker=dict(color=[c[2], c[1], c[3], c[0]], line=dict(width=0))))
-    fig.update_layout(**_layout("B2C-воронка · 0,23% TAM в осторожном плане"))
+    fig.update_layout(**_layout("B2C-воронка · 0,23% TAM в осторожном плане", showlegend=False))
     p = assets_dir / "chart_b2c_funnel.png"
     _export(fig, p)
     paths["b2c_funnel"] = p
@@ -247,7 +276,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="Другие ОЗ", x=years,
                          y=[FIN_Y1["b2b_other_k"], FIN_Y2["b2b_other_k"], FIN_Y3["b2b_other_k"]],
                          marker_color=c[3], marker_line_width=0))
-    fig.update_layout(**_layout("B2B: якорь vs сеть частных ОЗ", barmode="stack"))
+    fig.update_layout(**_layout("B2B: якорь vs сеть частных ОЗ", barmode="stack", legend_items=2))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_b2b_split.png"
     _export(fig, p)
@@ -260,7 +289,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
                            text=[f"{p:.2f}" for p in prices], textposition="outside"))
     fig.add_hline(y=B2C_AVG_PRICE, line_dash="dash", line_color=c[5],
                   annotation_text=f"средний {B2C_AVG_PRICE} BYN")
-    fig.update_layout(**_layout("Tier-цены B2C"))
+    fig.update_layout(**_layout("Tier-цены B2C", showlegend=False))
     fig.update_yaxes(title="BYN")
     p = assets_dir / "chart_b2c_tiers.png"
     _export(fig, p)
@@ -274,7 +303,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig = go.Figure()
     fig.add_trace(go.Bar(name="Клинике 30%", x=ex, y=clinic, marker_color=c[3], marker_line_width=0))
     fig.add_trace(go.Bar(name="Protocol 70%", x=ex, y=prot, marker_color=c[0], marker_line_width=0))
-    fig.update_layout(**_layout("Rev-share B2B2C", barmode="stack"))
+    fig.update_layout(**_layout("Rev-share B2B2C", barmode="stack", legend_items=2))
     fig.update_yaxes(title="BYN / проверка")
     p = assets_dir / "chart_b2c_revshare.png"
     _export(fig, p)
@@ -286,7 +315,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
               SCENARIO_BASE["b2c_k"], SCENARIO_OPTIMISTIC["b2c_k"]]
     fig = go.Figure(go.Bar(x=scen_x, y=scen_y,
                            marker_color=[c[0], c[0], c[0], c[1], c[5]], marker_line_width=0))
-    fig.update_layout(**_layout(f"B2C Protocol · ~{B2C_PROTOCOL_PER_CHECK} BYN/проверка"))
+    fig.update_layout(**_layout(f"B2C Protocol · ~{B2C_PROTOCOL_PER_CHECK} BYN/проверка", showlegend=False))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_b2c_growth.png"
     _export(fig, p)
@@ -298,7 +327,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
                 FIN_Y3["b2c_k"] + FIN_Y3["api_k"], total_rev_k(FIN_Y3)]
     fig = go.Figure(go.Bar(x=bridge_x, y=bridge_y, marker_color=[c[2], c[1], c[0], c[3], c[5]],
                            text=[f"{v:,}".replace(",", " ") for v in bridge_y], textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout("От TAM к выручке Protocol 2029 (тыс. BYN/год)"))
+    fig.update_layout(**_layout("От TAM к выручке Protocol 2029 (тыс. BYN/год)", showlegend=False))
     fig.update_yaxes(title="тыс. BYN")
     p = assets_dir / "chart_tam_bridge.png"
     _export(fig, p)
@@ -309,7 +338,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     se = [s["ebitda_k"] for s in ALL_SCENARIOS_Y3]
     fig = go.Figure(go.Bar(x=sn, y=se, marker_color=c[:3], marker_line_width=0,
                            text=[f"+{v}" for v in se], textposition="outside"))
-    fig.update_layout(**_layout("EBITDA 2029: три сценария проникновения"))
+    fig.update_layout(**_layout("EBITDA 2029: три сценария проникновения", showlegend=False))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_scenarios_ebitda.png"
     _export(fig, p)
@@ -321,7 +350,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig = go.Figure(go.Bar(x=pen_x, y=pen_y, marker_color=c[0], marker_line_width=0))
     fig.add_hline(y=ebitda_k(FIN_Y3), line_dash="dot", line_color=c[5],
                   annotation_text=f"план 8%: {ebitda_k(FIN_Y3)}")
-    fig.update_layout(**_layout("Чувствительность EBITDA к доле TAM B2B"))
+    fig.update_layout(**_layout("Чувствительность EBITDA к доле TAM B2B", showlegend=False))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_penetration.png"
     _export(fig, p)
@@ -332,7 +361,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     ch_p = [x["prob"] * 100 for x in CHANNEL_OUTLOOK]
     fig = go.Figure(go.Bar(y=ch_y, x=ch_p, orientation="h", marker_color=c[0], opacity=0.85, marker_line_width=0,
                            text=[f"{x['y3_k']} тыс." for x in CHANNEL_OUTLOOK], textposition="outside"))
-    fig.update_layout(**_layout("Вероятность успеха каналов к 2029"))
+    fig.update_layout(**_layout("Вероятность успеха каналов к 2029", showlegend=False))
     fig.update_xaxes(title="%", range=[0, 105])
     p = assets_dir / "chart_channel_outlook.png"
     _export(fig, p)
@@ -347,7 +376,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="B2B", x=labels_s, y=b2b_s, marker_color=c[0], marker_line_width=0))
     fig.add_trace(go.Bar(name="B2C", x=labels_s, y=b2c_s, marker_color=c[3], marker_line_width=0))
     fig.add_trace(go.Bar(name="API", x=labels_s, y=api_s, marker_color=c[1], marker_line_width=0))
-    fig.update_layout(**_layout("Выручка 2029 по сценариям", barmode="stack"))
+    fig.update_layout(**_layout("Выручка 2029 по сценариям", barmode="stack", legend_items=3))
     fig.update_yaxes(title="тыс. BYN")
     p = assets_dir / "chart_scenarios_revenue.png"
     _export(fig, p)
@@ -358,7 +387,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="год", x=years, y=ebit, marker_color=c[0], opacity=0.8, marker_line_width=0))
     fig.add_trace(go.Bar(name="мес", x=years, y=[ebitda_month_k(FIN_Y1), ebitda_month_k(FIN_Y2), ebitda_month_k(FIN_Y3)],
                          marker_color=c[3], opacity=0.8, marker_line_width=0))
-    fig.update_layout(**_layout("EBITDA: год и месяц", barmode="group"))
+    fig.update_layout(**_layout("EBITDA: год и месяц", barmode="group", legend_items=2))
     p = assets_dir / "chart_ebitda_monthly.png"
     _export(fig, p)
     paths["ebitda_monthly"] = p
@@ -370,7 +399,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
         y=stream_names, x=stream_vals, orientation="h",
         marker=dict(color=stream_vals, colorscale=[[0, c[1]], [0.5, c[0]], [1, c[3]]], showscale=False),
         text=[f"{v}" for v in stream_vals], textposition="outside", marker_line_width=0))
-    fig.update_layout(**_layout(f"Доп. каналы монетизации 2029 · +{EXPANDED_Y3['extra_rev_k']} тыс. BYN/год"))
+    fig.update_layout(**_layout(f"Доп. каналы монетизации 2029 · +{EXPANDED_Y3['extra_rev_k']} тыс. BYN/год", showlegend=False))
     fig.update_xaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_monetization.png"
     _export(fig, p)
@@ -384,7 +413,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(name="Выручка", x=scen_labels, y=scen_rev, marker_color=c[0], opacity=0.85), secondary_y=False)
     fig.add_trace(go.Scatter(name="EBITDA", x=scen_labels, y=scen_ebitda, mode="markers+lines",
                              marker=dict(size=12, color=c[5]), line=dict(width=2)), secondary_y=True)
-    fig.update_layout(**_layout("Сценарии 2029: до 3,5 млн выручки (расширенный)", legend_y=1.12))
+    fig.update_layout(**_layout("Сценарии 2029: до 3,5 млн выручки (расширенный)", legend_items=2))
     fig.update_yaxes(title_text="Выручка, тыс.", secondary_y=False)
     fig.update_yaxes(title_text="EBITDA, тыс.", secondary_y=True)
     p = assets_dir / "chart_all_scenarios.png"
@@ -399,7 +428,7 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     fig.add_trace(go.Bar(
         name="Расширенный", x=["2029"], y=[EXPANDED_Y3["total_rev_k"]], marker_color=c[0], marker_line_width=0,
         text=[f"EBITDA +{EXPANDED_Y3['ebitda_k']}"], textposition="outside"))
-    fig.update_layout(**_layout(f"Потенциал: +{EXPANDED_Y3['extra_rev_k']} тыс. от 8 доп. каналов", barmode="group"))
+    fig.update_layout(**_layout(f"Потенциал: +{EXPANDED_Y3['extra_rev_k']} тыс. от 8 доп. каналов", barmode="group", legend_items=2))
     fig.update_yaxes(title="тыс. BYN / год")
     p = assets_dir / "chart_expanded_potential.png"
     _export(fig, p)

@@ -198,7 +198,7 @@ B2C (физические лица, tier по specialty):
 Поставщики и контрагенты:
 - хостинг / виртуальные машины в дата-центре РБ (on-prem площадка клиники или облако РБ);
 - платёжные агрегаторы для B2C (ERIP, эквайринг банков РБ);
-- опционально API языковой модели (Gemini) или on-prem LLM для уровня L2;
+- опционально облачный LLM API или on-prem LLM для уровня L2;
 - НЦИС (БелГИСС) - регистрация программы для ЭВМ;
 - EPAM / вендор МИС «Айболит» - интеграционные работы;
 - юридическое сопровождение договоров B2B/B2C и политики ПДн.
@@ -281,8 +281,12 @@ ML-контур: каталог ml/ (configs, datasets, train, eval, registry), 
 детерминированное ядро (send_gate, CISZ) нейросетью: модели улучшают retrieval, medical entailment
 и structured extraction, а решение о подписи остаётся воспроизводимым по правилам с evidence_map.
 
+Статус на 2026: в production работают детерминированные правила (482+), semantic RAG и опциональные вызовы LLM;
+каталог ml/ - каркас MLOps (сбор feedback, export_training_feedback.py, заглушки train/eval). Полный цикл
+LoRA fine-tune и деплой локальных моделей - фаза 1 дорожной карты (Q4 2026), не текущий релиз.
+
 Три уровня ML в продукте:
-1) RAG - domain embedder + cross-encoder reranker на корпусе ~478 КП Минздрава (on-prem, без Gemini на L0).
+1) RAG - domain embedder + cross-encoder reranker на корпусе ~478 КП Минздрава (on-prem, без облачного LLM на L0).
 2) Сопоставление терминов КЗ - entailment-модель по меткам методслужбы (required_exam, keyword rules).
 3) Summary cards - student-модель на approved карточках протоколов (human-in-the-loop).
 

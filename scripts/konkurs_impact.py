@@ -93,7 +93,7 @@ GLOBAL_ANALOGUES = [
         "Pharmacovigilance, не полный КЗ",
     ),
     (
-        "OpenAI / ChatGPT (ad hoc)",
+        "Свободные LLM-чаты (ad hoc)",
         "Глобально",
         "Свободный LLM-чат",
         "ПДн, нет send_gate, галлюцинации, нет audit trail",

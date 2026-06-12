@@ -6,11 +6,11 @@ Protocol спроектирован как гибридная система: д
 принимает решение о подписи КЗ, а дообучаемые модели улучшают поиск протоколов, сопоставление медтерминов
 и структурирование данных - без «чёрного ящика» в блокировке ЭЦП.
 
-Отличие от ChatGPT/CDSS: корпус ~478 КП Минздрава РБ + цикл human-in-the-loop от методслужбы Кравиры
-+ локальное развёртывание моделей в контуре Республики Беларусь (on-prem, без выноса ПДн на L0).
+Отличие от свободных LLM-чатов и зарубежных CDSS: корпус ~478 КП Минздрава РБ + цикл human-in-the-loop
+от методслужбы Кравиры + локальное развёртывание моделей в контуре Республики Беларусь (on-prem, без выноса ПДн на L0).
 
-Каркас MLOps в репозитории: каталог ml/ (configs, datasets, train, eval, registry), сбор feedback
-в data/ml/feedback/, экспорт датасетов scripts/export_training_feedback.py.
+Статус на 2026: в production - правила, semantic RAG, опциональный LLM API; каталог ml/ - каркас MLOps
+(сбор feedback, export_training_feedback.py, заглушки train/eval). Fine-tune и деплой локальных моделей - фаза 1+ roadmap.
 """.strip()
 
 ML_PRINCIPLES_TABLE = [
@@ -24,7 +24,7 @@ ML_PRINCIPLES_TABLE = [
 
 ML_ROADMAP_TABLE = [
     ("Фаза 0", "Q2-Q3 2026", "kz_quality_scores, feedback JSONL, export_training_feedback.py", "Пилот Кравира"),
-    ("Фаза 1", "Q4 2026", "Local embedder (e5/bge-m3) вместо Gemini embed", "On-prem RAG"),
+    ("Фаза 1", "Q4 2026", "Local embedder (e5/bge-m3) вместо облачного embed API", "On-prem RAG"),
     ("Фаза 2", "2027 H1", "Cross-encoder reranker + medical entailment", "−ложные L0 срабатывания"),
     ("Фаза 3", "2027 H2", "30-100 approved summary cards, hybrid mode", "Качество vs auto-rules"),
     ("Фаза 4", "2028+", "Ежемесячный LoRA-retrain + A/B eval", "Data moat, масштаб сети ОЗ"),

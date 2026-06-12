@@ -20,7 +20,7 @@ ml/
   configs/default.json      # модели, пути, пороги eval
   registry/model_manifest.json
   datasets/                 # экспорт из scripts/export_training_feedback.py
-  train/                    # скрипты fine-tune (заглушки + CLI)
+  train/                    # скрипты fine-tune (заглушки CLI, --dry-run)
   eval/                     # регрессия vs golden sets
 data/ml/feedback/           # сырые события пилота (JSONL, без ПДн)
 ```
@@ -41,6 +41,17 @@ python3 scripts/export_training_feedback.py
 python3 scripts/export_training_feedback.py --seed-only   # только bootstrap из golden
 ```
 
+## Статус (2026)
+
+| Компонент | Статус |
+|-----------|--------|
+| send_gate, правила 482+ | Production |
+| Semantic RAG, FAISS, hybrid retrieve | Production |
+| Опциональный LLM API (L2, enrichment) | Production (при наличии ключа) |
+| `data/ml/feedback/`, `export_training_feedback.py` | Каркас, seed-датасеты |
+| `ml/train/*`, `ml/eval/*` | Заглушки CLI (`--dry-run`) |
+| LoRA fine-tune + деплой local embedder | Roadmap фаза 1 (Q4 2026) |
+
 ## Цикл MLOps (целевой)
 
 1. Production L0-L2 → `data/ml/feedback/`
@@ -51,7 +62,7 @@ python3 scripts/export_training_feedback.py --seed-only   # только bootstr
 
 ## Env (будущее)
 
-- `RAG_EMBED_BACKEND=local|gemini`
+- `RAG_EMBED_BACKEND=local|cloud`
 - `ML_MODEL_REGISTRY=ml/registry/model_manifest.json`
 - `ML_FEEDBACK_DIR=data/ml/feedback`
 
