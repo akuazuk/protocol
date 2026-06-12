@@ -129,6 +129,7 @@ def test_enrich_result_with_autolog(feedback_env):
     )
     assert out.get("analysis_id")
     assert out.get("text_hash", "").startswith("sha256:")
+    assert out.get("methodist_tier_meta", {}).get("label_ru", "").startswith("L0")
     assert (feedback_env["secure"] / (out["text_hash"].split(":")[-1] + ".txt")).is_file()
     assert (feedback_env["analyses"] / f"{out['analysis_id']}.json").is_file()
 

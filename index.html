@@ -5564,6 +5564,145 @@
       border-color: var(--green-600);
     }
 
+    body.methodist-mode .methodist-mode-badge.is-active {
+      background: var(--green-600);
+      color: #fff;
+      border-color: var(--green-700);
+      box-shadow: 0 0 0 2px rgba(26, 138, 114, 0.28);
+    }
+
+    body.methodist-mode .btn-methodist-exit.is-active {
+      background: var(--green-600);
+      color: #fff;
+      border-color: var(--green-700);
+      box-shadow: 0 2px 10px rgba(26, 138, 114, 0.35);
+    }
+
+    body.methodist-mode .btn-methodist-exit.is-active:hover {
+      background: var(--green-700);
+      color: #fff;
+    }
+
+    body.methodist-mode #consult-scores-spoiler,
+    body.methodist-mode #consult-criteria-spoiler,
+    body.methodist-mode #consult-structured-spoiler,
+    body.methodist-mode #consult-methodology-spoiler,
+    body.methodist-mode #consult-summary-spoiler,
+    body.methodist-mode #consult-limit-spoiler,
+    body.methodist-mode #consult-clinical-rules-panel,
+    body.methodist-mode #consult-protocols-section {
+      display: none !important;
+    }
+
+    body.methodist-mode #consult-send-gate-panel {
+      display: none !important;
+    }
+
+    .methodist-eval-dashboard {
+      margin: 0.65rem 0 0.75rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: linear-gradient(180deg, #f6fcf9 0%, #fff 100%);
+    }
+
+    .methodist-eval-dashboard__head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+      align-items: baseline;
+      margin-bottom: 0.55rem;
+    }
+
+    .methodist-eval-dashboard__head h3 {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--green-950);
+    }
+
+    .methodist-eval-tier-line {
+      font-size: 0.74rem;
+      color: #5a6f6a;
+    }
+
+    .methodist-eval-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+      gap: 0.45rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .methodist-eval-metric {
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+    }
+
+    .methodist-eval-metric__label {
+      display: block;
+      font-size: 0.68rem;
+      color: #6b7f78;
+      margin-bottom: 0.15rem;
+    }
+
+    .methodist-eval-metric__value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .methodist-eval-checks {
+      margin: 0.35rem 0 0.5rem;
+      padding-left: 1.1rem;
+      font-size: 0.76rem;
+      color: #2d4a42;
+      line-height: 1.45;
+    }
+
+    .methodist-eval-checks--muted {
+      color: #6b7280;
+    }
+
+    .methodist-eval-failed {
+      margin: 0.35rem 0 0.5rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      background: #fff8f0;
+      border: 1px solid rgba(180, 83, 9, 0.22);
+      font-size: 0.76rem;
+    }
+
+    .methodist-eval-failed ul {
+      margin: 0.25rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .methodist-guide {
+      margin-top: 0.45rem;
+      font-size: 0.76rem;
+      color: #374151;
+    }
+
+    .methodist-guide summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--green-800);
+    }
+
+    .methodist-guide ol,
+    .methodist-guide ul {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+      line-height: 1.45;
+    }
+
+    .methodist-tier-hint {
+      font-size: 0.72rem;
+      color: #6b7280;
+      margin: 0.15rem 0 0;
+    }
+
     body.methodist-mode .wrap {
       border-top: 3px solid var(--green-600);
     }
@@ -6984,10 +7123,11 @@
           <div class="methodist-tier-row consult-hide-print" id="methodist-tier-row" hidden>
             <label for="methodist-tier-select">Уровень проверки</label>
             <select id="methodist-tier-select" aria-label="Уровень проверки КЗ">
-              <option value="L2">L2 - полный RAG + LLM</option>
-              <option value="L1">L1 - структурный разбор</option>
-              <option value="L0">L0 - быстрый скрининг</option>
+              <option value="L1">L1 — структурный разбор (≈15–45 с)</option>
+              <option value="L0">L0 — быстрый скрининг (≈5–15 с)</option>
+              <option value="L2">L2 — полный RAG + LLM (≈2–5 мин)</option>
             </select>
+            <p class="methodist-tier-hint" id="methodist-tier-hint">L1: compliance + правила без LLM. L2: цитаты модели и RAG.</p>
           </div>
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать</button>
@@ -7135,6 +7275,31 @@
             <p class="consult-send-gate-summary" id="consult-send-gate-summary"></p>
             <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-send-gate-detail"></p>
           </div>
+
+          <section id="methodist-eval-dashboard" class="methodist-eval-dashboard consult-hide-print" hidden aria-label="Параметры для оценки методиста">
+            <div class="methodist-eval-dashboard__head">
+              <h3>Что проверила система</h3>
+              <span class="methodist-eval-tier-line" id="methodist-eval-tier-line"></span>
+            </div>
+            <div class="methodist-eval-grid" id="methodist-eval-metrics"></div>
+            <ul class="methodist-eval-checks" id="methodist-eval-checks"></ul>
+            <div class="methodist-eval-failed" id="methodist-eval-failed" hidden>
+              <strong>Невыполненные правила</strong>
+              <ul id="methodist-eval-failed-list"></ul>
+            </div>
+            <p class="consult-hint-small" id="methodist-eval-protocols" style="margin:0.25rem 0;font-size:0.72rem;color:#5a6f6a"></p>
+            <details class="methodist-guide consult-hide-print" id="methodist-guide-details">
+              <summary>Памятка: как оценивать точнее</summary>
+              <ol>
+                <li><strong>Рейтинг 1–5</strong> — насколько система в целом помогла методисту: 5 = можно опираться, 1 = вводит в заблуждение.</li>
+                <li><strong>Вердикт</strong> — «Верно» только если gate, правила и (на L2) RAG/LLM согласуются с вашей экспертизой.</li>
+                <li><strong>Теги</strong> — отметьте тип ошибки (ложное правило, пропуск, неверный КП, ЦИСЗ, вводящий %).</li>
+                <li><strong>Разметка правил</strong> — если система ошиблась по конкретному правилу, укажите «Не согласен» и короткий комментарий (≤280 симв.).</li>
+                <li><strong>RAG (L2)</strong> — если протокол подобран неверно, укажите ошибочный путь из топ-5 и правильный путь к PDF.</li>
+                <li><strong>Уровни:</strong> L0 — быстро gate+правила; L1 — полный structured; L2 — + RAG и LLM. Сравнивайте время и состав проверок по строке уровня выше.</li>
+              </ol>
+            </details>
+          </section>
 
           <section id="methodist-review-panel" class="methodist-review-panel consult-hide-print" hidden aria-label="Оценка методиста">
             <h3>Оценка качества анализа</h3>
@@ -10930,14 +11095,165 @@
     var active = !!window.__methodistMode;
     if (badge) {
       badge.hidden = !active;
+      badge.classList.toggle("is-active", active);
       badge.textContent = active && window.__methodistReviewer
         ? "Режим методиста · " + window.__methodistReviewer
         : "Режим методиста";
     }
     if (enterBtn) enterBtn.hidden = active;
-    if (exitBtn) exitBtn.hidden = !active;
+    if (exitBtn) {
+      exitBtn.hidden = !active;
+      exitBtn.classList.toggle("is-active", active);
+    }
     if (tierRow) tierRow.hidden = !active;
     document.body.classList.toggle("methodist-mode", active);
+    var dash = document.getElementById("methodist-eval-dashboard");
+    if (dash && !active) dash.hidden = true;
+  }
+
+  function methodistMetricCard(label, value) {
+    return (
+      '<div class="methodist-eval-metric">' +
+      '<span class="methodist-eval-metric__label">' +
+      escapeHtml(label) +
+      "</span>" +
+      '<span class="methodist-eval-metric__value">' +
+      escapeHtml(value) +
+      "</span></div>"
+    );
+  }
+
+  function methodistSendGateSummary(data) {
+    var sg =
+      (data && data.send_gate) ||
+      (data &&
+        data.structured_analysis &&
+        data.structured_analysis.compliance &&
+        data.structured_analysis.compliance.send_gate);
+    if (!sg) return "—";
+    var allowed = !!sg.gate_allowed;
+    var override = !!sg.requires_override;
+    if (!allowed) return "Подпись заблокирована";
+    if (override) return "Нужно подтверждение врача";
+    return "Подпись разрешена";
+  }
+
+  function renderMethodistEvalDashboard(data) {
+    var panel = document.getElementById("methodist-eval-dashboard");
+    if (!panel || !window.__methodistMode || !data) {
+      if (panel) panel.hidden = true;
+      return;
+    }
+    if (!data.analysis_id) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+
+    var meta = data.methodist_tier_meta || {};
+    var tier = (data.review_tier || (data.model_info && data.model_info.tier) || "L2").toUpperCase();
+    var tierLine = document.getElementById("methodist-eval-tier-line");
+    if (tierLine) {
+      var bits = [meta.label_ru || tier];
+      if (meta.latency_label_ru) bits.push("факт: " + meta.latency_label_ru);
+      else if (meta.latency_hint_ru) bits.push("обычно " + meta.latency_hint_ru);
+      tierLine.textContent = bits.join(" · ");
+    }
+
+    var saComp =
+      data.structured_analysis && data.structured_analysis.compliance
+        ? data.structured_analysis.compliance
+        : {};
+    var gateScore =
+      (data.send_gate && data.send_gate.gate_score != null
+        ? data.send_gate.gate_score
+        : saComp.overall_score != null
+          ? saComp.overall_score
+          : data.overall_score) || null;
+    var cr = data.clinical_rules || {};
+    var rc = cr.rules_check || {};
+    var rulesPct = rc.rules_compliance_pct;
+    var failed = (rc.findings || []).filter(function (f) {
+      return f && !f.skipped && f.passed === false;
+    });
+    var metricsEl = document.getElementById("methodist-eval-metrics");
+    if (metricsEl) {
+      var cards = [
+        methodistMetricCard("Send gate", methodistSendGateSummary(data)),
+        methodistMetricCard(
+          "Балл gate",
+          gateScore != null ? Math.round(Number(gateScore)) + "%" : "—"
+        ),
+        methodistMetricCard(
+          "Правила протокола",
+          rulesPct != null ? Math.round(Number(rulesPct)) + "%" : "—"
+        ),
+        methodistMetricCard("Не выполнено правил", String(failed.length)),
+      ];
+      if (tier === "L2") {
+        cards.push(
+          methodistMetricCard(
+            "RAG PDF",
+            String((data.retrieval_paths || []).length)
+          )
+        );
+      }
+      metricsEl.innerHTML = cards.join("");
+    }
+
+    var checksEl = document.getElementById("methodist-eval-checks");
+    if (checksEl) {
+      var items = (meta.checks_ru || []).slice();
+      checksEl.innerHTML = items
+        .map(function (t) {
+          return "<li>" + escapeHtml(t) + "</li>";
+        })
+        .join("");
+      checksEl.classList.remove("methodist-eval-checks--muted");
+      var notIn = meta.not_included_ru || [];
+      if (notIn.length) {
+        checksEl.innerHTML +=
+          '<li class="methodist-eval-checks--muted" style="list-style:none;margin-top:0.35rem"><em>Не входит в ' +
+          escapeHtml(tier) +
+          ":</em> " +
+          escapeHtml(notIn.join("; ")) +
+          "</li>";
+      }
+    }
+
+    var failedWrap = document.getElementById("methodist-eval-failed");
+    var failedList = document.getElementById("methodist-eval-failed-list");
+    if (failedWrap && failedList) {
+      if (failed.length) {
+        failedWrap.hidden = false;
+        failedList.innerHTML = failed
+          .slice(0, 12)
+          .map(function (f) {
+            return "<li>" + escapeHtml(methodistFindingTitle(f)) + "</li>";
+          })
+          .join("");
+      } else {
+        failedWrap.hidden = true;
+        failedList.innerHTML = "";
+      }
+    }
+
+    var protoEl = document.getElementById("methodist-eval-protocols");
+    if (protoEl) {
+      var paths = (data.retrieval_paths || []).slice(0, 5);
+      var matched = (cr.matched_protocols || [])
+        .map(function (m) {
+          return m && m.path ? m.path : "";
+        })
+        .filter(Boolean)
+        .slice(0, 5);
+      var show = paths.length ? paths : matched;
+      protoEl.textContent = show.length
+        ? "Протоколы: " + show.join(" · ")
+        : tier === "L2"
+          ? "Протоколы RAG: не подобраны"
+          : "";
+    }
   }
 
   function collectMethodistTags() {
@@ -11036,7 +11352,10 @@
     var tbody = document.getElementById("methodist-findings-tbody");
     var cnt = document.getElementById("methodist-findings-count");
     if (cnt) cnt.textContent = String(findings.length);
-    if (det) det.hidden = findings.length === 0;
+    if (det) {
+      det.hidden = findings.length === 0;
+      if (findings.length) det.open = true;
+    }
     if (tbody) {
       tbody.innerHTML = "";
       findings.forEach(function (f) {
@@ -13094,6 +13413,7 @@
     renderConsultClinicalRulesPanel(data);
     renderConsultProtocolsSection(data, rev);
     renderConsultSendGate(data);
+    renderMethodistEvalDashboard(data);
     renderMethodistReviewPanel(data);
     renderConsultMethodologyPanel(rev);
     renderConsultScoreOverview(data, rev);
@@ -13274,6 +13594,24 @@
       if (res) res.hidden = false;
       renderConsultClinicalRulesPanel(acc);
     }
+  }
+
+  function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef) {
+    var tierEl = document.getElementById("methodist-tier-select");
+    var tier = tierEl && tierEl.value ? tierEl.value : "L1";
+    if (tier === "L0" || tier === "L1") {
+      updateConsultProgressUI(20, tier + " — детерминированный разбор…", "без LLM и RAG");
+      return fetch(base + "/health")
+        .then(function (h) {
+          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+          return fetchConsultReviewSync(base, fd, consultCtrl);
+        })
+        .then(function (data) {
+          updateConsultProgressUI(100, "готово (" + tier + ")", "");
+          return data;
+        });
+    }
+    return fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef);
   }
 
   function fetchConsultReviewSync(base, fd, consultCtrl) {
@@ -13723,8 +14061,11 @@
 
       var consultTimeoutRef = { ms: 600000, abortTid: null };
       var consultCtrl = new AbortController();
+      var reviewFetch = window.__methodistMode
+        ? fetchConsultReviewMethodist
+        : fetchConsultReviewStream;
 
-      fetchConsultReviewStream(base, fd, consultCtrl, consultTimeoutRef)
+      reviewFetch(base, fd, consultCtrl, consultTimeoutRef)
         .then(function (r) {
           if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           return r;

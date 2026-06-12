@@ -339,10 +339,20 @@ def enrich_result_with_methodist_autolog(
     latency_ms: int | None = None,
     sandbox: bool = False,
     reviewer: str = "",
+    category_slugs: str = "",
 ) -> dict[str, Any]:
     """Пишет kz_analysis, снимок и добавляет analysis_id/text_hash в ответ API."""
     if not full_text.strip():
         return result
+    from clinical_knowledge.methodist_enrich import enrich_methodist_tier_payload
+
+    result = enrich_methodist_tier_payload(
+        result,
+        tier=tier,
+        full_text=full_text,
+        category_slugs=category_slugs,
+        latency_ms=latency_ms,
+    )
     event = build_kz_analysis_event(
         result=result,
         tier=tier,

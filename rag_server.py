@@ -5957,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r91-methodist-entry-labels"
+BUILD_VERSION = "2026-06-01-r92-methodist-tier-ui"
 
 
 def _app_version() -> str:
@@ -6141,6 +6141,7 @@ def _maybe_methodist_autolog(
     latency_ms: int | None = None,
     sandbox: bool = False,
     body_methodist_mode: bool = False,
+    category_slugs: str = "",
 ) -> dict:
     if not _methodist_request_active(request, body_methodist_mode):
         return result
@@ -6155,6 +6156,7 @@ def _maybe_methodist_autolog(
         latency_ms=latency_ms,
         sandbox=sandbox,
         reviewer=reviewer,
+        category_slugs=category_slugs,
     )
 
 
@@ -7174,6 +7176,7 @@ def api_consult_compliance_screen(request: "Request", body: ConsultComplianceScr
             latency_ms=latency_ms,
             sandbox=body.sandbox,
             body_methodist_mode=body.methodist_mode,
+            category_slugs=getattr(body, "category_slugs", "") or "",
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -7255,6 +7258,7 @@ def api_consult_review_tier(request: "Request", body: ConsultReviewTierIn) -> di
             latency_ms=latency_ms,
             sandbox=body.sandbox,
             body_methodist_mode=body.methodist_mode,
+            category_slugs=body.category_slugs or "",
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -7291,6 +7295,7 @@ def api_consult_review_json(request: "Request", body: ConsultReviewJsonIn) -> di
             latency_ms=latency_ms,
             sandbox=body.sandbox,
             body_methodist_mode=body.methodist_mode,
+            category_slugs=body.category_slugs or "",
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -7359,6 +7364,7 @@ def api_consult_review(
             full_text=full_text,
             consultation_id="upload",
             latency_ms=latency_ms,
+            category_slugs=category_slugs,
         )
     _require_rag_loaded()
     t0 = time.perf_counter()
@@ -7371,6 +7377,7 @@ def api_consult_review(
         full_text=full_text,
         consultation_id="upload",
         latency_ms=latency_ms,
+        category_slugs=category_slugs,
     )
 
 
@@ -7410,6 +7417,7 @@ def api_consult_review_stream(
 
     content_signature = "\n||\n".join(doc_texts_for_cache)
     selected_tier = (tier or "L2").strip().upper()
+    stream_t0 = time.perf_counter()
 
     if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
 
@@ -7436,6 +7444,7 @@ def api_consult_review_stream(
                     full_text=full_text,
                     consultation_id="upload",
                     latency_ms=latency_ms,
+                    category_slugs=category_slugs,
                 )
                 yield sse_encode_progress(
                     "extract",
@@ -7486,12 +7495,15 @@ def api_consult_review_stream(
                         p.get("partial"),
                     )
                 elif kind == "done":
+                    latency_ms = int((time.perf_counter() - stream_t0) * 1000)
                     payload = _maybe_methodist_autolog(
                         request,
                         payload,
                         tier="L2",
                         full_text=full_text,
                         consultation_id="upload",
+                        latency_ms=latency_ms,
+                        category_slugs=category_slugs,
                     )
                     yield sse_encode_done(payload)
                     sent_done = True
