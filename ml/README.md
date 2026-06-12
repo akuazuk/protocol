@@ -67,3 +67,14 @@ python3 scripts/export_training_feedback.py --seed-only   # только bootstr
 - `ML_FEEDBACK_DIR=data/ml/feedback`
 
 См. также `docs/architecture-stages-print.html` §11-12 (семантический RAG, `kz_quality_scores`).
+
+## Эксперимент embedder 001
+
+Первый прогон fine-tune на seed-датасете (313 пар):
+
+```bash
+pip install -r requirements-ml.txt
+python3 scripts/run_embedder_experiment.py
+```
+
+Отчёт: `ml/experiments/embedder_exp_001/REPORT.md` (чекпоинты локально, в git не коммитятся).

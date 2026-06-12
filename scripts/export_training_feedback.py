@@ -210,6 +210,36 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def enrich_retrieval_with_texts(
+    pairs: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """Добавляет positive_text / negative_text через ml.chunk_resolver."""
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from ml.chunk_resolver import build_path_index, resolve_path_text
+
+    index = build_path_index()
+    stats = {"total": len(pairs), "resolved": 0, "missing": 0, "with_negative": 0}
+    out: list[dict[str, Any]] = []
+    for row in pairs:
+        path = (row.get("positive_path") or "").strip()
+        neg_path = (row.get("negative_path") or "").strip()
+        pos_text = resolve_path_text(path, index) if path else None
+        if not pos_text:
+            stats["missing"] += 1
+            continue
+        stats["resolved"] += 1
+        item = dict(row)
+        item["positive_text"] = pos_text
+        if neg_path:
+            neg_text = resolve_path_text(neg_path, index)
+            if neg_text:
+                item["negative_text"] = neg_text
+                stats["with_negative"] += 1
+        out.append(item)
+    return out, stats
+
+
 def export_all(*, seed_only: bool = False) -> dict[str, Any]:
     events = [] if seed_only else list(iter_feedback_events())
 
@@ -232,6 +262,8 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
         retrieval_deduped.append(row)
 
     write_jsonl(DATASETS_DIR / "retrieval_pairs.jsonl", retrieval_deduped)
+    resolved, resolve_stats = enrich_retrieval_with_texts(retrieval_deduped)
+    write_jsonl(DATASETS_DIR / "retrieval_pairs_resolved.jsonl", resolved)
     write_jsonl(DATASETS_DIR / "entailment_pairs.jsonl", entailment)
     write_jsonl(DATASETS_DIR / "kz_regression.jsonl", kz_regression)
 
@@ -241,6 +273,8 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
         "counts": {
             "feedback_events": len(events),
             "retrieval_pairs": len(retrieval_deduped),
+            "retrieval_pairs_resolved": len(resolved),
+            "resolve_stats": resolve_stats,
             "entailment_pairs": len(entailment),
             "kz_regression": len(kz_regression),
         },
@@ -252,12 +286,13 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
         },
         "outputs": [
             "ml/datasets/retrieval_pairs.jsonl",
+            "ml/datasets/retrieval_pairs_resolved.jsonl",
             "ml/datasets/entailment_pairs.jsonl",
             "ml/datasets/kz_regression.jsonl",
         ],
         "next_steps": [
-            "ml/train/finetune_embedder.py --dataset ml/datasets/retrieval_pairs.jsonl",
-            "ml/eval/run_regression.py",
+            "python3 scripts/run_embedder_experiment.py",
+            "ml/train/finetune_embedder.py --dataset ml/datasets/retrieval_pairs_resolved.jsonl",
         ],
     }
     manifest_path = DATASETS_DIR / "export_manifest.json"
