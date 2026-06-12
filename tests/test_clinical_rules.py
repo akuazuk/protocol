@@ -32,6 +32,10 @@ def test_rule_checker_gerd_diagnosis_formula_missing():
     failed = [f for f in result["findings"] if not f.get("passed")]
     types = {f.get("rule_type") for f in failed}
     assert "diagnosis_formula" in types
+    formula = next(f for f in failed if f.get("rule_type") == "diagnosis_formula")
+    assert formula.get("title_ru")
+    assert "ГЭРБ" in formula["title_ru"] or "диагноз" in formula["title_ru"].lower()
+    assert "gerd_diagnosis_formula" not in formula["title_ru"]
 
 
 def test_rule_checker_gerd_full_diagnosis_passes_formula():

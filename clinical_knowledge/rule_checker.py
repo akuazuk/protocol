@@ -474,6 +474,12 @@ def run_rule_checker(
         passed_n = sum(1 for f in scored if f.get("passed"))
         compliance_pct = round(100.0 * passed_n / len(scored), 1) if scored else None
 
+    for f in all_findings:
+        if not f.get("title_ru"):
+            f["title_ru"] = rule_title_ru(str(f.get("rule_id") or ""), f)
+        if f.get("message_ru"):
+            f["message_ru"] = localize_message_ru(str(f["message_ru"]))
+
     return {
         "checked_conditions": checked_conditions,
         "findings": all_findings,

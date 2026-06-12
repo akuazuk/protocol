@@ -5957,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r90-methodist-autologin-fix"
+BUILD_VERSION = "2026-06-01-r91-methodist-entry-labels"
 
 
 def _app_version() -> str:

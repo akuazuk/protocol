@@ -26,6 +26,12 @@ def test_rule_title_ru_from_auto_id():
     assert "9f9e0fb1" not in title
 
 
+def test_rule_title_ru_gerd_diagnosis_formula():
+    title = rule_title_ru("9f9e0fb1_auto_gerd_diagnosis_formula", {"rule_type": "diagnosis_formula"})
+    assert "ГЭРБ" in title
+    assert "диагноз" in title.lower()
+
+
 def test_decision_ru():
     assert decision_ru("missing") == "Не выполнено"
     assert decision_ru("satisfied") == "Выполнено"

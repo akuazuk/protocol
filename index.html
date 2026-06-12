@@ -5523,22 +5523,49 @@
       color: #2d4a42;
     }
 
+    .methodist-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.65rem;
+      margin: 0 0 0.55rem;
+      min-height: 1.75rem;
+    }
+
     .methodist-mode-badge {
       display: inline-flex;
       align-items: center;
-      margin: 0.35rem 0 0.65rem;
       padding: 0.28rem 0.65rem;
       border-radius: 999px;
       font-size: 0.74rem;
       font-weight: 700;
       letter-spacing: 0.02em;
-      color: #3d3a6b;
-      background: #ece9f8;
-      border: 1px solid #c9c3e8;
+      color: var(--green-950);
+      background: var(--green-100);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+    }
+
+    .btn-methodist-enter,
+    .btn-methodist-exit {
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 650;
+      padding: 0.32rem 0.72rem;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      color: var(--green-800);
+    }
+
+    .btn-methodist-enter:hover,
+    .btn-methodist-exit:hover {
+      background: var(--green-100);
+      border-color: var(--green-600);
     }
 
     body.methodist-mode .wrap {
-      border-top: 3px solid #7b6fd6;
+      border-top: 3px solid var(--green-600);
     }
 
     .methodist-tier-row {
@@ -6479,7 +6506,11 @@
   </div>
   <div class="bg-pattern" aria-hidden="true"></div>
   <div class="wrap">
-    <span id="methodist-mode-badge" class="methodist-mode-badge" hidden>Режим методиста</span>
+    <div class="methodist-topbar consult-hide-print" id="methodist-topbar">
+      <span id="methodist-mode-badge" class="methodist-mode-badge" hidden>Режим методиста</span>
+      <button type="button" class="btn-methodist-enter" id="methodist-btn-enter">Кабинет методиста</button>
+      <button type="button" class="btn-methodist-exit" id="methodist-btn-exit" hidden>Выйти из кабинета</button>
+    </div>
     <div class="app-main-tabs" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
         <span class="app-main-tab-visual" aria-hidden="true">
@@ -7143,7 +7174,7 @@
                 <table class="methodist-findings-table">
                   <thead>
                     <tr>
-                      <th>rule_id</th>
+                      <th>Что проверяем</th>
                       <th>Система</th>
                       <th>Методист</th>
                       <th>Комментарий</th>
@@ -10881,6 +10912,34 @@
     return out;
   }
 
+  function methodistFindingTitle(f) {
+    if (f && f.title_ru) return String(f.title_ru);
+    if (f && f.message_ru) return String(f.message_ru).slice(0, 140);
+    return (f && f.rule_id) || "Правило";
+  }
+
+  function methodistSystemVerdictRu(passed) {
+    return passed ? "Выполнено" : "Не выполнено";
+  }
+
+  function updateMethodistChrome() {
+    var badge = document.getElementById("methodist-mode-badge");
+    var enterBtn = document.getElementById("methodist-btn-enter");
+    var exitBtn = document.getElementById("methodist-btn-exit");
+    var tierRow = document.getElementById("methodist-tier-row");
+    var active = !!window.__methodistMode;
+    if (badge) {
+      badge.hidden = !active;
+      badge.textContent = active && window.__methodistReviewer
+        ? "Режим методиста · " + window.__methodistReviewer
+        : "Режим методиста";
+    }
+    if (enterBtn) enterBtn.hidden = active;
+    if (exitBtn) exitBtn.hidden = !active;
+    if (tierRow) tierRow.hidden = !active;
+    document.body.classList.toggle("methodist-mode", active);
+  }
+
   function collectMethodistTags() {
     var tags = [];
     document.querySelectorAll('#methodist-tags-list input[type="checkbox"]:checked').forEach(function (cb) {
@@ -10984,17 +11043,33 @@
         var tr = document.createElement("tr");
         tr.setAttribute("data-rule-id", f.rule_id);
         tr.setAttribute("data-system-pass", f.passed ? "true" : "false");
-        var tdId = document.createElement("td");
-        tdId.textContent = f.rule_id;
+        var tdTitle = document.createElement("td");
+        var titleDiv = document.createElement("div");
+        titleDiv.textContent = methodistFindingTitle(f);
+        titleDiv.style.fontWeight = "650";
+        tdTitle.appendChild(titleDiv);
+        if (f.message_ru && f.title_ru && f.message_ru !== f.title_ru) {
+          var hint = document.createElement("div");
+          hint.textContent = String(f.message_ru).slice(0, 180);
+          hint.style.fontSize = "0.72rem";
+          hint.style.color = "#5a6f6a";
+          hint.style.marginTop = "0.2rem";
+          tdTitle.appendChild(hint);
+        }
         var tdSys = document.createElement("td");
-        tdSys.textContent = f.passed ? "pass" : "fail";
+        tdSys.textContent = methodistSystemVerdictRu(!!f.passed);
         var tdHum = document.createElement("td");
         var sel = document.createElement("select");
         sel.className = "methodist-override-verdict";
-        ["", "pass", "fail", "na"].forEach(function (v) {
+        [
+          { v: "", t: "Как система" },
+          { v: "pass", t: "Согласен" },
+          { v: "fail", t: "Не согласен" },
+          { v: "na", t: "Не применимо" },
+        ].forEach(function (opt) {
           var o = document.createElement("option");
-          o.value = v === "na" ? "na" : v;
-          o.textContent = v === "" ? "как система" : v === "na" ? "не применимо" : v;
+          o.value = opt.v;
+          o.textContent = opt.t;
           sel.appendChild(o);
         });
         tdHum.appendChild(sel);
@@ -11003,8 +11078,9 @@
         inp.type = "text";
         inp.className = "methodist-override-note";
         inp.maxLength = 280;
+        inp.placeholder = "Почему не согласны…";
         tdNote.appendChild(inp);
-        tr.appendChild(tdId);
+        tr.appendChild(tdTitle);
         tr.appendChild(tdSys);
         tr.appendChild(tdHum);
         tr.appendChild(tdNote);
@@ -11104,11 +11180,12 @@
   function exitMethodistModeToPublicUi() {
     hideMethodistLoginOverlay();
     window.__methodistMode = false;
-    document.body.classList.remove("methodist-mode");
-    var badge = document.getElementById("methodist-mode-badge");
-    if (badge) badge.hidden = true;
-    var tierRow = document.getElementById("methodist-tier-row");
-    if (tierRow) tierRow.hidden = true;
+    window.__methodistToken = "";
+    window.__methodistReviewer = "";
+    try {
+      sessionStorage.removeItem(METHODIST_STORAGE_TOKEN);
+      sessionStorage.removeItem(METHODIST_STORAGE_REVIEWER);
+    } catch (e) {}
     var mPanel = document.getElementById("methodist-review-panel");
     if (mPanel) mPanel.hidden = true;
     try {
@@ -11116,7 +11193,17 @@
       u.searchParams.delete("mode");
       u.searchParams.delete("methodist_token");
       window.history.replaceState({}, "", u.pathname + u.search + u.hash);
+    } catch (e2) {}
+    updateMethodistChrome();
+  }
+
+  function enterMethodistModeClicked() {
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.set("mode", "methodist");
+      window.history.replaceState({}, "", u.pathname + u.search + u.hash);
     } catch (e) {}
+    beginMethodistLoginFlow();
   }
 
   function verifyMethodistSession(base, onOk, onFail) {
@@ -11136,17 +11223,7 @@
       });
   }
 
-  function initMethodistWorkbench() {
-    hideMethodistLoginOverlay();
-
-    if (!isMethodistModeRequested()) return;
-
-    document.body.classList.add("methodist-mode");
-    var badge = document.getElementById("methodist-mode-badge");
-    if (badge) badge.hidden = false;
-    var tierRow = document.getElementById("methodist-tier-row");
-    if (tierRow) tierRow.hidden = false;
-
+  function beginMethodistLoginFlow() {
     var params = new URLSearchParams(window.location.search || "");
     var qt = params.get("methodist_token") || "";
     var stored = "";
@@ -11158,8 +11235,6 @@
       window.__methodistReviewer = sessionStorage.getItem(METHODIST_STORAGE_REVIEWER) || "";
     } catch (e2) {}
 
-    var loginBtn = document.getElementById("methodist-login-btn");
-    var loginSkip = document.getElementById("methodist-login-skip");
     var loginErr = document.getElementById("methodist-login-error");
     var tokenInp = document.getElementById("methodist-login-token");
     var revInp = document.getElementById("methodist-login-reviewer");
@@ -11167,15 +11242,8 @@
     function showLoginForm(prefill) {
       prefill = prefill || {};
       if (tokenInp) tokenInp.value = prefill.token || window.__methodistToken || "";
-      if (revInp) {
-        revInp.value = prefill.reviewer || window.__methodistReviewer || "";
-      }
+      if (revInp) revInp.value = prefill.reviewer || window.__methodistReviewer || "";
       showMethodistLoginOverlay();
-    }
-
-    function activateMethodistSession() {
-      window.__methodistMode = true;
-      hideMethodistLoginOverlay();
     }
 
     function persistMethodistCreds(tok, rev) {
@@ -11187,56 +11255,19 @@
       } catch (e) {}
     }
 
-    function verifyAndEnter() {
-      var baseEl = document.getElementById("rag-base");
-      var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
-      var tok = tokenInp ? String(tokenInp.value || "").trim() : window.__methodistToken;
-      var rev = revInp ? String(revInp.value || "").trim() : window.__methodistReviewer;
-      if (!tok) {
-        if (loginErr) {
-          loginErr.textContent = "Введите токен (или задайте METHODIST_UI_AUTO_LOGIN=1 в .env).";
-          loginErr.hidden = false;
-        }
-        return;
+    function activateMethodistSession() {
+      window.__methodistMode = true;
+      hideMethodistLoginOverlay();
+      updateMethodistChrome();
+      if (window.__consultReviewLastPayload) {
+        renderMethodistReviewPanel(window.__consultReviewLastPayload);
       }
-      if (!rev) {
-        if (loginErr) {
-          loginErr.textContent = "Введите инициалы (или METHODIST_REVIEWER в .env).";
-          loginErr.hidden = false;
-        }
-        return;
-      }
-      persistMethodistCreds(tok, rev);
-      verifyMethodistSession(
-        base,
-        activateMethodistSession,
-        function () {
-          if (loginErr) {
-            loginErr.textContent = "Токен отклонён сервером. Проверьте METHODIST_TOKEN в .env и перезапустите сервер.";
-            loginErr.hidden = false;
-          }
-          showLoginForm({ token: tok, reviewer: rev });
-        }
-      );
     }
-
-    if (loginBtn) loginBtn.addEventListener("click", verifyAndEnter);
-    if (loginSkip) loginSkip.addEventListener("click", exitMethodistModeToPublicUi);
-
-    var saveBtn = document.getElementById("methodist-btn-save");
-    if (saveBtn) saveBtn.addEventListener("click", saveMethodistReview);
-    var skipBtn = document.getElementById("methodist-btn-skip");
-    if (skipBtn) {
-      skipBtn.addEventListener("click", function () {
-        setMethodistReviewStatus("Пропущено", "");
-      });
-    }
-
-    var baseEl = document.getElementById("rag-base");
-    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
 
     function tryAutoLogin(st) {
       if (!st || !st.auto_login) return Promise.resolve(false);
+      var baseEl = document.getElementById("rag-base");
+      var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
       return fetch(base + "/api/methodist/bootstrap")
         .then(function (r) {
           if (!r.ok) return null;
@@ -11262,6 +11293,9 @@
           return false;
         });
     }
+
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
 
     fetch(base + "/api/methodist/status")
       .then(function (r) { return r.json(); })
@@ -11300,6 +11334,97 @@
         }
         showLoginForm();
       });
+  }
+
+  function initMethodistWorkbench() {
+    hideMethodistLoginOverlay();
+    updateMethodistChrome();
+
+    var enterBtn = document.getElementById("methodist-btn-enter");
+    if (enterBtn && !enterBtn.getAttribute("data-wired")) {
+      enterBtn.setAttribute("data-wired", "1");
+      enterBtn.addEventListener("click", enterMethodistModeClicked);
+    }
+    var exitBtn = document.getElementById("methodist-btn-exit");
+    if (exitBtn && !exitBtn.getAttribute("data-wired")) {
+      exitBtn.setAttribute("data-wired", "1");
+      exitBtn.addEventListener("click", exitMethodistModeToPublicUi);
+    }
+
+    var loginBtn = document.getElementById("methodist-login-btn");
+    var loginSkip = document.getElementById("methodist-login-skip");
+    var loginErr = document.getElementById("methodist-login-error");
+    var tokenInp = document.getElementById("methodist-login-token");
+    var revInp = document.getElementById("methodist-login-reviewer");
+
+    if (loginBtn && !loginBtn.getAttribute("data-wired")) {
+      loginBtn.setAttribute("data-wired", "1");
+      loginBtn.addEventListener("click", function () {
+        var baseEl = document.getElementById("rag-base");
+        var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+        var tok = tokenInp ? String(tokenInp.value || "").trim() : window.__methodistToken;
+        var rev = revInp ? String(revInp.value || "").trim() : window.__methodistReviewer;
+        if (!tok) {
+          if (loginErr) {
+            loginErr.textContent = "Введите токен (или задайте METHODIST_UI_AUTO_LOGIN=1 в .env).";
+            loginErr.hidden = false;
+          }
+          return;
+        }
+        if (!rev) {
+          if (loginErr) {
+            loginErr.textContent = "Введите инициалы (или METHODIST_REVIEWER в .env).";
+            loginErr.hidden = false;
+          }
+          return;
+        }
+        window.__methodistToken = tok;
+        window.__methodistReviewer = rev;
+        try {
+          sessionStorage.setItem(METHODIST_STORAGE_TOKEN, tok);
+          sessionStorage.setItem(METHODIST_STORAGE_REVIEWER, rev);
+        } catch (e) {}
+        verifyMethodistSession(
+          base,
+          function () {
+            window.__methodistMode = true;
+            hideMethodistLoginOverlay();
+            updateMethodistChrome();
+            if (window.__consultReviewLastPayload) {
+              renderMethodistReviewPanel(window.__consultReviewLastPayload);
+            }
+          },
+          function () {
+            if (loginErr) {
+              loginErr.textContent =
+                "Токен отклонён сервером. Проверьте METHODIST_TOKEN в .env и перезапустите сервер.";
+              loginErr.hidden = false;
+            }
+          }
+        );
+      });
+    }
+    if (loginSkip && !loginSkip.getAttribute("data-wired")) {
+      loginSkip.setAttribute("data-wired", "1");
+      loginSkip.addEventListener("click", exitMethodistModeToPublicUi);
+    }
+
+    var saveBtn = document.getElementById("methodist-btn-save");
+    if (saveBtn && !saveBtn.getAttribute("data-wired")) {
+      saveBtn.setAttribute("data-wired", "1");
+      saveBtn.addEventListener("click", saveMethodistReview);
+    }
+    var skipBtn = document.getElementById("methodist-btn-skip");
+    if (skipBtn && !skipBtn.getAttribute("data-wired")) {
+      skipBtn.setAttribute("data-wired", "1");
+      skipBtn.addEventListener("click", function () {
+        setMethodistReviewStatus("Пропущено", "");
+      });
+    }
+
+    if (isMethodistModeRequested()) {
+      beginMethodistLoginFlow();
+    }
   }
 
   var CITATIONS_ONLY_KEY = "rag_citations_only";

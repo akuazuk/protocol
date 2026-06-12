@@ -14,6 +14,12 @@ from clinical_knowledge.feedback_store import (
     text_hash,
     validate_and_normalize_event,
 )
+from clinical_knowledge.rule_labels_ru import rule_title_ru
+
+
+GERD_FORMULA_RULE_ID = "9f9e0fb1_auto_gerd_diagnosis_formula"
+GERD_EXAM_RULE_ID = "required_exam_egds"
+POPULATION_RULE_ID = "gerd_population_guard"
 
 
 @pytest.fixture
@@ -66,14 +72,14 @@ def test_expand_analysis_review_creates_override_events():
         "reviewer": "М.М.",
         "overrides": [
             {
-                "rule_id": "required_exam_egds",
+                "rule_id": GERD_EXAM_RULE_ID,
                 "system_pass": True,
                 "human_pass": False,
-                "note": "ложное срабатывание",
+                "note": "ЭГДС указана в КЗ сокращённо — система ошибочно требует повторно",
             }
         ],
         "retrieval_fix": {
-            "query": "ГЭРБ",
+            "query": "ГЭРБ изжога",
             "rejected_path": "gastro/a.pdf",
             "chosen_path": "gastro/b.pdf",
         },
@@ -83,6 +89,29 @@ def test_expand_analysis_review_creates_override_events():
     assert types.count("analysis_review") == 1
     assert "methodist_override" in types
     assert "retrieval_fix" in types
+    override = next(e for e in events if e["event_type"] == "methodist_override")
+    assert override["rule_id"] == GERD_EXAM_RULE_ID
+    assert "ЭГДС" in override["note"]
+
+
+def test_rule_title_ru_for_gerd_diagnosis_formula():
+    title = rule_title_ru(
+        GERD_FORMULA_RULE_ID,
+        {
+            "rule_type": "diagnosis_formula",
+            "message_ru": "В формулировке диагноза не хватает компонентов: этиология",
+        },
+    )
+    assert "ГЭРБ" in title
+    assert "диагноз" in title.lower()
+    assert "9f9e0fb1" not in title
+    assert "gerd_diagnosis_formula" not in title
+
+
+def test_rule_title_ru_for_required_exam():
+    title = rule_title_ru(GERD_EXAM_RULE_ID, {"rule_type": "required_exam", "exam": "ФГДС"})
+    assert "ФГДС" in title
+    assert "обследование" in title.lower()
 
 
 def test_enrich_result_with_autolog(feedback_env):
@@ -119,7 +148,13 @@ def test_build_kz_analysis_from_pipeline_result():
             "rules_check": {
                 "rules_compliance_pct": 40.0,
                 "findings": [
-                    {"rule_id": "population_mismatch", "passed": False},
+                    {
+                        "rule_id": POPULATION_RULE_ID,
+                        "rule_type": "population_mismatch",
+                        "passed": False,
+                        "title_ru": "Несоответствие возрастной группе: ГЭРБ",
+                        "message_ru": "Протокол для детей, в КЗ указаны взрослые.",
+                    },
                 ],
             }
         },
@@ -132,8 +167,10 @@ def test_build_kz_analysis_from_pipeline_result():
         latency_ms=50,
     )
     assert ev["event_type"] == "kz_analysis"
-    assert ev["failed_rule_ids"] == ["population_mismatch"]
+    assert ev["failed_rule_ids"] == [POPULATION_RULE_ID]
     assert ev["rules_compliance_pct"] == 40.0
+    title = rule_title_ru(POPULATION_RULE_ID, {"rule_type": "population_mismatch"})
+    assert "ГЭРБ" in title or "возраст" in title.lower()
 
 
 def test_methodist_bootstrap_requires_auto_login(feedback_env):
