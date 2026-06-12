@@ -38,7 +38,7 @@ def test_hybrid_same_input_same_output() -> None:
         for _ in range(5)
     ]
     assert len(set(outs)) == 1
-    assert outs[0] == 79  # round(0.75*82 + 0.25*70)
+    assert outs[0] == 80  # round(0.80*82 + 0.20*70)
 
 
 def test_llm_criteria_do_not_change_hybrid_when_structured_present() -> None:
@@ -55,7 +55,7 @@ def test_llm_criteria_do_not_change_hybrid_when_structured_present() -> None:
         structured_analysis=sa,
         clinical_rules=rules,
     )
-    assert r1["overall_compliance_pct"] == r2["overall_compliance_pct"] == 71
+    assert r1["overall_compliance_pct"] == r2["overall_compliance_pct"] == 72
 
 
 def test_fallback_weighted_llm_without_structured() -> None:
@@ -127,5 +127,25 @@ def test_partially_handled_thrombosis_no_flat_fifty_cap() -> None:
         structured_analysis=sa,
         clinical_rules=rules,
     )
-    assert out["overall_compliance_pct"] == 66  # round(0.75*79 + 0.25*29)
+    assert out["overall_compliance_pct"] == 69  # round(0.80*79 + 0.20*29)
+
+
+def test_rules_zero_warnings_only_not_blended() -> None:
+    sa = _structured(74.0)
+    rules = {
+        "rules_check": {
+            "rules_compliance_pct": 0.0,
+            "findings": [
+                {"passed": False, "severity": "warning", "rule_type": "diagnosis_formula"},
+            ],
+        },
+        "matched_protocols": [{"protocol_id": "p1"}],
+    }
+    out = apply_hybrid_overall_compliance(
+        {"criteria": []},
+        structured_analysis=sa,
+        clinical_rules=rules,
+    )
+    assert out["overall_compliance_pct"] == 74
+    assert out["overall_compliance_components"]["rules"] is None
     assert "_safety_cap" not in (out.get("overall_compliance_method") or "")

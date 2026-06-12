@@ -75,6 +75,8 @@ def findings_to_issues(
             continue
         rt = str(f.get("rule_type") or "")
         sev = str(f.get("severity") or "warning")
+        if rt == "population_mismatch":
+            sev = "warning"
         if sev not in ("critical", "high", "warning", "info", "low", "medium"):
             sev = "warning"
         msg = str(f.get("message_ru") or "Несоответствие правилу протокола.")

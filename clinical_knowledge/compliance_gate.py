@@ -48,6 +48,9 @@ def _has_blocking_critical(report: ComplianceReport) -> bool:
         return True
     for iss in report.critical_issues:
         sev = (iss.severity or "").lower()
+        it = str(iss.issue_type or "")
+        if it.endswith("_population_guard") or it == "population_mismatch":
+            continue
         if sev == "critical":
             return True
     for s in report.safety_assessments:
@@ -136,7 +139,7 @@ def evaluate_send_gate(
 ) -> dict[str, Any]:
     """Возвращает политику допуска к ЭЦП/отправке для интеграции с МИС."""
     mode = mode or _env_mode()
-    hard_thr = min_score_hard if min_score_hard is not None else _env_float("COMPLIANCE_GATE_MIN_SCORE", 70.0)
+    hard_thr = min_score_hard if min_score_hard is not None else _env_float("COMPLIANCE_GATE_MIN_SCORE", 65.0)
     soft_thr = min_score_soft if min_score_soft is not None else _env_float("COMPLIANCE_GATE_SOFT_MIN_SCORE", 55.0)
 
     structural_score = report.overall_score

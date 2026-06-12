@@ -334,9 +334,17 @@ def _safety_score(safety, *, has_content: bool = True) -> float | None:
     unhandled = [s for s in safety if s.status != "handled"]
     if not unhandled:
         return 80.0
+    partial = [s for s in unhandled if s.status == "partially_handled"]
+    if partial and len(partial) == len(unhandled):
+        worst = max(
+            (s.severity for s in partial),
+            default="medium",
+            key=lambda sev: ["low", "medium", "high", "critical"].index(sev),
+        )
+        return {"low": 75.0, "medium": 65.0, "high": 55.0, "critical": 45.0}.get(worst, 60.0)
     worst = max((s.severity for s in unhandled), default="medium",
                 key=lambda sev: ["low", "medium", "high", "critical"].index(sev))
-    return {"low": 70.0, "medium": 55.0, "high": 40.0, "critical": 0.0}.get(worst, 55.0)
+    return {"low": 70.0, "medium": 55.0, "high": 45.0, "critical": 0.0}.get(worst, 55.0)
 
 
 def _protocol_match_score(matches: list[dict[str, Any]]) -> float | None:

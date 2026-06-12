@@ -16,7 +16,7 @@ from typing import Any
 SCORER_VERSION = "2026-06-01.1"
 
 # structured : rules — при наличии обоих компонентов
-_BLEND_STRUCTURED_RULES = (0.75, 0.25)
+_BLEND_STRUCTURED_RULES = (0.80, 0.20)
 # llm_weighted : rules — fallback без структурного overall
 _BLEND_LLM_RULES = (0.60, 0.40)
 
@@ -71,7 +71,20 @@ def _extract_rules_pct(
                 matched = clinical_rules.get("matched_protocols")
                 if matched is not None and not matched:
                     return None
-                return _clamp_pct(float(v))
+                pct = float(v)
+                if pct == 0.0:
+                    findings = rc.get("findings") or []
+                    hard_fail = [
+                        f
+                        for f in findings
+                        if isinstance(f, dict)
+                        and not f.get("passed")
+                        and not f.get("skipped")
+                        and str(f.get("severity") or "") in ("critical", "high")
+                    ]
+                    if not hard_fail:
+                        return None
+                return _clamp_pct(pct)
     if structured_analysis:
         rc2 = structured_analysis.get("rules_check") or {}
         if isinstance(rc2, dict):

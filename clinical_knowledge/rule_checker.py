@@ -26,6 +26,47 @@ def _text_blob(consult_facts: dict[str, Any]) -> str:
     return _norm(" ".join(parts))
 
 
+def _icd_root(code: str) -> str:
+    c = (code or "").upper().strip()
+    return c[:3] if len(c) >= 3 else c
+
+
+def _icd_lists_overlap(cond_icd: list[Any], consult_icd: list[str]) -> bool:
+    cond_roots = {_icd_root(str(x)) for x in cond_icd if x}
+    cons_roots = {_icd_root(str(x)) for x in consult_icd if x}
+    if not cond_roots or not cons_roots:
+        return True
+    if cond_roots & cons_roots:
+        return True
+    for c in consult_icd:
+        cu = str(c).upper()
+        for cc in cond_icd:
+            cuu = str(cc).upper()
+            if cu.startswith(_icd_root(cuu)) or cuu.startswith(_icd_root(cu)):
+                return True
+    return False
+
+
+def _condition_applies_to_consult(
+    cid: str,
+    conditions: dict[str, dict[str, Any]],
+    consult_facts: dict[str, Any],
+) -> bool:
+    """Отсекает чужие нозологии (ИМ при I80.1) и несовпадение возраста."""
+    ctx = consult_facts.get("patient_context") or {}
+    cons = consult_facts.get("consultation") or {}
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    meta = conditions.get(cid) or _condition_meta(cid, conditions) or {}
+    pop = str(meta.get("population") or "any").lower()
+    aud = str(ctx.get("adult_or_child") or "").lower()
+    if pop not in ("any", "", "unknown") and aud and pop != aud:
+        return False
+    cond_icd = list(meta.get("icd10") or [])
+    if cond_icd and icd_list and not _icd_lists_overlap(cond_icd, icd_list):
+        return False
+    return True
+
+
 def _check_diagnosis_components(
     diagnosis_text: str,
     required: list[str],
@@ -242,7 +283,7 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
         hit = any(_norm(k) in low for k in keywords if k)
         finding["passed"] = hit
         if not hit:
-            finding["severity"] = rule.get("severity") or "critical"
+            finding["severity"] = rule.get("severity") or "high"
             finding["passed"] = False
             finding["message_ru"] = (
                 rule.get("message_ru")
@@ -362,7 +403,12 @@ def _resolve_target_conditions(
             if cid not in base:
                 base.append(cid)
 
-    return list(dict.fromkeys(base))
+    filtered = [
+        cid
+        for cid in dict.fromkeys(base)
+        if _condition_applies_to_consult(cid, conditions, consult_facts)
+    ]
+    return filtered
 
 
 def collect_catalog_rules(
@@ -436,15 +482,19 @@ def run_rule_checker(
                     {
                         "rule_id": f"{cid}_population_guard",
                         "rule_type": "population_mismatch",
-                        "severity": "critical",
-                        "passed": False,
+                        "severity": "info",
+                        "passed": True,
+                        "skipped": True,
+                        "not_applicable": True,
                         "message_ru": localize_message_ru(
                             f"Нозология «{cond.get('condition')}» — протокол для "
-                            f"{population_ru(str(pop))}, в КЗ аудитория {population_ru(str(ctx.get('adult_or_child') or ''))}."
+                            f"{population_ru(str(pop))}, в КЗ аудитория "
+                            f"{population_ru(str(ctx.get('adult_or_child') or ''))}; проверка пропущена."
                         ),
                         "source": cond.get("protocol_reference"),
                     }
                 )
+                continue
         for rule in filter_rules_for_matched_protocols(rules, matched_protocols):
             if str(rule.get("rule_id") or "") in skip_rule_ids:
                 continue

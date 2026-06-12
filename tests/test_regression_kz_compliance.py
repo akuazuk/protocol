@@ -111,6 +111,7 @@ def test_pl_1_f_thrombosis_and_medication():
 
 
 def test_pl_1_f_hybrid_headline_not_capped_at_fifty():
+    from clinical_knowledge.compliance_gate import evaluate_send_gate_from_compliance
     from clinical_knowledge.consult_overall_score import apply_hybrid_overall_compliance
 
     doc = parse_consultation(PL_1_F, consultation_id="pl_1_f")
@@ -123,9 +124,30 @@ def test_pl_1_f_hybrid_headline_not_capped_at_fifty():
         clinical_rules={"rules_check": {"rules_compliance_pct": 40.0}, "matched_protocols": []},
     )
     assert review["overall_compliance_pct"] > 50
-    assert review.get("overall_compliance_pct") != 50 or "_safety_cap" not in (
-        review.get("overall_compliance_method") or ""
-    )
+    sg = evaluate_send_gate_from_compliance(comp, headline_score=review["overall_compliance_pct"])
+    assert sg["gate_allowed"] is True
+    assert sg["sign_decision"] in ("allowed", "review_required", "allowed_with_warnings")
+    assert not comp.get("critical_issues")
+
+
+def test_pl_1_f_rich_text_no_mi_population_guard():
+    from clinical_knowledge.compliance_gate import evaluate_send_gate_from_compliance
+    from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+    text = """\
+Врач: флеболог
+Дата консультации: 21.10.2024
+Дата рождения: 15.08.1976
+Пол: мужской
+Диагноз: I80.1 Флебит и тромбофлебит бедренной вены. Флеботромбоз бедренно-подколенно-берцового сегмента.
+Рекомендации по лечению: Ривороксабан 20 мг. Эластическая компрессия. УЗИ через 3 месяца.
+"""
+    out = analyze_consultation_text(text, consultation_id="pl_rich", with_markdown=False)
+    comp = out["compliance"]
+    crit = comp.get("critical_issues") or []
+    assert not any("population_guard" in str(i.get("issue_type") or "") for i in crit)
+    sg = evaluate_send_gate_from_compliance(comp, headline_score=comp.get("overall_score"))
+    assert sg["gate_allowed"] is True
 
 
 def test_pl_2_d_s_suspected_and_exams():
