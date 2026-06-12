@@ -5586,11 +5586,9 @@
     body.methodist-mode #consult-scores-spoiler,
     body.methodist-mode #consult-criteria-spoiler,
     body.methodist-mode #consult-structured-spoiler,
-    body.methodist-mode #consult-methodology-spoiler,
     body.methodist-mode #consult-summary-spoiler,
     body.methodist-mode #consult-limit-spoiler,
-    body.methodist-mode #consult-clinical-rules-panel,
-    body.methodist-mode #consult-protocols-section {
+    body.methodist-mode #consult-clinical-rules-panel {
       display: none !important;
     }
 
@@ -5701,6 +5699,51 @@
       font-size: 0.72rem;
       color: #6b7280;
       margin: 0.15rem 0 0;
+    }
+
+    .methodist-workbench-wrap {
+      margin: 0.65rem 0 0;
+    }
+
+    .methodist-ml-record {
+      margin: 0.55rem 0 0;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      background: #fafdfb;
+      font-size: 0.76rem;
+    }
+
+    .methodist-ml-record summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--green-800);
+    }
+
+    .methodist-ml-record__lead {
+      margin: 0.35rem 0 0.5rem;
+      color: #4b5563;
+      line-height: 1.45;
+    }
+
+    .methodist-ml-record__subtitle {
+      margin: 0.35rem 0 0.2rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .methodist-ml-record__list {
+      margin: 0.15rem 0 0.35rem;
+      padding-left: 1.1rem;
+      line-height: 1.45;
+      color: #374151;
+    }
+
+    .methodist-ml-record__hint {
+      margin: 0.35rem 0 0 !important;
+      font-size: 0.68rem !important;
+      color: #6b7280 !important;
     }
 
     body.methodist-mode .wrap {
@@ -7276,6 +7319,9 @@
             <p class="consult-hint-small" style="margin: 0.28rem 0 0; font-size: 0.76rem; color: #6b7f78" id="consult-send-gate-detail"></p>
           </div>
 
+          </details>
+
+          <div id="methodist-workbench-wrap" class="methodist-workbench-wrap consult-hide-print" hidden>
           <section id="methodist-eval-dashboard" class="methodist-eval-dashboard consult-hide-print" hidden aria-label="Параметры для оценки методиста">
             <div class="methodist-eval-dashboard__head">
               <h3>Что проверила система</h3>
@@ -7333,7 +7379,7 @@
                 <input type="text" id="methodist-chosen-path" placeholder="gastroenterologiya/…" />
               </div>
             </div>
-            <details id="methodist-findings-details" hidden>
+            <details id="methodist-findings-details" hidden open>
               <summary>Разметка по правилам (<span id="methodist-findings-count">0</span>)</summary>
               <div style="overflow-x:auto">
                 <table class="methodist-findings-table">
@@ -7349,14 +7395,24 @@
                 </table>
               </div>
             </details>
+            <details class="methodist-ml-record consult-hide-print" id="methodist-ml-record-details" open>
+              <summary>Что сохраняется для обучения ML</summary>
+              <div class="methodist-ml-record__body">
+                <p class="methodist-ml-record__lead">При анализе КЗ сервер уже пишет событие <code>kz_analysis</code> (текст КЗ — в защищённом хранилище on-prem, не в git).</p>
+                <h4 class="methodist-ml-record__subtitle">Уже записано при анализе</h4>
+                <ul class="methodist-ml-record__list" id="methodist-autolog-list"></ul>
+                <h4 class="methodist-ml-record__subtitle">Добавится при «Сохранить оценку»</h4>
+                <ul class="methodist-ml-record__list" id="methodist-review-save-list"></ul>
+                <p class="consult-hint-small methodist-ml-record__hint" id="methodist-ml-export-hint">Экспорт для разметки: <code>scripts/export_training_feedback.py</code> → <code>analysis_review</code>, overrides, retrieval_fix.</p>
+              </div>
+            </details>
             <div class="methodist-review-actions">
               <button type="button" class="btn-methodist-save" id="methodist-btn-save">Сохранить оценку</button>
               <button type="button" id="methodist-btn-skip">Пропустить</button>
             </div>
             <p id="methodist-meta-line" class="consult-hint-small" style="margin:0.35rem 0 0;font-size:0.72rem;color:#6b7280"></p>
           </section>
-
-          </details>
+          </div>
 
           <details class="consult-spoiler consult-hide-print" id="consult-methodology-spoiler" hidden open>
             <summary id="consult-methodology-summary-line">Сводка для методслужбы</summary>
@@ -11107,8 +11163,114 @@
     }
     if (tierRow) tierRow.hidden = !active;
     document.body.classList.toggle("methodist-mode", active);
+    var workbench = document.getElementById("methodist-workbench-wrap");
+    if (workbench && !active) workbench.hidden = true;
     var dash = document.getElementById("methodist-eval-dashboard");
     if (dash && !active) dash.hidden = true;
+  }
+
+  function methodistVerdictRu(code) {
+    var map = {
+      correct: "Верно",
+      mostly_correct: "В основном верно",
+      partially_wrong: "Частично неверно",
+      wrong: "Неверно",
+    };
+    return map[code] || code || "—";
+  }
+
+  function methodistTagLabel(id) {
+    var opt = METHODIST_TAG_OPTIONS.find(function (o) {
+      return o.id === id;
+    });
+    return opt ? opt.label : id;
+  }
+
+  function renderMethodistMlRecordPreview(data) {
+    var autologEl = document.getElementById("methodist-autolog-list");
+    var saveEl = document.getElementById("methodist-review-save-list");
+    if (!autologEl || !saveEl || !data) return;
+
+    var tier = (data.review_tier || (data.model_info && data.model_info.tier) || "L2").toUpperCase();
+    var meta = data.methodist_tier_meta || {};
+    var cr = data.clinical_rules || {};
+    var rc = cr.rules_check || {};
+    var failed = (rc.findings || []).filter(function (f) {
+      return f && !f.skipped && f.passed === false;
+    });
+    var paths = (data.retrieval_paths || []).slice(0, 5);
+    var sg = data.send_gate || {};
+    if (!sg.send_decision && data.structured_analysis && data.structured_analysis.compliance) {
+      sg = data.structured_analysis.compliance.send_gate || sg;
+    }
+
+    var autologItems = [
+      "analysis_id: " + (data.analysis_id || "—"),
+      "text_hash: " + (data.text_hash ? data.text_hash.slice(0, 28) + "…" : "—"),
+      "tier: " + tier + (meta.latency_label_ru ? " · " + meta.latency_label_ru : ""),
+      "gate_score: " + (sg.gate_score != null ? Math.round(sg.gate_score) + "%" : "—"),
+      "send_decision: " + (sg.sign_decision || sg.send_decision || methodistSendGateSummary(data)),
+      "rules_compliance: " + (rc.rules_compliance_pct != null ? Math.round(rc.rules_compliance_pct) + "%" : "—"),
+      "failed_rules: " + failed.length,
+    ];
+    if (paths.length) autologItems.push("retrieval_top: " + paths.join(", "));
+    autologEl.innerHTML = autologItems
+      .map(function (t) {
+        return "<li>" + escapeHtml(t) + "</li>";
+      })
+      .join("");
+
+    var rating = methodistRatingValue();
+    var verdictEl = document.getElementById("methodist-verdict-select");
+    var verdict = verdictEl ? verdictEl.value : "";
+    var tags = collectMethodistTags();
+    var overrides = collectMethodistOverrides();
+    var note = (document.getElementById("methodist-note-input") || {}).value || "";
+    var chosen = (document.getElementById("methodist-chosen-path") || {}).value || "";
+    var rejected = (document.getElementById("methodist-rejected-path") || {}).value || "";
+
+    var saveItems = [
+      "event_type: analysis_review",
+      "rating: " + (rating != null ? rating : "—"),
+      "verdict: " + (verdict ? methodistVerdictRu(verdict) : "—"),
+      "tags: " + (tags.length ? tags.map(methodistTagLabel).join("; ") : "нет"),
+      "note: " + (note.trim() ? note.trim().slice(0, 120) + (note.length > 120 ? "…" : "") : "нет"),
+      "overrides: " + (overrides.length ? overrides.length + " правил" : "нет"),
+    ];
+    if (chosen.trim()) {
+      saveItems.push("retrieval_fix: «" + rejected + "» → «" + chosen.trim() + "»");
+    }
+    saveEl.innerHTML = saveItems
+      .map(function (t) {
+        return "<li>" + escapeHtml(t) + "</li>";
+      })
+      .join("");
+  }
+
+  function bindMethodistMlRecordPreviewUpdates() {
+    if (window.__methodistMlPreviewBound) return;
+    window.__methodistMlPreviewBound = true;
+    var refresh = function () {
+      if (window.__methodistMode && window.__consultReviewLastPayload) {
+        renderMethodistMlRecordPreview(window.__consultReviewLastPayload);
+      }
+    };
+    ["methodist-verdict-select", "methodist-note-input", "methodist-chosen-path", "methodist-rejected-path"].forEach(
+      function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener("input", refresh);
+        if (el) el.addEventListener("change", refresh);
+      }
+    );
+    var tagsList = document.getElementById("methodist-tags-list");
+    if (tagsList) {
+      tagsList.addEventListener("change", refresh);
+    }
+    var tbody = document.getElementById("methodist-findings-tbody");
+    if (tbody) {
+      tbody.addEventListener("change", refresh);
+      tbody.addEventListener("input", refresh);
+    }
   }
 
   function methodistMetricCard(label, value) {
@@ -11139,15 +11301,20 @@
   }
 
   function renderMethodistEvalDashboard(data) {
+    var workbench = document.getElementById("methodist-workbench-wrap");
     var panel = document.getElementById("methodist-eval-dashboard");
-    if (!panel || !window.__methodistMode || !data) {
+    if (!window.__methodistMode || !data) {
+      if (workbench) workbench.hidden = true;
       if (panel) panel.hidden = true;
       return;
     }
     if (!data.analysis_id) {
-      panel.hidden = true;
+      if (workbench) workbench.hidden = true;
+      if (panel) panel.hidden = true;
       return;
     }
+    if (workbench) workbench.hidden = false;
+    if (!panel) return;
     panel.hidden = false;
 
     var meta = data.methodist_tier_meta || {};
@@ -11265,15 +11432,20 @@
   }
 
   function renderMethodistReviewPanel(data) {
+    var workbench = document.getElementById("methodist-workbench-wrap");
     var panel = document.getElementById("methodist-review-panel");
-    if (!panel || !window.__methodistMode) {
+    if (!window.__methodistMode) {
       if (panel) panel.hidden = true;
+      if (workbench) workbench.hidden = true;
       return;
     }
     if (!data || !data.analysis_id) {
-      panel.hidden = true;
+      if (panel) panel.hidden = true;
+      if (workbench) workbench.hidden = true;
       return;
     }
+    if (workbench) workbench.hidden = false;
+    if (!panel) return;
     panel.hidden = false;
     window.__methodistReviewSavedAt = null;
     setMethodistReviewStatus("Оценка не сохранена", "is-unsaved");
@@ -11292,6 +11464,7 @@
           document.querySelectorAll(".methodist-rating-btn").forEach(function (b) {
             b.classList.toggle("is-active", b.getAttribute("data-rating") === val);
           });
+          renderMethodistMlRecordPreview(window.__consultReviewLastPayload);
         });
         ratingRow.appendChild(btn);
       }
@@ -11414,6 +11587,8 @@
         data.analysis_id +
         (data.text_hash ? " · hash: " + data.text_hash.slice(0, 20) + "…" : "");
     }
+    bindMethodistMlRecordPreviewUpdates();
+    renderMethodistMlRecordPreview(data);
   }
 
   function saveMethodistReview() {
@@ -13818,8 +13993,12 @@
     var pw = document.getElementById("consult-out-paths");
     if (pw) pw.innerHTML = "";
     window.__consultReviewLastPayload = null;
+    var mWorkbench = document.getElementById("methodist-workbench-wrap");
+    if (mWorkbench) mWorkbench.hidden = true;
     var mPanel = document.getElementById("methodist-review-panel");
     if (mPanel) mPanel.hidden = true;
+    var mDash = document.getElementById("methodist-eval-dashboard");
+    if (mDash) mDash.hidden = true;
   }
 
   function initMainAppTabsAndConsultReview() {
