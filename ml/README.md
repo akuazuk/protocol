@@ -30,6 +30,8 @@ data/ml/feedback/           # сырые события пилота (JSONL, б�
 События пишутся в `data/ml/feedback/*.jsonl` (одна строка = один JSON):
 
 - `l0_screen` - hash текста, scores, latency, rubric
+- `kz_analysis` - автолог прогона (режим методиста, `analysis_id`)
+- `analysis_review` - оценка методиста (rating, verdict, overrides)
 - `retrieval_fix` - query, rejected_path, chosen_path
 - `methodist_override` - rule_id, expected pass/fail
 - `summary_edit` - protocol_id, review_status
@@ -48,7 +50,8 @@ python3 scripts/export_training_feedback.py --seed-only   # только bootstr
 | send_gate, правила 482+ | Production |
 | Semantic RAG, FAISS, hybrid retrieve | Production |
 | Опциональный LLM API (L2, enrichment) | Production (при наличии ключа) |
-| `data/ml/feedback/`, `export_training_feedback.py` | Каркас, seed-датасеты |
+| `data/ml/feedback/`, `POST /api/ml/feedback`, `export_training_feedback.py` | Фаза A: сбор меток методиста |
+| UI `?mode=methodist` + панель оценки | Фаза A MVP |
 | `ml/train/*`, `ml/eval/*` | Заглушки CLI (`--dry-run`) |
 | LoRA fine-tune + деплой local embedder | Roadmap фаза 1 (Q4 2026) |
 
@@ -65,6 +68,7 @@ python3 scripts/export_training_feedback.py --seed-only   # только bootstr
 - `RAG_EMBED_BACKEND=local|cloud`
 - `ML_MODEL_REGISTRY=ml/registry/model_manifest.json`
 - `ML_FEEDBACK_DIR=data/ml/feedback`
+- `METHODIST_TOKEN=…` (кабинет методиста)
 
 См. также `docs/architecture-stages-print.html` §11-12 (семантический RAG, `kz_quality_scores`).
 

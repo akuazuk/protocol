@@ -169,9 +169,52 @@ def events_to_entailment_pairs(events: list[dict[str, Any]]) -> list[dict[str, A
                         "source": "methodist_override",
                     }
                 )
+        elif et == "analysis_review":
+            text_hash = ev.get("text_hash") or ""
+            for ov in ev.get("overrides") or []:
+                rule_id = (ov.get("rule_id") or "").strip()
+                if not rule_id or not text_hash:
+                    continue
+                human_pass = ov.get("human_pass")
+                out.append(
+                    {
+                        "text_hash": text_hash,
+                        "term": rule_id,
+                        "label": "entailment" if human_pass else "contradiction",
+                        "note": (ov.get("note") or "")[:280],
+                        "source": "analysis_review",
+                    }
+                )
         elif et == "l0_screen":
             # placeholder for future: block-level labels without raw text
             pass
+    return out
+
+
+def events_to_priority_cases(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Кейсы с низкой оценкой методиста - для очереди active learning."""
+    out: list[dict[str, Any]] = []
+    for ev in events:
+        if ev.get("event_type") != "analysis_review":
+            continue
+        rating = ev.get("rating")
+        try:
+            rating_n = int(rating)
+        except (TypeError, ValueError):
+            continue
+        if rating_n > 2:
+            continue
+        out.append(
+            {
+                "analysis_id": ev.get("analysis_id"),
+                "text_hash": ev.get("text_hash"),
+                "rating": rating_n,
+                "verdict": ev.get("verdict"),
+                "tags": ev.get("tags") or [],
+                "ts": ev.get("ts"),
+                "source": "analysis_review",
+            }
+        )
     return out
 
 
@@ -249,6 +292,7 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
         retrieval += events_to_retrieval_pairs(events)
 
     entailment = events_to_entailment_pairs(events)
+    priority_cases = events_to_priority_cases(events)
     kz_regression = load_gastro_gold()
 
     # dedupe retrieval by (query, positive_path)
@@ -265,6 +309,7 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
     resolved, resolve_stats = enrich_retrieval_with_texts(retrieval_deduped)
     write_jsonl(DATASETS_DIR / "retrieval_pairs_resolved.jsonl", resolved)
     write_jsonl(DATASETS_DIR / "entailment_pairs.jsonl", entailment)
+    write_jsonl(DATASETS_DIR / "priority_cases.jsonl", priority_cases)
     write_jsonl(DATASETS_DIR / "kz_regression.jsonl", kz_regression)
 
     manifest = {
@@ -276,6 +321,7 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
             "retrieval_pairs_resolved": len(resolved),
             "resolve_stats": resolve_stats,
             "entailment_pairs": len(entailment),
+            "priority_cases": len(priority_cases),
             "kz_regression": len(kz_regression),
         },
         "sources": {
@@ -288,6 +334,7 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
             "ml/datasets/retrieval_pairs.jsonl",
             "ml/datasets/retrieval_pairs_resolved.jsonl",
             "ml/datasets/entailment_pairs.jsonl",
+            "ml/datasets/priority_cases.jsonl",
             "ml/datasets/kz_regression.jsonl",
         ],
         "next_steps": [

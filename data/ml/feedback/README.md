@@ -44,4 +44,45 @@ JSONL-файлы: одна строка = один объект. Поле `event
 }
 ```
 
+## kz_analysis (автолог прогона в режиме методиста)
+
+```json
+{
+  "event_type": "kz_analysis",
+  "analysis_id": "uuid",
+  "ts": "2026-06-01T12:00:00Z",
+  "text_hash": "sha256:…",
+  "tier": "L0",
+  "gate_score": 72,
+  "send_decision": "allowed_with_warnings",
+  "sandbox": false
+}
+```
+
+## analysis_review (оценка методиста)
+
+```json
+{
+  "event_type": "analysis_review",
+  "analysis_id": "uuid",
+  "text_hash": "sha256:…",
+  "rating": 4,
+  "verdict": "mostly_correct",
+  "tags": ["false_positive_rule"],
+  "reviewer": "И.И.",
+  "overrides": [
+    {"rule_id": "required_exam_egds", "system_pass": true, "human_pass": false, "note": "…"}
+  ],
+  "retrieval_fix": {
+    "query": "ГЭРБ",
+    "rejected_path": "gastro/old.pdf",
+    "chosen_path": "gastro/kp_gerd.pdf"
+  }
+}
+```
+
+API: `POST /api/ml/feedback` (заголовок `X-Methodist-Token`).  
+Полный текст КЗ: `data/ml/secure/kz_text/{hash}.txt` (не в git).  
+Снимок ответа: `data/ml/analyses/{analysis_id}.json`.
+
 Экспорт: `python3 scripts/export_training_feedback.py`

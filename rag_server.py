@@ -58,7 +58,7 @@ from typing import Annotated, Iterable
 try:
     from fastapi import FastAPI, HTTPException, File, Form, Query, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
+    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, StreamingResponse
     from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
@@ -5432,6 +5432,7 @@ _RATE_WINDOW_SEC = 60.0
 _RATE_LIMITS: dict[str, int] = {
     "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 20),
     "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 6),
+    "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 15),
     "/api/protocol-detail": env_int("RATE_LIMIT_DETAIL_PER_MIN", 30),
     "/api/consultation-template": env_int("RATE_LIMIT_TEMPLATE_PER_MIN", 20),
@@ -5616,6 +5617,8 @@ class ConsultComplianceScreenIn(BaseModel):
     text: str | None = Field(default=None, max_length=120000)
     bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
     consultation_id: str = Field(default="screen", max_length=64)
+    methodist_mode: bool = Field(default=False, description="Режим методиста (требует X-Methodist-Token)")
+    sandbox: bool = Field(default=False, description="Песочница - не в production-очереди")
 
 
 class ConsultReviewJsonIn(BaseModel):
@@ -5629,6 +5632,8 @@ class ConsultReviewJsonIn(BaseModel):
         max_length=8,
         description="Уровень проверки: L0 (скрининг), L1 (structured), L2 (полный RAG+LLM)",
     )
+    methodist_mode: bool = Field(default=False)
+    sandbox: bool = Field(default=False)
 
 
 class ConsultReviewTierIn(BaseModel):
@@ -5639,6 +5644,8 @@ class ConsultReviewTierIn(BaseModel):
     bundle: dict | None = Field(default=None, description="FHIR BY Bundle document")
     consultation_id: str = Field(default="tier", max_length=64)
     category_slugs: str = Field(default="", max_length=400)
+    methodist_mode: bool = Field(default=False)
+    sandbox: bool = Field(default=False)
 
 
 class ConsultValidateBundleIn(BaseModel):
@@ -5950,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r88-chart-contrast-dashes"
+BUILD_VERSION = "2026-06-01-r89-methodist-workbench-a"
 
 
 def _app_version() -> str:
@@ -6093,6 +6100,62 @@ def _verify_key_admin_guard(request: "Request") -> None:
     got = (request.headers.get("x-admin-token") or "").strip()
     if got != expected:
         raise HTTPException(status_code=401, detail="Требуется корректный X-Admin-Token.")
+
+
+def _require_methodist_auth(request: "Request") -> None:
+    from clinical_knowledge.feedback_store import is_methodist_authenticated, methodist_auth_enabled
+
+    if not methodist_auth_enabled():
+        raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
+    if not is_methodist_authenticated(request.headers):
+        raise HTTPException(status_code=403, detail="Требуется корректный X-Methodist-Token.")
+
+
+def _methodist_request_active(request: "Request", body_flag: bool = False) -> bool:
+    from clinical_knowledge.feedback_store import is_methodist_authenticated, methodist_auth_enabled
+
+    if not methodist_auth_enabled():
+        return False
+    if is_methodist_authenticated(request.headers):
+        return True
+    return bool(body_flag) and is_methodist_authenticated(request.headers)
+
+
+def _consult_text_from_screen_body(body: "ConsultComplianceScreenIn") -> str:
+    if (body.text or "").strip():
+        return body.text or ""
+    if body.bundle:
+        from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
+
+        return bundle_to_consultation_text(body.bundle)
+    return ""
+
+
+def _maybe_methodist_autolog(
+    request: "Request",
+    result: dict,
+    *,
+    tier: str,
+    full_text: str,
+    consultation_id: str = "",
+    latency_ms: int | None = None,
+    sandbox: bool = False,
+    body_methodist_mode: bool = False,
+) -> dict:
+    if not _methodist_request_active(request, body_methodist_mode):
+        return result
+    from clinical_knowledge.feedback_store import enrich_result_with_methodist_autolog
+
+    reviewer = (request.headers.get("x-methodist-reviewer") or "").strip()
+    return enrich_result_with_methodist_autolog(
+        result,
+        tier=tier,
+        full_text=full_text,
+        consultation_id=consultation_id,
+        latency_ms=latency_ms,
+        sandbox=sandbox,
+        reviewer=reviewer,
+    )
 
 
 @app.get("/api/verify-key")
@@ -7008,18 +7071,75 @@ def _consult_review_from_uploads(
     )
 
 
+@app.get("/api/methodist/status")
+def api_methodist_status() -> dict:
+    """Публичный флаг: настроен ли кабинет методиста на сервере."""
+    from clinical_knowledge.feedback_store import methodist_auth_enabled
+
+    return {"enabled": methodist_auth_enabled()}
+
+
+@app.get("/api/methodist/session")
+def api_methodist_session(request: "Request") -> dict:
+    """Проверка токена методиста (без записи feedback)."""
+    _require_methodist_auth(request)
+    return {
+        "ok": True,
+        "reviewer": (request.headers.get("x-methodist-reviewer") or "").strip(),
+    }
+
+
+@app.post("/api/ml/feedback")
+def api_ml_feedback(request: "Request", body: dict) -> dict:
+    """Append-only запись события разметки методиста (JSONL)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.feedback_store import append_feedback_event, expand_analysis_review_events
+
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Ожидается JSON-объект")
+    reviewer_hdr = (request.headers.get("x-methodist-reviewer") or "").strip()
+    if reviewer_hdr and not body.get("reviewer"):
+        body = {**body, "reviewer": reviewer_hdr}
+    et = (body.get("event_type") or "").strip()
+    if not et:
+        raise HTTPException(status_code=400, detail="Поле event_type обязательно")
+    try:
+        if et == "analysis_review":
+            ids: list[str] = []
+            for ev in expand_analysis_review_events(body):
+                ids.append(append_feedback_event(ev))
+            return {"ok": True, "event_id": ids[0] if ids else ""}
+        event_id = append_feedback_event(body)
+        return {"ok": True, "event_id": event_id}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
 @app.post("/api/consult-compliance-screen")
-def api_consult_compliance_screen(body: ConsultComplianceScreenIn) -> dict:
+def api_consult_compliance_screen(request: "Request", body: ConsultComplianceScreenIn) -> dict:
     """Быстрый L0: структурный разбор + send_gate (<2 с, без LLM-критериев и RAG)."""
     from clinical_knowledge.consult_screen import run_compliance_screen
 
     if not (body.text or "").strip() and not body.bundle:
         raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
     try:
-        return run_compliance_screen(
+        t0 = time.perf_counter()
+        result = run_compliance_screen(
             text=body.text,
             bundle=body.bundle,
             consultation_id=body.consultation_id,
+        )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        raw_text = _consult_text_from_screen_body(body)
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier="L0",
+            full_text=raw_text,
+            consultation_id=body.consultation_id,
+            latency_ms=latency_ms,
+            sandbox=body.sandbox,
+            body_methodist_mode=body.methodist_mode,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -7071,12 +7191,13 @@ def _consult_review_from_tier_or_pipeline(
 
 
 @app.post("/api/consult-review/tier")
-def api_consult_review_tier(body: ConsultReviewTierIn) -> dict:
+def api_consult_review_tier(request: "Request", body: ConsultReviewTierIn) -> dict:
     """L0/L1/L2: скрининг, structured или полный pipeline (МИС, массовый поток)."""
     if not (body.text or "").strip() and not body.bundle:
         raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
     try:
-        return _consult_review_from_tier_or_pipeline(
+        t0 = time.perf_counter()
+        result = _consult_review_from_tier_or_pipeline(
             tier=body.tier,
             text=body.text,
             bundle=body.bundle,
@@ -7084,23 +7205,58 @@ def api_consult_review_tier(body: ConsultReviewTierIn) -> dict:
             category_slugs=body.category_slugs,
             require_rag_for_l2=True,
         )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        raw_text = (body.text or "").strip()
+        if not raw_text and body.bundle:
+            from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
+
+            raw_text = bundle_to_consultation_text(body.bundle)
+        tier = (body.tier or result.get("review_tier") or "L2").upper()
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier=tier,
+            full_text=raw_text,
+            consultation_id=body.consultation_id,
+            latency_ms=latency_ms,
+            sandbox=body.sandbox,
+            body_methodist_mode=body.methodist_mode,
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @app.post("/api/consult-review/json")
-def api_consult_review_json(body: ConsultReviewJsonIn) -> dict:
+def api_consult_review_json(request: "Request", body: ConsultReviewJsonIn) -> dict:
     """Полный конвейер проверки КЗ из текста или FHIR BY Bundle (интеграция «Айболит»)."""
     if not (body.text or "").strip() and not body.bundle:
         raise HTTPException(status_code=400, detail="Укажите text или bundle (FHIR BY).")
     try:
-        return _consult_review_from_tier_or_pipeline(
+        t0 = time.perf_counter()
+        result = _consult_review_from_tier_or_pipeline(
             tier=body.tier,
             text=body.text,
             bundle=body.bundle,
             consultation_id="json",
             category_slugs=body.category_slugs,
             require_rag_for_l2=True,
+        )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        raw_text = (body.text or "").strip()
+        if not raw_text and body.bundle:
+            from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
+
+            raw_text = bundle_to_consultation_text(body.bundle)
+        tier = (body.tier or result.get("review_tier") or "L2").upper()
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier=tier,
+            full_text=raw_text,
+            consultation_id="json",
+            latency_ms=latency_ms,
+            sandbox=body.sandbox,
+            body_methodist_mode=body.methodist_mode,
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
@@ -7119,6 +7275,7 @@ def api_consult_validate_bundle(body: ConsultValidateBundleIn) -> dict:
 
 @app.post("/api/consult-review")
 def api_consult_review(
+    request: "Request",
     files: Annotated[
         list[UploadFile],
         File(description="1-3 файла консультативных заключений (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
@@ -7130,27 +7287,68 @@ def api_consult_review(
             'РБ, например pulmonologiya-ftiziatriya)'
         ),
     ),
+    tier: str = Form(
+        "",
+        description="L0/L1/L2 (только с X-Methodist-Token; иначе L2)",
+    ),
 ) -> dict:
     """Загрузка одного или нескольких файлов заключений → отбор фрагментов протоколов → JSON-оценка.
 
     Не медико-правовая экспертиза; ориентир для методиста при настроенном сервере обработки текста.
     """
-    _require_rag_loaded()
     if not files:
         raise HTTPException(
             status_code=400,
             detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
         )
-    return _consult_review_from_uploads(files, category_slugs)
+    selected_tier = (tier or "L2").strip().upper()
+    full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = _parse_consult_review_uploads(files)
+    if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
+        t0 = time.perf_counter()
+        result = _consult_review_from_tier_or_pipeline(
+            tier=selected_tier,
+            text=full_text,
+            bundle=None,
+            consultation_id="upload",
+            category_slugs=category_slugs,
+            require_rag_for_l2=False,
+        )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        if pdf_warnings:
+            result["pdf_warnings"] = pdf_warnings
+        if consult_docs_meta:
+            result["consult_documents"] = consult_docs_meta
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier=selected_tier,
+            full_text=full_text,
+            consultation_id="upload",
+            latency_ms=latency_ms,
+        )
+    _require_rag_loaded()
+    t0 = time.perf_counter()
+    result = _consult_review_from_uploads(files, category_slugs)
+    latency_ms = int((time.perf_counter() - t0) * 1000)
+    return _maybe_methodist_autolog(
+        request,
+        result,
+        tier="L2",
+        full_text=full_text,
+        consultation_id="upload",
+        latency_ms=latency_ms,
+    )
 
 
 @app.post("/api/consult-review/stream")
 def api_consult_review_stream(
+    request: "Request",
     files: Annotated[
         list[UploadFile],
         File(description="1-3 файла консультативных заключений"),
     ],
     category_slugs: str = Form(""),
+    tier: str = Form(""),
 ):
     """SSE-поток прогресса проверки КЗ: события progress (pct, partial) и done (result)."""
     from consult_review_pipeline import (
@@ -7177,6 +7375,52 @@ def api_consult_review_stream(
         return StreamingResponse(err_gen(), media_type="text/event-stream")
 
     content_signature = "\n||\n".join(doc_texts_for_cache)
+    selected_tier = (tier or "L2").strip().upper()
+
+    if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
+
+        def tier_gen():
+            try:
+                t0 = time.perf_counter()
+                result = _consult_review_from_tier_or_pipeline(
+                    tier=selected_tier,
+                    text=full_text,
+                    bundle=None,
+                    consultation_id="upload",
+                    category_slugs=category_slugs,
+                    require_rag_for_l2=False,
+                )
+                latency_ms = int((time.perf_counter() - t0) * 1000)
+                if pdf_warnings:
+                    result["pdf_warnings"] = pdf_warnings
+                if consult_docs_meta:
+                    result["consult_documents"] = consult_docs_meta
+                result = _maybe_methodist_autolog(
+                    request,
+                    result,
+                    tier=selected_tier,
+                    full_text=full_text,
+                    consultation_id="upload",
+                    latency_ms=latency_ms,
+                )
+                yield sse_encode_progress(
+                    "extract",
+                    100,
+                    f"Готово ({selected_tier}, {len(full_text)} симв.)",
+                    result,
+                )
+                yield sse_encode_done(result)
+            except HTTPException as e:
+                detail = e.detail if isinstance(e.detail, str) else str(e.detail)
+                yield sse_encode_error(detail, e.status_code)
+            except Exception as e:
+                yield sse_encode_error(str(e)[:400], 500)
+
+        return StreamingResponse(
+            tier_gen(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
 
     def event_gen():
         sent_done = False
@@ -7208,6 +7452,13 @@ def api_consult_review_stream(
                         p.get("partial"),
                     )
                 elif kind == "done":
+                    payload = _maybe_methodist_autolog(
+                        request,
+                        payload,
+                        tier="L2",
+                        full_text=full_text,
+                        consultation_id="upload",
+                    )
                     yield sse_encode_done(payload)
                     sent_done = True
                     return
@@ -7244,6 +7495,10 @@ if (ROOT / "index.html").is_file():
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache"},
         )
+
+    @app.get("/methodist", include_in_schema=False)
+    def _redirect_methodist() -> RedirectResponse:
+        return RedirectResponse(url="/?mode=methodist", status_code=302)
 
     @app.get("/consult_review.html", include_in_schema=False)
     def _serve_consult_review_html() -> FileResponse:
