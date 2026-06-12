@@ -88,9 +88,12 @@ from konkurs_monetization import (  # noqa: E402
 )
 from konkurs_continuous_ml import (  # noqa: E402
     CONTINUOUS_ML_INTRO,
+    ML_AB_INTERPRETATION,
+    ML_AB_KZ_TABLE,
     ML_APPENDIX_TABLE,
     ML_COMPETITION_NOTE,
     ML_DATA_CYCLE,
+    ML_EXPERIMENT_EMBEDDER_TABLE,
     ML_PRINCIPLES_TABLE,
     ML_ROADMAP_TABLE,
 )
@@ -378,6 +381,11 @@ def _continuous_ml_html() -> str:
 <div class="section-body">
 <p>{_e(CONTINUOUS_ML_INTRO.replace(chr(10), ' '))}</p>
 <div class="highlight">{_e(ML_COMPETITION_NOTE.replace(chr(10), ' '))}</div>
+<h3>Результаты эксперимента embedder (июнь 2026)</h3>
+{_table(['Метрика', 'Baseline e5', 'Fine-tune', 'Δ'], ML_EXPERIMENT_EMBEDDER_TABLE, caption='Офлайн MRR на seed 313 пар (ml/experiments/embedder_exp_001)')}
+<h3>A/B: baseline vs fine-tune в retrieve()</h3>
+{_table(['Слой оценки', 'Baseline e5', 'Fine-tune', 'Δ'], ML_AB_KZ_TABLE, caption='consult_gold + golden RAG на полном корпусе КП')}
+<p>{_e(ML_AB_INTERPRETATION.replace(chr(10), ' '))}</p>
 <h3>Принцип: что обучается, а что нет</h3>
 {_table(['Компонент', 'Механизм', 'Обучение'], principles, caption='Разделение детерминированного ядра и ML')}
 <h3>Цикл MLOps</h3>

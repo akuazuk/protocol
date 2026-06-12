@@ -9,8 +9,29 @@ Protocol спроектирован как гибридная система: д
 Отличие от свободных LLM-чатов и зарубежных CDSS: корпус ~478 КП Минздрава РБ + цикл human-in-the-loop
 от методслужбы Кравиры + локальное развёртывание моделей в контуре Республики Беларусь (on-prem, без выноса ПДн на L0).
 
-Статус на 2026: в production - правила, semantic RAG, опциональный LLM API; каталог ml/ - каркас MLOps
-(сбор feedback, export_training_feedback.py, заглушки train/eval). Fine-tune и деплой локальных моделей - фаза 1+ roadmap.
+Статус на 2026: в production - правила, semantic RAG, опциональный LLM API. Выполнен пилотный fine-tune
+local embedder (e5-small, 313 пары, эксперимент embedder_exp_001) и A/B на consult_gold + golden RAG.
+Деплой локальной модели в production retrieve - фаза 1 (Q4 2026).
+""".strip()
+
+ML_EXPERIMENT_EMBEDDER_TABLE = [
+    ("MRR@10, 5-fold CV (seed 313 пар)", "0,12", "0,41", "+0,29"),
+    ("Recall@1, CV", "~8%", "~28%", "+20 п.п."),
+    ("Golden hold-out MRR@10 (13 запр.)", "0,17", "0,33", "+0,16"),
+    ("Время обучения (CPU)", "-", "~83 мин", "5-fold + final"),
+]
+
+ML_AB_KZ_TABLE = [
+    ("Rule checker consult_gold (9 КЗ)", "100%", "100%", "0"),
+    ("RAG по тексту КЗ, релевантный КП в топ-5", "100%", "100%", "0"),
+    ("Golden RAG retrieve() (18 запр.)", "77,8%", "77,8%", "0"),
+]
+
+ML_AB_INTERPRETATION = """
+Интерпретация A/B: детерминированный разбор КЗ (send_gate, rule_checker) не использует embedder - без изменений.
+На гастро-эталоне полный retrieve() уже находит нужные КП и с baseline e5: тексты КЗ богаты диагнозом и МКБ.
+Прирост MRR в офлайн-эксперименте проявился на seed-парах title→path; для продакшена следующий шаг -
+hard negatives от методиста, cross-encoder reranker и фиксация 4 провалов golden (E11, K85, I50, негатив).
 """.strip()
 
 ML_PRINCIPLES_TABLE = [
@@ -23,7 +44,7 @@ ML_PRINCIPLES_TABLE = [
 ]
 
 ML_ROADMAP_TABLE = [
-    ("Фаза 0", "Q2-Q3 2026", "kz_quality_scores, feedback JSONL, export_training_feedback.py", "Пилот Кравира"),
+    ("Фаза 0", "Q2-Q3 2026", "feedback JSONL, export, embedder_exp_001, A/B consult_gold", "Пилот Кравира"),
     ("Фаза 1", "Q4 2026", "Local embedder (e5/bge-m3) вместо облачного embed API", "On-prem RAG"),
     ("Фаза 2", "2027 H1", "Cross-encoder reranker + medical entailment", "−ложные L0 срабатывания"),
     ("Фаза 3", "2027 H2", "30-100 approved summary cards, hybrid mode", "Качество vs auto-rules"),
@@ -46,9 +67,12 @@ ML_COMPETITION_NOTE = """
 
 ML_APPENDIX_TABLE = [
     ("ml/README.md", "Архитектура ML и принципы"),
-    ("ml/configs/default.json", "Модели, пороги eval, расписание retrain"),
+    ("ml/experiments/embedder_exp_001/", "Fine-tune e5: MRR 0,12→0,41"),
+    ("ml/experiments/ab_kz_embedder/", "A/B: RAG и consult_gold"),
+    ("scripts/run_embedder_experiment.py", "Пайплайн обучения embedder"),
+    ("scripts/run_ab_embedder_kz.py", "A/B baseline vs fine-tune в retrieve()"),
     ("scripts/export_training_feedback.py", "Экспорт датасетов из пилота"),
     ("data/ml/feedback/", "Сырые события без ПДн"),
     ("eval/golden_queries.prod.jsonl", "Эталон RAG (18 запросов)"),
-    ("data/gastro_mvp/consult_gold.jsonl", "Регрессия KZ (9 кейсов)"),
+    ("data/gastro_mvp/consult_gold.jsonl", "Регрессия КЗ (9 кейсов)"),
 ]

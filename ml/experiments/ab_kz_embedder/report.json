@@ -1,0 +1,528 @@
+{
+  "experiment": "ab_kz_embedder",
+  "base_model": "intfloat/multilingual-e5-small",
+  "finetuned_checkpoint": "ml/experiments/embedder_exp_001/checkpoint_final",
+  "methodology_ru": "A/B локального embedder в retrieve(): текст КЗ как запрос RAG, успех - релевантный КП в топ-5. Rule checker (send_gate) не использует embedder - одинаков на обоих плечах.",
+  "rules_layer": {
+    "note": "Детерминированный rule_checker на consult_gold - не зависит от embedder",
+    "baseline": {
+      "title": "Эталон проверки КЗ по правилам (гастро MVP)",
+      "scope": "data/gastro_mvp/consult_gold.jsonl",
+      "cases_total": 9,
+      "cases_passed": 9,
+      "pass_rate_pct": 100.0,
+      "conditions_loaded": 87,
+      "rules_loaded": 498,
+      "updated": "2026-06-12",
+      "cases": [
+        {
+          "consultation_id": "gold_gerd_full_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 40.0
+        },
+        {
+          "consultation_id": "gold_gerd_incomplete_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 25.0
+        },
+        {
+          "consultation_id": "gold_gerd_child_mismatch_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "population_mismatch": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_ulcer_partial_01",
+          "target_condition": "peptic_ulcer",
+          "ok": true,
+          "checks": {
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 25.0
+        },
+        {
+          "consultation_id": "gold_gastritis_01",
+          "target_condition": "gastritis",
+          "ok": true,
+          "checks": {
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_celiac_full_01",
+          "target_condition": "celiac",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 100.0
+        },
+        {
+          "consultation_id": "gold_uc_partial_01",
+          "target_condition": "ulcerative_colitis",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_crohn_full_01",
+          "target_condition": "crohn",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 100.0
+        },
+        {
+          "consultation_id": "gold_pancreatitis_partial_01",
+          "target_condition": "acute_pancreatitis",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        }
+      ],
+      "methodology_ru": "Детерминированный rule_checker на размеченных синтетических КЗ; пересчёт: python3 scripts/update_gastro_rules_benchmark.py"
+    },
+    "finetuned": {
+      "title": "Эталон проверки КЗ по правилам (гастро MVP)",
+      "scope": "data/gastro_mvp/consult_gold.jsonl",
+      "cases_total": 9,
+      "cases_passed": 9,
+      "pass_rate_pct": 100.0,
+      "conditions_loaded": 87,
+      "rules_loaded": 498,
+      "updated": "2026-06-12",
+      "cases": [
+        {
+          "consultation_id": "gold_gerd_full_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 40.0
+        },
+        {
+          "consultation_id": "gold_gerd_incomplete_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 25.0
+        },
+        {
+          "consultation_id": "gold_gerd_child_mismatch_01",
+          "target_condition": "gerd",
+          "ok": true,
+          "checks": {
+            "population_mismatch": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_ulcer_partial_01",
+          "target_condition": "peptic_ulcer",
+          "ok": true,
+          "checks": {
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 25.0
+        },
+        {
+          "consultation_id": "gold_gastritis_01",
+          "target_condition": "gastritis",
+          "ok": true,
+          "checks": {
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_celiac_full_01",
+          "target_condition": "celiac",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true
+          },
+          "rules_compliance_pct": 100.0
+        },
+        {
+          "consultation_id": "gold_uc_partial_01",
+          "target_condition": "ulcerative_colitis",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        },
+        {
+          "consultation_id": "gold_crohn_full_01",
+          "target_condition": "crohn",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 100.0
+        },
+        {
+          "consultation_id": "gold_pancreatitis_partial_01",
+          "target_condition": "acute_pancreatitis",
+          "ok": true,
+          "checks": {
+            "diagnosis_formula_pass": true,
+            "has_condition_hint": true
+          },
+          "rules_compliance_pct": 0.0
+        }
+      ],
+      "methodology_ru": "Детерминированный rule_checker на размеченных синтетических КЗ; пересчёт: python3 scripts/update_gastro_rules_benchmark.py"
+    }
+  },
+  "arm_a_baseline": {
+    "kz_rag_top5": {
+      "cases_total": 9,
+      "cases_passed": 9,
+      "pass_rate_pct": 100.0,
+      "cases": [
+        {
+          "consultation_id": "gold_gerd_full_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_gerd_incomplete_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_gerd_child_mismatch_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_ulcer_partial_01",
+          "target_condition": "peptic_ulcer",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевода_желудка_двенадцатиперстной_кишки_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_gastritis_01",
+          "target_condition": "gastritis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевода_желудка_двенадцатиперстной_кишки_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_celiac_full_01",
+          "target_condition": "celiac",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_uc_partial_01",
+          "target_condition": "ulcerative_colitis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/khirurgiya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf"
+        },
+        {
+          "consultation_id": "gold_crohn_full_01",
+          "target_condition": "crohn",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf"
+        },
+        {
+          "consultation_id": "gold_pancreatitis_partial_01",
+          "target_condition": "acute_pancreatitis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf"
+        }
+      ]
+    },
+    "golden_rag": {
+      "queries_total": 18,
+      "queries_passed": 14,
+      "pass_rate_pct": 77.8,
+      "cases": [
+        {
+          "query": "I10 эссенциальная гипертензия",
+          "ok": true,
+          "notes": "кардиология / терапевтический профиль"
+        },
+        {
+          "query": "J20.9 острый бронхит",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "E11.9 сахарный диабет 2 типа",
+          "ok": false,
+          "notes": "эндокринология"
+        },
+        {
+          "query": "M32.9 системная красная волчанка",
+          "ok": true,
+          "notes": "ревматология / СКВ"
+        },
+        {
+          "query": "J45.9 бронхиальная астма",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "N18 хроническая болезнь почек",
+          "ok": true,
+          "notes": "нефрология"
+        },
+        {
+          "query": "K29 гастрит",
+          "ok": true,
+          "notes": "гастроэнтерология"
+        },
+        {
+          "query": "I21 инфаркт миокарда",
+          "ok": true,
+          "notes": "кардиология острое"
+        },
+        {
+          "query": "F32 депрессивный эпизод",
+          "ok": true,
+          "notes": "психиатрия"
+        },
+        {
+          "query": "красная волчанка системная",
+          "ok": true,
+          "notes": "текстовый запрос без кода"
+        },
+        {
+          "query": "гипертоническая болезнь",
+          "ok": true,
+          "notes": "синоним"
+        },
+        {
+          "query": "острый панкреатит K85",
+          "ok": false,
+          "notes": "гастроэнтерология"
+        },
+        {
+          "query": "беременность осложнения",
+          "ok": true,
+          "notes": "акушерство"
+        },
+        {
+          "query": "пневмония внебольничная",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "хроническая сердечная недостаточность I50",
+          "ok": false,
+          "notes": "кардиология"
+        },
+        {
+          "query": "аллергический ринит",
+          "ok": true,
+          "notes": "аллергология"
+        },
+        {
+          "query": "ожог термический",
+          "ok": true,
+          "notes": "хирургия / неотложное"
+        },
+        {
+          "query": "zzzz_nonexistent_clinical_xyz_999",
+          "ok": false,
+          "notes": "негатив"
+        }
+      ]
+    }
+  },
+  "arm_b_finetuned": {
+    "kz_rag_top5": {
+      "cases_total": 9,
+      "cases_passed": 9,
+      "pass_rate_pct": 100.0,
+      "cases": [
+        {
+          "consultation_id": "gold_gerd_full_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_gerd_incomplete_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_gerd_child_mismatch_01",
+          "target_condition": "gerd",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_и_лечение_пациентов_детс_нас_с_гастроэзофагеальной_рефлюксной_болезнью_ пост_МЗ_29.04.2023_64.pdf"
+        },
+        {
+          "consultation_id": "gold_ulcer_partial_01",
+          "target_condition": "peptic_ulcer",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевода_желудка_двенадцатиперстной_кишки_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_gastritis_01",
+          "target_condition": "gastritis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевода_желудка_двенадцатиперстной_кишки_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_celiac_full_01",
+          "target_condition": "celiac",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf"
+        },
+        {
+          "consultation_id": "gold_uc_partial_01",
+          "target_condition": "ulcerative_colitis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/khirurgiya/КП Алгоритмы диагностики и лечения злокач. новообр пост. МЗ РБ от 06.07.2018 №60.pdf"
+        },
+        {
+          "consultation_id": "gold_crohn_full_01",
+          "target_condition": "crohn",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_дет_население_с_болезнью_Крона_пост_МЗ_2024_66.pdf"
+        },
+        {
+          "consultation_id": "gold_pancreatitis_partial_01",
+          "target_condition": "acute_pancreatitis",
+          "rag_protocol_hit_top5": true,
+          "top_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_панкреатитом_в_стац_условиях_пост_МЗ_2023_182.pdf"
+        }
+      ]
+    },
+    "golden_rag": {
+      "queries_total": 18,
+      "queries_passed": 14,
+      "pass_rate_pct": 77.8,
+      "cases": [
+        {
+          "query": "I10 эссенциальная гипертензия",
+          "ok": true,
+          "notes": "кардиология / терапевтический профиль"
+        },
+        {
+          "query": "J20.9 острый бронхит",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "E11.9 сахарный диабет 2 типа",
+          "ok": false,
+          "notes": "эндокринология"
+        },
+        {
+          "query": "M32.9 системная красная волчанка",
+          "ok": true,
+          "notes": "ревматология / СКВ"
+        },
+        {
+          "query": "J45.9 бронхиальная астма",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "N18 хроническая болезнь почек",
+          "ok": true,
+          "notes": "нефрология"
+        },
+        {
+          "query": "K29 гастрит",
+          "ok": true,
+          "notes": "гастроэнтерология"
+        },
+        {
+          "query": "I21 инфаркт миокарда",
+          "ok": true,
+          "notes": "кардиология острое"
+        },
+        {
+          "query": "F32 депрессивный эпизод",
+          "ok": true,
+          "notes": "психиатрия"
+        },
+        {
+          "query": "красная волчанка системная",
+          "ok": true,
+          "notes": "текстовый запрос без кода"
+        },
+        {
+          "query": "гипертоническая болезнь",
+          "ok": true,
+          "notes": "синоним"
+        },
+        {
+          "query": "острый панкреатит K85",
+          "ok": false,
+          "notes": "гастроэнтерология"
+        },
+        {
+          "query": "беременность осложнения",
+          "ok": true,
+          "notes": "акушерство"
+        },
+        {
+          "query": "пневмония внебольничная",
+          "ok": true,
+          "notes": "пульмонология"
+        },
+        {
+          "query": "хроническая сердечная недостаточность I50",
+          "ok": false,
+          "notes": "кардиология"
+        },
+        {
+          "query": "аллергический ринит",
+          "ok": true,
+          "notes": "аллергология"
+        },
+        {
+          "query": "ожог термический",
+          "ok": true,
+          "notes": "хирургия / неотложное"
+        },
+        {
+          "query": "zzzz_nonexistent_clinical_xyz_999",
+          "ok": false,
+          "notes": "негатив"
+        }
+      ]
+    }
+  },
+  "delta": {
+    "kz_rag_pass_rate_pct": 0.0,
+    "golden_rag_pass_rate_pct": 0.0
+  },
+  "elapsed_sec": 236.3
+}

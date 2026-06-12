@@ -78,3 +78,5 @@ python3 scripts/run_embedder_experiment.py
 ```
 
 Отчёт: `ml/experiments/embedder_exp_001/REPORT.md` (чекпоинты локально, в git не коммитятся).
+
+A/B на КЗ и golden RAG: `python3 scripts/run_ab_embedder_kz.py` → `ml/experiments/ab_kz_embedder/report.json`.

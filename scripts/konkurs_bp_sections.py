@@ -281,24 +281,21 @@ ML-контур: каталог ml/ (configs, datasets, train, eval, registry), 
 детерминированное ядро (send_gate, CISZ) нейросетью: модели улучшают retrieval, medical entailment
 и structured extraction, а решение о подписи остаётся воспроизводимым по правилам с evidence_map.
 
-Статус на 2026: в production работают детерминированные правила (482+), semantic RAG и опциональные вызовы LLM;
-каталог ml/ - каркас MLOps (сбор feedback, export_training_feedback.py, заглушки train/eval). Полный цикл
-LoRA fine-tune и деплой локальных моделей - фаза 1 дорожной карты (Q4 2026), не текущий релиз.
+Статус на 2026: выполнен первый цикл ML - export 313 пар, fine-tune local embedder (e5-small),
+офлайн MRR@10 вырос с 0,12 до 0,41 (5-fold CV); A/B на consult_gold и golden RAG в полном retrieve():
+rule checker 9/9 (100%) без изменений; RAG по тексту КЗ 9/9 (100%) на обоих плечах; golden 14/18 (77,8%) -
+без прироста на текущих метриках (гастро-КЗ уже однозначны для лексического+semantic поиска).
 
 Три уровня ML в продукте:
 1) RAG - domain embedder + cross-encoder reranker на корпусе ~478 КП Минздрава (on-prem, без облачного LLM на L0).
 2) Сопоставление терминов КЗ - entailment-модель по меткам методслужбы (required_exam, keyword rules).
 3) Summary cards - student-модель на approved карточках протоколов (human-in-the-loop).
 
-Цикл данных: production L0-L2 → data/ml/feedback/ (hash, scores, overrides) → export_training_feedback.py
-→ ml/datasets/ → LoRA fine-tune → eval (golden queries + consult_gold) → ml/registry/model_manifest.json.
+Цикл данных: production L0-L2 → data/ml/feedback/ → export_training_feedback.py → ml/datasets/
+→ fine-tune → eval (golden + consult_gold) → ml/registry/model_manifest.json → деплой local embedder.
 
-Дорожная карта: фаза 0 (2026) - сбор feedback; фаза 1 - local embedder; фаза 2 - reranker + entailment;
-фаза 3 - hybrid summary cards; фаза 4 - ежемесячный retrain и A/B на сети частных ОЗ.
+Следующий шаг пилота: retrieval_fix от методиста, reranker, закрытие 4 провалов golden (E11, K85, I50).
 
-Конкурентное преимущество: поток ~25 000 КЗ/мес в Кравире как источник меток + официальный корпус КП РБ.
-Сертификат ГКНТ направлен также на запуск ML-контура в защищённом контуре РБ.
-
-Подробные таблицы принципов, roadmap и артефактов - приложение И и ml/README.md.
+Подробные таблицы эксперимента, A/B и roadmap - приложение И, ml/experiments/.
 """.strip(),
 }
