@@ -5957,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r89-methodist-workbench-a"
+BUILD_VERSION = "2026-06-01-r90-methodist-autologin-fix"
 
 
 def _app_version() -> str:
@@ -7074,19 +7074,53 @@ def _consult_review_from_uploads(
 @app.get("/api/methodist/status")
 def api_methodist_status() -> dict:
     """Публичный флаг: настроен ли кабинет методиста на сервере."""
-    from clinical_knowledge.feedback_store import methodist_auth_enabled
+    from clinical_knowledge.feedback_store import (
+        methodist_auth_enabled,
+        methodist_default_reviewer,
+        methodist_ui_auto_login,
+    )
 
-    return {"enabled": methodist_auth_enabled()}
+    return {
+        "enabled": methodist_auth_enabled(),
+        "auto_login": methodist_ui_auto_login() and methodist_auth_enabled(),
+        "default_reviewer": methodist_default_reviewer(),
+    }
+
+
+@app.get("/api/methodist/bootstrap")
+def api_methodist_bootstrap() -> dict:
+    """Автовход для on-prem: токен и инициалы из env (только при METHODIST_UI_AUTO_LOGIN=1)."""
+    from clinical_knowledge.feedback_store import (
+        methodist_auth_enabled,
+        methodist_default_reviewer,
+        methodist_token_expected,
+        methodist_ui_auto_login,
+    )
+
+    if not methodist_auth_enabled():
+        raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
+    if not methodist_ui_auto_login():
+        raise HTTPException(status_code=404, detail="Автовход отключён (METHODIST_UI_AUTO_LOGIN).")
+    token = methodist_token_expected()
+    reviewer = methodist_default_reviewer()
+    if not reviewer:
+        raise HTTPException(
+            status_code=503,
+            detail="Задайте METHODIST_REVIEWER в .env для автовхода.",
+        )
+    return {"token": token, "reviewer": reviewer}
 
 
 @app.get("/api/methodist/session")
 def api_methodist_session(request: "Request") -> dict:
     """Проверка токена методиста (без записи feedback)."""
     _require_methodist_auth(request)
-    return {
-        "ok": True,
-        "reviewer": (request.headers.get("x-methodist-reviewer") or "").strip(),
-    }
+    from clinical_knowledge.feedback_store import methodist_default_reviewer
+
+    reviewer = (request.headers.get("x-methodist-reviewer") or "").strip()
+    if not reviewer:
+        reviewer = methodist_default_reviewer()
+    return {"ok": True, "reviewer": reviewer}
 
 
 @app.post("/api/ml/feedback")

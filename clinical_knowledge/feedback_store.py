@@ -46,6 +46,23 @@ def methodist_token_expected() -> str:
     return (os.environ.get("METHODIST_TOKEN") or os.environ.get("METHODIST_PIN") or "").strip()
 
 
+def methodist_default_reviewer() -> str:
+    return (
+        os.environ.get("METHODIST_REVIEWER")
+        or os.environ.get("METHODIST_DEFAULT_REVIEWER")
+        or ""
+    ).strip()
+
+
+def methodist_ui_auto_login() -> bool:
+    return os.environ.get("METHODIST_UI_AUTO_LOGIN", "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+
+
 def methodist_auth_enabled() -> bool:
     return bool(methodist_token_expected())
 

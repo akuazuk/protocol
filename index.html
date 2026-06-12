@@ -5680,53 +5680,95 @@
       position: fixed;
       inset: 0;
       z-index: 12000;
-      background: rgba(30, 35, 48, 0.55);
+      background: rgba(6, 61, 53, 0.42);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1rem;
     }
 
+    .methodist-login-overlay[hidden] {
+      display: none !important;
+      pointer-events: none;
+    }
+
     .methodist-login-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.1rem 1.25rem;
-      max-width: 22rem;
+      background: linear-gradient(165deg, #ffffff 0%, #f4faf8 100%);
+      border-radius: 14px;
+      padding: 1.15rem 1.3rem 1.05rem;
+      max-width: 24rem;
       width: 100%;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      box-shadow: 0 16px 48px rgba(6, 61, 53, 0.16);
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
     }
 
     .methodist-login-card h2 {
-      margin: 0 0 0.65rem;
-      font-size: 1.05rem;
-      color: #3d3a6b;
+      margin: 0 0 0.35rem;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--green-950);
+    }
+
+    .methodist-login-card .methodist-login-lead {
+      margin: 0 0 0.75rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #4a6b62;
     }
 
     .methodist-login-card label {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       margin: 0.45rem 0 0.2rem;
+      color: var(--green-800);
     }
 
     .methodist-login-card input {
       width: 100%;
       box-sizing: border-box;
-      padding: 0.4rem 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #c5ccd6;
+      padding: 0.42rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid #c8ddd6;
+      font-family: inherit;
     }
 
-    .methodist-login-card button {
-      margin-top: 0.75rem;
+    .methodist-login-card input:focus {
+      outline: 2px solid rgba(26, 138, 114, 0.35);
+      border-color: var(--green-600);
+    }
+
+    .methodist-login-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+    }
+
+    .methodist-login-card .btn-methodist-enter {
       width: 100%;
-      padding: 0.45rem;
+      padding: 0.48rem 0.65rem;
       border: none;
-      border-radius: 8px;
-      background: #5c52b8;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--green-700), var(--green-600));
       color: #fff;
-      font-weight: 650;
+      font-weight: 700;
+      font-family: inherit;
       cursor: pointer;
+    }
+
+    .methodist-login-card .btn-methodist-skip {
+      width: 100%;
+      padding: 0.4rem 0.55rem;
+      border-radius: 9px;
+      border: 1px solid #c8ddd6;
+      background: #fff;
+      color: var(--green-800);
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      font-size: 0.82rem;
     }
 
     .methodist-login-error {
@@ -6420,15 +6462,18 @@
       </div>
     </div>
   </div>
-  <div id="methodist-login-overlay" class="methodist-login-overlay" hidden>
-    <div class="methodist-login-card" role="dialog" aria-labelledby="methodist-login-title">
+  <div id="methodist-login-overlay" class="methodist-login-overlay" hidden aria-hidden="true">
+    <div class="methodist-login-card" role="dialog" aria-labelledby="methodist-login-title" aria-modal="true">
       <h2 id="methodist-login-title">Кабинет методиста</h2>
-      <p class="consult-hint-small" style="margin: 0 0 0.35rem">Введите токен и инициалы для разметки результатов.</p>
+      <p class="methodist-login-lead">Только для методслужбы. Обычная проверка КЗ - без этого окна, откройте сайт без <code>?mode=methodist</code>.</p>
       <label for="methodist-login-token">Токен</label>
       <input type="password" id="methodist-login-token" autocomplete="off" />
       <label for="methodist-login-reviewer">Инициалы методиста</label>
       <input type="text" id="methodist-login-reviewer" maxlength="32" placeholder="И.О." />
-      <button type="button" id="methodist-login-btn">Войти</button>
+      <div class="methodist-login-actions">
+        <button type="button" class="btn-methodist-enter" id="methodist-login-btn">Войти</button>
+        <button type="button" class="btn-methodist-skip" id="methodist-login-skip">Обычный режим (без кабинета)</button>
+      </div>
       <p id="methodist-login-error" class="methodist-login-error" hidden></p>
     </div>
   </div>
@@ -11038,7 +11083,62 @@
       });
   }
 
+  function hideMethodistLoginOverlay() {
+    var overlay = document.getElementById("methodist-login-overlay");
+    if (overlay) {
+      overlay.hidden = true;
+      overlay.setAttribute("aria-hidden", "true");
+    }
+    var loginErr = document.getElementById("methodist-login-error");
+    if (loginErr) loginErr.hidden = true;
+  }
+
+  function showMethodistLoginOverlay() {
+    var overlay = document.getElementById("methodist-login-overlay");
+    if (overlay) {
+      overlay.hidden = false;
+      overlay.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  function exitMethodistModeToPublicUi() {
+    hideMethodistLoginOverlay();
+    window.__methodistMode = false;
+    document.body.classList.remove("methodist-mode");
+    var badge = document.getElementById("methodist-mode-badge");
+    if (badge) badge.hidden = true;
+    var tierRow = document.getElementById("methodist-tier-row");
+    if (tierRow) tierRow.hidden = true;
+    var mPanel = document.getElementById("methodist-review-panel");
+    if (mPanel) mPanel.hidden = true;
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.delete("mode");
+      u.searchParams.delete("methodist_token");
+      window.history.replaceState({}, "", u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+
+  function verifyMethodistSession(base, onOk, onFail) {
+    fetch(base + "/api/methodist/session", { headers: methodistHeaders() })
+      .then(function (r) {
+        if (!r.ok) throw new Error("session");
+        return r.json();
+      })
+      .then(function (data) {
+        if (data && data.reviewer && !window.__methodistReviewer) {
+          window.__methodistReviewer = data.reviewer;
+        }
+        if (onOk) onOk();
+      })
+      .catch(function () {
+        if (onFail) onFail();
+      });
+  }
+
   function initMethodistWorkbench() {
+    hideMethodistLoginOverlay();
+
     if (!isMethodistModeRequested()) return;
 
     document.body.classList.add("methodist-mode");
@@ -11058,68 +11158,70 @@
       window.__methodistReviewer = sessionStorage.getItem(METHODIST_STORAGE_REVIEWER) || "";
     } catch (e2) {}
 
-    var overlay = document.getElementById("methodist-login-overlay");
     var loginBtn = document.getElementById("methodist-login-btn");
+    var loginSkip = document.getElementById("methodist-login-skip");
     var loginErr = document.getElementById("methodist-login-error");
     var tokenInp = document.getElementById("methodist-login-token");
     var revInp = document.getElementById("methodist-login-reviewer");
 
-    function showLogin() {
-      if (overlay) overlay.hidden = false;
-      if (revInp && window.__methodistReviewer) revInp.value = window.__methodistReviewer;
-    }
-    function hideLogin() {
-      if (overlay) overlay.hidden = true;
-      if (loginErr) loginErr.hidden = true;
+    function showLoginForm(prefill) {
+      prefill = prefill || {};
+      if (tokenInp) tokenInp.value = prefill.token || window.__methodistToken || "";
+      if (revInp) {
+        revInp.value = prefill.reviewer || window.__methodistReviewer || "";
+      }
+      showMethodistLoginOverlay();
     }
 
     function activateMethodistSession() {
       window.__methodistMode = true;
-      hideLogin();
+      hideMethodistLoginOverlay();
     }
 
-    function verifyAndEnter() {
-      var baseEl = document.getElementById("rag-base");
-      var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
-      var tok = tokenInp ? String(tokenInp.value || "").trim() : window.__methodistToken;
-      var rev = revInp ? String(revInp.value || "").trim() : "";
-      if (!tok) {
-        if (loginErr) {
-          loginErr.textContent = "Введите токен.";
-          loginErr.hidden = false;
-        }
-        return;
-      }
-      if (!rev) {
-        if (loginErr) {
-          loginErr.textContent = "Введите инициалы методиста.";
-          loginErr.hidden = false;
-        }
-        return;
-      }
+    function persistMethodistCreds(tok, rev) {
       window.__methodistToken = tok;
       window.__methodistReviewer = rev;
       try {
         sessionStorage.setItem(METHODIST_STORAGE_TOKEN, tok);
         sessionStorage.setItem(METHODIST_STORAGE_REVIEWER, rev);
       } catch (e) {}
-      fetch(base + "/api/methodist/session", { headers: methodistHeaders() })
-        .then(function (r) {
-          if (!r.ok) throw new Error("Неверный токен");
-          return r.json();
-        })
-        .then(function () {
-          activateMethodistSession();
-        })
-        .catch(function () {
+    }
+
+    function verifyAndEnter() {
+      var baseEl = document.getElementById("rag-base");
+      var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+      var tok = tokenInp ? String(tokenInp.value || "").trim() : window.__methodistToken;
+      var rev = revInp ? String(revInp.value || "").trim() : window.__methodistReviewer;
+      if (!tok) {
+        if (loginErr) {
+          loginErr.textContent = "Введите токен (или задайте METHODIST_UI_AUTO_LOGIN=1 в .env).";
+          loginErr.hidden = false;
+        }
+        return;
+      }
+      if (!rev) {
+        if (loginErr) {
+          loginErr.textContent = "Введите инициалы (или METHODIST_REVIEWER в .env).";
+          loginErr.hidden = false;
+        }
+        return;
+      }
+      persistMethodistCreds(tok, rev);
+      verifyMethodistSession(
+        base,
+        activateMethodistSession,
+        function () {
           if (loginErr) {
-            loginErr.textContent = "Токен отклонён сервером.";
+            loginErr.textContent = "Токен отклонён сервером. Проверьте METHODIST_TOKEN в .env и перезапустите сервер.";
             loginErr.hidden = false;
           }
-        });
+          showLoginForm({ token: tok, reviewer: rev });
+        }
+      );
     }
 
     if (loginBtn) loginBtn.addEventListener("click", verifyAndEnter);
+    if (loginSkip) loginSkip.addEventListener("click", exitMethodistModeToPublicUi);
 
     var saveBtn = document.getElementById("methodist-btn-save");
     if (saveBtn) saveBtn.addEventListener("click", saveMethodistReview);
@@ -11132,30 +11234,71 @@
 
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+
+    function tryAutoLogin(st) {
+      if (!st || !st.auto_login) return Promise.resolve(false);
+      return fetch(base + "/api/methodist/bootstrap")
+        .then(function (r) {
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .then(function (boot) {
+          if (!boot || !boot.token || !boot.reviewer) return false;
+          persistMethodistCreds(boot.token, boot.reviewer);
+          return new Promise(function (resolve) {
+            verifyMethodistSession(
+              base,
+              function () {
+                activateMethodistSession();
+                resolve(true);
+              },
+              function () {
+                resolve(false);
+              }
+            );
+          });
+        })
+        .catch(function () {
+          return false;
+        });
+    }
+
     fetch(base + "/api/methodist/status")
       .then(function (r) { return r.json(); })
       .then(function (st) {
-        if (!st || !st.enabled) {
-          if (loginErr) {
-            loginErr.textContent = "METHODIST_TOKEN не настроен на сервере.";
-            loginErr.hidden = false;
+        if (st && st.default_reviewer && !window.__methodistReviewer) {
+          window.__methodistReviewer = st.default_reviewer;
+        }
+        return tryAutoLogin(st).then(function (autoOk) {
+          if (autoOk) return;
+          if (!st || !st.enabled) {
+            if (loginErr) {
+              loginErr.textContent =
+                "METHODIST_TOKEN не настроен на сервере. Добавьте в .env и перезапустите rag_server.";
+              loginErr.hidden = false;
+            }
+            showLoginForm();
+            return;
           }
-          showLogin();
-          return;
-        }
-        if (window.__methodistToken && window.__methodistReviewer) {
-          fetch(base + "/api/methodist/session", { headers: methodistHeaders() })
-            .then(function (r) {
-              if (r.ok) activateMethodistSession();
-              else showLogin();
-            })
-            .catch(function () { showLogin(); });
-        } else {
-          showLogin();
-        }
+          if (window.__methodistToken && window.__methodistReviewer) {
+            verifyMethodistSession(
+              base,
+              activateMethodistSession,
+              function () {
+                showLoginForm();
+              }
+            );
+          } else {
+            showLoginForm();
+          }
+        });
       })
       .catch(function () {
-        showLogin();
+        if (loginErr) {
+          loginErr.textContent = "Не удалось связаться с сервером. Проверьте, что rag_server запущен.";
+          loginErr.hidden = false;
+        }
+        showLoginForm();
       });
   }
 

@@ -136,6 +136,48 @@ def test_build_kz_analysis_from_pipeline_result():
     assert ev["rules_compliance_pct"] == 40.0
 
 
+def test_methodist_bootstrap_requires_auto_login(feedback_env):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    client = TestClient(rag_server.app)
+    r = client.get("/api/methodist/bootstrap")
+    assert r.status_code == 404
+
+
+def test_methodist_bootstrap_ok_when_auto_login(feedback_env, monkeypatch: pytest.MonkeyPatch):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    monkeypatch.setenv("METHODIST_UI_AUTO_LOGIN", "1")
+    monkeypatch.setenv("METHODIST_REVIEWER", "Test R")
+    client = TestClient(rag_server.app)
+    r = client.get("/api/methodist/bootstrap")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["token"] == "test-methodist-token"
+    assert data["reviewer"] == "Test R"
+
+
+def test_methodist_status_includes_reviewer(feedback_env, monkeypatch: pytest.MonkeyPatch):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    monkeypatch.setenv("METHODIST_REVIEWER", "I.I.")
+    client = TestClient(rag_server.app)
+    r = client.get("/api/methodist/status")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["enabled"] is True
+    assert data["default_reviewer"] == "I.I."
+
+
 def test_api_ml_feedback_forbidden_without_token(feedback_env):
     pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient
