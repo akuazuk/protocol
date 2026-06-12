@@ -284,9 +284,64 @@ def _src_line_html(ref: SourceRef) -> str:
     return " — ".join(parts) if parts else "источник не указан"
 
 
+def _resolve_send_gate(
+    report: ComplianceReport,
+    *,
+    send_gate: dict[str, Any] | None = None,
+    headline_score: float | None = None,
+) -> dict[str, Any]:
+    if send_gate:
+        return send_gate
+    from .compliance_gate import evaluate_send_gate
+
+    return evaluate_send_gate(report, headline_score=headline_score)
+
+
+def _sign_decision_section_html(sg: dict[str, Any]) -> str:
+    sd = sg.get("sign_decision") or "allowed"
+    sd_ru = _e(sg.get("sign_decision_ru") or "Решение о подписи")
+    sd_det = _e(sg.get("sign_decision_detail_ru") or "")
+    sd_colors = {
+        "allowed": ("#1a6b52", "#e8f5f1"),
+        "allowed_with_warnings": ("#8a5a12", "#faf5eb"),
+        "review_required": ("#8a5a12", "#faf5eb"),
+        "blocked": ("#9a3030", "#faf0f0"),
+    }
+    sd_fg, sd_bg = sd_colors.get(sd, ("#334155", "#f8fafc"))
+    return (
+        f'<section class="cr-sign-decision" style="margin:0.65rem 0;padding:0.65rem 0.75rem;'
+        f'border-radius:10px;border:1px solid {sd_fg}33;background:{sd_bg}">'
+        f'<h3 style="margin:0 0 0.35rem;font-size:0.95rem;color:{sd_fg}">Решение о подписи</h3>'
+        f'<p style="margin:0;font-weight:700;color:{sd_fg}">{sd_ru}</p>'
+        f'<p style="margin:0.35rem 0 0;font-size:0.88rem;color:#4a5c56">{sd_det}</p>'
+        "</section>"
+    )
+
+
+def patch_report_html_send_gate(html: str, send_gate: dict[str, Any]) -> str:
+    """Подменяет блок «Решение о подписи» в уже собранном HTML-отчёте."""
+    import re
+
+    if not html or not send_gate:
+        return html
+    new_block = _sign_decision_section_html(send_gate)
+    if 'class="cr-sign-decision"' not in html:
+        return html
+    return re.sub(
+        r'<section class="cr-sign-decision"[^>]*>.*?</section>',
+        new_block,
+        html,
+        count=1,
+        flags=re.DOTALL,
+    )
+
+
 def report_to_json(
     report: ComplianceReport,
     doc: ConsultationDocument | None = None,
+    *,
+    send_gate: dict[str, Any] | None = None,
+    headline_score: float | None = None,
 ) -> dict[str, Any]:
     """JSON-отчёт по ТЗ раздел 20."""
     patient_summary: dict[str, Any] = {}
@@ -316,9 +371,11 @@ def report_to_json(
         + list(report.missing_required_items)
         + list(report.warnings)
     )
-    from .compliance_gate import evaluate_send_gate
-
-    send_gate = evaluate_send_gate(report)
+    send_gate = _resolve_send_gate(
+        report,
+        send_gate=send_gate,
+        headline_score=headline_score,
+    )
     return {
         "consultation_id": report.consultation_id,
         "source_file": report.source_file,
@@ -387,6 +444,9 @@ def report_to_html(
     report: ComplianceReport,
     doc: ConsultationDocument | None = None,
     rubric_specifics: dict | None = None,
+    *,
+    send_gate: dict[str, Any] | None = None,
+    headline_score: float | None = None,
 ) -> str:
     """Цветной HTML-отчёт для UI (обезличенный: ФИО → инициалы)."""
     bd = report.score_breakdown
@@ -425,27 +485,12 @@ def report_to_html(
     parts.append(_layer_cards_html(bd))
     parts.append("</header>")
 
-    from .compliance_gate import evaluate_send_gate
-
-    sg = evaluate_send_gate(report)
-    sd = sg.get("sign_decision") or "allowed"
-    sd_ru = _e(sg.get("sign_decision_ru") or "Решение о подписи")
-    sd_det = _e(sg.get("sign_decision_detail_ru") or "")
-    sd_colors = {
-        "allowed": ("#1a6b52", "#e8f5f1"),
-        "allowed_with_warnings": ("#8a5a12", "#faf5eb"),
-        "review_required": ("#8a5a12", "#faf5eb"),
-        "blocked": ("#9a3030", "#faf0f0"),
-    }
-    sd_fg, sd_bg = sd_colors.get(sd, ("#334155", "#f8fafc"))
-    parts.append(
-        f'<section class="cr-sign-decision" style="margin:0.65rem 0;padding:0.65rem 0.75rem;'
-        f'border-radius:10px;border:1px solid {sd_fg}33;background:{sd_bg}">'
-        f'<h3 style="margin:0 0 0.35rem;font-size:0.95rem;color:{sd_fg}">Решение о подписи</h3>'
-        f'<p style="margin:0;font-weight:700;color:{sd_fg}">{sd_ru}</p>'
-        f'<p style="margin:0.35rem 0 0;font-size:0.88rem;color:#4a5c56">{sd_det}</p>'
-        "</section>"
+    sg = _resolve_send_gate(
+        report,
+        send_gate=send_gate,
+        headline_score=headline_score,
     )
+    parts.append(_sign_decision_section_html(sg))
 
     # Резюме (компактно, в спойлере)
     resume_inner: list[str] = ['<ul class="cr-kv">']

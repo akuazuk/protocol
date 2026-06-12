@@ -68,6 +68,9 @@ def _extract_rules_pct(
         if isinstance(rc, dict):
             v = rc.get("rules_compliance_pct")
             if isinstance(v, (int, float)):
+                matched = clinical_rules.get("matched_protocols")
+                if matched is not None and not matched:
+                    return None
                 return _clamp_pct(float(v))
     if structured_analysis:
         rc2 = structured_analysis.get("rules_check") or {}

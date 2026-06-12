@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .applicability import assess_card_applicability
+from .applicability import assess_card_applicability, infer_card_population
 from .condition_registry import score_card_for_hint
 from .diagnosis_icd import is_symptom_code, prioritize_codes
 from .loader import load_protocol_cards_registry
@@ -56,8 +56,8 @@ def _card_venous_relevance(card: dict[str, Any]) -> float:
     return 0.5
 
 
-def _population_match(card_pop: str, consult_audience: str | None) -> float:
-    cp = (card_pop or "any").lower()
+def _population_match(card: dict[str, Any], consult_audience: str | None) -> float:
+    cp = infer_card_population(card)
     ca = (consult_audience or "").lower()
     if not ca or cp == "any":
         return 1.0
@@ -107,8 +107,10 @@ def compute_match_score(
                     icd_part = 0.5
                     break
 
-    pop_mult = _population_match(str(card.get("population") or "any"), audience)
-    pop_part = pop_mult if pop_mult > 0 else 0.0
+    pop_mult = _population_match(card, audience)
+    if pop_mult == 0:
+        return 0.0
+    pop_part = pop_mult
 
     spec_part = 0.0
     if specialty_slug and card.get("specialty_slug") == specialty_slug:
@@ -141,8 +143,6 @@ def compute_match_score(
         + _WEIGHT_EXAMS * exam_part
         + _WEIGHT_COMPLAINTS * compl_part
     )
-    if pop_mult == 0:
-        raw *= 0.2
     if (card.get("status") or "active") != "active":
         raw *= 0.7
 
@@ -193,12 +193,16 @@ def match_protocol_cards(
             scored.append((score, card))
 
     scored.sort(key=lambda x: (-x[0], x[1].get("protocol_id") or ""))
+    patient = ctx
     out: list[dict[str, Any]] = []
     seen_keys: set[str] = set()
     for sc, card in scored:
         # Дедуп: один протокол (по source_path/protocol_id) — одна строка с лучшим score.
         key = str(card.get("source_path") or card.get("protocol_id") or id(card))
         if key in seen_keys:
+            continue
+        appl, _, _ = assess_card_applicability(card, patient)
+        if appl == "not_applicable":
             continue
         seen_keys.add(key)
         out.append(

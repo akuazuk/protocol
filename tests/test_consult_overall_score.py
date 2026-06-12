@@ -89,3 +89,15 @@ def test_scorer_version_attached() -> None:
         clinical_rules=None,
     )
     assert out["overall_compliance_scorer_version"] == SCORER_VERSION
+
+
+def test_rules_zero_without_matched_protocols_not_blended() -> None:
+    sa = _structured(78.0)
+    rules = {"rules_check": {"rules_compliance_pct": 0.0}, "matched_protocols": []}
+    out = apply_hybrid_overall_compliance(
+        {"criteria": []},
+        structured_analysis=sa,
+        clinical_rules=rules,
+    )
+    assert out["overall_compliance_pct"] == 78
+    assert out["overall_compliance_components"]["rules"] is None

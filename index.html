@@ -13088,6 +13088,13 @@
       panel.hidden = true;
       return;
     }
+    var failedChecks = (cisz.checks || []).filter(function (chk) {
+      return chk && chk.passed === false;
+    });
+    if (!failedChecks.length && (cisz.critical_failures || 0) === 0) {
+      panel.hidden = true;
+      return;
+    }
     panel.hidden = false;
     panel.classList.remove("gate-ok", "gate-warn");
     var pct = Math.round(cisz.overall_score);
@@ -13108,7 +13115,7 @@
     }
     if (listEl) {
       listEl.innerHTML = "";
-      var checks = (cisz.checks || []).slice();
+      var checks = failedChecks.slice();
       checks.sort(function (a, b) {
         var score = function (c) {
           if (!c.passed && c.critical) return 0;

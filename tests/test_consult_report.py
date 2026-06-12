@@ -75,9 +75,33 @@ def test_html_report_has_structure():
     doc, rep = _report()
     html = report_to_html(rep, doc)
     assert "consult-report-html" in html
-    assert "cr-bar-fill" in html
+    assert "cr-hero-grid" in html
     assert "cr-badge" in html
     assert "<script" not in html.lower()
     assert "cr-sign-decision" in html
     assert "Решение о подписи" in html
+
+
+def test_html_report_sign_gate_uses_headline_score():
+    doc, rep = _report()
+    html = report_to_html(rep, doc, headline_score=55.0)
+    assert "Нужно подтверждение врача" in html
+    assert "Можно подписывать" not in html
+
+    sg = report_to_json(rep, doc, headline_score=55.0)["send_gate"]
+    assert sg["sign_decision"] == "review_required"
+    assert sg["gate_score"] == 55.0
+
+
+def test_patch_report_html_send_gate():
+    from clinical_knowledge.compliance_gate import evaluate_send_gate
+    from clinical_knowledge.consult_report import patch_report_html_send_gate
+
+    doc, rep = _report()
+    html = report_to_html(rep, doc)
+    assert "Можно подписывать" in html
+    sg = evaluate_send_gate(rep, headline_score=58.0, mode="soft_gate", min_score_hard=70.0)
+    patched = patch_report_html_send_gate(html, sg)
+    assert "Нужно подтверждение врача" in patched
+    assert patched.count("cr-sign-decision") == 1
 

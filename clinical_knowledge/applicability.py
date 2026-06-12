@@ -11,10 +11,43 @@ from typing import Any
 
 PREGNANCY_MARKERS = ("беременн", "гестац", "беременности", "родоразрешен", "послеродов")
 NEONATAL_MARKERS = ("новорожд", "перинатал", "неонат")
+PED_TITLE_MARKERS = (
+    "детск",
+    "детское население",
+    "детей ",
+    "детей,",
+    "детей.",
+    "ребён",
+    "ребен",
+    "педиатр",
+)
+ADULT_TITLE_MARKERS = (
+    "взросл",
+    "взрослое население",
+)
 
 
 def _card_text(card: dict[str, Any]) -> str:
     return ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
+
+
+def infer_card_population(card: dict[str, Any]) -> str:
+    """population из карточки или по маркерам в названии/path (детское/взрослое население)."""
+    raw = str(card.get("population") or "any").lower().strip()
+    if raw in ("child", "children", "pediatric"):
+        return "child"
+    if raw == "adult":
+        return "adult"
+    if raw not in ("any", "", "unknown"):
+        return raw
+    text = _card_text(card)
+    has_ped = any(m in text for m in PED_TITLE_MARKERS)
+    has_adult = any(m in text for m in ADULT_TITLE_MARKERS)
+    if has_ped and not has_adult:
+        return "child"
+    if has_adult and not has_ped:
+        return "adult"
+    return "any"
 
 
 def assess_card_applicability(
@@ -32,7 +65,7 @@ def assess_card_applicability(
     sex = (p.get("sex") or "").lower() or None
     pregnancy = p.get("pregnancy")
 
-    card_pop = str(card.get("population") or "any").lower()
+    card_pop = infer_card_population(card)
     text = _card_text(card)
     match_reasons: list[str] = []
     mismatch_reasons: list[str] = []

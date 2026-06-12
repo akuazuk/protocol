@@ -185,6 +185,7 @@ def iter_consult_review_pipeline(
     )
     from clinical_knowledge.consult_retrieval import (
         consult_target_protocol_paths,
+        filter_retrieval_by_category_slugs,
         filter_retrieval_rows_by_paths,
     )
 
@@ -360,6 +361,14 @@ def iter_consult_review_pipeline(
             second_pass_diag["reason"] = "first_pass_ok"
 
     retrieved, audience_hint, audience_fb = rs.filter_retrieval_by_audience(retrieved, rq, rs._routing)
+
+    if doctor_rubric and rs.env_bool("CONSULT_REVIEW_STRICT_SPECIALTY", True):
+        specialty_slugs = list(dict.fromkeys([doctor_rubric] + (user_slugs or [])))
+        retrieved = filter_retrieval_by_category_slugs(
+            retrieved,
+            specialty_slugs,
+            strict=True,
+        )
 
     _acoag_markers = (
         "ривароксабан", "апиксабан", "варфарин", "дабигатран", "эноксапарин",
@@ -572,8 +581,6 @@ def iter_consult_review_pipeline(
         result["structured_analysis"] = structured_analysis
     if report_markdown:
         result["report_markdown"] = report_markdown
-    if report_html:
-        result["report_html"] = report_html
 
     if isinstance(structured_analysis, dict):
         comp = structured_analysis.get("compliance")
@@ -590,8 +597,15 @@ def iter_consult_review_pipeline(
                 sg = evaluate_send_gate_from_compliance(comp, headline_score=hs)
                 comp["send_gate"] = sg
                 result["send_gate"] = sg
+                if report_html:
+                    from clinical_knowledge.consult_report import patch_report_html_send_gate
+
+                    report_html = patch_report_html_send_gate(report_html, sg)
             except Exception:
                 pass
+
+    if report_html:
+        result["report_html"] = report_html
 
     try:
         from clinical_knowledge.cisz_readiness import attach_cisz_readiness

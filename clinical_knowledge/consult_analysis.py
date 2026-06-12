@@ -213,6 +213,20 @@ def analyze_consultation_text(
         except Exception:
             matches = []
     matches = annotate_applicability(matches, _patient_dict(doc))
+    na_from_matches = [
+        m for m in matches if m.get("applicability") == "not_applicable"
+    ]
+    if na_from_matches:
+        seen_na = {
+            str(x.get("source_path") or x.get("protocol_id") or "")
+            for x in not_applicable
+        }
+        for m in na_from_matches:
+            key = str(m.get("source_path") or m.get("protocol_id") or "")
+            if key and key not in seen_na:
+                not_applicable.append(m)
+                seen_na.add(key)
+    matches = [m for m in matches if m.get("applicability") != "not_applicable"]
 
     icd_codes = facts.get("consultation", {}).get("icd10") or []
     diagnosis_texts = [d.raw_text for d in doc.diagnoses if d.raw_text]

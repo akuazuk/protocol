@@ -5957,7 +5957,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r94-methodist-ml-compliance"
+BUILD_VERSION = "2026-06-01-r95-consult-gate-protocols-cisz"
 
 
 def _app_version() -> str:
@@ -6954,7 +6954,14 @@ def _consult_clinical_rules_pipeline(
     icd_merged = [str(c).upper() for c in (merged_icd or []) if c]
     cons["icd10"] = list(dict.fromkeys((cons.get("icd10") or []) + icd_merged))
 
+    from clinical_knowledge.consult_parser import _detect_specialty
+    from clinical_knowledge.protocol_match import annotate_applicability
+    from clinical_knowledge.rubric_extractors import specialty_to_rubric
+
+    doctor_rubric = specialty_to_rubric(_detect_specialty(full_text[:1500]) or _detect_specialty(full_text))
     specialty = (os.environ.get("CONSULT_RULE_CHECK_SPECIALTY") or "").strip() or None
+    if not specialty and doctor_rubric in ALLOWED_SPECIALTY_SLUGS:
+        specialty = doctor_rubric
     if not specialty and category_slugs:
         allowed = [sl for sl in category_slugs if sl in ALLOWED_SPECIALTY_SLUGS]
         if len(allowed) == 1:
@@ -6962,6 +6969,12 @@ def _consult_clinical_rules_pipeline(
 
     try:
         matched = match_protocol_cards(facts, specialty_slug=specialty, limit=8)
+        patient = facts.get("patient_context") or {}
+        matched = [
+            m
+            for m in annotate_applicability(matched, patient)
+            if m.get("applicability") != "not_applicable"
+        ]
         rules = run_rule_checker(facts, matched_protocols=matched)
     except Exception as exc:
         return {

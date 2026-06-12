@@ -127,3 +127,19 @@ def filter_retrieval_rows_by_paths(
         if p in allow:
             out.append(row)
     return out
+
+
+def filter_retrieval_by_category_slugs(
+    rows: list[dict[str, Any]],
+    allowed_slugs: list[str] | None,
+    *,
+    strict: bool = True,
+) -> list[dict[str, Any]]:
+    """Отбрасывает чанки вне рубрики врача КЗ (напр. акушерство при неврологии)."""
+    if not allowed_slugs or not strict:
+        return rows
+    allow = {s.strip() for s in allowed_slugs if s and s.strip()}
+    if not allow:
+        return rows
+    out = [r for r in rows if (r.get("category") or "").strip() in allow]
+    return out if out else rows

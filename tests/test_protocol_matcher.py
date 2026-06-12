@@ -15,6 +15,32 @@ def test_child_protocol_not_applied_to_adult():
     assert mismatch
 
 
+def test_pediatric_title_marker_not_applied_to_adult():
+    card = {
+        "title": "Диагностика и лечение пациентов (детское население) Неврология",
+        "population": "any",
+        "source_path": "nevrologiya/ped_neuro.pdf",
+    }
+    appl, _, mismatch = assess_card_applicability(card, {"adult_or_child": "adult", "age_years": 48})
+    assert appl == "not_applicable"
+    assert mismatch
+
+
+def test_match_protocol_cards_skip_pediatric_for_adult():
+    facts = {
+        "patient_context": {"adult_or_child": "adult", "age_years": 48},
+        "consultation": {"icd10": ["M54.1"], "conditions_hint": [], "diagnosis_text": "радикулопатия"},
+    }
+    res = match_protocol_cards(facts, limit=12)
+    if not res:
+        import pytest
+
+        pytest.skip("Реестр карточек протоколов не загружен в этом окружении.")
+    for m in res:
+        blob = ((m.get("title") or "") + " " + (m.get("source_path") or "")).lower()
+        assert "детск" not in blob or "взросл" in blob
+
+
 def test_pregnancy_protocol_not_applied_without_pregnancy():
     card = {"title": "КП ведение беременности", "population": "adult", "source_path": "akush/preg.pdf"}
     appl, _, mismatch = assess_card_applicability(
