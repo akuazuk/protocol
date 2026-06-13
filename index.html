@@ -5773,6 +5773,95 @@
       margin: 0.65rem 0 0;
     }
 
+    .methodist-ai-review-panel {
+      margin: 0.55rem 0 0;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(37, 99, 235, 0.28);
+      background: linear-gradient(180deg, #f8fbff 0%, #f3f8ff 100%);
+    }
+
+    .methodist-ai-review-panel.is-loading {
+      border-color: rgba(107, 114, 128, 0.25);
+      background: #f9fafb;
+    }
+
+    .methodist-ai-review-panel.is-ready {
+      border-color: rgba(26, 138, 114, 0.35);
+    }
+
+    .methodist-ai-review-panel h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.92rem;
+      color: #1e3a5f;
+    }
+
+    .methodist-ai-review-panel__meta {
+      font-size: 0.72rem;
+      color: #6b7280;
+      margin: 0 0 0.45rem;
+    }
+
+    .methodist-ai-review-panel__summary {
+      margin: 0.35rem 0;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #1f2937;
+    }
+
+    .methodist-ai-review-improvements {
+      margin: 0.35rem 0 0.5rem;
+      padding-left: 1.15rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #374151;
+    }
+
+    .methodist-ai-review-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+      margin: 0.35rem 0;
+      font-size: 0.74rem;
+    }
+
+    .methodist-ai-review-metrics span {
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(107, 114, 128, 0.2);
+    }
+
+    .methodist-ai-review-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.55rem;
+    }
+
+    .btn-methodist-approve {
+      background: var(--green-700, #15803d);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .btn-methodist-reject {
+      background: #fff;
+      color: #b45309;
+      border: 1px solid rgba(180, 83, 9, 0.35);
+      border-radius: 8px;
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+    }
+
+    .methodist-manual-wrap.is-collapsed {
+      display: none;
+    }
+
     .methodist-ml-record {
       margin: 0.55rem 0 0;
       padding: 0.45rem 0.55rem;
@@ -7442,9 +7531,27 @@
             </details>
           </section>
 
+          <section id="methodist-ai-review-panel" class="methodist-ai-review-panel consult-hide-print" hidden aria-label="AI-оценка для методиста">
+            <h3>Оценка ИИ (этап 2)</h3>
+            <p class="methodist-ai-review-panel__meta" id="methodist-ai-review-meta">После анализа модель оценит КЗ и точность системы.</p>
+            <div id="methodist-ai-review-body" hidden>
+              <div class="methodist-ai-review-metrics" id="methodist-ai-review-metrics"></div>
+              <p class="methodist-ai-review-panel__summary" id="methodist-ai-review-summary"></p>
+              <p class="consult-hint-small" style="margin:0.2rem 0 0.15rem;font-weight:650">Что улучшить в КЗ:</p>
+              <ul class="methodist-ai-review-improvements" id="methodist-ai-review-improvements"></ul>
+              <p class="consult-hint-small" id="methodist-ai-review-system-notes" style="margin:0.25rem 0 0;font-size:0.72rem;color:#5a6f6a"></p>
+              <div class="methodist-ai-review-actions">
+                <button type="button" class="btn-methodist-approve" id="methodist-btn-ai-approve">Одобрить оценку ИИ</button>
+                <button type="button" class="btn-methodist-reject" id="methodist-btn-ai-reject">Отклонить</button>
+                <button type="button" id="methodist-btn-ai-edit">Редактировать вручную</button>
+              </div>
+            </div>
+          </section>
+
           <section id="methodist-review-panel" class="methodist-review-panel consult-hide-print" hidden aria-label="Разметка для обучения">
-            <h3>Разметка для обучения модели</h3>
+            <h3 id="methodist-review-panel-title">Разметка для обучения модели</h3>
             <p id="methodist-review-status" class="consult-hint-small" style="margin: 0 0 0.35rem; color: #8a6914">Оценка не сохранена</p>
+            <div id="methodist-manual-wrap" class="methodist-manual-wrap">
             <div class="methodist-rating-row" id="methodist-rating-row" role="group" aria-label="Точность оценки системы 1-5">
               <span style="font-size:0.76rem;font-weight:600">Точность системы (1–5):</span>
             </div>
@@ -7528,6 +7635,7 @@
                 <p class="consult-hint-small methodist-ml-record__hint" id="methodist-ml-export-hint">Экспорт для разметки: <code>scripts/export_training_feedback.py</code> → <code>analysis_review</code>, overrides, retrieval_fix.</p>
               </div>
             </details>
+            </div>
             <div class="methodist-review-actions">
               <button type="button" class="btn-methodist-save" id="methodist-btn-save">Сохранить оценку</button>
               <button type="button" id="methodist-btn-skip">Пропустить</button>
@@ -11344,6 +11452,212 @@
     return opt ? opt.label : id;
   }
 
+  function fetchMethodistServerStatus(base) {
+    var url = normalizeRagBaseForRequest(base || "") + "/api/methodist/status";
+    return fetch(url)
+      .then(function (r) {
+        return r.ok ? r.json() : {};
+      })
+      .catch(function () {
+        return {};
+      })
+      .then(function (st) {
+        window.__methodistAiReviewEnabled = !!st.ai_review_enabled;
+        window.__methodistAiReviewModel = st.ai_review_model || "";
+        return st;
+      });
+  }
+
+  function setMethodistAiReviewLoading(label) {
+    var panel = document.getElementById("methodist-ai-review-panel");
+    var meta = document.getElementById("methodist-ai-review-meta");
+    var body = document.getElementById("methodist-ai-review-body");
+    if (!panel) return;
+    panel.hidden = false;
+    panel.classList.add("is-loading");
+    panel.classList.remove("is-ready");
+    if (meta) meta.textContent = label || "ИИ оценивает результат анализа…";
+    if (body) body.hidden = true;
+  }
+
+  function renderMethodistAiReviewUi(ai) {
+    var panel = document.getElementById("methodist-ai-review-panel");
+    var meta = document.getElementById("methodist-ai-review-meta");
+    var body = document.getElementById("methodist-ai-review-body");
+    var metrics = document.getElementById("methodist-ai-review-metrics");
+    var summary = document.getElementById("methodist-ai-review-summary");
+    var impList = document.getElementById("methodist-ai-review-improvements");
+    var sysNotes = document.getElementById("methodist-ai-review-system-notes");
+    if (!panel || !ai) return;
+    panel.hidden = false;
+    panel.classList.remove("is-loading");
+    panel.classList.add("is-ready");
+    if (meta) {
+      meta.textContent =
+        "Модель: " +
+        (ai.model_used || window.__methodistAiReviewModel || "Gemini") +
+        " · уверенность: " +
+        (ai.confidence || "medium");
+    }
+    if (metrics) {
+      metrics.innerHTML =
+        "<span>КЗ: <strong>" +
+        escapeHtml(methodistGoldStatusRu(ai.kz_compliance_gold)) +
+        "</strong></span>" +
+        "<span>Точность системы: <strong>" +
+        String(ai.system_accuracy_rating) +
+        "/5</strong></span>" +
+        "<span>" +
+        escapeHtml(methodistVerdictRu(ai.system_accuracy_verdict)) +
+        "</span>";
+    }
+    if (summary) summary.textContent = ai.summary_ru || "";
+    if (impList) {
+      impList.innerHTML = (ai.improvements_ru || [])
+        .map(function (t) {
+          return "<li>" + escapeHtml(t) + "</li>";
+        })
+        .join("");
+    }
+    if (sysNotes) {
+      sysNotes.textContent = ai.system_notes_ru ? "Замечания к системе: " + ai.system_notes_ru : "";
+    }
+    if (body) body.hidden = false;
+    var manual = document.getElementById("methodist-manual-wrap");
+    if (manual) manual.classList.add("is-collapsed");
+    var title = document.getElementById("methodist-review-panel-title");
+    if (title) title.textContent = "Подтверждение оценки ИИ";
+  }
+
+  function applyMethodistAiReviewToForm(ai) {
+    if (!ai) return;
+    var goldEl = document.getElementById("methodist-kz-gold-select");
+    if (goldEl && ai.kz_compliance_gold) goldEl.value = ai.kz_compliance_gold;
+    var verdictEl = document.getElementById("methodist-verdict-select");
+    if (verdictEl && ai.system_accuracy_verdict) verdictEl.value = ai.system_accuracy_verdict;
+    document.querySelectorAll(".methodist-rating-btn").forEach(function (b) {
+      b.classList.toggle(
+        "is-active",
+        String(b.getAttribute("data-rating")) === String(ai.system_accuracy_rating)
+      );
+    });
+    document.querySelectorAll("#methodist-tags-list input[type=checkbox]").forEach(function (cb) {
+      cb.checked = (ai.tags || []).indexOf(cb.value) >= 0;
+    });
+    var noteParts = [];
+    if (ai.summary_ru) noteParts.push(ai.summary_ru);
+    if (ai.improvements_ru && ai.improvements_ru.length) {
+      noteParts.push("Улучшения: " + ai.improvements_ru.join("; "));
+    }
+    var noteEl = document.getElementById("methodist-note-input");
+    if (noteEl) noteEl.value = noteParts.join("\n\n").slice(0, 2000);
+    (ai.block_overrides || []).forEach(function (bo) {
+      var tr = document.querySelector(
+        '#methodist-blocks-tbody tr[data-block-key="' + bo.block_key + '"]'
+      );
+      if (!tr) return;
+      var sel = tr.querySelector(".methodist-block-verdict");
+      if (sel) sel.value = bo.verdict === "disagree" ? "disagree" : "agree";
+      var inp = tr.querySelector(".methodist-block-note");
+      if (inp && bo.note) inp.value = bo.note;
+    });
+    (ai.rule_overrides || []).forEach(function (ro) {
+      var tr = document.querySelector(
+        '#methodist-findings-tbody tr[data-rule-id="' + ro.rule_id + '"]'
+      );
+      if (!tr) return;
+      var sel = tr.querySelector(".methodist-override-verdict");
+      if (sel && ro.human_pass === true) sel.value = "pass";
+      if (sel && ro.human_pass === false) sel.value = "fail";
+      if (sel && ro.human_pass == null) sel.value = "na";
+      var inp = tr.querySelector(".methodist-override-note");
+      if (inp && ro.note) inp.value = ro.note;
+    });
+    if (ai.retrieval_fix && ai.retrieval_fix.chosen_path) {
+      var wrap = document.getElementById("methodist-retrieval-fix-wrap");
+      if (wrap) wrap.hidden = false;
+      var chosenInp = document.getElementById("methodist-chosen-path");
+      if (chosenInp) chosenInp.value = ai.retrieval_fix.chosen_path;
+      var rejSel = document.getElementById("methodist-rejected-path");
+      if (rejSel && ai.retrieval_fix.rejected_path) rejSel.value = ai.retrieval_fix.rejected_path;
+    }
+    renderMethodistMlRecordPreview(window.__consultReviewLastPayload);
+  }
+
+  function requestMethodistAiReview(data) {
+    if (!window.__methodistMode || !window.__methodistAiReviewEnabled) {
+      var aiPanelOff = document.getElementById("methodist-ai-review-panel");
+      if (aiPanelOff) aiPanelOff.hidden = true;
+      return;
+    }
+    if (!data || !data.analysis_id) return;
+    window.__methodistLastAiReview = null;
+    setMethodistAiReviewLoading("ИИ оценивает результат анализа (этап 2)…");
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+    fetch(base + "/api/methodist/ai-review", {
+      method: "POST",
+      headers: Object.assign({"Content-Type": "application/json"}, methodistHeaders()),
+      body: JSON.stringify({ analysis_id: data.analysis_id }),
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || "HTTP " + r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (payload) {
+        var ai = payload && payload.ai_review;
+        if (!ai) throw new Error("Пустой ответ AI-оценки");
+        window.__methodistLastAiReview = ai;
+        renderMethodistAiReviewUi(ai);
+        applyMethodistAiReviewToForm(ai);
+        setMethodistReviewStatus("Оценка ИИ готова — одобрите или отклоните", "is-unsaved");
+      })
+      .catch(function (e) {
+        var meta = document.getElementById("methodist-ai-review-meta");
+        var panel = document.getElementById("methodist-ai-review-panel");
+        if (panel) {
+          panel.hidden = false;
+          panel.classList.remove("is-ready");
+          panel.classList.add("is-loading");
+        }
+        if (meta) {
+          meta.textContent =
+            "AI-оценка недоступна: " +
+            (e.message || e) +
+            ". Заполните форму вручную.";
+        }
+        var manual = document.getElementById("methodist-manual-wrap");
+        if (manual) manual.classList.remove("is-collapsed");
+      });
+  }
+
+  function showMethodistManualForm() {
+    var manual = document.getElementById("methodist-manual-wrap");
+    if (manual) manual.classList.remove("is-collapsed");
+    var title = document.getElementById("methodist-review-panel-title");
+    if (title) title.textContent = "Разметка для обучения модели (вручную)";
+  }
+
+  function rejectMethodistAiReview() {
+    window.__methodistLastAiReview = null;
+    var panel = document.getElementById("methodist-ai-review-panel");
+    if (panel) panel.hidden = true;
+    showMethodistManualForm();
+    setMethodistReviewStatus("Оценка ИИ отклонена — заполните вручную", "is-unsaved");
+  }
+
+  function approveMethodistAiReview() {
+    if (!window.__methodistLastAiReview) {
+      alert("Нет готовой оценки ИИ.");
+      return;
+    }
+    saveMethodistReview({ methodist_approved: true, review_source: "ai_assisted" });
+  }
+
   function renderMethodistMlRecordPreview(data) {
     var autologEl = document.getElementById("methodist-autolog-list");
     var saveEl = document.getElementById("methodist-review-save-list");
@@ -11885,9 +12199,11 @@
     }
     bindMethodistMlRecordPreviewUpdates();
     renderMethodistMlRecordPreview(data);
+    requestMethodistAiReview(data);
   }
 
-  function saveMethodistReview() {
+  function saveMethodistReview(opts) {
+    opts = opts || {};
     var data = window.__consultReviewLastPayload;
     if (!data || !data.analysis_id) {
       alert("Сначала выполните анализ КЗ.");
@@ -11917,6 +12233,16 @@
       overrides: collectMethodistOverrides(),
       block_overrides: collectMethodistBlockOverrides(),
     };
+    if (opts.review_source) body.review_source = opts.review_source;
+    if (opts.methodist_approved != null) body.methodist_approved = !!opts.methodist_approved;
+    if (window.__methodistLastAiReview) {
+      body.ai_review = {
+        model_used: window.__methodistLastAiReview.model_used || "",
+        confidence: window.__methodistLastAiReview.confidence || "",
+        summary_ru: window.__methodistLastAiReview.summary_ru || "",
+        improvements_ru: window.__methodistLastAiReview.improvements_ru || [],
+      };
+    }
     var rejSel = document.getElementById("methodist-rejected-path");
     var chosenInp = document.getElementById("methodist-chosen-path");
     var chosen = chosenInp ? String(chosenInp.value || "").trim() : "";
@@ -12094,6 +12420,8 @@
     fetch(base + "/api/methodist/status")
       .then(function (r) { return r.json(); })
       .then(function (st) {
+        window.__methodistAiReviewEnabled = !!(st && st.ai_review_enabled);
+        window.__methodistAiReviewModel = (st && st.ai_review_model) || "";
         if (st && st.default_reviewer && !window.__methodistReviewer) {
           window.__methodistReviewer = st.default_reviewer;
         }
@@ -12214,6 +12542,21 @@
       skipBtn.addEventListener("click", function () {
         setMethodistReviewStatus("Пропущено", "");
       });
+    }
+    var aiApprove = document.getElementById("methodist-btn-ai-approve");
+    if (aiApprove && !aiApprove.getAttribute("data-wired")) {
+      aiApprove.setAttribute("data-wired", "1");
+      aiApprove.addEventListener("click", approveMethodistAiReview);
+    }
+    var aiReject = document.getElementById("methodist-btn-ai-reject");
+    if (aiReject && !aiReject.getAttribute("data-wired")) {
+      aiReject.setAttribute("data-wired", "1");
+      aiReject.addEventListener("click", rejectMethodistAiReview);
+    }
+    var aiEdit = document.getElementById("methodist-btn-ai-edit");
+    if (aiEdit && !aiEdit.getAttribute("data-wired")) {
+      aiEdit.setAttribute("data-wired", "1");
+      aiEdit.addEventListener("click", showMethodistManualForm);
     }
 
     if (isMethodistModeRequested()) {

@@ -131,6 +131,33 @@ def save_analysis_snapshot(analysis_id: str, snapshot: dict[str, Any]) -> Path |
     return path
 
 
+def load_analysis_snapshot(analysis_id: str) -> dict[str, Any] | None:
+    if not analysis_id:
+        return None
+    path = analyses_dir() / f"{analysis_id}.json"
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def load_secure_kz_text(text_hash: str) -> str | None:
+    h = (text_hash or "").strip()
+    if not h:
+        return None
+    digest = h.split(":", 1)[-1]
+    path = secure_kz_dir() / f"{digest}.txt"
+    if not path.is_file():
+        return None
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+
 def _event_path(event_type: str) -> Path:
     safe = re.sub(r"[^a-z0-9_]+", "_", (event_type or "unknown").lower())
     return feedback_dir() / f"{safe}.jsonl"

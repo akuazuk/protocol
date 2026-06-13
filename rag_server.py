@@ -2899,6 +2899,11 @@ GEMINI_CONSULT_RAG_REFINE_TIMEOUT = float(
 GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT = float(
     os.environ.get("GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT", "120")
 )
+GEMINI_METHODIST_AI_REVIEW_TIMEOUT = float(
+    os.environ.get("GEMINI_METHODIST_AI_REVIEW_TIMEOUT", "90")
+)
+
+_methodist_model = None
 
 
 def get_gemini():
@@ -2930,6 +2935,40 @@ def get_gemini():
     ]
     _model = genai.GenerativeModel(name, safety_settings=safety)
     return _model
+
+
+def get_methodist_gemini():
+    """Отдельная модель для AI-оценки методиста (можно GEMINI_METHODIST_MODEL=gemini-2.5-pro)."""
+    global _methodist_model
+    if _methodist_model is not None:
+        return _methodist_model
+    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not key:
+        raise HTTPException(
+            status_code=503,
+            detail="На сервере не настроен ключ API для обработки текста.",
+        )
+    try:
+        import google.generativeai as genai
+        from google.generativeai.types import HarmBlockThreshold, HarmCategory
+    except ImportError as e:
+        raise HTTPException(
+            status_code=503,
+            detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
+        ) from e
+    genai.configure(api_key=key)
+    name = (
+        os.environ.get("GEMINI_METHODIST_MODEL")
+        or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    ).strip()
+    safety = [
+        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
+    ]
+    _methodist_model = genai.GenerativeModel(name, safety_settings=safety)
+    return _methodist_model
 
 
 def _is_quota_error(e: Exception) -> bool:
@@ -3167,6 +3206,23 @@ def generate_gemini_consult_review_synthesize(model, full_prompt: str, *, max_ou
         full_prompt,
         GEMINI_CONSULT_REVIEW_SYNTH_TIMEOUT,
     )
+
+
+def generate_gemini_methodist_ai_review(model, full_prompt: str):
+    """AI-оценка для кабинета методиста (этап 2 после детерминированного анализа)."""
+    mo = env_int("GEMINI_METHODIST_AI_MAX_TOKENS", 4096)
+
+    def _fn(m, prompt):
+        return m.generate_content(
+            prompt,
+            generation_config={
+                "temperature": 0.2,
+                "max_output_tokens": mo,
+                "response_mime_type": "application/json",
+            },
+        )
+
+    return _run_model_with_retry(_fn, model, full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
 
 
 def refine_clinical_query_gemini(
@@ -5957,7 +6013,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r97-scoring-gate-calibration"
+BUILD_VERSION = "2026-06-01-r98-methodist-ai-review"
 
 
 def _app_version() -> str:
@@ -7094,11 +7150,20 @@ def api_methodist_status() -> dict:
         methodist_default_reviewer,
         methodist_ui_auto_login,
     )
+    from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled
+
+    has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    methodist_model = (
+        os.environ.get("GEMINI_METHODIST_MODEL")
+        or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    ).strip()
 
     return {
         "enabled": methodist_auth_enabled(),
         "auto_login": methodist_ui_auto_login() and methodist_auth_enabled(),
         "default_reviewer": methodist_default_reviewer(),
+        "ai_review_enabled": methodist_ai_review_enabled() and has_key,
+        "ai_review_model": methodist_model if methodist_ai_review_enabled() and has_key else None,
     }
 
 
@@ -7136,6 +7201,50 @@ def api_methodist_session(request: "Request") -> dict:
     if not reviewer:
         reviewer = methodist_default_reviewer()
     return {"ok": True, "reviewer": reviewer}
+
+
+class MethodistAiReviewIn(BaseModel):
+    analysis_id: str = Field(min_length=8, description="UUID прогона из kz_analysis")
+
+
+@app.post("/api/methodist/ai-review")
+def api_methodist_ai_review(request: "Request", body: MethodistAiReviewIn) -> dict:
+    """Этап 2: LLM оценивает результат детерминированного анализа; методист только одобряет."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.feedback_store import load_analysis_snapshot, load_secure_kz_text
+    from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled, run_methodist_ai_review
+
+    if not methodist_ai_review_enabled():
+        raise HTTPException(status_code=404, detail="METHODIST_AI_REVIEW отключён на сервере.")
+    if not (os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")):
+        raise HTTPException(status_code=503, detail="GOOGLE_API_KEY не настроен для AI-оценки.")
+
+    snap = load_analysis_snapshot(body.analysis_id.strip())
+    if not snap:
+        raise HTTPException(status_code=404, detail="Снимок analysis_id не найден. Повторите анализ в режиме методиста.")
+    result = snap.get("api_result")
+    if not isinstance(result, dict):
+        raise HTTPException(status_code=404, detail="Некорректный снимок анализа.")
+
+    text_hash = str(snap.get("text_hash") or result.get("text_hash") or "")
+    full_text = load_secure_kz_text(text_hash) or ""
+    if not full_text.strip():
+        full_text = str(snap.get("text_excerpt") or "")
+
+    try:
+        ai_review = run_methodist_ai_review(result, full_text)
+    except ValueError as e:
+        raise HTTPException(status_code=502, detail=str(e)[:240]) from e
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Ошибка AI-оценки: {str(e)[:200]}") from e
+
+    return {
+        "ok": True,
+        "analysis_id": body.analysis_id.strip(),
+        "ai_review": ai_review,
+    }
 
 
 @app.post("/api/ml/feedback")
