@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import logging
 import os
 import re
+import tarfile
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -481,6 +483,76 @@ def enrich_result_with_methodist_autolog(
 
     out["methodist_review_context"] = build_methodist_review_context(out, full_text)
     return out
+
+
+def normalize_since_param(since: str | None) -> str | None:
+    """Нормализует ?since= для фильтра JSONL по полю ts (ISO-8601)."""
+    s = (since or "").strip()
+    if not s:
+        return None
+    if len(s) == 10 and s[4] == "-" and s[7] == "-":
+        return f"{s}T00:00:00Z"
+    return s
+
+
+def list_feedback_jsonl_files(*, include_events_aggregate: bool = False) -> list[Path]:
+    d = feedback_dir()
+    if not d.is_dir():
+        return []
+    paths = sorted(d.glob("*.jsonl"))
+    if not include_events_aggregate:
+        paths = [p for p in paths if p.name != "events.jsonl"]
+    return paths
+
+
+def collect_feedback_export_lines(*, since: str | None = None) -> dict[str, list[str]]:
+    """Собирает строки JSONL по файлам; опционально только события с ts ≥ since."""
+    since_norm = normalize_since_param(since)
+    out: dict[str, list[str]] = {}
+    for path in list_feedback_jsonl_files():
+        lines_out: list[str] = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if since_norm:
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                ts = (row.get("ts") or "").strip()
+                if ts and ts < since_norm:
+                    continue
+            lines_out.append(line)
+        out[path.name] = lines_out
+    return out
+
+
+def build_feedback_export_tar_gz(*, since: str | None = None) -> tuple[bytes, dict[str, Any]]:
+    """Архив feedback/*.jsonl (без текста КЗ) + _manifest.json для sync с Render."""
+    since_norm = normalize_since_param(since)
+    files = collect_feedback_export_lines(since=since)
+    event_count = sum(len(v) for v in files.values())
+    manifest: dict[str, Any] = {
+        "exported_at": _utc_now(),
+        "since": since_norm,
+        "feedback_dir_label": "ml/feedback",
+        "files": {k: len(v) for k, v in sorted(files.items())},
+        "event_count": event_count,
+    }
+
+    buf = io.BytesIO()
+    with tarfile.open(fileobj=buf, mode="w:gz") as tar:
+        manifest_bytes = json.dumps(manifest, ensure_ascii=False, indent=2).encode("utf-8")
+        manifest_info = tarfile.TarInfo(name="feedback/_manifest.json")
+        manifest_info.size = len(manifest_bytes)
+        tar.addfile(manifest_info, io.BytesIO(manifest_bytes))
+        for fname, lines in sorted(files.items()):
+            body = ("\n".join(lines) + ("\n" if lines else "")).encode("utf-8")
+            file_info = tarfile.TarInfo(name=f"feedback/{fname}")
+            file_info.size = len(body)
+            tar.addfile(file_info, io.BytesIO(body))
+    return buf.getvalue(), manifest
 
 
 def expand_analysis_review_events(review: dict[str, Any]) -> list[dict[str, Any]]:

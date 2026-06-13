@@ -58,7 +58,7 @@ from typing import Annotated, Iterable
 try:
     from fastapi import FastAPI, HTTPException, File, Form, Query, Request, UploadFile
     from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, StreamingResponse
+    from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
     from fastapi.staticfiles import StaticFiles
     from pydantic import BaseModel, Field
 except ImportError as e:
@@ -5512,6 +5512,7 @@ _RATE_LIMITS: dict[str, int] = {
     "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 20),
     "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 6),
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
+    "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 15),
     "/api/protocol-detail": env_int("RATE_LIMIT_DETAIL_PER_MIN", 30),
     "/api/consultation-template": env_int("RATE_LIMIT_TEMPLATE_PER_MIN", 20),
@@ -6036,7 +6037,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r107-neoplasm-gate-export-feedback-dir"
+BUILD_VERSION = "2026-06-01-r108-ml-feedback-export-api"
 
 
 def _app_version() -> str:
@@ -7274,6 +7275,32 @@ def api_methodist_ai_review(request: "Request", body: MethodistAiReviewIn) -> di
         "analysis_id": body.analysis_id.strip(),
         "ai_review": ai_review,
     }
+
+
+@app.get("/api/ml/feedback/export")
+def api_ml_feedback_export(
+    request: "Request",
+    since: str | None = Query(
+        None,
+        description="ISO-дата (YYYY-MM-DD) или datetime; только события с ts ≥ since",
+        max_length=40,
+    ),
+) -> "Response":
+    """Скачать feedback/*.jsonl (без текста КЗ) для export_training_feedback на Mac."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.feedback_store import build_feedback_export_tar_gz
+
+    data, manifest = build_feedback_export_tar_gz(since=since)
+    exported_at = str(manifest.get("exported_at") or "export")
+    fname = f"ml_feedback_{exported_at[:10]}.tar.gz"
+    return Response(
+        content=data,
+        media_type="application/gzip",
+        headers={
+            "Content-Disposition": f'attachment; filename="{fname}"',
+            "X-Feedback-Event-Count": str(manifest.get("event_count", 0)),
+        },
+    )
 
 
 @app.post("/api/ml/feedback")

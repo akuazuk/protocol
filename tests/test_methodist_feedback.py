@@ -1,13 +1,16 @@
 """Tests for Methodist Workbench feedback store and API (phase A)."""
 from __future__ import annotations
 
+import io
 import json
+import tarfile
 from pathlib import Path
 
 import pytest
 
 from clinical_knowledge.feedback_store import (
     append_feedback_event,
+    build_feedback_export_tar_gz,
     build_kz_analysis_event,
     enrich_result_with_methodist_autolog,
     expand_analysis_review_events,
@@ -228,6 +231,69 @@ def test_feedback_dir_fallback_when_ml_path_not_writable(
     )
     assert feedback_dir() == fallback
     assert fallback.is_dir()
+
+
+def test_build_feedback_export_tar_gz(feedback_env):
+    append_feedback_event({
+        "event_type": "kz_analysis",
+        "analysis_id": "old",
+        "text_hash": "sha256:1",
+        "ts": "2026-06-01T10:00:00Z",
+    })
+    append_feedback_event({
+        "event_type": "analysis_review",
+        "analysis_id": "new",
+        "text_hash": "sha256:2",
+        "rating": 3,
+        "verdict": "mostly_correct",
+        "reviewer": "P.",
+        "ts": "2026-06-15T12:00:00Z",
+    })
+    data, manifest = build_feedback_export_tar_gz(since="2026-06-13")
+    assert manifest["event_count"] == 1
+    assert manifest["files"].get("analysis_review.jsonl") == 1
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tar:
+        names = tar.getnames()
+        assert "feedback/_manifest.json" in names
+        assert "feedback/analysis_review.jsonl" in names
+        review_member = tar.extractfile("feedback/analysis_review.jsonl")
+        assert review_member is not None
+        row = json.loads(review_member.read().decode("utf-8").strip())
+        assert row["analysis_id"] == "new"
+
+
+def test_api_ml_feedback_export_forbidden_without_token(feedback_env):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    client = TestClient(rag_server.app)
+    r = client.get("/api/ml/feedback/export")
+    assert r.status_code == 403
+
+
+def test_api_ml_feedback_export_ok_with_token(feedback_env):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    append_feedback_event({
+        "event_type": "analysis_review",
+        "analysis_id": "exp-1",
+        "text_hash": "sha256:x",
+        "rating": 4,
+        "verdict": "mostly_correct",
+        "reviewer": "P.",
+    })
+    client = TestClient(rag_server.app)
+    headers = {"X-Methodist-Token": "test-methodist-token"}
+    r = client.get("/api/ml/feedback/export", headers=headers)
+    assert r.status_code == 200
+    assert r.headers.get("x-feedback-event-count")
+    with tarfile.open(fileobj=io.BytesIO(r.content), mode="r:gz") as tar:
+        assert "feedback/analysis_review.jsonl" in tar.getnames()
 
 
 def test_api_ml_feedback_forbidden_without_token(feedback_env):
