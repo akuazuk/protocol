@@ -428,7 +428,35 @@ def run_requirement_check(doc: ConsultationDocument) -> tuple[StructuralAssessme
     structural_score = round(len([r for r in filled if r not in missing_recommended]) / max(n_req, 1) * 100, 1)
     structural_score = max(0.0, min(100.0, structural_score - 10 * len(missing_required)))
     if _sparse_primary_neurology(doc):
-        structural_score = min(structural_score, 60.0)
+        structural_score = min(structural_score, 35.0)
+        snip = [(doc.raw_text or "")[:240]] if doc.raw_text else []
+        if not doc.sections.complaints:
+            issues.append(
+                _issue(
+                    "missing_complaints_neurology",
+                    "Жалобы (первичная неврологическая консультация)",
+                    severity="critical",
+                    evidence=snip,
+                )
+            )
+        if not doc.sections.anamnesis:
+            issues.append(
+                _issue(
+                    "missing_anamnesis_neurology",
+                    "Анамнез (первичная неврологическая консультация)",
+                    severity="major",
+                    evidence=snip,
+                )
+            )
+        if not doc.sections.objective_status:
+            issues.append(
+                _issue(
+                    "missing_objective_neurology",
+                    "Объективный/неврологический статус",
+                    severity="critical",
+                    evidence=snip,
+                )
+            )
 
     patient_checks = [
         doc.patient.full_name,

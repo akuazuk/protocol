@@ -59,6 +59,36 @@ def _has_oncology_context(consult_facts: dict[str, Any]) -> bool:
     return any(m in blob for m in markers)
 
 
+def _is_pregnancy_icd(code: str) -> bool:
+    c = (code or "").upper().strip()
+    if c.startswith("O"):
+        return True
+    return c.startswith("Z3") and len(c) >= 3 and c[1] == "3"
+
+
+def _has_pregnancy_context(consult_facts: dict[str, Any]) -> bool:
+    """Беременность: явный маркер в КZ/МКБ; не срабатывает на гинекологию без беременности (61 г.)."""
+    ctx = consult_facts.get("patient_context") or {}
+    if ctx.get("pregnancy") is True:
+        return True
+    cons = consult_facts.get("consultation") or {}
+    hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+    if "pregnancy" in hints:
+        return True
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    if any(_is_pregnancy_icd(c) for c in icd_list):
+        return True
+    blob = _text_blob(consult_facts)
+    sample = str(cons.get("text_sample") or "")
+    preg_markers = ("беременн", "гестац", "беременность ", "плод", "триместр")
+    if any(m in blob for m in preg_markers) or any(m in sample.lower() for m in preg_markers):
+        return True
+    age = ctx.get("age_years")
+    if isinstance(age, (int, float)) and age > 50:
+        return False
+    return False
+
+
 def _icd_lists_overlap(cond_icd: list[Any], consult_icd: list[str]) -> bool:
     cond_roots = {_icd_root(str(x)) for x in cond_icd if x}
     cons_roots = {_icd_root(str(x)) for x in consult_icd if x}
@@ -105,6 +135,10 @@ def _condition_applies_to_consult(
     if cid == "neoplasm":
         hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
         if "neoplasm" not in hints and not _has_oncology_context(consult_facts):
+            return False
+    if cid == "pregnancy":
+        hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+        if "pregnancy" not in hints and not _has_pregnancy_context(consult_facts):
             return False
     return True
 

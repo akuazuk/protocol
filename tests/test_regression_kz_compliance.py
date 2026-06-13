@@ -196,9 +196,9 @@ def test_report_n_2_pdf_lumbosciatica_compliance():
     treat = bd.get("treatment_score")
     follow = bd.get("follow_up_score")
     doc_score = bd.get("documentation_quality_score") or bd.get("structural_score")
-    assert treat is None or treat >= 70.0
+    assert treat is not None and treat <= 50.0
     assert follow is not None and follow >= 85.0
-    assert doc_score is not None and doc_score <= 70.0
+    assert doc_score is not None and doc_score <= 40.0
 
     doc = parse_consultation(text, consultation_id="report_n_2")
     assert doc.follow_up

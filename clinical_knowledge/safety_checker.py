@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .medication_safety import detect_concurrent_nsaids
 from .consult_config import load_red_flags
 from .consult_schema import ConsultationDocument, SafetyAssessment, SafetyCapInfo
 
@@ -114,6 +115,9 @@ def run_safety_checks(doc: ConsultationDocument) -> list[SafetyAssessment]:
                 status=status,  # type: ignore[arg-type]
             )
         )
+    nsaid = detect_concurrent_nsaids(doc)
+    if nsaid:
+        out.append(nsaid)
     return out
 
 

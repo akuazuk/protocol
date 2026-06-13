@@ -364,6 +364,57 @@ def _protocol_match_score(matches: list[dict[str, Any]]) -> float | None:
     return 90.0 if best.get("applicability") == "applicable" else 65.0
 
 
+def _apply_sparse_neurology_score_caps(
+    doc: ConsultationDocument,
+    structural: StructuralAssessment,
+    *,
+    diag_score: float | None,
+    treat_score: float | None,
+    safety_score: float | None,
+) -> tuple[float | None, float | None, float | None]:
+    from .requirement_checker import _sparse_primary_neurology
+
+    if not _sparse_primary_neurology(doc):
+        return diag_score, treat_score, safety_score
+    s = doc.sections
+    missing_core = not (s.complaints and s.anamnesis and s.objective_status)
+    if missing_core and structural.structural_score is not None:
+        structural.structural_score = min(structural.structural_score, 35.0)
+    has_therapy = bool(
+        doc.sections.recommendations_treatment
+        or any(looks_like_medication_item(m) for m in doc.medications)
+    )
+    if missing_core and has_therapy:
+        if treat_score is not None:
+            treat_score = min(treat_score, 50.0)
+        if safety_score is not None:
+            safety_score = min(safety_score, 55.0)
+    if missing_core and diag_score is not None:
+        diag_score = min(diag_score, 45.0)
+    return diag_score, treat_score, safety_score
+
+
+def _apply_concurrent_nsaid_score_caps(
+    safety: list,
+    *,
+    treat_score: float | None,
+    safety_score: float | None,
+) -> tuple[float | None, float | None]:
+    has_dual = any(
+        getattr(s, "issue_type", None) == "drug_safety"
+        and "нпвп" in (getattr(s, "finding_text", None) or "").lower()
+        and getattr(s, "status", None) != "handled"
+        for s in safety
+    )
+    if not has_dual:
+        return treat_score, safety_score
+    if treat_score is not None:
+        treat_score = min(treat_score, 25.0)
+    if safety_score is not None:
+        safety_score = min(safety_score, 15.0)
+    return treat_score, safety_score
+
+
 def build_compliance_report(
     doc: ConsultationDocument,
     matches: list[dict[str, Any]] | None = None,
@@ -395,6 +446,12 @@ def build_compliance_report(
         treat_score = treat_score_base
     section_q, doc_score = _section_quality(doc)
     safety_score = _safety_score(safety, has_content=has_content)
+    diag_score, treat_score, safety_score = _apply_sparse_neurology_score_caps(
+        doc, structural, diag_score=diag_score, treat_score=treat_score, safety_score=safety_score,
+    )
+    treat_score, safety_score = _apply_concurrent_nsaid_score_caps(
+        safety, treat_score=treat_score, safety_score=safety_score,
+    )
     pm_score = _protocol_match_score(matches)
     follow_score = _follow_up_score(doc, structural)
     proto_assess = _protocol_assessment(matches, rules_check)
