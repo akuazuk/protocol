@@ -2904,6 +2904,15 @@ GEMINI_METHODIST_AI_REVIEW_TIMEOUT = float(
 )
 
 _methodist_model = None
+_methodist_model_name: str | None = None
+_methodist_model_warn: str | None = None
+
+
+def reset_methodist_gemini_cache() -> None:
+    global _methodist_model, _methodist_model_name, _methodist_model_warn
+    _methodist_model = None
+    _methodist_model_name = None
+    _methodist_model_warn = None
 
 
 def get_gemini():
@@ -2925,7 +2934,9 @@ def get_gemini():
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
     genai.configure(api_key=key)
-    name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    from clinical_knowledge.gemini_model_config import main_gemini_model_name
+
+    name, _warn = main_gemini_model_name()
     # Единые safety-настройки (как в gemini_verify) - иначе медицинский текст чаще даёт пустой ответ.
     safety = [
         {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
@@ -2938,8 +2949,8 @@ def get_gemini():
 
 
 def get_methodist_gemini():
-    """Отдельная модель для AI-оценки методиста (можно GEMINI_METHODIST_MODEL=gemini-2.5-pro)."""
-    global _methodist_model
+    """Отдельная модель для AI-оценки методиста (GEMINI_METHODIST_MODEL или gemini-2.5-pro)."""
+    global _methodist_model, _methodist_model_name, _methodist_model_warn
     if _methodist_model is not None:
         return _methodist_model
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
@@ -2957,10 +2968,11 @@ def get_methodist_gemini():
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
     genai.configure(api_key=key)
-    name = (
-        os.environ.get("GEMINI_METHODIST_MODEL")
-        or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-    ).strip()
+    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
+
+    name, warn = methodist_gemini_model_name()
+    _methodist_model_name = name
+    _methodist_model_warn = warn
     safety = [
         {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
         {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
@@ -3212,17 +3224,28 @@ def generate_gemini_methodist_ai_review(model, full_prompt: str):
     """AI-оценка для кабинета методиста (этап 2 после детерминированного анализа)."""
     mo = env_int("GEMINI_METHODIST_AI_MAX_TOKENS", 4096)
 
-    def _fn(m, prompt):
-        return m.generate_content(
-            prompt,
-            generation_config={
-                "temperature": 0.2,
-                "max_output_tokens": mo,
-                "response_mime_type": "application/json",
-            },
-        )
+    def _call(m, prompt, *, json_mode: bool):
+        cfg: dict = {"temperature": 0.2, "max_output_tokens": mo}
+        if json_mode:
+            cfg["response_mime_type"] = "application/json"
+        return m.generate_content(prompt, generation_config=cfg)
 
-    return _run_model_with_retry(_fn, model, full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
+    def _fn(m, prompt):
+        try:
+            return _call(m, prompt, json_mode=True)
+        except Exception as exc:
+            if "response_mime_type" in str(exc).lower() or "json" in str(exc).lower():
+                return _call(m, prompt, json_mode=False)
+            raise
+
+    try:
+        return _run_model_with_retry(_fn, model, full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
+    except Exception as exc:
+        err = str(exc).lower()
+        if "not found" in err or "is not supported" in err:
+            reset_methodist_gemini_cache()
+            return _run_model_with_retry(_fn, get_methodist_gemini(), full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
+        raise
 
 
 def refine_clinical_query_gemini(
@@ -6013,7 +6036,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r98-methodist-ai-review"
+BUILD_VERSION = "2026-06-01-r99-methodist-ai-ux-model-fix"
 
 
 def _app_version() -> str:
@@ -7151,19 +7174,18 @@ def api_methodist_status() -> dict:
         methodist_ui_auto_login,
     )
     from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled
+    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
 
     has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
-    methodist_model = (
-        os.environ.get("GEMINI_METHODIST_MODEL")
-        or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-    ).strip()
+    ai_model, model_warn = methodist_gemini_model_name()
 
     return {
         "enabled": methodist_auth_enabled(),
         "auto_login": methodist_ui_auto_login() and methodist_auth_enabled(),
         "default_reviewer": methodist_default_reviewer(),
         "ai_review_enabled": methodist_ai_review_enabled() and has_key,
-        "ai_review_model": methodist_model if methodist_ai_review_enabled() and has_key else None,
+        "ai_review_model": ai_model if methodist_ai_review_enabled() and has_key else None,
+        "ai_review_model_warn": model_warn,
     }
 
 
@@ -7239,6 +7261,13 @@ def api_methodist_ai_review(request: "Request", body: MethodistAiReviewIn) -> di
         raise
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Ошибка AI-оценки: {str(e)[:200]}") from e
+
+    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
+
+    resolved, model_warn = methodist_gemini_model_name()
+    if model_warn:
+        ai_review["model_warn"] = model_warn
+    ai_review["model_used"] = resolved
 
     return {
         "ok": True,

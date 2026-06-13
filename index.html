@@ -5588,7 +5588,20 @@
     body.methodist-mode #consult-structured-spoiler,
     body.methodist-mode #consult-summary-spoiler,
     body.methodist-mode #consult-limit-spoiler,
-    body.methodist-mode #consult-clinical-rules-panel {
+    body.methodist-mode #consult-clinical-rules-panel,
+    body.methodist-mode #consult-protocols-spoiler,
+    body.methodist-mode #consult-methodology-spoiler,
+    body.methodist-mode #consult-oncology-banner {
+      display: none !important;
+    }
+
+    body.methodist-mode.methodist-ai-pending #methodist-review-panel,
+    body.methodist-mode.methodist-ai-ready #methodist-review-panel {
+      display: none !important;
+    }
+
+    body.methodist-mode.methodist-ai-pending .methodist-manual-wrap,
+    body.methodist-mode.methodist-ai-ready .methodist-manual-wrap {
       display: none !important;
     }
 
@@ -7532,8 +7545,8 @@
           </section>
 
           <section id="methodist-ai-review-panel" class="methodist-ai-review-panel consult-hide-print" hidden aria-label="AI-оценка для методиста">
-            <h3>Оценка ИИ (этап 2)</h3>
-            <p class="methodist-ai-review-panel__meta" id="methodist-ai-review-meta">После анализа модель оценит КЗ и точность системы.</p>
+            <h3>Оценка ИИ — этап 2</h3>
+            <p class="methodist-ai-review-panel__meta" id="methodist-ai-review-meta">После анализа модель оценит КЗ и точность системы; вам останется одобрить или отклонить.</p>
             <div id="methodist-ai-review-body" hidden>
               <div class="methodist-ai-review-metrics" id="methodist-ai-review-metrics"></div>
               <p class="methodist-ai-review-panel__summary" id="methodist-ai-review-summary"></p>
@@ -11429,6 +11442,13 @@
     }
     if (tierRow) tierRow.hidden = !active;
     document.body.classList.toggle("methodist-mode", active);
+    if (!active) setMethodistAiFlowState("");
+    if (active) {
+      var tierSel = document.getElementById("methodist-tier-select");
+      if (tierSel && !tierSel.getAttribute("data-user-tier")) {
+        tierSel.value = "L1";
+      }
+    }
     var workbench = document.getElementById("methodist-workbench-wrap");
     if (workbench && !active) workbench.hidden = true;
     var dash = document.getElementById("methodist-eval-dashboard");
@@ -11450,6 +11470,27 @@
       return o.id === id;
     });
     return opt ? opt.label : id;
+  }
+
+  function methodistApiErrorRu(raw) {
+    var msg = String(raw || "");
+    try {
+      var j = JSON.parse(msg);
+      if (j && j.detail) msg = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail);
+    } catch (e1) {}
+    if (msg.indexOf("is not found") !== -1 || msg.indexOf("not supported for generateContent") !== -1) {
+      return (
+        "Неверное имя модели в .env. Задайте GEMINI_METHODIST_MODEL=gemini-2.5-pro " +
+        "(или gemini-2.5-flash). Сейчас в API нет gemini-3.1-pro. " +
+        msg.slice(0, 180)
+      );
+    }
+    return msg.slice(0, 420);
+  }
+
+  function setMethodistAiFlowState(state) {
+    document.body.classList.remove("methodist-ai-pending", "methodist-ai-ready", "methodist-ai-failed");
+    if (state) document.body.classList.add(state);
   }
 
   function fetchMethodistServerStatus(base) {
@@ -11523,8 +11564,7 @@
       sysNotes.textContent = ai.system_notes_ru ? "Замечания к системе: " + ai.system_notes_ru : "";
     }
     if (body) body.hidden = false;
-    var manual = document.getElementById("methodist-manual-wrap");
-    if (manual) manual.classList.add("is-collapsed");
+    setMethodistAiFlowState("methodist-ai-ready");
     var title = document.getElementById("methodist-review-panel-title");
     if (title) title.textContent = "Подтверждение оценки ИИ";
   }
@@ -11588,10 +11628,13 @@
     if (!window.__methodistMode || !window.__methodistAiReviewEnabled) {
       var aiPanelOff = document.getElementById("methodist-ai-review-panel");
       if (aiPanelOff) aiPanelOff.hidden = true;
+      setMethodistAiFlowState("");
       return;
     }
     if (!data || !data.analysis_id) return;
     window.__methodistLastAiReview = null;
+    setMethodistAiFlowState("methodist-ai-pending");
+    setMethodistReviewStatus("ИИ оценивает результат…", "is-unsaved");
     setMethodistAiReviewLoading("ИИ оценивает результат анализа (этап 2)…");
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
@@ -11617,6 +11660,7 @@
         setMethodistReviewStatus("Оценка ИИ готова — одобрите или отклоните", "is-unsaved");
       })
       .catch(function (e) {
+        setMethodistAiFlowState("methodist-ai-failed");
         var meta = document.getElementById("methodist-ai-review-meta");
         var panel = document.getElementById("methodist-ai-review-panel");
         if (panel) {
@@ -11627,15 +11671,16 @@
         if (meta) {
           meta.textContent =
             "AI-оценка недоступна: " +
-            (e.message || e) +
-            ". Заполните форму вручную.";
+            methodistApiErrorRu(e.message || e) +
+            ". Ниже — ручная форма.";
         }
-        var manual = document.getElementById("methodist-manual-wrap");
-        if (manual) manual.classList.remove("is-collapsed");
+        showMethodistManualForm();
+        setMethodistReviewStatus("Ошибка AI — заполните вручную или повторите анализ", "is-unsaved");
       });
   }
 
   function showMethodistManualForm() {
+    setMethodistAiFlowState("methodist-ai-failed");
     var manual = document.getElementById("methodist-manual-wrap");
     if (manual) manual.classList.remove("is-collapsed");
     var title = document.getElementById("methodist-review-panel-title");

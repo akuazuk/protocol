@@ -250,7 +250,11 @@ def run_methodist_ai_review(
     parsed = parse_json_fn(txt) if parse_json_fn else _try_parse_json(txt)
     if not parsed:
         raise ValueError("Модель не вернула корректный JSON для оценки методиста")
+    from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
+
     normalized = normalize_ai_review(parsed)
-    model_name = os.environ.get("GEMINI_METHODIST_MODEL") or os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+    model_name, model_warn = methodist_gemini_model_name()
     normalized["model_used"] = model_name
+    if model_warn:
+        normalized["model_warn"] = model_warn
     return normalized
