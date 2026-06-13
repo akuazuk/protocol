@@ -89,6 +89,34 @@ def _has_pregnancy_context(consult_facts: dict[str, Any]) -> bool:
     return False
 
 
+def _has_condition_context(consult_facts: dict[str, Any], condition_id: str) -> bool:
+    """Нозология по hints, маркерам текста или префиксам МКБ из реестра."""
+    cons = consult_facts.get("consultation") or {}
+    hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+    if condition_id in hints:
+        return True
+    cdef = CONDITION_BY_ID.get(condition_id)
+    if not cdef:
+        return False
+    blob = _text_blob(consult_facts)
+    if any(m in blob for m in cdef.text_markers):
+        return True
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    for pref in cdef.icd_prefixes:
+        pu = pref.upper()
+        if any(code.startswith(pu) for code in icd_list):
+            return True
+    return False
+
+
+def _is_adult_patient(ctx: dict[str, Any]) -> bool:
+    aud = (ctx.get("adult_or_child") or "").lower()
+    if aud == "adult":
+        return True
+    age = ctx.get("age_years")
+    return isinstance(age, (int, float)) and age >= 18
+
+
 def _icd_lists_overlap(cond_icd: list[Any], consult_icd: list[str]) -> bool:
     cond_roots = {_icd_root(str(x)) for x in cond_icd if x}
     cons_roots = {_icd_root(str(x)) for x in consult_icd if x}
@@ -140,6 +168,16 @@ def _condition_applies_to_consult(
         hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
         if "pregnancy" not in hints and not _has_pregnancy_context(consult_facts):
             return False
+    if cid == "pediatric_general_surgery":
+        if _is_adult_patient(ctx):
+            return False
+        age = ctx.get("age_years")
+        aud = (ctx.get("adult_or_child") or "").lower()
+        if aud != "child" and not (isinstance(age, (int, float)) and age < 18):
+            return False
+    if not cond_icd and cid not in ("bladder_dysfunction", "neoplasm", "pregnancy", "pediatric_general_surgery"):
+        if not _has_condition_context(consult_facts, cid):
+            return False
     return True
 
 
@@ -151,9 +189,17 @@ def _check_diagnosis_components(
     present: list[str] = []
     missing: list[str] = []
     markers = {
-        "нозология": ("гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс", "колит", "крон", "целиак", "k50", "k51", "k90", "k85", "k35", "панкреат", "аппендицит", "пневмон", "бронхит", "астм", "диабет", "гипертон", "инфаркт", "инсульт", "артрит", "анем"),
+        "нозология": (
+            "гэрб", "рефлюкс", "гастрит", "язв", "k21", "k29", "k25", "k26", "диспепс", "kолит", "kрон",
+            "целиак", "k50", "k51", "k90", "k85", "k35", "панкреат", "аппендицит", "пневмон", "бронхит",
+            "астм", "диабет", "гипертон", "инфаркт", "инсульт", "артрит", "анем", "щитовид", "e03", "e04",
+            "e05", "e06", "ожирен", "e66", "орви", "j06",
+        ),
         "клиническая форма": ("форма", "неэрозив", "эрозив", "атроф", "поверхност", "катаральн", "флегмон"),
-        "форма": ("форма", "лёгк", "легк", "умерен", "тяжел", "тяжёл", "катаральн", "флегмон", "гангрен"),
+        "форма": (
+            "форма", "лёгк", "легк", "умерен", "тяжел", "тяжёл", "катаральн", "флегмон", "гангрен",
+            "диффузн", "узлов", "многоузлов",
+        ),
         "степень тяжести": ("степен", "лёгк", "легк", "средн", "тяжел", "тяжёл"),
         "фаза": ("фаз", "обострен", "ремисс", "хроническ", "остр"),
         "осложнения": ("осложнен", "кровотеч", "стеноз", "перфора", "без ослож", "перитонит", "абсцесс"),
@@ -191,7 +237,7 @@ def _check_diagnosis_components(
         "возрастная группа": ("возраст", "дет", "подрост", "новорожд"),
         "бактериовыделение": ("бактериовыдел", "микобакт", "бацилл"),
         "эпизод": ("эпизод", "депрессив", "маниакальн", "рекуррент"),
-        "функция": ("функци", "гипотиреоз", "гипертиреоз", "ттг"),
+        "функция": ("функци", "гипотиреоз", "гипертиреоз", "ттг", "эутиреоз", "euthyre"),
         "степень": ("степен", "i ст", "ii ст", "iii ст", "лёгк", "легк", "умерен", "тяжел"),
         "частота": ("частот", "приступ", "эпизод", "раз в"),
     }

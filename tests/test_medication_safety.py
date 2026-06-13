@@ -46,3 +46,43 @@ def test_pregnancy_rule_skipped_for_61yo_obgyn_without_pregnancy():
     )
     preg = [f for f in rc.get("findings", []) if "d4c0214b" in str(f.get("rule_id", ""))]
     assert not preg
+
+
+def _failed_ids(text: str, cid: str, *, protocols: list[dict] | None = None) -> set[str]:
+    facts = facts_from_document(parse_consultation(text, consultation_id=cid))
+    rc = run_rule_checker(facts, matched_protocols=protocols or [])
+    return {str(f.get("rule_id") or "") for f in rc.get("findings", []) if f.get("passed") is False}
+
+
+def test_obgyn_61_local_reanalyze_no_pregnancy_rule():
+    text = (FIXTURES / "feedback_obgyn_61.txt").read_text(encoding="utf-8")
+    out = analyze_consultation_text(text, consultation_id="obgyn_61_r109", with_markdown=False)
+    failed = {
+        str(i.get("issue_type") or i.get("rule_id") or "")
+        for i in (out["compliance"].get("issues") or []) + (out["compliance"].get("warnings") or [])
+    }
+    assert not any("d4c0214b" in r or "pregnancy" in r for r in failed)
+
+
+def test_urvi_j06_no_pneumonia_asthma_tb_rules():
+    text = (FIXTURES / "feedback_urvi_j06.txt").read_text(encoding="utf-8")
+    failed = _failed_ids(text, "urvi_j06")
+    assert not any(x in failed for x in (
+        "f3927f15_path_tuberculosis_diagnosis_formula",
+        "49c2e461_auto_pneumonia_generic_diagnosis_formula",
+        "c7955406_auto_bronchial_asthma_generic_diagnosis_formula",
+    ))
+
+
+def test_thyroid_euthyroid_no_obesity_rule():
+    text = (FIXTURES / "feedback_thyroid_eu.txt").read_text(encoding="utf-8")
+    failed = _failed_ids(text, "thyroid_eu")
+    assert "4c60ee77_path_obesity_diagnosis_formula" not in failed
+    assert "2d00ba03_path_thyroid_disease_diagnosis_formula" not in failed
+
+
+def test_gastro_adult_no_pediatric_surgery_rule():
+    from tests.test_regression_kz_compliance import GASTRO_1
+
+    failed = _failed_ids(GASTRO_1, "gastro_oncology_adult")
+    assert "7265d120_path_pediatric_general_surgery_diagnosis_formula" not in failed
