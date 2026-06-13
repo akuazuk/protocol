@@ -6,6 +6,7 @@ from pathlib import Path
 from clinical_knowledge.compliance_engine import build_compliance_report
 from clinical_knowledge.consult_analysis import analyze_consultation_text
 from clinical_knowledge.consult_parser import parse_consultation
+from clinical_knowledge.rule_checker import run_rule_checker
 from clinical_knowledge.safety_checker import run_safety_checks
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "consultations"
@@ -176,3 +177,37 @@ def test_surgery_redflag_manual_review():
     assert comp["overall_status"] == "manual_review_required"
     assert comp.get("confidence_score") is not None
     assert comp.get("score_source") == "deterministic"
+
+
+def test_report_n_2_pdf_lumbosciatica_compliance():
+    """КZ M54.1 (report_n_2.pdf): без ложного bladder rule, адекватные treatment/follow_up."""
+    text = (FIXTURES / "report_n_2_pdf.txt").read_text(encoding="utf-8")
+    out = analyze_consultation_text(text, consultation_id="report_n_2", with_markdown=False)
+    comp = out["compliance"]
+    bd = comp.get("score_breakdown") or {}
+
+    rule_ids = {
+        str(i.get("issue_type") or i.get("rule_id") or "")
+        for i in (comp.get("issues") or []) + (comp.get("warnings") or [])
+    }
+    assert not any("389f8cf1" in r or "bladder_dysfunction" in r for r in rule_ids)
+
+    treat = bd.get("treatment_score")
+    follow = bd.get("follow_up_score")
+    doc_score = bd.get("documentation_quality_score") or bd.get("structural_score")
+    assert treat is None or treat >= 70.0
+    assert follow is not None and follow >= 85.0
+    assert doc_score is not None and doc_score <= 70.0
+
+    doc = parse_consultation(text, consultation_id="report_n_2")
+    assert doc.follow_up
+    assert not any("контрольная явка" in (m.raw_text or "").lower() for m in doc.medications)
+    assert not any("массаж" in (m.raw_text or "").lower() for m in doc.medications)
+
+    matches = out.get("clinical_rules", {}).get("matched_protocols") or []
+    ped_titles = [
+        m for m in matches
+        if "детск" in str(m.get("title") or "").lower()
+        and m.get("applicability") != "not_applicable"
+    ]
+    assert not ped_titles

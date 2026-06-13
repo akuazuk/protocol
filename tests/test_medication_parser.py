@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import datetime as dt
 
-from clinical_knowledge.medication_parser import RE_SCHEDULE_PREFIX, parse_medications
+from clinical_knowledge.medication_parser import RE_SCHEDULE_PREFIX, parse_medications, looks_like_medication_item
 
 
 def test_medication_regex_compiles():
@@ -47,3 +47,19 @@ def test_prednisolone_schedule():
     assert len(pred.schedule) >= 2
     starts = [s.start_date for s in pred.schedule if s.start_date]
     assert dt.date(2024, 8, 12) in starts
+
+
+def test_non_drug_recommendations_skipped():
+    text = "\n".join([
+        "1. таб. аркоксия 90мг №7 утром",
+        "4. консультация физиотерапевта",
+        "5. ручной классический массаж поясничная область №10",
+        "7. контрольная явка 23.11.2021",
+        "л/н № АЮ 2784681",
+    ])
+    meds = parse_medications(text)
+    raws = [m.raw_text for m in meds]
+    assert any("аркоксия" in (r or "").lower() for r in raws)
+    assert not any("массаж" in (r or "").lower() for r in raws)
+    assert not any("контрольная явка" in (r or "").lower() for r in raws)
+    assert all(looks_like_medication_item(m) for m in meds)

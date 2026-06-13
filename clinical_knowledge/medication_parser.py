@@ -44,6 +44,37 @@ RE_SCHEDULE_SUFFIX = re.compile(
 )
 _DOSE_LEADIN = re.compile(r"\b(по|на)\b", re.I)
 
+RE_DRUG_MARKERS = re.compile(
+    r"\b(?:таб\.?|капс(?:\.|ул)?|р-?р\.?|амп\.?|супп\.?|"
+    r"мг|мкг|мл|г\b|ме\b|ед\.?|"
+    r"№\s*\d+|"
+    r"\d+\s*(?:мг|мкг|мл|г\b|таб|капс|доз)|"
+    r"(?:\d+\s*)?раз\s*(?:в|/)|р/с|р/д|"
+    r"в/м|в/мыш|в/в|п/к|перорально|внутрь)\b",
+    re.I,
+)
+RE_NON_DRUG_LINE = re.compile(
+    r"(?:^|\d+\.\s*)"
+    r"(?:"
+    r"консультац\w*\s+(?:физиотерап|специалист|врач)|"
+    r"(?:ручн\w*\s+)?(?:классическ\w*\s+)?массаж|"
+    r"иглорефлекс|"
+    r"курс\s+корпоральн|"
+    r"контрольн\w*\s+явк|"
+    r"л/н\b|"
+    r"лист\s+нетруд|"
+    r"физиотерап\w*|"
+    r"^лфк\b|"
+    r"немедикамент|"
+    r"^врач\s*:"
+    r")",
+    re.I,
+)
+RE_SICK_LEAVE_PERIOD = re.compile(
+    r"^\s*с\s+\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4}\s+по\s+\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4}\s*$",
+    re.I,
+)
+
 _mid = 0
 
 
@@ -51,6 +82,30 @@ def _next_id() -> str:
     global _mid
     _mid += 1
     return f"med{_mid}"
+
+
+def is_non_drug_prescription_line(raw: str) -> bool:
+    """Строка назначения без лекарственного препарата (процедуры, явка, л/н)."""
+    s = (raw or "").strip()
+    if len(s) < 3:
+        return True
+    if RE_SICK_LEAVE_PERIOD.match(s):
+        return True
+    if RE_NON_DRUG_LINE.search(s):
+        return True
+    return False
+
+
+def looks_like_medication_item(item: MedicationItem) -> bool:
+    """True только для строк с признаками лекарственного назначения."""
+    raw = item.raw_text or ""
+    if is_non_drug_prescription_line(raw):
+        return False
+    if item.dose_value is not None:
+        return True
+    if item.frequency or item.duration or item.route or item.schedule:
+        return True
+    return bool(RE_DRUG_MARKERS.search(raw))
 
 
 def _extract_drug_name(raw: str) -> str | None:
@@ -66,6 +121,8 @@ def _extract_drug_name(raw: str) -> str | None:
 def _parse_one(raw: str, *, source_section: str | None = None) -> MedicationItem | None:
     s = (raw or "").strip()
     if len(s) < 3:
+        return None
+    if is_non_drug_prescription_line(s):
         return None
     dose_value = None
     dose_unit = None

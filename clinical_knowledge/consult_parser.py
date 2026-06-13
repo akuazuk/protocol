@@ -29,6 +29,11 @@ from .diagnosis_parser import parse_diagnoses
 from .medication_parser import parse_medications
 from .template_parser import parse_template_blocks
 
+RE_FOLLOW_UP_INLINE = re.compile(
+    r"контрольн\w*\s+явк\w*(?:\s+(?:на\s+)?(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4}))?",
+    re.I,
+)
+
 # Заголовок секции -> поле ConsultationSections. Порядок важен (более специфичные выше).
 _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"аллерг(?:оанамнез|ия\s+на\s+лс|ологическ\w*\s+анамнез)", "allergy_history"),
@@ -139,6 +144,34 @@ def _exam_items_from_text(text: str, status: str) -> list[ExamItem]:
             )
         )
     return out
+
+
+def _extract_follow_up_from_text(text: str) -> tuple[str, list[FollowUpItem]]:
+    """Убирает строки контрольной явки из блока рекомендаций."""
+    if not text:
+        return text, []
+    kept: list[str] = []
+    items: list[FollowUpItem] = []
+    fu_idx = 0
+    for raw in re.split(r"[\n]+", text):
+        line = raw.strip()
+        if not line:
+            continue
+        m = RE_FOLLOW_UP_INLINE.search(line)
+        if m:
+            fu_idx += 1
+            fu_date = parse_date(m.group(1) or line)
+            items.append(
+                FollowUpItem(
+                    follow_up_id=f"fu_inline_{fu_idx}",
+                    raw_text=line[:300],
+                    date=fu_date,
+                    source_section="general_recommendations",
+                )
+            )
+            continue
+        kept.append(line)
+    return "\n".join(kept), items
 
 
 def _detect_specialty(text: str) -> str | None:
@@ -265,13 +298,22 @@ def parse_consultation(
     recommended = _exam_items_from_text(sections.recommendations_exams or "", "recommended")
 
     # --- лекарства ---
-    med_text = "\n".join(
-        s for s in [sections.recommendations_treatment, sections.general_recommendations] if s
-    )
+    inline_follow_up: list[FollowUpItem] = []
+    med_parts: list[str] = []
+    for field in ("recommendations_treatment", "general_recommendations"):
+        chunk = getattr(sections, field)
+        if not chunk:
+            continue
+        cleaned, fu = _extract_follow_up_from_text(chunk)
+        setattr(sections, field, cleaned or None)
+        inline_follow_up.extend(fu)
+        if cleaned:
+            med_parts.append(cleaned)
+    med_text = "\n".join(med_parts)
     medications = parse_medications(med_text) if med_text else []
 
     # --- повторная явка ---
-    follow_up: list[FollowUpItem] = []
+    follow_up: list[FollowUpItem] = list(inline_follow_up)
     if sections.follow_up_text:
         fu_date = parse_date(sections.follow_up_text)
         follow_up.append(

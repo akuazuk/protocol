@@ -64,6 +64,16 @@ def _condition_applies_to_consult(
     cond_icd = list(meta.get("icd10") or [])
     if cond_icd and icd_list and not _icd_lists_overlap(cond_icd, icd_list):
         return False
+    if cid == "bladder_dysfunction":
+        hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+        if "bladder_dysfunction" not in hints:
+            blob = _text_blob(consult_facts)
+            markers = (
+                "мочев", "пузыр", "дизур", "уролог", "урин", "н31", "n31", "n39", "n39",
+                "цистит", "инконтинен", "недержан",
+            )
+            if not any(m in blob for m in markers):
+                return False
     return True
 
 

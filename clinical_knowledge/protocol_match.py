@@ -32,6 +32,35 @@ _VENOUS_CARD_NEEDLES = (
 _HEART_FAILURE_NEEDLES = (
     "недостаточност", "сердечн", "кардиомиопат", "функциональн класс", "nyha",
 )
+_SPINE_ICD_ROOTS = frozenset({"M51", "M53", "M54"})
+_BLADDER_PATH_NEEDLES = ("мочевого", "мочев", "пузыр", "уролог", "дизури", "цистит")
+_SPINE_PATH_NEEDLES = (
+    "позвоноч", "радикул", "люмбо", "ишиас", "нейрохирург", "м54", "m54", "м51", "m51",
+)
+
+
+def _is_spine_icd(icd_list: list[str]) -> bool:
+    for c in icd_list:
+        root = _icd_root(c)
+        if root in _SPINE_ICD_ROOTS or (len(root) >= 2 and root.startswith("M5")):
+            return True
+    return False
+
+
+def _card_spine_bladder_relevance(card: dict[str, Any], icd_list: list[str]) -> float:
+    """0.0 - урологический КП при M54*; 1.0 - позвоночный/нейро КП при M54*."""
+    if not _is_spine_icd(icd_list):
+        return 0.5
+    blob = ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
+    bladder = any(n in blob for n in _BLADDER_PATH_NEEDLES)
+    spine = any(n in blob for n in _SPINE_PATH_NEEDLES)
+    if bladder and not spine:
+        return 0.0
+    if spine and not bladder:
+        return 1.0
+    if bladder and spine:
+        return 0.4
+    return 0.5
 
 
 def _is_venous_icd(icd_list: list[str]) -> bool:
@@ -152,6 +181,13 @@ def compute_match_score(
             raw = min(1.0, raw * 1.15)
         elif rel <= 0.1:
             raw *= 0.12
+
+    if _is_spine_icd(icd_list):
+        rel = _card_spine_bladder_relevance(card, icd_list)
+        if rel >= 0.9:
+            raw = min(1.0, raw * 1.12)
+        elif rel <= 0.05:
+            raw *= 0.08
 
     return round(max(0.0, min(100.0, raw * 100)), 2)
 

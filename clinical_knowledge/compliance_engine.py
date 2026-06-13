@@ -10,6 +10,8 @@
 """
 from __future__ import annotations
 
+import re
+
 from typing import Any
 
 from .consult_schema import (
@@ -28,6 +30,7 @@ from .consult_schema import (
 )
 from .confidence_scoring import apply_confidence_status, compute_confidence_score
 from .evidence_map import build_evidence_map
+from .medication_parser import looks_like_medication_item
 from .protocol_compliance_checker import run_protocol_compliance_check
 from .requirement_checker import run_requirement_check
 from .safety_checker import apply_safety_cap_to_score, has_unhandled_critical, run_safety_checks
@@ -201,13 +204,17 @@ def _treatment_assessments(
     doc: ConsultationDocument,
 ) -> tuple[list[TreatmentAssessment], float | None]:
     out: list[TreatmentAssessment] = []
-    if not doc.medications:
+    drug_meds = [m for m in doc.medications if looks_like_medication_item(m)]
+    if not drug_meds:
         return out, None
     scores: list[float] = []
-    for m in doc.medications:
+    for m in drug_meds:
         issues: list[ComplianceIssue] = []
         penalty = 0
-        if m.dose_value is None:
+        raw_low = (m.raw_text or "").lower()
+        informal_freq = bool(re.search(r"утром|вечером|на\s+ночь|\d+\s*р/с|\d+\s*раз", raw_low))
+        pack_duration = bool(re.search(r"№\s*\d+", raw_low))
+        if m.dose_value is None and not re.search(r"\d+(?:[.,]\d+)?\s*(?:в/м|в/мыш|в/в|мг|мл)", raw_low):
             issues.append(
                 ComplianceIssue(
                     issue_type="missing_dose", severity="warning",
@@ -217,7 +224,7 @@ def _treatment_assessments(
                 )
             )
             penalty += 25
-        if not m.frequency:
+        if not m.frequency and not informal_freq:
             issues.append(
                 ComplianceIssue(
                     issue_type="missing_frequency", severity="warning",
@@ -227,7 +234,7 @@ def _treatment_assessments(
                 )
             )
             penalty += 20
-        if not m.duration and not m.schedule:
+        if not m.duration and not m.schedule and not pack_duration:
             issues.append(
                 ComplianceIssue(
                     issue_type="missing_duration", severity="warning",

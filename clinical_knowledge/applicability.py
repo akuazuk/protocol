@@ -7,6 +7,8 @@
 """
 from __future__ import annotations
 
+import re
+
 from typing import Any
 
 PREGNANCY_MARKERS = ("беременн", "гестац", "беременности", "родоразрешен", "послеродов")
@@ -31,8 +33,21 @@ def _card_text(card: dict[str, Any]) -> str:
     return ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
 
 
+def _title_population_marker(title: str) -> str | None:
+    """Явная возрастная группа в заголовке КП (приоритетнее path/registry)."""
+    t = (title or "").lower()
+    if re.search(r"детск\w*\s+населен|\(детск", t):
+        return "child"
+    if re.search(r"взросл\w*\s+населен|\(взросл", t):
+        return "adult"
+    return None
+
+
 def infer_card_population(card: dict[str, Any]) -> str:
     """population из карточки или по маркерам в названии/path (детское/взрослое население)."""
+    title_pop = _title_population_marker(str(card.get("title") or ""))
+    if title_pop:
+        return title_pop
     raw = str(card.get("population") or "any").lower().strip()
     if raw in ("child", "children", "pediatric"):
         return "child"

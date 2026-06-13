@@ -6036,7 +6036,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r104-fix-regex-after-dash-normalize"
+BUILD_VERSION = "2026-06-01-r105-report-n2-compliance-fixes"
 
 
 def _app_version() -> str:

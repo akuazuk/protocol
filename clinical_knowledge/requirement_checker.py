@@ -16,6 +16,7 @@ from .consult_schema import (
     StructuralAssessment,
 )
 from .diagnosis_icd import lookup_disease_icd, normalize_code
+from .medication_parser import looks_like_medication_item
 from .safety_checker import run_safety_checks
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -112,11 +113,30 @@ def _primary_visit(doc: ConsultationDocument) -> bool:
 
 def _follow_up_mentioned(doc: ConsultationDocument) -> bool:
     blob = (doc.raw_text or "").lower()
+    rec = "\n".join(
+        x for x in [
+            doc.sections.recommendations_treatment or "",
+            doc.sections.general_recommendations or "",
+            doc.sections.follow_up_text or "",
+        ] if x
+    ).lower()
     return bool(
         doc.follow_up
         or doc.sections.follow_up_text
+        or re.search(r"контрольн\w*\s+явк", rec)
         or re.search(r"контрол\w*\s+(?:через|через\s+\d)|повторн\w*\s+явк", blob)
     )
+
+
+def _sparse_primary_neurology(doc: ConsultationDocument) -> bool:
+    spec = (doc.doctor_specialty or "").lower()
+    if "невролог" not in spec:
+        return False
+    blob = (doc.raw_text or "").lower()
+    if re.search(r"повторн\w*\s+(?:консультац|при[её]м|осмотр)|на\s+контрол", blob):
+        return False
+    s = doc.sections
+    return not (s.complaints and s.anamnesis and s.objective_status)
 
 
 def _suspected_diagnosis(doc: ConsultationDocument) -> bool:
@@ -290,6 +310,8 @@ def _data_quality_issues(doc: ConsultationDocument) -> list[ComplianceIssue]:
             )
         )
     for m in doc.medications:
+        if not looks_like_medication_item(m):
+            continue
         ev = [m.raw_text[:200]] if m.raw_text else []
         if m.dose_value is None and m.raw_text:
             issues.append(
@@ -405,6 +427,8 @@ def run_requirement_check(doc: ConsultationDocument) -> tuple[StructuralAssessme
     n_req = len(list(cfg.get("required") or [])) or 1
     structural_score = round(len([r for r in filled if r not in missing_recommended]) / max(n_req, 1) * 100, 1)
     structural_score = max(0.0, min(100.0, structural_score - 10 * len(missing_required)))
+    if _sparse_primary_neurology(doc):
+        structural_score = min(structural_score, 60.0)
 
     patient_checks = [
         doc.patient.full_name,
