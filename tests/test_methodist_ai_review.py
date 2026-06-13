@@ -17,7 +17,8 @@ def test_normalize_ai_review_valid():
         "system_accuracy_verdict": "mostly_correct",
         "tags": ["false_positive_rule"],
         "summary_ru": "КЗ в целом соответствует.",
-        "improvements_ru": ["Уточнить локализацию", "Добавить контроль"],
+        "engine_improvements_ru": ["Отключить ложное правило bladder_dysfunction для M54.1", "Не занижать treatment_score при НПВС"],
+        "kz_text_notes_ru": ["Опечатка реблакса"],
         "system_notes_ru": "Правило ЭГДС — ложное срабатывание.",
         "block_overrides": [
             {"block_key": "diagnosis_score", "verdict": "agree", "note": ""},
@@ -32,6 +33,8 @@ def test_normalize_ai_review_valid():
     assert out["system_accuracy_rating"] == 4
     assert len(out["block_overrides"]) == 1
     assert out["block_overrides"][0]["block_key"] == "treatment_score"
+    assert len(out["engine_improvements_ru"]) == 2
+    assert out["kz_text_notes_ru"] == ["Опечатка реблакса"]
     assert out["retrieval_fix"]["chosen_path"] == "b.pdf"
 
 
@@ -47,7 +50,7 @@ def test_run_methodist_ai_review_mock():
         "system_accuracy_verdict": "partially_wrong",
         "tags": ["score_misleading"],
         "summary_ru": "Итог",
-        "improvements_ru": ["Пункт 1"],
+        "engine_improvements_ru": ["Исправить hybrid gate для rules=0%"],
         "system_notes_ru": "Hybrid завышен",
         "block_overrides": [],
         "rule_overrides": [],

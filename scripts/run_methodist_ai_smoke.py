@@ -142,8 +142,10 @@ def main() -> int:
             if ai:
                 print(f"AI gold: {ai.get('kz_compliance_gold')} | rating={ai.get('system_accuracy_rating')}/5 | {ai.get('system_accuracy_verdict')}")
                 print(f"AI summary: {ai.get('summary_ru', '')[:280]}")
-                print("Улучшения КЗ:")
-                for i, imp in enumerate(ai.get("improvements_ru") or [], 1):
+                print("Правки движка (engine_improvements_ru):")
+                for i, imp in enumerate(
+                    ai.get("engine_improvements_ru") or ai.get("improvements_ru") or [], 1
+                ):
                     print(f"  {i}. {imp}")
                 print(f"System notes: {(ai.get('system_notes_ru') or '')[:200]}")
                 print(f"Tags: {ai.get('tags')} | confidence: {ai.get('confidence')} | model: {ai.get('model_used')}")

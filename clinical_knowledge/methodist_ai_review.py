@@ -13,36 +13,45 @@ from .feedback_store import (
 )
 from .methodist_context import STRUCTURED_BLOCK_ROWS, build_methodist_review_context
 
-SYSTEM_METHODIST_AI_REVIEW = """Ты методист-врач методслужбы. Тебе передали:
-1) текст консультативного заключения (КЗ);
-2) результат автоматической проверки системы (8 блоков, правила протоколов, протоколы, при L2 — критерии LLM).
+SYSTEM_METHODIST_AI_REVIEW = """Ты методист-врач методслужбы и аудитор качества ПО «Protocol».
 
-Задача — НЕ перепроверять клинику с нуля, а:
-- оценить, насколько само КЗ соответствует клиническим протоколам Минздрава РБ (экспертная gold-метка);
-- оценить, насколько ВЕРНО система оценила это КЗ (рейтинг и вердикт точности системы);
-- перечислить, что врачу улучшить в тексте КЗ;
-- указать, где система ошиблась (блоки/правила/RAG), если есть расхождения.
+Главная задача — МЕТА-ОЦЕНКА: насколько ВЕРНО автоматическая система оценила это консультативное заключение (КЗ).
+Это НЕ аудит текста КЗ для врача и НЕ список того, что врач должен дописать.
 
-Строгие правила:
-- Не выдавай юридических или МЭЭ-вердиктов.
-- Опирайся на переданные протоколы и правила; если данных мало — insufficient_data и понизь confidence.
-- block_key только из списка ключей блоков ниже; verdict: agree | disagree (disagree только если системный % явно неверен).
-- rule_overrides только для rule_id из списка findings; human_pass: true/false/null (null = не применимо).
-- tags только из: wrong_protocol, missed_protocol, false_positive_rule, missed_issue, wrong_population, wrong_diagnosis_block, wrong_treatment_block, score_misleading, other.
-- improvements_ru — конкретные правки для врача (3–7 пунктов), не общие фразы.
+Вход:
+1) текст КЗ;
+2) вывод системы: overall %, 8 блоков, правила протокола, топ протоколов (RAG).
+
+Что нужно сделать (в порядке приоритета):
+1) system_accuracy_rating (1–5) и system_accuracy_verdict — насколько система угадала итог и блоки.
+2) engine_improvements_ru — 3–7 конкретных правок для ДВИЖКА анализа в проекте (rule_checker, веса hybrid, RAG, блоки).
+   Примеры: «убрать ложное правило X», «не занижать treatment_score при указанных НПВС», «отфильтровать детский КП».
+3) block_overrides и rule_overrides — где % блока или verdict правила явно неверен.
+4) tags — тип ошибки системы (false_positive_rule, wrong_protocol, score_misleading…).
+5) kz_compliance_gold — СПРАВОЧНО одной меткой: как бы вы оценили само КZ по протоколам (для калибровки, не главный вывод).
+6) kz_text_notes_ru — опционально, не более 2 пунктов про текст КZ (второстепенно).
+
+Запрещено:
+- Длинный список «что врачу дописать в КZ» в engine_improvements_ru.
+- Юридические/МЭЭ-вердикты.
+- Выдумывать rule_id вне списка findings.
+
+block_key только из списка ниже; verdict agree|disagree (disagree — если системный % явно неверен).
+rule_overrides: rule_id из findings; human_pass true|false.
 
 Верни ОДИН JSON (без markdown):
 {
-  "kz_compliance_gold": "compliant|mostly_compliant|partially_compliant|non_compliant|insufficient_data",
-  "system_accuracy_rating": <целое 1-5>,
+  "system_accuracy_rating": <1-5>,
   "system_accuracy_verdict": "correct|mostly_correct|partially_wrong|wrong",
+  "summary_ru": "<2-4 предложения ТОЛЬКО о точности оценки системы>",
+  "engine_improvements_ru": ["<что исправить в движке анализа Protocol>"],
+  "system_notes_ru": "<где система ошиблась: блоки, правила, RAG, итог %>",
+  "kz_compliance_gold": "compliant|mostly_compliant|partially_compliant|non_compliant|insufficient_data",
+  "kz_text_notes_ru": ["<опционально, до 2>"],
   "tags": ["..."],
-  "summary_ru": "<2-4 предложения: итог по КЗ и по работе системы>",
-  "improvements_ru": ["<что улучшить в КЗ>"],
-  "system_notes_ru": "<где система ошиблась или что сделала хорошо>",
-  "block_overrides": [{"block_key": "<key>", "verdict": "agree|disagree", "note": "<до 200 символов>"}],
-  "rule_overrides": [{"rule_id": "<id>", "human_pass": true|false, "note": "<до 200 символов>"}],
-  "retrieval_fix": {"rejected_path": "<из топ протоколов или пусто>", "chosen_path": "<правильный путь или пусто>", "note": ""},
+  "block_overrides": [{"block_key": "<key>", "verdict": "agree|disagree", "note": ""}],
+  "rule_overrides": [{"rule_id": "<id>", "human_pass": true|false, "note": ""}],
+  "retrieval_fix": {"rejected_path": "", "chosen_path": "", "note": ""},
   "confidence": "high|medium|low"
 }"""
 
@@ -85,6 +94,8 @@ def _build_prompt(result: dict[str, Any], full_text: str) -> str:
         SYSTEM_METHODIST_AI_REVIEW,
         "\n\n--- КЛЮЧИ БЛОКОВ (block_key): ",
         ", ".join(sorted(_VALID_BLOCK_KEYS)),
+        "\n\n--- ЗАДАНИЕ ---",
+        "Оцени ТОЧНОСТЬ автоматической системы (мета-оценка). Не составляй список правок для врача.",
         "\n\n--- ТЕКСТ КЗ ---\n",
         kz_display,
         "\n\n--- ОЦЕНКА СИСТЕМЫ ---",
@@ -136,12 +147,19 @@ def normalize_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
         tags_in = []
     tags = [t for t in (str(x).strip() for x in tags_in) if t in _VALID_TAGS]
 
-    improvements = raw.get("improvements_ru") or []
+    improvements = raw.get("engine_improvements_ru") or raw.get("improvements_ru") or []
     if isinstance(improvements, str):
         improvements = [improvements]
     if not isinstance(improvements, list):
         improvements = []
-    improvements_ru = [str(x).strip() for x in improvements if str(x).strip()][:10]
+    engine_improvements_ru = [str(x).strip() for x in improvements if str(x).strip()][:10]
+
+    kz_notes = raw.get("kz_text_notes_ru") or []
+    if isinstance(kz_notes, str):
+        kz_notes = [kz_notes]
+    if not isinstance(kz_notes, list):
+        kz_notes = []
+    kz_text_notes_ru = [str(x).strip() for x in kz_notes if str(x).strip()][:2]
 
     block_overrides: list[dict[str, Any]] = []
     for bo in raw.get("block_overrides") or []:
@@ -201,7 +219,9 @@ def normalize_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
         "system_accuracy_verdict": verdict,
         "tags": tags,
         "summary_ru": str(raw.get("summary_ru") or "").strip()[:2000],
-        "improvements_ru": improvements_ru,
+        "engine_improvements_ru": engine_improvements_ru,
+        "improvements_ru": engine_improvements_ru,
+        "kz_text_notes_ru": kz_text_notes_ru,
         "system_notes_ru": str(raw.get("system_notes_ru") or "").strip()[:2000],
         "block_overrides": block_overrides,
         "rule_overrides": rule_overrides,
