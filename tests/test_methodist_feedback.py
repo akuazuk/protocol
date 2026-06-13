@@ -11,6 +11,7 @@ from clinical_knowledge.feedback_store import (
     build_kz_analysis_event,
     enrich_result_with_methodist_autolog,
     expand_analysis_review_events,
+    feedback_dir,
     text_hash,
     validate_and_normalize_event,
 )
@@ -214,6 +215,19 @@ def test_methodist_status_includes_reviewer(feedback_env, monkeypatch: pytest.Mo
     data = r.json()
     assert data["enabled"] is True
     assert data["default_reviewer"] == "I.I."
+
+
+def test_feedback_dir_fallback_when_ml_path_not_writable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+):
+    fallback = tmp_path / "project" / "data" / "ml" / "feedback"
+    monkeypatch.setenv("ML_FEEDBACK_DIR", "/var/data/ml/feedback")
+    monkeypatch.setattr(
+        "clinical_knowledge.feedback_store._DEFAULT_FEEDBACK_DIR",
+        fallback,
+    )
+    assert feedback_dir() == fallback
+    assert fallback.is_dir()
 
 
 def test_api_ml_feedback_forbidden_without_token(feedback_env):

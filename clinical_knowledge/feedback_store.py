@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import re
 import uuid
@@ -11,6 +12,8 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parent.parent
+_DEFAULT_FEEDBACK_DIR = ROOT / "data" / "ml" / "feedback"
+_log = logging.getLogger(__name__)
 
 _VALID_VERDICTS = frozenset({"correct", "mostly_correct", "partially_wrong", "wrong"})
 _VALID_TAGS = frozenset({
@@ -37,9 +40,37 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def _probe_writable_dir(path: Path) -> bool:
+    """True если каталог существует/создаётся и доступен для записи."""
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / ".write_probe"
+        probe.write_text("", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return True
+    except OSError:
+        return False
+
+
 def feedback_dir() -> Path:
+    """Каталог JSONL feedback. ML_FEEDBACK_DIR — только если путь реально доступен для записи.
+
+    На Render без Persistent Disk ``/var/data/...`` недоступен (Permission denied) —
+    откат на ``data/ml/feedback`` внутри проекта, чтобы consult-review не падал с 500.
+    """
     raw = (os.environ.get("ML_FEEDBACK_DIR") or "").strip()
-    return Path(raw) if raw else ROOT / "data" / "ml" / "feedback"
+    if raw:
+        configured = Path(raw)
+        if _probe_writable_dir(configured):
+            return configured
+        _log.warning(
+            "ML_FEEDBACK_DIR=%s недоступен для записи; fallback %s",
+            configured,
+            _DEFAULT_FEEDBACK_DIR,
+        )
+    if _probe_writable_dir(_DEFAULT_FEEDBACK_DIR):
+        return _DEFAULT_FEEDBACK_DIR
+    return _DEFAULT_FEEDBACK_DIR
 
 
 def secure_kz_dir() -> Path:
