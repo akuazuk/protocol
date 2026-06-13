@@ -1,11 +1,12 @@
 ---
-description: В UI и пользовательских текстах Protocol использовать только короткий дефис (-), не длинное тире ( - ).
+description: В UI и пользовательских текстах Protocol использовать только короткий дефис (-), не em/en dash.
 alwaysApply: true
 ---
 
 # Тире в текстах Protocol
 
-- В интерфейсе (`index.html`), API-сообщениях (`rag_server.py`), презентации (`docs/mvp-presentation.html`), буклете и связанных `.md` для пользователей **не использовать** символы ` - ` (em dash) и `-` (en dash).
+- В интерфейсе (`index.html`), API-сообщениях (`rag_server.py`), презентации (`docs/mvp-presentation.html`), буклете и связанных `.md` для пользователей **не использовать** em dash (U+2014) и en dash (U+2013).
 - Заменять на **короткий дефис** с пробелами по контексту: `текст - продолжение`, диапазоны `70-84%`, годы `2022-2024`.
 - **Не менять** извлечённый текст протоколов в `data/protocol_summaries/`, `corpus/`, `output/` - там цитаты из PDF.
-- Перед коммитом UI-текстов при необходимости: `python3 scripts/normalize_ui_dashes.py`.
+- **Не менять** строки с `re.compile` / `re.search` и `.strip(...)` с классами символов: в regex для PDF допустимы `\u2013`/`\u2014`; `normalize_ui_dashes.py` пропускает такие строки.
+- Перед коммитом UI-текстов: `python3 scripts/normalize_ui_dashes.py`.

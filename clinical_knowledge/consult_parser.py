@@ -126,7 +126,7 @@ def _exam_items_from_text(text: str, status: str) -> list[ExamItem]:
         return out
     idx = 0
     for raw in re.split(r"[\n;,]+", text):
-        line = raw.strip(" - - \t•.")
+        line = raw.strip(" \t-•.\u2013\u2014")
         if len(line) < 3:
             continue
         idx += 1

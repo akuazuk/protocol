@@ -65,7 +65,7 @@ def infer_approval_from_filename(filename: str) -> dict[str, str | None]:
     """Номер и дата постановления из имени PDF."""
     fn = filename or ""
     num = None
-    m_num = re.search(r"№\s*([\d\-- - /]+)", fn, re.I)
+    m_num = re.search(r"№\s*([\d/\-\u2013\u2014]+)", fn, re.I)
     if m_num:
         num = m_num.group(1).strip()
     else:

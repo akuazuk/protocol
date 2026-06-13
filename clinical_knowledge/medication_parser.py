@@ -11,6 +11,11 @@ import re
 from .consult_schema import MedicationItem, MedicationScheduleStep
 from .date_parser import parse_date
 
+# Разделители в тексте КZ/PDF (типографские тире не нормализуются в regex-скрипте).
+_RE_DASH = r"[\-\u2013\u2014]"
+_RE_DASH_COLON = r"[\-:\u2013\u2014]"
+_STRIP_LEAD = " \t-:.,\u2013\u2014"
+
 _DOSE_UNITS = r"мкг|мг|г|мл|л|ммоль|ме|ед|таб(?:л(?:етк[аи])?)?|т|капс(?:ул[аы])?|к|кап(?:ель|ли)?|доз[аы]?"
 RE_DOSE = re.compile(rf"(\d+(?:[.,]\d+)?)\s*({_DOSE_UNITS})\b", re.I)
 RE_FREQ = re.compile(
@@ -21,7 +26,7 @@ RE_FREQ = re.compile(
     re.I,
 )
 RE_DURATION = re.compile(
-    r"(\d+\s*(?:[--]\s*\d+\s*)?(?:дн(?:я|ей|евн)?|сут(?:ок|ки)?|нед(?:ел[ьия])?|мес(?:яц[ева]*)?)"
+    rf"(\d+\s*(?:{_RE_DASH}\s*\d+\s*)?(?:дн(?:я|ей|евн)?|сут(?:ок|ки)?|нед(?:ел[ьия])?|мес(?:яц[ева]*)?)"
     r"|постоянно|пожизненно|длительно|курс[а-я]*)",
     re.I,
 )
@@ -29,7 +34,10 @@ RE_ROUTE = re.compile(
     r"\b(внутрь|перорально|в/в|в/м|п/к|внутривенно|внутримышечно|подкожно|местно|наружно|ингаляц\w*)\b",
     re.I,
 )
-RE_SCHEDULE_PREFIX = re.compile(r"^\s*с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*[-- - :]\s*(.+)$", re.I)
+RE_SCHEDULE_PREFIX = re.compile(
+    rf"^\s*с\s+(\d{{1,2}}[.\-/]\d{{1,2}}[.\-/]\d{{2,4}})\s*{_RE_DASH_COLON}\s*(.+)$",
+    re.I,
+)
 RE_SCHEDULE_SUFFIX = re.compile(
     r"^(.+?)\s+с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*$",
     re.I,
@@ -51,7 +59,7 @@ def _extract_drug_name(raw: str) -> str | None:
     m = RE_DOSE.search(s)
     head = s[: m.start()] if m else s
     head = re.split(r"\d", head)[0]
-    head = head.strip(" - - :.,")
+    head = head.strip(_STRIP_LEAD)
     return head or None
 
 
@@ -150,7 +158,7 @@ def parse_medications(text: str, *, source_section: str | None = None) -> list[M
 
     for raw_line in re.split(r"[\n]+", text):
         for segment in re.split(r"\s*;\s*", raw_line):
-            line = segment.strip(" - - \t•")
+            line = segment.strip(_STRIP_LEAD + "\t•")
             if len(line) < 3:
                 continue
             step = _schedule_step(line) or _schedule_step_suffix(line)

@@ -3,7 +3,11 @@ from __future__ import annotations
 
 import datetime as dt
 
-from clinical_knowledge.medication_parser import parse_medications
+from clinical_knowledge.medication_parser import RE_SCHEDULE_PREFIX, parse_medications
+
+
+def test_medication_regex_compiles():
+    assert RE_SCHEDULE_PREFIX.pattern
 
 
 def test_rivaroxaban():

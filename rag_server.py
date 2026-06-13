@@ -4588,8 +4588,8 @@ def _consult_oncology_dual_scan(blob: str) -> tuple[list[str], list[str]]:
             ),
             "карцинома/саркома/меланома",
         ),
-        (re.compile(r"\bher2\b|\bгер\s*[--]?\s*2\b|\bгер2\b", re.I), "HER2"),
-        (re.compile(r"\bki\s*[--]?\s*67\b|\bki67\b", re.I), "Ki-67"),
+        (re.compile(r"\bher2\b|\bгер\s*[\-\u2013\u2014]?\s*2\b|\bгер2\b", re.I), "HER2"),
+        (re.compile(r"\bki\s*[\-\u2013\u2014]?\s*67\b|\bki67\b", re.I), "Ki-67"),
         (re.compile(r"\btnm\b", re.I), "TNM"),
         (re.compile(r"\bstaging\b", re.I), "staging"),
         (re.compile(r"\boncolog\w+", re.I), "oncology_en"),
@@ -6036,7 +6036,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r103-normalize-dashes"
+BUILD_VERSION = "2026-06-01-r104-fix-regex-after-dash-normalize"
 
 
 def _app_version() -> str:

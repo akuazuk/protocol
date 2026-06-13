@@ -86,7 +86,7 @@ def parse_template_blocks(text: str) -> list[TemplateBlock]:
             continue
         if cur_label is not None:
             cur_source_lines.append(line)
-            item = line.strip(" - - \t•*")
+            item = line.strip(" \t-•*\u2013\u2014")
             if item:
                 cur_items.append(item)
     _flush()

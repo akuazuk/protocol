@@ -65,7 +65,7 @@ def _split_diagnosis_lines(diagnosis_block: str) -> list[str]:
         return []
     parts: list[str] = []
     for raw in re.split(r"[\n;]+", diagnosis_block):
-        line = raw.strip(" - - \t")
+        line = raw.strip(" \t-\u2013\u2014")
         if len(line) < 3:
             # слишком короткий фрагмент - приклеиваем к предыдущему, если это хвост
             if line and parts:

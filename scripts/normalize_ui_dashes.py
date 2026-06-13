@@ -94,6 +94,22 @@ def normalize_dashes(text: str) -> str:
     return re.sub(r"\s*\u2014\s*", " - ", text)
 
 
+_RE_LINE_SKIP = re.compile(
+    r"\b(re\.(?:compile|search|match|findall|sub|split|fullmatch)|rf[\"'])"
+)
+
+
+def normalize_file_text(text: str) -> str:
+    """Построчно: не трогаем строки с regex (иначе ломаются классы символов)."""
+    out_lines: list[str] = []
+    for line in text.splitlines(keepends=True):
+        if _RE_LINE_SKIP.search(line):
+            out_lines.append(line)
+        else:
+            out_lines.append(normalize_dashes(line))
+    return "".join(out_lines)
+
+
 def main() -> int:
     changed = 0
     total_dashes = 0
@@ -105,7 +121,7 @@ def main() -> int:
         n_before = raw.count("\u2014") + raw.count("\u2013")
         if not n_before:
             continue
-        norm = normalize_dashes(raw)
+        norm = normalize_file_text(raw)
         if norm == raw:
             continue
         path.write_text(norm, encoding="utf-8")
