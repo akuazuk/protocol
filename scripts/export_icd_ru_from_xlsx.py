@@ -6,10 +6,10 @@
     ICD_RU_XLSX=data/icd_reference/mkb10_minzdrav_rb.xlsx python3 scripts/export_icd_ru_from_xlsx.py
 
 Переменные окружения:
-  ICD_RU_XLSX — путь к .xlsx (по умолчанию data/icd_reference/mkb10_ru_mkb10su.xlsx)
-  ICD_RU_JSON — куда записать JSON (по умолчанию data/icd_reference/icd10_ru_mkb10su.json)
+  ICD_RU_XLSX - путь к .xlsx (по умолчанию data/icd_reference/mkb10_ru_mkb10su.xlsx)
+  ICD_RU_JSON - куда записать JSON (по умолчанию data/icd_reference/icd10_ru_mkb10su.json)
 
-Формат таблицы как у прежнего mkb10.su: колонка A — код, B — название (строки данных с 5-й).
+Формат таблицы как у прежнего mkb10.su: колонка A - код, B - название (строки данных с 5-й).
 Без openpyxl: чтение через zip+xml (stdlib).
 """
 from __future__ import annotations

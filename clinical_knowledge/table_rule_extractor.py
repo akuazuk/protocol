@@ -49,7 +49,7 @@ def rule_from_table_chunk(chunk: dict[str, Any]) -> ProtocolRule | None:
     rows = chunk.get("rows") or chunk.get("table_rows")
     if not rows and chunk.get("text"):
         # fallback: строки через перенос
-        lines = [ln.strip(" -—\t") for ln in str(chunk["text"]).splitlines() if ln.strip()]
+        lines = [ln.strip(" - - \t") for ln in str(chunk["text"]).splitlines() if ln.strip()]
         rows = [[ln] for ln in lines if len(ln) > 3]
     if not rows:
         return None

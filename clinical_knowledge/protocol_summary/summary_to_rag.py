@@ -54,7 +54,7 @@ def condition_to_summary_chunks(summary: ProtocolSummary, cond: ConditionSummary
     overview = _chunk_base(summary, cond, "summary_overview")
     overview["text"] = (
         f"Протокол: {summary.source.title}. Нозология: {cond.name}. "
-        f"МКБ-10: {', '.join(cond.icd10_codes) or '—'}. "
+        f"МКБ-10: {', '.join(cond.icd10_codes) or ' - '}. "
         f"Рубрика: {summary.rubric.name}."
     )
     overview["source_refs"] = _refs_to_list(cond.source_refs)

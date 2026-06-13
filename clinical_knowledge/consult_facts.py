@@ -9,11 +9,11 @@ from corpus_pipeline.entities_extract import extract_icd10
 from .condition_registry import infer_conditions_hints
 
 RE_DIAG_BLOCK = re.compile(
-    r"(?:диагноз|заключительный\s+диагноз|клинический\s+диагноз)\s*[:\-—]?\s*([^\n]{5,400})",
+    r"(?:диагноз|заключительный\s+диагноз|клинический\s+диагноз)\s*[:\- - ]?\s*([^\n]{5,400})",
     re.I,
 )
 RE_COMPLAINT = re.compile(
-    r"(?:жалоб[ыа]?)\s*[:\-—]?\s*([^\n]{5,500})",
+    r"(?:жалоб[ыа]?)\s*[:\- - ]?\s*([^\n]{5,500})",
     re.I,
 )
 RE_SEX_F = re.compile(r"\b(женский|жен\.?\s*пол|пол\s*[:\-]?\s*ж)\b", re.I)

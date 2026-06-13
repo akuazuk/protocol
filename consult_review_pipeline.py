@@ -6,7 +6,7 @@ import os
 from collections.abc import Iterator
 from typing import Any
 
-ProgressFn = Any  # Callable[[str, int, str, dict], None] — optional legacy
+ProgressFn = Any  # Callable[[str, int, str, dict], None] - optional legacy
 
 
 def _progress_tuple(stage: str, pct: int, label_ru: str, partial: dict | None = None) -> tuple[str, dict]:
@@ -120,7 +120,7 @@ def iter_consult_review_pipeline(
         diag_codes_list = prioritize_codes(list(diag_codes_list) + lex_codes)
         merged_icd = prioritize_codes(list(merged_icd or []) + lex_codes)
 
-    # Специальность врача из шапки КЗ — авторитетный якорь рубрики.
+    # Специальность врача из шапки КЗ - авторитетный якорь рубрики.
     doctor_specialty_kz = _detect_specialty(full_text[:1500]) or _detect_specialty(full_text)
     doctor_rubric = specialty_to_rubric(doctor_specialty_kz)
     if doctor_rubric not in rs.ALLOWED_SPECIALTY_SLUGS:
@@ -137,7 +137,7 @@ def iter_consult_review_pipeline(
         query_specialties = rs.infer_specialties_gemini(q, model) if q_rag.strip() else []
     except Exception:
         query_specialties = []
-    # Рубрика врача КЗ — впереди (приоритетный якорь), затем угаданные/выбранные.
+    # Рубрика врача КЗ - впереди (приоритетный якорь), затем угаданные/выбранные.
     boost_merged = list(
         dict.fromkeys(
             ([doctor_rubric] if doctor_rubric else [])
@@ -449,7 +449,7 @@ def iter_consult_review_pipeline(
         ""
         if n_files <= 1
         else (
-            "Несколько документов: блоки ниже — в порядке загрузки; при оценке учитывай "
+            "Несколько документов: блоки ниже - в порядке загрузки; при оценке учитывай "
             "согласованность между приёмами, хронологию формулировок и возможные противоречия между частями.\n\n"
         )
     )

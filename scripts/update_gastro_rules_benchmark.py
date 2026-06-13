@@ -16,7 +16,7 @@ def main() -> int:
     payload = write_gastro_benchmark()
     total = payload.get("cases_total", 0)
     passed = payload.get("cases_passed", 0)
-    print(f"Wrote data/gastro_mvp/benchmark.json — {passed}/{total} ({payload.get('pass_rate_pct')}%)")
+    print(f"Wrote data/gastro_mvp/benchmark.json - {passed}/{total} ({payload.get('pass_rate_pct')}%)")
     return 0 if passed == total else 1
 
 

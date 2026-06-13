@@ -48,7 +48,7 @@ def _slug_part(text: str, max_len: int = 48) -> str:
 
 
 def infer_population_from_text(*parts: str) -> str:
-    """adult | child | any — по имени файла и заголовку."""
+    """adult | child | any - по имени файла и заголовку."""
     blob = " ".join(p for p in parts if p).lower()
     is_child = any(m in blob for m in POPULATION_CHILD_MARKERS)
     is_adult = any(m in blob for m in POPULATION_ADULT_MARKERS)
@@ -65,7 +65,7 @@ def infer_approval_from_filename(filename: str) -> dict[str, str | None]:
     """Номер и дата постановления из имени PDF."""
     fn = filename or ""
     num = None
-    m_num = re.search(r"№\s*([\d\-–—/]+)", fn, re.I)
+    m_num = re.search(r"№\s*([\d\-- - /]+)", fn, re.I)
     if m_num:
         num = m_num.group(1).strip()
     else:
@@ -285,7 +285,7 @@ def build_all_protocol_cards(
     protocols_json: Path | None = None,
     manifest_path: Path | None = None,
 ) -> list[dict[str, Any]]:
-    """Собрать карточки: приоритет — documents/*.json, иначе protocols.json."""
+    """Собрать карточки: приоритет - documents/*.json, иначе protocols.json."""
     root = Path(root)
     documents_dir = documents_dir or (root / "output" / "documents")
     protocols_json = protocols_json or (root / "protocols.json")

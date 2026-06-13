@@ -1,6 +1,6 @@
 """Разбор FHIR BY Bundle для проверки готовности к ЦИСЗ.
 
-Программа испытаний МИС v.1.3-4 (содержимое) + Протокол МИС ОЗ–ЦИСЗ v.1.4 (Composition/пакет).
+Программа испытаний МИС v.1.3-4 (содержимое) + Протокол МИС ОЗ-ЦИСЗ v.1.4 (Composition/пакет).
 """
 from __future__ import annotations
 
@@ -214,7 +214,7 @@ def _bundle_has_package_profile(bundle: dict[str, Any]) -> bool:
         return True
     if "пакет" in prof or "packagedocument" in prof:
         return True
-    # Допуск: type=document без profile — частичное соответствие (МИС в разработке)
+    # Допуск: type=document без profile - частичное соответствие (МИС в разработке)
     return str(bundle.get("type") or "").lower() == "document" and bool(prof)
 
 
@@ -259,7 +259,7 @@ def _composition_event_has_refs(comp: dict[str, Any]) -> bool:
 
 
 def inspect_protocol_v14_checks(bundle: dict[str, Any]) -> dict[str, bool]:
-    """Проверки структуры пакета по Протоколу взаимодействия МИС ОЗ – ЦИСЗ v.1.4."""
+    """Проверки структуры пакета по Протоколу взаимодействия МИС ОЗ - ЦИСЗ v.1.4."""
     compositions = resources_by_type(bundle).get("Composition") or []
     comp = compositions[0] if compositions else {}
     first = _first_entry_resource(bundle)

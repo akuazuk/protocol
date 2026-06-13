@@ -1,6 +1,6 @@
 """
 Загрузка .env и .env.local в os.environ.
-Сначала python-dotenv (если есть), иначе простой разбор строк — чтобы работало с любым python3.
+Сначала python-dotenv (если есть), иначе простой разбор строк - чтобы работало с любым python3.
 """
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ def _parse_and_apply(path: Path, override: bool) -> None:
 
 
 def load_project_env(root: Path) -> None:
-    """root — каталог с .env (рядом с rag_server.py)."""
+    """root - каталог с .env (рядом с rag_server.py)."""
     try:
         from dotenv import load_dotenv
 

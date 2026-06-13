@@ -6,13 +6,13 @@
 
 Использование:
 
-  # 1) Сформировать отчёт (нужен корпус; для прод-метрик — ключ API и --embed-on)
+  # 1) Сформировать отчёт (нужен корпус; для прод-метрик - ключ API и --embed-on)
   python3 eval/search_quality_eval.py --golden eval/golden_queries.jsonl --report-json report.json
 
   # 2) Проверить порог (по умолчанию 0.9 или QUALITY_MIN_PASS_RATE)
   python3 eval/quality_gate.py --report report.json --min-pass-rate 0.9
 
-Коды возврата: 0 — порог пройден, 1 — ниже порога, 2 — ошибка чтения отчёта.
+Коды возврата: 0 - порог пройден, 1 - ниже порога, 2 - ошибка чтения отчёта.
 """
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ def main() -> int:
         f"порог={args.min_pass_rate:.2%}"
     )
     if total == 0:
-        print("Нет кейсов в отчёте — порог не может быть проверён.", file=sys.stderr)
+        print("Нет кейсов в отчёте - порог не может быть проверён.", file=sys.stderr)
         return 2
     if rate + 1e-9 < args.min_pass_rate:
         print("НИЖЕ ПОРОГА: возможна регрессия отбора протоколов.", file=sys.stderr)

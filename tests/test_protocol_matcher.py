@@ -48,7 +48,7 @@ def test_pregnancy_protocol_not_applied_without_pregnancy():
     )
     assert appl in ("possibly_applicable", "not_applicable")
     assert mismatch
-    # мужчина — точно неприменимо
+    # мужчина - точно неприменимо
     appl_m, _, _ = assess_card_applicability(
         card, {"adult_or_child": "adult", "sex": "male", "pregnancy": None}
     )

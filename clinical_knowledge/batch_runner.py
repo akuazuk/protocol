@@ -110,7 +110,7 @@ def run_batch(
             cap = comp.get("safety_cap") or {}
             row.safety_cap_applied = bool(cap.get("applied"))
             row.protocols_matched = len(comp.get("matched_protocols") or [])
-        except Exception as exc:  # noqa: BLE001 — batch не падает на одном файле
+        except Exception as exc:  # noqa: BLE001 - batch не падает на одном файле
             row.error = str(exc)[:300]
         rows.append(row)
 
@@ -146,14 +146,14 @@ def _write_batch_md(path: Path, rows: list[BatchRow], *, folder: Path) -> None:
         "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | --- |",
     ]
     for r in rows:
-        score = f"{r.overall_score:.0f}" if isinstance(r.overall_score, (int, float)) else "—"
-        conf = f"{r.confidence_score:.0f}" if isinstance(r.confidence_score, (int, float)) else "—"
+        score = f"{r.overall_score:.0f}" if isinstance(r.overall_score, (int, float)) else " - "
+        conf = f"{r.confidence_score:.0f}" if isinstance(r.confidence_score, (int, float)) else " - "
         err = (r.error or "")[:60].replace("|", "/")
-        cap = "да" if r.safety_cap_applied else "—"
+        cap = "да" if r.safety_cap_applied else " - "
         lines.append(
-            f"| {r.file} | {r.overall_status or '—'} | {score} | {conf} | "
+            f"| {r.file} | {r.overall_status or ' - '} | {score} | {conf} | "
             f"{r.critical_count} | {r.major_count} | {r.warnings_count} | "
-            f"{r.missing_required_count} | {cap} | {r.protocols_matched} | {err or '—'} |"
+            f"{r.missing_required_count} | {cap} | {r.protocols_matched} | {err or ' - '} |"
         )
     lines.append("")
     path.write_text("\n".join(lines), encoding="utf-8")

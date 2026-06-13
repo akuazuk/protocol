@@ -355,7 +355,7 @@
 Результат: одинаковый вход -> одинаковый digest -> один и тот же отбор протоколов -> одинаковый %.
 
 Дополнение (после повторной жалобы «всё ещё разное»): `temperature=0` у Gemini не даёт 100% гарантии
-(остаточная недетерминированность на стороне API + `overall_compliance_pct` — свободно генерируемое число).
+(остаточная недетерминированность на стороне API + `overall_compliance_pct` - свободно генерируемое число).
 Поэтому добавлен **кэш результата по контент-хэшу файлов** (`_consult_cache_*`): один и тот же PDF (тот же контент)
 + те же рубрики/модель/настройки -> идентичный результат из кэша, тяжёлый разбор выполняется один раз.
 Ключ кэша строится по **нормализованному извлечённому тексту** (`_normalize_for_cache`: схлопывание пробелов,
@@ -403,11 +403,11 @@
 
 Рантайм (`rag_server.py`), всё за обратимыми флагами:
 - `_load_chunks_from_jsonl`: сохраняет `section_path`/`section_title`/`point_numbers`/`icd10_codes`/`page_*`
-  (`RAG_KEEP_STRUCT=1` по умолчанию; `0` — прежнее поведение).
+  (`RAG_KEEP_STRUCT=1` по умолчанию; `0` - прежнее поведение).
 - `retrieve()`: в результат добавлены `section_title`/`page_from`/`page_to`/`point_numbers` (скоринг не изменён).
 - `_build_review_chunks_context` + `SYSTEM_CONSULT_REVIEW_JSON`: в выдержки протоколов добавляются
   `section=`/`pages=`/`пункты=`, модель просят перенести их в `protocol_section`/`protocol_page`
-  (`CONSULT_REVIEW_RICH_CONTEXT=1` по умолчанию; `0` — старый формат для сравнения/отката).
+  (`CONSULT_REVIEW_RICH_CONTEXT=1` по умолчанию; `0` - старый формат для сравнения/отката).
 - UI: `consult_protocol_fragments` несут `section`/`pages`; `index.html` показывает «Раздел: …, стр. N».
 
 Скачивание (`download_minzdrav_protocols.py`): манифест `minzdrav_protocols/_manifest.jsonl`
@@ -415,7 +415,7 @@
 журнал ошибок `_download_errors.json`.
 
 Версия: `BUILD_VERSION` бампнута; `/api/version` теперь отдаёт `corpus_chunks`, `corpus_structured_chunks`,
-`keep_struct`, `consult_rich_context` — по ним видно, что корпус структурирован и какой код/настройки на сервере.
+`keep_struct`, `consult_rich_context` - по ним видно, что корпус структурирован и какой код/настройки на сервере.
 
 Тесты: `tests/test_corpus_structure.py`, `tests/test_runtime_struct.py`, `tests/test_download_manifest.py`.
 
@@ -428,21 +428,21 @@ python3 split_chunks_jsonl.py
 ```
 
 ### Фаза 6 - Производительность и доступность (частично ВЫПОЛНЕНО)
-- **3.1 inverted index** — `RAG_LEX_INVERTED_INDEX=1` (по умолчанию): токен→чанки при загрузке корпуса, retrieve без полного прохода.
-- **3.4 кэш `/health`** — было ранее (ICD count).
-- **8.4 a11y** — инкремент в фазе 7 (skip-link, tabs, focus-trap).
-- **8.7 фронтенд-перф** — инкремент в фазе 7.
-- **Consult SSE** — `POST /api/consult-review/stream`: прогресс в % и partial results (протоколы, правила, МКБ до финальной модели).
-- **3.3 офлайн-эмбеддинги** — `scripts/build_chunk_embeddings.py`, `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query); `scripts/corpus_manifest.py` для coverage.
-- **Vector index (фаза 2)** — `clinical_knowledge/vector_index.py`, `scripts/build_vector_index.py`, `RAG_VECTOR_INDEX=1`: prefilter top-K перед lex/BM25.
-- **Semantic rules (фаза 3)** — `semantic_rule_fallback.py`, `RULE_SEMANTIC_FALLBACK=1`.
-- **L0/L1/L2 tiering (фаза 4)** — `consult_tiering.py`, `POST /api/consult-review/tier`.
-- **Batch LLM rules (фаза 5)** — `scripts/enrich_protocol_rules_batch.py`, `required_exams`/`red_flags` в enrichment → rule_checker.
-- **Каталог нозологий** — `clinical_knowledge/condition_registry.py`; скрипты `scripts/catalog_rules_coverage_report.py`, `scripts/build_catalog_llm_enrichment.py`.
-- **Правила по всему каталогу (r23)** — `clinical_knowledge/catalog_build.py`, `scripts/build_catalog_rules.py` → `data/catalog/rules/` + `rules_coverage_report.json` (478 PDF, 24 рубрики); loader мержит gastro + catalog; rule_checker v3 с runtime path-правилами и `condition_registry`; consult pipeline без жёсткой привязки к одной рубрике (scope `all_catalog`).
-- **Полная структуризация как gastro (r25)** — `catalog_full_build.py`, `condition_builder.py`, `scripts/build_catalog_full.py` → `data/catalog/conditions/` (JSON нозологий), прогресс % в CLI/SSE; `/api/clinical-knowledge/build-status`; generic corpus «формулировка диагноза» + path-шаблоны всех рубрик.
-- **Надёжный consult-review (r27)** — строгий RAG по МКБ/matched PDF (`CONSULT_REVIEW_STRICT_PROTOCOLS`), fallback на `/api/consult-review` при обрыве SSE, компактный прогресс в одной строке, отдельный таймаут синтеза модели.
-- Legacy `build_semantic_embeddings.py` (e5 для браузера) — отдельный контур; prod-RAG использует per-chunk Gemini через `build_chunk_embeddings.py`.
+- **3.1 inverted index** - `RAG_LEX_INVERTED_INDEX=1` (по умолчанию): токен→чанки при загрузке корпуса, retrieve без полного прохода.
+- **3.4 кэш `/health`** - было ранее (ICD count).
+- **8.4 a11y** - инкремент в фазе 7 (skip-link, tabs, focus-trap).
+- **8.7 фронтенд-перф** - инкремент в фазе 7.
+- **Consult SSE** - `POST /api/consult-review/stream`: прогресс в % и partial results (протоколы, правила, МКБ до финальной модели).
+- **3.3 офлайн-эмбеддинги** - `scripts/build_chunk_embeddings.py`, `RAG_PRECOMPUTED_CHUNK_EMBED=1`: rerank по полю `embedding` в JSONL (один API-вызов на query); `scripts/corpus_manifest.py` для coverage.
+- **Vector index (фаза 2)** - `clinical_knowledge/vector_index.py`, `scripts/build_vector_index.py`, `RAG_VECTOR_INDEX=1`: prefilter top-K перед lex/BM25.
+- **Semantic rules (фаза 3)** - `semantic_rule_fallback.py`, `RULE_SEMANTIC_FALLBACK=1`.
+- **L0/L1/L2 tiering (фаза 4)** - `consult_tiering.py`, `POST /api/consult-review/tier`.
+- **Batch LLM rules (фаза 5)** - `scripts/enrich_protocol_rules_batch.py`, `required_exams`/`red_flags` в enrichment → rule_checker.
+- **Каталог нозологий** - `clinical_knowledge/condition_registry.py`; скрипты `scripts/catalog_rules_coverage_report.py`, `scripts/build_catalog_llm_enrichment.py`.
+- **Правила по всему каталогу (r23)** - `clinical_knowledge/catalog_build.py`, `scripts/build_catalog_rules.py` → `data/catalog/rules/` + `rules_coverage_report.json` (478 PDF, 24 рубрики); loader мержит gastro + catalog; rule_checker v3 с runtime path-правилами и `condition_registry`; consult pipeline без жёсткой привязки к одной рубрике (scope `all_catalog`).
+- **Полная структуризация как gastro (r25)** - `catalog_full_build.py`, `condition_builder.py`, `scripts/build_catalog_full.py` → `data/catalog/conditions/` (JSON нозологий), прогресс % в CLI/SSE; `/api/clinical-knowledge/build-status`; generic corpus «формулировка диагноза» + path-шаблоны всех рубрик.
+- **Надёжный consult-review (r27)** - строгий RAG по МКБ/matched PDF (`CONSULT_REVIEW_STRICT_PROTOCOLS`), fallback на `/api/consult-review` при обрыве SSE, компактный прогресс в одной строке, отдельный таймаут синтеза модели.
+- Legacy `build_semantic_embeddings.py` (e5 для браузера) - отдельный контур; prod-RAG использует per-chunk Gemini через `build_chunk_embeddings.py`.
 
 ### Фаза 7 - Полировка (частично ВЫПОЛНЕНО)
 - 8.8 SEO/мета - сделано: robots (noindex для пилота с ПДн), theme-color, OpenGraph/Twitter, инлайн-favicon (`index.html`).

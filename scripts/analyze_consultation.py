@@ -6,7 +6,7 @@
     python -m scripts.analyze_consultation --file kz.txt --markdown out.md
     python -m scripts.analyze_consultation --folder data/examples/consultations --output data/reports/kz_checks
 
-Извлечение текста: TXT — как есть; PDF — через pypdf (текстовый слой, без OCR).
+Извлечение текста: TXT - как есть; PDF - через pypdf (текстовый слой, без OCR).
 """
 from __future__ import annotations
 

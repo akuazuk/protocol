@@ -43,7 +43,7 @@ def _is_venous_icd(icd_list: list[str]) -> bool:
 
 
 def _card_venous_relevance(card: dict[str, Any]) -> float:
-    """1.0 – явно венозный КП; 0.0 – явно ЧСН без вен; 0.5 – нейтрально."""
+    """1.0 - явно венозный КП; 0.0 - явно ЧСН без вен; 0.5 - нейтрально."""
     blob = ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
     venous = any(n in blob for n in _VENOUS_CARD_NEEDLES)
     heart = any(n in blob for n in _HEART_FAILURE_NEEDLES)
@@ -90,7 +90,7 @@ def compute_match_score(
     complaints: list[str],
     performed_exams: list[str],
 ) -> float:
-    """Нормализованный 0–100 match score."""
+    """Нормализованный 0-100 match score."""
     card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or [])]
     icd_roots = {_icd_root(c) for c in icd_list if not is_symptom_code(c)}
     card_roots = {_icd_root(c) for c in card_icd}
@@ -197,7 +197,7 @@ def match_protocol_cards(
     out: list[dict[str, Any]] = []
     seen_keys: set[str] = set()
     for sc, card in scored:
-        # Дедуп: один протокол (по source_path/protocol_id) — одна строка с лучшим score.
+        # Дедуп: один протокол (по source_path/protocol_id) - одна строка с лучшим score.
         key = str(card.get("source_path") or card.get("protocol_id") or id(card))
         if key in seen_keys:
             continue

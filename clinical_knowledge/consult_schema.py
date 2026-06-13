@@ -3,8 +3,8 @@
 Реализуют схему из docs/cursor_task_protocols_and_consultations.md (разделы 7, 9, 11, 13-19).
 
 Принципы (см. docs/implementation_plan.md, этап 1):
-- Все поля имеют дефолты — частично распознанное КЗ не должно ронять разбор.
-- ``extra="ignore"`` — лишние ключи из эвристик/LLM не вызывают ошибок.
+- Все поля имеют дефолты - частично распознанное КЗ не должно ронять разбор.
+- ``extra="ignore"`` - лишние ключи из эвристик/LLM не вызывают ошибок.
 - Модели чистые: без побочных эффектов и тяжёлых импортов.
 """
 from __future__ import annotations
@@ -343,7 +343,7 @@ class StructuralAssessment(_Base):
 
 
 class ProtocolAssessment(_Base):
-    """Сводка применимости подобранных протоколов (ТЗ §11–12)."""
+    """Сводка применимости подобранных протоколов (ТЗ §11-12)."""
     matched_count: int = 0
     applicable_count: int = 0
     top_protocol_id: str | None = None

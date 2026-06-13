@@ -50,7 +50,7 @@ def _diagnose_empty_response(resp) -> str:
 def verify_gemini_key() -> tuple[bool, str]:
     """
     Возвращает (успех, сообщение).
-    При успехе сообщение — короткий ответ модели (превью).
+    При успехе сообщение - короткий ответ модели (превью).
     """
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not key:
@@ -72,7 +72,7 @@ def verify_gemini_key() -> tuple[bool, str]:
     try:
         genai.configure(api_key=key)
         name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        # Нейтральный промпт — фразы про «медицину» иногда дают пустой ответ из‑за фильтров
+        # Нейтральный промпт - фразы про «медицину» иногда дают пустой ответ из‑за фильтров
         safety = [
             {
                 "category": HarmCategory.HARM_CATEGORY_HARASSMENT,

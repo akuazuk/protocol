@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 
-# На macOS Trainer может уйти в MPS и упасть по памяти — принудительно CPU.
+# На macOS Trainer может уйти в MPS и упасть по памяти - принудительно CPU.
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "0")
 

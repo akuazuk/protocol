@@ -5,7 +5,7 @@
 
 Гибрид: взвешенная оценка структурного разбора (6 блоков по compliance_weights.yaml)
 + проверка по правилам протокола из RAG-пайплайна. При отсутствии структурного
-блока — взвешенное среднее LLM-критериев по клиническим темам + правила.
+блока - взвешенное среднее LLM-критериев по клиническим темам + правила.
 """
 from __future__ import annotations
 
@@ -15,9 +15,9 @@ from typing import Any
 
 SCORER_VERSION = "2026-06-01.1"
 
-# structured : rules — при наличии обоих компонентов
+# structured : rules - при наличии обоих компонентов
 _BLEND_STRUCTURED_RULES = (0.80, 0.20)
-# llm_weighted : rules — fallback без структурного overall
+# llm_weighted : rules - fallback без структурного overall
 _BLEND_LLM_RULES = (0.60, 0.40)
 
 _CRITERION_PATTERNS: list[tuple[re.Pattern[str], float]] = [
@@ -144,7 +144,7 @@ def _apply_safety_cap(
 
     if comp.get("overall_status") == "manual_review_required":
         cap = min(cap, 45.0)
-        reason = "Статус manual_review_required — потолок 45%."
+        reason = "Статус manual_review_required - потолок 45%."
 
     for s in comp.get("safety_assessments") or []:
         if not isinstance(s, dict):
@@ -155,10 +155,10 @@ def _apply_safety_cap(
         sev = str(s.get("severity") or "")
         if sev == "critical":
             cap = min(cap, 35.0)
-            reason = "Необработанный критический red flag — потолок 35%."
+            reason = "Необработанный критический red flag - потолок 35%."
         elif sev == "high":
             cap = min(cap, 55.0)
-            reason = reason or "Необработанный red flag высокой значимости — потолок 55%."
+            reason = reason or "Необработанный red flag высокой значимости - потолок 55%."
 
     sc = comp.get("safety_cap") if isinstance(comp.get("safety_cap"), dict) else {}
     if sc.get("applied") and isinstance(sc.get("cap_value"), (int, float)):

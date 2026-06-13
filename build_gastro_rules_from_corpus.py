@@ -21,10 +21,10 @@ CHUNKS = ROOT / "output" / "chunks" / "chunks.jsonl"
 
 def main() -> None:
     if not CHUNKS.is_file():
-        print(f"WARN: нет {CHUNKS} — сначала run_pipeline")
+        print(f"WARN: нет {CHUNKS} - сначала run_pipeline")
         sys.exit(1)
     if not REGISTRY.is_file():
-        print(f"WARN: нет {REGISTRY} — сначала build_protocol_cards.py")
+        print(f"WARN: нет {REGISTRY} - сначала build_protocol_cards.py")
         sys.exit(1)
 
     extracted, meta = extract_rules_all_gastro_pdfs(CHUNKS, REGISTRY)

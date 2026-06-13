@@ -25,7 +25,7 @@ def test_consultation_document_defaults():
 
 
 def test_extra_keys_ignored():
-    # эвристики/LLM могут добавлять лишние ключи — это не должно ронять модель
+    # эвристики/LLM могут добавлять лишние ключи - это не должно ронять модель
     p = PatientContext.model_validate({"sex": "female", "unexpected": 123})
     assert p.sex == "female"
     assert not hasattr(p, "unexpected")

@@ -50,10 +50,10 @@
 
 ### Этап 4. Подбор протоколов
 
-**Файлы:** `protocol_match.py`, `applicability.py` — **без breaking changes**.
+**Файлы:** `protocol_match.py`, `applicability.py` - **без breaking changes**.
 
 - Документировать контракт; при необходимости заполнять `matched_condition` из condition registry.
-- `consult_analysis.py` — без изменений логики, только прокидывание assessment.
+- `consult_analysis.py` - без изменений логики, только прокидывание assessment.
 
 **Тесты:** существующие `test_protocol_matcher.py`.
 
@@ -65,8 +65,8 @@
 
 - Подключить issues из `requirement_checker`.
 - `_treatment_assessments`: штраф за missing dose/frequency/duration → `treatment_score` (не `None` при наличии meds).
-- `_exam_assessments`: учитывать `performed_exams` — не считать missing, если exam выполнен.
-- `ProtocolAssessment` — сводка по top match + rules_compliance_pct.
+- `_exam_assessments`: учитывать `performed_exams` - не считать missing, если exam выполнен.
+- `ProtocolAssessment` - сводка по top match + rules_compliance_pct.
 
 **Тесты:** расширить `test_compliance_engine.py`.
 
@@ -77,7 +77,7 @@
 **Файлы:** `scoring.py`, `config/compliance_weights.yaml`, `consult_config.py`
 
 - 8 блоков по ТЗ §14.2 (15/10/15/20/15/15/5/5).
-- Обратная совместимость: если новые ключи в yaml — использовать их; иначе fallback на 6 блоков.
+- Обратная совместимость: если новые ключи в yaml - использовать их; иначе fallback на 6 блоков.
 - `follow_up_score` из наличия follow_up + requirement issues.
 
 **Тесты:** `tests/test_scoring.py`.
@@ -113,7 +113,7 @@
 
 ## Порядок коммитов (рекомендуемый)
 
-1. `docs/` — аудит + план (этот PR).
+1. `docs/` - аудит + план (этот PR).
 2. `requirement_checker` + schema + config yaml.
 3. `compliance_engine` + scoring 8 blocks.
 4. `batch_runner` + report sections + CLI.

@@ -22,7 +22,7 @@ RE_SEX_F_WORDS = re.compile(r"\b(беременн\w*|рожен\w*|пациен�
 RE_AGE_YEARS = re.compile(r"\bвозраст\s*[:\-]?\s*(\d{1,3})\s*(?:лет|года?|л\.)\b", re.I)
 RE_AGE_INLINE_YEARS = re.compile(r"\b(\d{1,3})\s*(?:лет|года?)\b", re.I)
 RE_AGE_MONTHS = re.compile(r"\b(\d{1,2})\s*(?:мес(?:яц)?[а-я]*)\b", re.I)
-# Контексты, в которых число лет — это НЕ возраст (длительность болезни/стаж и т.п.).
+# Контексты, в которых число лет - это НЕ возраст (длительность болезни/стаж и т.п.).
 RE_DURATION_CTX = re.compile(
     r"(?:болеет|болезн\w*|заболел\w*|в\s+течени\w*|около|примерно|более|менее|"
     r"на\s+протяжени\w*|стаж\w*|давност\w*|беспоко\w*|анамнез\w*|длительн\w*|"
@@ -91,7 +91,7 @@ def age_group(age_years: int | None, age_months: int | None = None) -> str:
         return "elderly"
     if age_years is not None and age_years >= 18:
         return "adult"
-    # < 18 лет — уточняем младенцев/новорождённых по месяцам, если есть
+    # < 18 лет - уточняем младенцев/новорождённых по месяцам, если есть
     if age_months is not None:
         if age_months <= 0:
             return "newborn"  # упрощение: <1 мес считаем как newborn-зону
@@ -140,7 +140,7 @@ def resolve_age(
         age_years, age_months = age_at(birth_date, on_date)
     else:
         txt = text or ""
-        # Сначала явное «возраст: N лет» — самый надёжный inline-признак.
+        # Сначала явное «возраст: N лет» - самый надёжный inline-признак.
         m = RE_AGE_YEARS.search(txt)
         if m:
             try:

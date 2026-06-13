@@ -53,7 +53,7 @@ _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"рекомендац\w*", "general_recommendations"),
 ]
 _HEADER_RE = re.compile(
-    r"(?im)^\s*(" + "|".join(h for h, _ in _SECTION_HEADERS) + r")\s*[:\-—]",
+    r"(?im)^\s*(" + "|".join(h for h, _ in _SECTION_HEADERS) + r")\s*[:\- - ]",
 )
 
 RE_SPECIALTY = re.compile(
@@ -112,7 +112,7 @@ def _split_sections(text: str) -> dict[str, str]:
             continue
         start = m.end()
         end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-        body = text[start:end].strip(" \n\t:—-")
+        body = text[start:end].strip(" \n\t: - -")
         if field in sections and body:
             sections[field] = (sections[field] + "\n" + body).strip()
         elif body:
@@ -126,7 +126,7 @@ def _exam_items_from_text(text: str, status: str) -> list[ExamItem]:
         return out
     idx = 0
     for raw in re.split(r"[\n;,]+", text):
-        line = raw.strip(" -—\t•.")
+        line = raw.strip(" - - \t•.")
         if len(line) < 3:
             continue
         idx += 1
@@ -244,7 +244,7 @@ def parse_consultation(
                 d.icd10_code = lex[0]
     if not diagnoses:
         # fallback: словарь нозологий по всему тексту, затем ICD из текста.
-        # Приоритет — коды болезней, симптом-коды (R..) уходят в конец.
+        # Приоритет - коды болезней, симптом-коды (R..) уходят в конец.
         from .diagnosis_icd import prioritize_codes
 
         codes = prioritize_codes(lookup_disease_icd(text[:120_000]) + extract_icd10(text[:120_000]))
@@ -291,7 +291,7 @@ def parse_consultation(
     has_undefined = "undefined" in low
     has_qmark = any(d.certainty == "suspected" for d in diagnoses) or "?" in diag_block
     if has_undefined:
-        warnings.append("Обнаружено значение 'undefined' — проблема качества документа.")
+        warnings.append("Обнаружено значение 'undefined' - проблема качества документа.")
     if birth_date is None:
         warnings.append("Дата рождения не распознана.")
     if consult_date is None:

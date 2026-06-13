@@ -26,7 +26,7 @@ _RE_INP = re.compile(r"(?i)(инп|унp|ид\s*пациента)\s*[:\-]?\s*[\d
 def name_to_initials(full_name: str | None) -> str:
     """Преобразует ФИО в инициалы: «Кузавка Павел Леонидович» → «К. П. Л.»."""
     if not full_name or not str(full_name).strip():
-        return "—"
+        return " - "
     raw = str(full_name).strip()
     # Отрезаем дату/хвост после запятой.
     raw = raw.split(",")[0].strip()
@@ -36,13 +36,13 @@ def name_to_initials(full_name: str | None) -> str:
     else:
         parts = [g for g in m.groups() if g]
     if not parts:
-        return "—"
+        return " - "
     initials: list[str] = []
     for p in parts[:3]:
         ch = p[0].upper()
         if ch.isalpha():
             initials.append(ch + ".")
-    return " ".join(initials) if initials else "—"
+    return " ".join(initials) if initials else " - "
 
 
 def redact_kz_text_for_display(text: str) -> str:

@@ -2,7 +2,7 @@
 """
 Проверка ключа из .env: один короткий запрос к модели.
 
-Код выхода: 0 — OK, 1 — ошибка.
+Код выхода: 0 - OK, 1 - ошибка.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from gemini_verify import verify_gemini_key
 def main() -> int:
     ok, msg = verify_gemini_key()
     if ok:
-        print("OK — модель ответила:", msg)
+        print("OK - модель ответила:", msg)
         return 0
     print("FAIL:", msg)
     return 1

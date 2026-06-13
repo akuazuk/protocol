@@ -350,5 +350,5 @@ def _synthesize_bundle_text(
 
 
 def bundle_to_consultation_text(bundle: dict[str, Any]) -> str:
-    """Синтетический текст КЗ из Bundle – для пайплайна и L0-скрининга."""
+    """Синтетический текст КЗ из Bundle - для пайплайна и L0-скрининга."""
     return _synthesize_bundle_text(bundle)

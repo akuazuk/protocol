@@ -16,7 +16,7 @@ RE_ACT_DATE = re.compile(
     r"(?:(\d{1,2})[.\s]+([а-яё]+)\s+(\d{4})\s*г?)|((\d{4})-(\d{2})-(\d{2}))",
     re.I,
 )
-RE_NUMBER = re.compile(r"№\s*([\d\-–—/]+)", re.I)
+RE_NUMBER = re.compile(r"№\s*([\d\-- - /]+)", re.I)
 RE_POSTANOVLENIE = re.compile(
     r"постановлени[ея]\s+([^.]+\.)",
     re.I,

@@ -1,7 +1,6 @@
 """Опциональный архив обезличенных снимков анализа КЗ (только manifest.jsonl).
 
-По умолчанию выключен (CONSULT_ARCHIVE_ANALYSES=0). На Render можно включить —
-файл копится на диске сервиса. Для улучшения кода эталоны хранятся в git:
+По умолчанию выключен (CONSULT_ARCHIVE_ANALYSES=0). На Render можно включить - файл копится на диске сервиса. Для улучшения кода эталоны хранятся в git:
 tests/fixtures/consult_replay.jsonl + clients_consult/*.pdf → git pull в Cursor → replay.
 """
 from __future__ import annotations

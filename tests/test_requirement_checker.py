@@ -1,4 +1,4 @@
-"""Тесты requirement_checker (ТЗ §9–10)."""
+"""Тесты requirement_checker (ТЗ §9-10)."""
 from __future__ import annotations
 
 from pathlib import Path

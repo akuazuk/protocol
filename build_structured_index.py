@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Строит structured_index.json: для каждого протокола — краткие выдержки
+Строит structured_index.json: для каждого протокола - краткие выдержки
 по диагностике и лечению (эвристики по абзацам и заголовкам разделов).
 
 Вход: corpus.json (полный извлечённый текст).
-Выход: structured_index.json — для поиска и отображения карточек.
+Выход: structured_index.json - для поиска и отображения карточек.
 """
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def clinical_start(text: str) -> int:
         m = rx.search(t)
         if m and m.start() < len(t) * 0.35:
             best = max(best, m.start())
-    # если ничего — отрезаем типичную шапку (~12%)
+    # если ничего - отрезаем типичную шапку (~12%)
     if best == 0 and len(t) > 800:
         return min(len(t) // 8, 2500)
     return best
@@ -168,7 +168,7 @@ def main() -> None:
         diagnosis = d_head or best_snippets(paras, DIAG_PAT)
         treatment = t_head or best_snippets(paras, TREAT_PAT)
 
-        # если оба пустые — взять среднюю часть как summary для поиска
+        # если оба пустые - взять среднюю часть как summary для поиска
         summary = clinical[:900].replace("\n", " ")
         if len(summary) > 700:
             summary = summary[:699] + "…"

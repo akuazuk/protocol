@@ -5,7 +5,7 @@
   .venv/bin/python scripts/replay_consult_archive.py
   .venv/bin/python scripts/replay_consult_archive.py --fixtures tests/fixtures/consult_replay.jsonl
 
-Если в clients_consult/ есть файл с тем же basename, что в снимке — пересчитывает
+Если в clients_consult/ есть файл с тем же basename, что в снимке - пересчитывает
 структурный анализ и сравнивает баллы/статус/МКБ.
 """
 from __future__ import annotations
@@ -111,11 +111,11 @@ def _compare(saved: dict, comp: dict) -> list[str]:
         d.get("icd10_code") for d in (comp.get("diagnosis_assessments") or []) if d.get("icd10_code")
     ])
     if not new_icd:
-        new_icd = _primary_icd(saved.get("icd_codes"))  # fallback — не сравниваем если нет новых
+        new_icd = _primary_icd(saved.get("icd_codes"))  # fallback - не сравниваем если нет новых
     if old_icd and new_icd and set(old_icd) != set(new_icd):
         diffs.append(f"primary_icd: {old_icd!r} → {new_icd!r}")
     old_rubric = saved.get("rubric_slugs") or []
-    # rubric из fresh не в comp directly — skip unless we pass it
+    # rubric из fresh не в comp directly - skip unless we pass it
     return diffs
 
 
@@ -180,7 +180,7 @@ def main() -> int:
         label = base or snap.get("text_hash", "")[:12]
         if not text:
             skipped += 1
-            print(f"[{i}] SKIP {label} — положите PDF в clients_consult/")
+            print(f"[{i}] SKIP {label} - положите PDF в clients_consult/")
             continue
         res = analyze_consultation_text(text, with_markdown=False)
         comp = res.get("compliance") or {}
@@ -194,7 +194,7 @@ def main() -> int:
             ok += 1
             score = comp.get("overall_score") or _saved_score(snap)
             status = comp.get("overall_status")
-            print(f"[{i}] OK   {label} — {status} {score}%")
+            print(f"[{i}] OK   {label} - {status} {score}%")
 
     print(f"\nSummary: ok={ok} diff={failed} skipped={skipped}")
     return 1 if failed else 0

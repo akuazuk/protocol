@@ -116,7 +116,7 @@ def normalize_code(code: str) -> str:
 
 
 def is_symptom_code(code: str) -> bool:
-    """Симптом/фактор-код (главы R, Z) — не должен 'вести' подбор протокола."""
+    """Симптом/фактор-код (главы R, Z) - не должен 'вести' подбор протокола."""
     c = normalize_code(code)
     return bool(c) and c[0] in _SYMPTOM_CHAPTER_PREFIXES
 
@@ -134,7 +134,7 @@ def lookup_disease_icd(text: str) -> list[str]:
 
 
 def prioritize_codes(codes: list[str] | None) -> list[str]:
-    """Сначала коды болезней, в конце — симптоматические/неспецифичные (R, Z)."""
+    """Сначала коды болезней, в конце - симптоматические/неспецифичные (R, Z)."""
     disease: list[str] = []
     symptom: list[str] = []
     seen: set[str] = set()
@@ -160,7 +160,7 @@ def enrich_diagnosis_codes(
 ) -> tuple[list[str], dict]:
     """Дополняет коды диагноза кодом болезни из словаря, демотит симптом-коды.
 
-    Возвращает (codes, meta). codes — упорядоченные (болезни вперёд).
+    Возвращает (codes, meta). codes - упорядоченные (болезни вперёд).
     meta содержит added_from_lexicon и demoted_symptom для прозрачности.
     """
     existing = [normalize_code(str(c)) for c in (existing_codes or []) if c]

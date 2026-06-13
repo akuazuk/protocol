@@ -13,9 +13,9 @@ OUT_TABLES = OUTPUT_ROOT / "tables"
 OUT_ENTITIES = OUTPUT_ROOT / "entities"
 OUT_REGISTRY = OUTPUT_ROOT / "registry"
 
-# Минимум символов на странице, ниже — считать слой «плохим» и пробовать OCR
+# Минимум символов на странице, ниже - считать слой «плохим» и пробовать OCR
 MIN_CHARS_PER_PAGE_FOR_NATIVE = 80
-# Минимальная уверенность при эвристике (0–1)
+# Минимальная уверенность при эвристике (0-1)
 DEFAULT_EXTRACTION_CONFIDENCE = 0.75
 
 SPECIALTY_FROM_FOLDER: dict[str, str] = {

@@ -8,7 +8,7 @@
 
   RAG_SMOKE_BASE=http://127.0.0.1:8000 python3 scripts/protocol_detail_smoke.py --fixtures scripts/protocol_detail_smoke_fixtures.json
 
-В protocol_detail_smoke_fixtures.json поле path можно оставить пустым — возьмётся первый path из protocols.json.
+В protocol_detail_smoke_fixtures.json поле path можно оставить пустым - возьмётся первый path из protocols.json.
 Переменные: RAG_SMOKE_BASE, RAG_SMOKE_TIMEOUT (сек., по умолчанию 300).
 """
 from __future__ import annotations

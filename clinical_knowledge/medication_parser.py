@@ -21,7 +21,7 @@ RE_FREQ = re.compile(
     re.I,
 )
 RE_DURATION = re.compile(
-    r"(\d+\s*(?:[-–]\s*\d+\s*)?(?:дн(?:я|ей|евн)?|сут(?:ок|ки)?|нед(?:ел[ьия])?|мес(?:яц[ева]*)?)"
+    r"(\d+\s*(?:[--]\s*\d+\s*)?(?:дн(?:я|ей|евн)?|сут(?:ок|ки)?|нед(?:ел[ьия])?|мес(?:яц[ева]*)?)"
     r"|постоянно|пожизненно|длительно|курс[а-я]*)",
     re.I,
 )
@@ -29,7 +29,7 @@ RE_ROUTE = re.compile(
     r"\b(внутрь|перорально|в/в|в/м|п/к|внутривенно|внутримышечно|подкожно|местно|наружно|ингаляц\w*)\b",
     re.I,
 )
-RE_SCHEDULE_PREFIX = re.compile(r"^\s*с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*[-–—:]\s*(.+)$", re.I)
+RE_SCHEDULE_PREFIX = re.compile(r"^\s*с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*[-- - :]\s*(.+)$", re.I)
 RE_SCHEDULE_SUFFIX = re.compile(
     r"^(.+?)\s+с\s+(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})\s*$",
     re.I,
@@ -51,7 +51,7 @@ def _extract_drug_name(raw: str) -> str | None:
     m = RE_DOSE.search(s)
     head = s[: m.start()] if m else s
     head = re.split(r"\d", head)[0]
-    head = head.strip(" -—:.,")
+    head = head.strip(" - - :.,")
     return head or None
 
 
@@ -123,7 +123,7 @@ def _schedule_step(raw: str) -> tuple[MedicationScheduleStep, str] | None:
     mdose = RE_DOSE.search(rest)
     dose_text = rest
     if mdose:
-        # текст дозы — от препарата/«по» до конца
+        # текст дозы - от препарата/«по» до конца
         lead = _DOSE_LEADIN.search(rest)
         dose_text = rest[lead.start():].strip() if lead else rest[mdose.start():].strip()
     mf = RE_FREQ.search(rest)
@@ -150,7 +150,7 @@ def parse_medications(text: str, *, source_section: str | None = None) -> list[M
 
     for raw_line in re.split(r"[\n]+", text):
         for segment in re.split(r"\s*;\s*", raw_line):
-            line = segment.strip(" -—\t•")
+            line = segment.strip(" - - \t•")
             if len(line) < 3:
                 continue
             step = _schedule_step(line) or _schedule_step_suffix(line)

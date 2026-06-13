@@ -158,7 +158,7 @@ def run_ab() -> dict[str, Any]:
         raise SystemExit(f"Fine-tuned checkpoint not found: {FINETUNED}. Run run_embedder_experiment.py first.")
 
     _setup_rag_env()
-    import rag_server as rs  # noqa: F401 — triggers corpus load
+    import rag_server as rs  # noqa: F401 - triggers corpus load
 
     _wait_rag_ready()
 

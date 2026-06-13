@@ -21,7 +21,7 @@ class MisCheckDef:
     critical: bool = False
 
 
-# 3.2.1 – первичный амбулаторный приём (табл. 12–17)
+# 3.2.1 - первичный амбулаторный приём (табл. 12-17)
 PRIMARY_AMBULATORY_CHECKS: tuple[MisCheckDef, ...] = (
     MisCheckDef("patient", "Пациент (Patient)", 8, "3.2.1 / Patient"),
     MisCheckDef("encounter", "Визит (EncounterGeneral)", 10, "табл. 17", critical=True),
@@ -37,10 +37,10 @@ PRIMARY_AMBULATORY_CHECKS: tuple[MisCheckDef, ...] = (
     MisCheckDef("diagnosis_final_kind", "Вид диагноза: заключительный", 10, "табл. 16", critical=True),
     MisCheckDef("diagnosis_clinical_status", "Клинический статус диагноза", 3, "табл. 16"),
     MisCheckDef("diagnosis_author", "Автор диагноза (PractitionerRole)", 5, "табл. 16"),
-    MisCheckDef("bundle_links", "Связи Patient–Encounter–Condition", 5, "3.2.1"),
+    MisCheckDef("bundle_links", "Связи Patient-Encounter-Condition", 5, "3.2.1"),
 )
 
-# 3.13.1 – консультация специалиста (табл. 118, 125–126)
+# 3.13.1 - консультация специалиста (табл. 118, 125-126)
 SPECIALIST_CONSULT_CHECKS: tuple[MisCheckDef, ...] = (
     MisCheckDef("patient", "Пациент (Patient)", 10, "3.13.1"),
     MisCheckDef("service_request_consult", "Направление ServiceRequestConsult", 20, "табл. 118", critical=True),
@@ -59,9 +59,9 @@ MEDICATION_EXTRA_CHECKS: tuple[MisCheckDef, ...] = (
     MisCheckDef("medication_encounter_link", "Назначение привязано к визиту", 10, "табл. 49"),
 )
 
-# Протокол взаимодействия МИС ОЗ – ЦИСЗ v.1.4 (§4.1, §5.1.1, §5.2.2) — обёртка пакета
+# Протокол взаимодействия МИС ОЗ - ЦИСЗ v.1.4 (§4.1, §5.1.1, §5.2.2) - обёртка пакета
 PROTOCOL_V14_BUNDLE_CHECKS: tuple[MisCheckDef, ...] = (
-    MisCheckDef("bundle_type_document", "Bundle.type = document", 8, "ПИ МИС–ЦИСЗ §5.1.1", critical=True),
+    MisCheckDef("bundle_type_document", "Bundle.type = document", 8, "ПИ МИС-ЦИСЗ §5.1.1", critical=True),
     MisCheckDef(
         "bundle_profile_package",
         "meta.profile пакета (MedicationDocument / пакет МИО)",
@@ -74,7 +74,7 @@ PROTOCOL_V14_BUNDLE_CHECKS: tuple[MisCheckDef, ...] = (
 )
 
 PROTOCOL_V14_COMPOSITION_CHECKS: tuple[MisCheckDef, ...] = (
-    MisCheckDef("composition_first_entry", "Composition — первый entry Bundle", 10, "ПИ v1.4 §5.1.1", critical=True),
+    MisCheckDef("composition_first_entry", "Composition - первый entry Bundle", 10, "ПИ v1.4 §5.1.1", critical=True),
     MisCheckDef("composition_present", "Ресурс Composition (CompDocument)", 8, "ПИ v1.4 §4.1", critical=True),
     MisCheckDef("composition_status", "Composition.status", 3, "ПИ v1.4"),
     MisCheckDef("composition_type", "Composition.type (НСИ CompositionType)", 5, "ПИ v1.4"),

@@ -105,7 +105,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     assert r2.status_code == 200, r2.text
     d2 = r2.json()
 
-    # Тяжёлый синтез вызван ровно один раз — второй ответ из кэша
+    # Тяжёлый синтез вызван ровно один раз - второй ответ из кэша
     assert calls["n"] == 1
     assert d1["review"]["overall_compliance_pct"] == d2["review"]["overall_compliance_pct"]
     assert d1.get("cached_result") is False

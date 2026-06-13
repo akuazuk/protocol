@@ -27,7 +27,7 @@ def sample_text_for_pdf(
     *,
     max_chars: int = 10_000,
 ) -> str:
-    """Текстовый сэмпл из PDF для LLM-enrich (приоритет — блоки диагноза/классификации)."""
+    """Текстовый сэмпл из PDF для LLM-enrich (приоритет - блоки диагноза/классификации)."""
     from .rules_from_corpus import _collapse_ws, load_chunks_exact, pick_best_logical_chunks
 
     chunks = pick_best_logical_chunks(load_chunks_exact(chunks_path, source_path))

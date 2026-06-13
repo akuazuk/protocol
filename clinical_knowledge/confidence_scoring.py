@@ -12,7 +12,7 @@ def compute_confidence_score(
     *,
     rules_check: dict[str, Any] | None = None,
 ) -> float:
-    """0–100: насколько системе хватает данных для надёжной оценки."""
+    """0-100: насколько системе хватает данных для надёжной оценки."""
     factors: list[float] = []
 
     eq = doc.extraction_quality
@@ -52,7 +52,7 @@ def apply_confidence_status(
     *,
     low_threshold: float = 55.0,
 ) -> str:
-    """Если confidence низкий — low_confidence (кроме manual_review / insufficient)."""
+    """Если confidence низкий - low_confidence (кроме manual_review / insufficient)."""
     if overall_status in ("manual_review_required", "insufficient_data", "insufficient_protocol_data"):
         return overall_status
     if confidence < low_threshold:

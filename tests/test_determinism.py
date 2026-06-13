@@ -42,7 +42,7 @@ def test_overall_compliance_is_mean_of_criteria() -> None:
     import rag_server as rs
 
     parsed = {
-        "overall_compliance_pct": 91,  # «свободное» число модели — должно быть пересчитано
+        "overall_compliance_pct": 91,  # «свободное» число модели - должно быть пересчитано
         "criteria": [
             {"name_ru": "A", "score_pct": 80},
             {"name_ru": "B", "score_pct": 60},

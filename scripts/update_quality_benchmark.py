@@ -73,7 +73,7 @@ def main() -> int:
         ],
     }
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {out_path} — {passed}/{total} ({pct}%)")
+    print(f"Wrote {out_path} - {passed}/{total} ({pct}%)")
     return 0 if passed == total else 1
 
 

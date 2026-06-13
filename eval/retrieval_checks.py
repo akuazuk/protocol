@@ -1,5 +1,5 @@
 """
-Общие проверки качества retrieve() — без импорта rag_server (удобно для pytest).
+Общие проверки качества retrieve() - без импорта rag_server (удобно для pytest).
 """
 from __future__ import annotations
 

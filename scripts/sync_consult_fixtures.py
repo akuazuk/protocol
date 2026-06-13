@@ -39,7 +39,7 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.manifest:
-        # временно подменяем через env не нужно — читаем файл напрямую
+        # временно подменяем через env не нужно - читаем файл напрямую
         manifest = Path(args.manifest)
         if not manifest.is_file():
             print(f"Manifest not found: {manifest}", file=sys.stderr)

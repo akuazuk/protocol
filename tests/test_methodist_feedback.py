@@ -75,7 +75,7 @@ def test_expand_analysis_review_creates_override_events():
                 "rule_id": GERD_EXAM_RULE_ID,
                 "system_pass": True,
                 "human_pass": False,
-                "note": "ЭГДС указана в КЗ сокращённо — система ошибочно требует повторно",
+                "note": "ЭГДС указана в КЗ сокращённо - система ошибочно требует повторно",
             }
         ],
         "retrieval_fix": {

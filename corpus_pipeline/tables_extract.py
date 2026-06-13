@@ -29,7 +29,7 @@ def _pad_row(row: list[str], width: int) -> list[str]:
 
 
 def _normalize_pdf_table(table: list[list[Any]]) -> tuple[list[str], list[list[str]]] | None:
-    """Первая строка — заголовок; пустые заголовки заменяются на Столбец N."""
+    """Первая строка - заголовок; пустые заголовки заменяются на Столбец N."""
     if not table:
         return None
     cells = [[str(c or "").strip() for c in row] for row in table]
@@ -133,7 +133,7 @@ def merge_multipage_tables(tables: list[dict[str, Any]]) -> list[dict[str, Any]]
             page_adjacent = page <= int(prev.get("page_to") or prev.get("page") or page) + 1
             if continuation and page_adjacent:
                 prev_rows = list(prev.get("rows") or [])
-                # При совпадении заголовка строки продолжения — это данные, не повтор шапки.
+                # При совпадении заголовка строки продолжения - это данные, не повтор шапки.
                 prev_rows.extend(rows)
                 prev["rows"] = prev_rows
                 prev["page_to"] = max(int(prev.get("page_to") or page), page)

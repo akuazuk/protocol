@@ -49,7 +49,7 @@ def _starts_new_diagnosis(s: str) -> bool:
         return True
     first = s[:1]
     if first.isdigit() or first.islower():
-        # дата/«от 11.09.2024…» или продолжение со строчной — это перенос, не новый диагноз
+        # дата/«от 11.09.2024…» или продолжение со строчной - это перенос, не новый диагноз
         return False
     return True
 
@@ -57,7 +57,7 @@ def _starts_new_diagnosis(s: str) -> bool:
 def _split_diagnosis_lines(diagnosis_block: str) -> list[str]:
     """Разбивает блок на диагнозы, склеивая перенесённые строки (даты/уточнения).
 
-    Жёсткие разделители — `;` и перенос строки; но строка-продолжение
+    Жёсткие разделители - `;` и перенос строки; но строка-продолжение
     (без кода МКБ, начинается со строчной буквы или с цифры-даты) приклеивается
     к предыдущему диагнозу, а не образует отдельный.
     """
@@ -65,9 +65,9 @@ def _split_diagnosis_lines(diagnosis_block: str) -> list[str]:
         return []
     parts: list[str] = []
     for raw in re.split(r"[\n;]+", diagnosis_block):
-        line = raw.strip(" -—\t")
+        line = raw.strip(" - - \t")
         if len(line) < 3:
-            # слишком короткий фрагмент — приклеиваем к предыдущему, если это хвост
+            # слишком короткий фрагмент - приклеиваем к предыдущему, если это хвост
             if line and parts:
                 parts[-1] = (parts[-1] + " " + line).strip()
             continue

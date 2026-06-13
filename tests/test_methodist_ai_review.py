@@ -19,7 +19,7 @@ def test_normalize_ai_review_valid():
         "summary_ru": "КЗ в целом соответствует.",
         "engine_improvements_ru": ["Отключить ложное правило bladder_dysfunction для M54.1", "Не занижать treatment_score при НПВС"],
         "kz_text_notes_ru": ["Опечатка реблакса"],
-        "system_notes_ru": "Правило ЭГДС — ложное срабатывание.",
+        "system_notes_ru": "Правило ЭГДС - ложное срабатывание.",
         "block_overrides": [
             {"block_key": "diagnosis_score", "verdict": "agree", "note": ""},
             {"block_key": "treatment_score", "verdict": "disagree", "note": "Занижено"},

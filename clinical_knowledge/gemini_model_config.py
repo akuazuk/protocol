@@ -42,7 +42,7 @@ def resolve_gemini_model(
 ) -> tuple[str, str | None]:
     """
     Возвращает (имя модели, предупреждение или None).
-    env_fallback_key — второй env, если primary пуст (напр. GEMINI_MODEL для methodist).
+    env_fallback_key - второй env, если primary пуст (напр. GEMINI_MODEL для methodist).
     """
     primary = (raw or "").strip()
     if not primary and env_fallback_key:
@@ -60,7 +60,7 @@ def resolve_gemini_model(
     if low in _KNOWN_MODELS:
         return low, None
 
-    # gemini-2.5-* и прочие новые — пропускаем как есть, но 3.x без алиаса → flash
+    # gemini-2.5-* и прочие новые - пропускаем как есть, но 3.x без алиаса → flash
     if re.match(r"gemini-3[.\d-]*", low):
         resolved = "gemini-2.5-pro" if "pro" in low else "gemini-2.5-flash"
         return resolved, f"Модель «{name}» не поддерживается; используется «{resolved}»."

@@ -60,7 +60,7 @@ def test_evidence_map_uses_russian_labels():
                 "rule_id": "celiac_population_guard",
                 "rule_type": "population_mismatch",
                 "passed": False,
-                "message_ru": "Нозология «Целиакия» — протокол для дети, в КЗ аудитория взрослые.",
+                "message_ru": "Нозология «Целиакия» - протокол для дети, в КЗ аудитория взрослые.",
             },
         ]
     }

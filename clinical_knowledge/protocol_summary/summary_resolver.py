@@ -175,7 +175,7 @@ def discover_protocol_summaries(
                     reason=f"diagnosis_text:{q[:40]}", score=0.75, condition_ids=[cond.condition_id],
                 )
 
-    # Фильтр по рубрике (мягкий): если slug задан и summary другой рубрики без ICD match — понизить
+    # Фильтр по рубрике (мягкий): если slug задан и summary другой рубрики без ICD match - понизить
     if specialty_slug and found:
         filtered: dict[str, ProtocolSummary] = {}
         for pid, s in found.items():

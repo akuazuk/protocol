@@ -24,7 +24,7 @@ def main() -> int:
 
         paths = _load_protocol_paths()
         if not paths:
-            print("WARN: нет protocol_cards — соберите output/registry/protocol_cards.jsonl")
+            print("WARN: нет protocol_cards - соберите output/registry/protocol_cards.jsonl")
             return 1
 
         with_rules: list[str] = []

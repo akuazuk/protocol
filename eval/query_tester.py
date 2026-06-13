@@ -29,7 +29,7 @@ if _rs not in sys.path:
     sys.path.insert(0, _rs)
 
 def apply_mini_fixture_env() -> None:
-    """Мини-корпус из tests/fixtures — как tests/conftest.py."""
+    """Мини-корпус из tests/fixtures - как tests/conftest.py."""
     p = ROOT / "tests" / "fixtures" / "chunks.mini.jsonl"
     if not p.is_file():
         raise SystemExit(f"Нет файла фикстуры: {p}")
@@ -50,7 +50,7 @@ def load_golden_lines(path: Path) -> list[dict]:
 
 def print_retrieval_table(retrieved: list[dict]) -> None:
     if not retrieved:
-        print("(пустой отбор — уточните запрос или проверьте корпус RAG_CHUNKS_*)")
+        print("(пустой отбор - уточните запрос или проверьте корпус RAG_CHUNKS_*)")
         return
     w = os.get_terminal_size().columns if sys.stdout.isatty() else 100
     sep = "─" * min(w, 80)
@@ -152,7 +152,7 @@ def main() -> int:
     if args.mini:
         apply_mini_fixture_env()
 
-    # Запуск как `python eval/query_tester.py` — корень репо должен быть в sys.path
+    # Запуск как `python eval/query_tester.py` - корень репо должен быть в sys.path
     root_s = str(ROOT)
     if root_s not in sys.path:
         sys.path.insert(0, root_s)

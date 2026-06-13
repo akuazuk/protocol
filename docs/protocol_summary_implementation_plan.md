@@ -66,7 +66,7 @@ Env (см. `protocol_summary/config.py`):
 - `PROTOCOL_SUMMARY_FALLBACK_TO_LEGACY=1`
 - `PROTOCOL_SUMMARY_MIN_REVIEW_STATUS=draft`
 
-**Безопасный default на этапе внедрения:** `MODE=legacy`, `ENABLED=0` — новый код загружается, но не влияет на production до явного включения.
+**Безопасный default на этапе внедрения:** `MODE=legacy`, `ENABLED=0` - новый код загружается, но не влияет на production до явного включения.
 
 ---
 
@@ -74,7 +74,7 @@ Env (см. `protocol_summary/config.py`):
 
 ### 4.1 `rule_model.ProtocolRule`
 
-Добавить поля (с дефолтами — backward compatible):
+Добавить поля (с дефолтами - backward compatible):
 
 ```python
 rule_source: Literal["legacy", "summary", "manual", "table", "llm_draft"] = "legacy"
@@ -97,15 +97,15 @@ fallback_to_legacy: bool = False
 method_comparison: dict | None = None
 ```
 
-Старые JSON-отчёты без этих полей — валидны (`extra="ignore"` на потребителе не нужен — дефолты).
+Старые JSON-отчёты без этих полей - валидны (`extra="ignore"` на потребителе не нужен - дефолты).
 
 ### 4.3 `consult_analysis.analyze_consultation_text`
 
 Новый параметр `analysis_mode: str | None = None` (из env если None):
 
 1. `method_selector.resolve_analysis_plan(...)` → `{primary, fallback, compare}`
-2. Legacy path — **без изменений** внутри `_run_legacy_analysis()`
-3. Summary/hybrid — подмешать `load_summary_rules()` перед `run_rule_checker`
+2. Legacy path - **без изменений** внутри `_run_legacy_analysis()`
+3. Summary/hybrid - подмешать `load_summary_rules()` перед `run_rule_checker`
 4. Hybrid merge в `build_compliance_report(..., summary_meta=...)`
 
 ### 4.4 `compliance_engine.build_compliance_report`
@@ -125,7 +125,7 @@ method_comparison: dict | None = None
 ### 4.6 RAG (`summary_to_rag` + опционально `rag_server`)
 
 Phase 1: генерировать `data/protocol_summaries/summary_chunks.jsonl` offline.  
-Phase 2: `retrieve(..., corpus="summary"|"hybrid")` — отдельный PR, не блокирует compliance.
+Phase 2: `retrieve(..., corpus="summary"|"hybrid")` - отдельный PR, не блокирует compliance.
 
 ---
 
@@ -151,7 +151,7 @@ if mode == hybrid:
     if summary invalid → legacy only + fallback flag
 ```
 
-**Red flags:** safety_checker не отключается; summary red_flag_rule + legacy safety — union, не intersection.
+**Red flags:** safety_checker не отключается; summary red_flag_rule + legacy safety - union, не intersection.
 
 **LLM:** `llm_score_ignored=True` сохраняется; summary не меняет deterministic score через LLM.
 
@@ -161,7 +161,7 @@ if mode == hybrid:
 
 | Риск | Митигация |
 |------|-----------|
-| Слом regression-тестов KZ | Default `legacy`; после каждого этапа — `pytest tests/test_regression_kz_compliance.py` |
+| Слом regression-тестов KZ | Default `legacy`; после каждого этапа - `pytest tests/test_regression_kz_compliance.py` |
 | Дублирование rules → двойной штраф | Hybrid dedupe по `rule_type + expected_items`; summary priority |
 | Неполные draft YAML | Validator → `needs_human_review`; hybrid fallback |
 | Производительность loader | `@lru_cache` как в `loader.py` |
@@ -187,7 +187,7 @@ if mode == hybrid:
 
 ---
 
-## 8. CLI (этап 9–10)
+## 8. CLI (этап 9-10)
 
 ```bash
 python -m scripts.build_protocol_summaries [--limit N]
@@ -215,4 +215,4 @@ python -m scripts.analyze_consultation --file kz.txt  # + --mode legacy|summary|
 2. Fixtures-linked conditions: K30, I80.1, L30, J06.8
 3. Draft YAML в `data/protocol_summaries/drafts/` + validated copies в `yaml/`
 
-Полный каталог 478 PDF — итеративно, без блокировки legacy.
+Полный каталог 478 PDF - итеративно, без блокировки legacy.

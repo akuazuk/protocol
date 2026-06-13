@@ -74,7 +74,7 @@ class ProtocolRule(_Base):
     forbidden_items: list[str] = []
 
     source: SourceRef = SourceRef()
-    confidence: float = 1.0  # уверенность извлечения правила (0–1)
+    confidence: float = 1.0  # уверенность извлечения правила (0-1)
 
 
 _LEGACY_TYPE_MAP: dict[str, RuleType] = {
@@ -149,7 +149,7 @@ def rule_applicable_to_patient(
     *,
     diagnosis_certainty: str | None = None,
 ) -> bool:
-    """Правило неприменимо — не должно снижать score."""
+    """Правило неприменимо - не должно снижать score."""
     appl = rule.applicability
     if appl.condition_certainty and diagnosis_certainty:
         if diagnosis_certainty not in appl.condition_certainty:

@@ -16,7 +16,7 @@ OUT = ROOT / "data/icd_reference/icd10_who_2016_terminal_codes.json"
 
 def main() -> None:
     if not SRC.is_file():
-        raise SystemExit(f"Нет файла: {SRC} — распакуйте icd102016enMeta.zip в data/icd_reference/")
+        raise SystemExit(f"Нет файла: {SRC} - распакуйте icd102016enMeta.zip в data/icd_reference/")
     rows: list[dict] = []
     with SRC.open(encoding="utf-8", errors="replace") as f:
         for line in f:

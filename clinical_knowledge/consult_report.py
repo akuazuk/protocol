@@ -104,7 +104,7 @@ def _score_bar_color(pct: float) -> str:
 def _score_verdict_ru(pct: float | None) -> tuple[str, str]:
     """Краткий вердикт для врача: (текст, css-класс)."""
     if not isinstance(pct, (int, float)):
-        return "—", "cr-verdict--na"
+        return " - ", "cr-verdict--na"
     p = float(pct)
     if p >= 85:
         return "Хорошо", "cr-verdict--good"
@@ -147,7 +147,7 @@ def _mini_donut_svg(
     c_len = 2 * 3.14159 * r
     dash = c_len * pct / 100.0
     col = stroke or _score_bar_color(pct)
-    display = f"{pct:.0f}" if isinstance(score, (int, float)) else "—"
+    display = f"{pct:.0f}" if isinstance(score, (int, float)) else " - "
     cx = size / 2
     return (
         f'<svg class="cr-mini-donut" width="{size}" height="{size}" viewBox="0 0 {size} {size}" '
@@ -173,7 +173,7 @@ def _svg_donut(
     r = 40
     c_len = 2 * 3.14159 * r
     dash = c_len * pct / 100.0
-    display = _fmt_pct(score) if isinstance(score, (int, float)) else "—"
+    display = _fmt_pct(score) if isinstance(score, (int, float)) else " - "
     verdict, vcls = _score_verdict_ru(score if isinstance(score, (int, float)) else None)
     ring = _score_bar_color(pct) if isinstance(score, (int, float)) else "#cbd5e1"
     return (
@@ -185,7 +185,7 @@ def _svg_donut(
         f'stroke-dasharray="{dash:.2f} {c_len:.2f}" stroke-linecap="round" '
         f'transform="rotate(-90 48 48)"/>'
         f'<text x="48" y="44" text-anchor="middle" font-size="20" font-weight="800" fill="#1e3d34">'
-        f'{display if display != "—" else "—"}</text>'
+        f'{display if display != " - " else " - "}</text>'
         f'<text x="48" y="58" text-anchor="middle" font-size="8.5" fill="#6b7f78" font-weight="600">'
         f'{_e(caption)}</text></svg>'
         f'<figcaption class="cr-donut-verdict {_e(vcls)}">{_e(verdict)}</figcaption></figure>'
@@ -255,7 +255,7 @@ def _src_line(ref: SourceRef) -> str:
         parts.append(pg)
     if ref.quote:
         parts.append(f"«{ref.quote[:160]}»")
-    return " — ".join(parts) if parts else (ref.protocol_id or "источник не указан")
+    return " - ".join(parts) if parts else (ref.protocol_id or "источник не указан")
 
 
 def _src_line_html(ref: SourceRef) -> str:
@@ -281,7 +281,7 @@ def _src_line_html(ref: SourceRef) -> str:
         parts.append(_e(pg))
     if ref.quote:
         parts.append(f"«{_e(ref.quote[:160])}»")
-    return " — ".join(parts) if parts else "источник не указан"
+    return " - ".join(parts) if parts else "источник не указан"
 
 
 def _resolve_send_gate(
@@ -424,7 +424,7 @@ def report_to_json(
 
 
 def _fmt_pct(v: float | None) -> str:
-    return f"{v:.0f}%" if isinstance(v, (int, float)) else "—"
+    return f"{v:.0f}%" if isinstance(v, (int, float)) else " - "
 
 
 def _e(s: Any) -> str:
@@ -499,17 +499,17 @@ def report_to_html(
         initials = name_to_initials(p.full_name)
         resume_inner.append(f"<li><strong>Пациент:</strong> {_e(initials)}</li>")
         resume_inner.append(
-            f"<li><strong>Возраст:</strong> {p.age_years if p.age_years is not None else '—'} "
+            f"<li><strong>Возраст:</strong> {p.age_years if p.age_years is not None else ' - '} "
             f"({_e(p.age_group)})</li>"
         )
         resume_inner.append(f"<li><strong>Пол:</strong> {_e(_SEX_RU.get(p.sex, p.sex))}</li>")
-        cdate = doc.consultation_date.isoformat() if doc.consultation_date else "—"
+        cdate = doc.consultation_date.isoformat() if doc.consultation_date else " - "
         resume_inner.append(f"<li><strong>Дата консультации:</strong> {_e(cdate)}</li>")
-        resume_inner.append(f"<li><strong>Специальность врача:</strong> {_e(doc.doctor_specialty or '—')}</li>")
+        resume_inner.append(f"<li><strong>Специальность врача:</strong> {_e(doc.doctor_specialty or ' - ')}</li>")
         diags = ", ".join(
             _e(f"{d.icd10_code or ''} {d.diagnosis_name or d.raw_text}".strip())
             for d in doc.diagnoses
-        ) or "—"
+        ) or " - "
         resume_inner.append(f"<li><strong>Диагнозы:</strong> {diags}</li>")
     protos_html: list[str] = []
     seen_proto: set[str] = set()
@@ -534,7 +534,7 @@ def report_to_html(
         else:
             protos_html.append(title)
     resume_inner.append(
-        f"<li><strong>Протоколы:</strong> {', '.join(protos_html) if protos_html else '—'}</li>"
+        f"<li><strong>Протоколы:</strong> {', '.join(protos_html) if protos_html else ' - '}</li>"
     )
     resume_inner.append("</ul>")
     parts.append(_spoiler_section("Краткое резюме", "".join(resume_inner), open_default=True))
@@ -575,7 +575,7 @@ def report_to_html(
             txt = a.diagnosis_text or ""
             raw_label = txt if (code and txt.upper().startswith(code.upper())) else f"{code} {txt}".strip()
             label = _e(raw_label)
-            diag_inner.append(f"<li><span class='cr-icd'>{label}</span> — {_status_badge_html(a.status, st)}</li>")
+            diag_inner.append(f"<li><span class='cr-icd'>{label}</span> - {_status_badge_html(a.status, st)}</li>")
         diag_inner.append("</ul>")
         parts.append(_spoiler_section("Диагноз", "".join(diag_inner), open_default=True))
 
@@ -584,7 +584,7 @@ def report_to_html(
         exam_inner = ["<ul class='cr-list'>"]
         for e in report.exam_assessments:
             st = _EXAM_RU.get(e.status, e.status)
-            exam_inner.append(f"<li>{_e(e.exam_name)} — <strong>{_e(st)}</strong></li>")
+            exam_inner.append(f"<li>{_e(e.exam_name)} - <strong>{_e(st)}</strong></li>")
         exam_inner.append("</ul>")
         parts.append(_spoiler_section("Обследования", "".join(exam_inner)))
     else:
@@ -595,7 +595,7 @@ def report_to_html(
         treat_inner = ["<ul class='cr-list'>"]
         for t in report.treatment_assessments:
             st = _TREAT_RU.get(t.status, t.status)
-            treat_inner.append(f"<li>{_e(t.treatment_text)} — <strong>{_e(st)}</strong></li>")
+            treat_inner.append(f"<li>{_e(t.treatment_text)} - <strong>{_e(st)}</strong></li>")
         treat_inner.append("</ul>")
         parts.append(_spoiler_section("Лечение и назначения", "".join(treat_inner), open_default=True))
     else:
@@ -610,7 +610,7 @@ def report_to_html(
             st = _SAFETY_RU.get(s.status, s.status)
             safety_inner.append(
                 f"<li><span class='cr-sev cr-sev--{_e(s.severity)}'>[{_e(sev)}]</span> "
-                f"{_e(s.finding_text)} — <strong>{_e(st)}</strong></li>"
+                f"{_e(s.finding_text)} - <strong>{_e(st)}</strong></li>"
             )
         safety_inner.append("</ul>")
     else:
@@ -629,8 +629,8 @@ def report_to_html(
             '<h3 class="cr-section-title">Протоколы не применимы</h3><ul class="cr-list">'
         )
         for m in report.not_applicable_protocols[:6]:
-            title = _e(m.document_title or m.protocol_id or "—")
-            parts.append(f"<li>{title} — <em>{_e(m.applicability)}</em></li>")
+            title = _e(m.document_title or m.protocol_id or " - ")
+            parts.append(f"<li>{title} - <em>{_e(m.applicability)}</em></li>")
         parts.append("</ul></section>")
 
     if report.evidence_map:
@@ -669,7 +669,7 @@ def report_to_html(
                 for slug, info in by_rubric.items():
                     title = (info or {}).get("title", slug)
                     cov = (info or {}).get("term_coverage_pct", 0)
-                    rub_inner.append(f"<li><strong>{_e(title)}</strong> — {cov}%</li>")
+                    rub_inner.append(f"<li><strong>{_e(title)}</strong> - {cov}%</li>")
                 rub_inner.append("</ul>")
             if measurements:
                 rub_inner.append("<ul class='cr-list cr-list--meas'>")
@@ -717,7 +717,7 @@ def report_to_markdown(
     if report.fallback_to_legacy:
         L.append("- **Fallback на legacy:** да")
     elif mode_label in ("summary", "hybrid") and not report.protocol_summary_used:
-        L.append("- **Fallback на legacy:** нет (summary не найден — см. diagnostics)")
+        L.append("- **Fallback на legacy:** нет (summary не найден - см. diagnostics)")
     if report.rules_count_by_source:
         L.append(
             f"- **Правила по источнику:** summary={report.rules_count_by_source.get('summary', 0)}, "
@@ -727,7 +727,7 @@ def report_to_markdown(
         L.append("- **Diagnostics summary:**")
         for d in report.summary_diagnostics[:5]:
             reasons = ", ".join(d.get("match_reasons") or [])
-            L.append(f"  - {d.get('protocol_id') or '—'}: {reasons}")
+            L.append(f"  - {d.get('protocol_id') or ' - '}: {reasons}")
     if report.method_comparison:
         mc = report.method_comparison
         L.append(
@@ -742,22 +742,22 @@ def report_to_markdown(
     if doc is not None:
         p = doc.patient
         L.append(f"- Пациент: {name_to_initials(p.full_name)}")
-        L.append(f"- Возраст: {p.age_years if p.age_years is not None else '—'} ({p.age_group})")
+        L.append(f"- Возраст: {p.age_years if p.age_years is not None else ' - '} ({p.age_group})")
         L.append(f"- Пол: {_SEX_RU.get(p.sex, p.sex)}")
-        L.append(f"- Дата консультации: {doc.consultation_date.isoformat() if doc.consultation_date else '—'}")
-        L.append(f"- Специальность врача: {doc.doctor_specialty or '—'}")
+        L.append(f"- Дата консультации: {doc.consultation_date.isoformat() if doc.consultation_date else ' - '}")
+        L.append(f"- Специальность врача: {doc.doctor_specialty or ' - '}")
         diags = ", ".join(
             f"{d.icd10_code or ''} {d.diagnosis_name or d.raw_text}".strip()
             for d in doc.diagnoses
-        ) or "—"
+        ) or " - "
         L.append(f"- Основные диагнозы: {diags}")
     protos = ", ".join(
         f"{m.document_title or m.protocol_id} [{m.applicability}]"
         for m in report.protocol_matches[:5]
-    ) or "—"
+    ) or " - "
     L.append(f"- Подобранные протоколы: {protos}")
     L.append(
-        f"- Общая оценка: {_fmt_pct(report.overall_score)} — статус "
+        f"- Общая оценка: {_fmt_pct(report.overall_score)} - статус "
         f"**{_OVERALL_RU.get(report.overall_status, report.overall_status)}**"
     )
     if report.confidence_score is not None:
@@ -797,8 +797,8 @@ def report_to_markdown(
     L.append("## 3. Данные пациента")
     if doc is not None:
         p = doc.patient
-        L.append(f"- Дата рождения: {p.birth_date.isoformat() if p.birth_date else '—'}")
-        L.append(f"- Возраст на дату консультации: {p.age_years if p.age_years is not None else '—'}")
+        L.append(f"- Дата рождения: {p.birth_date.isoformat() if p.birth_date else ' - '}")
+        L.append(f"- Возраст на дату консультации: {p.age_years if p.age_years is not None else ' - '}")
         L.append(f"- Пол: {_SEX_RU.get(p.sex, p.sex)}")
         if p.pregnancy is not None:
             L.append(f"- Беременность: {'да' if p.pregnancy else 'нет'}")
@@ -820,7 +820,7 @@ def report_to_markdown(
         suspected = [d for d in doc.diagnoses if d.certainty == "suspected"]
         if primary:
             L.append("- **Основной:** " + "; ".join(
-                f"{d.icd10_code or '—'} {d.diagnosis_name or d.raw_text}" for d in primary
+                f"{d.icd10_code or ' - '} {d.diagnosis_name or d.raw_text}" for d in primary
             ))
         if secondary:
             L.append("- Сопутствующие: " + "; ".join(d.raw_text[:80] for d in secondary[:3]))
@@ -828,7 +828,7 @@ def report_to_markdown(
             L.append("- Подозрительные: " + "; ".join(d.raw_text[:80] for d in suspected[:3]))
     L.append(f"_Балл блока: {_fmt_pct(bd.diagnosis_score)}_")
     for a in report.diagnosis_assessments:
-        L.append(f"- {a.icd10_code or ''} {a.diagnosis_text} — **{_DIAG_RU.get(a.status, a.status)}**")
+        L.append(f"- {a.icd10_code or ''} {a.diagnosis_text} - **{_DIAG_RU.get(a.status, a.status)}**")
         for e in a.evidence_found:
             L.append(f"  - подтверждено: {e}")
         for e in a.evidence_missing:
@@ -843,7 +843,7 @@ def report_to_markdown(
     L.append(f"- Подобрано: {pa.matched_count}; применимо: {pa.applicable_count}")
     if report.protocol_matches:
         for m in report.protocol_matches[:5]:
-            L.append(f"- **{m.document_title or m.protocol_id}** — {m.applicability}")
+            L.append(f"- **{m.document_title or m.protocol_id}** - {m.applicability}")
             if m.matched_condition:
                 L.append(f"  - нозология: {m.matched_condition}")
             for r in m.match_reasons[:3]:
@@ -855,7 +855,7 @@ def report_to_markdown(
     if report.not_applicable_protocols:
         L.append("- **Не применимы (возраст/пол/аудитория):**")
         for m in report.not_applicable_protocols[:5]:
-            L.append(f"  - {m.document_title or m.protocol_id} — {m.applicability}")
+            L.append(f"  - {m.document_title or m.protocol_id} - {m.applicability}")
             for r in m.mismatch_reasons[:2]:
                 L.append(f"    - {r}")
     L.append("")
@@ -870,7 +870,7 @@ def report_to_markdown(
             L.append("- **Рекомендованные:** " + ", ".join(e.exam_name for e in doc.planned_exams[:8]))
     if report.exam_assessments:
         for e in report.exam_assessments:
-            L.append(f"- {e.exam_name} — **{_EXAM_RU.get(e.status, e.status)}**" + (f" ({e.reason})" if e.reason else ""))
+            L.append(f"- {e.exam_name} - **{_EXAM_RU.get(e.status, e.status)}**" + (f" ({e.reason})" if e.reason else ""))
     else:
         L.append("- Детерминированные правила по обследованиям не сработали (нет данных).")
     L.append("")
@@ -880,7 +880,7 @@ def report_to_markdown(
     L.append(f"_Балл блока: {_fmt_pct(bd.treatment_score)}_")
     if report.treatment_assessments:
         for t in report.treatment_assessments:
-            L.append(f"- {t.treatment_text} — **{_TREAT_RU.get(t.status, t.status)}**")
+            L.append(f"- {t.treatment_text} - **{_TREAT_RU.get(t.status, t.status)}**")
             for iss in t.issues:
                 L.append(f"  - {iss.message_ru}")
             if t.consultation_evidence:
@@ -894,7 +894,7 @@ def report_to_markdown(
     L.append(f"_Балл блока: {_fmt_pct(bd.safety_score)}_")
     if report.safety_assessments:
         for s in report.safety_assessments:
-            L.append(f"- [{_SEVERITY_RU.get(s.severity, s.severity)}] {s.finding_text} — **{_SAFETY_RU.get(s.status, s.status)}**")
+            L.append(f"- [{_SEVERITY_RU.get(s.severity, s.severity)}] {s.finding_text} - **{_SAFETY_RU.get(s.status, s.status)}**")
             if s.expected_action:
                 L.append(f"  - ожидаемые действия: {s.expected_action}")
     else:
@@ -909,7 +909,7 @@ def report_to_markdown(
     if doc is not None:
         if doc.follow_up:
             for fu in doc.follow_up[:3]:
-                L.append(f"- Повторная явка: {fu.date.isoformat() if fu.date else fu.raw_text or '—'}")
+                L.append(f"- Повторная явка: {fu.date.isoformat() if fu.date else fu.raw_text or ' - '}")
         elif doc.sections.follow_up_text:
             L.append(f"- {doc.sections.follow_up_text[:200]}")
         else:
@@ -922,7 +922,7 @@ def report_to_markdown(
         for ev in report.evidence_map[:20]:
             title = ev.title_ru or rule_title_ru(ev.rule_id, {})
             dec_label = ev.decision_ru or decision_ru(ev.decision)
-            L.append(f"- **{title}** ({dec_label}): {ev.explanation or '—'}")
+            L.append(f"- **{title}** ({dec_label}): {ev.explanation or ' - '}")
             if ev.consultation_evidence:
                 L.append(f"  - КЗ: {ev.consultation_evidence[0][:120]}")
             if ev.protocol_evidence:
@@ -968,7 +968,7 @@ def report_to_markdown(
                 matched = (info or {}).get("matched_terms") or []
                 missing = (info or {}).get("missing_terms") or []
                 cov = (info or {}).get("term_coverage_pct", 0)
-                L.append(f"- **{title}** — покрытие профильных понятий {cov}%")
+                L.append(f"- **{title}** - покрытие профильных понятий {cov}%")
                 if matched:
                     L.append(f"  - найдено: {', '.join(matched)}")
                 if missing:
@@ -999,6 +999,6 @@ def report_to_markdown(
 
     L.append(
         "> Оценка ориентировочная и не заменяет врача. "
-        "Документ — инструмент экспертной проверки соответствия клиническим протоколам."
+        "Документ - инструмент экспертной проверки соответствия клиническим протоколам."
     )
     return "\n".join(L)

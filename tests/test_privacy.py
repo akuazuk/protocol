@@ -14,8 +14,8 @@ def test_name_with_dob_suffix():
 
 
 def test_empty_name():
-    assert name_to_initials("") == "—"
-    assert name_to_initials(None) == "—"
+    assert name_to_initials("") == " - "
+    assert name_to_initials(None) == " - "
 
 
 def test_redact_fio_line():

@@ -154,5 +154,5 @@ def apply_safety_cap_to_score(
                     cap = float(limit)
                     applied = True
                     cap_val = float(limit)
-                    reason = f"Необработанный флаг «{flag_id}» — safety cap {limit}%"
+                    reason = f"Необработанный флаг «{flag_id}» - safety cap {limit}%"
     return cap, SafetyCapInfo(applied=applied, reason=reason, cap_value=cap_val)

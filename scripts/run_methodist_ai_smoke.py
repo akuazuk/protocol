@@ -30,7 +30,7 @@ def _load_pdf_text(path: Path) -> str:
 
 
 def _load(name: str) -> str:
-    """name: pl_1_f.pdf или pl_1_f.txt — ищет в clients_consult, затем fixtures."""
+    """name: pl_1_f.pdf или pl_1_f.txt - ищет в clients_consult, затем fixtures."""
     candidates = [CLIENTS / name, FIXTURES / name]
     stem = Path(name).stem
     candidates.extend([CLIENTS / f"{stem}.pdf", FIXTURES / f"{stem}.txt"])
@@ -150,7 +150,7 @@ def main() -> int:
                 print(f"System notes: {(ai.get('system_notes_ru') or '')[:200]}")
                 print(f"Tags: {ai.get('tags')} | confidence: {ai.get('confidence')} | model: {ai.get('model_used')}")
             elif rep.get("ai_error"):
-                print(f"AI-этап: ОШИБКА — {rep['ai_error']}")
+                print(f"AI-этап: ОШИБКА - {rep['ai_error']}")
             print(f"Timing: analysis {rep['analysis_ms']}ms, AI {rep['ai_review_ms']}ms")
         except Exception as exc:
             print(f"ERROR: {exc}", file=sys.stderr)

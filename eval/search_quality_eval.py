@@ -3,10 +3,7 @@
 Оценка качества поиска протоколов: полный retrieve() как в проде, включая опциональный
 Семантический embed-rerank (если заданы RAG_GEMINI_EMBED_RERANK=1 и ключ API в окружении).
 
-Для каждого кейса:
-  — метрики (пустой отбор, совпадение must_substrings, ожидаемые пути);
-  — эвристический «план улучшений» (что проверить в коде и данных);
-  — при --gemini-advice — краткий анализ и шаги от модели (нужен API-ключ).
+Для каждого кейса: - метрики (пустой отбор, совпадение must_substrings, ожидаемые пути); - эвристический «план улучшений» (что проверить в коде и данных); - при --gemini-advice - краткий анализ и шаги от модели (нужен API-ключ).
 
 Примеры:
 
@@ -19,13 +16,13 @@
 
 Формат строки в JSONL (все поля кроме query необязательны):
 
-  query                    — текст запроса
-  must_substrings          — подстроки, которые должны быть в объединённом тексте топ-чанков
-  expected_any_path_contains — список фрагментов пути к PDF (хотя бы один из топа)
-  forbidden_substrings     — не должны встречаться в объединённом тексте топа
-  min_chunks               — минимальное число строк в выдаче (провал, если меньше)
-  expect_empty             — true: успех только при пустой выдаче (негативный кейс)
-  notes                    — комментарий для человека
+  query - текст запроса
+  must_substrings - подстроки, которые должны быть в объединённом тексте топ-чанков
+  expected_any_path_contains - список фрагментов пути к PDF (хотя бы один из топа)
+  forbidden_substrings - не должны встречаться в объединённом тексте топа
+  min_chunks - минимальное число строк в выдаче (провал, если меньше)
+  expect_empty - true: успех только при пустой выдаче (негативный кейс)
+  notes - комментарий для человека
 """
 from __future__ import annotations
 
@@ -123,14 +120,14 @@ def build_heuristic_plan(
         plan.append(
             "Ужесточить фильтры: RAG_ROUTING, штрафы в symptom_routing, менее общие токены в запросе."
         )
-        plan.append("Проверить RAG_GENERIC_LEX_* — не проходят ли слишком широкие совпадения.")
+        plan.append("Проверить RAG_GENERIC_LEX_* - не проходят ли слишком широкие совпадения.")
 
     if rep.min_chunks_ok is False:
         issues.append(
             f"Мало чанков в выдаче (ожидалось min_chunks, получено {rep.chunks})."
         )
         plan.append("Поднять RAG_MAX_CHUNKS / RAG_EMBED_POOL или снизить пороги отсечения в retrieve.")
-        plan.append("Проверить symptom_routing — не занижен ли скор по возрасту/рубрике.")
+        plan.append("Проверить symptom_routing - не занижен ли скор по возрасту/рубрике.")
 
     if rep.forbidden_ok is False:
         issues.append(f"В выдаче есть запрещённые подстроки: {rep.forbidden_found}")
@@ -150,7 +147,7 @@ def build_heuristic_plan(
         )
         if embed_requested and api_key_present:
             plan.append(
-                "При пустом пуле до rerank семантика не поможет — сначала лексический проход."
+                "При пустом пуле до rerank семантика не поможет - сначала лексический проход."
             )
 
     if rep.must_ok is False:
@@ -177,7 +174,7 @@ def build_heuristic_plan(
     if not embed_requested and api_key_present:
         if not (rep.expect_empty and rep.retrieval_empty):
             issues.append(
-                "Семантический rerank выключен — порядок чанков может отличаться от «боевого» режима."
+                "Семантический rerank выключен - порядок чанков может отличаться от «боевого» режима."
             )
             plan.append(
                 "Запускать eval с --embed-on при наличии GOOGLE_API_KEY для сопоставимости с продом."
@@ -193,7 +190,7 @@ def build_heuristic_plan(
 
     if rep.chunks > 1 and rep.unique_paths == 1:
         hints.append(
-            "Все чанки с одного PDF — ожидаемо при max_per_path>1; иначе расширьте корпус по теме."
+            "Все чанки с одного PDF - ожидаемо при max_per_path>1; иначе расширьте корпус по теме."
         )
     if (
         rep.top_score is not None
@@ -202,11 +199,11 @@ def build_heuristic_plan(
         and rep.score_spread < 0.02
     ):
         hints.append(
-            f"Малый разрыв скоров (spread={rep.score_spread}): порядок нестабилен без семантики — embed-rerank."
+            f"Малый разрыв скоров (spread={rep.score_spread}): порядок нестабилен без семантики - embed-rerank."
         )
     if rep.top_score is not None and rep.top_score < 0.12 and not rep.retrieval_empty:
         hints.append(
-            f"Низкий top_score ({rep.top_score}) — слабое совпадение; уточнить запрос или BM25/лексику."
+            f"Низкий top_score ({rep.top_score}) - слабое совпадение; уточнить запрос или BM25/лексику."
         )
 
     rep.heuristic_issues = issues
@@ -217,7 +214,7 @@ def build_heuristic_plan(
 _GEMINI_ADVICE_PROMPT = """Ты помощник по улучшению RAG-поиска по медицинским протоколам (русский язык).
 Дан запрос пользователя и фрагменты из топа выдачи (path + краткий excerpt).
 Ответь СТРОГО одним JSON-объектом без markdown:
-{{"relevance": <число 1-5 насколько топ релевантен запросу>, "main_issue": "<одна короткая формулировка или пустая строка>", "steps": ["шаг 1", "шаг 2", "до 5 пунктов — конкретные действия для разработчика/контента"]}}
+{{"relevance": <число 1-5 насколько топ релевантен запросу>, "main_issue": "<одна короткая формулировка или пустая строка>", "steps": ["шаг 1", "шаг 2", "до 5 пунктов - конкретные действия для разработчика/контента"]}}
 
 Запрос:
 {query}
@@ -459,14 +456,14 @@ def print_case_human(r: CaseReport) -> None:
     if r.schema_warnings:
         print(f"schema: {r.schema_warnings}")
     if r.expect_empty:
-        print(f"expect_empty: {'да' if r.expect_empty_ok else 'нет — непустая выдача'}")
+        print(f"expect_empty: {'да' if r.expect_empty_ok else 'нет - непустая выдача'}")
     if r.min_chunks is not None:
         mc_ok = r.min_chunks_ok
         print(f"min_chunks (>={r.min_chunks}): {'да' if mc_ok else 'нет'}")
     if r.must_ok is not None:
-        print(f"must_substrings: {'да' if r.must_ok else 'нет — ' + str(r.must_missing)}")
+        print(f"must_substrings: {'да' if r.must_ok else 'нет - ' + str(r.must_missing)}")
     if r.path_ok is not None:
-        print(f"expected path fragments: {'да' if r.path_ok else 'нет — ' + (r.path_detail or '')}")
+        print(f"expected path fragments: {'да' if r.path_ok else 'нет - ' + (r.path_detail or '')}")
     if r.forbidden_ok is not None:
         print(
             f"forbidden_substrings: {'нет совпадений' if r.forbidden_ok else 'найдено: ' + str(r.forbidden_found)}"

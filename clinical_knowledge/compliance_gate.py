@@ -1,6 +1,6 @@
 """Решение о допуске КЗ к подписи и отправке в государственный контур (для МИС).
 
-Protocol не подписывает и не импортирует пакеты в ЦИСЗ – возвращает рекомендацию
+Protocol не подписывает и не импортирует пакеты в ЦИСЗ - возвращает рекомендацию
 «можно / нельзя / нужно подтверждение врача», которую МИС «Айболит» применяет
 по локальной политике учреждения.
 """
@@ -98,7 +98,7 @@ def enrich_sign_decision(gate: dict[str, Any]) -> dict[str, Any]:
         detail_ru = (
             "Критических препятствий к подписи не выявлено."
             if status == "allowed"
-            else "Есть замечания – рекомендуется доработать КЗ перед отправкой в ЦИСЗ."
+            else "Есть замечания - рекомендуется доработать КЗ перед отправкой в ЦИСЗ."
         )
     elif status == "review_required" and not detail_parts:
         detail_ru = "Оценка ниже порога - подтвердите подпись осознанно."
@@ -162,15 +162,15 @@ def evaluate_send_gate(
     if mode == "inform":
         gate_allowed = True
         if critical_block:
-            block_reason = "Критические замечания – рекомендуется исправить до подписи (режим inform: блокировка отключена)."
+            block_reason = "Критические замечания - рекомендуется исправить до подписи (режим inform: блокировка отключена)."
         elif score is not None and score < hard_thr:
-            block_reason = f"Оценка {score:.0f}% ниже рекомендуемого порога {hard_thr:.0f}% – доработайте КЗ перед отправкой."
+            block_reason = f"Оценка {score:.0f}% ниже рекомендуемого порога {hard_thr:.0f}% - доработайте КЗ перед отправкой."
 
     elif mode == "critical_only":
         gate_allowed = not critical_block
         if not gate_allowed:
             send_risk = "blocked"
-            block_reason = "Критические замечания по безопасности или структуре – подпись заблокирована политикой учреждения."
+            block_reason = "Критические замечания по безопасности или структуре - подпись заблокирована политикой учреждения."
 
     elif mode == "hard_gate":
         low_score = score is not None and score < hard_thr
@@ -178,27 +178,27 @@ def evaluate_send_gate(
         if not gate_allowed:
             send_risk = "blocked"
             if critical_block:
-                block_reason = "Критические замечания – подпись заблокирована."
+                block_reason = "Критические замечания - подпись заблокирована."
             elif low_score:
-                block_reason = f"Оценка {score:.0f}% ниже порога {hard_thr:.0f}% – подпись заблокирована."
+                block_reason = f"Оценка {score:.0f}% ниже порога {hard_thr:.0f}% - подпись заблокирована."
             elif confidence_low:
-                block_reason = "Низкая уверенность разбора – подпись заблокирована; проверьте текст КЗ вручную."
+                block_reason = "Низкая уверенность разбора - подпись заблокирована; проверьте текст КЗ вручную."
 
     elif mode == "soft_gate":
         gate_allowed = not critical_block
         low_score = score is not None and score < hard_thr
         if critical_block:
             send_risk = "blocked"
-            block_reason = "Критические замечания – подпись заблокирована."
+            block_reason = "Критические замечания - подпись заблокирована."
             gate_allowed = False
         elif low_score or confidence_low:
             requires_override = True
             if low_score:
                 block_reason = (
-                    f"Оценка {score:.0f}% ниже {hard_thr:.0f}% – требуется подтверждение врача «Подписать всё равно»."
+                    f"Оценка {score:.0f}% ниже {hard_thr:.0f}% - требуется подтверждение врача «Подписать всё равно»."
                 )
             else:
-                block_reason = "Низкая уверенность разбора – требуется подтверждение врача."
+                block_reason = "Низкая уверенность разбора - требуется подтверждение врача."
 
     return enrich_sign_decision({
         "gate_mode": mode,

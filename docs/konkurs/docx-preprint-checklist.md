@@ -64,7 +64,7 @@ python3 scripts/build_konkurs_pdf.py
 
 - [ ] **01_Zayavka_Kravira_Protocol.docx** (подпись, печать)
 - [ ] **02_Pasport_Kravira_Protocol.docx**
-- [ ] **03_Biznes_plan_Kravira_Protocol.docx** + приложения А–Е (внутри docx) + PDF **05_Biznes_plan_Prilozheniya.html**
+- [ ] **03_Biznes_plan_Kravira_Protocol.docx** + приложения А-Е (внутри docx) + PDF **05_Biznes_plan_Prilozheniya.html**
 - [ ] **04_Strategiya_Kravira_Protocol.docx**
 - [ ] **06_ROI_Kravira.html** → PDF (1 стр.)
 - [ ] **architecture-kravira-fhir-mis.pdf**
@@ -76,7 +76,7 @@ python3 scripts/build_konkurs_pdf.py
 - [ ] Приказ директора о пилоте Protocol (№ ___ от «___» 2026 г.)
 - [ ] Договоры с разработчиками: права на код → Кравира
 - [ ] Заявка на регистрацию программы для ЭВМ (НЦИС)
-- [ ] Политика обработки ПДн (L0 on-prem, B2C — минимизация хранения)
+- [ ] Политика обработки ПДн (L0 on-prem, B2C - минимизация хранения)
 
 ### Коммерциализация (для экспертов)
 
@@ -91,11 +91,11 @@ python3 scripts/build_konkurs_pdf.py
 
 | Что проверить | Заменить / убрать |
 |---------------|-------------------|
-| Длинное тире «—» | короткое «-» (скрипт делает автоматически; перепроверить вручную) |
+| Длинное тире « - » | короткое «-» (скрипт делает автоматически; перепроверить вручную) |
 | «pet-project» | «пилот на потоке 25 000 КЗ/мес» |
 | Устаревшая версия Protocol | актуальный `BUILD_VERSION` из `/api/version` |
 | «478 протоколов» | «~478» или актуальное число из корпуса |
-| B2C как основной доход | акцент: **B2B + МИС**; B2C — доп. канал с 2027 |
+| B2C как основной доход | акцент: **B2B + МИС**; B2C - доп. канал с 2027 |
 | Формулировка «медизделие» | «вспомогательное ПО / информационная система» |
 
 ---
@@ -126,4 +126,4 @@ python3 scripts/fill_konkurs_docx.py
 
 ## 8. Контроль «один источник правды»
 
-Все расчёты синхронизированы с `scripts/konkurs_finance.py` и `docs/konkurs/financial_assumptions.md`. После изменения тарифов или допущений — править эти файлы и перезапускать `fill_konkurs_docx.py`.
+Все расчёты синхронизированы с `scripts/konkurs_finance.py` и `docs/konkurs/financial_assumptions.md`. После изменения тарифов или допущений - править эти файлы и перезапускать `fill_konkurs_docx.py`.

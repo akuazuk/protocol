@@ -67,7 +67,7 @@ def test_markdown_report_sections():
     ]:
         assert header in md
     assert "gastro/g.pdf" in md
-    # ФИО не попадает в отчёт — только инициалы или прочерк.
+    # ФИО не попадает в отчёт - только инициалы или прочерк.
     assert "Пациент:" in md
 
 

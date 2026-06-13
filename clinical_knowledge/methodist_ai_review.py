@@ -15,7 +15,7 @@ from .methodist_context import STRUCTURED_BLOCK_ROWS, build_methodist_review_con
 
 SYSTEM_METHODIST_AI_REVIEW = """Ты методист-врач методслужбы и аудитор качества ПО «Protocol».
 
-Главная задача — МЕТА-ОЦЕНКА: насколько ВЕРНО автоматическая система оценила это консультативное заключение (КЗ).
+Главная задача - МЕТА-ОЦЕНКА: насколько ВЕРНО автоматическая система оценила это консультативное заключение (КЗ).
 Это НЕ аудит текста КЗ для врача и НЕ список того, что врач должен дописать.
 
 Вход:
@@ -23,20 +23,20 @@ SYSTEM_METHODIST_AI_REVIEW = """Ты методист-врач методслу�
 2) вывод системы: overall %, 8 блоков, правила протокола, топ протоколов (RAG).
 
 Что нужно сделать (в порядке приоритета):
-1) system_accuracy_rating (1–5) и system_accuracy_verdict — насколько система угадала итог и блоки.
-2) engine_improvements_ru — 3–7 конкретных правок для ДВИЖКА анализа в проекте (rule_checker, веса hybrid, RAG, блоки).
+1) system_accuracy_rating (1-5) и system_accuracy_verdict - насколько система угадала итог и блоки.
+2) engine_improvements_ru - 3-7 конкретных правок для ДВИЖКА анализа в проекте (rule_checker, веса hybrid, RAG, блоки).
    Примеры: «убрать ложное правило X», «не занижать treatment_score при указанных НПВС», «отфильтровать детский КП».
-3) block_overrides и rule_overrides — где % блока или verdict правила явно неверен.
-4) tags — тип ошибки системы (false_positive_rule, wrong_protocol, score_misleading…).
-5) kz_compliance_gold — СПРАВОЧНО одной меткой: как бы вы оценили само КZ по протоколам (для калибровки, не главный вывод).
-6) kz_text_notes_ru — опционально, не более 2 пунктов про текст КZ (второстепенно).
+3) block_overrides и rule_overrides - где % блока или verdict правила явно неверен.
+4) tags - тип ошибки системы (false_positive_rule, wrong_protocol, score_misleading…).
+5) kz_compliance_gold - СПРАВОЧНО одной меткой: как бы вы оценили само КZ по протоколам (для калибровки, не главный вывод).
+6) kz_text_notes_ru - опционально, не более 2 пунктов про текст КZ (второстепенно).
 
 Запрещено:
 - Длинный список «что врачу дописать в КZ» в engine_improvements_ru.
 - Юридические/МЭЭ-вердикты.
 - Выдумывать rule_id вне списка findings.
 
-block_key только из списка ниже; verdict agree|disagree (disagree — если системный % явно неверен).
+block_key только из списка ниже; verdict agree|disagree (disagree - если системный % явно неверен).
 rule_overrides: rule_id из findings; human_pass true|false.
 
 Верни ОДИН JSON (без markdown):
@@ -77,7 +77,7 @@ def _build_prompt(result: dict[str, Any], full_text: str) -> str:
         if b.get("score_pct") is not None
     ]
     finding_lines = [
-        f"- {f.get('rule_id')}: {'OK' if f.get('passed') else 'FAIL'} — {(f.get('title_ru') or f.get('message_ru') or '')[:120]}"
+        f"- {f.get('rule_id')}: {'OK' if f.get('passed') else 'FAIL'} - {(f.get('title_ru') or f.get('message_ru') or '')[:120]}"
         for f in findings[:24]
     ]
     llm_lines = [
@@ -102,7 +102,7 @@ def _build_prompt(result: dict[str, Any], full_text: str) -> str:
         f"overall: {comp.get('overall_pct')}%",
         f"structured: {comp.get('structured_pct')}%",
         f"rules: {comp.get('rules_pct')}%",
-        f"status: {comp.get('overall_status') or '—'}",
+        f"status: {comp.get('overall_status') or ' - '}",
     ]
     if summary:
         parts.extend(["\nsummary_ru системы: ", summary])
@@ -140,7 +140,7 @@ def normalize_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
 
     rating = _clamp_rating(raw.get("system_accuracy_rating"))
     if rating is None:
-        raise ValueError("system_accuracy_rating должен быть 1–5")
+        raise ValueError("system_accuracy_rating должен быть 1-5")
 
     tags_in = raw.get("tags") or []
     if not isinstance(tags_in, list):

@@ -1,6 +1,6 @@
 """Подсчёт итоговой оценки соответствия КЗ (ТЗ §19 / improve_kz §4, §8).
 
-Веса из config/compliance_weights.yaml. Блоки None не штрафуют — веса перенормируются.
+Веса из config/compliance_weights.yaml. Блоки None не штрафуют - веса перенормируются.
 """
 from __future__ import annotations
 

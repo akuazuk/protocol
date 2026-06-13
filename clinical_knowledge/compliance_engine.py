@@ -272,7 +272,7 @@ def _protocol_assessment(
     pct = float(rc) if isinstance(rc, (int, float)) else None
     summary = ""
     if top:
-        summary = f"Топ протокол: {top.get('title') or top.get('protocol_id') or '—'}"
+        summary = f"Топ протокол: {top.get('title') or top.get('protocol_id') or ' - '}"
         if pct is not None:
             summary += f"; соответствие правилам: {pct:.0f}%"
     return ProtocolAssessment(
@@ -326,7 +326,7 @@ def _section_quality(doc: ConsultationDocument) -> tuple[SectionQualityAssessmen
 
 def _safety_score(safety, *, has_content: bool = True) -> float | None:
     if not safety:
-        # «нет red flags» — это кредит только при наличии содержательного КЗ;
+        # «нет red flags» - это кредит только при наличии содержательного КЗ;
         # для пустого/нечитаемого документа это не оценка, а отсутствие данных.
         return 100.0 if has_content else None
     if any(s.severity == "critical" and s.status != "handled" for s in safety):
@@ -457,9 +457,9 @@ def build_compliance_report(
 
     limitations: list[str] = []
     if not has_protocol:
-        limitations.append("Не найден применимый протокол — клиническая оценка ограничена.")
+        limitations.append("Не найден применимый протокол - клиническая оценка ограничена.")
     if confidence < 55:
-        limitations.append("Низкая уверенность разбора — рекомендуется ручная проверка.")
+        limitations.append("Низкая уверенность разбора - рекомендуется ручная проверка.")
     draft.limitations = limitations
 
     missing_items: list[ComplianceIssue] = []
@@ -558,5 +558,5 @@ def build_compliance_report(
     if sm.get("limitations"):
         draft.limitations = list(dict.fromkeys(list(draft.limitations) + list(sm["limitations"])))
     if draft.protocol_summary_used and draft.fallback_to_legacy:
-        draft.limitations.append("Часть правил взята из legacy fallback — summary-карточка неполная.")
+        draft.limitations.append("Часть правил взята из legacy fallback - summary-карточка неполная.")
     return draft

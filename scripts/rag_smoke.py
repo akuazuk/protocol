@@ -15,15 +15,15 @@
   Сохранить снимок ответов (пути retrieval + протоколы из JSON) в файл:
   python3 scripts/rag_smoke.py --write-baseline scripts/rag_smoke_baseline.json
 
-  После изменений в RAG — сравнить с сохранённым эталоном (код выхода 1 при отличиях):
+  После изменений в RAG - сравнить с сохранённым эталоном (код выхода 1 при отличиях):
   python3 scripts/rag_smoke.py --compare-baseline scripts/rag_smoke_baseline.json
 
   Смягчить сравнение: только первые N путей retrieval и N протоколов (по умолчанию 5):
   python3 scripts/rag_smoke.py --compare-baseline scripts/rag_smoke_baseline.json --depth 3
 
 Переменные окружения клиента:
-  RAG_SMOKE_BASE   — базовый URL API (без слэша в конце)
-  RAG_SMOKE_TIMEOUT — таймаут HTTP в секундах (по умолчанию 300)
+  RAG_SMOKE_BASE - базовый URL API (без слэша в конце)
+  RAG_SMOKE_TIMEOUT - таймаут HTTP в секундах (по умолчанию 300)
 """
 from __future__ import annotations
 
@@ -227,11 +227,11 @@ def main() -> int:
         rp = ", ".join((r.get("retrieval_paths") or [])[:3])
         pp = ", ".join((r.get("protocol_paths") or [])[:3])
         status = "OK" if r["ok"] else "FAIL"
-        err = f" — {r.get('error')}" if r.get("error") else ""
+        err = f" - {r.get('error')}" if r.get("error") else ""
         print(
             f"  [{status}] {r['id']}: {r['ms']} ms http={r.get('http_status', 0)}{err}\n"
-            f"       retrieval: {rp or '—'}\n"
-            f"       protocols: {pp or '—'}"
+            f"       retrieval: {rp or ' - '}\n"
+            f"       protocols: {pp or ' - '}"
         )
 
     snapshot = {

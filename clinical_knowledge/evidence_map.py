@@ -193,7 +193,7 @@ def build_evidence_map(
             fstatus = "mentioned"
         elif rule.confidence < 0.5:
             decision = "manual_review"
-            expl = "Правило извлечено с низкой уверенностью — требуется ручная проверка."
+            expl = "Правило извлечено с низкой уверенностью - требуется ручная проверка."
             fstatus = "unknown"
         else:
             decision = "missing"

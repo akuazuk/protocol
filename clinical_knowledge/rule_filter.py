@@ -19,7 +19,7 @@ def filter_rules_for_matched_protocols(
     rules: list[dict[str, Any]],
     matched_protocols: list[dict[str, Any]] | None,
 ) -> list[dict[str, Any]]:
-    """Оставить ручные правила; авто — только с source_path из top matched PDF."""
+    """Оставить ручные правила; авто - только с source_path из top matched PDF."""
     paths = matched_source_paths(matched_protocols)
     if not paths:
         return _dedupe_rule_types(rules)

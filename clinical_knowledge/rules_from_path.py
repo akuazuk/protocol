@@ -178,7 +178,7 @@ PATH_CONDITION_TEMPLATES: list[dict[str, Any]] = [
     {"needles": ("bolezni-sistemy-krovoobrashcheniya",), "condition_id": "cardiology_protocol", "required_components": ["нозология", "стадия", "тяжесть"]},
     {"needles": ("perinatal",), "condition_id": "perinatal_protocol", "required_components": ["нозология", "срок", "осложнения"]},
     {"needles": ("immunolog",), "condition_id": "allergy_immunology_protocol", "required_components": ["нозология", "форма", "тяжесть"]},
-    # Рубрико-уровневый fallback для хирургии — ловит оставшиеся PDF без специфичного needle (низший приоритет).
+    # Рубрико-уровневый fallback для хирургии - ловит оставшиеся PDF без специфичного needle (низший приоритет).
     {"needles": ("khirurgiya",), "condition_id": "general_surgery_protocol", "required_components": ["нозология", "локализация", "осложнения"]},
 ]
 

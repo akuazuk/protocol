@@ -1,6 +1,6 @@
 """Тесты /api/assist: валидация, путь без ключа модели и успешный путь с мок-моделью.
 
-Внешняя модель не вызывается — все точки обращения к ней подменяются monkeypatch.
+Внешняя модель не вызывается - все точки обращения к ней подменяются monkeypatch.
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ class _FakeResp:
 
 
 def test_assist_success_mocked(client, monkeypatch) -> None:
-    """Успешный путь: модель и тяжёлые шаги подменены — проверяем сборку ответа."""
+    """Успешный путь: модель и тяжёлые шаги подменены - проверяем сборку ответа."""
     import rag_server as rs
 
     icd_analysis = {"codes_for_retrieval": ["J20"], "detected": [], "suggested": []}

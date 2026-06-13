@@ -1,4 +1,4 @@
-"""Protocol Summary Cards — нормализованные карточки протоколов (additive layer)."""
+"""Protocol Summary Cards - нормализованные карточки протоколов (additive layer)."""
 from __future__ import annotations
 
 from .config import protocol_summary_config

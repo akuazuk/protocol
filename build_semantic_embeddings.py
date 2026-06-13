@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
 Строит семантические векторы для протоколов (мультиязычная e5).
-Для каждого PDF: усреднение векторов по чанкам (chunks.json) — лучше, чем один усечённый фрагмент.
+Для каждого PDF: усреднение векторов по чанкам (chunks.json) - лучше, чем один усечённый фрагмент.
 
 Требует: pip install sentence-transformers torch
 
-Выход: embeddings.json — в браузере запрос кодируется той же моделью (@xenova/transformers).
+Выход: embeddings.json - в браузере запрос кодируется той же моделью (@xenova/transformers).
 """
 from __future__ import annotations
 

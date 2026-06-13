@@ -6,8 +6,8 @@ from typing import Any
 
 TIER_META: dict[str, dict[str, Any]] = {
     "L0": {
-        "label_ru": "L0 — быстрый скрининг",
-        "latency_hint_ru": "≈5–15 с",
+        "label_ru": "L0 - быстрый скрининг",
+        "latency_hint_ru": "≈5-15 с",
         "checks_ru": [
             "8 блоков структурного compliance (оформление, диагноз, лечение…)",
             "Краткий подбор протоколов (до 3 карточек)",
@@ -20,8 +20,8 @@ TIER_META: dict[str, dict[str, Any]] = {
         ],
     },
     "L1": {
-        "label_ru": "L1 — структурный разбор",
-        "latency_hint_ru": "≈15–45 с",
+        "label_ru": "L1 - структурный разбор",
+        "latency_hint_ru": "≈15-45 с",
         "checks_ru": [
             "Полный детерминированный разбор КЗ (8 блоков)",
             "Критические замечания по протоколам",
@@ -34,8 +34,8 @@ TIER_META: dict[str, dict[str, Any]] = {
         ],
     },
     "L2": {
-        "label_ru": "L2 — полный RAG + LLM",
-        "latency_hint_ru": "≈2–5 мин",
+        "label_ru": "L2 - полный RAG + LLM",
+        "latency_hint_ru": "≈2-5 мин",
         "checks_ru": [
             "Всё из L1",
             "RAG: отбор фрагментов PDF протоколов",

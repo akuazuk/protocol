@@ -15,7 +15,7 @@ SYSTEM_CONDITION_ENRICH = """Ты медицинский редактор. По 
 Верни ОДИН JSON без markdown:
 {"condition": "<название>", "icd10": ["..."], "diagnosis_required_components": ["..."], "diagnostic_criteria_summary": "<1-3 предложения>", "required_exams": ["..."], "red_flags": ["..."]}
 
-Не выдумывай факты вне текста. Если данных нет — пустые массивы."""
+Не выдумывай факты вне текста. Если данных нет - пустые массивы."""
 
 
 def _env_bool(name: str, default: bool) -> bool:

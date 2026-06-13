@@ -1,4 +1,4 @@
-# Аудит проекта Protocol — модуль проверки КЗ (KZ Compliance Checker)
+# Аудит проекта Protocol - модуль проверки КЗ (KZ Compliance Checker)
 
 > Обновлено: 2026-05-31 после доработки модуля KZ compliance.  
 > Версия сборки: `2026-05-31-r49-kz-compliance-complete`.
@@ -52,13 +52,13 @@
 
 | # | Критерий | Статус |
 |---|----------|--------|
-| 1–2 | check-kz / folder | ✅ `scripts/check_kz.py` |
-| 3–11 | Парсинг КЗ | ✅ |
-| 12–15 | Подбор протоколов | ✅ |
-| 16–18 | JSON/MD/batch | ✅ |
-| 19–22 | Scoring, issues, red flags | ✅ |
+| 1-2 | check-kz / folder | ✅ `scripts/check_kz.py` |
+| 3-11 | Парсинг КЗ | ✅ |
+| 12-15 | Подбор протоколов | ✅ |
+| 16-18 | JSON/MD/batch | ✅ |
+| 19-22 | Scoring, issues, red flags | ✅ |
 | 23 | Source refs на выводы | ⚠️ частично (протокол + фрагменты КЗ в отчёте) |
-| 24–26 | insufficient_data, тесты, без регрессий | ✅ |
+| 24-26 | insufficient_data, тесты, без регрессий | ✅ |
 
 ---
 

@@ -1,6 +1,6 @@
-"""Проверка обязательных и условных рубрик КЗ (ТЗ §9–10).
+"""Проверка обязательных и условных рубрик КЗ (ТЗ §9-10).
 
-Отдельно от rule_checker (протокольные правила): здесь — структура и качество
+Отдельно от rule_checker (протокольные правила): здесь - структура и качество
 заполнения документа по нормативным/внутренним требованиям.
 """
 from __future__ import annotations
@@ -181,7 +181,7 @@ def _data_quality_issues(doc: ConsultationDocument) -> list[ComplianceIssue]:
                 issue_type="undefined_placeholder",
                 severity="high",
                 category="data_quality",
-                message_ru="В тексте КЗ найдено «undefined» — дефект качества данных.",
+                message_ru="В тексте КЗ найдено «undefined» - дефект качества данных.",
                 field_target="raw_text",
                 actual="undefined",
                 consultation_evidence=raw_snip,

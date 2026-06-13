@@ -4,7 +4,7 @@
 
   cd Protocol && python3 -m corpus_pipeline.run_pipeline
 
-Переменные: CORPUS_PDF_ROOT, CORPUS_OUTPUT_ROOT, CORPUS_USE_OCR — см. output/README.md
+Переменные: CORPUS_PDF_ROOT, CORPUS_OUTPUT_ROOT, CORPUS_USE_OCR - см. output/README.md
 """
 from __future__ import annotations
 
@@ -158,7 +158,7 @@ def main() -> None:
                         sec.get("section_type") or "body",
                     )
                 )
-            # Таблицы pdfplumber — отдельные чанки table_block (только первый логический документ PDF)
+            # Таблицы pdfplumber - отдельные чанки table_block (только первый логический документ PDF)
             if li == 0:
                 doc_chunks.extend(
                     build_table_chunks_for_document(

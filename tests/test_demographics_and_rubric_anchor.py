@@ -41,7 +41,7 @@ def test_age_from_birth_and_consult_dates():
 
 
 def test_sex_from_patient_name_not_doctor():
-    # Пациент — Павел Леонидович (м), врач — Виктория Васильевна (ж).
+    # Пациент - Павел Леонидович (м), врач - Виктория Васильевна (ж).
     doc = parse_consultation(SAMPLE)
     assert doc.patient.sex == "male"
 

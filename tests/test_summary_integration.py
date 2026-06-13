@@ -58,6 +58,6 @@ def test_summary_not_found_is_explicit(monkeypatch):
     text = (FIX / "mg_1.txt").read_text(encoding="utf-8")
     comp = analyze_consultation_text(text, with_markdown=False, analysis_mode="summary")["compliance"]
     assert comp.get("analysis_mode") == "summary"
-    # J06 — нет test fixture summary
+    # J06 - нет test fixture summary
     if not comp.get("protocol_summary_used"):
         assert comp.get("summary_diagnostics") or comp.get("fallback_to_legacy") is not None

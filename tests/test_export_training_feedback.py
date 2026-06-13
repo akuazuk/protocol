@@ -15,7 +15,7 @@ from export_training_feedback import export_all  # noqa: E402
 
 def test_export_seed_only_creates_datasets(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr("export_training_feedback.DATASETS_DIR", tmp_path)
-    # В tmp нет corpus_chunks — мокаем resolver для unit-теста export.
+    # В tmp нет corpus_chunks - мокаем resolver для unit-теста export.
     fake_index = {"gastro/kp.pdf": "ГЭРБ клинический протокол"}
 
     def _fake_enrich(pairs):

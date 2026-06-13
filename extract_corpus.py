@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "minzdrav_protocols"
 OUT = ROOT / "corpus.json"
-# 0 = без обрезки (раньше было 8000 — отрезало почти весь протокол и ломало поиск)
+# 0 = без обрезки (раньше было 8000 - отрезало почти весь протокол и ломало поиск)
 MAX_CHARS = int(os.environ.get("CORPUS_MAX_CHARS", "0"))
 
 _WS = re.compile(r"\s+")

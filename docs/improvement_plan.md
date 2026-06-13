@@ -49,10 +49,10 @@
 
 | Файл | Действие |
 |------|----------|
-| `clinical_knowledge/rule_model.py` | **Новый** — ProtocolRule, RuleApplicability |
-| `clinical_knowledge/evidence_map.py` | **Новый** — построение evidence map |
-| `clinical_knowledge/table_rule_extractor.py` | **Новый** — правила из table_block чанков |
-| `clinical_knowledge/confidence_scoring.py` | **Новый** — confidence_score |
+| `clinical_knowledge/rule_model.py` | **Новый** - ProtocolRule, RuleApplicability |
+| `clinical_knowledge/evidence_map.py` | **Новый** - построение evidence map |
+| `clinical_knowledge/table_rule_extractor.py` | **Новый** - правила из table_block чанков |
+| `clinical_knowledge/confidence_scoring.py` | **Новый** - confidence_score |
 | `clinical_knowledge/consult_schema.py` | Расширение моделей (backward-compatible) |
 | `clinical_knowledge/diagnosis_parser.py` | safety_flags, red_flag_finding |
 | `clinical_knowledge/template_parser.py` | source_text в TemplateBlock |
@@ -63,7 +63,7 @@
 | `clinical_knowledge/safety_checker.py` | required_actions, cap_if_unhandled |
 | `config/red_flags.yaml` | cap_if_unhandled, drug_safety |
 | `config/compliance_weights.yaml` | documentation_score alias weights |
-| `clinical_knowledge/consult_report.py` | JSON/MD §17–18 |
+| `clinical_knowledge/consult_report.py` | JSON/MD §17-18 |
 | `clinical_knowledge/batch_runner.py` | расширенный CSV |
 | `tests/test_regression_kz_compliance.py` | **Новый** |
 
@@ -74,8 +74,8 @@
 ## 4. Обратная совместимость
 
 1. **ScoreBreakdown:** сохраняем `structural_score`, `protocol_match_score`; дублируем в `documentation_score`, `protocol_applicability_score`.
-2. **OverallStatus:** старые статусы без изменения семантики; новые — только при условиях ТЗ.
-3. **API:** новые поля в `structured_analysis.compliance` — опциональные; UI читает `overall_compliance_pct` из hybrid scorer.
+2. **OverallStatus:** старые статусы без изменения семантики; новые - только при условиях ТЗ.
+3. **API:** новые поля в `structured_analysis.compliance` - опциональные; UI читает `overall_compliance_pct` из hybrid scorer.
 4. **CLI:** те же команды; расширенный batch CSV.
 5. **Env:** все существующие флаги (`CONSULT_STRUCTURED_ANALYSIS`, `CONSULT_OVERALL_HYBRID`) без изменений.
 

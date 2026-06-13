@@ -24,7 +24,7 @@ import pytest
 
 @pytest.fixture(scope="session", autouse=True)
 def _wait_for_rag_chunks() -> None:
-    """Корпус грузится в фоне при импорте rag_server — ждём перед API-тестами."""
+    """Корпус грузится в фоне при импорте rag_server - ждём перед API-тестами."""
     import rag_server as rs
 
     if not rs._chunks_load_done.wait(timeout=120):
