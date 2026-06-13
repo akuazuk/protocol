@@ -5989,6 +5989,29 @@
       margin-top: 0.55rem;
     }
 
+    .methodist-ai-save-status {
+      margin: 0.45rem 0 0;
+      font-size: 0.78rem;
+      font-weight: 650;
+      line-height: 1.4;
+    }
+
+    .methodist-ai-save-status.is-saving {
+      color: #8a6914;
+    }
+
+    .methodist-ai-save-status.is-saved {
+      color: #0d6b4a;
+    }
+
+    .methodist-ai-save-status.is-error {
+      color: #b42318;
+    }
+
+    .methodist-ai-review-panel.is-saved {
+      box-shadow: inset 0 0 0 2px rgba(13, 107, 74, 0.35);
+    }
+
     .btn-methodist-approve {
       background: var(--green-700, #15803d);
       color: #fff;
@@ -7697,6 +7720,7 @@
                 <button type="button" class="btn-methodist-reject" id="methodist-btn-ai-reject">Отклонить</button>
                 <button type="button" id="methodist-btn-ai-edit">Редактировать вручную</button>
               </div>
+              <p class="methodist-ai-save-status" id="methodist-ai-save-status" hidden role="status" aria-live="polite"></p>
             </div>
           </section>
 
@@ -11496,6 +11520,84 @@
     }
   }
 
+  function setMethodistAiSaveStatus(text, state) {
+    var el = document.getElementById("methodist-ai-save-status");
+    var aiPanel = document.getElementById("methodist-ai-review-panel");
+    if (!el) return;
+    if (!text) {
+      el.hidden = true;
+      el.textContent = "";
+      el.classList.remove("is-saving", "is-saved", "is-error");
+      if (aiPanel) aiPanel.classList.remove("is-saved");
+      return;
+    }
+    el.hidden = false;
+    el.textContent = text;
+    el.classList.remove("is-saving", "is-saved", "is-error");
+    if (state) el.classList.add(state);
+    if (aiPanel) {
+      aiPanel.classList.toggle("is-saved", state === "is-saved");
+    }
+    try {
+      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } catch (eScroll) {}
+  }
+
+  function methodistFindingsMap(data) {
+    var map = {};
+    var ctx = methodistReviewContext(data);
+    var cr = (data && data.clinical_rules) || {};
+    var rc = cr.rules_check || {};
+    (rc.findings || []).forEach(function (f) {
+      if (f && f.rule_id) map[f.rule_id] = f;
+    });
+    (ctx && ctx.rules_findings ? ctx.rules_findings : []).forEach(function (f) {
+      if (f && f.rule_id) map[f.rule_id] = f;
+    });
+    return map;
+  }
+
+  function methodistOverridesFromAi(ai, data) {
+    var out = [];
+    var byId = methodistFindingsMap(data);
+    (ai.rule_overrides || []).forEach(function (ro) {
+      if (!ro || !ro.rule_id || ro.human_pass == null) return;
+      var f = byId[ro.rule_id] || {};
+      var sysPass = f.passed != null ? !!f.passed : null;
+      if (sysPass === ro.human_pass) return;
+      out.push({
+        rule_id: ro.rule_id,
+        system_pass: sysPass,
+        human_pass: !!ro.human_pass,
+        note: String(ro.note || "").slice(0, 280),
+      });
+    });
+    return out;
+  }
+
+  function methodistBlockOverridesFromAi(ai, data) {
+    var blocksByKey = {};
+    var ctx = methodistReviewContext(data);
+    var comp = (ctx && ctx.compliance) || {};
+    (comp.blocks || []).forEach(function (b) {
+      if (b && b.key) blocksByKey[b.key] = b;
+    });
+    var out = [];
+    (ai.block_overrides || []).forEach(function (bo) {
+      if (!bo || bo.verdict !== "disagree" || !bo.block_key) return;
+      var b = blocksByKey[bo.block_key] || {};
+      out.push({
+        block_key: bo.block_key,
+        block_label_ru: b.label_ru || bo.block_key,
+        system_score:
+          b.score_pct != null && !isNaN(Number(b.score_pct)) ? Number(b.score_pct) : null,
+        human_agrees: false,
+        note: String(bo.note || "").slice(0, 280),
+      });
+    });
+    return out;
+  }
+
   function collectMethodistOverrides() {
     var rows = document.querySelectorAll("#methodist-findings-tbody tr[data-rule-id]");
     var out = [];
@@ -11736,6 +11838,12 @@
     }
     if (body) body.hidden = false;
     setMethodistAiFlowState("methodist-ai-ready");
+    setMethodistAiSaveStatus("", "");
+    var approveBtn = document.getElementById("methodist-btn-ai-approve");
+    if (approveBtn) {
+      approveBtn.disabled = false;
+      approveBtn.textContent = "Одобрить — сохранить для обучения движка";
+    }
     var title = document.getElementById("methodist-review-panel-title");
     if (title) title.textContent = "Подтверждение мета-оценки (для обучения движка)";
   }
@@ -11873,7 +11981,12 @@
       alert("Нет готовой оценки ИИ.");
       return;
     }
-    saveMethodistReview({ methodist_approved: true, review_source: "ai_assisted" });
+    if (!window.__methodistToken) {
+      alert("Сессия методиста не активна. Войдите в кабинет снова (?mode=methodist).");
+      beginMethodistLoginFlow();
+      return;
+    }
+    saveMethodistReview({ methodist_approved: true, review_source: "ai_assisted", from_ai_approve: true });
   }
 
   function renderMethodistMlRecordPreview(data) {
@@ -12421,65 +12534,104 @@
   }
 
   function saveMethodistReview(opts) {
+    if (opts && typeof opts.preventDefault === "function") opts = {};
     opts = opts || {};
     var data = window.__consultReviewLastPayload;
     if (!data || !data.analysis_id) {
       alert("Сначала выполните анализ КЗ.");
       return;
     }
-    var rating = methodistRatingValue();
-    var verdictEl = document.getElementById("methodist-verdict-select");
-    var verdict = verdictEl ? verdictEl.value : "";
-    var goldEl = document.getElementById("methodist-kz-gold-select");
-    var gold = goldEl ? goldEl.value : "";
-    if (rating == null || !verdict || !gold) {
-      alert("Укажите справочный эталон КZ, точность системы (1–5) и вердикт.");
+    var ai = window.__methodistLastAiReview;
+    var useAiDirect = !!(opts.from_ai_approve && ai);
+    var rating = useAiDirect ? ai.system_accuracy_rating : methodistRatingValue();
+    var verdict = useAiDirect
+      ? ai.system_accuracy_verdict
+      : (document.getElementById("methodist-verdict-select") || {}).value || "";
+    var gold = useAiDirect
+      ? ai.kz_compliance_gold
+      : (document.getElementById("methodist-kz-gold-select") || {}).value || "";
+    if (rating == null || rating === "" || !verdict || !gold) {
+      var msg = "Укажите справочный эталон КZ, точность системы (1–5) и вердикт.";
+      if (opts.from_ai_approve) {
+        msg = "Не удалось собрать оценку ИИ для сохранения. Нажмите «Редактировать вручную» или повторите анализ.";
+      }
+      alert(msg);
       return;
     }
+    if (!window.__methodistToken) {
+      alert("Сессия методиста не активна. Войдите в кабинет снова.");
+      beginMethodistLoginFlow();
+      return;
+    }
+    var note = (document.getElementById("methodist-note-input") || {}).value || "";
+    if (useAiDirect) {
+      var noteParts = [];
+      if (ai.summary_ru) noteParts.push(ai.summary_ru);
+      if (ai.system_notes_ru) noteParts.push("Ошибки системы: " + ai.system_notes_ru);
+      var engineItems = ai.engine_improvements_ru || ai.improvements_ru || [];
+      if (engineItems.length) noteParts.push("Правки движка: " + engineItems.join("; "));
+      note = noteParts.join("\n\n").slice(0, 2000);
+    }
+    var overrides = useAiDirect ? methodistOverridesFromAi(ai, data) : collectMethodistOverrides();
+    if (!overrides.length && useAiDirect) {
+      overrides = collectMethodistOverrides();
+    }
+    var blockOverrides = useAiDirect
+      ? methodistBlockOverridesFromAi(ai, data)
+      : collectMethodistBlockOverrides();
+    if (!blockOverrides.length && useAiDirect) {
+      blockOverrides = collectMethodistBlockOverrides();
+    }
+    var tags = useAiDirect && ai.tags && ai.tags.length ? ai.tags.slice() : collectMethodistTags();
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
     var body = {
       event_type: "analysis_review",
       analysis_id: data.analysis_id,
       text_hash: data.text_hash || "",
-      rating: rating,
+      rating: Number(rating),
       verdict: verdict,
       kz_compliance_gold: gold,
-      tags: collectMethodistTags(),
-      note: (document.getElementById("methodist-note-input") || {}).value || "",
+      tags: tags,
+      note: note,
       reviewer: window.__methodistReviewer || "methodist",
-      overrides: collectMethodistOverrides(),
-      block_overrides: collectMethodistBlockOverrides(),
+      overrides: overrides,
+      block_overrides: blockOverrides,
     };
     if (opts.review_source) body.review_source = opts.review_source;
     if (opts.methodist_approved != null) body.methodist_approved = !!opts.methodist_approved;
-    if (window.__methodistLastAiReview) {
+    if (ai) {
       body.ai_review = {
-        model_used: window.__methodistLastAiReview.model_used || "",
-        confidence: window.__methodistLastAiReview.confidence || "",
-        summary_ru: window.__methodistLastAiReview.summary_ru || "",
-        system_notes_ru: window.__methodistLastAiReview.system_notes_ru || "",
-        engine_improvements_ru:
-          window.__methodistLastAiReview.engine_improvements_ru ||
-          window.__methodistLastAiReview.improvements_ru ||
-          [],
-        kz_text_notes_ru: window.__methodistLastAiReview.kz_text_notes_ru || [],
-        improvements_ru:
-          window.__methodistLastAiReview.engine_improvements_ru ||
-          window.__methodistLastAiReview.improvements_ru ||
-          [],
+        model_used: ai.model_used || "",
+        confidence: ai.confidence || "",
+        summary_ru: ai.summary_ru || "",
+        system_notes_ru: ai.system_notes_ru || "",
+        engine_improvements_ru: ai.engine_improvements_ru || ai.improvements_ru || [],
+        kz_text_notes_ru: ai.kz_text_notes_ru || [],
+        improvements_ru: ai.engine_improvements_ru || ai.improvements_ru || [],
       };
     }
     var rejSel = document.getElementById("methodist-rejected-path");
     var chosenInp = document.getElementById("methodist-chosen-path");
     var chosen = chosenInp ? String(chosenInp.value || "").trim() : "";
     var rejected = rejSel ? String(rejSel.value || "").trim() : "";
-    if (chosen) {
+    if (useAiDirect && ai.retrieval_fix && ai.retrieval_fix.chosen_path) {
+      body.retrieval_fix = {
+        query: (data.review && data.review.summary_ru) || "",
+        rejected_path: ai.retrieval_fix.rejected_path || "",
+        chosen_path: ai.retrieval_fix.chosen_path,
+      };
+    } else if (chosen) {
       body.retrieval_fix = {
         query: (data.review && data.review.summary_ru) || "",
         rejected_path: rejected,
         chosen_path: chosen,
       };
+    }
+    var approveBtn = document.getElementById("methodist-btn-ai-approve");
+    if (opts.from_ai_approve) {
+      setMethodistAiSaveStatus("Сохранение разметки…", "is-saving");
+      if (approveBtn) approveBtn.disabled = true;
     }
     fetch(base + "/api/ml/feedback", {
       method: "POST",
@@ -12494,15 +12646,35 @@
         }
         return r.json();
       })
-      .then(function () {
+      .then(function (resp) {
         window.__methodistReviewSavedAt = new Date().toISOString();
-        setMethodistReviewStatus(
-          "Оценка сохранена · " + new Date().toLocaleString("ru-RU"),
-          "is-saved"
-        );
+        var savedAt = new Date().toLocaleString("ru-RU");
+        var okMsg =
+          "Разметка сохранена для обучения движка · " +
+          savedAt +
+          (resp && resp.event_id ? " · id: " + String(resp.event_id).slice(0, 8) + "…" : "");
+        setMethodistReviewStatus("Оценка сохранена · " + savedAt, "is-saved");
+        if (opts.from_ai_approve) {
+          setMethodistAiSaveStatus(okMsg, "is-saved");
+          if (approveBtn) {
+            approveBtn.textContent = "Сохранено";
+            approveBtn.disabled = true;
+          }
+          var rejectBtn = document.getElementById("methodist-btn-ai-reject");
+          if (rejectBtn) rejectBtn.disabled = true;
+        } else {
+          setMethodistAiSaveStatus(okMsg, "is-saved");
+        }
+        applyMethodistAiReviewToForm(ai || window.__methodistLastAiReview);
+        renderMethodistMlRecordPreview(data);
       })
       .catch(function (e) {
-        alert("Не удалось сохранить оценку: " + (e.message || e));
+        var errMsg = methodistApiErrorRu(e.message || e);
+        if (opts.from_ai_approve) {
+          setMethodistAiSaveStatus("Ошибка сохранения: " + errMsg, "is-error");
+          if (approveBtn) approveBtn.disabled = false;
+        }
+        alert("Не удалось сохранить оценку: " + errMsg);
       });
   }
 
@@ -12761,7 +12933,9 @@
     var saveBtn = document.getElementById("methodist-btn-save");
     if (saveBtn && !saveBtn.getAttribute("data-wired")) {
       saveBtn.setAttribute("data-wired", "1");
-      saveBtn.addEventListener("click", saveMethodistReview);
+      saveBtn.addEventListener("click", function () {
+        saveMethodistReview();
+      });
     }
     var skipBtn = document.getElementById("methodist-btn-skip");
     if (skipBtn && !skipBtn.getAttribute("data-wired")) {
