@@ -40,7 +40,26 @@ def test_normalize_ai_review_valid():
 
 def test_normalize_ai_review_rejects_bad_gold():
     with pytest.raises(ValueError, match="kz_compliance_gold"):
-        normalize_ai_review({"system_accuracy_rating": 3, "system_accuracy_verdict": "wrong"})
+        normalize_ai_review(
+            {"system_accuracy_rating": 3, "system_accuracy_verdict": "wrong", "kz_compliance_gold": "bogus"},
+        )
+
+
+def test_normalize_ai_review_infers_gold_from_result():
+    raw = {
+        "system_accuracy_rating": 4,
+        "system_accuracy_verdict": "mostly_correct",
+        "tags": [],
+        "summary_ru": "OK",
+    }
+    result = {
+        "structured_analysis": {
+            "compliance": {"overall_score": 85, "overall_status": "mostly_compliant"},
+        },
+    }
+    out = normalize_ai_review(raw, fallback_result=result)
+    assert out["kz_compliance_gold"] == "mostly_compliant"
+    assert out["kz_compliance_gold_inferred"] is True
 
 
 def test_run_methodist_ai_review_mock():

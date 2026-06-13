@@ -58,6 +58,67 @@ rule_overrides: rule_id из findings; human_pass true|false.
 _VALID_BLOCK_KEYS = frozenset(row["key"] for row in STRUCTURED_BLOCK_ROWS)
 _VALID_CONFIDENCE = frozenset({"high", "medium", "low"})
 
+_GOLD_ALIASES: dict[str, str] = {
+    "compliant": "compliant",
+    "mostly_compliant": "mostly_compliant",
+    "mostly compliant": "mostly_compliant",
+    "partially_compliant": "partially_compliant",
+    "partially compliant": "partially_compliant",
+    "non_compliant": "non_compliant",
+    "non compliant": "non_compliant",
+    "insufficient_data": "insufficient_data",
+    "insufficient data": "insufficient_data",
+}
+
+_STATUS_TO_GOLD: dict[str, str] = {
+    "compliant": "compliant",
+    "mostly_compliant": "mostly_compliant",
+    "needs_review": "partially_compliant",
+    "partially_compliant": "partially_compliant",
+    "non_compliant": "non_compliant",
+    "manual_review_required": "partially_compliant",
+    "insufficient_data": "insufficient_data",
+}
+
+
+def _normalize_gold_token(raw: str) -> str | None:
+    s = (raw or "").strip().lower().replace("-", " ")
+    if not s:
+        return None
+    if s in _GOLD_ALIASES:
+        return _GOLD_ALIASES[s]
+    underscored = s.replace(" ", "_")
+    if underscored in _VALID_KZ_COMPLIANCE_GOLD:
+        return underscored
+    return _GOLD_ALIASES.get(s)
+
+
+def infer_kz_compliance_gold_from_result(result: dict[str, Any] | None) -> str:
+    """Fallback, если LLM не вернула kz_compliance_gold."""
+    if not isinstance(result, dict):
+        return "insufficient_data"
+    comp = (result.get("structured_analysis") or {}).get("compliance") or {}
+    status = str(comp.get("overall_status") or result.get("overall_status") or "").strip().lower()
+    if status in _STATUS_TO_GOLD:
+        return _STATUS_TO_GOLD[status]
+    pct = comp.get("overall_score")
+    if pct is None:
+        pct = comp.get("overall_pct")
+    if pct is None:
+        rev = result.get("review") or {}
+        pct = rev.get("overall_compliance_pct")
+    try:
+        p = float(pct)
+    except (TypeError, ValueError):
+        return "insufficient_data"
+    if p >= 90:
+        return "compliant"
+    if p >= 75:
+        return "mostly_compliant"
+    if p >= 55:
+        return "partially_compliant"
+    return "non_compliant"
+
 
 def methodist_ai_review_enabled() -> bool:
     return os.environ.get("METHODIST_AI_REVIEW", "1").strip().lower() in ("1", "true", "yes", "on")
@@ -125,14 +186,31 @@ def _clamp_rating(v: Any) -> int | None:
     return n if 1 <= n <= 5 else None
 
 
-def normalize_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
+def normalize_ai_review(
+    raw: dict[str, Any],
+    *,
+    fallback_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Валидация и нормализация ответа модели."""
     if not isinstance(raw, dict):
         raise ValueError("Ответ модели не является JSON-объектом")
 
-    gold = str(raw.get("kz_compliance_gold") or "").strip()
+    gold_raw = (
+        raw.get("kz_compliance_gold")
+        or raw.get("kz_compliance_gold_label")
+        or raw.get("compliance_gold")
+    )
+    gold_raw_str = str(gold_raw or "").strip()
+    if not gold_raw_str:
+        gold_inferred = True
+        gold = infer_kz_compliance_gold_from_result(fallback_result)
+    else:
+        gold_inferred = False
+        gold = _normalize_gold_token(gold_raw_str)
+        if gold is None:
+            raise ValueError(f"Неверный kz_compliance_gold: {gold_raw_str}")
     if gold not in _VALID_KZ_COMPLIANCE_GOLD:
-        raise ValueError(f"Неверный kz_compliance_gold: {gold or 'пусто'}")
+        raise ValueError(f"Неверный kz_compliance_gold: {gold_raw_str or 'пусто'}")
 
     verdict = str(raw.get("system_accuracy_verdict") or "").strip()
     if verdict not in _VALID_VERDICTS:
@@ -228,6 +306,7 @@ def normalize_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
         "retrieval_fix": retrieval_fix,
         "confidence": conf,
         "review_source": "ai_assisted",
+        "kz_compliance_gold_inferred": gold_inferred,
     }
 
 
@@ -272,7 +351,7 @@ def run_methodist_ai_review(
         raise ValueError("Модель не вернула корректный JSON для оценки методиста")
     from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
 
-    normalized = normalize_ai_review(parsed)
+    normalized = normalize_ai_review(parsed, fallback_result=result)
     model_name, model_warn = methodist_gemini_model_name()
     normalized["model_used"] = model_name
     if model_warn:
