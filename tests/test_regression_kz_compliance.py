@@ -191,6 +191,7 @@ def test_report_n_2_pdf_lumbosciatica_compliance():
         for i in (comp.get("issues") or []) + (comp.get("warnings") or [])
     }
     assert not any("389f8cf1" in r or "bladder_dysfunction" in r for r in rule_ids)
+    assert not any("9bdafb96" in r or "neoplasm" in r for r in rule_ids)
 
     treat = bd.get("treatment_score")
     follow = bd.get("follow_up_score")
@@ -211,3 +212,24 @@ def test_report_n_2_pdf_lumbosciatica_compliance():
         and m.get("applicability") != "not_applicable"
     ]
     assert not ped_titles
+
+
+def test_report_n_2_neoplasm_rule_blocked_with_tumor_protocol_match():
+    """9bdafb96 не срабатывает на M54.1 даже при matched КП опухолей (неизвестный возраст)."""
+    from clinical_knowledge.consult_analysis import facts_from_document
+    from clinical_knowledge.rule_checker import run_rule_checker
+
+    text = (FIXTURES / "report_n_2_pdf.txt").read_text(encoding="utf-8")
+    facts = facts_from_document(parse_consultation(text, consultation_id="report_n_2"))
+    facts["patient_context"]["adult_or_child"] = None
+    sp = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Нейрохирургическое_лечение_первичных_опухолей_головного_мозга_"
+        "детс_население_стац_условиях_пост_МЗ_12.09.2023_134.pdf"
+    )
+    rc = run_rule_checker(
+        facts,
+        matched_protocols=[{"source_path": sp, "applicability": "applicable"}],
+    )
+    neo = [f for f in rc.get("findings", []) if "9bdafb96" in str(f.get("rule_id", ""))]
+    assert not neo

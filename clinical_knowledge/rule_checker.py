@@ -31,6 +31,34 @@ def _icd_root(code: str) -> str:
     return c[:3] if len(c) >= 3 else c
 
 
+def _is_oncology_icd(code: str) -> bool:
+    c = (code or "").upper().strip()
+    if not c:
+        return False
+    if c.startswith("C"):
+        return True
+    if c.startswith("D") and len(c) >= 3 and c[1:3].isdigit():
+        return 0 <= int(c[1:3]) <= 48
+    return False
+
+
+def _has_oncology_context(consult_facts: dict[str, Any]) -> bool:
+    """Признаки ЗНО в КZ: МКБ C/D00-D48, hints или текст (не «радикулопатия» без онко-маркеров)."""
+    cons = consult_facts.get("consultation") or {}
+    hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+    if hints & {"neoplasm", "oncology", "malignancy", "novoobrazovaniya"}:
+        return True
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    if any(_is_oncology_icd(c) for c in icd_list):
+        return True
+    blob = _text_blob(consult_facts)
+    markers = (
+        "опухол", "новообраз", "злокач", "карцином", "метастаз", "онколог",
+        "меланом", "лимфом", "сарком", "гистолог", "metast", "tnm",
+    )
+    return any(m in blob for m in markers)
+
+
 def _icd_lists_overlap(cond_icd: list[Any], consult_icd: list[str]) -> bool:
     cond_roots = {_icd_root(str(x)) for x in cond_icd if x}
     cons_roots = {_icd_root(str(x)) for x in consult_icd if x}
@@ -74,6 +102,10 @@ def _condition_applies_to_consult(
             )
             if not any(m in blob for m in markers):
                 return False
+    if cid == "neoplasm":
+        hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+        if "neoplasm" not in hints and not _has_oncology_context(consult_facts):
+            return False
     return True
 
 

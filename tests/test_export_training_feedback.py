@@ -37,3 +37,41 @@ def test_export_seed_only_creates_datasets(tmp_path, monkeypatch) -> None:
     saved = json.loads((tmp_path / "export_manifest.json").read_text(encoding="utf-8"))
     assert saved["seed_only"] is True
     assert saved["counts"]["retrieval_pairs_resolved"] > 0
+
+
+def test_export_reads_ml_feedback_dir(tmp_path, monkeypatch) -> None:
+    fb = tmp_path / "remote_feedback"
+    fb.mkdir()
+    review = {
+        "event_type": "analysis_review",
+        "analysis_id": "a-neo",
+        "text_hash": "sha256:abc",
+        "rating": 2,
+        "verdict": "partially_wrong",
+        "reviewer": "Pavel",
+        "overrides": [
+            {
+                "rule_id": "9bdafb96_path_neoplasm_diagnosis_formula",
+                "system_pass": False,
+                "human_pass": True,
+                "note": "ложное срабатывание",
+            }
+        ],
+    }
+    (fb / "analysis_review.jsonl").write_text(
+        json.dumps(review, ensure_ascii=False) + "\n", encoding="utf-8",
+    )
+    out = tmp_path / "datasets"
+    monkeypatch.setenv("ML_FEEDBACK_DIR", str(fb))
+    monkeypatch.setattr("export_training_feedback.DATASETS_DIR", out)
+    monkeypatch.setattr(
+        "export_training_feedback.enrich_retrieval_with_texts",
+        lambda pairs: ([], {"total": 0, "resolved": 0, "missing": 0, "with_negative": 0}),
+    )
+    manifest = export_all(seed_only=False)
+    assert manifest["counts"]["feedback_events"] == 1
+    assert manifest["counts"]["entailment_pairs"] == 1
+    assert manifest["sources"]["feedback_dir"] == str(fb)
+    ent = json.loads((out / "entailment_pairs.jsonl").read_text(encoding="utf-8").strip())
+    assert ent["term"] == "9bdafb96_path_neoplasm_diagnosis_formula"
+    assert ent["label"] == "entailment"

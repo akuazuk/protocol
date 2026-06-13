@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -30,7 +31,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-FEEDBACK_DIR = ROOT / "data" / "ml" / "feedback"
+from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
+
 DATASETS_DIR = ROOT / "ml" / "datasets"
 QUALITY_BENCH = ROOT / "data" / "quality_benchmark.json"
 GOLDEN_QUERIES = ROOT / "eval" / "golden_queries.prod.jsonl"
@@ -47,10 +49,17 @@ def _text_hash(text: str) -> str:
     return "sha256:" + hashlib.sha256(text.encode("utf-8")).hexdigest()[:32]
 
 
-def iter_feedback_events() -> Iterator[dict[str, Any]]:
-    if not FEEDBACK_DIR.is_dir():
+def _feedback_dir(override: Path | None = None) -> Path:
+    if override is not None:
+        return override
+    return resolve_feedback_dir()
+
+
+def iter_feedback_events(feedback_root: Path | None = None) -> Iterator[dict[str, Any]]:
+    fb = _feedback_dir(feedback_root)
+    if not fb.is_dir():
         return
-    for path in sorted(FEEDBACK_DIR.glob("*.jsonl")):
+    for path in sorted(fb.glob("*.jsonl")):
         for line in path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
@@ -297,8 +306,9 @@ def enrich_retrieval_with_texts(
     return out, stats
 
 
-def export_all(*, seed_only: bool = False) -> dict[str, Any]:
-    events = [] if seed_only else list(iter_feedback_events())
+def export_all(*, seed_only: bool = False, feedback_root: Path | None = None) -> dict[str, Any]:
+    fb = _feedback_dir(feedback_root)
+    events = [] if seed_only else list(iter_feedback_events(feedback_root))
 
     retrieval = load_quality_retrieval_pairs()
     retrieval += bootstrap_structured_index_pairs()
@@ -339,7 +349,8 @@ def export_all(*, seed_only: bool = False) -> dict[str, Any]:
             "kz_regression": len(kz_regression),
         },
         "sources": {
-            "feedback_dir": str(FEEDBACK_DIR.relative_to(ROOT)),
+            "feedback_dir": str(fb),
+            "feedback_dir_env": os.environ.get("ML_FEEDBACK_DIR") or None,
             "golden_queries": GOLDEN_QUERIES.is_file(),
             "structured_index": STRUCTURED_INDEX.is_file(),
             "gastro_gold": GASTRO_GOLD.is_file(),
@@ -368,8 +379,14 @@ def main() -> None:
         action="store_true",
         help="Only bootstrap from quality_benchmark, index.csv, gastro gold (no feedback/)",
     )
+    parser.add_argument(
+        "--feedback-dir",
+        type=Path,
+        default=None,
+        help="Каталог feedback JSONL (иначе ML_FEEDBACK_DIR или data/ml/feedback)",
+    )
     args = parser.parse_args()
-    manifest = export_all(seed_only=args.seed_only)
+    manifest = export_all(seed_only=args.seed_only, feedback_root=args.feedback_dir)
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
 
 

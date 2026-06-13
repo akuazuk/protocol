@@ -38,14 +38,15 @@ def _icd_overlap_score(card: dict[str, Any], icd_roots: set[str], icd_full: set[
 _SPINE_ICD_ROOTS = frozenset({"M51", "M53", "M54"})
 
 
-def _path_spine_bladder_mismatch(sp: str, icd_roots: set[str]) -> bool:
-    """M54* + путь КП мочевого пузыря без позвоночника - чужой протокол."""
+def _path_spine_domain_mismatch(sp: str, icd_roots: set[str]) -> bool:
+    """M54* + путь КП мочевого пузыря или опухолей без позвоночника - чужой протокол."""
     if not icd_roots & _SPINE_ICD_ROOTS:
         return False
     low = sp.lower()
     bladder = any(n in low for n in ("мочевого", "мочев", "пузыр"))
+    neoplasm = any(n in low for n in ("опухол", "новообраз", "онколог", "злокач"))
     spine = any(n in low for n in ("позвоноч", "радикул", "люмбо", "нейрохирург", "ишиас"))
-    return bladder and not spine
+    return (bladder or neoplasm) and not spine
 
 
 def consult_target_protocol_paths(
@@ -105,7 +106,7 @@ def consult_target_protocol_paths(
             sc = _icd_overlap_score(card, icd_roots, icd_full)
             if sc <= 0:
                 continue
-            if _path_spine_bladder_mismatch(sp, icd_roots):
+            if _path_spine_domain_mismatch(sp, icd_roots):
                 continue
             if slugs and card.get("specialty_slug") in slugs:
                 sc += 12.0
