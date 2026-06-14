@@ -117,3 +117,24 @@ def test_rerank_demotes_anesthesia_and_gi_for_throat():
     q = "болит горло и трудно глотать\nКонтекст подбора: взрослое население"
     out = _rerank_protocols_symptom_only(protos, q, icd)
     assert out[0]["path"].endswith("ent.pdf")
+
+
+def test_functional_gi_adult_prefers_intestinal_not_trauma():
+    q = (
+        "вздутие живота и запоры\n"
+        "Контекст подбора: взрослое население\n"
+        "МКБ-10 для поиска протокола: K59.0 (K59.0 - Запор)"
+    )
+    paths, meta = search_target_protocol_paths(query=q, icd_codes=["K59.0"])
+    assert meta.get("gi_functional_context") is True
+    assert "gastroenterology" in (meta.get("clinical_routes") or [])
+    joined = " ".join(paths).lower()
+    assert "травм" not in joined and "огнестрел" not in joined
+    assert "кишеч" in joined or "дефекац" in joined or "желч" in joined
+
+    ctx = build_protocol_search_context(query=q, icd_codes=["K59.0"])
+    allow = ctx.get("path_allowlist") or []
+    assert allow
+    allow_joined = " ".join(allow).lower()
+    assert "травм" not in allow_joined
+    assert "детс" not in allow_joined and "дет_" not in allow_joined

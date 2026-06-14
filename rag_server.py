@@ -5466,6 +5466,21 @@ def _rerank_protocols_symptom_only(
     if not uri_context:
         def _score_clinical_only(pr: dict) -> tuple[int, float]:
             penalty, boost = _apply_clinical_and_audience(pr, 0, 0)
+            path = str(pr.get("path") or "").lower()
+            title = str(pr.get("title") or path).lower()
+            blob = path + " " + title
+            from clinical_knowledge.search_retrieval import (
+                _GI_TITLE_STRONG,
+                _GI_TITLE_WRONG,
+                _has_functional_gi_context,
+            )
+
+            icd_codes_local = _icd_codes_from_analysis(icd_analysis, query)
+            if _has_functional_gi_context(query, icd_codes_local):
+                if any(k in blob for k in _GI_TITLE_WRONG):
+                    penalty += 22
+                elif any(k in blob for k in _GI_TITLE_STRONG):
+                    boost += 10
             try:
                 conf = float(pr.get("confidence_score") or 0.0)
             except (TypeError, ValueError):
@@ -5491,6 +5506,39 @@ def _rerank_protocols_symptom_only(
     has_cough = any(w in ql for w in ("кашел", "кашель", "сухой каш"))
     has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
     has_gi = any(w in ql for w in ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул"))
+    has_functional_gi = any(
+        w in ql
+        for w in (
+            "запор",
+            "вздут",
+            "метеор",
+            "дисхез",
+            "дефекац",
+            "срк",
+            "гастр",
+            "кишечник",
+        )
+    ) or any(str(c).upper().startswith(("K58", "K59")) for c in (icd_codes or []))
+    gi_trauma_title = (
+        "травмой живота",
+        "травма живота",
+        "травм живота",
+        "огнестрел",
+        "огнестр",
+        "ранени",
+        "ранен",
+        "ранами",
+    )
+    gi_strong_title = (
+        "кишеч",
+        "кишечник",
+        "запор",
+        "дефекац",
+        "гастр",
+        "моторно",
+        "эвакуатор",
+        "пищевар",
+    )
     throat_distress = any(w in ql for w in ("одыш", "дистресс", "синус", "сатурац", "загиб", "трипод"))
     has_sinus_hint = any(w in ql for w in ("синус", "риносинус", "лоб", "лобно", "maxillar"))
 
@@ -5505,6 +5553,11 @@ def _rerank_protocols_symptom_only(
             penalty += 5
         if has_throat and not has_gi and any(k in blob for k in gi_mismatch):
             penalty += 8
+        if has_functional_gi and not any(w in ql for w in ("травм", "ранен", "огнестрел")):
+            if any(k in blob for k in gi_trauma_title):
+                penalty += 20
+            elif any(k in blob for k in gi_strong_title):
+                boost += 8
         if has_throat and not throat_distress and "эпиглоттит" in blob:
             penalty += 4
         if any(k in blob for k in ("анестезиолог", "анестези", "хирургическ")) and has_throat:
@@ -6690,7 +6743,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r151-search-funnel-ux-attention"
+BUILD_VERSION = "2026-05-31-r152-gi-routing-search-progress-ui"
 
 
 def _app_version() -> str:

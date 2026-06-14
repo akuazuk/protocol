@@ -97,6 +97,58 @@ _WRONG_DOMAIN_FOR_THROAT = (
     "мягких тканей",
 )
 _GI_QUERY_MARKERS = ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул", "диар")
+_FUNCTIONAL_GI_MARKERS = (
+    "запор",
+    "вздут",
+    "метеор",
+    "дисхез",
+    "дефекац",
+    "срк",
+    "изжог",
+    "тошн",
+    "рвот",
+    "гастр",
+    "кишеч",
+    "стул",
+    "диар",
+    "гэрб",
+    "диспепс",
+    "кишечник",
+)
+_TRAUMA_ABDOMEN_QUERY = ("травм", "ранен", "огнестрел", "огнестр", "ранами", "пулев", "ножев", "ранение")
+_GI_TITLE_STRONG = (
+    "gastroenterolog",
+    "гастр",
+    "кишеч",
+    "кишечник",
+    "запор",
+    "дефекац",
+    "пищевар",
+    "желуд",
+    "желч",
+    "печен",
+    "поджелуд",
+    "колит",
+    "гастрит",
+    "эзофаг",
+    "моторно",
+    "эвакуатор",
+    "срк",
+)
+_GI_TITLE_WEAK = ("абdom", "брюш", "кишечн")
+_GI_TITLE_WRONG = (
+    "травмой живота",
+    "травма живота",
+    "травм живота",
+    "огнестрел",
+    "огнестр",
+    "ранени",
+    "ранен",
+    "ранами",
+    "пулев",
+    "ножев",
+    "проникающ",
+)
 _COUGH_MARKERS = ("кашел", "кашель", "сухой каш")
 _FEVER_MARKERS = ("температ", "лихорад", "жар", "озноб", "субфебрил", "гипертерм")
 _COUGH_FEVER_TITLE_STRONG = (
@@ -196,6 +248,25 @@ def _has_gi_context(query: str) -> bool:
     return any(m in ql for m in _GI_QUERY_MARKERS)
 
 
+def _is_trauma_abdominal_query(query: str) -> bool:
+    ql = _query_blob(query)
+    return any(m in ql for m in _TRAUMA_ABDOMEN_QUERY)
+
+
+def _has_functional_gi_context(query: str, icd_codes: list[str] | None = None) -> bool:
+    if _is_trauma_abdominal_query(query):
+        return False
+    ql = _query_blob(query)
+    if any(m in ql for m in _FUNCTIONAL_GI_MARKERS):
+        return True
+    if "вздут" in ql:
+        return True
+    if "живот" in ql and any(x in ql for x in ("запор", "метеор", "газ", "стул", "кишеч", "вздут")):
+        return True
+    codes = [normalize_code(c) for c in (icd_codes or [])]
+    return any(c.startswith(("K58", "K59")) for c in codes)
+
+
 def _has_cough_fever_context(query: str, icd_codes: list[str]) -> bool:
     ql = _query_blob(query)
     has_cough = any(m in ql for m in _COUGH_MARKERS)
@@ -260,6 +331,7 @@ def _title_match_paths(
     audience: str | None,
     throat: bool,
     cough_fever: bool = False,
+    gi_functional: bool = False,
     clinical_routes: list[str] | None = None,
     limit: int = 8,
 ) -> list[tuple[str, float, str]]:
@@ -315,6 +387,21 @@ def _title_match_paths(
                 score += 10.0
             elif audience == "child" and aud == "child":
                 score += 10.0
+        elif gi_functional:
+            if any(m in blob for m in _GI_TITLE_WRONG):
+                return
+            strong_hits = sum(1 for m in _GI_TITLE_STRONG if m in blob)
+            weak_hits = sum(1 for m in _GI_TITLE_WEAK if m in blob)
+            if strong_hits == 0 and weak_hits == 0:
+                return
+            score = base + 10.0 + 7.0 * strong_hits + 2.0 * weak_hits
+            aud = _audience_from_title(sp, title)
+            if audience == "adult" and aud == "adult":
+                score += 12.0
+            elif audience == "child" and aud == "child":
+                score += 12.0
+            elif audience == "adult" and aud == "pediatric":
+                score -= 8.0
         else:
             score = base
         if routes:
@@ -332,7 +419,7 @@ def _title_match_paths(
         title = str(row.get("title") or sp)
         consider(sp, title, 8.0, "protocol_meta")
 
-    if throat or cough_fever:
+    if throat or cough_fever or gi_functional:
         try:
             from clinical_knowledge.loader import load_protocol_cards_registry
 
@@ -363,6 +450,7 @@ def search_target_protocol_paths(
     audience = _infer_audience(query)
     throat = _has_throat_context(query, expanded)
     cough_fever = _has_cough_fever_context(query, expanded) and not throat
+    gi_functional = _has_functional_gi_context(query, expanded) and not throat and not _is_trauma_abdominal_query(query)
     slugs = sorted(
         expand_slugs_for_clinical_routes(
             expand_specialty_slugs_for_clinical_text(
@@ -392,6 +480,8 @@ def search_target_protocol_paths(
                 "terapiya",
             }
         )
+    elif gi_functional and not slugs:
+        slugs = sorted({"gastroenterologiya", "terapiya"})
 
     paths: list[str] = []
     seen: set[str] = set()
@@ -417,6 +507,12 @@ def search_target_protocol_paths(
         blob = sp.lower()
         if throat and _domain_mismatch_for_query(sp, sp, throat=throat, gi=_has_gi_context(query)):
             continue
+        if gi_functional:
+            title_guess = Path(sp).stem.lower().replace("_", " ")
+            if any(m in blob or m in title_guess for m in _GI_TITLE_WRONG):
+                continue
+            if _audience_mismatch(audience, sp, title_guess):
+                continue
         add(sp, registry_meta.get("path_sources", {}).get(sp, "icd_registry"))
 
     try:
@@ -432,10 +528,17 @@ def search_target_protocol_paths(
         audience=audience,
         throat=throat,
         cough_fever=cough_fever,
+        gi_functional=gi_functional,
         clinical_routes=clinical_routes,
         limit=limit,
     )
-    title_threshold = 18.0 if throat else 16.0 if (cough_fever or clinical_routes) else 18.0
+    title_threshold = (
+        18.0
+        if throat
+        else 16.0
+        if (cough_fever or gi_functional or clinical_routes)
+        else 18.0
+    )
     for sp, sc, src in title_hits:
         if sc >= title_threshold:
             add(sp, src)
@@ -458,6 +561,7 @@ def search_target_protocol_paths(
         "audience": audience,
         "throat_context": throat,
         "cough_fever_context": cough_fever,
+        "gi_functional_context": gi_functional,
         "clinical_routes": clinical_routes,
         "registry_meta": registry_meta,
     }
@@ -494,6 +598,18 @@ def search_target_protocol_paths(
             else:
                 rest.append(sp)
         deduped = respiratory + rest
+    if gi_functional:
+        gi_ok: list[str] = []
+        gi_rest: list[str] = []
+        for sp in deduped:
+            blob = f"{sp} {Path(sp).stem}".lower().replace("_", " ")
+            if any(m in blob for m in _GI_TITLE_WRONG):
+                continue
+            if any(m in blob for m in _GI_TITLE_STRONG):
+                gi_ok.append(sp)
+            else:
+                gi_rest.append(sp)
+        deduped = gi_ok + gi_rest
     return deduped[:limit], meta
 
 
@@ -526,11 +642,39 @@ def build_protocol_search_context(
         dict.fromkeys(_path_norm(p) for p in (target_paths + summary_paths) if p)
     )
     path_allowlist: list[str] | None = None
-    if meta.get("strict") and target_paths:
-        path_allowlist = list(target_paths)
+    search_meta = meta
+    audience = search_meta.get("audience")
+    if search_meta.get("strict") and target_paths:
+        allow_candidates: list[str] = []
+        meta_map = _load_protocol_meta()
+        for sp in target_paths:
+            row = meta_map.get(sp) if isinstance(meta_map, dict) else None
+            title = str((row or {}).get("title") or Path(sp).stem)
+            if audience and _audience_mismatch(audience, sp, title):
+                continue
+            if search_meta.get("gi_functional_context"):
+                blob = f"{sp} {title}".lower().replace("_", " ")
+                if any(m in blob for m in _GI_TITLE_WRONG):
+                    continue
+            allow_candidates.append(sp)
+        if allow_candidates:
+            path_allowlist = allow_candidates
+        elif search_meta.get("gi_functional_context"):
+            search_meta = dict(search_meta)
+            search_meta["strict"] = False
+    if search_meta.get("gi_functional_context") and audience == "adult":
+        path_boost = [
+            p
+            for p in path_boost
+            if not _audience_mismatch(
+                audience,
+                p,
+                str((_load_protocol_meta().get(p) or {}).get("title") or Path(p).stem),
+            )
+        ] or path_boost
     return {
         "expanded_icd_codes": expanded,
         "path_boost": path_boost or None,
         "path_allowlist": path_allowlist,
-        "search_meta": meta,
+        "search_meta": search_meta,
     }

@@ -38,6 +38,32 @@ def test_detect_hypertension_route():
     assert "hypertension" in ids
 
 
+def test_detect_gastro_route_bloating_constipation():
+    ids = detect_clinical_route_ids(
+        "вздутие живота и запоры\nКонтекст подбора: взрослое население",
+        ["K59.0"],
+    )
+    assert "gastroenterology" in ids
+
+
+def test_score_gastro_penalizes_abdominal_trauma():
+    delta, _ = score_path_for_clinical_routes(
+        "minzdrav_protocols/khirurgiya/kp_trauma_abdomen.pdf",
+        "КП диагностика лечение пациентов с травмой живота",
+        route_ids=["gastroenterology"],
+    )
+    assert delta < -10
+
+
+def test_score_gastro_boosts_intestinal():
+    delta, _ = score_path_for_clinical_routes(
+        "minzdrav/gastro/intestine.pdf",
+        "КП заболеваниями кишечника",
+        route_ids=["gastroenterology"],
+    )
+    assert delta > 0
+
+
 def test_score_burn_over_urology():
     delta, _ = score_path_for_clinical_routes(
         "minzdrav/khirurgiya/ozhog.pdf",

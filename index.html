@@ -2929,9 +2929,9 @@
       margin: 1rem 0 0;
       padding: 0.85rem 1rem;
       border-radius: 16px;
-      border: 2px solid rgba(217, 119, 6, 0.35);
-      background: linear-gradient(165deg, rgba(255, 251, 235, 0.95) 0%, #fff 100%);
-      box-shadow: 0 6px 24px rgba(120, 53, 15, 0.08);
+      border: 1px solid rgba(186, 196, 214, 0.55);
+      background: linear-gradient(165deg, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.92) 100%);
+      box-shadow: 0 4px 18px rgba(100, 116, 139, 0.06);
     }
 
     body.methodist-mode #panel-main-search .assist-lead,
@@ -2990,18 +2990,18 @@
       margin: 0 0 0.85rem;
       padding: 0.75rem 0.85rem;
       border-radius: 12px;
-      border: 1px solid rgba(26, 138, 114, 0.28);
-      background: rgba(232, 245, 241, 0.55);
+      border: 1px solid rgba(186, 210, 230, 0.65);
+      background: linear-gradient(160deg, rgba(237, 247, 252, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
     }
 
     .search-methodist-ai-panel.is-loading {
-      opacity: 0.85;
+      display: none;
     }
 
     .search-methodist-ai-panel h4 {
       margin: 0 0 0.35rem;
       font-size: 0.88rem;
-      color: var(--green-900);
+      color: #475569;
     }
 
     .search-methodist-ai-metrics {
@@ -3010,13 +3010,75 @@
       gap: 0.5rem 1rem;
       font-size: 0.78rem;
       margin: 0.35rem 0;
+      color: #64748b;
+    }
+
+    .search-methodist-ai-metrics strong {
+      color: #334155;
     }
 
     .search-methodist-ai-improvements {
       margin: 0.35rem 0 0;
       padding-left: 1.1rem;
       font-size: 0.78rem;
-      color: #374151;
+      color: #64748b;
+    }
+
+    .search-funnel-progress {
+      margin: 0.5rem 0 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(186, 210, 230, 0.55);
+      background: linear-gradient(165deg, rgba(240, 249, 255, 0.75) 0%, rgba(248, 250, 252, 0.95) 100%);
+    }
+
+    .search-funnel-progress__title {
+      margin: 0 0 0.55rem;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .search-funnel-progress__track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(203, 213, 225, 0.55);
+      overflow: hidden;
+      margin: 0 0 0.65rem;
+    }
+
+    .search-funnel-progress__fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(125, 211, 192, 0.85), rgba(147, 197, 253, 0.9));
+      transition: width 0.35s ease;
+    }
+
+    .search-funnel-progress__steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+      font-size: 0.74rem;
+      color: #64748b;
+    }
+
+    .search-funnel-progress__step {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .search-funnel-progress__step.is-done {
+      color: #059669;
+    }
+
+    .search-funnel-progress__step.is-active {
+      color: #0369a1;
+      font-weight: 600;
+    }
+
+    .search-funnel-progress__step.is-pending {
+      color: #94a3b8;
     }
 
     .search-methodist-ai-actions {
@@ -11725,6 +11787,7 @@
 
   function renderSearchMethodistAiReviewUi(ai) {
     var panel = document.getElementById("search-methodist-ai-panel");
+    var parentPanel = document.getElementById("search-methodist-panel");
     var title = document.getElementById("search-methodist-ai-title");
     var body = document.getElementById("search-methodist-ai-body");
     var metrics = document.getElementById("search-methodist-ai-metrics");
@@ -11732,8 +11795,14 @@
     var notes = document.getElementById("search-methodist-ai-notes");
     var impList = document.getElementById("search-methodist-ai-improvements");
     if (!panel || !ai) return;
+    if (parentPanel) parentPanel.hidden = false;
     panel.hidden = false;
     panel.classList.remove("is-loading");
+    var outDone = document.getElementById("llm-out");
+    if (outDone) {
+      var progDone = outDone.querySelector(".search-funnel-progress");
+      if (progDone) progDone.remove();
+    }
     if (title) {
       title.textContent =
         "ИИ-оценка · " +
@@ -11779,22 +11848,30 @@
   function requestSearchMethodistAiReview(data) {
     if (!window.__methodistMode || !window.__methodistAiReviewEnabled || !window.__methodistToken) {
       setSearchMethodistAiFlowState("");
-      var pOff = document.getElementById("search-methodist-ai-panel");
+      var pOff = document.getElementById("search-methodist-panel");
       if (pOff) pOff.hidden = true;
       return;
     }
     window.__searchLastAiReview = null;
     setSearchMethodistStatus("");
     setSearchMethodistAiFlowState("methodist-search-ai-pending");
-    var panel = document.getElementById("search-methodist-ai-panel");
-    var title = document.getElementById("search-methodist-ai-title");
-    var body = document.getElementById("search-methodist-ai-body");
-    if (panel) {
-      panel.hidden = false;
-      panel.classList.add("is-loading");
+    var parentPanel = document.getElementById("search-methodist-panel");
+    var aiPanel = document.getElementById("search-methodist-ai-panel");
+    if (parentPanel) parentPanel.hidden = true;
+    if (aiPanel) {
+      aiPanel.hidden = true;
+      aiPanel.classList.add("is-loading");
     }
-    if (title) title.textContent = "ИИ оценивает подбор протоколов…";
-    if (body) body.hidden = true;
+    var out = document.getElementById("llm-out");
+    if (out && !out.querySelector(".search-funnel-progress")) {
+      out.insertAdjacentHTML(
+        "afterbegin",
+        getSearchFunnelProgressSteps("ai_review")
+      );
+    } else if (out) {
+      var oldProg = out.querySelector(".search-funnel-progress");
+      if (oldProg) oldProg.outerHTML = getSearchFunnelProgressSteps("ai_review");
+    }
     var llm = (data && data.llm_json) || {};
     var icd = icdCodesFromAssistData(data || {});
     fetch(apiBaseUrl() + "/api/methodist/search-ai-review", {
@@ -11835,7 +11912,13 @@
       })
       .catch(function (e) {
         setSearchMethodistAiFlowState("methodist-search-ai-failed");
-        if (panel) panel.classList.remove("is-loading");
+        if (parentPanel) parentPanel.hidden = false;
+        if (aiPanel) {
+          aiPanel.hidden = false;
+          aiPanel.classList.remove("is-loading");
+        }
+        var title = document.getElementById("search-methodist-ai-title");
+        var body = document.getElementById("search-methodist-ai-body");
         if (title) {
           title.textContent =
             "AI-оценка недоступна: " + methodistApiErrorRu(e.message || e) + ". Заполните форму вручную.";
@@ -12087,6 +12170,84 @@
     return paths;
   }
 
+  function getSearchFunnelProgressSteps(activeStep) {
+    var steps = [
+      { id: "population", label: "Аудитория" },
+      { id: "icd", label: "МКБ-10" },
+      { id: "retrieve", label: "Поиск PDF" },
+      { id: "ai_review", label: "Оценка ИИ" },
+    ];
+    var order = ["population", "icd", "retrieve", "ai_review"];
+    var activeIdx = order.indexOf(activeStep);
+    if (activeIdx < 0) activeIdx = 2;
+    var pct = Math.round(((activeIdx + 0.45) / steps.length) * 100);
+    var html =
+      '<div class="search-funnel-progress" role="status" aria-live="polite">' +
+      '<p class="search-funnel-progress__title">Подбор протоколов</p>' +
+      '<div class="search-funnel-progress__track" aria-hidden="true">' +
+      '<div class="search-funnel-progress__fill" style="width:' +
+      String(pct) +
+      '%"></div></div>' +
+      '<div class="search-funnel-progress__steps">';
+    var si;
+    for (si = 0; si < steps.length; si++) {
+      var st = steps[si];
+      var cls = "search-funnel-progress__step ";
+      if (si < activeIdx) cls += "is-done";
+      else if (si === activeIdx) cls += "is-active";
+      else cls += "is-pending";
+      var mark = si < activeIdx ? "✓" : si === activeIdx ? "●" : "○";
+      html +=
+        '<span class="' +
+        cls +
+        '"><span aria-hidden="true">' +
+        mark +
+        "</span> " +
+        escapeHtml(st.label) +
+        "</span>";
+    }
+    html += "</div></div>";
+    return html;
+  }
+
+  function renderSearchLoadingHtml(opts) {
+    opts = opts || {};
+    var retrieveOnly = !!opts.retrieveOnly;
+    var activeStep = opts.progressStep || "retrieve";
+    var hint =
+      opts.hint ||
+      (retrieveOnly
+        ? "Поиск фрагментов в PDF (без краткого ответа модели)…"
+        : ASSIST_PHASE_HINTS[0]);
+    var h0 = escapeHtml(hint);
+    var disc = escapeHtml(ASSIST_PHASE_DISCLAIMER);
+    var progress = getSearchFunnelProgressSteps(activeStep);
+    if (retrieveOnly) {
+      return (
+        progress +
+        '<div class="assist-loading assist-loading--compact" role="status" aria-live="polite">' +
+        '<p class="assist-loading__hint" id="assist-inline-phase-hint">' +
+        h0 +
+        "</p></div>"
+      );
+    }
+    return (
+      progress +
+      '<div class="assist-loading" role="status" aria-live="polite">' +
+      '<div class="assist-loading__timer">' +
+      '<span class="assist-timer-num">0</span>' +
+      '<span class="assist-timer-unit">сек</span>' +
+      "</div>" +
+      '<p class="assist-loading__hint" id="assist-inline-phase-hint">' +
+      h0 +
+      "</p>" +
+      '<p class="assist-loading__disclaimer">' +
+      disc +
+      "</p>" +
+      "</div>"
+    );
+  }
+
   function populateSearchMethodistPanel(data) {
     var panel = document.getElementById("search-methodist-panel");
     if (!panel) return;
@@ -12094,7 +12255,12 @@
       panel.hidden = true;
       return;
     }
-    panel.hidden = false;
+    panel.hidden = true;
+    var aiPanel = document.getElementById("search-methodist-ai-panel");
+    if (aiPanel) {
+      aiPanel.hidden = true;
+      aiPanel.classList.remove("is-loading");
+    }
     window.__lastAssistData = data;
     var paths = uniqueRetrievalPaths(data);
     var rejSel = document.getElementById("search-methodist-rejected");
@@ -14478,9 +14644,10 @@
       if (!uiCompact) {
         bindProtocolSummaryNav(data);
       }
-      if (window.__methodistMode) {
-        var mPanel = document.getElementById("search-methodist-panel");
-        if (mPanel) mPanel.hidden = false;
+      var prog = document.getElementById("llm-out");
+      if (prog) {
+        var progEl = prog.querySelector(".search-funnel-progress");
+        if (progEl) progEl.remove();
       }
       updateScrollFabVisibility();
       var sr = document.getElementById("section-results");
@@ -21130,23 +21297,7 @@
   }
 
   function getAssistLoadingHtml() {
-    var h0 = escapeHtml(ASSIST_PHASE_HINTS[0]);
-    var disc = escapeHtml(ASSIST_PHASE_DISCLAIMER);
-    return (
-      '<div class="assist-loading" role="status" aria-live="polite">' +
-      '<div class="assist-loading__title">Подбор протоколов</div>' +
-      '<div class="assist-loading__timer">' +
-      '<span class="assist-timer-num">0</span>' +
-      '<span class="assist-timer-unit">сек</span>' +
-      "</div>" +
-      '<p class="assist-loading__hint" id="assist-inline-phase-hint">' +
-      h0 +
-      "</p>" +
-      '<p class="assist-loading__disclaimer">' +
-      disc +
-      "</p>" +
-      "</div>"
-    );
+    return renderSearchLoadingHtml({ retrieveOnly: false, progressStep: "retrieve" });
   }
 
   function showAssistTimerOverlay(titleStr, hintStr) {
@@ -21408,6 +21559,8 @@
 
       setSearchBusy(true);
       showResultsSection(true);
+      var mPanelBusy = document.getElementById("search-methodist-panel");
+      if (mPanelBusy) mPanelBusy.hidden = true;
       var prPanel = document.getElementById("practical-review-panel");
       if (prPanel) {
         prPanel.hidden = true;
@@ -21427,12 +21580,11 @@
               : undefined
           );
         } else if (retrieveOnly) {
-          out.innerHTML =
-            '<div class="assist-loading assist-loading--compact" role="status" aria-live="polite">' +
-            '<div class="assist-loading__title">Отбор протоколов</div>' +
-            '<div class="assist-loading__timer"><span class="assist-timer-num">0</span><span class="assist-timer-unit">сек</span></div>' +
-            '<p class="assist-loading__hint">Поиск фрагментов в PDF (без краткого ответа модели)…</p>' +
-            "</div>";
+          out.innerHTML = renderSearchLoadingHtml({
+            retrieveOnly: true,
+            progressStep: "retrieve",
+            hint: "Поиск фрагментов в PDF (без краткого ответа модели)…",
+          });
         } else {
           out.innerHTML = getAssistLoadingHtml();
         }
