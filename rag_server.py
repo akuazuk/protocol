@@ -2832,6 +2832,8 @@ def retrieve(
 
     _set_retrieval_embed_meta(embed_meta)
     per_path: dict[str, int] = {}
+    per_basename: dict[str, int] = {}
+    max_per_basename = int(os.environ.get("RAG_MAX_CHUNKS_PER_BASENAME", "1"))
     out: list[dict] = []
     rerank_used = bool(embed_meta.get("used"))
     for row in work_rows:
@@ -2848,7 +2850,12 @@ def retrieve(
         p = ch.get("path") or ""
         if per_path.get(p, 0) >= max_per_path:
             continue
+        bk = _protocol_basename_key(p)
+        if bk and per_basename.get(bk, 0) >= max(1, max_per_basename):
+            continue
         per_path[p] = per_path.get(p, 0) + 1
+        if bk:
+            per_basename[bk] = per_basename.get(bk, 0) + 1
         ex_lim = int(os.environ.get("RAG_EXCERPT_CHARS", "700"))
         cat_out = (ch.get("category") or "").strip()
         row_out: dict = {
@@ -4925,12 +4932,82 @@ def _normalize_protocol_path_key(p: str) -> str:
     return s
 
 
-def _normalize_protocol_title_key(t: str) -> str:
-    return " ".join((t or "").strip().lower().split())
+def _protocol_basename_key(p: str) -> str:
+    s = _normalize_protocol_path_key(p)
+    if not s:
+        return ""
+    return Path(s).name.lower()
 
 
-def dedupe_protocols_list(protocols: list) -> list:
-    """Один path и один title - с максимальным confidence_score (ответ модели без дублей)."""
+def _path_category_slug(p: str) -> str:
+    s = _normalize_protocol_path_key(p)
+    parts = [x for x in s.split("/") if x]
+    if "minzdrav_protocols" in parts:
+        idx = parts.index("minzdrav_protocols")
+        if idx + 1 < len(parts):
+            return parts[idx + 1].lower()
+    if len(parts) >= 2:
+        return parts[-2].lower()
+    return ""
+
+
+_RUBRIC_PATH_PRIORITY = (
+    "khirurgiya",
+    "gastroenterologiya",
+    "koloproktologiya",
+    "proktologiya",
+    "novoobrazovaniya",
+    "dermatovenerologiya",
+    "infektsionnye-zabolevaniya",
+)
+
+
+def _pick_better_protocol_entry(
+    a: dict,
+    b: dict,
+    *,
+    prefer_slugs: list[str] | None = None,
+) -> dict:
+    """Выбор канонической копии PDF при дублях filename в разных рубриках."""
+    sc_a = _confidence_numeric(a.get("confidence_score")) or float(a.get("score") or 0.0)
+    sc_b = _confidence_numeric(b.get("confidence_score")) or float(b.get("score") or 0.0)
+    if sc_b > sc_a + 0.001:
+        winner, loser = b, a
+    elif sc_a > sc_b + 0.001:
+        winner, loser = a, b
+    else:
+        slugs = {str(s).strip().lower() for s in (prefer_slugs or []) if str(s).strip()}
+        pa = _path_category_slug(str(a.get("path") or ""))
+        pb = _path_category_slug(str(b.get("path") or ""))
+        if pb in slugs and pa not in slugs:
+            winner, loser = b, a
+        elif pa in slugs and pb not in slugs:
+            winner, loser = a, b
+        else:
+            ia = next((i for i, s in enumerate(_RUBRIC_PATH_PRIORITY) if s == pa), 99)
+            ib = next((i for i, s in enumerate(_RUBRIC_PATH_PRIORITY) if s == pb), 99)
+            if ib < ia:
+                winner, loser = b, a
+            elif ia < ib:
+                winner, loser = a, b
+            else:
+                winner = a if len(str(a.get("path") or "")) <= len(str(b.get("path") or "")) else b
+                loser = b if winner is a else a
+    dup = list(winner.get("duplicate_catalog_paths") or [])
+    other = str(loser.get("path") or "").strip()
+    if other and other not in dup:
+        dup.append(other)
+    if dup:
+        winner = {**winner, "duplicate_catalog_paths": dup}
+    return winner
+
+
+def dedupe_protocols_list(
+    protocols: list,
+    *,
+    prefer_slugs: list[str] | None = None,
+) -> list:
+    """Один PDF (basename) и один title — с максимальным confidence_score."""
     if not protocols:
         return []
     by_path: dict[str, dict] = {}
@@ -4954,28 +5031,69 @@ def dedupe_protocols_list(protocols: list) -> list:
         tk = _normalize_protocol_title_key(str(pr.get("title") or ""))
         if not tk:
             tk = _normalize_protocol_path_key(str(pr.get("path") or ""))
-        sc = _confidence_numeric(pr.get("confidence_score")) or 0.0
         prev = by_title.get(tk)
         if prev is None:
             by_title[tk] = pr
         else:
-            psc = _confidence_numeric(prev.get("confidence_score")) or 0.0
-            if sc > psc:
-                by_title[tk] = pr
+            by_title[tk] = _pick_better_protocol_entry(prev, pr, prefer_slugs=prefer_slugs)
     out = list(by_title.values())
+    by_base: dict[str, dict] = {}
+    for pr in out:
+        bk = _protocol_basename_key(str(pr.get("path") or ""))
+        if not bk:
+            by_base[f"__path__:{pr.get('path')}"] = pr
+            continue
+        prev = by_base.get(bk)
+        if prev is None:
+            by_base[bk] = pr
+        else:
+            by_base[bk] = _pick_better_protocol_entry(prev, pr, prefer_slugs=prefer_slugs)
+    out = list(by_base.values())
     out.sort(
         key=lambda x: -(_confidence_numeric(x.get("confidence_score")) or 0.0)
     )
     return out
 
 
-def dedupe_parsed_protocols(parsed: dict | None) -> None:
+def _normalize_protocol_title_key(t: str) -> str:
+    return " ".join((t or "").strip().lower().split())
+
+
+def dedupe_retrieval_by_basename(
+    rows: list[dict],
+    *,
+    prefer_slugs: list[str] | None = None,
+) -> list[dict]:
+    """Один фрагмент на уникальный PDF (basename) — убирает копии в разных рубриках."""
+    if not rows:
+        return []
+    by_base: dict[str, dict] = {}
+    order: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        p = str(row.get("path") or "")
+        bk = _protocol_basename_key(p) or f"__path__:{p}"
+        prev = by_base.get(bk)
+        if prev is None:
+            by_base[bk] = dict(row)
+            order.append(bk)
+        else:
+            by_base[bk] = _pick_better_protocol_entry(prev, row, prefer_slugs=prefer_slugs)
+    return [by_base[k] for k in order if k in by_base]
+
+
+def dedupe_parsed_protocols(
+    parsed: dict | None,
+    *,
+    prefer_slugs: list[str] | None = None,
+) -> None:
     if not parsed or not isinstance(parsed, dict):
         return
     protos = parsed.get("protocols")
     if not isinstance(protos, list):
         return
-    parsed["protocols"] = dedupe_protocols_list(protos)
+    parsed["protocols"] = dedupe_protocols_list(protos, prefer_slugs=prefer_slugs)
 
 
 # --- Выдержки из PDF: склейка переносов, обрезка по границам слов (для UI) ---
@@ -6055,7 +6173,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r127-search-methodist-p0"
+BUILD_VERSION = "2026-06-01-r129-search-methodist-compact"
 
 
 def _app_version() -> str:
@@ -6548,7 +6666,9 @@ def api_assist(body: AssistIn) -> dict:
 
     if parsed and isinstance(parsed, dict):
         apply_protocol_confidence_calibration(parsed, retrieved)
-        dedupe_parsed_protocols(parsed)
+        dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
+
+    retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
 
     icd_payload = _icd_client_payload(icd_analysis)
     diag_mode = _diagnostic_mode_summary(icd_payload, retrieved)

@@ -2934,6 +2934,34 @@
       box-shadow: 0 6px 24px rgba(120, 53, 15, 0.08);
     }
 
+    body.methodist-mode #panel-main-search .assist-lead,
+    body.methodist-mode #panel-main-search .assist-diagnostic-note,
+    body.methodist-mode #panel-main-search .assist-sec--icd,
+    body.methodist-mode #panel-main-search .assist-sec--redflags,
+    body.methodist-mode #panel-main-search .assist-sec--differential,
+    body.methodist-mode #panel-main-search .assist-collapsible,
+    body.methodist-mode #panel-main-search .assist-proto-actions,
+    body.methodist-mode #panel-main-search .assist-proto-summary-nav,
+    body.methodist-mode #panel-main-search .assist-embed-note,
+    body.methodist-mode #panel-main-search #practical-review-panel,
+    body.methodist-mode #panel-main-search .assist-source-note {
+      display: none !important;
+    }
+
+    body.methodist-mode #panel-main-search .search-methodist-panel {
+      display: block !important;
+    }
+
+    .search-methodist-grid--compact {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 720px) {
+      .search-methodist-grid--compact {
+        grid-template-columns: 1fr;
+      }
+    }
+
     body:not(.methodist-mode) .search-methodist-panel {
       display: none !important;
     }
@@ -3033,6 +3061,39 @@
     .search-methodist-status {
       font-size: 0.74rem;
       color: var(--muted);
+    }
+
+    .assist-ai-eval-lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-dup-note {
+      margin: 0.25rem 0 0;
+      font-size: 0.72rem;
+      color: #8a6914;
+    }
+
+    .assist-proto-actions {
+      margin: 0.45rem 0 0;
+    }
+
+    .assist-card--citations-only .assist-lead,
+    .assist-card--citations-only .assist-diagnostic-note,
+    .assist-card--citations-only .assist-sec--icd,
+    .assist-card--citations-only .assist-sec--redflags,
+    .assist-card--citations-only .assist-sec--differential,
+    .assist-card--citations-only .assist-collapsible,
+    .assist-card--citations-only .assist-reason,
+    .assist-card--citations-only .assist-ai-eval-lead,
+    .assist-card--citations-only .assist-proto-actions,
+    .assist-card--citations-only .assist-proto-icd-top,
+    .assist-card--citations-only .assist-proto-summary-nav,
+    .assist-card--citations-only .assist-embed-note,
+    .assist-card--citations-only #practical-review-panel {
+      display: none !important;
     }
 
     .section-results {
@@ -8339,28 +8400,26 @@
         <div id="llm-out" class="llm-out"></div>
 
         <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
-          <h3>Разметка выдачи поиска (методист)</h3>
+          <h3>Разметка выдачи поиска</h3>
           <p class="search-methodist-panel__lead">
-            Исправление top-протокола сохраняется как <code>retrieval_fix</code> для обучения RAG и eval. Текст запроса передаётся только в защищённый feedback (не в публичную аналитику).
+            Сохраните исправление top-протокола как <code>retrieval_fix</code> для обучения RAG. Текст запроса — только в защищённый feedback.
           </p>
-          <div class="search-methodist-grid">
+          <div class="search-methodist-grid search-methodist-grid--compact">
             <div>
-              <label>Retrieval top (read-only)</label>
-              <ol id="search-methodist-retrieval-list" class="search-methodist-retrieval-list"></ol>
-            </div>
-            <div>
-              <label for="search-methodist-rejected">Система ошибочно выбрала</label>
+              <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
               <select id="search-methodist-rejected">
                 <option value="">— не указано —</option>
               </select>
-              <label for="search-methodist-chosen" style="margin-top:0.45rem;display:block">Правильный протокол *</label>
+            </div>
+            <div>
+              <label for="search-methodist-chosen">Правильный протокол *</label>
               <div class="search-methodist-autocomplete">
-                <input type="text" id="search-methodist-chosen" placeholder="Начните вводить название или рубрику…" autocomplete="off" />
+                <input type="text" id="search-methodist-chosen" placeholder="Название или рубрика…" autocomplete="off" />
                 <ul id="search-methodist-ac-list" class="search-methodist-ac-list" hidden></ul>
               </div>
             </div>
             <div>
-              <span style="font-size:0.76rem;font-weight:600">Теги</span>
+              <span class="search-methodist-tags-label">Теги</span>
               <div class="search-methodist-tags" id="search-methodist-tags"></div>
             </div>
             <div>
@@ -10308,6 +10367,43 @@
       .toLowerCase();
   }
 
+  function protocolBasenameKey(path) {
+    var p = normalizeProtocolPath(path || "");
+    if (!p) return "";
+    var i = p.lastIndexOf("/");
+    return (i >= 0 ? p.slice(i + 1) : p).toLowerCase();
+  }
+
+  function pathCategorySlug(path) {
+    var p = normalizeProtocolPath(path || "");
+    var parts = p.split("/").filter(Boolean);
+    var idx = parts.indexOf("minzdrav_protocols");
+    if (idx >= 0 && idx + 1 < parts.length) return parts[idx + 1].toLowerCase();
+    if (parts.length >= 2) return parts[parts.length - 2].toLowerCase();
+    return "";
+  }
+
+  function pickBetterProtocolEntry(a, b) {
+    var scA = confidenceFromProtocol(a);
+    var scB = confidenceFromProtocol(b);
+    if (scB > scA + 0.001) return b;
+    if (scA > scB + 0.001) return a;
+    var rubricPriority = [
+      "khirurgiya",
+      "gastroenterologiya",
+      "koloproktologiya",
+      "proktologiya",
+      "novoobrazovaniya",
+    ];
+    var ia = rubricPriority.indexOf(pathCategorySlug(a.path || ""));
+    var ib = rubricPriority.indexOf(pathCategorySlug(b.path || ""));
+    ia = ia < 0 ? 99 : ia;
+    ib = ib < 0 ? 99 : ib;
+    if (ib < ia) return b;
+    if (ia < ib) return a;
+    return String(a.path || "").length <= String(b.path || "").length ? a : b;
+  }
+
   function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
     var byPath = {};
@@ -10341,11 +10437,32 @@
         byTitle[tk] = pr2;
       }
     }
-    var out = [];
+    var byBase = {};
     for (var t2 in byTitle) {
-      if (Object.prototype.hasOwnProperty.call(byTitle, t2)) {
-        out.push(byTitle[t2]);
+      if (!Object.prototype.hasOwnProperty.call(byTitle, t2)) continue;
+      var pr3 = byTitle[t2];
+      var bk = protocolBasenameKey(pr3.path || "");
+      if (!bk) {
+        byBase["__path__:" + pr3.path] = pr3;
+        continue;
       }
+      if (!byBase[bk]) {
+        byBase[bk] = pr3;
+      } else {
+        var winner = pickBetterProtocolEntry(byBase[bk], pr3);
+        var loser = winner === byBase[bk] ? pr3 : byBase[bk];
+        var dup = winner.duplicate_catalog_paths || loser.duplicate_catalog_paths || [];
+        if (!Array.isArray(dup)) dup = [];
+        dup = dup.slice();
+        var otherPath = loser.path || "";
+        if (otherPath && dup.indexOf(otherPath) === -1) dup.push(otherPath);
+        winner = Object.assign({}, winner, { duplicate_catalog_paths: dup });
+        byBase[bk] = winner;
+      }
+    }
+    var out = [];
+    for (var b in byBase) {
+      if (Object.prototype.hasOwnProperty.call(byBase, b)) out.push(byBase[b]);
     }
     out.sort(function (a, b) {
       return confidenceFromProtocol(b) - confidenceFromProtocol(a);
@@ -11021,26 +11138,25 @@
   }
 
   function uniqueRetrievalPaths(data) {
-    var seen = {};
-    var out = [];
+    var paths = [];
+    var seenBase = {};
+    var protos = dedupeProtocolsByPath(((data && data.llm_json && data.llm_json.protocols) || []));
+    var pi;
+    for (pi = 0; pi < protos.length; pi++) {
+      if (protos[pi].path) paths.push(protos[pi].path);
+    }
     var retrieval = (data && data.retrieval) || [];
     var ri;
     for (ri = 0; ri < retrieval.length; ri++) {
       var p = retrieval[ri].path || "";
-      if (!p || seen[p]) continue;
-      seen[p] = true;
-      out.push(p);
-      if (out.length >= 5) break;
+      if (!p) continue;
+      var base = protocolBasenameKey(p);
+      if (base && seenBase[base]) continue;
+      if (base) seenBase[base] = true;
+      if (paths.indexOf(p) === -1) paths.push(p);
+      if (paths.length >= 8) break;
     }
-    var protos = ((data && data.llm_json && data.llm_json.protocols) || []);
-    for (ri = 0; ri < protos.length; ri++) {
-      p = protos[ri].path || "";
-      if (!p || seen[p]) continue;
-      seen[p] = true;
-      out.push(p);
-      if (out.length >= 8) break;
-    }
-    return out;
+    return paths;
   }
 
   function populateSearchMethodistPanel(data) {
@@ -11053,26 +11169,16 @@
     panel.hidden = false;
     window.__lastAssistData = data;
     var paths = uniqueRetrievalPaths(data);
-    var listEl = document.getElementById("search-methodist-retrieval-list");
-    if (listEl) {
-      listEl.innerHTML = "";
-      if (!paths.length) {
-        listEl.innerHTML = "<li>Нет путей retrieval</li>";
-      } else {
-        paths.forEach(function (p) {
-          var li = document.createElement("li");
-          li.textContent = p;
-          listEl.appendChild(li);
-        });
-      }
-    }
     var rejSel = document.getElementById("search-methodist-rejected");
     if (rejSel) {
       rejSel.innerHTML = '<option value="">— не указано —</option>';
       paths.forEach(function (p) {
         var opt = document.createElement("option");
         opt.value = p;
-        opt.textContent = p.length > 72 ? "…" + p.slice(-70) : p;
+        var shortTitle = p.split("/").pop() || p;
+        if (shortTitle.length > 56) shortTitle = shortTitle.slice(0, 54) + "…";
+        opt.textContent = shortTitle;
+        opt.title = p;
         rejSel.appendChild(opt);
       });
       if (paths.length) rejSel.value = paths[0];
@@ -11341,9 +11447,16 @@
       html +=
         '<span class="assist-pct assist-pct--warn" title="Слабая опора в отобранных фрагментах"> · слабая опора в отборе</span>';
     }
-    if (pr.match_reason) {
+    if (pr.match_reason && !opts.citationsOnly) {
       html +=
-        '<p class="assist-reason">' + escapeHtml(pr.match_reason) + "</p>";
+        '<p class="assist-reason"><strong>Оценка ИИ:</strong> ' + escapeHtml(pr.match_reason) + "</p>";
+    }
+    var dupN = (pr.duplicate_catalog_paths && pr.duplicate_catalog_paths.length) || 0;
+    if (dupN > 0) {
+      html +=
+        '<p class="assist-dup-note">Тот же PDF есть ещё в ' +
+        String(dupN) +
+        " рубриках каталога (показана одна копия).</p>";
     }
     var cit = excerptForProtocol(pr, excerptByPath);
     if (cit) {
@@ -11396,6 +11509,18 @@
         html += "</li>";
       }
       html += "</ul></details>";
+    }
+    if (!opts.compactResults) {
+      html +=
+        '<p class="assist-proto-actions">' +
+        '<button type="button" class="btn-assist btn-proto-explore" data-proto-path="' +
+        escapeHtmlAttr(pr.path || "") +
+        '" data-proto-title="' +
+        escapeHtmlAttr(title) +
+        '" data-proto-confidence="' +
+        escapeHtmlAttr(String(mScore)) +
+        '">Разобрать протокол (выдержка + матрица КЗ)</button>' +
+        "</p>";
     }
     html += "</li>";
     return html;
@@ -11581,6 +11706,27 @@
         if (timerCtl) timerCtl.stop();
         if (abortTid) clearTimeout(abortTid);
       });
+  }
+
+  function bindProtoExploreButtons(queryText, icdCodes) {
+    document.querySelectorAll(".btn-proto-explore").forEach(function (btn) {
+      if (btn.getAttribute("data-wired")) return;
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () {
+        var offer = {
+          path: btn.getAttribute("data-proto-path") || "",
+          title: btn.getAttribute("data-proto-title") || "",
+          confidence_score: parseFloat(btn.getAttribute("data-proto-confidence") || ""),
+        };
+        loadProtocolPractical(offer, queryText, icdCodes);
+        var slot = document.getElementById("practical-review-panel");
+        if (slot) {
+          try {
+            slot.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (e) {}
+        }
+      });
+    });
   }
 
   function bindProtocolDetailLoader(queryText) {
@@ -12165,6 +12311,18 @@
 
   function loadProtocolPractical(offer, queryText, icdCodes) {
     if (!offer || !offer.path) return;
+    var slot = document.getElementById("practical-review-panel");
+    if (slot) {
+      slot.hidden = false;
+      slot.className = "practical-review-panel practical-review-panel--loading";
+      var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
+      slot.innerHTML =
+        '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
+        '<p class="assist-detail-meta">' +
+        escapeHtml(String(titleLine)) +
+        " — загрузка выдержки и матрицы для КЗ…</p>" +
+        getDetailLoadingHtml();
+    }
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -12807,11 +12965,37 @@
     );
   }
 
+  function uniqueRetrievalBasenameCount(retrieval) {
+    var seen = {};
+    var n = 0;
+    var i;
+    for (i = 0; i < (retrieval || []).length; i++) {
+      var p = retrieval[i].path || "";
+      var b = protocolBasenameKey(p);
+      if (!b) {
+        n += 1;
+        continue;
+      }
+      if (!seen[b]) {
+        seen[b] = true;
+        n += 1;
+      }
+    }
+    return n;
+  }
+
   function buildAssistSearchMetaHtml(data, rawProtos) {
     var parts = [];
     var retr = data.retrieval || [];
     if (retr.length) {
-      parts.push("Отобрано " + retr.length + " фрагмент(ов) из корпуса");
+      var uniqPdf = uniqueRetrievalBasenameCount(retr);
+      parts.push(
+        "Отобрано " +
+          retr.length +
+          " фрагмент(ов) из " +
+          uniqPdf +
+          " PDF"
+      );
     }
     if (rawProtos && rawProtos.length) {
       var top = confidenceFromProtocol(rawProtos[0]);
@@ -12871,10 +13055,14 @@
       var excerptByPath = ragExcerptByPath(data.retrieval || []);
       var protocolIcdMentions = data.protocol_icd_mentions || {};
       var citationsOnly = isCitationsOnlyMode();
+      var methodistSearch = !!window.__methodistMode;
+      var compactResults = citationsOnly || methodistSearch;
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
         protocolIcdMentions: protocolIcdMentions,
         protocolUiMeta: data.protocol_ui_meta || {},
+        citationsOnly: citationsOnly,
+        compactResults: compactResults,
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
       var high = [];
@@ -12887,7 +13075,7 @@
           low.push(rawProtos[hi]);
         }
       }
-      var html = '<div class="assist-card"><div class="assist-card-inner">';
+      var html = '<div class="assist-card' + (citationsOnly ? " assist-card--citations-only" : "") + '"><div class="assist-card-inner">';
       html += buildAssistSearchMetaHtml(data, rawProtos);
       if (window.__assistUndoSnapshot) {
         html +=
@@ -12897,7 +13085,7 @@
           "</div>";
       }
 
-      if (!citationsOnly && j.summary) {
+      if (!compactResults && j.summary) {
         html +=
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
@@ -12921,7 +13109,7 @@
           '<p class="assist-audience-banner">' + escapeHtml(audLabel) + "</p>";
       }
 
-      if (!citationsOnly && data.diagnostic_notice) {
+      if (!compactResults && data.diagnostic_notice) {
         var dmode = String(data.diagnostic_mode || "");
         var dconf = data.diagnostic_confidence != null && !isNaN(Number(data.diagnostic_confidence))
           ? Math.round(Number(data.diagnostic_confidence) * 100)
@@ -12938,11 +13126,11 @@
           "</p>";
       }
 
-      if (!citationsOnly) {
+      if (!compactResults) {
         html += formatIcdSectionHtml(data.icd || {});
       }
 
-      if (!citationsOnly && data.red_flags && data.red_flags.length) {
+      if (!compactResults && data.red_flags && data.red_flags.length) {
         html += '<div class="assist-sec assist-sec--redflags">';
         html +=
           '<span class="assist-sec-label assist-sec-label--alert">Обратить внимание (по тексту отобранных фрагментов)</span>';
@@ -12970,7 +13158,21 @@
 
       if (rawProtos.length) {
         html += '<hr class="assist-hr" /><div class="assist-sec">';
-        html += '<span class="assist-sec-label">Протоколы и оценка соответствия</span>';
+        html +=
+          '<span class="assist-sec-label">' +
+          (citationsOnly
+            ? "Протоколы · цитаты из PDF"
+            : methodistSearch
+              ? "Протоколы · оценка для разметки"
+              : "Протоколы · оценка релевантности ИИ") +
+          "</span>";
+        if (!citationsOnly && !methodistSearch) {
+          html +=
+            '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. <strong>Соответствие %</strong> — насколько протокол подходит к запросу (не вероятность диагноза). Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>";
+        } else if (methodistSearch && !citationsOnly) {
+          html +=
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>";
+        }
         if (high.length) {
           html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="assist-proto-list">';
           for (hi = 0; hi < high.length; hi++) {
@@ -12987,13 +13189,16 @@
           html += "</ul>";
         }
         html += "</div>";
-        if (data.retrieval_embedding && data.retrieval_embedding.used) {
+        if (data.retrieval_embedding && data.retrieval_embedding.used && !compactResults) {
           html +=
             '<p class="assist-embed-note">Отбор фрагментов дополнительно уточняется по смыслу запроса поверх текстового поиска.</p>';
         }
       }
 
-      if (!citationsOnly && j.differential && j.differential.length) {
+      html +=
+        '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
+
+      if (!compactResults && j.differential && j.differential.length) {
         html +=
           '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
         html +=
@@ -13024,7 +13229,7 @@
       }
 
       if (
-        !citationsOnly &&
+        !compactResults &&
         j.questions_for_patient &&
         j.questions_for_patient.length &&
         !hasAnyProtocolAt100Pct(rawProtos)
@@ -13055,40 +13260,17 @@
         html += "</div></details>";
       }
 
-      if (rawProtos.length) {
+      if (rawProtos.length && !compactResults) {
         html +=
           '<details class="assist-collapsible assist-collapsible--legend"><summary>Пояснение к оценкам (%)</summary><p class="assist-metrics-legend" style="margin:0"><strong>Соответствие (%)</strong> - насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0-100%). ' +
           "<strong>Фрагмент (%)</strong> - насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
-      var practicalOffer = pickTopProtocolForPractical(rawProtos, 0.65);
       var icdForPractical = icdCodesFromAssistData(data);
-      if (practicalOffer && !data.clinical_detail_offer) {
-        lastProtocolDetailOffer = {
-          path: practicalOffer.path,
-          title: practicalOffer.title || "",
-          confidence_score: practicalOffer.confidence_score,
-          rag_support: practicalOffer.rag_support,
-        };
-      }
-      var checklistHtml = renderProtocolChecklistHtml(data);
-      if (checklistHtml && !citationsOnly && !practicalOffer) {
-        html += checklistHtml;
-      }
-
-      if (practicalOffer && !citationsOnly && !data.clinical_detail) {
-        html += renderPracticalReviewLoading(practicalOffer);
-      } else if (data.clinical_detail) {
+      if (data.clinical_detail && !compactResults) {
         html += renderClinicalDetailBlock(data.clinical_detail, data.query || "");
-        if (practicalOffer && !citationsOnly) {
-          html +=
-            '<div id="practical-kz-slot" class="practical-kz-slot"><p class="assist-detail-meta">Загрузка матрицы для КЗ…</p></div>';
-        }
-      } else if (data.clinical_detail_offer && !citationsOnly) {
+      } else if (data.clinical_detail_offer && !compactResults) {
         html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
-      } else if (data.clinical_detail_offer && citationsOnly) {
-        html +=
-          '<p class="assist-source-note">Развёрнутая выдержка: откройте PDF по ссылке выше или снимите режим «только цитаты» и нажмите «Загрузить развёрнутую выдержку».</p>';
       }
 
       if (j.disclaimer) {
@@ -13125,22 +13307,14 @@
       bindProtocolFactsTabs();
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
+      bindProtoExploreButtons(data.query || "", icdForPractical);
       populateSearchMethodistPanel(data);
-      bindProtocolSummaryNav(data);
-      if (practicalOffer && !citationsOnly && !data.clinical_detail) {
-        loadProtocolPractical(practicalOffer, data.query || "", icdForPractical);
-      } else if (
-        practicalOffer &&
-        !citationsOnly &&
-        data.clinical_detail &&
-        !data.clinical_detail.error
-      ) {
-        loadKzMatrixOnly(
-          practicalOffer,
-          data.query || "",
-          icdForPractical,
-          data.clinical_detail
-        );
+      if (!compactResults) {
+        bindProtocolSummaryNav(data);
+      }
+      if (window.__methodistMode) {
+        var mPanel = document.getElementById("search-methodist-panel");
+        if (mPanel) mPanel.hidden = false;
       }
       updateScrollFabVisibility();
       var sr = document.getElementById("section-results");
