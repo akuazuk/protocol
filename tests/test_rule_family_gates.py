@@ -99,6 +99,12 @@ def test_gastro_heuristic_facts_multiline_diagnosis_oncology():
     assert not any("8e7327d9" in r or "functional_dyspepsia" in r for r in ids)
 
 
+def test_report_g_11_anamnesis_pregnancy_count_not_active_pregnancy():
+    text = (FIXTURES / "report_g_11_anamnesis.txt").read_text(encoding="utf-8")
+    ids = _failed_rule_ids(text)
+    assert not any("d4c0214b" in r or "pregnancy" in r for r in ids)
+
+
 def test_f1_p_rich_safety_and_follow_scores():
     from clinical_knowledge.consult_analysis import analyze_consultation_text
 

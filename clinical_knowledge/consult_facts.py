@@ -79,16 +79,19 @@ def extract_consult_facts_heuristic(
     if diagnosis_text:
         icd = list(dict.fromkeys(icd + extract_icd10(diagnosis_text)))
 
+    demo = demographics_meta or {}
+    age_years = demo.get("age_years")
+
+    from clinical_knowledge.pregnancy_context import is_active_pregnancy
+
+    pregnancy = is_active_pregnancy(raw, icd, age_years=age_years)
+
     sex = None
     if RE_SEX_F.search(raw):
         sex = "female"
     elif RE_SEX_M.search(raw):
         sex = "male"
-
-    pregnancy = bool(RE_PREG.search(raw))
-    demo = demographics_meta or {}
     audience = demo.get("audience")
-    age_years = demo.get("age_years")
 
     adult_or_child = audience
     if not adult_or_child and age_years is not None:

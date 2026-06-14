@@ -63,25 +63,33 @@ def _is_pregnancy_icd(code: str) -> bool:
 
 def _has_pregnancy_context(consult_facts: dict[str, Any]) -> bool:
     """Беременность: явный маркер в КZ/МКБ; не срабатывает на гинекологию без беременности (61 г.)."""
+    from clinical_knowledge.pregnancy_context import is_active_pregnancy
+
     ctx = consult_facts.get("patient_context") or {}
     if ctx.get("pregnancy") is True:
+        cons = consult_facts.get("consultation") or {}
+        icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+        raw = "\n".join(
+            [
+                cons.get("diagnosis_text") or "",
+                cons.get("clinical_text") or "",
+                cons.get("text_sample") or "",
+            ]
+        )
+        if not is_active_pregnancy(raw, icd_list, age_years=ctx.get("age_years")):
+            return False
         return True
     cons = consult_facts.get("consultation") or {}
-    hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
-    if "pregnancy" in hints:
-        return True
     icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
-    if any(_is_pregnancy_icd(c) for c in icd_list):
-        return True
-    blob = _text_blob(consult_facts)
-    sample = str(cons.get("text_sample") or "")
-    preg_markers = ("беременн", "гестац", "беременность ", "плод", "триместр")
-    if any(m in blob for m in preg_markers) or any(m in sample.lower() for m in preg_markers):
-        return True
-    age = ctx.get("age_years")
-    if isinstance(age, (int, float)) and age > 50:
-        return False
-    return False
+    raw = "\n".join(
+        [
+            cons.get("diagnosis_text") or "",
+            " ".join(cons.get("complaints") or []),
+            cons.get("clinical_text") or "",
+            cons.get("text_sample") or "",
+        ]
+    )
+    return is_active_pregnancy(raw, icd_list, age_years=ctx.get("age_years"))
 
 
 _VENOUS_ICD_PREFIXES = ("I80", "I81", "I82", "I83", "I86", "I87")
@@ -209,9 +217,7 @@ def _condition_applies_to_consult(
         if "neoplasm" not in hints and not _has_oncology_context(consult_facts):
             return False
     if cid == "pregnancy":
-        hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
-        if "pregnancy" not in hints and not _has_pregnancy_context(consult_facts):
-            return False
+        return _has_pregnancy_context(consult_facts)
     if cid == "pediatric_general_surgery":
         if _is_adult_patient(ctx):
             return False
