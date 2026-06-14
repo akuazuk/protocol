@@ -6546,7 +6546,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r144-search-funnel-b1-b2-golden"
+BUILD_VERSION = "2026-06-01-r145-population-gate-fix"
 
 
 def _app_version() -> str:

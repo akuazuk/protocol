@@ -10775,6 +10775,8 @@
       icdBox.innerHTML = "";
     }
     window.__icdAppendLine = "";
+    window.__funnelContext = {};
+    window.__searchWizard = { step: "query" };
   }
 
   function stripToClinicalOnly(fullQuery) {
@@ -16983,9 +16985,29 @@
   }
 
   function isSearchSteppedMode() {
-    if (window.__methodistMode) return false;
+    if (window.__methodistMode) return true;
     var el = document.getElementById("search-stepped-mode");
     return !!(el && el.checked);
+  }
+
+  function clinicalQueryKeyForPopulation(qRaw) {
+    return stripPopulationContextFromQuery(qRaw).trim();
+  }
+
+  function syncPopulationGateForQuery(qRaw, opts) {
+    opts = opts || {};
+    if (opts.skipPopulationGate) return;
+    window.__funnelContext = window.__funnelContext || {};
+    var clinicalKey = clinicalQueryKeyForPopulation(qRaw);
+    if (window.__funnelContext._populationClinicalKey !== clinicalKey) {
+      window.__funnelContext._populationClinicalKey = clinicalKey;
+      window.__funnelContext.populationConfirmed = false;
+      delete window.__funnelContext.population;
+      delete window.__funnelContext.rubric;
+      delete window.__funnelContext.rubricSkipped;
+      delete window.__funnelContext.rubric_slugs;
+      delete window.__funnelContext.icd_codes;
+    }
   }
 
   function queryHasIcdInText(raw) {
@@ -21330,10 +21352,7 @@
         return;
       }
       qRaw = prep.query;
-      if (!opts.skipPopulationGate && queryOverride == null) {
-        window.__funnelContext = window.__funnelContext || {};
-        window.__funnelContext.populationConfirmed = false;
-      }
+      syncPopulationGateForQuery(qRaw, opts);
       if (needsPopulationStep(qRaw, opts)) {
         renderSearchWizardPopulationStep(qRaw);
         resolve();
