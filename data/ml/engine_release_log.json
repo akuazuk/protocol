@@ -202,6 +202,38 @@
           "note": "Убрано ложное thyroid из осмотра «ЩЖ не увеличена»"
         }
       ]
+    },
+    {
+      "version": "2026-06-01-r121",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Matched-path GI/urology gates",
+      "summary": "Path-правила от RAG не применяются без клинического контекста (dyspepsia, balanopostitis).",
+      "fixes": [
+        "foreign_body_gi / intussusception / defecation_disorder: gate по диагнозу+МКБ",
+        "bladder_dysfunction: gate при N48/N47 без N31/N39",
+        "intestinal_obstruction: gate при dyspepsia-only визите"
+      ],
+      "metrics": [
+        {
+          "case_label": "report_ter_1 (full RAG)",
+          "before_failed_rules": 3,
+          "after_failed_rules": 0,
+          "note": "foreign_body/intussusception/defecation от matched gastritis paths"
+        },
+        {
+          "case_label": "report_urolofg_2",
+          "before_failed_rules": 1,
+          "after_failed_rules": 0,
+          "note": "bladder_dysfunction от matched urology path"
+        },
+        {
+          "case_label": "report_uril_3",
+          "before_failed_rules": 2,
+          "after_failed_rules": 0,
+          "note": "bladder + urology formula FP"
+        }
+      ]
     }
   ],
   "ml_experiments": [

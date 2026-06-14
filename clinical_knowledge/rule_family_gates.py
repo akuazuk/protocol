@@ -111,6 +111,15 @@ def _is_dyspepsia_primary_visit(diag: str, icd_list: list[str]) -> bool:
     return bool(diag) and "диспепс" in diag and "гастрит" not in diag
 
 
+def _diag_complaints(consult_facts: dict[str, Any]) -> str:
+    cons = consult_facts.get("consultation") or {}
+    return _norm(f"{cons.get('diagnosis_text') or ''} {' '.join(cons.get('complaints') or [])}")
+
+
+def _has_icd_prefix(icd_list: list[str], prefixes: tuple[str, ...]) -> bool:
+    return any(any(c.startswith(p) for p in prefixes) for c in icd_list)
+
+
 def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -> bool | None:
     """None — использовать стандартную логику rule_checker."""
     cons = consult_facts.get("consultation") or {}
@@ -164,6 +173,38 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
         if not any(c.startswith("S36") for c in icd_list):
             complaints = _norm(" ".join(cons.get("complaints") or []))
             if "травм" not in diag and "травм" not in complaints:
+                return False
+
+    if condition_id == "foreign_body_gi":
+        dc = _diag_complaints(consult_facts)
+        if not _has_icd_prefix(icd_list, ("T18",)) and "инородн" not in dc:
+            return False
+
+    if condition_id == "intussusception":
+        dc = _diag_complaints(consult_facts)
+        if not _has_icd_prefix(icd_list, ("K56",)) and "инвагинац" not in dc:
+            return False
+
+    if condition_id == "defecation_disorder":
+        dc = _diag_complaints(consult_facts)
+        if not _has_icd_prefix(icd_list, ("K59", "R15", "R19")) and not any(
+            m in dc for m in ("запор", "дисхез", "дефекац", "недержан", "стул")
+        ):
+            return False
+
+    if condition_id == "bladder_dysfunction":
+        urology_surface = ("N40", "N41", "N42", "N43", "N44", "N45", "N46", "N47", "N48", "N49", "N50")
+        bladder_icd = ("N30", "N31", "N32", "N33", "N34", "N35", "N36", "N37", "N38", "N39")
+        if icd_list and _has_icd_prefix(icd_list, urology_surface):
+            if not _has_icd_prefix(icd_list, bladder_icd):
+                dc = _diag_complaints(consult_facts)
+                if not any(m in dc for m in ("дизур", "недержан", "инконтинен", "мочевой пузыр", "цистит", "n31", "n39")):
+                    return False
+
+    if condition_id == "intestinal_obstruction":
+        dc = _diag_complaints(consult_facts)
+        if not _has_icd_prefix(icd_list, ("K56",)) and "непроходим" not in dc:
+            if _is_dyspepsia_primary_visit(diag, icd_list):
                 return False
 
     if condition_id in ("functional_dyspepsia", "gastritis", "gerd") and has_oncology_clinical_suspicion(consult_facts):

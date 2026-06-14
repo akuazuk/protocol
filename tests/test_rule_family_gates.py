@@ -156,3 +156,50 @@ def test_report_urolofg_2_no_thyroid_formula():
         return
     ids = _failed_rule_ids(text)
     assert not any("thyroid" in r or "2d00ba03" in r for r in ids)
+
+
+def _failed_rule_ids_full(text: str, case_id: str) -> list[str]:
+    from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+    out = analyze_consultation_text(text, consultation_id=case_id, with_markdown=False)
+    rc = out.get("rule_check") or ((out.get("clinical_rules") or {}).get("rules_check") or {})
+    return [
+        str(f.get("rule_id") or "")
+        for f in (rc.get("findings") or [])
+        if not f.get("passed") and not f.get("skipped")
+    ]
+
+
+def test_report_ter_1_no_matched_path_gi_surgical_rules():
+    text = _pdf_text("report_ter_1.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids_full(text, "report_ter_1")
+    assert not any(
+        x in r
+        for r in ids
+        for x in (
+            "foreign_body_gi",
+            "intussusception",
+            "defecation_disorder",
+            "5edd444b",
+            "882e3259",
+            "c050eb35",
+        )
+    )
+
+
+def test_report_urolofg_2_no_bladder_dysfunction_formula():
+    text = _pdf_text("report_urolofg_2.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids_full(text, "report_urolofg_2")
+    assert not any("bladder" in r or "606439cd" in r for r in ids)
+
+
+def test_report_uril_3_no_bladder_dysfunction_formula():
+    text = _pdf_text("report_uril_3.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids_full(text, "report_uril_3")
+    assert not any("bladder" in r or "606439cd" in r for r in ids)
