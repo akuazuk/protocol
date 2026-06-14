@@ -14,6 +14,26 @@ def test_symptom_only_demotes_mycobacteriosis():
     assert out[0]["path"].endswith("пневмония.pdf")
 
 
+def test_symptom_only_demotes_allergic_rhinitis_with_fever():
+    protos = [
+        {
+            "path": "a/аллергический_ринит_дет.pdf",
+            "title": "Аллергический ринит дет нас",
+            "confidence_score": 0.98,
+        },
+        {
+            "path": "b/орви.pdf",
+            "title": "Диагностика лечение ОРВИ",
+            "confidence_score": 0.82,
+        },
+    ]
+    icd = {"explicit_icd_in_query": False, "detected": [], "suggested": []}
+    out = _rerank_protocols_symptom_only(
+        protos, "температура и кашель и болит горло", icd
+    )
+    assert out[0]["path"].endswith("орви.pdf")
+
+
 def test_symptom_only_demotes_pediatric_orvi_without_child_context():
     protos = [
         {

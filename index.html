@@ -3022,8 +3022,20 @@
     .search-methodist-ai-actions {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       gap: 0.45rem;
       margin-top: 0.55rem;
+    }
+
+    .search-methodist-ai-status {
+      flex: 1 1 100%;
+      margin: 0.15rem 0 0;
+      font-size: 0.78rem;
+      color: var(--green-800);
+    }
+
+    .search-methodist-ai-status:empty {
+      display: none;
     }
 
     .search-methodist-manual-wrap {
@@ -8669,6 +8681,7 @@
                 <button type="button" class="btn-assist" id="search-methodist-ai-approve">Одобрить оценку ИИ</button>
                 <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-edit">Править вручную</button>
                 <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-reject">Отклонить ИИ</button>
+                <span class="search-methodist-status search-methodist-ai-status" id="search-methodist-ai-status" role="status" aria-live="polite"></span>
               </div>
             </div>
           </section>
@@ -11657,6 +11670,7 @@
       return;
     }
     window.__searchLastAiReview = null;
+    setSearchMethodistStatus("");
     setSearchMethodistAiFlowState("methodist-search-ai-pending");
     var panel = document.getElementById("search-methodist-ai-panel");
     var title = document.getElementById("search-methodist-ai-title");
@@ -11734,26 +11748,48 @@
 
   function postSearchMethodistFeedback(body, okMsg) {
     setSearchMethodistStatus("Сохранение…");
+    var payload;
+    try {
+      payload = JSON.stringify(body);
+    } catch (serErr) {
+      setSearchMethodistStatus("Ошибка формирования запроса: " + (serErr.message || serErr));
+      return Promise.resolve(false);
+    }
+    if (!window.__methodistToken) {
+      setSearchMethodistStatus("Нет токена методиста — войдите в режим методиста.");
+      return Promise.resolve(false);
+    }
     return fetch(apiBaseUrl() + "/api/ml/feedback", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
-      body: JSON.stringify(body),
+      body: payload,
     })
       .then(function (r) {
-        return r.json().then(function (j) {
-          return { ok: r.ok, body: j };
+        return r.text().then(function (t) {
+          var j = {};
+          if (t) {
+            try {
+              j = JSON.parse(t);
+            } catch (parseErr) {
+              j = { detail: t.slice(0, 240) || "HTTP " + r.status };
+            }
+          }
+          return { ok: r.ok, status: r.status, body: j };
         });
       })
       .then(function (res) {
         if (!res.ok) {
-          setSearchMethodistStatus(formatMethodistApiDetail(res.body && res.body.detail));
+          var detail = formatMethodistApiDetail(res.body && res.body.detail);
+          setSearchMethodistStatus(
+            detail || ("Ошибка сохранения (HTTP " + (res.status || "?") + ")")
+          );
           return false;
         }
         setSearchMethodistStatus(okMsg || "Сохранено.");
         return true;
       })
-      .catch(function () {
-        setSearchMethodistStatus("Сеть недоступна.");
+      .catch(function (netErr) {
+        setSearchMethodistStatus("Сеть: " + (netErr && netErr.message ? netErr.message : "недоступна"));
         return false;
       });
   }
@@ -11773,63 +11809,74 @@
   }
 
   function saveSearchMethodistAiApproved() {
-    var ai = window.__searchLastAiReview;
-    if (!ai) {
-      setSearchMethodistStatus("Нет AI-оценки.");
-      return;
-    }
-    var data = window.__lastAssistData || {};
-    var queryText = data.query || lastAssistFullQuery || "";
-    var topPaths = searchRetrievalTopPaths(data);
-    var rf = ai.retrieval_fix;
-    var tags = ai.tags || [];
-    var rejectedForCheck = (rf && rf.rejected_path) || (topPaths[0] || "");
-    var rejErr = searchMethodistRequiresRejected(tags, rejectedForCheck);
-    if (rejErr) {
-      setSearchMethodistStatus(rejErr);
-      return;
-    }
-    var reviewer = methodistReviewerForFeedback();
-    var approvedVerdict = ai.ranking_verdict || "mostly_correct";
-    if (rf && rf.chosen_path) {
+    var approveBtn = document.getElementById("search-methodist-ai-approve");
+    try {
+      var ai = window.__searchLastAiReview;
+      if (!ai) {
+        setSearchMethodistStatus("Нет AI-оценки — дождитесь завершения или обновите поиск.");
+        return;
+      }
+      var data = window.__lastAssistData || {};
+      var queryText = data.query || lastAssistFullQuery || "";
+      var topPaths = searchRetrievalTopPaths(data);
+      var rf = ai.retrieval_fix;
+      var tags = ai.tags || [];
+      var rejectedPath = (rf && rf.rejected_path) || topPaths[0] || "";
+      var rejErr = searchMethodistRequiresRejected(tags, rejectedPath);
+      if (rejErr) {
+        setSearchMethodistStatus(rejErr);
+        return;
+      }
+      var reviewer = methodistReviewerForFeedback();
+      var approvedVerdict = ai.ranking_verdict || "mostly_correct";
+      if (approveBtn) approveBtn.disabled = true;
+      var done = function () {
+        if (approveBtn) approveBtn.disabled = false;
+      };
+      if (rf && String(rf.chosen_path || "").trim()) {
+        postSearchMethodistFeedback(
+          appendSearchFunnelFeedbackFields({
+            event_type: "retrieval_fix",
+            query: queryText,
+            rejected_path: rejectedPath || null,
+            chosen_path: String(rf.chosen_path).trim(),
+            source: "protocol_search_ui",
+            reviewer: reviewer,
+            tags: tags,
+            retrieval_top_paths: topPaths,
+            ranking_rating: ai.ranking_rating,
+            ranking_verdict: ai.ranking_verdict,
+            ai_review: ai,
+            methodist_approved: true,
+            review_source: "ai_assisted",
+            note: (rf.note || ai.summary_ru || "").slice(0, 500),
+          }),
+          "Одобрено: retrieval_fix сохранён."
+        ).then(done).catch(done);
+        return;
+      }
       postSearchMethodistFeedback(
         appendSearchFunnelFeedbackFields({
-          event_type: "retrieval_fix",
+          event_type: "search_review",
           query: queryText,
-          rejected_path: rf.rejected_path || topPaths[0] || null,
-          chosen_path: rf.chosen_path,
-          source: "protocol_search_ui",
-          reviewer: reviewer,
-          tags: ai.tags || [],
           retrieval_top_paths: topPaths,
+          rejected_path: rejectedPath || null,
           ranking_rating: ai.ranking_rating,
           ranking_verdict: ai.ranking_verdict,
+          methodist_verdict: approvedVerdict,
+          tags: tags,
           ai_review: ai,
           methodist_approved: true,
           review_source: "ai_assisted",
-          note: (rf.note || ai.summary_ru || "").slice(0, 500),
+          reviewer: reviewer,
+          note: (ai.summary_ru || "").slice(0, 500),
         }),
-        "Одобрено: retrieval_fix сохранён."
-      );
-      return;
+        "Одобрено: оценка ИИ сохранена (search_review)."
+      ).then(done).catch(done);
+    } catch (e) {
+      if (approveBtn) approveBtn.disabled = false;
+      setSearchMethodistStatus("Ошибка: " + (e && e.message ? e.message : String(e)));
     }
-    postSearchMethodistFeedback(
-      appendSearchFunnelFeedbackFields({
-        event_type: "search_review",
-        query: queryText,
-        retrieval_top_paths: topPaths,
-        ranking_rating: ai.ranking_rating,
-        ranking_verdict: ai.ranking_verdict,
-        methodist_verdict: approvedVerdict,
-        tags: ai.tags || [],
-        ai_review: ai,
-        methodist_approved: true,
-        review_source: "ai_assisted",
-        reviewer: reviewer,
-        note: (ai.summary_ru || "").slice(0, 500),
-      }),
-      "Одобрено: оценка ИИ сохранена (search_review)."
-    );
   }
 
   function initSearchMethodistPanel() {
@@ -11895,8 +11942,11 @@
   }
 
   function setSearchMethodistStatus(text) {
-    var el = document.getElementById("search-methodist-status");
-    if (el) el.textContent = text || "";
+    var msg = text || "";
+    ["search-methodist-status", "search-methodist-ai-status"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = msg;
+    });
   }
 
   function uniqueRetrievalPaths(data) {

@@ -5280,10 +5280,28 @@ def _rerank_protocols_symptom_only(
     if explicit or detected or suggested:
         return protos
     ql = (query or "").lower()
-    if not any(w in ql for w in ("кашел", "температ", "лихорад", "озноб", "орви", "простуд")):
+    if not any(
+        w in ql
+        for w in (
+            "кашел",
+            "температ",
+            "лихорад",
+            "озноб",
+            "орви",
+            "простуд",
+            "горл",
+            "глот",
+            "насморк",
+            "ангин",
+            "фаринг",
+        )
+    ):
         return protos
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
+    chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
     acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
+    uri = ("фаринг", "ангин", "тонзилл", "ларинг", "респираторн", "орз", "грипп", "фингит")
+    has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
     routing = _routing or {}
     aud_inferred = infer_audience_from_funnel_context(query) or infer_audience_from_query(
         query, routing
@@ -5297,8 +5315,12 @@ def _rerank_protocols_symptom_only(
         penalty = 0
         if any(k in blob for k in rare) and not any(k in ql for k in rare):
             penalty += 2
+        if has_fever and any(k in blob for k in chronic_mismatch):
+            penalty += 3
         boost = 0
         if "пневмон" in blob:
+            boost += 2
+        elif any(k in blob for k in uri):
             boost += 2
         elif any(k in blob for k in acute):
             boost += 1
@@ -6422,7 +6444,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r139-methodist-approve-symptom-rerank"
+BUILD_VERSION = "2026-06-01-r140-methodist-approve-ui-symptom-rerank"
 
 
 def _app_version() -> str:
