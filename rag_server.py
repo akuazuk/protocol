@@ -5284,6 +5284,11 @@ def _rerank_protocols_symptom_only(
         return protos
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
+    routing = _routing or {}
+    aud_inferred = infer_audience_from_funnel_context(query) or infer_audience_from_query(
+        query, routing
+    )
+    child_query = aud_inferred == "child"
 
     def _score_row(pr: dict) -> tuple[int, float]:
         path = str(pr.get("path") or "").lower()
@@ -5293,8 +5298,14 @@ def _rerank_protocols_symptom_only(
         if any(k in blob for k in rare) and not any(k in ql for k in rare):
             penalty += 2
         boost = 0
-        if any(k in blob for k in acute):
+        if "пневмон" in blob:
+            boost += 2
+        elif any(k in blob for k in acute):
             boost += 1
+        if not child_query:
+            hint = doc_audience_hint(path, title, routing)
+            if hint == "pediatric":
+                penalty += 2
         try:
             conf = float(pr.get("confidence_score") or 0.0)
         except (TypeError, ValueError):
@@ -6411,7 +6422,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r138-search-funnel-b3-b6-c2-c5"
+BUILD_VERSION = "2026-06-01-r139-methodist-approve-symptom-rerank"
 
 
 def _app_version() -> str:

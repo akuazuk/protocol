@@ -12,3 +12,21 @@ def test_symptom_only_demotes_mycobacteriosis():
     icd = {"explicit_icd_in_query": False, "detected": [], "suggested": []}
     out = _rerank_protocols_symptom_only(protos, "кашель и температура 39", icd)
     assert out[0]["path"].endswith("пневмония.pdf")
+
+
+def test_symptom_only_demotes_pediatric_orvi_without_child_context():
+    protos = [
+        {
+            "path": "a/орви_дет_нас.pdf",
+            "title": "Диагностика лечение ОРВИ дет нас",
+            "confidence_score": 0.98,
+        },
+        {
+            "path": "b/пневмония.pdf",
+            "title": "Внебольничная пневмония взр и детс население",
+            "confidence_score": 0.86,
+        },
+    ]
+    icd = {"explicit_icd_in_query": False, "detected": [], "suggested": []}
+    out = _rerank_protocols_symptom_only(protos, "кашель и температура 38", icd)
+    assert out[0]["path"].endswith("пневмония.pdf")

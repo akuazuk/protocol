@@ -342,6 +342,43 @@ def test_api_ml_feedback_forbidden_without_token(feedback_env):
     assert r.status_code == 403
 
 
+def test_search_review_accepts_agree_alias():
+    out = validate_and_normalize_event(
+        {
+            "event_type": "search_review",
+            "reviewer": "M.",
+            "methodist_verdict": "agree",
+            "ranking_verdict": "partially_wrong",
+            "ranking_rating": 2,
+        }
+    )
+    assert out["methodist_verdict"] == "partially_wrong"
+
+
+def test_api_ml_feedback_search_review_ok(feedback_env):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    client = TestClient(rag_server.app)
+    headers = {"X-Methodist-Token": "test-methodist-token", "X-Methodist-Reviewer": "I.I."}
+    body = {
+        "event_type": "search_review",
+        "query": "кашель и температура 38",
+        "retrieval_top_paths": ["a/orvi.pdf", "b/pneumonia.pdf"],
+        "ranking_rating": 2,
+        "ranking_verdict": "partially_wrong",
+        "methodist_verdict": "partially_wrong",
+        "methodist_approved": True,
+        "review_source": "ai_assisted",
+        "reviewer": "I.I.",
+    }
+    r = client.post("/api/ml/feedback", json=body, headers=headers)
+    assert r.status_code == 200
+    assert (feedback_env["feedback"] / "search_review.jsonl").is_file()
+
+
 def test_api_ml_feedback_ok_with_token(feedback_env):
     pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient

@@ -319,9 +319,14 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
     elif et == "search_review":
         if not (out.get("reviewer") or "").strip():
             raise ValueError("search_review: reviewer обязателен")
-        verdict = str(out.get("methodist_verdict") or out.get("ranking_verdict") or "").strip()
-        if verdict and verdict not in _VALID_VERDICTS:
-            raise ValueError("search_review: неверный verdict")
+        mv = str(out.get("methodist_verdict") or "").strip()
+        rv = str(out.get("ranking_verdict") or "").strip()
+        if mv in ("agree", "approve"):
+            out["methodist_verdict"] = rv if rv in _VALID_VERDICTS else "mostly_correct"
+        else:
+            verdict = mv or rv
+            if verdict and verdict not in _VALID_VERDICTS:
+                raise ValueError("search_review: неверный verdict")
         _normalize_funnel_feedback_fields(out)
 
     elif et == "kz_analysis":
