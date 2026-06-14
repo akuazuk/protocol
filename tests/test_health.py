@@ -94,7 +94,9 @@ def test_presentation_stats_ok(client: TestClient) -> None:
 def test_pilot_analytics_demo_ok(client: TestClient) -> None:
     r = client.get("/api/pilot-analytics-demo")
     assert r.status_code == 200
-    assert r.json().get("demo") is True
+    body = r.json()
+    assert "charts" in body
+    assert "generated_at" in body
 
 
 def test_protocol_ui_meta() -> None:

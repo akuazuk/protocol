@@ -5978,24 +5978,16 @@ def api_presentation_stats() -> dict:
 
 @app.get("/api/pilot-analytics-demo")
 def api_pilot_analytics_demo() -> dict:
-    """Агрегированная аналитика пилота (демо, без ПДн) для презентации руководству."""
+    """Агрегированная аналитика пилота (обезличенно, live из feedback)."""
+    from clinical_knowledge.pilot_analytics_public import build_public_pilot_analytics
+
     corpus = _corpus_stats_from_index_csv()
-    return {
-        "demo": True,
-        "period_label": "Пилот (иллюстрация, обезличенные данные)",
-        "reviews_total": 124,
-        "avg_compliance_pct": 76,
-        "reviews_with_risk_zones": 41,
-        "risk_zone_rate_pct": 33,
-        "top_weak_criteria": [
-            {"name": "Обследование", "avg_pct": 68},
-            {"name": "Специализированная помощь", "avg_pct": 71},
-            {"name": "Диспансерное наблюдение", "avg_pct": 72},
-            {"name": "Лечение", "avg_pct": 74},
-        ],
-        "protocols_in_corpus": corpus.get("protocols_in_index"),
-        "note_ru": "Цифры для демонстрации интерфейса; в пилоте заменяются реальной агрегацией без ПДн.",
-    }
+    corpus["chunks_loaded"] = len(_chunks) if _chunks_load_done.is_set() else None
+    return build_public_pilot_analytics(
+        corpus=corpus,
+        version=_app_version(),
+        rag_ready=_chunks_load_done.is_set(),
+    )
 
 
 @app.get("/api/quality-benchmark")
@@ -6037,7 +6029,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r121-matched-path-gi-urology-gates"
+BUILD_VERSION = "2026-06-01-r122-search-ui-pilot-analytics"
 
 
 def _app_version() -> str:
