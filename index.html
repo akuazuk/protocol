@@ -16991,7 +16991,9 @@
   }
 
   function clinicalQueryKeyForPopulation(qRaw) {
-    return stripPopulationContextFromQuery(qRaw).trim();
+    return stripIcdAppendLinesFromQuery(
+      stripPopulationContextFromQuery(stripToClinicalOnly(String(qRaw || "")))
+    ).trim();
   }
 
   function syncPopulationGateForQuery(qRaw, opts) {
@@ -17029,6 +17031,7 @@
     if (opts.skipPopulationGate) return false;
     if (!isSearchSteppedMode()) return false;
     if (window.__funnelContext && window.__funnelContext.populationConfirmed) return false;
+    if (/^Контекст подбора:/im.test(String(qRaw || ""))) return false;
     return true;
   }
 
@@ -17508,7 +17511,7 @@
           delete window.__funnelContext.rubricSkipped;
           setSelectedCategorySlugs(slugs);
         }
-        runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
+        runAssist(undefined, { skipRubricGate: true, skipPopulationGate: true }).catch(function (err) {
           console.error(err);
         });
       },
@@ -17517,7 +17520,7 @@
         window.__funnelContext.rubricSkipped = true;
         window.__funnelContext.rubric_slugs = [];
         delete window.__funnelContext.rubric;
-        runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
+        runAssist(undefined, { skipRubricGate: true, skipPopulationGate: true }).catch(function (err) {
           console.error(err);
         });
       },
@@ -17686,12 +17689,12 @@
         if (qInput) {
           qInput.value = appendIcdChoicesToQuery(qInput.value || "", sel);
         }
-        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(function (err) {
+        runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
           console.error(err);
         });
       },
       onSkip: function () {
-        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(function (err) {
+        runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
           console.error(err);
         });
       },
@@ -21528,30 +21531,29 @@
               retrieve_only: retrieveOnly,
             }),
             signal: ctrl.signal,
-          });
-        })
-        .then(function (r) {
-          return r.text().then(function (text) {
-            var j = parseJsonSafe(text);
-            if (!j || typeof j !== "object") {
-              throw new Error(
-                text
-                  ? text.slice(0, 200)
-                  : "Пустой ответ сервера"
-              );
-            }
-            if (!r.ok) {
-              var d = j.detail;
-              if (Array.isArray(d)) {
-                d = d
-                  .map(function (x) {
-                    return x.msg || JSON.stringify(x);
-                  })
-                  .join("; ");
+          }).then(function (r) {
+            return r.text().then(function (text) {
+              var j = parseJsonSafe(text);
+              if (!j || typeof j !== "object") {
+                throw new Error(
+                  text
+                    ? text.slice(0, 200)
+                    : "Пустой ответ сервера"
+                );
               }
-              throw new Error(d || r.statusText);
-            }
-            return j;
+              if (!r.ok) {
+                var d = j.detail;
+                if (Array.isArray(d)) {
+                  d = d
+                    .map(function (x) {
+                      return x.msg || JSON.stringify(x);
+                    })
+                    .join("; ");
+                }
+                throw new Error(d || r.statusText);
+              }
+              return j;
+            });
           });
         })
         .then(function (data) {
