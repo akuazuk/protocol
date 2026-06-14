@@ -1,0 +1,81 @@
+{
+  "releases": [
+    {
+      "version": "2026-06-01-r108",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Export feedback API",
+      "summary": "GET /api/ml/feedback/export для синхронизации JSONL с Render.",
+      "fixes": [],
+      "metrics": []
+    },
+    {
+      "version": "2026-06-01-r109",
+      "date": "2026-06-13",
+      "type": "engine",
+      "title": "Priority Methodist feedback fixes",
+      "summary": "Gates по feedback: pregnancy, sparse neuro caps, dual NSAID.",
+      "fixes": [
+        "d4c0214b pregnancy gate (возраст/контекст)",
+        "Sparse neurology caps (report_n_2)",
+        "Concurrent NSAID detection (Аэртал+Дексалгин)"
+      ],
+      "metrics": [
+        {
+          "text_hash_short": "ce6470d5",
+          "case_label": "report_n_2 (неврология)",
+          "before_overall_pct": 85.9,
+          "after_overall_pct": 61.8,
+          "before_failed_rules": 1,
+          "after_failed_rules": 0,
+          "note": "Убрано ложное neoplasm; caps по sparse КЗ"
+        },
+        {
+          "text_hash_short": "3ac8ed06",
+          "case_label": "dual NSAID (неврология)",
+          "before_overall_pct": 90.9,
+          "after_overall_pct": 60.0,
+          "before_treatment_score": 100,
+          "after_treatment_score": 25,
+          "before_safety_score": 100,
+          "after_safety_score": 0,
+          "note": "Обнаружение двух НПВС одновременно"
+        }
+      ]
+    },
+    {
+      "version": "2026-06-01-r110",
+      "date": "2026-06-13",
+      "type": "engine",
+      "title": "Condition context rule gates",
+      "summary": "Gates catalog rules на condition context; pediatric skip; ОРВИ/thyroid FP.",
+      "fixes": [
+        "bladder_dysfunction condition gate",
+        "Pediatric surgery skip для adults",
+        "J06 ОРВИ: нет ложных TB/pneumonia/asthma",
+        "Thyroid: нет obesity FP на эутиреоз"
+      ],
+      "metrics": []
+    },
+    {
+      "version": "2026-06-01-r111",
+      "date": "2026-06-13",
+      "type": "engine",
+      "title": "AI review gold fallback",
+      "summary": "Этап 2 методиста не падает при пустом kz_compliance_gold от Gemini.",
+      "fixes": [],
+      "metrics": []
+    }
+  ],
+  "ml_experiments": [
+    {
+      "id": "embedder_exp_001",
+      "date": "2026-05",
+      "type": "ml",
+      "model": "multilingual-e5-small LoRA",
+      "status": "offline_only",
+      "summary": "313 seed-пар; офлайн MRR улучшен, end-to-end КЗ без изменений.",
+      "deployed": false
+    }
+  ]
+}

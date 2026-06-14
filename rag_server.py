@@ -6037,7 +6037,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r111-ai-review-gold-fallback"
+BUILD_VERSION = "2026-06-01-r112-methodist-ml-dashboard"
 
 
 def _app_version() -> str:
@@ -7224,6 +7224,15 @@ def api_methodist_session(request: "Request") -> dict:
     if not reviewer:
         reviewer = methodist_default_reviewer()
     return {"ok": True, "reviewer": reviewer}
+
+
+@app.get("/api/methodist/stats")
+def api_methodist_stats(request: "Request") -> dict:
+    """Агрегированная статистика ML/feedback для дашборда методиста."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_stats import build_methodist_dashboard_stats
+
+    return build_methodist_dashboard_stats()
 
 
 class MethodistAiReviewIn(BaseModel):
