@@ -1593,7 +1593,8 @@ def filter_retrieval_by_audience(
         out.append(r)
 
     if not out:
-        return rows, aud, True
+        # Никогда не возвращаем чанки явно несовпадающей аудитории (дет/взросл).
+        return [], aud, True
     return out, aud, False
 
 
@@ -5312,6 +5313,31 @@ def _infer_funnel_audience(query: str, routing: dict | None = None) -> str | Non
     return infer_audience_from_funnel_context(query) or infer_audience_from_query(query, routing)
 
 
+def _filter_protocols_by_funnel_audience(
+    protos: list[dict],
+    query: str,
+    routing: dict | None = None,
+) -> list[dict]:
+    """Жёстко убирает КП несовпадающей аудитории при подтверждённом контексте воронки."""
+    if not protos:
+        return protos
+    routing = routing or _routing or {}
+    aud = _infer_funnel_audience(query, routing)
+    if aud not in ("adult", "child"):
+        return protos
+    kept: list[dict] = []
+    for pr in protos:
+        path = str(pr.get("path") or "")
+        title = str(pr.get("title") or path)
+        hint = doc_audience_hint(path, title, routing)
+        if aud == "adult" and hint == "pediatric":
+            continue
+        if aud == "child" and hint == "adult":
+            continue
+        kept.append(pr)
+    return kept
+
+
 def _demote_pediatric_for_adult_query(
     protos: list[dict],
     query: str,
@@ -5343,7 +5369,7 @@ def _demote_pediatric_for_adult_query(
     if is_pregnant and obstetric_first:
         return obstetric_first + adult_first + mixed + pediatric
     if not adult_first and not mixed:
-        return protos
+        return []
     return adult_first + mixed + pediatric
 
 
@@ -6743,7 +6769,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r153-protocol-nav-hub-matrix"
+BUILD_VERSION = "2026-05-31-r154-audience-filter-throat-fever"
 
 
 def _app_version() -> str:
@@ -7157,6 +7183,7 @@ def api_assist(body: AssistIn) -> dict:
                 catalog_path_extra=(search_ctx or {}).get("path_boost"),
                 audience_hint=aud_hint,
             )
+            rows, _, _ = filter_retrieval_by_audience(rows, q, _routing)
         return rows
 
     retrieved = _assist_retrieve(q_rag)
@@ -7184,6 +7211,15 @@ def api_assist(body: AssistIn) -> dict:
     retrieved, audience_inferred, audience_fallback = filter_retrieval_by_audience(
         retrieved, q, _routing
     )
+    if not retrieved and search_ctx and (
+        infer_audience_from_funnel_context(q) or infer_audience_from_query(q, _routing)
+    ):
+        retrieved = _assist_retrieve(q_rag, strict_paths=False)
+        retrieved, audience_inferred, audience_fallback = filter_retrieval_by_audience(
+            retrieved, q, _routing
+        )
+    if not retrieved:
+        raise HTTPException(status_code=400, detail="Пустой отбор - уточните запрос")
 
     chunk_vote_majority: str | None = None
     if retrieved and os.environ.get("RAG_CHUNK_VOTE_RERETRIEVE", "0").strip().lower() in (
@@ -7224,7 +7260,9 @@ def api_assist(body: AssistIn) -> dict:
         assist_lite = True
         retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
         protos = _build_protocols_from_retrieval(retrieved, prefer_slugs=user_slugs)
+        protos = _filter_protocols_by_funnel_audience(protos, q)
         protos = _rerank_protocols_symptom_only(protos, q, icd_analysis)
+        protos = _filter_protocols_by_funnel_audience(protos, q)
         parsed: dict | None = {"protocols": protos}
         text = ""
         finish = "RETRIEVE_ONLY"

@@ -2,7 +2,14 @@
 from __future__ import annotations
 
 from clinical_knowledge.methodist_search_ai_review import build_deterministic_search_ai_review
-from rag_server import _demote_pediatric_for_adult_query, _rerank_protocols_symptom_only, doc_audience_hint
+from rag_server import (
+    _demote_pediatric_for_adult_query,
+    _filter_protocols_by_funnel_audience,
+    _rerank_protocols_symptom_only,
+    _routing,
+    doc_audience_hint,
+    filter_retrieval_by_audience,
+)
 
 
 def test_doc_audience_hint_dет_nas_without_underscore():
@@ -50,6 +57,33 @@ def test_demote_pediatric_for_adult_moves_children_to_end():
     q = "кашель\nКонтекст подбора: взрослое население"
     out = _demote_pediatric_for_adult_query(protos, q)
     assert out[0]["path"].endswith("adult.pdf")
+
+
+def test_demote_pediatric_for_adult_drops_only_pediatric_list():
+    protos = [
+        {"path": "a/child.pdf", "title": "КП дет нас", "confidence_score": 0.99},
+    ]
+    q = "болит горло\nКонтекст подбора: взрослое население"
+    assert _demote_pediatric_for_adult_query(protos, q) == []
+
+
+def test_filter_retrieval_by_audience_never_returns_pediatric_for_adult():
+    rows = [
+        {"path": "x/ent_dets.pdf", "title": "Диагностика лечение дет нас уха горла носа"},
+    ]
+    q = "болит горло\nКонтекст подбора: взрослое население"
+    out, aud, fallback = filter_retrieval_by_audience(rows, q, _routing)
+    assert aud == "adult"
+    assert out == []
+    assert fallback is True
+
+
+def test_filter_protocols_by_funnel_audience_hard_drop():
+    protos = [
+        {"path": "x/ent_dets.pdf", "title": "Диагностика лечение дет нас уха горла носа", "confidence_score": 0.98},
+    ]
+    q = "болит горло и температура 38\nКонтекст подбора: взрослое население"
+    assert _filter_protocols_by_funnel_audience(protos, q) == []
 
 
 def test_methodist_deterministic_wrong_population_adult_top_pediatric():

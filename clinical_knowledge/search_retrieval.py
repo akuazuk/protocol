@@ -267,6 +267,11 @@ def _has_functional_gi_context(query: str, icd_codes: list[str] | None = None) -
     return any(c.startswith(("K58", "K59")) for c in codes)
 
 
+def _has_fever_in_query(query: str) -> bool:
+    ql = _query_blob(query)
+    return any(m in ql for m in _FEVER_MARKERS)
+
+
 def _has_cough_fever_context(query: str, icd_codes: list[str]) -> bool:
     ql = _query_blob(query)
     has_cough = any(m in ql for m in _COUGH_MARKERS)
@@ -277,6 +282,8 @@ def _has_cough_fever_context(query: str, icd_codes: list[str]) -> bool:
     if any(c.startswith("R05") for c in codes):
         return True
     if has_cough and any(c.startswith(("J06", "J20", "J18", "J00", "J11")) for c in codes):
+        return True
+    if _has_throat_context(query, icd_codes) and _has_fever_in_query(query):
         return True
     return False
 
@@ -363,6 +370,9 @@ def _title_match_paths(
                 return
             weak_hits = sum(1 for m in _URI_TITLE_MARKERS if m in blob)
             score = base + 12.0 + 6.0 * strong_hits + 2.0 * max(0, weak_hits - strong_hits)
+            if _has_fever_in_query(query):
+                orvi_hits = sum(1 for m in _COUGH_FEVER_TITLE_STRONG if m in blob)
+                score += 6.0 * orvi_hits
             aud = _audience_from_title(sp, title)
             if audience == "adult" and aud == "adult":
                 score += 10.0
@@ -449,6 +459,7 @@ def search_target_protocol_paths(
     expanded, expand_meta = expand_icd_for_protocol_search(query, icd_codes)
     audience = _infer_audience(query)
     throat = _has_throat_context(query, expanded)
+    throat_fever = throat and _has_fever_in_query(query)
     cough_fever = _has_cough_fever_context(query, expanded) and not throat
     gi_functional = _has_functional_gi_context(query, expanded) and not throat and not _is_trauma_abdominal_query(query)
     slugs = sorted(
@@ -471,6 +482,8 @@ def search_target_protocol_paths(
                 "terapiya",
             }
         )
+    elif throat_fever and "infektsionnye-zabolevaniya" not in slugs:
+        slugs = sorted(set(slugs) | {"infektsionnye-zabolevaniya", "pulmonologiya-ftiziatriya"})
     elif cough_fever and not slugs:
         slugs = sorted(
             {
@@ -505,6 +518,9 @@ def search_target_protocol_paths(
     )
     for sp in registry_paths:
         blob = sp.lower()
+        title_guess = Path(sp).stem.lower().replace("_", " ")
+        if audience and _audience_mismatch(audience, sp, title_guess):
+            continue
         if throat and _domain_mismatch_for_query(sp, sp, throat=throat, gi=_has_gi_context(query)):
             continue
         if gi_functional:
@@ -560,6 +576,7 @@ def search_target_protocol_paths(
         "strict": strict,
         "audience": audience,
         "throat_context": throat,
+        "throat_fever_context": throat_fever,
         "cough_fever_context": cough_fever,
         "gi_functional_context": gi_functional,
         "clinical_routes": clinical_routes,
@@ -610,6 +627,14 @@ def search_target_protocol_paths(
             else:
                 gi_rest.append(sp)
         deduped = gi_ok + gi_rest
+    if audience in ("adult", "child"):
+        audience_ok: list[str] = []
+        for sp in deduped:
+            title_guess = Path(sp).stem.lower().replace("_", " ")
+            if _audience_mismatch(audience, sp, title_guess):
+                continue
+            audience_ok.append(sp)
+        deduped = audience_ok
     return deduped[:limit], meta
 
 
@@ -672,6 +697,18 @@ def build_protocol_search_context(
                 str((_load_protocol_meta().get(p) or {}).get("title") or Path(p).stem),
             )
         ] or path_boost
+    elif audience in ("adult", "child") and path_boost:
+        filtered_boost = [
+            p
+            for p in path_boost
+            if not _audience_mismatch(
+                audience,
+                p,
+                str((_load_protocol_meta().get(p) or {}).get("title") or Path(p).stem),
+            )
+        ]
+        if filtered_boost:
+            path_boost = filtered_boost
     return {
         "expanded_icd_codes": expanded,
         "path_boost": path_boost or None,

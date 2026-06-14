@@ -36,6 +36,20 @@ def test_throat_adult_query_targets_ent_not_anesthesia():
     assert "дет_нас" not in joined and "дет нас" not in joined
 
 
+def test_throat_fever_adult_query_targets_adult_not_pediatric():
+    q = (
+        "болит горло и температура 38\n"
+        "Контекст подбора: взрослое население\n"
+        "МКБ-10: R07.0"
+    )
+    paths, meta = search_target_protocol_paths(query=q, icd_codes=["R07.0"])
+    assert meta.get("throat_context") is True
+    assert meta.get("throat_fever_context") is True
+    assert paths
+    joined = " ".join(paths).lower()
+    assert "дет_нас" not in joined and "дет нас" not in joined
+
+
 def test_build_context_sets_allowlist_for_symptom_icd():
     q = "болит горло\nКонтекст подбора: взрослое население\nМКБ-10: R07.0"
     ctx = build_protocol_search_context(query=q, icd_codes=["R07.0"])
