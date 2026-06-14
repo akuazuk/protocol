@@ -6173,7 +6173,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r129-search-methodist-compact"
+BUILD_VERSION = "2026-06-01-r130-fix-assist-js-syntax"
 
 
 def _app_version() -> str:
