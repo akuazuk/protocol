@@ -5927,8 +5927,57 @@
       display: none;
     }
 
+    #tab-methodist-queue {
+      display: none;
+    }
+
     body.methodist-mode #tab-methodist-ml-stats {
       display: flex;
+    }
+
+    body.methodist-mode #tab-methodist-queue {
+      display: flex;
+    }
+
+    .methodist-retrieval-fix-wrap.is-required {
+      border: 1px solid #c45a2a;
+      border-radius: 10px;
+      padding: 0.55rem 0.65rem;
+      background: #fff8f3;
+    }
+
+    .methodist-retrieval-fix-wrap.is-required > label:first-of-type::after {
+      content: " *";
+      color: #c45a2a;
+      font-weight: 700;
+    }
+
+    .methodist-queue-panel {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.5rem 0 2rem;
+    }
+
+    .methodist-queue-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn-methodist-queue-open {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      border: 1px solid #0d5c4a;
+      background: #fff;
+      color: #0d5c4a;
+      cursor: pointer;
+    }
+
+    .btn-methodist-queue-open:hover {
+      background: #e8f5f1;
     }
 
     .methodist-ml-dashboard {
@@ -7299,6 +7348,17 @@
           <span class="app-main-tab-sub">методический контроль документации по протоколам</span>
         </span>
       </button>
+      <button type="button" role="tab" id="tab-methodist-queue" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-queue" hidden>
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 6h13" /><path d="M8 12h13" /><path d="M8 18h13" /><path d="M3 6h.01" /><path d="M3 12h.01" /><path d="M3 18h.01" />
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title">Очередь</span>
+          <span class="app-main-tab-sub">active learning — разметка приоритетных КЗ</span>
+        </span>
+      </button>
       <button type="button" role="tab" id="tab-methodist-ml-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-ml-stats" hidden>
         <span class="app-main-tab-visual" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -8029,10 +8089,13 @@
                 <label for="methodist-note-input">Комментарий</label>
                 <textarea id="methodist-note-input" rows="2" maxlength="2000" placeholder="Необязательно"></textarea>
               </div>
-              <div id="methodist-retrieval-fix-wrap" hidden>
+              <div id="methodist-retrieval-fix-wrap" class="methodist-retrieval-fix-wrap" hidden>
+                <p class="consult-hint-small methodist-retrieval-hint" id="methodist-retrieval-hint" hidden style="margin:0 0 0.35rem;color:#8a4a14">
+                  При тегах «Неверный КП» / «Не нашли КП» укажите правильный протокол — это метка для обучения RAG.
+                </p>
                 <label for="methodist-rejected-path">Система ошибочно выбрала (из топ-5)</label>
                 <select id="methodist-rejected-path"></select>
-                <label for="methodist-chosen-path" style="margin-top:0.35rem">Правильный протокол (путь)</label>
+                <label for="methodist-chosen-path" style="margin-top:0.35rem">Правильный протокол (путь PDF в каталоге) *</label>
                 <input type="text" id="methodist-chosen-path" placeholder="gastroenterologiya/…" />
               </div>
             </div>
@@ -8251,23 +8314,12 @@
           </div>
         </section>
         <section class="methodist-ml-section">
-          <h3>Очередь разметки (active learning)</h3>
-          <div id="methodist-ml-queue-meta" class="methodist-ml-meta"></div>
-          <div class="methodist-ml-table-wrap">
-            <table class="methodist-ml-table" id="methodist-ml-table-queue">
-              <thead>
-                <tr>
-                  <th>Причина</th>
-                  <th>analysis_id</th>
-                  <th>Рубрика</th>
-                  <th>Overall %</th>
-                  <th>Failed rules</th>
-                  <th>Rating</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+          <h3>Опора A: подбор протокола (RAG)</h3>
+          <div id="methodist-ml-protocol-kpi" class="methodist-ml-kpi-grid methodist-ml-kpi-grid--compact"></div>
+        </section>
+        <section class="methodist-ml-section">
+          <h3>Очередь разметки</h3>
+          <p class="methodist-ml-meta">Полный список и кнопка «Открыть в проверке КЗ» — на вкладке <strong>Очередь</strong>.</p>
         </section>
         <section class="methodist-ml-section">
           <h3>История релизов: движок vs ML</h3>
@@ -8290,6 +8342,47 @@
           <h3>ML-эксперименты (offline)</h3>
           <div id="methodist-ml-experiments"></div>
         </section>
+      </div>
+    </div>
+
+    <div
+      id="panel-methodist-queue"
+      class="panel-methodist-queue"
+      role="tabpanel"
+      aria-labelledby="tab-methodist-queue"
+      hidden
+    >
+      <div id="methodist-queue-root" class="methodist-queue-panel consult-hide-print">
+        <div class="methodist-ml-dashboard__hero">
+          <div>
+            <h2>Очередь active learning</h2>
+            <p>
+              Приоритетные КЗ из feedback: низкий rating, без оценки, подозрительные правила.
+              Откройте снимок в «Проверка КЗ» для разметки без повторного прогона.
+            </p>
+          </div>
+          <div class="methodist-ml-dashboard__hero-actions">
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-queue-refresh">Обновить</button>
+          </div>
+        </div>
+        <div id="methodist-queue-error" class="methodist-ml-error" hidden></div>
+        <div id="methodist-queue-meta" class="methodist-ml-meta"></div>
+        <div class="methodist-ml-table-wrap">
+          <table class="methodist-ml-table" id="methodist-queue-table">
+            <thead>
+              <tr>
+                <th>Причина</th>
+                <th>analysis_id</th>
+                <th>Рубрика</th>
+                <th>Overall %</th>
+                <th>Failed rules</th>
+                <th>Rating</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -11890,6 +11983,8 @@
   var MAIN_TAB_SEARCH = "search";
   var MAIN_TAB_CONSULT = "consult";
   var MAIN_TAB_ML_STATS = "ml-stats";
+  var MAIN_TAB_QUEUE = "queue";
+  var METHODIST_RETRIEVAL_PROTOCOL_TAGS = ["wrong_protocol", "missed_protocol"];
   var __methodistMlCharts = {};
 
   window.__consultReviewLastPayload = null;
@@ -12118,6 +12213,7 @@
     document.body.classList.toggle("methodist-mode", active);
     document.title = active ? "Кабинет методиста · Protocol" : APP_DEFAULT_TITLE;
     var tabMl = document.getElementById("tab-methodist-ml-stats");
+    var tabQueue = document.getElementById("tab-methodist-queue");
     if (tabMl) {
       if (active) {
         tabMl.removeAttribute("hidden");
@@ -12127,6 +12223,10 @@
           switchMainAppTab(MAIN_TAB_CONSULT);
         }
       }
+    }
+    if (tabQueue) {
+      if (active) tabQueue.removeAttribute("hidden");
+      else tabQueue.setAttribute("hidden", "");
     }
     if (!active) setMethodistAiFlowState("");
     if (active) {
@@ -12187,6 +12287,20 @@
         { label: "Средний rating", value: s.avg_methodist_rating != null ? s.avg_methodist_rating : "—", sub: "1=плохо, 5=отлично" },
         { label: "AI одобрено", value: (s.ai_approved_reviews || 0) + " / " + (s.ai_assisted_reviews || 0), sub: "methodist_approved / ai_assisted" },
       ];
+      var pm = stats.protocol_match || {};
+      if (pm.total_kz_runs != null) {
+        kpis.push({
+          label: "RAG hit@3",
+          value: pm.protocol_hit_at_3_pct != null ? pm.protocol_hit_at_3_pct + "%" : "—",
+          sub: "по " + (pm.labeled_retrieval_gold || 0) + " retrieval_fix",
+          accent: true,
+        });
+        kpis.push({
+          label: "КП в matched",
+          value: (pm.kz_with_matched_protocol_pct != null ? pm.kz_with_matched_protocol_pct + "%" : "—"),
+          sub: (pm.kz_with_matched_protocol || 0) + " / " + (pm.total_kz_runs || 0) + " прогонов",
+        });
+      }
       kpiGrid.innerHTML = kpis
         .map(function (k) {
           return (
@@ -12231,6 +12345,49 @@
       var steps = (ml.next_steps || []).join(" · ");
       readNote.textContent =
         (ml.ml_deployed ? "ML в production: да. " : "ML в production: нет (только engine). ") + steps;
+    }
+
+    var protoKpi = document.getElementById("methodist-ml-protocol-kpi");
+    if (protoKpi) {
+      var pm2 = stats.protocol_match || {};
+      var protoCards = [
+        {
+          label: "Hit@1 (retrieval_fix)",
+          value: pm2.protocol_hit_at_1_pct != null ? pm2.protocol_hit_at_1_pct + "%" : "—",
+          sub: "размечено: " + (pm2.labeled_retrieval_gold || 0),
+        },
+        {
+          label: "Hit@3 (retrieval_fix)",
+          value: pm2.protocol_hit_at_3_pct != null ? pm2.protocol_hit_at_3_pct + "%" : "—",
+          sub: "цель LoRA embedder",
+          accent: true,
+        },
+        {
+          label: "retrieval_top заполнен",
+          value: pm2.kz_with_retrieval_top_pct != null ? pm2.kz_with_retrieval_top_pct + "%" : "—",
+          sub: (pm2.kz_with_retrieval_top || 0) + " прогонов",
+        },
+        {
+          label: "Теги wrong/missed КП",
+          value: pm2.protocol_tag_reviews || 0,
+          sub: "reviews с ошибкой RAG",
+        },
+      ];
+      protoKpi.innerHTML = protoCards
+        .map(function (k) {
+          return (
+            '<div class="methodist-ml-kpi' +
+            (k.accent ? " methodist-ml-kpi--accent" : "") +
+            '"><div class="methodist-ml-kpi__label">' +
+            escapeHtml(k.label) +
+            '</div><div class="methodist-ml-kpi__value">' +
+            escapeHtml(String(k.value)) +
+            '</div><div class="methodist-ml-kpi__sub">' +
+            escapeHtml(k.sub) +
+            "</div></div>"
+          );
+        })
+        .join("");
     }
 
     function fillTableBody(id, rows, cols) {
@@ -12511,9 +12668,41 @@
     }
   }
 
-  function renderMethodistMlQueue(queue) {
-    if (!queue) return;
-    var meta = document.getElementById("methodist-ml-queue-meta");
+  function methodistRetrievalFixRequired() {
+    var tags = collectMethodistTags();
+    return METHODIST_RETRIEVAL_PROTOCOL_TAGS.some(function (t) {
+      return tags.indexOf(t) >= 0;
+    });
+  }
+
+  function updateMethodistRetrievalFixVisibility() {
+    var rejWrap = document.getElementById("methodist-retrieval-fix-wrap");
+    var hint = document.getElementById("methodist-retrieval-hint");
+    if (!rejWrap) return;
+    var required = methodistRetrievalFixRequired();
+    var paths = (window.__consultReviewLastPayload && window.__consultReviewLastPayload.retrieval_paths) || [];
+    if (!paths.length && window.__consultReviewLastPayload) {
+      var ctx = methodistReviewContext(window.__consultReviewLastPayload);
+      paths = (ctx && ctx.retrieval_top_paths) || [];
+    }
+    var show = required || paths.length > 0;
+    rejWrap.hidden = !show;
+    if (hint) hint.hidden = !required;
+    rejWrap.classList.toggle("is-required", required);
+  }
+
+  function bindMethodistTagRetrievalListeners() {
+    var tagsList = document.getElementById("methodist-tags-list");
+    if (!tagsList || tagsList.getAttribute("data-retrieval-bound")) return;
+    tagsList.setAttribute("data-retrieval-bound", "1");
+    tagsList.addEventListener("change", function (e) {
+      if (e.target && e.target.type === "checkbox") updateMethodistRetrievalFixVisibility();
+    });
+  }
+
+  function renderMethodistQueuePanel(queue) {
+    queue = queue || {};
+    var meta = document.getElementById("methodist-queue-meta");
     var c = queue.counts || {};
     if (meta) {
       meta.textContent =
@@ -12536,20 +12725,23 @@
       .concat((queue.suspicious || []).map(function (r) {
         return Object.assign({}, r, { _kind: "suspicious" });
       }));
-    var tb = document.querySelector("#methodist-ml-table-queue tbody");
+    var tb = document.querySelector("#methodist-queue-table tbody");
     if (!tb) return;
     if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="6">Очередь пуста — загрузите КЗ в «Проверить КЗ»</td></tr>';
+      tb.innerHTML = '<tr><td colspan="7">Очередь пуста — загрузите КЗ в «Проверка КЗ»</td></tr>';
       return;
     }
     tb.innerHTML = rows
       .map(function (r) {
+        var aid = String(r.analysis_id || "");
         var fr = (r.failed_rule_ids || []).length ? (r.failed_rule_ids || []).join(", ") : "—";
         return (
           "<tr><td>" +
           escapeHtml(r.reason || r._kind || "") +
-          "</td><td><code>" +
-          escapeHtml(String(r.analysis_id || "").slice(0, 8)) +
+          "</td><td><code title=\"" +
+          escapeHtml(aid) +
+          "\">" +
+          escapeHtml(aid.slice(0, 8)) +
           "…</code></td><td>" +
           escapeHtml(r.rubric_label || "") +
           "</td><td>" +
@@ -12558,10 +12750,108 @@
           escapeHtml(String(fr).slice(0, 80)) +
           "</td><td>" +
           (r.rating != null ? r.rating : "—") +
-          "</td></tr>"
+          '</td><td><button type="button" class="btn-methodist-queue-open" data-analysis-id="' +
+          escapeHtml(aid) +
+          '">Открыть</button></td></tr>'
         );
       })
       .join("");
+    tb.querySelectorAll(".btn-methodist-queue-open").forEach(function (btn) {
+      if (btn.getAttribute("data-wired")) return;
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () {
+        openMethodistQueueAnalysis(btn.getAttribute("data-analysis-id"));
+      });
+    });
+  }
+
+  function openMethodistQueueAnalysis(analysisId) {
+    if (!analysisId || !window.__methodistToken) return;
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+    var errEl = document.getElementById("methodist-queue-error");
+    if (errEl) errEl.hidden = true;
+    fetch(base + "/api/methodist/analysis/" + encodeURIComponent(analysisId), {
+      headers: {
+        "X-Methodist-Token": window.__methodistToken,
+        "X-Methodist-Reviewer": window.__methodistReviewer || "",
+      },
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (payload) {
+        var data = Object.assign({}, payload.api_result || {});
+        if (payload.analysis_id) data.analysis_id = payload.analysis_id;
+        if (payload.text_hash) data.text_hash = payload.text_hash;
+        if (payload.full_text) {
+          data.methodist_review_context = data.methodist_review_context || {};
+          data.methodist_review_context.kz_text_display = payload.full_text;
+        } else if (payload.text_excerpt) {
+          data.methodist_review_context = data.methodist_review_context || {};
+          data.methodist_review_context.kz_text_display =
+            payload.text_excerpt + "\n\n[Полный текст недоступен — при необходимости загрузите файл заново]";
+        }
+        var resWrap = document.getElementById("consult-results-wrap");
+        if (resWrap) resWrap.hidden = false;
+        var st = document.getElementById("consult-review-status");
+        renderConsultReviewResult(data, null, st);
+        if (window.__methodistMode && typeof renderMethodistReviewPanel === "function") {
+          renderMethodistReviewPanel(data);
+        }
+        switchMainAppTab(MAIN_TAB_CONSULT);
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось открыть снимок: " + methodistApiErrorRu(e.message || e);
+        }
+      });
+  }
+
+  function loadMethodistQueuePanel() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var root = document.getElementById("methodist-queue-root");
+    var errEl = document.getElementById("methodist-queue-error");
+    if (root) root.classList.add("is-loading");
+    if (errEl) errEl.hidden = true;
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+    fetch(base + "/api/methodist/queue?limit=60", {
+      headers: {
+        "X-Methodist-Token": window.__methodistToken,
+        "X-Methodist-Reviewer": window.__methodistReviewer || "",
+      },
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (queue) {
+        renderMethodistQueuePanel(queue);
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось загрузить очередь: " + methodistApiErrorRu(e.message || e);
+        }
+      })
+      .finally(function () {
+        if (root) root.classList.remove("is-loading");
+      });
+  }
+
+  function renderMethodistMlQueue(queue) {
+    renderMethodistQueuePanel(queue);
   }
 
   function loadMethodistMlDashboard() {
@@ -12586,19 +12876,6 @@
       })
       .then(function (stats) {
         renderMethodistMlDashboard(stats);
-        return fetch(base + "/api/methodist/queue?limit=30", {
-          headers: {
-            "X-Methodist-Token": window.__methodistToken,
-            "X-Methodist-Reviewer": window.__methodistReviewer || "",
-          },
-        });
-      })
-      .then(function (r) {
-        if (!r || !r.ok) return null;
-        return r.json();
-      })
-      .then(function (queue) {
-        if (queue) renderMethodistMlQueue(queue);
       })
       .catch(function (e) {
         if (errEl) {
@@ -13277,9 +13554,11 @@
         opt.textContent = p;
         rejSel.appendChild(opt);
       });
-      rejWrap.hidden = paths.length === 0;
+      rejWrap.hidden = paths.length === 0 && !methodistRetrievalFixRequired();
     }
     if (chosenInp) chosenInp.value = "";
+    bindMethodistTagRetrievalListeners();
+    updateMethodistRetrievalFixVisibility();
 
     var ctx = methodistReviewContext(data);
     var comp = (ctx && ctx.compliance) || {};
@@ -13473,6 +13752,27 @@
       alert("Сессия методиста не активна. Войдите в кабинет снова.");
       beginMethodistLoginFlow();
       return;
+    }
+    var tagsEarly = useAiDirect && ai.tags && ai.tags.length ? ai.tags.slice() : collectMethodistTags();
+    var chosenEarly = (document.getElementById("methodist-chosen-path") || {}).value || "";
+    chosenEarly = String(chosenEarly).trim();
+    var needsRetrieval = METHODIST_RETRIEVAL_PROTOCOL_TAGS.some(function (t) {
+      return tagsEarly.indexOf(t) >= 0;
+    });
+    if (needsRetrieval) {
+      var aiChosen =
+        useAiDirect && ai.retrieval_fix && ai.retrieval_fix.chosen_path
+          ? String(ai.retrieval_fix.chosen_path).trim()
+          : "";
+      if (!chosenEarly && !aiChosen) {
+        alert(
+          "Укажите правильный протокол (retrieval_fix): при тегах «Неверный КП» или «Не нашли КП» поле обязательно."
+        );
+        updateMethodistRetrievalFixVisibility();
+        var chosenInpFocus = document.getElementById("methodist-chosen-path");
+        if (chosenInpFocus) chosenInpFocus.focus();
+        return;
+      }
     }
     var note = (document.getElementById("methodist-note-input") || {}).value || "";
     if (useAiDirect) {
@@ -15071,13 +15371,16 @@
     var tabSearch = document.getElementById("tab-main-search");
     var tabConsult = document.getElementById("tab-consult-review");
     var tabMl = document.getElementById("tab-methodist-ml-stats");
+    var tabQueue = document.getElementById("tab-methodist-queue");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
     var panelMl = document.getElementById("panel-methodist-ml-stats");
+    var panelQueue = document.getElementById("panel-methodist-queue");
     if (!tabSearch || !tabConsult || !panelSearch || !panelConsult) return;
     var isConsult = which === MAIN_TAB_CONSULT;
     var isMl = which === MAIN_TAB_ML_STATS;
-    var isSearch = !isConsult && !isMl;
+    var isQueue = which === MAIN_TAB_QUEUE;
+    var isSearch = !isConsult && !isMl && !isQueue;
     tabSearch.setAttribute("aria-selected", isSearch ? "true" : "false");
     tabConsult.setAttribute("aria-selected", isConsult ? "true" : "false");
     tabSearch.tabIndex = isSearch ? 0 : -1;
@@ -15086,13 +15389,21 @@
       tabMl.setAttribute("aria-selected", isMl ? "true" : "false");
       tabMl.tabIndex = isMl ? 0 : -1;
     }
+    if (tabQueue) {
+      tabQueue.setAttribute("aria-selected", isQueue ? "true" : "false");
+      tabQueue.tabIndex = isQueue ? 0 : -1;
+    }
     panelSearch.hidden = !isSearch;
     panelConsult.hidden = !isConsult;
     if (panelMl) panelMl.hidden = !isMl;
+    if (panelQueue) panelQueue.hidden = !isQueue;
     try {
       if (isMl) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#ml-dashboard");
         if (typeof loadMethodistMlDashboard === "function") loadMethodistMlDashboard();
+      } else if (isQueue) {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#methodist-queue");
+        if (typeof loadMethodistQueuePanel === "function") loadMethodistQueuePanel();
       } else if (isConsult) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#consult-review");
       } else {
@@ -15986,6 +16297,7 @@
     var ts = document.getElementById("tab-main-search");
     var tc = document.getElementById("tab-consult-review");
     var tml = document.getElementById("tab-methodist-ml-stats");
+    var tq = document.getElementById("tab-methodist-queue");
     var tablist = document.getElementById("app-main-tabs");
     if (!ts || !tc) return;
 
@@ -16001,11 +16313,24 @@
         switchMainAppTab(MAIN_TAB_ML_STATS);
       });
     }
+    if (tq && !tq.getAttribute("data-wired")) {
+      tq.setAttribute("data-wired", "1");
+      tq.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_QUEUE);
+      });
+    }
     var refreshBtn = document.getElementById("methodist-ml-dash-refresh");
     if (refreshBtn && !refreshBtn.getAttribute("data-wired")) {
       refreshBtn.setAttribute("data-wired", "1");
       refreshBtn.addEventListener("click", function () {
         loadMethodistMlDashboard();
+      });
+    }
+    var queueRefresh = document.getElementById("methodist-queue-refresh");
+    if (queueRefresh && !queueRefresh.getAttribute("data-wired")) {
+      queueRefresh.setAttribute("data-wired", "1");
+      queueRefresh.addEventListener("click", function () {
+        loadMethodistQueuePanel();
       });
     }
 
@@ -16016,6 +16341,7 @@
         }
         e.preventDefault();
         var tabs = [ts];
+        if (window.__methodistMode && tq && !tq.hidden) tabs.push(tq);
         if (window.__methodistMode && tml && !tml.hidden) tabs.push(tml);
         tabs.push(tc);
         var idx = tabs.findIndex(function (t) {
@@ -16028,6 +16354,7 @@
         tabs[idx].focus();
         if (tabs[idx] === ts) switchMainAppTab(MAIN_TAB_SEARCH);
         else if (tabs[idx] === tml) switchMainAppTab(MAIN_TAB_ML_STATS);
+        else if (tabs[idx] === tq) switchMainAppTab(MAIN_TAB_QUEUE);
         else switchMainAppTab(MAIN_TAB_CONSULT);
       });
     }
@@ -16036,6 +16363,8 @@
       var h = window.location.hash || "";
       if (h === "#ml-dashboard" && window.__methodistMode) {
         switchMainAppTab(MAIN_TAB_ML_STATS);
+      } else if (h === "#methodist-queue" && window.__methodistMode) {
+        switchMainAppTab(MAIN_TAB_QUEUE);
       } else if (h === "#search" || h === "#/search") {
         switchMainAppTab(MAIN_TAB_SEARCH);
       } else {

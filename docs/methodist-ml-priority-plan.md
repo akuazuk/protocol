@@ -95,7 +95,7 @@ flowchart LR
 | `POST /api/ml/feedback` | ✅ | Append-only JSONL |
 | `GET /api/ml/feedback/export` | ✅ r108 | Sync с Render |
 | `GET /api/methodist/stats` | ✅ r112 | Дашборд ML |
-| Вкладка «Очередь» | ❌ | ТЗ фаза B |
+| Вкладка «Очередь» | ✅ r114 | Клик → снимок в «Проверка КЗ» |
 | `run_methodist_batch.py` | ❌ | Только smoke на 2 кейса |
 | `ml/train/*` deploy | ❌ | `--dry-run`, offline exp |
 | Engine fixes из feedback | ✅ r109–r111 | neoplasm, NSAID, context gates |
@@ -111,10 +111,10 @@ flowchart LR
 | # | Задача | Результат | Effort | Impact | Статус |
 |---|--------|-----------|--------|--------|--------|
 | P0.1 | **`GET /api/methodist/stats`** | JSON + UI дашборд | 2 д | Видимость | ✅ r112 |
-| P0.2 | **`scripts/run_methodist_batch.py`** | Папка PDF → L1 × N, optional AI | 2 д | Масштаб T1 | ⬜ |
-| P0.3 | **GitHub Action nightly sync** | pull → export → artifact | 0.5 д | Cursor + CI | ⬜ |
-| P0.4 | **`GET /api/methodist/analysis/{id}`** | Снимок api_result | 1 д | Triage | ⬜ |
-| P0.5 | **Protocol hit@k в stats** | Метрика опоры A в дашборде | 1 д | Фокус на RAG | ⬜ |
+| P0.2 | **`scripts/run_methodist_batch.py`** | Папка PDF → L1 × N, optional AI | 2 д | Масштаб T1 | ✅ r113 |
+| P0.3 | **GitHub Action nightly sync** | pull → export → artifact | 0.5 д | Cursor + CI | ✅ r113 |
+| P0.4 | **`GET /api/methodist/analysis/{id}`** | Снимок api_result | 1 д | Triage | ✅ r114 |
+| P0.5 | **Protocol hit@k в stats** | Метрика опоры A в дашборде | 1 д | Фокус на RAG | ✅ r114 |
 
 **Критерий приёмки P0:** batch 20+ КЗ за прогон; дашборд показывает readiness + protocol match rate; агент получает feedback без ручного curl.
 
@@ -407,9 +407,10 @@ sequenceDiagram
 3. ✅ GitHub Action `methodist-feedback-sync.yml`
 4. ✅ Venous I80.x gate + tests `test_venous_rule_gates.py`
 5. ✅ Dedup diagnosis_formula (engine + UI)
-6. ✅ `GET /api/methodist/queue` + таблица в дашборде
-7. ✅ `analyze_priority_cases.py`
-8. ⬜ Re-analyze obgyn + pull → verify в дашборде
+6. ✅ `GET /api/methodist/analysis/{id}` + вкладка «Очередь» (r114)
+7. ✅ Protocol hit@k в дашборде (r114)
+8. ✅ UI retrieval_fix обязателен при wrong/missed protocol (r114)
+9. ⬜ Re-analyze obgyn + pull → verify в дашборде
 
 **Неделя 2 — очередь + опора A**
 

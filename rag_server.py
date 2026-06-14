@@ -6037,7 +6037,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r113-methodist-sprint-week1"
+BUILD_VERSION = "2026-06-01-r114-methodist-analysis-queue"
 
 
 def _app_version() -> str:
@@ -7242,6 +7242,18 @@ def api_methodist_queue(request: "Request", limit: int = Query(50, ge=5, le=200)
     from clinical_knowledge.methodist_queue import build_methodist_queue
 
     return build_methodist_queue(limit=limit)
+
+
+@app.get("/api/methodist/analysis/{analysis_id}")
+def api_methodist_analysis(request: "Request", analysis_id: str) -> dict:
+    """Снимок сохранённого прогона (api_result) без пересчёта."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_analysis import get_methodist_analysis
+
+    payload = get_methodist_analysis(analysis_id.strip())
+    if not payload:
+        raise HTTPException(status_code=404, detail="Снимок analysis_id не найден.")
+    return payload
 
 
 class MethodistAiReviewIn(BaseModel):

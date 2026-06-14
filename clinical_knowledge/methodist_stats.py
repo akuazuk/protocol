@@ -177,6 +177,68 @@ def _load_model_manifest() -> dict[str, Any]:
         return {}
 
 
+def _compute_protocol_match_stats(
+    kz_events: list[dict[str, Any]],
+    reviews: list[dict[str, Any]],
+    retrieval_fixes: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Метрики опоры A: заполненность matched/retrieval и hit@k по retrieval_fix."""
+    total_kz = len(kz_events)
+    with_matched = sum(1 for e in kz_events if e.get("matched_protocol_paths"))
+    with_top = sum(1 for e in kz_events if e.get("retrieval_top_paths"))
+    kz_by_id = {
+        str(e.get("analysis_id")): e for e in kz_events if e.get("analysis_id")
+    }
+
+    gold_rows: list[tuple[dict[str, Any], str]] = []
+    for rev in reviews:
+        rf = rev.get("retrieval_fix")
+        if isinstance(rf, dict) and (rf.get("chosen_path") or "").strip():
+            gold_rows.append((rev, str(rf["chosen_path"]).strip()))
+    for fix in retrieval_fixes:
+        chosen = (fix.get("chosen_path") or "").strip()
+        if chosen:
+            gold_rows.append((fix, chosen))
+
+    labeled = 0
+    hit1 = 0
+    hit3 = 0
+    for ev, chosen in gold_rows:
+        kz = kz_by_id.get(str(ev.get("analysis_id") or "")) or {}
+        top = list(kz.get("retrieval_top_paths") or [])
+        if not top:
+            top = list(kz.get("matched_protocol_paths") or [])
+        if not top:
+            continue
+        labeled += 1
+        if chosen in top[:1]:
+            hit1 += 1
+        if chosen in top[:3]:
+            hit3 += 1
+
+    embedded_fixes = sum(
+        1 for r in reviews if isinstance(r.get("retrieval_fix"), dict) and r["retrieval_fix"].get("chosen_path")
+    )
+    protocol_tags = sum(
+        1
+        for r in reviews
+        if {"wrong_protocol", "missed_protocol"} & {str(t) for t in (r.get("tags") or [])}
+    )
+
+    return {
+        "total_kz_runs": total_kz,
+        "kz_with_matched_protocol": with_matched,
+        "kz_with_matched_protocol_pct": _pct(with_matched, total_kz) if total_kz else 0.0,
+        "kz_with_retrieval_top": with_top,
+        "kz_with_retrieval_top_pct": _pct(with_top, total_kz) if total_kz else 0.0,
+        "labeled_retrieval_gold": labeled,
+        "protocol_hit_at_1_pct": _pct(hit1, labeled) if labeled else None,
+        "protocol_hit_at_3_pct": _pct(hit3, labeled) if labeled else None,
+        "protocol_tag_reviews": protocol_tags,
+        "retrieval_fix_events": len(retrieval_fixes) + embedded_fixes,
+    }
+
+
 def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict[str, Any]:
     """Полная статистика для GET /api/methodist/stats."""
     from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
@@ -331,6 +393,7 @@ def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict
 
     engine_log = _load_engine_releases()
     reanalysis = _compute_reanalysis_deltas(kz_events)
+    protocol_match = _compute_protocol_match_stats(kz_events, reviews, retrieval_fixes)
 
     try:
         from rag_server import BUILD_VERSION  # type: ignore
@@ -354,7 +417,10 @@ def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict
             "ai_assisted_reviews": ai_assisted,
             "ai_approved_reviews": ai_approved,
             "readiness_overall_pct": readiness_overall,
+            "protocol_hit_at_3_pct": protocol_match.get("protocol_hit_at_3_pct"),
+            "kz_with_matched_protocol_pct": protocol_match.get("kz_with_matched_protocol_pct"),
         },
+        "protocol_match": protocol_match,
         "pool": {
             "in_training_pool": len(unique_hashes_kz),
             "labeled_reviews": len(reviews),
