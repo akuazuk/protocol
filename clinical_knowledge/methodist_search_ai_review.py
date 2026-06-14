@@ -455,3 +455,52 @@ def run_methodist_search_ai_review(
     if model_warn:
         normalized["model_warn"] = model_warn
     return normalized
+
+
+def persist_search_ai_artifact(
+    payload: dict[str, Any],
+    ai_review: dict[str, Any],
+    *,
+    fallback: bool = False,
+    fallback_reason: str = "",
+) -> str | None:
+    """Сохраняет обезличенный артефакт AI-оценки поиска (без текста запроса)."""
+    import hashlib
+
+    from clinical_knowledge.feedback_store import append_feedback_event
+
+    q = str(payload.get("query") or "")
+    qh = hashlib.sha256(q.encode("utf-8")).hexdigest()[:16]
+    protos = ((payload.get("llm_json") or {}).get("protocols") or [])
+    top_paths: list[str] = []
+    for pr in protos:
+        if isinstance(pr, dict):
+            p = str(pr.get("path") or "").strip()
+            if p:
+                top_paths.append(p)
+        if len(top_paths) >= 6:
+            break
+    rejected = top_paths[0] if top_paths else ""
+    try:
+        return append_feedback_event(
+            {
+                "event_type": "search_ai_artifact",
+                "query_hash": qh,
+                "query_len": len(q),
+                "ranking_rating": ai_review.get("ranking_rating"),
+                "ranking_verdict": ai_review.get("ranking_verdict"),
+                "top1_relevant": ai_review.get("top1_relevant"),
+                "tags": list(ai_review.get("tags") or [])[:8],
+                "review_source": ai_review.get("review_source")
+                or ("deterministic_fallback" if fallback else "gemini"),
+                "fallback": bool(fallback),
+                "fallback_reason": (fallback_reason or "")[:120] if fallback else None,
+                "retrieval_top_paths": top_paths,
+                "rejected_path": rejected or None,
+                "summary_ru": (ai_review.get("summary_ru") or "")[:280],
+                "methodist_approved": False,
+                "funnel_step": ai_review.get("suggested_funnel_step"),
+            }
+        )
+    except Exception:
+        return None

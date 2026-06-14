@@ -6769,7 +6769,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r154-audience-filter-throat-fever"
+BUILD_VERSION = "2026-05-31-r155-search-ui-matrix-kz"
 
 
 def _app_version() -> str:
@@ -8224,6 +8224,7 @@ def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiRe
     from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled
     from clinical_knowledge.methodist_search_ai_review import (
         build_deterministic_search_ai_review,
+        persist_search_ai_artifact,
         run_methodist_search_ai_review,
     )
 
@@ -8268,11 +8269,16 @@ def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiRe
             fallback = True
             fallback_reason = str(e)[:200]
 
+    artifact_id = persist_search_ai_artifact(
+        payload, ai_review, fallback=fallback, fallback_reason=fallback_reason
+    )
+
     return {
         "ok": True,
         "ai_review": ai_review,
         "fallback": fallback,
         "fallback_reason": fallback_reason if fallback else None,
+        "artifact_id": artifact_id,
     }
 
 

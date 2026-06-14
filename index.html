@@ -2943,13 +2943,18 @@
     body.methodist-mode #panel-main-search .assist-proto-actions,
     body.methodist-mode #panel-main-search .assist-proto-summary-nav,
     body.methodist-mode #panel-main-search .assist-embed-note,
-    body.methodist-mode #panel-main-search #practical-review-panel,
+    body.methodist-mode #panel-main-search #practical-review-panel[hidden],
     body.methodist-mode #panel-main-search .assist-source-note {
       display: none !important;
     }
 
-    body.methodist-mode #panel-main-search .search-methodist-panel {
+    body.methodist-mode #panel-main-search #practical-review-panel:not([hidden]) {
       display: block !important;
+      margin-top: 1rem;
+    }
+
+    #panel-main-search #search-methodist-panel {
+      display: none !important;
     }
 
     /* Methodist search: без маркетингового шапки и блока «Материалы проекта» */
@@ -3126,10 +3131,6 @@
       }
     }
 
-    body:not(.methodist-mode) .search-methodist-panel {
-      display: none !important;
-    }
-
     .search-methodist-panel h3 {
       margin: 0 0 0.35rem;
       font-size: 0.95rem;
@@ -3162,6 +3163,28 @@
       line-height: 1.4;
       max-height: 8rem;
       overflow: auto;
+    }
+
+    .methodist-search-artifacts {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .methodist-search-artifact-card {
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(186, 210, 230, 0.55);
+      background: rgba(248, 250, 252, 0.95);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .methodist-search-artifact-card strong {
+      color: #334155;
+    }
+
+    #panel-methodist-search-stats .search-methodist-panel {
+      margin: 0 0 1rem;
     }
 
     .search-methodist-tags {
@@ -3255,9 +3278,17 @@
     .assist-card--citations-only .assist-proto-actions,
     .assist-card--citations-only .assist-proto-icd-top,
     .assist-card--citations-only .assist-proto-summary-nav,
-    .assist-card--citations-only .assist-embed-note,
-    .assist-card--citations-only #practical-review-panel {
+    .assist-card--citations-only .assist-embed-note {
       display: none !important;
+    }
+
+    .assist-card--citations-only #practical-review-panel[hidden] {
+      display: none !important;
+    }
+
+    .assist-card--citations-only #practical-review-panel:not([hidden]) {
+      display: block !important;
+      margin-top: 1rem;
     }
 
     .assist-card--doctor-lite .assist-pct-rag {
@@ -9011,71 +9042,6 @@
         </div>
         <div id="llm-out" class="llm-out"></div>
 
-        <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
-          <h3>Оценка выдачи поиска</h3>
-          <p class="search-methodist-panel__lead">
-            ИИ оценивает подбор протоколов; методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> — данные идут в RAG и движок.
-          </p>
-          <section id="search-methodist-ai-panel" class="search-methodist-ai-panel" hidden aria-live="polite">
-            <h4 id="search-methodist-ai-title">ИИ оценивает выдачу…</h4>
-            <div id="search-methodist-ai-body" hidden>
-              <div class="search-methodist-ai-metrics" id="search-methodist-ai-metrics"></div>
-              <p class="search-methodist-panel__lead" id="search-methodist-ai-summary" style="margin:0.35rem 0"></p>
-              <p class="consult-hint-small" id="search-methodist-ai-notes" style="margin:0"></p>
-              <ul class="search-methodist-ai-improvements" id="search-methodist-ai-improvements"></ul>
-              <div class="search-methodist-ai-actions">
-                <button type="button" class="btn-assist" id="search-methodist-ai-approve">Одобрить оценку ИИ</button>
-                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-edit">Править вручную</button>
-                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-reject">Отклонить ИИ</button>
-                <span class="search-methodist-status search-methodist-ai-status" id="search-methodist-ai-status" role="status" aria-live="polite"></span>
-              </div>
-            </div>
-          </section>
-          <div class="search-methodist-manual-wrap" id="search-methodist-manual-wrap">
-          <div class="search-methodist-grid search-methodist-grid--compact">
-            <div>
-              <label for="search-methodist-funnel-step">Шаг воронки (ошибка)</label>
-              <select id="search-methodist-funnel-step">
-                <option value="">— авто / из ИИ —</option>
-                <option value="0">0 · запрос</option>
-                <option value="1">1 · популяция</option>
-                <option value="2">2 · МКБ</option>
-                <option value="3">3 · рубрика</option>
-                <option value="4">4 · протокол</option>
-                <option value="5">5 · нозология</option>
-                <option value="6">6 · раздел</option>
-                <option value="7">7 · цитаты</option>
-              </select>
-            </div>
-            <div>
-              <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
-              <p class="consult-hint-small" style="margin:0.15rem 0 0.35rem">При теге «Неверный КП» поле обязательно.</p>
-              <select id="search-methodist-rejected">
-                <option value="">— не указано —</option>
-              </select>
-            </div>
-            <div>
-              <label for="search-methodist-chosen">Правильный протокол *</label>
-              <div class="search-methodist-autocomplete">
-                <input type="text" id="search-methodist-chosen" placeholder="Название или рубрика…" autocomplete="off" />
-                <ul id="search-methodist-ac-list" class="search-methodist-ac-list" hidden></ul>
-              </div>
-            </div>
-            <div>
-              <span class="search-methodist-tags-label">Теги</span>
-              <div class="search-methodist-tags" id="search-methodist-tags"></div>
-            </div>
-            <div>
-              <label for="search-methodist-note">Комментарий</label>
-              <textarea id="search-methodist-note" rows="2" maxlength="500" placeholder="Необязательно"></textarea>
-            </div>
-          </div>
-          <div class="search-methodist-actions">
-            <button type="button" class="btn-assist" id="search-methodist-save">Сохранить retrieval_fix</button>
-            <span class="search-methodist-status" id="search-methodist-status" role="status" aria-live="polite"></span>
-          </div>
-          </div>
-        </section>
         </section>
     </div>
     <!-- /#panel-main-search -->
@@ -9862,6 +9828,71 @@
           </div>
         </div>
         <div id="methodist-search-dash-error" class="methodist-ml-error" hidden></div>
+        <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
+          <h3>Оценка последней выдачи</h3>
+          <p class="search-methodist-panel__lead">
+            После поиска на вкладке «Поиск протоколов» здесь появляется ИИ-оценка. Методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> — данные идут в RAG и движок.
+          </p>
+          <section id="search-methodist-ai-panel" class="search-methodist-ai-panel" hidden aria-live="polite">
+            <h4 id="search-methodist-ai-title">ИИ оценивает выдачу…</h4>
+            <div id="search-methodist-ai-body" hidden>
+              <div class="search-methodist-ai-metrics" id="search-methodist-ai-metrics"></div>
+              <p class="search-methodist-panel__lead" id="search-methodist-ai-summary" style="margin:0.35rem 0"></p>
+              <p class="consult-hint-small" id="search-methodist-ai-notes" style="margin:0"></p>
+              <ul class="search-methodist-ai-improvements" id="search-methodist-ai-improvements"></ul>
+              <div class="search-methodist-ai-actions">
+                <button type="button" class="btn-assist" id="search-methodist-ai-approve">Одобрить оценку ИИ</button>
+                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-edit">Править вручную</button>
+                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-reject">Отклонить ИИ</button>
+                <span class="search-methodist-status search-methodist-ai-status" id="search-methodist-ai-status" role="status" aria-live="polite"></span>
+              </div>
+            </div>
+          </section>
+          <div class="search-methodist-manual-wrap" id="search-methodist-manual-wrap">
+          <div class="search-methodist-grid search-methodist-grid--compact">
+            <div>
+              <label for="search-methodist-funnel-step">Шаг воронки (ошибка)</label>
+              <select id="search-methodist-funnel-step">
+                <option value="">— авто / из ИИ —</option>
+                <option value="0">0 · запрос</option>
+                <option value="1">1 · популяция</option>
+                <option value="2">2 · МКБ</option>
+                <option value="3">3 · рубрика</option>
+                <option value="4">4 · протокол</option>
+                <option value="5">5 · нозология</option>
+                <option value="6">6 · раздел</option>
+                <option value="7">7 · цитаты</option>
+              </select>
+            </div>
+            <div>
+              <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
+              <p class="consult-hint-small" style="margin:0.15rem 0 0.35rem">При теге «Неверный КП» поле обязательно.</p>
+              <select id="search-methodist-rejected">
+                <option value="">— не указано —</option>
+              </select>
+            </div>
+            <div>
+              <label for="search-methodist-chosen">Правильный протокол *</label>
+              <div class="search-methodist-autocomplete">
+                <input type="text" id="search-methodist-chosen" placeholder="Название или рубрика…" autocomplete="off" />
+                <ul id="search-methodist-ac-list" class="search-methodist-ac-list" hidden></ul>
+              </div>
+            </div>
+            <div>
+              <span class="search-methodist-tags-label">Теги</span>
+              <div class="search-methodist-tags" id="search-methodist-tags"></div>
+            </div>
+            <div>
+              <label for="search-methodist-note">Комментарий</label>
+              <textarea id="search-methodist-note" rows="2" maxlength="500" placeholder="Необязательно"></textarea>
+            </div>
+          </div>
+          <div class="search-methodist-actions">
+            <button type="button" class="btn-assist" id="search-methodist-save">Сохранить retrieval_fix</button>
+            <span class="search-methodist-status" id="search-methodist-status" role="status" aria-live="polite"></span>
+          </div>
+          </div>
+        </section>
         <div id="methodist-search-dash-meta" class="methodist-ml-meta"></div>
         <div id="methodist-search-kpi-grid" class="methodist-ml-kpi-grid"></div>
         <div class="methodist-ml-two-col">
@@ -9882,6 +9913,10 @@
               <tbody></tbody>
             </table>
           </div>
+        </section>
+        <section class="methodist-ml-section" id="methodist-search-artifacts-section">
+          <h3>Артефакты eval (golden / probe)</h3>
+          <div id="methodist-search-artifacts-root" class="methodist-search-artifacts"></div>
         </section>
         <section class="methodist-ml-section">
           <h3>Последние разметки (без текста запроса)</h3>
@@ -11962,6 +11997,23 @@
     }
   }
 
+  function isSearchStatsTabActive() {
+    var tab = document.getElementById("tab-methodist-search-stats");
+    return !!(tab && tab.getAttribute("aria-selected") === "true");
+  }
+
+  function ensurePracticalReviewPanel() {
+    var slot = document.getElementById("practical-review-panel");
+    if (slot) return slot;
+    var host = document.getElementById("section-results") || document.getElementById("llm-out");
+    if (!host) return null;
+    host.insertAdjacentHTML(
+      "beforeend",
+      '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>'
+    );
+    return document.getElementById("practical-review-panel");
+  }
+
   function renderSearchMethodistAiReviewUi(ai) {
     var panel = document.getElementById("search-methodist-ai-panel");
     var parentPanel = document.getElementById("search-methodist-panel");
@@ -11972,7 +12024,7 @@
     var notes = document.getElementById("search-methodist-ai-notes");
     var impList = document.getElementById("search-methodist-ai-improvements");
     if (!panel || !ai) return;
-    if (parentPanel) parentPanel.hidden = false;
+    if (parentPanel && isSearchStatsTabActive()) parentPanel.hidden = false;
     panel.hidden = false;
     panel.classList.remove("is-loading");
     var outDone = document.getElementById("llm-out");
@@ -12039,16 +12091,6 @@
       aiPanel.hidden = true;
       aiPanel.classList.add("is-loading");
     }
-    var out = document.getElementById("llm-out");
-    if (out && !out.querySelector(".search-funnel-progress")) {
-      out.insertAdjacentHTML(
-        "afterbegin",
-        getSearchFunnelProgressSteps("ai_review")
-      );
-    } else if (out) {
-      var oldProg = out.querySelector(".search-funnel-progress");
-      if (oldProg) oldProg.outerHTML = getSearchFunnelProgressSteps("ai_review");
-    }
     var llm = (data && data.llm_json) || {};
     var icd = icdCodesFromAssistData(data || {});
     fetch(apiBaseUrl() + "/api/methodist/search-ai-review", {
@@ -12076,19 +12118,25 @@
         var ai = payload && payload.ai_review;
         if (!ai) throw new Error("Пустой ответ AI-оценки поиска");
         window.__searchLastAiReview = ai;
-        renderSearchMethodistAiReviewUi(ai);
-        if (payload.fallback) {
-          setSearchMethodistStatus(
-            "Оценка без LLM (fallback): " +
-              (payload.fallback_reason || "модель недоступна") +
-              " — проверьте и при необходимости правьте."
-          );
+        window.__searchReviewKey = String((data && data.query) || lastAssistFullQuery || "");
+        if (isSearchStatsTabActive()) {
+          renderSearchMethodistAiReviewUi(ai);
+          if (payload.fallback) {
+            setSearchMethodistStatus(
+              "Оценка без LLM (fallback): " +
+                (payload.fallback_reason || "модель недоступна") +
+                " — проверьте и при необходимости правьте."
+            );
+          } else {
+            setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
+          }
         } else {
-          setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
+          setSearchMethodistAiFlowState("methodist-search-ai-ready");
         }
       })
       .catch(function (e) {
         setSearchMethodistAiFlowState("methodist-search-ai-failed");
+        if (!isSearchStatsTabActive()) return;
         if (parentPanel) parentPanel.hidden = false;
         if (aiPanel) {
           aiPanel.hidden = false;
@@ -12425,19 +12473,8 @@
     );
   }
 
-  function populateSearchMethodistPanel(data) {
-    var panel = document.getElementById("search-methodist-panel");
-    if (!panel) return;
-    if (!window.__methodistMode || !window.__methodistToken) {
-      panel.hidden = true;
-      return;
-    }
-    panel.hidden = true;
-    var aiPanel = document.getElementById("search-methodist-ai-panel");
-    if (aiPanel) {
-      aiPanel.hidden = true;
-      aiPanel.classList.remove("is-loading");
-    }
+  function populateSearchMethodistFormFields(data) {
+    if (!data) return;
     window.__lastAssistData = data;
     var paths = uniqueRetrievalPaths(data);
     var rejSel = document.getElementById("search-methodist-rejected");
@@ -12454,6 +12491,22 @@
       });
       if (paths.length) rejSel.value = paths[0];
     }
+  }
+
+  function populateSearchMethodistPanel(data) {
+    var panel = document.getElementById("search-methodist-panel");
+    if (!panel) return;
+    if (!window.__methodistMode || !window.__methodistToken) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = true;
+    var aiPanel = document.getElementById("search-methodist-ai-panel");
+    if (aiPanel) {
+      aiPanel.hidden = true;
+      aiPanel.classList.remove("is-loading");
+    }
+    populateSearchMethodistFormFields(data);
     var chosenInp = document.getElementById("search-methodist-chosen");
     if (chosenInp) chosenInp.value = "";
     var note = document.getElementById("search-methodist-note");
@@ -12462,6 +12515,10 @@
       cb.checked = false;
     });
     setSearchMethodistStatus("");
+    var reviewKey = String((data && data.query) || lastAssistFullQuery || "");
+    if (window.__searchReviewKey === reviewKey && window.__searchLastAiReview) {
+      return;
+    }
     window.__searchLastAiReview = null;
     setSearchMethodistAiFlowState("");
     requestSearchMethodistAiReview(data);
@@ -13883,18 +13940,17 @@
   function loadProtocolPractical(offer, queryText, icdCodes, opts) {
     opts = opts || {};
     if (!offer || !offer.path) return;
-    var slot = document.getElementById("practical-review-panel");
-    if (slot) {
-      slot.hidden = false;
-      slot.className = "practical-review-panel practical-review-panel--loading";
-      var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
-      slot.innerHTML =
-        '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
-        '<p class="assist-detail-meta">' +
-        escapeHtml(String(titleLine)) +
-        " — загрузка выдержки и матрицы для КЗ…</p>" +
-        getDetailLoadingHtml();
-    }
+    var slot = ensurePracticalReviewPanel();
+    if (!slot) return;
+    slot.hidden = false;
+    slot.className = "practical-review-panel practical-review-panel--loading";
+    var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
+    slot.innerHTML =
+      '<h3 class="practical-review-head">Практический разбор по протоколу</h3>' +
+      '<p class="assist-detail-meta">' +
+      escapeHtml(String(titleLine)) +
+      " — загрузка выдержки и матрицы для КЗ…</p>" +
+      getDetailLoadingHtml();
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -15048,9 +15104,7 @@
       bindProtocolDetailLoader(data.query || "");
       bindProtoExploreButtons(data.query || "", icdForPractical);
       bindProtoPickButtons(data);
-      if (stepped && wiz.step === "protocols") {
-        bindProtocolNavHub(data);
-      }
+      bindProtocolNavHub(data);
       maybeAutoLoadPracticalForSearch(data);
       if (stepped) {
         if (wiz.step === "detail") {
@@ -16224,6 +16278,59 @@
 
   var __methodistSearchCharts = {};
 
+  function renderMethodistSearchArtifacts(stats) {
+    var root = document.getElementById("methodist-search-artifacts-root");
+    if (!root) return;
+    var s = (stats && stats.search) || {};
+    var cards = [];
+    var golden = s.golden_eval_snapshot;
+    var probe = s.probe_eval_snapshot;
+    if (golden && typeof golden === "object") {
+      cards.push(
+        '<div class="methodist-search-artifact-card"><strong>Golden eval</strong> · ' +
+          escapeHtml(String(golden.generated_at || golden.ts || "—")) +
+          (golden.pass_rate != null
+            ? " · pass " + escapeHtml(String(golden.pass_rate)) + "%"
+            : golden.pass_count != null && golden.total != null
+              ? " · " + escapeHtml(String(golden.pass_count)) + "/" + escapeHtml(String(golden.total))
+              : "") +
+          (golden.report_path ? " · " + escapeHtml(String(golden.report_path).slice(-48)) : "") +
+          "</div>"
+      );
+    }
+    if (probe && typeof probe === "object") {
+      cards.push(
+        '<div class="methodist-search-artifact-card"><strong>Probe batch</strong> · ' +
+          escapeHtml(String(probe.generated_at || probe.ts || "—")) +
+          (probe.n_rows != null ? " · строк " + escapeHtml(String(probe.n_rows)) : "") +
+          (probe.md_path ? " · " + escapeHtml(String(probe.md_path).slice(-48)) : "") +
+          "</div>"
+      );
+    }
+    if (s.search_ai_artifact_count) {
+      cards.push(
+        '<div class="methodist-search-artifact-card"><strong>AI-артефакты поиска</strong> · ' +
+          escapeHtml(String(s.search_ai_artifact_count)) +
+          " автосохранённых оценок (обезличенно, без текста запроса)</div>"
+      );
+    }
+    if (!cards.length) {
+      root.innerHTML =
+        '<p class="methodist-ml-meta">Нет snapshot-файлов. Запустите <code>eval/search_quality_eval.py</code> или <code>scripts/run_methodist_search_probe.py</code>; AI-артефакты появятся после поисков в режиме методиста.</p>';
+      return;
+    }
+    root.innerHTML = cards.join("");
+  }
+
+  function mountPendingSearchReviewWorkbench() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var data = window.__lastAssistData;
+    if (data) populateSearchMethodistFormFields(data);
+    if (window.__searchLastAiReview) {
+      renderSearchMethodistAiReviewUi(window.__searchLastAiReview);
+    }
+  }
+
   function renderMethodistSearchDashboard(stats) {
     if (!stats || !stats.search) return;
     var s = stats.search;
@@ -16251,6 +16358,7 @@
     if (kpiGrid) {
       var kpis = [
         { label: "Поисков (telemetry)", value: s.protocol_search_count || 0, sub: "без текста запроса" },
+        { label: "AI-артефакты", value: s.search_ai_artifact_count || 0, sub: "авто после каждого AI-review", accent: true },
         { label: "retrieval_fix (UI)", value: s.search_ui_retrieval_fix || 0, sub: "source=protocol_search_ui", accent: true },
         { label: "search_review", value: s.search_review_count || 0, sub: "верная выдача без fix" },
         { label: "AI одобрено", value: (s.ai_approved_labels || 0) + " / " + (s.ai_assisted_labels || 0), sub: "methodist_approved / ai_assisted" },
@@ -16314,6 +16422,10 @@
       recTb.innerHTML = rec.length
         ? rec
             .map(function (r) {
+              var chosen =
+                r.event_type === "search_ai_artifact"
+                  ? escapeHtml(r.summary_ru || "—")
+                  : escapeHtml(r.chosen_short || "—");
               return (
                 "<tr><td>" +
                 escapeHtml(r.ts || "") +
@@ -16322,7 +16434,7 @@
                 "</td><td>" +
                 escapeHtml(r.rejected_short || "—") +
                 "</td><td>" +
-                escapeHtml(r.chosen_short || "—") +
+                chosen +
                 "</td><td>" +
                 escapeHtml((r.tags || []).join(", ")) +
                 "</td><td>" +
@@ -16333,6 +16445,7 @@
             .join("")
         : '<tr><td colspan="6">Разметок поиска пока нет — выполните поиск на вкладке «Поиск протоколов»</td></tr>';
     }
+    renderMethodistSearchArtifacts(stats);
     if (typeof Chart !== "undefined") {
       var tagCanvas = document.getElementById("methodist-search-chart-tags");
       if (tagCanvas) {
@@ -16405,6 +16518,7 @@
       })
       .finally(function () {
         if (root) root.classList.remove("is-loading");
+        mountPendingSearchReviewWorkbench();
       });
   }
 
@@ -18749,6 +18863,8 @@
           escapeHtmlAttr(path) +
           '">Разобрать протокол (LLM)</button>' +
           "</p>";
+        html +=
+          '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
         html += "</div></div>";
         out.innerHTML = html;
         bindProtocolNavHub(data);

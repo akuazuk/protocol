@@ -329,6 +329,14 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError("search_review: неверный verdict")
         _normalize_funnel_feedback_fields(out)
 
+    elif et == "search_ai_artifact":
+        if not (out.get("query_hash") or "").strip():
+            raise ValueError("search_ai_artifact: query_hash обязателен")
+        rv = str(out.get("ranking_verdict") or "").strip()
+        if rv and rv not in _VALID_VERDICTS:
+            raise ValueError("search_ai_artifact: неверный ranking_verdict")
+        _normalize_funnel_feedback_fields(out)
+
     elif et == "kz_analysis":
         if not (out.get("analysis_id") or "").strip():
             raise ValueError("kz_analysis: analysis_id обязателен")

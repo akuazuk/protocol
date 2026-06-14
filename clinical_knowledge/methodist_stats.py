@@ -290,6 +290,7 @@ def _compute_search_domain_stats(
 
     protocol_searches = [e for e in events if e.get("event_type") == "protocol_search"]
     search_reviews = [e for e in events if e.get("event_type") == "search_review"]
+    search_ai_artifacts = [e for e in events if e.get("event_type") == "search_ai_artifact"]
     search_ui_fixes = [
         f
         for f in retrieval_fixes
@@ -298,13 +299,13 @@ def _compute_search_domain_stats(
     ]
 
     tag_counts: Counter[str] = Counter()
-    for ev in search_ui_fixes + search_reviews:
+    for ev in search_ui_fixes + search_reviews + search_ai_artifacts:
         for tag in ev.get("tags") or []:
             tag_counts[str(tag)] += 1
 
     ai_assisted = sum(
         1
-        for ev in search_ui_fixes + search_reviews
+        for ev in search_ui_fixes + search_reviews + search_ai_artifacts
         if ev.get("review_source") == "ai_assisted" or ev.get("ai_review")
     )
     ai_approved = sum(
@@ -333,7 +334,7 @@ def _compute_search_domain_stats(
             hit3 += 1
 
     improvements: Counter[str] = Counter()
-    for ev in search_ui_fixes + search_reviews:
+    for ev in search_ui_fixes + search_reviews + search_ai_artifacts:
         ai = ev.get("ai_review") if isinstance(ev.get("ai_review"), dict) else ev
         for imp in ai.get("engine_improvements_ru") or []:
             s = str(imp).strip()
@@ -342,7 +343,7 @@ def _compute_search_domain_stats(
 
     recent: list[dict[str, Any]] = []
     combined = sorted(
-        search_ui_fixes + search_reviews,
+        search_ui_fixes + search_reviews + search_ai_artifacts,
         key=lambda r: r.get("ts") or "",
         reverse=True,
     )
@@ -358,6 +359,7 @@ def _compute_search_domain_stats(
                 "methodist_approved": ev.get("methodist_approved"),
                 "ranking_rating": ev.get("ranking_rating"),
                 "reviewer": ev.get("reviewer"),
+                "summary_ru": (ev.get("summary_ru") or "")[:80] or None,
             }
         )
 
@@ -409,6 +411,7 @@ def _compute_search_domain_stats(
         "protocol_search_count": len(protocol_searches),
         "search_ui_retrieval_fix": search_fix_count,
         "search_review_count": len(search_reviews),
+        "search_ai_artifact_count": len(search_ai_artifacts),
         "ai_assisted_labels": ai_assisted,
         "ai_approved_labels": ai_approved,
         "manual_labels": manual_only,
