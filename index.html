@@ -3096,6 +3096,17 @@
       display: none !important;
     }
 
+    .assist-card--doctor-lite .assist-pct-rag {
+      display: none;
+    }
+
+    .assist-ai-eval-lead--doctor {
+      margin: 0 0 0.65rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
     .section-results {
       margin-top: 1.5rem;
       padding: 1.15rem 1.1rem 1.25rem;
@@ -11447,7 +11458,7 @@
       html +=
         '<span class="assist-pct assist-pct--warn" title="Слабая опора в отобранных фрагментах"> · слабая опора в отборе</span>';
     }
-    if (pr.match_reason && !opts.citationsOnly) {
+    if (pr.match_reason && !opts.citationsOnly && (!opts.doctorLite || opts.isTopProtocol)) {
       html +=
         '<p class="assist-reason"><strong>Оценка ИИ:</strong> ' + escapeHtml(pr.match_reason) + "</p>";
     }
@@ -11468,7 +11479,7 @@
         "</p></blockquote>";
     }
     var icdTop = icdMentionsForProtocol(pr, protocolIcdMentions);
-    if (icdTop && icdTop.length) {
+    if (icdTop && icdTop.length && !opts.doctorLite) {
       html += '<details class="assist-proto-structure assist-proto-icd-top">';
       var sumLab = "Упоминания МКБ-10 в тексте индекса (топ по частоте)";
       var tq;
@@ -13056,13 +13067,16 @@
       var protocolIcdMentions = data.protocol_icd_mentions || {};
       var citationsOnly = isCitationsOnlyMode();
       var methodistSearch = !!window.__methodistMode;
+      var doctorLite = data.assist_lite === true;
       var compactResults = citationsOnly || methodistSearch;
+      var uiCompact = compactResults || doctorLite;
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
         protocolIcdMentions: protocolIcdMentions,
         protocolUiMeta: data.protocol_ui_meta || {},
         citationsOnly: citationsOnly,
         compactResults: compactResults,
+        doctorLite: doctorLite,
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
       var high = [];
@@ -13075,7 +13089,11 @@
           low.push(rawProtos[hi]);
         }
       }
-      var html = '<div class="assist-card' + (citationsOnly ? " assist-card--citations-only" : "") + '"><div class="assist-card-inner">';
+      var html =
+        '<div class="assist-card' +
+        (citationsOnly ? " assist-card--citations-only" : "") +
+        (doctorLite ? " assist-card--doctor-lite" : "") +
+        '"><div class="assist-card-inner">';
       html += buildAssistSearchMetaHtml(data, rawProtos);
       if (window.__assistUndoSnapshot) {
         html +=
@@ -13085,7 +13103,7 @@
           "</div>";
       }
 
-      if (!compactResults && j.summary) {
+      if (!uiCompact && j.summary) {
         html +=
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
@@ -13093,7 +13111,7 @@
       if (citationsOnly) {
         html +=
           '<p class="assist-source-note"><strong>Режим «только цитаты»:</strong> показаны выдержки из PDF протоколов Минздрава и ссылки; краткий ответ модели скрыт.</p>';
-      } else {
+      } else if (!doctorLite) {
         html +=
           '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность - в файле на сайте Минздрава.</p>';
       }
@@ -13109,7 +13127,7 @@
           '<p class="assist-audience-banner">' + escapeHtml(audLabel) + "</p>";
       }
 
-      if (!compactResults && data.diagnostic_notice) {
+      if (!uiCompact && data.diagnostic_notice) {
         var dmode = String(data.diagnostic_mode || "");
         var dconf = data.diagnostic_confidence != null && !isNaN(Number(data.diagnostic_confidence))
           ? Math.round(Number(data.diagnostic_confidence) * 100)
@@ -13126,11 +13144,11 @@
           "</p>";
       }
 
-      if (!compactResults) {
+      if (!uiCompact) {
         html += formatIcdSectionHtml(data.icd || {});
       }
 
-      if (!compactResults && data.red_flags && data.red_flags.length) {
+      if (!uiCompact && data.red_flags && data.red_flags.length) {
         html += '<div class="assist-sec assist-sec--redflags">';
         html +=
           '<span class="assist-sec-label assist-sec-label--alert">Обратить внимание (по тексту отобранных фрагментов)</span>';
@@ -13164,19 +13182,32 @@
             ? "Протоколы · цитаты из PDF"
             : methodistSearch
               ? "Протоколы · оценка для разметки"
-              : "Протоколы · оценка релевантности ИИ") +
+              : doctorLite
+                ? "Протоколы"
+                : "Протоколы · оценка релевантности ИИ") +
           "</span>";
-        if (!citationsOnly && !methodistSearch) {
+        if (!citationsOnly && !methodistSearch && !doctorLite) {
           html +=
             '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. <strong>Соответствие %</strong> — насколько протокол подходит к запросу (не вероятность диагноза). Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>';
         } else if (methodistSearch && !citationsOnly) {
           html +=
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>';
+        } else if (doctorLite && !citationsOnly) {
+          html +=
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол по выдержке из PDF. Для черновика КЗ нажмите «Разобрать протокол» у нужного пункта.</p>';
         }
+        var protoRank = 0;
         if (high.length) {
           html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="assist-proto-list">';
           for (hi = 0; hi < high.length; hi++) {
-            html += renderProtoLi(high[hi], ragMap, protoRenderOpts);
+            html += renderProtoLi(
+              high[hi],
+              ragMap,
+              Object.assign({}, protoRenderOpts, {
+                isTopProtocol: protoRank === 0,
+              })
+            );
+            protoRank += 1;
           }
           html += "</ul>";
         }
@@ -13184,12 +13215,19 @@
           html +=
             '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="assist-proto-list">';
           for (hi = 0; hi < low.length; hi++) {
-            html += renderProtoLi(low[hi], ragMap, protoRenderOpts);
+            html += renderProtoLi(
+              low[hi],
+              ragMap,
+              Object.assign({}, protoRenderOpts, {
+                isTopProtocol: protoRank === 0,
+              })
+            );
+            protoRank += 1;
           }
           html += "</ul>";
         }
         html += "</div>";
-        if (data.retrieval_embedding && data.retrieval_embedding.used && !compactResults) {
+        if (data.retrieval_embedding && data.retrieval_embedding.used && !uiCompact) {
           html +=
             '<p class="assist-embed-note">Отбор фрагментов дополнительно уточняется по смыслу запроса поверх текстового поиска.</p>';
         }
@@ -13198,7 +13236,7 @@
       html +=
         '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
 
-      if (!compactResults && j.differential && j.differential.length) {
+      if (!uiCompact && j.differential && j.differential.length) {
         html +=
           '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
         html +=
@@ -13229,7 +13267,7 @@
       }
 
       if (
-        !compactResults &&
+        !uiCompact &&
         j.questions_for_patient &&
         j.questions_for_patient.length &&
         !hasAnyProtocolAt100Pct(rawProtos)
@@ -13260,16 +13298,16 @@
         html += "</div></details>";
       }
 
-      if (rawProtos.length && !compactResults) {
+      if (rawProtos.length && !uiCompact) {
         html +=
           '<details class="assist-collapsible assist-collapsible--legend"><summary>Пояснение к оценкам (%)</summary><p class="assist-metrics-legend" style="margin:0"><strong>Соответствие (%)</strong> - насколько протокол подходит к вашему запросу по автоматической оценке (шкала 0-100%). ' +
           "<strong>Фрагмент (%)</strong> - насколько отобранный отрывок текста из этого протокола близок к запросу; среди нескольких фрагментов одного документа показывается наибольшее значение.</p></details>";
       }
 
       var icdForPractical = icdCodesFromAssistData(data);
-      if (data.clinical_detail && !compactResults) {
+      if (data.clinical_detail && !uiCompact) {
         html += renderClinicalDetailBlock(data.clinical_detail, data.query || "");
-      } else if (data.clinical_detail_offer && !compactResults) {
+      } else if (data.clinical_detail_offer && !uiCompact) {
         html += renderClinicalDetailPlaceholder(data.clinical_detail_offer);
       }
 
@@ -13309,7 +13347,7 @@
       bindProtocolDetailLoader(data.query || "");
       bindProtoExploreButtons(data.query || "", icdForPractical);
       populateSearchMethodistPanel(data);
-      if (!compactResults) {
+      if (!uiCompact) {
         bindProtocolSummaryNav(data);
       }
       if (window.__methodistMode) {

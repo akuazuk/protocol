@@ -347,6 +347,28 @@ SYSTEM_JSON = """Ты помощник врача по клиническим п
 - protocols: все уникальные path из входных фрагментов; confidence_score 0.0-1.0. Каждый path и каждый протокол по названию (title) указывай только один раз - не дублируй одинаковые строки.
 Если не хватает места - сожми формулировки, но НЕ обрывай слова и НЕ оставляй незаконченное предложение в summary."""
 
+SYSTEM_JSON_LITE = """Ты помощник врача по клиническим протоколам Минздрава Республики Беларусь.
+Фрагменты PDF ниже могут быть неполными. Не выдумывай факты вне фрагментов.
+Если в запросе есть блок «=== Контекст пациента ===», учитывай возраст при выборе детских vs взрослых протоколов.
+Клиническая калибровка (обязательно):
+- Опирайся на «Запрос пользователя». Не приписывай симптомов, которых там нет.
+- Если фрагмент явно про другую нозологию - не повышай confidence; укажи несоответствие в match_reason или опусти из верхних позиций.
+- Не противоречь явным фактам из запроса.
+
+Верни ОДИН JSON-объект (без markdown, без текста до/после).
+Схема (только эти поля):
+{
+  "protocols": [{"path":"…","title":"…","match_reason":"…","confidence":"низкая|средняя|высокая","confidence_score":0.0}],
+  "disclaimer": "Информация из протоколов; не замена очной консультации."
+}
+НЕ добавляй summary, differential, questions_for_patient, icd_codes.
+- match_reason: не длиннее 70 символов, одна короткая фраза.
+- protocols: все уникальные path из входных фрагментов; confidence_score 0.0-1.0; без дубликатов path/title."""
+
+SYSTEM_JSON_LITE_RETRY = """Повтори: нужен ОДИН компактный JSON (без markdown).
+Только поля protocols и disclaimer. Без summary, differential, questions_for_patient.
+match_reason: до 55 символов. Сохрани все path из фрагментов. Не обрывай слова."""
+
 SYSTEM_JSON_RETRY = """Повтори задачу: нужен ОДИН компактный JSON (без markdown).
 Не добавляй симптомы носа/горла/ОРВИ, если их не было в запросе пользователя. Эпиглоттит и др. редкие неотложные - только при красных флагах или прямо в фрагментах; при нормальном дыхании не веди с эпиглоттита.
 Не дублируй один и тот же протокол в protocols (один path / один title).
@@ -4917,6 +4939,25 @@ def _ensure_symptom_followup_questions(parsed: dict | None, diag_mode: str, conf
     parsed["questions_for_patient"] = questions[:4]
 
 
+def _assist_lite_enabled(*, assist_full: bool = False) -> bool:
+    if assist_full:
+        return False
+    return os.environ.get("RAG_ASSIST_LITE", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def _strip_assist_verbose_fields(parsed: dict | None) -> None:
+    """Lite assist: только protocols + disclaimer в JSON для UI."""
+    if not parsed or not isinstance(parsed, dict):
+        return
+    parsed.pop("summary", None)
+    parsed.pop("differential", None)
+    parsed.pop("questions_for_patient", None)
+
+
 def _normalize_protocol_path_key(p: str) -> str:
     s = (p or "").strip()
     if not s:
@@ -5749,6 +5790,10 @@ class AssistIn(BaseModel):
         default=False,
         description="true - сразу развёрнутая выдержка (дольше); false - только кнопка загрузки",
     )
+    assist_full: bool = Field(
+        default=False,
+        description="true - полный JSON (summary, differential); false - lite (только protocols, быстрее)",
+    )
 
 
 class IcdSuggestIn(BaseModel):
@@ -6173,7 +6218,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r130-fix-assist-js-syntax"
+BUILD_VERSION = "2026-06-01-r131-assist-lite-doctor-ui"
 
 
 def _app_version() -> str:
@@ -6492,6 +6537,7 @@ def _format_icd_append_line(icd_analysis: dict) -> str | None:
 def api_assist(body: AssistIn) -> dict:
     _require_rag_loaded()
     model = get_gemini()
+    assist_lite = _assist_lite_enabled(assist_full=body.assist_full)
     icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
         _infer_icd_pipeline_from_full_query(body.query, model)
     )
@@ -6499,12 +6545,15 @@ def api_assist(body: AssistIn) -> dict:
         raise HTTPException(status_code=400, detail=icd_err)
     assert icd_analysis is not None
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
-    query_specialties = infer_specialties_gemini(q, model)
     user_slugs = [
         s
         for s in (body.category_slugs or [])
         if isinstance(s, str) and s in ALLOWED_SPECIALTY_SLUGS
     ]
+    if user_slugs or icd_codes_for_lex:
+        query_specialties: list[str] = []
+    else:
+        query_specialties = infer_specialties_gemini(q, model)
     boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
     retrieved = retrieve(
         q_rag,
@@ -6611,7 +6660,11 @@ def api_assist(body: AssistIn) -> dict:
         + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}\n\n"
         + ASSIST_USER_CONTEXT_GUIDE
     )
-    full_prompt = SYSTEM_JSON + "\n\n---\n\n" + user_block
+    full_prompt = (
+        (SYSTEM_JSON_LITE if assist_lite else SYSTEM_JSON)
+        + "\n\n---\n\n"
+        + user_block
+    )
     prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
     if len(full_prompt) > prompt_limit:
         full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
@@ -6652,7 +6705,11 @@ def api_assist(body: AssistIn) -> dict:
         "yes",
     )
     if do_retry and (parsed is None or _finish_hits_max(resp)):
-        retry_prompt = SYSTEM_JSON_RETRY + "\n\n---\n\n" + user_block
+        retry_prompt = (
+            (SYSTEM_JSON_LITE_RETRY if assist_lite else SYSTEM_JSON_RETRY)
+            + "\n\n---\n\n"
+            + user_block
+        )
         if len(retry_prompt) > prompt_limit:
             retry_prompt = retry_prompt[: prompt_limit - 80] + "\n…[обрезано]"
         try:
@@ -6667,16 +6724,19 @@ def api_assist(body: AssistIn) -> dict:
     if parsed and isinstance(parsed, dict):
         apply_protocol_confidence_calibration(parsed, retrieved)
         dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
+        if assist_lite:
+            _strip_assist_verbose_fields(parsed)
 
     retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
 
     icd_payload = _icd_client_payload(icd_analysis)
     diag_mode = _diagnostic_mode_summary(icd_payload, retrieved)
-    _ensure_symptom_followup_questions(
-        parsed,
-        str(diag_mode.get("mode") or ""),
-        float(diag_mode.get("confidence") or 0.0),
-    )
+    if not assist_lite:
+        _ensure_symptom_followup_questions(
+            parsed,
+            str(diag_mode.get("mode") or ""),
+            float(diag_mode.get("confidence") or 0.0),
+        )
     if parsed and isinstance(parsed, dict):
         merged_icd: list[dict] = []
         for it in icd_payload.get("detected") or []:
@@ -6754,7 +6814,8 @@ def api_assist(body: AssistIn) -> dict:
                     "rag_support": pr.get("rag_support"),
                 }
 
-    normalize_differential_field(parsed)
+    if not assist_lite:
+        normalize_differential_field(parsed)
 
     proto_list = (parsed.get("protocols") or []) if parsed else []
     icd_for_focus = icd_analysis.get("codes_for_retrieval") or []
@@ -6816,6 +6877,7 @@ def api_assist(body: AssistIn) -> dict:
         "routing_version": int(_routing.get("version", 1)) if _routing else 1,
         "chunk_vote_majority": chunk_vote_majority,
         "confidence_second_pass_used": confidence_second_pass_used,
+        "assist_lite": assist_lite,
     }
 
 

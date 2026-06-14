@@ -78,6 +78,8 @@
 | P0.5 | Dedup PDF по basename; оценка ИИ; разбор/KZ по кнопке | ✅ r128 |
 | P0.6 | Режим «только цитаты» | ✅ r128 |
 | P0.7 | Компактная выдача в режиме методиста; упрощённая панель `retrieval_fix` | ✅ r129 |
+| P0.8 | Lite assist (B1): быстрый JSON только protocols; skip specialty infer при МКБ/рубриках | ✅ r131 |
+| P0.9 | Doctor UI (A1): без summary/differential/ICD-блока; match_reason только top-1 | ✅ r131 |
 
 ### P1 — качество retrieval (2–4 недели)
 
