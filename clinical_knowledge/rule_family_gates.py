@@ -63,6 +63,40 @@ def _text_blob(consult_facts: dict[str, Any]) -> str:
     return _norm(" ".join(parts))
 
 
+_ONCOLOGY_SUSPICION_MARKERS = (
+    "опухолевое образование",
+    "картина опухол",
+    "нельзя исключить инваз",
+    "подозрени на зло",
+    "подозрени на рак",
+    "злокачествен",
+    "новообразован",
+    "метастаз",
+)
+
+
+def has_oncology_clinical_suspicion(consult_facts: dict[str, Any]) -> bool:
+    """Подозрение на ЗНО по тексту КЗ (не только код C/D)."""
+    cons = consult_facts.get("consultation") or {}
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    if any(is_oncology_icd(c) for c in icd_list):
+        return True
+    blob = _text_blob(consult_facts)
+    return any(m in blob for m in _ONCOLOGY_SUSPICION_MARKERS)
+
+
+def expand_specialty_slugs_for_clinical_text(
+    slugs: set[str] | list[str] | None,
+    text: str,
+) -> set[str]:
+    """Доп. рубрики по клиническому тексту (опухоль сигмы → novoobrazovaniya)."""
+    out = {s.strip() for s in (slugs or []) if s and str(s).strip()}
+    low = _norm(text or "")
+    if any(m in low for m in _ONCOLOGY_SUSPICION_MARKERS):
+        out.update({"novoobrazovaniya", "gastroenterologiya", "khirurgiya"})
+    return out
+
+
 def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -> bool | None:
     """None — использовать стандартную логику rule_checker."""
     cons = consult_facts.get("consultation") or {}
@@ -103,5 +137,8 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
             primary = icd_list[0]
             if primary.startswith(("E55", "E56", "E58", "E59", "E61", "E63", "E64", "E65")):
                 return False
+
+    if condition_id == "functional_dyspepsia" and has_oncology_clinical_suspicion(consult_facts):
+        return False
 
     return None

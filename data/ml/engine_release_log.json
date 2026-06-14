@@ -102,9 +102,35 @@
           "note": "13/13 L1; report_n_1/2 60-62% — P1.7 отложен"
         }
       ]
+    },
+    {
+      "version": "2026-06-01-r117",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Venous DVT formula + gastro oncology caps",
+      "summary": "F_1_p без ложного e912b455; gastro_1 overall ≤75% при подозрении на ЗНО; batch review script.",
+      "fixes": [
+        "DVT diagnosis_formula: флеботромб/тромбофлеб в нозологии; осложнения optional для I80.x",
+        "functional_dyspepsia gate при oncology suspicion",
+        "oncology priority score caps + RAG slugs novoobrazovaniya",
+        "scripts/submit_priority_reviews_render.py"
+      ],
+      "metrics": [
+        {
+          "case_label": "F_1_p",
+          "before_failed_rules": 1,
+          "after_failed_rules": 0,
+          "note": "e912b455 больше не FAIL"
+        },
+        {
+          "case_label": "gastro_1",
+          "before_overall_pct": 89.8,
+          "after_overall_pct": 75.0,
+          "note": "Cap при опухоли сигмы + K30"
+        }
+      ]
     }
   ],
-  "ml_experiments": [
     {
       "id": "embedder_exp_001",
       "date": "2026-05",

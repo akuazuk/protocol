@@ -364,6 +364,39 @@ def _protocol_match_score(matches: list[dict[str, Any]]) -> float | None:
     return 90.0 if best.get("applicability") == "applicable" else 65.0
 
 
+def _oncology_workup_suspicion(doc: ConsultationDocument) -> bool:
+    blob = (doc.raw_text or "").lower()
+    return any(
+        m in blob
+        for m in (
+            "опухолевое образование",
+            "картина опухол",
+            "нельзя исключить инваз",
+            "подозрени на зло",
+            "подозрени на рак",
+        )
+    )
+
+
+def _apply_oncology_priority_score_caps(
+    doc: ConsultationDocument,
+    *,
+    pm_score: float | None,
+    treat_score: float | None,
+    overall: float | None,
+) -> tuple[float | None, float | None, float | None]:
+    """K30/диспепсия не должна маскировать подозрение на ЗНО (gastro_1)."""
+    if not _oncology_workup_suspicion(doc):
+        return pm_score, treat_score, overall
+    if pm_score is not None:
+        pm_score = min(pm_score, 55.0)
+    if treat_score is not None:
+        treat_score = min(treat_score, 72.0)
+    if overall is not None:
+        overall = min(overall, 75.0)
+    return pm_score, treat_score, overall
+
+
 def _apply_sparse_neurology_score_caps(
     doc: ConsultationDocument,
     structural: StructuralAssessment,
@@ -455,6 +488,9 @@ def build_compliance_report(
     pm_score = _protocol_match_score(matches)
     follow_score = _follow_up_score(doc, structural)
     proto_assess = _protocol_assessment(matches, rules_check)
+    pm_score, treat_score, _ = _apply_oncology_priority_score_caps(
+        doc, pm_score=pm_score, treat_score=treat_score, overall=None,
+    )
     if not has_content:
         doc_score = None  # type: ignore[assignment]
         structural.structural_score = None
@@ -482,6 +518,9 @@ def build_compliance_report(
     force_manual = has_unhandled_critical(safety)
     overall, status = compute_overall(
         breakdown, force_manual_review=force_manual, has_protocol_data=has_protocol,
+    )
+    _, _, overall = _apply_oncology_priority_score_caps(
+        doc, pm_score=None, treat_score=None, overall=overall,
     )
     breakdown = sync_score_aliases(breakdown)
     breakdown.overall_score = overall

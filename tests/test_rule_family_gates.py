@@ -69,3 +69,19 @@ def test_kard_1_e55_no_thyroid_diagnosis_formula():
     text = extract_text_from_path(pdf)
     ids = _failed_rule_ids(text)
     assert not any("thyroid" in r or "2d00ba03" in r for r in ids)
+
+
+def test_gastro_1_oncology_suspicion_no_dyspepsia_formula():
+    text = (FIXTURES / "gastro_1.txt").read_text(encoding="utf-8")
+    ids = _failed_rule_ids(text)
+    assert not any("8e7327d9" in r or "functional_dyspepsia" in r for r in ids)
+
+
+def test_gastro_1_oncology_suspicion_caps_overall():
+    from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+    text = (FIXTURES / "gastro_1.txt").read_text(encoding="utf-8")
+    out = analyze_consultation_text(text, consultation_id="gastro_1", with_markdown=False)
+    comp = out.get("compliance") or {}
+    overall = comp.get("overall_score")
+    assert overall is not None and overall <= 75.0

@@ -40,3 +40,13 @@ def test_pl_1_f_rich_deep_segment_dedupes_diagnosis_formula_messages():
     ]
     messages = [str(f.get("message_ru") or "") for f in failed]
     assert len(messages) == len(set(messages))
+
+
+def test_f1_p_rich_diagnosis_passes_dvt_formula():
+    text = """\
+Диагноз: I80.1. Флебит и тромбофлебит бедренной вены;
+I80.2. Флебит и тромбофлебит других глубоких сосудов нижних конечностей;
+ТГВ справа. Неоклюзионный тромбоз бедренной, оклюзионный тромбоз подколенной вены.
+"""
+    ids = _failed_rule_ids(text)
+    assert not any("e912b455" in r for r in ids)

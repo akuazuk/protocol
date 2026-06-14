@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from clinical_knowledge.rule_family_gates import expand_specialty_slugs_for_icd
+from clinical_knowledge.rule_family_gates import expand_specialty_slugs_for_icd, expand_specialty_slugs_for_clinical_text
 
 
 def _icd_root(code: str) -> str:
@@ -57,6 +57,7 @@ def consult_target_protocol_paths(
     diag_icd: list[str] | None,
     clinical_rules: dict[str, Any] | None,
     specialty_slugs: list[str] | None,
+    consult_text: str | None = None,
     max_paths: int | None = None,
 ) -> tuple[list[str], dict[str, Any]]:
     """Список source_path PDF, по которым разрешён RAG для КЗ."""
@@ -94,6 +95,7 @@ def consult_target_protocol_paths(
     icd_roots = {_icd_root(c) for c in primary_icd}
     icd_full = set(primary_icd)
     slugs = expand_specialty_slugs_for_icd(set(specialty_slugs or []), primary_icd)
+    slugs = expand_specialty_slugs_for_clinical_text(slugs, consult_text or "")
 
     if primary_icd:
         # Лучший балл на КАЖДЫЙ PDF (а не на каждую секцию), иначе PDF с многими

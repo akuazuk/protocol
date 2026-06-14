@@ -202,6 +202,7 @@ def iter_consult_review_pipeline(
         diag_icd=list(diag_codes_list or []),
         clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
         specialty_slugs=target_slugs or None,
+        consult_text=full_text,
     )
     matched_path_boost = list(allowed_paths)
     if not matched_path_boost and isinstance(clinical_rules, dict):
