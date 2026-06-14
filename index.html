@@ -2870,6 +2870,171 @@
       scroll-margin-top: 4rem;
     }
 
+    .assist-proto-summary-nav {
+      margin: 0.45rem 0 0;
+      padding: 0.45rem 0.55rem;
+      border-radius: 12px;
+      background: rgba(232, 245, 241, 0.45);
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      font-size: 0.78rem;
+    }
+
+    .assist-proto-summary-nav summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--green-900);
+    }
+
+    .assist-proto-summary-condition {
+      margin: 0.55rem 0 0;
+      padding-top: 0.45rem;
+      border-top: 1px dashed rgba(26, 138, 114, 0.2);
+    }
+
+    .assist-proto-summary-condition__title {
+      font-weight: 650;
+      color: var(--green-950);
+      margin: 0 0 0.25rem;
+    }
+
+    .assist-proto-summary-sections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.35rem 0 0;
+    }
+
+    .btn-proto-summary-section {
+      font-size: 0.72rem;
+      padding: 0.28rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: #fff;
+      color: var(--green-900);
+      cursor: pointer;
+    }
+
+    .btn-proto-summary-section:hover {
+      background: rgba(232, 245, 241, 0.9);
+    }
+
+    .assist-proto-summary-section-preview {
+      margin: 0.25rem 0 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .search-methodist-panel {
+      margin: 1rem 0 0;
+      padding: 0.85rem 1rem;
+      border-radius: 16px;
+      border: 2px solid rgba(217, 119, 6, 0.35);
+      background: linear-gradient(165deg, rgba(255, 251, 235, 0.95) 0%, #fff 100%);
+      box-shadow: 0 6px 24px rgba(120, 53, 15, 0.08);
+    }
+
+    body:not(.methodist-mode) .search-methodist-panel {
+      display: none !important;
+    }
+
+    .search-methodist-panel h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.95rem;
+      color: #92400e;
+    }
+
+    .search-methodist-panel__lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .search-methodist-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
+
+    @media (min-width: 720px) {
+      .search-methodist-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .search-methodist-retrieval-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      max-height: 8rem;
+      overflow: auto;
+    }
+
+    .search-methodist-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .search-methodist-tags label {
+      font-size: 0.72rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+    }
+
+    .search-methodist-autocomplete {
+      position: relative;
+    }
+
+    .search-methodist-ac-list {
+      position: absolute;
+      z-index: 40;
+      left: 0;
+      right: 0;
+      top: 100%;
+      margin: 0.15rem 0 0;
+      padding: 0.25rem 0;
+      list-style: none;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.25);
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(6, 61, 53, 0.12);
+      max-height: 11rem;
+      overflow: auto;
+    }
+
+    .search-methodist-ac-list li button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.35rem 0.55rem;
+      border: none;
+      background: transparent;
+      font-size: 0.74rem;
+      cursor: pointer;
+    }
+
+    .search-methodist-ac-list li button:hover {
+      background: rgba(232, 245, 241, 0.85);
+    }
+
+    .search-methodist-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.65rem;
+    }
+
+    .search-methodist-status {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
     .section-results {
       margin-top: 1.5rem;
       padding: 1.15rem 1.1rem 1.25rem;
@@ -5629,7 +5794,6 @@
     }
 
     body.methodist-mode .consult-intro-card,
-    body.methodist-mode #tab-main-search,
     body.methodist-mode .demo-cases-bar,
     body.methodist-mode #consult-rubrics-details,
     body.methodist-mode #consult-btn-demo-text,
@@ -8173,8 +8337,43 @@
           </button>
         </div>
         <div id="llm-out" class="llm-out"></div>
-      </section>
-      </section>
+
+        <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
+          <h3>Разметка выдачи поиска (методист)</h3>
+          <p class="search-methodist-panel__lead">
+            Исправление top-протокола сохраняется как <code>retrieval_fix</code> для обучения RAG и eval. Текст запроса передаётся только в защищённый feedback (не в публичную аналитику).
+          </p>
+          <div class="search-methodist-grid">
+            <div>
+              <label>Retrieval top (read-only)</label>
+              <ol id="search-methodist-retrieval-list" class="search-methodist-retrieval-list"></ol>
+            </div>
+            <div>
+              <label for="search-methodist-rejected">Система ошибочно выбрала</label>
+              <select id="search-methodist-rejected">
+                <option value="">— не указано —</option>
+              </select>
+              <label for="search-methodist-chosen" style="margin-top:0.45rem;display:block">Правильный протокол *</label>
+              <div class="search-methodist-autocomplete">
+                <input type="text" id="search-methodist-chosen" placeholder="Начните вводить название или рубрику…" autocomplete="off" />
+                <ul id="search-methodist-ac-list" class="search-methodist-ac-list" hidden></ul>
+              </div>
+            </div>
+            <div>
+              <span style="font-size:0.76rem;font-weight:600">Теги</span>
+              <div class="search-methodist-tags" id="search-methodist-tags"></div>
+            </div>
+            <div>
+              <label for="search-methodist-note">Комментарий</label>
+              <textarea id="search-methodist-note" rows="2" maxlength="500" placeholder="Необязательно"></textarea>
+            </div>
+          </div>
+          <div class="search-methodist-actions">
+            <button type="button" class="btn-assist" id="search-methodist-save">Сохранить retrieval_fix</button>
+            <span class="search-methodist-status" id="search-methodist-status" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+        </section>
     </div>
     <!-- /#panel-main-search -->
 
@@ -10769,6 +10968,336 @@
     return html;
   }
 
+  var SEARCH_METHODIST_TAGS = [
+    { id: "wrong_protocol", label: "Неверный КП" },
+    { id: "missed_protocol", label: "Не нашли КП" },
+    { id: "wrong_population", label: "Ошибка популяции" },
+    { id: "query_too_vague", label: "Запрос слишком общий" },
+  ];
+
+  function initSearchMethodistPanel() {
+    var tagsEl = document.getElementById("search-methodist-tags");
+    if (tagsEl && !tagsEl.getAttribute("data-wired")) {
+      tagsEl.setAttribute("data-wired", "1");
+      tagsEl.innerHTML = "";
+      SEARCH_METHODIST_TAGS.forEach(function (opt) {
+        var lab = document.createElement("label");
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = opt.id;
+        cb.className = "search-methodist-tag-cb";
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(" " + opt.label));
+        tagsEl.appendChild(lab);
+      });
+    }
+    var saveBtn = document.getElementById("search-methodist-save");
+    if (saveBtn && !saveBtn.getAttribute("data-wired")) {
+      saveBtn.setAttribute("data-wired", "1");
+      saveBtn.addEventListener("click", saveSearchMethodistRetrievalFix);
+    }
+    var chosenInp = document.getElementById("search-methodist-chosen");
+    if (chosenInp && !chosenInp.getAttribute("data-wired")) {
+      chosenInp.setAttribute("data-wired", "1");
+      var acTimer = null;
+      chosenInp.addEventListener("input", function () {
+        if (acTimer) clearTimeout(acTimer);
+        acTimer = setTimeout(function () {
+          searchMethodistProtocolAutocomplete(chosenInp.value);
+        }, 280);
+      });
+      chosenInp.addEventListener("blur", function () {
+        setTimeout(function () {
+          var ac = document.getElementById("search-methodist-ac-list");
+          if (ac) ac.hidden = true;
+        }, 200);
+      });
+    }
+  }
+
+  function setSearchMethodistStatus(text) {
+    var el = document.getElementById("search-methodist-status");
+    if (el) el.textContent = text || "";
+  }
+
+  function uniqueRetrievalPaths(data) {
+    var seen = {};
+    var out = [];
+    var retrieval = (data && data.retrieval) || [];
+    var ri;
+    for (ri = 0; ri < retrieval.length; ri++) {
+      var p = retrieval[ri].path || "";
+      if (!p || seen[p]) continue;
+      seen[p] = true;
+      out.push(p);
+      if (out.length >= 5) break;
+    }
+    var protos = ((data && data.llm_json && data.llm_json.protocols) || []);
+    for (ri = 0; ri < protos.length; ri++) {
+      p = protos[ri].path || "";
+      if (!p || seen[p]) continue;
+      seen[p] = true;
+      out.push(p);
+      if (out.length >= 8) break;
+    }
+    return out;
+  }
+
+  function populateSearchMethodistPanel(data) {
+    var panel = document.getElementById("search-methodist-panel");
+    if (!panel) return;
+    if (!window.__methodistMode || !window.__methodistToken) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    window.__lastAssistData = data;
+    var paths = uniqueRetrievalPaths(data);
+    var listEl = document.getElementById("search-methodist-retrieval-list");
+    if (listEl) {
+      listEl.innerHTML = "";
+      if (!paths.length) {
+        listEl.innerHTML = "<li>Нет путей retrieval</li>";
+      } else {
+        paths.forEach(function (p) {
+          var li = document.createElement("li");
+          li.textContent = p;
+          listEl.appendChild(li);
+        });
+      }
+    }
+    var rejSel = document.getElementById("search-methodist-rejected");
+    if (rejSel) {
+      rejSel.innerHTML = '<option value="">— не указано —</option>';
+      paths.forEach(function (p) {
+        var opt = document.createElement("option");
+        opt.value = p;
+        opt.textContent = p.length > 72 ? "…" + p.slice(-70) : p;
+        rejSel.appendChild(opt);
+      });
+      if (paths.length) rejSel.value = paths[0];
+    }
+    var chosenInp = document.getElementById("search-methodist-chosen");
+    if (chosenInp) chosenInp.value = "";
+    var note = document.getElementById("search-methodist-note");
+    if (note) note.value = "";
+    document.querySelectorAll(".search-methodist-tag-cb").forEach(function (cb) {
+      cb.checked = false;
+    });
+    setSearchMethodistStatus("");
+  }
+
+  function searchMethodistProtocolAutocomplete(q) {
+    var ac = document.getElementById("search-methodist-ac-list");
+    if (!ac || !window.__methodistToken) return;
+    var term = String(q || "").trim();
+    if (term.length < 2) {
+      ac.hidden = true;
+      ac.innerHTML = "";
+      return;
+    }
+    var base = apiBaseUrl();
+    fetch(
+      base +
+        "/api/methodist/protocol-search?q=" +
+        encodeURIComponent(term),
+      { headers: methodistHeaders() }
+    )
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (d) {
+        ac.innerHTML = "";
+        var items = (d && d.items) || [];
+        if (!items.length) {
+          ac.hidden = true;
+          return;
+        }
+        items.forEach(function (it) {
+          var li = document.createElement("li");
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = (it.title || it.path || "").slice(0, 120);
+          btn.title = it.path || "";
+          btn.addEventListener("mousedown", function (ev) {
+            ev.preventDefault();
+            var inp = document.getElementById("search-methodist-chosen");
+            if (inp) inp.value = it.path || "";
+            ac.hidden = true;
+          });
+          li.appendChild(btn);
+          ac.appendChild(li);
+        });
+        ac.hidden = false;
+      })
+      .catch(function () {
+        ac.hidden = true;
+      });
+  }
+
+  function saveSearchMethodistRetrievalFix() {
+    if (!window.__methodistToken) {
+      setSearchMethodistStatus("Нужен режим методиста.");
+      return;
+    }
+    var chosenInp = document.getElementById("search-methodist-chosen");
+    var chosen = chosenInp ? String(chosenInp.value || "").trim() : "";
+    if (!chosen) {
+      setSearchMethodistStatus("Укажите правильный протокол.");
+      return;
+    }
+    var data = window.__lastAssistData || {};
+    var queryText = data.query || lastAssistFullQuery || "";
+    var rejSel = document.getElementById("search-methodist-rejected");
+    var rejected = rejSel ? String(rejSel.value || "").trim() : "";
+    var tags = [];
+    document.querySelectorAll(".search-methodist-tag-cb:checked").forEach(function (cb) {
+      tags.push(cb.value);
+    });
+    var noteEl = document.getElementById("search-methodist-note");
+    var note = noteEl ? String(noteEl.value || "").trim() : "";
+    var body = {
+      event_type: "retrieval_fix",
+      query: queryText,
+      rejected_path: rejected || null,
+      chosen_path: chosen,
+      source: "protocol_search_ui",
+      reviewer: window.__methodistReviewer || "",
+    };
+    if (note) body.note = note;
+    if (tags.length) body.tags = tags;
+    setSearchMethodistStatus("Сохранение…");
+    fetch(apiBaseUrl() + "/api/ml/feedback", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
+      body: JSON.stringify(body),
+    })
+      .then(function (r) {
+        return r.json().then(function (j) {
+          return { ok: r.ok, body: j };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          setSearchMethodistStatus((res.body && res.body.detail) || "Ошибка сохранения");
+          return;
+        }
+        setSearchMethodistStatus("Сохранено (retrieval_fix).");
+      })
+      .catch(function () {
+        setSearchMethodistStatus("Сеть недоступна.");
+      });
+  }
+
+  function renderProtocolSummaryNavBlock(nav) {
+    if (!nav || !nav.available || !nav.conditions || !nav.conditions.length) return "";
+    var html =
+      '<details class="assist-proto-summary-nav"><summary>Навигация по карточке протокола';
+    if (nav.review_status === "approved" || nav.review_status === "reviewed") {
+      html += " · проверено";
+    }
+    html += "</summary>";
+    var ci;
+    for (ci = 0; ci < nav.conditions.length; ci++) {
+      var cond = nav.conditions[ci];
+      html += '<div class="assist-proto-summary-condition">';
+      html +=
+        '<p class="assist-proto-summary-condition__title">' +
+        escapeHtml(cond.name || "Нозология") +
+        (cond.icd_match ? ' <span title="Совпадение МКБ">· МКБ</span>' : "") +
+        "</p>";
+      if (cond.icd10_codes && cond.icd10_codes.length) {
+        html +=
+          '<p class="assist-proto-summary-section-preview"><code>' +
+          escapeHtml(cond.icd10_codes.slice(0, 4).join(", ")) +
+          "</code></p>";
+      }
+      html += '<div class="assist-proto-summary-sections">';
+      var si;
+      for (si = 0; si < (cond.sections || []).length; si++) {
+        var sec = cond.sections[si];
+        html +=
+          '<button type="button" class="btn-proto-summary-section" data-extract-focus="' +
+          escapeHtmlAttr(sec.extract_focus || "") +
+          '" data-section-label="' +
+          escapeHtmlAttr(sec.label || "") +
+          '">' +
+          escapeHtml(sec.label || sec.id) +
+          " (" +
+          String(sec.count || 0) +
+          ")</button>";
+      }
+      html += "</div>";
+      if (cond.sections && cond.sections[0] && cond.sections[0].preview) {
+        html +=
+          '<p class="assist-proto-summary-section-preview">' +
+          escapeHtml(cond.sections[0].preview) +
+          "</p>";
+      }
+      html += "</div>";
+    }
+    html += "</details>";
+    return html;
+  }
+
+  function bindProtocolSummaryNav(assistData) {
+    var items = document.querySelectorAll(".assist-proto-list li[data-proto-path]");
+    if (!items.length) return;
+    var queryText = (assistData && assistData.query) || "";
+    var icdList = icdCodesFromAssistData(assistData || {});
+    var icdParam = icdList.length ? icdList.join(",") : "";
+    var ii;
+    for (ii = 0; ii < items.length; ii++) {
+      (function (li) {
+        var path = li.getAttribute("data-proto-path") || "";
+        if (!path) return;
+        var old = li.querySelector(".assist-proto-summary-nav");
+        if (old) old.remove();
+        var url =
+          apiBaseUrl() +
+          "/api/protocol-summary-nav?path=" +
+          encodeURIComponent(path) +
+          "&query=" +
+          encodeURIComponent(queryText);
+        if (icdParam) url += "&icd=" + encodeURIComponent(icdParam);
+        fetch(url, { cache: "no-store" })
+          .then(function (r) {
+            return r.ok ? r.json() : null;
+          })
+          .then(function (nav) {
+            if (!nav || !nav.available) return;
+            var wrap = document.createElement("div");
+            wrap.innerHTML = renderProtocolSummaryNavBlock(nav);
+            var det = wrap.firstElementChild;
+            if (!det) return;
+            li.appendChild(det);
+            det.querySelectorAll(".btn-proto-summary-section").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                var focus = btn.getAttribute("data-extract-focus") || "";
+                var title =
+                  li.querySelector(".proto-link") &&
+                  li.querySelector(".proto-link").textContent
+                    ? li.querySelector(".proto-link").textContent
+                    : "";
+                loadProtocolDetailExpand(
+                  { path: path, title: title },
+                  queryText,
+                  focus || undefined
+                );
+                var slot = document.getElementById("clinical-detail-slot");
+                if (slot) {
+                  try {
+                    slot.scrollIntoView({ behavior: "smooth", block: "start" });
+                  } catch (e) {}
+                }
+              });
+            });
+          })
+          .catch(function () {});
+      })(items[ii]);
+    }
+  }
+
   function renderProtoLi(pr, ragMap, opts) {
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
@@ -10777,7 +11306,12 @@
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
-    var html = "<li>";
+    var html =
+      '<li data-proto-path="' +
+      escapeHtmlAttr(pr.path || "") +
+      '" data-proto-title="' +
+      escapeHtmlAttr(pr.title || "") +
+      '">';
     html +=
       '<a class="proto-link" href="' +
       href +
@@ -10930,7 +11464,7 @@
     };
   }
 
-  function loadProtocolDetailExpand(offer, queryText) {
+  function loadProtocolDetailExpand(offer, queryText, extractFocus) {
     if (!offer || !offer.path) return;
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
@@ -10981,6 +11515,7 @@
           offer.rag_support != null && !isNaN(Number(offer.rag_support))
             ? Number(offer.rag_support)
             : null,
+        extract_focus: extractFocus || undefined,
       }),
       signal: ctrl.signal,
     })
@@ -12590,6 +13125,8 @@
       bindProtocolFactsTabs();
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
+      populateSearchMethodistPanel(data);
+      bindProtocolSummaryNav(data);
       if (practicalOffer && !citationsOnly && !data.clinical_detail) {
         loadProtocolPractical(practicalOffer, data.query || "", icdForPractical);
       } else if (
@@ -14932,6 +15469,7 @@
   function initMethodistWorkbench() {
     hideMethodistLoginOverlay();
     updateMethodistChrome();
+    initSearchMethodistPanel();
 
     var enterBtn = document.getElementById("methodist-btn-enter");
     if (enterBtn && !enterBtn.getAttribute("data-wired")) {

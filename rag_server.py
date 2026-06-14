@@ -6055,7 +6055,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r126-analytics-descriptions-charts"
+BUILD_VERSION = "2026-06-01-r127-search-methodist-p0"
 
 
 def _app_version() -> str:
@@ -7283,6 +7283,33 @@ def api_methodist_queue(request: "Request", limit: int = Query(50, ge=5, le=200)
     from clinical_knowledge.methodist_queue import build_methodist_queue
 
     return build_methodist_queue(limit=limit)
+
+
+@app.get("/api/methodist/protocol-search")
+def api_methodist_protocol_search(
+    request: "Request",
+    q: str = Query("", min_length=2, max_length=120),
+    limit: int = Query(10, ge=1, le=20),
+) -> dict:
+    """Autocomplete протоколов каталога для разметки retrieval_fix (methodist only)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_protocol_search import search_catalog_protocols
+
+    query = q.strip()
+    return {"query": query, "items": search_catalog_protocols(query, limit=limit)}
+
+
+@app.get("/api/protocol-summary-nav")
+def api_protocol_summary_nav(
+    path: str = Query(..., min_length=3, max_length=512),
+    query: str = Query("", max_length=12000),
+    icd: str = Query("", max_length=256),
+) -> dict:
+    """Оглавление Protocol Summary для навигации по протоколу в UI поиска."""
+    from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
+
+    icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
+    return build_protocol_summary_nav(path.strip(), query=query, icd_codes=icd_codes)
 
 
 @app.get("/api/methodist/analysis/{analysis_id}")
