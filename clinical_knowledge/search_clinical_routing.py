@@ -59,6 +59,9 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
             "трансплант",
             "паллиат",
             "онкolog",
+            "оториноларингологическ",
+            "заболеваниями в-нас",
+            "заболеваниями в нас",
         ),
     },
     {
@@ -75,18 +78,58 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "query_markers": ("гипертон", "гипертенз", "давлен", "артериальн", "i10"),
         "icd_prefixes": ("I10", "I11", "I12", "I13", "I15"),
         "slugs": ("bolezni-sistemy-krovoobrashcheniya", "terapiya"),
-        "title_strong": ("гипертенз", "артериальн", "гипертон", "кardiol", "кардиол"),
-        "title_weak": ("сердечн", "krovoobrash"),
-        "title_wrong": ("вен ", "варикоз", "тромбофлеб", "мочев", "уролог", "невроген"),
+        "title_strong": ("гипертенз", "артериальн", "гипертон", "давлен"),
+        "title_weak": ("сердечн", "krovoobrash", "кровообращ", "cardio", "кардиол"),
+        "title_wrong": (
+            "вен ",
+            "варикоз",
+            "тромбофлеб",
+            "мочев",
+            "уролог",
+            "невроген",
+            "д-нас",
+            "дет нас",
+            "дет_нас",
+            "детс",
+            "pediatr",
+        ),
+    },
+    {
+        "id": "coronary",
+        "query_markers": ("ишем", "стенокард", "коронар", "инфаркт миокард"),
+        "icd_prefixes": ("I20", "I21", "I22", "I23", "I24", "I25"),
+        "slugs": ("bolezni-sistemy-krovoobrashcheniya",),
+        "title_strong": ("ишем", "стенокард", "инфаркт", "коронар", "ишемическ"),
+        "title_weak": ("krovoobrash", "кровообращ", "cardio", "кардиол"),
+        "title_wrong": (
+            "оторин",
+            "оторin",
+            "лор",
+            "ларинг",
+            "фаринг",
+            "тромбоз",
+            "глубоких вен",
+            "периферич",
+            "д-нас",
+            "дет нас",
+        ),
     },
     {
         "id": "heart_failure",
         "query_markers": ("сердечн", "недостат", "одыш", "отек", "отёк"),
         "icd_prefixes": ("I50", "I11", "I13"),
         "slugs": ("bolezni-sistemy-krovoobrashcheniya",),
-        "title_strong": ("сердечн", "недостат", "cardio"),
-        "title_weak": ("krovoobrash",),
-        "title_wrong": ("эндокрин", "почек", "nefrolog"),
+        "title_strong": ("сердечн", "недостат", "cardio", "сердечной недостат"),
+        "title_weak": ("krovoobrash", "кровообращ"),
+        "title_wrong": (
+            "эндокрин",
+            "почек",
+            "nefrolog",
+            "тромбоз",
+            "глубоких вен",
+            "периферич",
+            "варикоз",
+        ),
     },
     {
         "id": "allergy_rhinitis",
@@ -111,9 +154,18 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "query_markers": ("ожог", "термическ", "обвар", "отморож"),
         "icd_prefixes": ("T20", "T21", "T22", "T23", "T24", "T25", "T29", "T30", "T31", "T32"),
         "slugs": ("khirurgiya", "anesteziologiya-reanimatologiya"),
-        "title_strong": ("ожог", "термическ", "травм", "обожжен"),
+        "title_strong": ("ожог", "термическ", "обожжен"),
         "title_weak": ("реаним", "anestez"),
-        "title_wrong": ("урolog", "уролог", "мочев", "гинекolog"),
+        "title_wrong": (
+            "урolog",
+            "уролог",
+            "мочев",
+            "гинекolog",
+            "травмой живота",
+            "травма живота",
+            "травм живота",
+            "живота в стацион",
+        ),
     },
     {
         "id": "migraine",
@@ -167,7 +219,7 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "slugs": ("novoobrazovaniya",),
         "title_strong": ("онкolog", "онколог", "злокач", "новообраз", "зно"),
         "title_weak": (),
-        "title_wrong": ("орви", "гастрит"),
+        "title_wrong": ("орви", "гастрит", "паллиат", "фармакотерап"),
     },
     {
         "id": "ophthalmology",
@@ -254,6 +306,11 @@ def _title_blob(path: str, title: str) -> str:
     return re.sub(r"\s+", " ", raw).strip()
 
 
+def _marker_in_blob(marker: str, blob: str) -> bool:
+    m = re.sub(r"\s+", " ", str(marker or "").lower().replace("_", " ").replace("-", " ")).strip()
+    return bool(m) and m in blob
+
+
 def _icd_matches_prefixes(codes: list[str], prefixes: tuple[str, ...]) -> bool:
     for raw in codes:
         c = normalize_code(str(raw))
@@ -336,23 +393,26 @@ def score_path_for_clinical_routes(
         route = next((r for r in _CLINICAL_ROUTES if r["id"] == rid), None)
         if not route:
             continue
-        strong = sum(1 for m in route.get("title_strong") or () if m in blob)
-        weak = sum(1 for m in route.get("title_weak") or () if m in blob)
-        wrong = sum(1 for m in route.get("title_wrong") or () if m in blob)
-        if wrong and not strong:
+        strong = sum(1 for m in route.get("title_strong") or () if _marker_in_blob(m, blob))
+        weak = sum(1 for m in route.get("title_weak") or () if _marker_in_blob(m, blob))
+        wrong = sum(1 for m in route.get("title_wrong") or () if _marker_in_blob(m, blob))
+        touched = False
+        if wrong:
             pen = 14.0 + 3.0 * wrong
             if rid == "pregnancy":
                 pen += 6.0
             delta -= pen
-            matched.append(rid)
-        elif strong:
+            touched = True
+        if strong:
             boost = 8.0 + 3.0 * strong + 1.0 * weak
             if rid == "pregnancy":
                 boost += 4.0
             delta += boost
-            matched.append(rid)
-        elif weak:
+            touched = True
+        elif weak and not wrong:
             delta += 2.0 * weak
+            touched = True
+        if touched:
             matched.append(rid)
     return delta, matched
 
@@ -371,11 +431,11 @@ def title_match_score_for_routes(
         route = next((r for r in _CLINICAL_ROUTES if r["id"] == rid), None)
         if not route:
             continue
-        if any(m in blob for m in route.get("title_wrong") or ()):
-            if not any(m in blob for m in route.get("title_strong") or ()):
+        if any(_marker_in_blob(m, blob) for m in route.get("title_wrong") or ()):
+            if not any(_marker_in_blob(m, blob) for m in route.get("title_strong") or ()):
                 continue
-        strong = sum(1 for m in route.get("title_strong") or () if m in blob)
-        weak = sum(1 for m in route.get("title_weak") or () if m in blob)
+        strong = sum(1 for m in route.get("title_strong") or () if _marker_in_blob(m, blob))
+        weak = sum(1 for m in route.get("title_weak") or () if _marker_in_blob(m, blob))
         if strong == 0 and weak == 0:
             continue
         score = base + 10.0 + 6.0 * strong + 2.0 * weak

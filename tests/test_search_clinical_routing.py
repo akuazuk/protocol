@@ -86,3 +86,35 @@ def test_score_lupus_not_dermatology_bullous():
         route_ids=["lupus"],
     )
     assert delta < 0
+
+
+def test_detect_coronary_route_icd():
+    ids = detect_clinical_route_ids("", ["I25"])
+    assert "coronary" in ids
+
+
+def test_score_coronary_penalizes_ent_hub():
+    delta, _ = score_path_for_clinical_routes(
+        "minzdrav_protocols/otorinolaringologiya/ent_hub.pdf",
+        "КП оториноларингологическими заболеваниями в-нас",
+        route_ids=["coronary"],
+    )
+    assert delta < -10
+
+
+def test_score_hypertension_penalizes_pediatric_cardiology():
+    delta, _ = score_path_for_clinical_routes(
+        "minzdrav/bolezni-sistemy-krovoobrashcheniya/ped_cardio.pdf",
+        "КП кардиологическими заболеваниями д-нас",
+        route_ids=["hypertension"],
+    )
+    assert delta < -10
+
+
+def test_score_burn_penalizes_abdominal_trauma():
+    delta, _ = score_path_for_clinical_routes(
+        "minzdrav/khirurgiya/abd_trauma.pdf",
+        "КП травма живота в стационарных условиях",
+        route_ids=["burn"],
+    )
+    assert delta < -10

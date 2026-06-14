@@ -5573,6 +5573,7 @@ def _rerank_protocols_symptom_only(
         title = str(pr.get("title") or path).lower()
         blob = path + " " + title
         penalty = 0
+        boost = 0
         if any(k in blob for k in rare) and not any(k in ql for k in rare):
             penalty += 2
         if has_fever and any(k in blob for k in chronic_mismatch):
@@ -5584,6 +5585,13 @@ def _rerank_protocols_symptom_only(
                 penalty += 20
             elif any(k in blob for k in gi_strong_title):
                 boost += 8
+        if child_query and has_cough and (has_fever or "температ" in ql):
+            if any(k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr", "орви", "респиратор")):
+                boost += 10
+            if "бронхит" in blob and not any(
+                k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr")
+            ):
+                penalty += 14
         if has_throat and not throat_distress and "эпиглоттит" in blob:
             penalty += 4
         if any(k in blob for k in ("анестезиолог", "анестези", "хирургическ")) and has_throat:
@@ -5592,7 +5600,6 @@ def _rerank_protocols_symptom_only(
             penalty += 6
         if (has_cough or has_fever) and any(k in blob for k in wrong_acute):
             penalty += 8
-        boost = 0
         if has_cough and not has_throat:
             if any(k in blob for k in cough_acute):
                 boost += 5
@@ -6769,7 +6776,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r155-search-ui-matrix-kz"
+BUILD_VERSION = "2026-05-31-r156-probe-routing"
 
 
 def _app_version() -> str:
