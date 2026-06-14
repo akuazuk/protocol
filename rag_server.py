@@ -6690,7 +6690,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r150-search-probe-fixes-kz-auto"
+BUILD_VERSION = "2026-05-31-r151-search-funnel-ux-attention"
 
 
 def _app_version() -> str:
@@ -7384,6 +7384,16 @@ def api_assist(body: AssistIn) -> dict:
         focus_codes=icd_for_focus if icd_for_focus else None,
     )
     red_flags = _red_flags_from_retrieval(retrieved)
+    from clinical_knowledge.clinical_attention import build_clinical_attention
+
+    clinical_attention = build_clinical_attention(
+        query=q,
+        proto_list=proto_list if isinstance(proto_list, list) else [],
+        red_flags=red_flags,
+        audience_inferred=audience_inferred,
+        diagnostic_notice=diag_mode.get("notice"),
+        diagnostic_mode=diag_mode.get("mode"),
+    )
 
     meta_paths: set[str] = set()
     for r in retrieved:
@@ -7432,6 +7442,7 @@ def api_assist(body: AssistIn) -> dict:
         "query_clinical_refinement": query_clinical_refinement,
         "retrieval_embedding": dict(_get_retrieval_embed_meta() or {"used": False}),
         "red_flags": red_flags,
+        "clinical_attention": clinical_attention,
         "protocol_icd_mentions": protocol_icd_mentions,
         "routing_version": int(_routing.get("version", 1)) if _routing else 1,
         "chunk_vote_majority": chunk_vote_majority,

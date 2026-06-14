@@ -7895,6 +7895,71 @@
       color: var(--green-800);
     }
 
+    .search-wizard-chip--fit-high {
+      border-color: rgba(16, 185, 129, 0.55);
+      background: rgba(236, 253, 245, 0.95);
+    }
+
+    .search-wizard-chip--fit-medium {
+      border-color: rgba(245, 158, 11, 0.55);
+      background: rgba(255, 251, 235, 0.95);
+    }
+
+    .search-wizard-chip--fit-low {
+      border-color: rgba(239, 68, 68, 0.45);
+      background: rgba(254, 242, 242, 0.92);
+    }
+
+    .wizard-fit-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .wizard-fit-badge--high {
+      background: rgba(16, 185, 129, 0.2);
+      color: #047857;
+    }
+
+    .wizard-fit-badge--medium {
+      background: rgba(245, 158, 11, 0.22);
+      color: #b45309;
+    }
+
+    .wizard-fit-badge--low {
+      background: rgba(239, 68, 68, 0.16);
+      color: #b91c1c;
+    }
+
+    .assist-sec--attention {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: linear-gradient(155deg, #fffbeb 0%, #ffffff 70%);
+    }
+
+    .assist-attention-list {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+    }
+
+    .assist-attention-list li {
+      margin: 0.35rem 0;
+      line-height: 1.45;
+      font-size: 0.88rem;
+    }
+
+    .assist-attention-list li.attention--high {
+      color: #991b1b;
+    }
+
+    .assist-attention-list li.attention--medium {
+      color: #92400e;
+    }
+
     .search-wizard-step-actions {
       margin: 0.55rem 0 0;
     }
@@ -8489,7 +8554,7 @@
         <p class="search-quick-start__label">Быстрый старт</p>
         <div class="demo-cases-chips" id="search-quick-chips"></div>
         <p class="search-quick-start__hint">
-          Нажмите пример — запрос подставится и запустится подбор. Для жалоб без кода используйте «Подобрать коды МКБ-10».
+          Нажмите пример — запрос подставится и запустится пошаговый подбор (аудитория → коды МКБ → протоколы).
         </p>
       </div>
 
@@ -8568,21 +8633,16 @@
 
       <div class="search-panel">
         <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
-          <label>
+          <label class="search-mode-toolbar__citations-only">
             <input type="checkbox" id="citations-only-mode" />
             Только цитаты из протоколов (без краткого ответа модели)
           </label>
-          <label>
-            <input type="checkbox" id="search-stepped-mode" />
-            Пошаговый подбор (коды → список → протокол)
-          </label>
-          <span class="info-panel-note" style="margin: 0">Для аудита: видны PDF-выдержки и ссылки, без краткой интерпретации сервиса.</span>
+          <span class="info-panel-note" style="margin: 0">Пошаговый подбор включён: после «Найти» — уточнение аудитории и кодов МКБ при необходимости.</span>
         </div>
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
-            Индекс рассчитан под сопоставление с <strong>формулировками диагноза и МКБ-10</strong> в протоколах. При
-            одних жалобах сначала нажмите <strong>«Подобрать коды МКБ»</strong>, затем - <strong>«Найти протоколы»</strong>.
+            Введите диагноз, код МКБ-10 или жалобы и нажмите <strong>«Найти протоколы»</strong> — система предложит уточнить аудиторию и коды МКБ, затем покажет протоколы и рекомендации для заключения.
           </p>
         </div>
         <div id="section-query" class="section-anchor section-block--query">
@@ -8595,21 +8655,20 @@
                 rows="6"
                 autocomplete="off"
                 maxlength="12000"
-                placeholder="Предпочтительно: диагноз словами и/или код МКБ-10 (например J20.9, I10). Можно кратко описать жалобы - тогда сначала нажмите «Подобрать коды МКБ» под полем."
+                placeholder="Диагноз и/или МКБ-10 (J20.9, I10) или кратко жалобы — после «Найти» система предложит уточнения."
                 aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
               ></textarea>
               <p class="query-form-hint" id="query-form-hint">
-                Поиск в корпусе ведётся в основном по <strong>совпадению с диагнозом и кодами МКБ-10</strong> в текстах
-                протоколов. Если указаны только симптомы, сервис при полном поиске тоже пытается вывести коды, но надёжнее
-                сначала нажать <strong>«Подобрать коды МКБ»</strong>, проверить строку и затем <strong>«Найти протоколы»</strong>.
+                Поиск ведётся по диагнозу и МКБ-10 в текстах протоколов. Если указаны только симптомы, нажмите
+                <strong>«Найти протоколы»</strong> — на следующем шаге отметьте подходящие коды МКБ (цветом: зелёный — лучшее совпадение).
               </p>
               <div
-                class="query-toolbar"
+                class="query-toolbar query-toolbar--voice-only"
                 role="group"
-                aria-label="Действия под полем: голосовой ввод и подбор кодов МКБ"
+                aria-label="Голосовой ввод под полем запроса"
               >
                 <div class="query-toolbar__main">
-                  <div class="query-toolbar__col">
+                  <div class="query-toolbar__col query-toolbar__col--full">
                     <p class="query-toolbar__label" id="query-toolbar-voice-label">Голосовой ввод</p>
                     <button
                       type="button"
@@ -8623,17 +8682,6 @@
                     <p class="query-toolbar__hint" id="voice-hint">
                       Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
                     </p>
-                  </div>
-                  <div class="query-toolbar__sep" aria-hidden="true"></div>
-                  <div class="query-toolbar__col" id="icd-preflight">
-                    <p class="query-toolbar__label" id="query-toolbar-icd-label">Сначала коды МКБ</p>
-                    <button type="button" class="btn-assist btn-icd-preflight" id="btn-icd-preflight">
-                      Подобрать коды МКБ-10
-                    </button>
-                    <p class="query-toolbar__hint">
-                      Если в поле только жалобы без диагноза - подбор кодов перед поиском протоколов.
-                    </p>
-                    <div class="icd-preflight-result" id="icd-preflight-result" hidden></div>
                   </div>
                 </div>
                 <div class="query-toolbar__full">
@@ -8668,9 +8716,8 @@
             <div class="hero-help-step">
               <span class="hero-help-step-num" aria-hidden="true">1</span>
               <div class="hero-help-step-body">
-                Укажите при необходимости <strong>контекст и рубрики</strong>. В поле запроса лучше сразу ввести
-                <strong>диагноз и/или МКБ-10</strong>. Если есть только жалобы - нажмите <strong>«Подобрать коды МКБ»</strong>,
-                проверьте предложенные коды, при необходимости отредактируйте текст и затем <strong>«Найти протоколы»</strong>.
+                Укажите при необходимости <strong>контекст и рубрики</strong>. Введите
+                <strong>диагноз и/или МКБ-10</strong> или жалобы и нажмите <strong>«Найти протоколы»</strong> — система проведёт через шаги уточнения.
               </div>
             </div>
             <div class="hero-help-step">
@@ -8694,7 +8741,7 @@
             <span class="hero-chip">J20.9 острый бронхит</span>
             <span class="hero-chip">I10 эссенциальная гипертензия</span>
             <span class="hero-chip">E11.9 сахарный диабет 2 типа</span>
-            <span class="hero-chip">жалобы → «Подобрать коды МКБ», затем поиск</span>
+            <span class="hero-chip">кашель 3 дня → Найти → коды МКБ</span>
           </div>
           <p class="hero-help-footnote">
             <strong>Совет:</strong> на телефоне можно надиктовать в поле кнопкой <strong>«Надиктовать в поле»</strong> (слева под
@@ -10044,11 +10091,7 @@
         var inp = document.getElementById("q");
         if (inp) inp.value = dc.query;
         updateSearchIcdDetect();
-        if (dc.icdPreflight) {
-          runIcdPreflight().catch(function () {});
-        } else {
-          runAssist().catch(function () {});
-        }
+        runAssist().catch(function () {});
       });
       wrap.appendChild(b);
     });
@@ -14041,6 +14084,33 @@
     return '<p class="assist-search-meta">' + escapeHtml(parts.join(" · ")) + "</p>";
   }
 
+  function renderClinicalAttentionBlock(data) {
+    var items = (data && data.clinical_attention) || [];
+    if (!items.length) return "";
+    var html =
+      '<div class="assist-sec assist-sec--attention" role="region" aria-label="На что обратить внимание">';
+    html +=
+      '<span class="assist-sec-label assist-sec-label--alert">На что обратить внимание при оформлении заключения</span>';
+    html +=
+      '<p class="assist-attention-lead" style="margin:0.25rem 0 0.5rem;font-size:0.84rem;color:var(--muted)">Ориентиры по выбранным протоколам; не заменяют очный осмотр и полный текст КП.</p>';
+    html += '<ul class="assist-attention-list">';
+    var ai;
+    for (ai = 0; ai < items.length; ai++) {
+      var it = items[ai];
+      var sev = it.severity || "info";
+      var cls =
+        sev === "high" ? "attention--high" : sev === "medium" ? "attention--medium" : "";
+      html +=
+        '<li class="' +
+        cls +
+        '">' +
+        escapeHtml(String(it.text || "")) +
+        "</li>";
+    }
+    html += "</ul></div>";
+    return html;
+  }
+
   function renderLlmOut(data) {
     var out = document.getElementById("llm-out");
     if (!out) return;
@@ -14272,6 +14342,10 @@
           html +=
             '<p class="assist-embed-note">Отбор фрагментов дополнительно уточняется по смыслу запроса поверх текстового поиска.</p>';
         }
+      }
+
+      if (rawProtos.length && !methodistSearch && wiz.step !== "detail") {
+        html += renderClinicalAttentionBlock(data);
       }
 
       html +=
@@ -17043,8 +17117,19 @@
 
   function isSearchSteppedMode() {
     if (window.__methodistMode) return true;
-    var el = document.getElementById("search-stepped-mode");
-    return !!(el && el.checked);
+    if (window.__mainAppTab === MAIN_TAB_CONSULT) return false;
+    return true;
+  }
+
+  function scrollToSearchWizard() {
+    showResultsSection(true);
+    var sr = document.getElementById("section-results");
+    var target = sr || document.getElementById("llm-out");
+    if (target) {
+      try {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (eScroll) {}
+    }
   }
 
   function clinicalQueryKeyForPopulation(qRaw) {
@@ -17128,6 +17213,37 @@
     return '<span class="' + cls + '">' + String(score) + "%</span>";
   }
 
+  function icdFitTierFromScore(score, bucket, rankIdx) {
+    if (bucket === "detected") return "high";
+    if (rankIdx === 0) return "high";
+    var n = Number(score);
+    if (!isNaN(n)) {
+      if (n >= 72) return "high";
+      if (n >= 48) return "medium";
+      return "low";
+    }
+    return rankIdx <= 1 ? "medium" : "low";
+  }
+
+  function formatWizardFitBadge(fitTier) {
+    var tier = fitTier || "medium";
+    var label =
+      tier === "high"
+        ? "лучшее совпадение"
+        : tier === "medium"
+          ? "возможно"
+          : "слабое совпадение";
+    return (
+      '<span class="wizard-fit-badge wizard-fit-badge--' +
+      escapeHtml(tier) +
+      '" aria-label="Степень совпадения: ' +
+      escapeHtml(label) +
+      '">' +
+      escapeHtml(label) +
+      "</span>"
+    );
+  }
+
   function buildIcdWizardChoices(icd) {
     var choices = [];
     var seen = {};
@@ -17154,6 +17270,7 @@
         title_ru: title,
         appendLine: buildIcdPreflightAppendLine(c, title),
         score: clampWizardScore(score),
+        bucket: bucket,
         label: title ? title : c,
       });
     }
@@ -17173,10 +17290,15 @@
         title_ru: "",
         appendLine: buildIcdPreflightAppendLine(c2, ""),
         score: clampWizardScore(58 - di * 3),
+        bucket: "retrieval",
         label: c2,
       });
     }
-    return sortWizardChoices(choices);
+    var sorted = sortWizardChoices(choices);
+    for (di = 0; di < sorted.length; di++) {
+      sorted[di].fitTier = icdFitTierFromScore(sorted[di].score, sorted[di].bucket, di);
+    }
+    return sorted;
   }
 
   function buildIcdMultiAppendLine(selectedChoices) {
@@ -17246,9 +17368,11 @@
       for (ci = 0; ci < sorted.length; ci++) {
         var ch = sorted[ci];
         var isTop = ch.score != null && ch.score === topScore;
+        var fitCls = ch.fitTier ? " search-wizard-chip--fit-" + ch.fitTier : "";
         html +=
           '<button type="button" class="search-wizard-chip search-wizard-chip--pick' +
-          (isTop ? " search-wizard-chip--top" : "") +
+          (isTop && !ch.fitTier ? " search-wizard-chip--top" : "") +
+          fitCls +
           '" data-choice-id="' +
           escapeHtmlAttr(String(ch.id)) +
           '" role="listitem" aria-pressed="false">';
@@ -17259,7 +17383,11 @@
           '<span class="search-wizard-chip__label">' +
           escapeHtml(ch.label || String(ch.id)) +
           "</span>";
-        html += formatWizardRatingBadge(ch.score, isTop);
+        if (ch.fitTier) {
+          html += formatWizardFitBadge(ch.fitTier);
+        } else {
+          html += formatWizardRatingBadge(ch.score, isTop);
+        }
         html += "</button>";
       }
       html += "</div>";
@@ -17527,6 +17655,7 @@
         });
       },
     });
+    scrollToSearchWizard();
   }
 
   function renderSearchWizardRubricStep(qRaw) {
@@ -17582,6 +17711,7 @@
         });
       },
     });
+    scrollToSearchWizard();
   }
 
   function truncateExcerpt(text, maxLen) {
@@ -17607,23 +17737,6 @@
   }
 
   function initSearchSteppedToggle() {
-    var el = document.getElementById("search-stepped-mode");
-    if (!el) return;
-    try {
-      var stored = localStorage.getItem(SEARCH_STEPPED_KEY);
-      el.checked = stored === null ? true : stored === "1";
-    } catch (e) {
-      el.checked = true;
-    }
-    el.addEventListener("change", function () {
-      try {
-        localStorage.setItem(SEARCH_STEPPED_KEY, el.checked ? "1" : "0");
-      } catch (e) {}
-      if (!el.checked) {
-        window.__searchWizard = { step: "query" };
-        updateSearchWizardBar(null);
-      }
-    });
     var backBtn = document.getElementById("btn-search-wizard-back");
     if (backBtn && !backBtn.getAttribute("data-wired")) {
       backBtn.setAttribute("data-wired", "1");
@@ -17724,7 +17837,7 @@
     var icd = (data && data.icd) || {};
     var choices = buildIcdWizardChoices(icd).slice(0, 12);
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "По жалобам без кода отметьте один или несколько кодов МКБ-10 — так точнее найдутся протоколы.",
+      lead: "Отметьте коды МКБ-10 по степени совпадения: зелёный — лучшее, жёлтый — возможно, красный — слабое. Можно выбрать несколько.",
       hint: data && data.hint ? data.hint : "",
       choices: choices,
       multi: true,
@@ -17756,12 +17869,7 @@
         });
       },
     });
-    var sr = document.getElementById("section-results");
-    if (sr) {
-      try {
-        sr.scrollIntoView({ behavior: "smooth", block: "start" });
-      } catch (e) {}
-    }
+    scrollToSearchWizard();
   }
 
   function runIcdPreflightForWizard() {
@@ -18815,9 +18923,7 @@
             switchMainAppTab(MAIN_TAB_SEARCH);
             var inp = document.getElementById("q");
             if (inp && tc.query) inp.value = tc.query;
-            if (tc.icd_preflight) {
-              runIcdPreflight().catch(function () {});
-            } else if (tc.query) {
+            if (tc.query) {
               runAssist().catch(function () {});
             }
           });
@@ -18903,10 +19009,9 @@
     { label: "E11.9 СД 2 типа", tab: "search", query: "E11.9 сахарный диабет 2 типа" },
     { label: "M32.9 СКВ", tab: "search", query: "M32.9 системная красная волчанка" },
     {
-      label: "Жалобы → МКБ",
+      label: "Жалобы → воронка",
       tab: "search",
       query: "кашель 5 дней, температура субфебрильная, одышки нет",
-      icdPreflight: true,
     },
     { label: "Вкладка: проверка КЗ", tab: "consult", query: "" },
   ];
@@ -19021,9 +19126,7 @@
         switchMainAppTab(MAIN_TAB_SEARCH);
         var inp = document.getElementById("q");
         if (inp && dc.query) inp.value = dc.query;
-        if (dc.icdPreflight) {
-          runIcdPreflight().catch(function () {});
-        } else if (dc.query) {
+        if (dc.query) {
           runAssist().catch(function () {});
         }
       });
@@ -21011,10 +21114,6 @@
       btn.disabled = !!busy;
       btn.classList.toggle("is-busy", !!busy);
     }
-    var btnIcd = document.getElementById("btn-icd-preflight");
-    if (btnIcd) {
-      btnIcd.disabled = !!busy;
-    }
     var btnVoice = document.getElementById("btn-voice");
     if (btnVoice && !btnVoice.classList.contains("voice-unavailable")) {
       btnVoice.disabled = !!busy;
@@ -21028,200 +21127,6 @@
     return tr
       ? "МКБ-10 для поиска протокола: " + c + " (" + tr + ")"
       : "МКБ-10 для поиска протокола: " + c;
-  }
-
-  function renderIcdPreflightResult(data) {
-    var box = document.getElementById("icd-preflight-result");
-    if (!box) return;
-    var icd = data.icd || {};
-    var hint = data.hint;
-    var appendLine = data.append_line;
-    var choices = buildIcdWizardChoices(icd);
-    window.__icdPreflightChoices = choices;
-    window.__icdAppendLine = "";
-    var html = "";
-    if (hint) {
-      html +=
-        '<div class="icd-preflight-result icd-preflight-result--hint">' +
-        escapeHtml(hint) +
-        "</div>";
-    }
-    if (choices.length) {
-      html +=
-        '<p><strong>Предложенные коды МКБ-10</strong> <span class="search-wizard-select-hint">(можно несколько)</span>:</p>';
-      html += '<ul class="icd-preflight-codes">';
-      var topScore = choices[0].score;
-      var ci;
-      for (ci = 0; ci < choices.length; ci++) {
-        var ch = choices[ci];
-        var rid = "icd-preflight-cb-" + ci;
-        var isTop = ch.score != null && ch.score === topScore;
-        html +=
-          '<li class="icd-preflight-codes__item' +
-          (isTop ? " icd-preflight-codes__item--top" : "") +
-          '">' +
-          '<label class="icd-preflight-codes__label" for="' +
-          escapeHtmlAttr(rid) +
-          '">' +
-          '<input type="checkbox" name="icd-preflight-choice" id="' +
-          escapeHtmlAttr(rid) +
-          '" value="' +
-          String(ci) +
-          '"' +
-          (ci === 0 ? " checked" : "") +
-          " />" +
-          "<code>" +
-          escapeHtml(ch.code) +
-          "</code>" +
-          (ch.title_ru ? " - " + escapeHtml(ch.title_ru) : "") +
-          formatWizardRatingBadge(ch.score, isTop) +
-          "</label></li>";
-      }
-      html += "</ul>";
-    }
-    if (choices.length) {
-      window.__icdAppendLine = buildIcdMultiAppendLine([choices[0]]);
-      html +=
-        '<p class="icd-preflight-append-preview" style="margin-top:0.5rem">Будет добавлена строка: <em id="icd-preflight-append-em">' +
-        escapeHtml(window.__icdAppendLine) +
-        "</em></p>" +
-        '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
-    } else if (appendLine) {
-      window.__icdAppendLine = appendLine;
-      html +=
-        '<p class="icd-preflight-append-preview" style="margin-top:0.5rem">Будет добавлена строка: <em id="icd-preflight-append-em">' +
-        escapeHtml(appendLine) +
-        "</em></p>" +
-        '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
-    } else if (!hint && !choices.length) {
-      html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
-    }
-    box.innerHTML = html;
-    box.hidden = false;
-
-    function syncIcdPreflightPreview() {
-      var chList = window.__icdPreflightChoices || [];
-      var checked = box.querySelectorAll('input[name="icd-preflight-choice"]:checked');
-      var sel = [];
-      var ri;
-      for (ri = 0; ri < checked.length; ri++) {
-        var idx = parseInt(checked[ri].value, 10);
-        if (chList[idx]) sel.push(chList[idx]);
-      }
-      var line = buildIcdMultiAppendLine(sel);
-      window.__icdAppendLine = line;
-      var em = document.getElementById("icd-preflight-append-em");
-      if (em) em.textContent = line || "—";
-    }
-
-    box.querySelectorAll('input[name="icd-preflight-choice"]').forEach(function (cb) {
-      cb.addEventListener("change", syncIcdPreflightPreview);
-    });
-    syncIcdPreflightPreview();
-
-    var applyBtn = document.getElementById("btn-icd-apply");
-    if (applyBtn) {
-      applyBtn.addEventListener("click", function () {
-        var chList = window.__icdPreflightChoices || [];
-        var checked = box.querySelectorAll('input[name="icd-preflight-choice"]:checked');
-        var sel = [];
-        var ri;
-        for (ri = 0; ri < checked.length; ri++) {
-          var idx = parseInt(checked[ri].value, 10);
-          if (chList[idx]) sel.push(chList[idx]);
-        }
-        var inp = document.getElementById("q");
-        if (inp && sel.length) {
-          inp.value = appendIcdChoicesToQuery(inp.value || "", sel);
-        }
-        box.hidden = true;
-        box.innerHTML = "";
-        window.__icdPreflightChoices = [];
-        window.__icdAppendLine = "";
-        runAssist().catch(function (e) {
-          console.error(e);
-        });
-      });
-    }
-  }
-
-  function runIcdPreflight() {
-    var qInput = document.getElementById("q");
-    var raw = ((qInput && qInput.value) || "").trim();
-    var prep = preprocessSearchQuery(raw);
-    if (!prep.ok) {
-      alert(prep.message);
-      return;
-    }
-    raw = prep.query;
-    if (qInput) qInput.value = raw;
-    var qSend =
-      raw.indexOf("=== Контекст пациента ===") === 0
-        ? raw
-        : buildFullQuery(raw);
-    var baseEl = document.getElementById("rag-base");
-    var base = normalizeRagBaseForRequest(
-      baseEl && baseEl.value ? baseEl.value : ""
-    );
-    var btn = document.getElementById("btn-icd-preflight");
-    var box = document.getElementById("icd-preflight-result");
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "Подбор кодов…";
-    }
-    if (box) {
-      box.hidden = false;
-      box.innerHTML =
-        '<p class="icd-preflight-result">Сопоставление с справочником МКБ-10…</p>';
-    }
-    fetch(base + "/health")
-      .then(function (h) {
-        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-        return h.json();
-      })
-      .then(function (health) {
-        if (!health.gemini_configured) {
-          throw new Error("На сервере не настроен ключ доступа к обработке запросов.");
-        }
-        return fetch(base + "/api/icd-suggest", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: qSend }),
-        });
-      })
-      .then(function (r) {
-        return r.text().then(function (text) {
-          var j = parseJsonSafe(text);
-          if (!r.ok || !j || typeof j !== "object") {
-            var d = j && j.detail;
-            if (Array.isArray(d)) {
-              d = d
-                .map(function (x) {
-                  return x.msg || JSON.stringify(x);
-                })
-                .join("; ");
-            }
-            throw new Error(d || text || r.statusText);
-          }
-          return j;
-        });
-      })
-      .then(function (data) {
-        renderIcdPreflightResult(data);
-      })
-      .catch(function (err) {
-        if (box) {
-          box.hidden = false;
-          box.innerHTML =
-            '<p class="error">' + escapeHtml(String(err.message || err)) + "</p>";
-        }
-      })
-      .finally(function () {
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = "Подобрать коды МКБ-10";
-        }
-      });
   }
 
   function getAssistLoadingHtml() {
@@ -21708,12 +21613,6 @@
     e.preventDefault();
     doAssist();
   });
-  var btnIcdPf = document.getElementById("btn-icd-preflight");
-  if (btnIcdPf) {
-    btnIcdPf.addEventListener("click", function () {
-      runIcdPreflight();
-    });
-  }
   var params = new URLSearchParams(window.location.search).get("q");
   if (params) {
     input.value = params;
