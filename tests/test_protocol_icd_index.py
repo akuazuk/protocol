@@ -72,3 +72,27 @@ def test_lookup_rubric_fallback_when_icd_missing_from_catalog():
     assert protos, "expected oncology protocols via rubric fallback for C50.9"
     paths = " ".join(p.get("path", "") for p in protos).lower()
     assert "novoobrazovaniya" in paths
+
+
+def test_lookup_sore_throat_r07_excludes_hiv_and_pediatric():
+    """R07.0 + adult: не подмешивать J02 из жалоб; ВИЧ и детские КП не должны быть top."""
+    pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
+    pii._inverted_index.cache_clear()
+    q = (
+        "болит горло и температура 38\n"
+        "Контекст подбора: взрослое население\n"
+        "МКБ-10: R07.0"
+    )
+    result = pii.lookup_protocols_by_icd(
+        icd_codes=["R07.0"],
+        query=q,
+        population="adult",
+        limit=6,
+    )
+    protos = result.get("protocols") or []
+    assert protos, "expected ENT/respiratory protocols for sore throat"
+    titles = " ".join(p.get("title", "") for p in protos).lower()
+    assert "вич" not in titles
+    assert all(p.get("audience") != "pediatric" for p in protos)
+    top = (protos[0].get("title") or "").lower()
+    assert any(k in top for k in ("оториноларинг", "отоларинг", "орви", "респиратор", "фаринг", "ангин"))

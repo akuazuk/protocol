@@ -6972,7 +6972,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r165-icd-lookup-fallback-fix"
+BUILD_VERSION = "2026-05-31-r166-icd-scoring-throat-fix"
 
 
 def _app_version() -> str:

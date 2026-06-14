@@ -30,6 +30,7 @@ enrich_diagnosis_codes = _diag.enrich_diagnosis_codes
 _ICD_RUBRIC: dict[str, list[str]] = {
     "I": ["bolezni-sistemy-krovoobrashcheniya"],
     "J": ["pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya"],
+    "R": ["pulmonologiya-ftiziatriya", "otorinolaringologiya", "infektsionnye-zabolevaniya"],
     "E": ["endokrinologiya-narusheniya-obmena-veshchestv"],
     "K": ["gastroenterologiya"],
     "G": ["nevrologiya-neyrokhirurgiya"],
@@ -75,6 +76,44 @@ def _title_tokens(text: str) -> set[str]:
     return set(re.findall(r"[а-яёa-z0-9]{4,}", (text or "").lower(), re.I))
 
 
+def _primary_covers_code(primary: set[str], code: str) -> bool:
+    root = _icd_root(code)
+    letter = code[:1].upper()
+    for p in primary:
+        if p == code or _icd_root(p) == root:
+            return True
+        if len(p) >= 1 and p[0].upper() == letter:
+            return True
+    return False
+
+
+def _symptom_title_boost(query: str, title: str) -> tuple[float, list[str]]:
+    """Бонус/штраф по симптомам в запросе vs тема протокола в названии."""
+    ql = (query or "").lower()
+    tl = (title or "").lower()
+    score = 0.0
+    reasons: list[str] = []
+    throat_q = any(s in ql for s in ("горл", "глот", "фаринг", "ангин"))
+    if throat_q:
+        if any(t in tl for t in ("фаринг", "ангин", "тонзил", "горл", "орви", "тонзилл")):
+            score += 28.0
+            reasons.append("symptom↔title throat")
+        if any(t in tl for t in ("оториноларинг", "отоларинг", "лор ")):
+            score += 22.0
+            reasons.append("symptom↔title ent")
+        if "дистресс" in tl and "дистресс" not in ql:
+            score -= 45.0
+            reasons.append("symptom↔title ards penalty")
+        if any(t in tl for t in ("вич", "hiv", "иммунодефицит", "сифилис", "туберкул")):
+            score -= 70.0
+            reasons.append("symptom↔title topic mismatch")
+    if any(s in ql for s in ("температ", "лихорад", "жар")):
+        if any(t in tl for t in ("орви", "респиратор", "инфекц", "лихорад", "пневмон", "ангин", "фаринг")):
+            score += 12.0
+            reasons.append("symptom↔title fever")
+    return score, reasons
+
+
 @lru_cache(maxsize=1)
 def _inverted_index() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """exact code -> paths, icd root -> paths."""
@@ -116,6 +155,7 @@ def _score_entry(
     query_icd: set[str],
     query_roots: set[str],
     query_tokens: set[str],
+    query_text: str,
     rubric_slugs: set[str],
     request_aud: str | None,
 ) -> tuple[float, list[str]]:
@@ -130,22 +170,42 @@ def _score_entry(
             score += 100.0
             reasons.append(f"exact {code} in icd10_primary")
         elif code in all_icd:
-            score += 80.0
-            reasons.append(f"exact {code} in icd10_all")
+            score += 22.0
+            reasons.append(f"secondary {code} in icd10_all")
+            if primary and not _primary_covers_code(primary, code):
+                score -= 35.0
+                reasons.append("incidental icd10_all")
         else:
             root = _icd_root(code)
-            for ic in all_icd | primary:
+            matched = False
+            for ic in primary:
                 if ic.startswith(root) or code.startswith(_icd_root(ic)):
-                    score += 60.0
-                    reasons.append(f"prefix {code}↔{ic}")
+                    score += 55.0
+                    reasons.append(f"prefix {code}↔{ic} (primary)")
+                    matched = True
                     break
+            if not matched:
+                for ic in all_icd:
+                    if ic.startswith(root) or code.startswith(_icd_root(ic)):
+                        score += 18.0
+                        reasons.append(f"prefix {code}↔{ic} (secondary)")
+                        if primary and not _primary_covers_code(primary, code):
+                            score -= 25.0
+                            reasons.append("incidental prefix")
+                        break
 
     for root in query_roots:
-        for ic in all_icd | primary:
+        for ic in primary:
             if _icd_root(ic) == root:
                 score += 25.0
-                reasons.append(f"same root {root}")
+                reasons.append(f"same root {root} (primary)")
                 break
+        else:
+            for ic in all_icd:
+                if _icd_root(ic) == root:
+                    score += 10.0
+                    reasons.append(f"same root {root} (secondary)")
+                    break
 
     slug = str(row.get("specialty_slug") or "")
     if slug and slug in rubric_slugs:
@@ -159,6 +219,11 @@ def _score_entry(
         score += min(15.0, 3.0 * overlap)
         reasons.append(f"title overlap ×{overlap}")
 
+    sym_sc, sym_reasons = _symptom_title_boost(query_text, title)
+    if sym_sc:
+        score += sym_sc
+        reasons.extend(sym_reasons)
+
     aud = str(row.get("audience") or "any")
     if request_aud == "adult" and aud == "adult":
         score += 15.0
@@ -167,7 +232,7 @@ def _score_entry(
         score += 15.0
         reasons.append("audience pediatric")
     elif _audience_mismatch(request_aud, aud):
-        score -= 50.0
+        score -= 80.0
         reasons.append("audience mismatch")
 
     return score, reasons
@@ -177,8 +242,23 @@ def _norm_icd(code: str) -> str:
     return normalize_code(code)
 
 
-def _expand_icd_for_lookup(query: str, icd_codes: list[str] | None) -> list[str]:
+def _expand_icd_for_lookup(
+    query: str,
+    icd_codes: list[str] | None,
+    *,
+    explicit_only: bool = False,
+) -> list[str]:
+    """explicit_only: не подмешивать J02/J06 из жалоб, если код уже выбран в воронке."""
     raw: list[str] = list(icd_codes or [])
+    if explicit_only:
+        out: list[str] = []
+        seen: set[str] = set()
+        for c in raw:
+            nc = normalize_code(str(c))
+            if nc and nc not in seen:
+                seen.add(nc)
+                out.append(nc)
+        return out
     for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
         raw.append(m.group(1).upper())
     ordered, _ = enrich_diagnosis_codes(query, raw)
@@ -205,6 +285,7 @@ def lookup_protocols_by_icd(
     population: str | None = None,
     rubric_slugs: list[str] | None = None,
     limit: int = 8,
+    explicit_icd_only: bool = False,
 ) -> dict[str, Any]:
     """Детерминированный подбор PDF по МКБ без RAG."""
     t0 = time.perf_counter()
@@ -218,7 +299,8 @@ def lookup_protocols_by_icd(
             "expanded_icd": [],
         }
 
-    expanded = _expand_icd_for_lookup(query, icd_codes)
+    use_explicit_only = explicit_icd_only or bool(icd_codes)
+    expanded = _expand_icd_for_lookup(query, icd_codes, explicit_only=use_explicit_only)
     query_icd = {normalize_code(c) for c in expanded if c}
     query_roots = {_icd_root(c) for c in query_icd}
     rubric_set = {s.strip() for s in (rubric_slugs or []) if s}
@@ -260,12 +342,20 @@ def lookup_protocols_by_icd(
             query_icd=query_icd,
             query_roots=query_roots,
             query_tokens=query_tokens,
+            query_text=query,
             rubric_slugs=rubric_set,
             request_aud=request_aud,
         )
         if sc <= 0:
             continue
         scored.append((sc, row, reasons))
+
+    if request_aud in ("adult", "child"):
+        aud_filtered = [
+            item for item in scored if not _audience_mismatch(request_aud, str(item[1].get("audience") or "any"))
+        ]
+        if aud_filtered:
+            scored = aud_filtered
 
     scored.sort(key=lambda x: (-x[0], x[1].get("path") or ""))
     top = scored[: max(limit, 1)]
