@@ -7108,9 +7108,22 @@
     }
 
     .analytics-tab-page {
-      max-width: 1180px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 0.5rem 0 2rem;
+      padding: 0.5rem 0 2.5rem;
+    }
+
+    #panel-analytics-stats {
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.35) 0%, rgba(255, 255, 255, 0) 28%);
+    }
+
+    body.app-tab-analytics #site-bottom-zone {
+      display: none !important;
+    }
+
+    body.app-tab-analytics .site-footer--compact {
+      margin-top: 0;
+      border-top: 1px solid rgba(26, 138, 114, 0.12);
     }
 
     .analytics-hero {
@@ -7216,7 +7229,7 @@
 
     .analytics-kpi strong {
       display: block;
-      font-size: 1.25rem;
+      font-size: 1.42rem;
       line-height: 1.15;
       color: var(--green-900);
     }
@@ -7233,38 +7246,61 @@
     }
 
     .analytics-section {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.75rem;
+      padding: 1rem 1.05rem 1.15rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(26, 138, 114, 0.12);
+      box-shadow: 0 8px 32px rgba(6, 61, 53, 0.06);
     }
 
     .analytics-section__title {
-      margin: 0 0 0.65rem;
+      margin: 0 0 1rem;
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 1rem;
+      font-size: 1.12rem;
+      font-weight: 700;
       color: var(--green-950);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.55rem;
     }
 
     .analytics-section__title::before {
       content: "";
-      width: 4px;
-      height: 1.1em;
+      width: 5px;
+      height: 1.15em;
       border-radius: 4px;
-      background: var(--green-700);
+      background: linear-gradient(180deg, #1a8a72, #0d5c4a);
+    }
+
+    .analytics-tips-collapsible {
+      margin: 0 0 1rem;
+      border-radius: 14px;
+      border: 1px dashed rgba(26, 138, 114, 0.28);
+      background: rgba(232, 245, 241, 0.35);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .analytics-tips-collapsible summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--green-900);
+      list-style: none;
+    }
+
+    .analytics-tips-collapsible summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .analytics-tips-collapsible ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
     }
 
     .analytics-layout {
-      display: grid;
-      grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.4fr);
-      gap: 0.85rem 1rem;
-      align-items: start;
-    }
-
-    @media (max-width: 900px) {
-      .analytics-layout {
-        grid-template-columns: 1fr;
-      }
+      display: block;
     }
 
     .analytics-tips {
@@ -7290,36 +7326,62 @@
 
     .analytics-charts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
-      gap: 0.65rem;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 720px) {
+      .analytics-charts-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     .analytics-chart-card {
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid rgba(26, 138, 114, 0.14);
-      padding: 0.55rem 0.6rem 0.65rem;
-      min-height: 10.5rem;
-      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.04);
+      border-radius: 18px;
+      background: linear-gradient(165deg, #ffffff 0%, rgba(248, 252, 251, 0.98) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      padding: 0.85rem 1rem 1rem;
+      min-height: 18rem;
+      box-shadow: 0 6px 24px rgba(6, 61, 53, 0.07);
+      display: flex;
+      flex-direction: column;
     }
 
     .analytics-chart-card h4 {
-      margin: 0 0 0.3rem;
-      font-size: 0.74rem;
+      margin: 0 0 0.55rem;
+      font-size: 0.82rem;
       font-weight: 700;
+      letter-spacing: 0.01em;
       color: var(--green-900);
+      flex-shrink: 0;
     }
 
-    .analytics-chart-card canvas {
+    .analytics-chart-wrap {
+      flex: 1 1 auto;
+      position: relative;
+      min-height: 14rem;
+    }
+
+    .analytics-chart-wrap canvas {
       width: 100% !important;
-      height: 8.5rem !important;
+      height: 100% !important;
+      min-height: 14rem;
     }
 
     .analytics-chart-card--wide {
-      grid-column: span 2;
+      grid-column: 1 / -1;
+      min-height: 20rem;
     }
 
-    @media (max-width: 720px) {
+    .analytics-chart-card--wide .analytics-chart-wrap {
+      min-height: 17rem;
+    }
+
+    .analytics-chart-card--wide .analytics-chart-wrap canvas {
+      min-height: 17rem;
+    }
+
+    @media (max-width: 719px) {
       .analytics-chart-card--wide {
         grid-column: span 1;
       }
@@ -8121,29 +8183,27 @@
 
         <section class="analytics-section" aria-labelledby="analytics-search-section-title">
           <h3 class="analytics-section__title" id="analytics-search-section-title">Поиск протоколов</h3>
-          <div class="analytics-layout">
-            <div class="analytics-tips">
-              <h4>Как пользоваться поиском</h4>
-              <ul id="analytics-tips-list"></ul>
-              <p class="search-session-stat" id="search-session-stat"></p>
+          <details class="analytics-tips-collapsible">
+            <summary>Как пользоваться поиском (рекомендации)</summary>
+            <ul id="analytics-tips-list"></ul>
+            <p class="search-session-stat" id="search-session-stat"></p>
+          </details>
+          <div class="analytics-charts-grid">
+            <div class="analytics-chart-card analytics-chart-card--wide">
+              <h4>Протоколы по рубрикам каталога</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-rubrics" aria-label="Рубрики"></canvas></div>
             </div>
-            <div class="analytics-charts-grid">
-              <div class="analytics-chart-card analytics-chart-card--wide">
-                <h4>Протоколы по рубрикам каталога</h4>
-                <canvas id="chart-an-rubrics" aria-label="Рубрики"></canvas>
-              </div>
-              <div class="analytics-chart-card">
-                <h4>Поиски по дням</h4>
-                <canvas id="chart-an-search-activity" aria-label="Поиски"></canvas>
-              </div>
-              <div class="analytics-chart-card">
-                <h4>Эталон eval (pass/fail)</h4>
-                <canvas id="chart-an-benchmark" aria-label="Эталон"></canvas>
-              </div>
-              <div class="analytics-chart-card">
-                <h4>Top score выдачи</h4>
-                <canvas id="chart-an-confidence" aria-label="Confidence"></canvas>
-              </div>
+            <div class="analytics-chart-card">
+              <h4>Поиски по дням</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-search-activity" aria-label="Поиски"></canvas></div>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Эталон eval (pass/fail)</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-benchmark" aria-label="Эталон"></canvas></div>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Top score выдачи</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-confidence" aria-label="Confidence"></canvas></div>
             </div>
           </div>
         </section>
@@ -8154,35 +8214,35 @@
           <div class="analytics-charts-grid">
             <div class="analytics-chart-card">
               <h4>КЗ по зонам %</h4>
-              <canvas id="chart-an-kz-compliance" aria-label="Compliance"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-compliance" aria-label="Compliance"></canvas></div>
             </div>
             <div class="analytics-chart-card">
               <h4>Оценки методиста</h4>
-              <canvas id="chart-an-ratings" aria-label="Ratings"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-ratings" aria-label="Ratings"></canvas></div>
             </div>
-            <div class="analytics-chart-card">
+            <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Прогоны КЗ по рубрикам</h4>
-              <canvas id="chart-an-kz-rubrics" aria-label="KZ rubrics"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-rubrics" aria-label="KZ rubrics"></canvas></div>
             </div>
             <div class="analytics-chart-card">
               <h4>Активность (все события)</h4>
-              <canvas id="chart-an-kz-activity" aria-label="Activity"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-activity" aria-label="Activity"></canvas></div>
             </div>
             <div class="analytics-chart-card">
               <h4>Типы событий</h4>
-              <canvas id="chart-an-events-type" aria-label="Events"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-events-type" aria-label="Events"></canvas></div>
             </div>
             <div class="analytics-chart-card">
               <h4>Теги методиста</h4>
-              <canvas id="chart-an-tags" aria-label="Tags"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-tags" aria-label="Tags"></canvas></div>
             </div>
             <div class="analytics-chart-card">
               <h4>Вердикты оценок</h4>
-              <canvas id="chart-an-verdicts" aria-label="Verdicts"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-verdicts" aria-label="Verdicts"></canvas></div>
             </div>
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Готовность данных для ML</h4>
-              <canvas id="chart-an-readiness" aria-label="ML readiness"></canvas>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-readiness" aria-label="ML readiness"></canvas></div>
             </div>
           </div>
         </section>
@@ -15105,7 +15165,86 @@
   function renderAnalyticsCharts(d) {
     if (typeof Chart === "undefined") return;
     var charts = (d && d.charts) || {};
-    var chartOpts = { maintainAspectRatio: false, plugins: { legend: { display: false } } };
+    var fontFamily = "'DM Sans', 'Outfit', system-ui, sans-serif";
+    var tickColor = "#4a6b63";
+    var gridColor = "rgba(13, 92, 74, 0.1)";
+    var tooltipStyle = {
+      backgroundColor: "rgba(13, 60, 53, 0.94)",
+      titleFont: { family: fontFamily, size: 12, weight: "600" },
+      bodyFont: { family: fontFamily, size: 11 },
+      padding: 10,
+      cornerRadius: 8,
+    };
+    function axisScales(extra) {
+      var scales = {
+        x: {
+          ticks: { color: tickColor, font: { family: fontFamily, size: 11 } },
+          grid: { color: gridColor, drawBorder: false },
+          border: { display: false },
+        },
+        y: {
+          ticks: { color: tickColor, font: { family: fontFamily, size: 11 } },
+          grid: { color: gridColor, drawBorder: false },
+          border: { display: false },
+        },
+      };
+      if (extra) {
+        Object.keys(extra).forEach(function (k) {
+          scales[k] = Object.assign({}, scales[k] || {}, extra[k]);
+        });
+      }
+      return scales;
+    }
+    function barOpts(extra) {
+      return Object.assign({
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: tooltipStyle },
+        scales: axisScales(extra && extra.scales),
+      }, extra || {});
+    }
+    function doughnutOpts() {
+      return {
+        maintainAspectRatio: false,
+        cutout: "58%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              boxWidth: 12,
+              padding: 14,
+              color: tickColor,
+              font: { family: fontFamily, size: 11 },
+            },
+          },
+          tooltip: tooltipStyle,
+        },
+      };
+    }
+    function lineDataset(label, data, border, fill) {
+      return {
+        label: label,
+        data: data,
+        borderColor: border,
+        backgroundColor: fill,
+        fill: true,
+        tension: 0.35,
+        borderWidth: 2.5,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        pointBackgroundColor: "#fff",
+        pointBorderColor: border,
+        pointBorderWidth: 2,
+      };
+    }
+    function barDs(values, color) {
+      return [{
+        data: values,
+        backgroundColor: color,
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 42,
+      }];
+    }
 
     destroyAnalyticsChart("rubrics");
     var cats = charts.categories_top || [];
@@ -15118,9 +15257,9 @@
             var lb = c.label || c.slug || "";
             return lb.length > 22 ? lb.slice(0, 20) + "…" : lb;
           }),
-          datasets: [{ data: cats.map(function (c) { return c.count; }), backgroundColor: "#1a8a72" }],
+          datasets: barDs(cats.map(function (c) { return c.count; }), "#1a8a72"),
         },
-        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+        options: Object.assign(barOpts(), { indexAxis: "y" }),
       });
     }
 
@@ -15132,16 +15271,14 @@
         type: "line",
         data: {
           labels: sAct.map(function (a) { return a.date; }),
-          datasets: [{
-            label: "Поиски",
-            data: sAct.map(function (a) { return a.count; }),
-            borderColor: "#0d5c4a",
-            backgroundColor: "rgba(26, 138, 114, 0.15)",
-            fill: true,
-            tension: 0.3,
-          }],
+          datasets: [lineDataset(
+            "Поиски",
+            sAct.map(function (a) { return a.count; }),
+            "#0d5c4a",
+            "rgba(26, 138, 114, 0.18)"
+          )],
         },
-        options: chartOpts,
+        options: barOpts({ scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
       });
     }
 
@@ -15153,9 +15290,9 @@
         type: "doughnut",
         data: {
           labels: bench.map(function (b) { return b.label; }),
-          datasets: [{ data: bench.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#f87171"] }],
+          datasets: [{ data: bench.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#f87171"], borderWidth: 0 }],
         },
-        options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } },
+        options: doughnutOpts(),
       });
     }
 
@@ -15167,9 +15304,9 @@
         type: "bar",
         data: {
           labels: conf.map(function (b) { return b.label; }),
-          datasets: [{ data: conf.map(function (b) { return b.count; }), backgroundColor: "#2563eb" }],
+          datasets: barDs(conf.map(function (b) { return b.count; }), "#2563eb"),
         },
-        options: Object.assign({}, chartOpts, { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+        options: barOpts({ scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
       });
     }
 
@@ -15181,9 +15318,9 @@
         type: "doughnut",
         data: {
           labels: kzComp.map(function (b) { return b.label; }),
-          datasets: [{ data: kzComp.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#2ec4a0", "#f87171", "#94a3b8"] }],
+          datasets: [{ data: kzComp.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#2ec4a0", "#f87171", "#94a3b8"], borderWidth: 0 }],
         },
-        options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } },
+        options: doughnutOpts(),
       });
     }
 
@@ -15205,9 +15342,9 @@
           type: "bar",
           data: {
             labels: rLabels,
-            datasets: [{ data: rData, backgroundColor: "#1a8a72" }],
+            datasets: barDs(rData, "#1a8a72"),
           },
-          options: Object.assign({}, chartOpts, { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+          options: barOpts({ scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
         });
       }
     }
@@ -15221,11 +15358,11 @@
         data: {
           labels: kzRub.map(function (r) {
             var lb = r.rubric || r.slug || "";
-            return lb.length > 20 ? lb.slice(0, 18) + "…" : lb;
+            return lb.length > 28 ? lb.slice(0, 26) + "…" : lb;
           }),
-          datasets: [{ data: kzRub.map(function (r) { return r.count; }), backgroundColor: "#0d5c4a" }],
+          datasets: barDs(kzRub.map(function (r) { return r.count; }), "#0d5c4a"),
         },
-        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+        options: Object.assign(barOpts(), { indexAxis: "y" }),
       });
     }
 
@@ -15237,15 +15374,14 @@
         type: "line",
         data: {
           labels: kzAct.map(function (a) { return a.date; }),
-          datasets: [{
-            data: kzAct.map(function (a) { return a.count; }),
-            borderColor: "#d97706",
-            backgroundColor: "rgba(217, 119, 6, 0.12)",
-            fill: true,
-            tension: 0.3,
-          }],
+          datasets: [lineDataset(
+            "События",
+            kzAct.map(function (a) { return a.count; }),
+            "#d97706",
+            "rgba(217, 119, 6, 0.15)"
+          )],
         },
-        options: chartOpts,
+        options: barOpts({ scales: { y: { beginAtZero: true } } }),
       });
     }
 
@@ -15260,9 +15396,10 @@
           datasets: [{
             data: evTypes.map(function (e) { return e.count; }),
             backgroundColor: ["#1a8a72", "#2ec4a0", "#0d5c4a", "#2563eb", "#d97706", "#f87171"],
+            borderWidth: 0,
           }],
         },
-        options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 9 } } } } },
+        options: doughnutOpts(),
       });
     }
 
@@ -15275,11 +15412,11 @@
         data: {
           labels: tags.map(function (t) {
             var lb = t.label || t.tag || "";
-            return lb.length > 18 ? lb.slice(0, 16) + "…" : lb;
+            return lb.length > 22 ? lb.slice(0, 20) + "…" : lb;
           }),
-          datasets: [{ data: tags.map(function (t) { return t.count; }), backgroundColor: "#d97706" }],
+          datasets: barDs(tags.map(function (t) { return t.count; }), "#d97706"),
         },
-        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+        options: Object.assign(barOpts(), { indexAxis: "y" }),
       });
     }
 
@@ -15293,9 +15430,9 @@
           labels: verdicts.map(function (v) {
             return VERDICT_LABELS_RU[v.label] || v.label;
           }),
-          datasets: [{ data: verdicts.map(function (v) { return v.count; }), backgroundColor: "#6366f1" }],
+          datasets: barDs(verdicts.map(function (v) { return v.count; }), "#6366f1"),
         },
-        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+        options: Object.assign(barOpts(), { indexAxis: "y" }),
       });
     }
 
@@ -15308,11 +15445,11 @@
         data: {
           labels: ready.map(function (it) {
             var lb = it.label || "";
-            return lb.length > 28 ? lb.slice(0, 26) + "…" : lb;
+            return lb.length > 34 ? lb.slice(0, 32) + "…" : lb;
           }),
-          datasets: [{ data: ready.map(function (it) { return it.pct != null ? it.pct : 0; }), backgroundColor: "#2563eb" }],
+          datasets: barDs(ready.map(function (it) { return it.pct != null ? it.pct : 0; }), "#2563eb"),
         },
-        options: Object.assign({}, chartOpts, { indexAxis: "y", scales: { x: { max: 100 } } }),
+        options: Object.assign(barOpts({ scales: { x: { max: 100 } } }), { indexAxis: "y" }),
       });
     }
   }
@@ -16299,6 +16436,12 @@
     if (panelAnalytics) panelAnalytics.hidden = !isAnalytics;
     if (panelMl) panelMl.hidden = !isMl;
     if (panelQueue) panelQueue.hidden = !isQueue;
+    document.body.classList.remove("app-tab-search", "app-tab-consult", "app-tab-analytics", "app-tab-ml", "app-tab-queue");
+    if (isSearch) document.body.classList.add("app-tab-search");
+    else if (isConsult) document.body.classList.add("app-tab-consult");
+    else if (isAnalytics) document.body.classList.add("app-tab-analytics");
+    else if (isMl) document.body.classList.add("app-tab-ml");
+    else if (isQueue) document.body.classList.add("app-tab-queue");
     try {
       if (isMl) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#ml-dashboard");
