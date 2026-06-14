@@ -6444,7 +6444,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r140-methodist-approve-ui-symptom-rerank"
+BUILD_VERSION = "2026-06-01-r141-funnel-multi-select-ratings"
 
 
 def _app_version() -> str:

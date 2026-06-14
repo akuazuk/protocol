@@ -3949,9 +3949,18 @@
       line-height: 1.42;
     }
 
-    .icd-preflight-codes__label input[type="radio"] {
-      margin-top: 0.22rem;
+    .icd-preflight-codes__label input[type="radio"],
+    .icd-preflight-codes__label input[type="checkbox"] {
+      margin: 0 0.35rem 0 0;
       flex-shrink: 0;
+    }
+
+    .icd-preflight-codes__item--top .icd-preflight-codes__label {
+      font-weight: 650;
+    }
+
+    .icd-preflight-codes__label input[type="checkbox"] {
+      margin-top: 0.22rem;
       accent-color: var(--green-600);
     }
 
@@ -7856,6 +7865,46 @@
       font-size: 0.78rem;
     }
 
+    .search-wizard-chip__label {
+      line-height: 1.25;
+    }
+
+    .search-wizard-chip--selected {
+      background: rgba(26, 138, 114, 0.16);
+      border-color: var(--green-700);
+      box-shadow: 0 0 0 2px rgba(26, 138, 114, 0.22);
+    }
+
+    .search-wizard-chip--top:not(.search-wizard-chip--selected) {
+      border-color: rgba(26, 138, 114, 0.5);
+      background: rgba(232, 245, 241, 0.92);
+    }
+
+    .search-wizard-chip__rating {
+      font-size: 0.68rem;
+      font-weight: 750;
+      padding: 0.1rem 0.42rem;
+      border-radius: 999px;
+      background: rgba(100, 116, 139, 0.14);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .search-wizard-chip__rating--top {
+      background: rgba(26, 138, 114, 0.22);
+      color: var(--green-800);
+    }
+
+    .search-wizard-step-actions {
+      margin: 0.55rem 0 0;
+    }
+
+    .search-wizard-select-hint {
+      margin: 0 0 0.45rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
     .search-wizard-skip {
       margin: 0;
       font-size: 0.8rem;
@@ -9907,7 +9956,12 @@
     }
     var out = [];
     for (i = 0; i < slugs.length && out.length < 6; i++) {
-      out.push({ slug: slugs[i], label: rubricLabelFromSlug(slugs[i]) });
+      out.push({
+        id: slugs[i],
+        slug: slugs[i],
+        label: rubricLabelFromSlug(slugs[i]),
+        score: Math.max(48, 92 - out.length * 8),
+      });
     }
     return out;
   }
@@ -11539,9 +11593,10 @@
     return {
       population: ctx.population || null,
       rubric: ctx.rubric || null,
+      rubric_slugs: ctx.rubric_slugs || (ctx.rubric ? [ctx.rubric] : null),
       protocol_path: ctx.protocol_path || (window.__searchWizard && window.__searchWizard.selectedProto) || null,
       condition_id: ctx.condition_id || null,
-      icd_codes: extractIcdCodesFromQuery(q),
+      icd_codes: ctx.icd_codes || extractIcdCodesFromQuery(q),
     };
   }
 
@@ -16911,6 +16966,275 @@
     return true;
   }
 
+  function clampWizardScore(n) {
+    var v = Math.round(Number(n));
+    if (isNaN(v)) return null;
+    return Math.max(1, Math.min(99, v));
+  }
+
+  function sortWizardChoices(choices) {
+    return (choices || [])
+      .slice()
+      .sort(function (a, b) {
+        return (b.score || 0) - (a.score || 0);
+      });
+  }
+
+  function formatWizardRatingBadge(score, isTop) {
+    if (score == null) {
+      return isTop
+        ? '<span class="search-wizard-chip__rating search-wizard-chip__rating--top">топ</span>'
+        : "";
+    }
+    var cls =
+      "search-wizard-chip__rating" +
+      (isTop ? " search-wizard-chip__rating--top" : "");
+    return '<span class="' + cls + '">' + String(score) + "%</span>";
+  }
+
+  function buildIcdWizardChoices(icd) {
+    var choices = [];
+    var seen = {};
+    function addRow(row, bucket, idx) {
+      if (!row || !row.code) return;
+      var c = String(row.code).trim();
+      if (!c || seen[c]) return;
+      seen[c] = true;
+      var score = null;
+      if (bucket === "detected") {
+        score = 98 - idx;
+      } else if (row.score != null && !isNaN(Number(row.score))) {
+        var n = Number(row.score);
+        score = n <= 1 ? Math.round(n * 100) : n <= 100 ? Math.round(n) : 68 - idx * 3;
+      } else if (row.role === "suggested_gemini") {
+        score = Math.max(52, 86 - idx * 4);
+      } else {
+        score = Math.max(42, 74 - idx * 5);
+      }
+      var title = (row.title_ru || "").trim();
+      choices.push({
+        id: c,
+        code: c,
+        title_ru: title,
+        appendLine: buildIcdPreflightAppendLine(c, title),
+        score: clampWizardScore(score),
+        label: title ? title : c,
+      });
+    }
+    var detected = (icd && icd.detected) || [];
+    var suggested = (icd && icd.suggested) || [];
+    var di;
+    for (di = 0; di < detected.length; di++) addRow(detected[di], "detected", di);
+    for (di = 0; di < suggested.length; di++) addRow(suggested[di], "suggested", di);
+    var codes = (icd && icd.codes_for_retrieval) || [];
+    for (di = 0; di < codes.length; di++) {
+      var c2 = String(codes[di]).trim();
+      if (!c2 || seen[c2]) continue;
+      seen[c2] = true;
+      choices.push({
+        id: c2,
+        code: c2,
+        title_ru: "",
+        appendLine: buildIcdPreflightAppendLine(c2, ""),
+        score: clampWizardScore(58 - di * 3),
+        label: c2,
+      });
+    }
+    return sortWizardChoices(choices);
+  }
+
+  function buildIcdMultiAppendLine(selectedChoices) {
+    if (!selectedChoices || !selectedChoices.length) return "";
+    if (selectedChoices.length === 1) {
+      return selectedChoices[0].appendLine || buildIcdPreflightAppendLine(selectedChoices[0].code, selectedChoices[0].title_ru);
+    }
+    var parts = [];
+    var si;
+    for (si = 0; si < selectedChoices.length; si++) {
+      var ch = selectedChoices[si];
+      parts.push(ch.title_ru ? ch.code + " (" + ch.title_ru + ")" : ch.code);
+    }
+    return "МКБ-10 для поиска протокола: " + parts.join("; ");
+  }
+
+  function stripIcdAppendLinesFromQuery(qRaw) {
+    var lines = String(qRaw || "")
+      .split("\n")
+      .filter(function (line) {
+        return !/^МКБ-10 для поиска протокола:/i.test(String(line || "").trim());
+      });
+    return lines.join("\n").trim();
+  }
+
+  function appendIcdChoicesToQuery(qRaw, selectedChoices) {
+    var line = buildIcdMultiAppendLine(selectedChoices);
+    if (!line) return qRaw || "";
+    var base = stripIcdAppendLinesFromQuery(stripToClinicalOnly(qRaw || ""));
+    return base ? base + "\n" + line : line;
+  }
+
+  function inferPopulationScores(qRaw) {
+    var ql = String(qRaw || "").toLowerCase();
+    return {
+      adult: /\bвзросл|\bпожил|\b18\s*лет|\b≥\s*18/.test(ql) ? 90 : 72,
+      pediatric: /\bдет|\bдети|\bребен|\bребён|\bноворожд|\bподрост|\bгрудн|\bинфант/.test(ql) ? 90 : 48,
+      pregnant: /\bберемен/.test(ql) ? 92 : 38,
+      emergency: /\bнеотлож|\bсрочн|\b112\b|\bскорой/.test(ql) ? 91 : 36,
+    };
+  }
+
+  function buildWizardMultiSelectHtml(options) {
+    var sorted = sortWizardChoices(options.choices || []);
+    var topScore = sorted.length ? sorted[0].score : null;
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner search-wizard-step-card">';
+    html +=
+      '<p class="search-wizard-icd-lead">' + escapeHtml(options.lead || "") + "</p>";
+    if (options.hint) {
+      html +=
+        '<p class="icd-preflight-result icd-preflight-result--hint">' +
+        escapeHtml(options.hint) +
+        "</p>";
+    }
+    if (sorted.length) {
+      if (options.multi !== false) {
+        html +=
+          '<p class="search-wizard-select-hint search-wizard-select-count">' +
+          escapeHtml(
+            options.selectHint || "Можно выбрать несколько — отметьте варианты и нажмите «Продолжить»."
+          ) +
+          "</p>";
+      }
+      html += '<div class="search-wizard-chips" role="list">';
+      var ci;
+      for (ci = 0; ci < sorted.length; ci++) {
+        var ch = sorted[ci];
+        var isTop = ch.score != null && ch.score === topScore;
+        html +=
+          '<button type="button" class="search-wizard-chip search-wizard-chip--pick' +
+          (isTop ? " search-wizard-chip--top" : "") +
+          '" data-choice-id="' +
+          escapeHtmlAttr(String(ch.id)) +
+          '" role="listitem" aria-pressed="false">';
+        if (ch.code) {
+          html += "<code>" + escapeHtml(ch.code) + "</code>";
+        }
+        html +=
+          '<span class="search-wizard-chip__label">' +
+          escapeHtml(ch.label || String(ch.id)) +
+          "</span>";
+        html += formatWizardRatingBadge(ch.score, isTop);
+        html += "</button>";
+      }
+      html += "</div>";
+      html += '<div class="search-wizard-step-actions">';
+      html +=
+        '<button type="button" class="btn-assist btn-wizard-continue"' +
+        (options.multi === false ? "" : " disabled") +
+        ">" +
+        escapeHtml(options.continueLabel || "Продолжить") +
+        "</button>";
+      html += "</div>";
+    } else if (options.emptyText) {
+      html +=
+        '<p class="search-wizard-icd-lead">' + escapeHtml(options.emptyText) + "</p>";
+    }
+    if (options.skipLabel) {
+      html +=
+        '<p class="search-wizard-skip"><button type="button" class="btn-link-nav btn-wizard-skip">' +
+        escapeHtml(options.skipLabel) +
+        "</button></p>";
+    }
+    html += "</div></div>";
+    return html;
+  }
+
+  function wireWizardMultiSelectStep(cardEl, options) {
+    if (!cardEl) return;
+    options = options || {};
+    var multi = options.multi !== false;
+    var choices = options.choices || [];
+    var choiceById = {};
+    var ci;
+    for (ci = 0; ci < choices.length; ci++) {
+      choiceById[String(choices[ci].id)] = choices[ci];
+    }
+    var selectedIds = {};
+    var pre = options.preselectIds;
+    if (!pre && options.preselectTop !== false && choices.length) {
+      pre = [String(sortWizardChoices(choices)[0].id)];
+    }
+    if (pre && pre.length) {
+      for (ci = 0; ci < pre.length; ci++) {
+        selectedIds[String(pre[ci])] = true;
+      }
+    }
+    var countEl = cardEl.querySelector(".search-wizard-select-count");
+    var continueBtn = cardEl.querySelector(".btn-wizard-continue");
+
+    function selectedList() {
+      return Object.keys(selectedIds)
+        .map(function (id) {
+          return choiceById[id];
+        })
+        .filter(Boolean)
+        .sort(function (a, b) {
+          return (b.score || 0) - (a.score || 0);
+        });
+    }
+
+    function syncUi() {
+      cardEl.querySelectorAll(".search-wizard-chip--pick").forEach(function (btn) {
+        var id = btn.getAttribute("data-choice-id") || "";
+        var on = !!selectedIds[id];
+        btn.classList.toggle("search-wizard-chip--selected", on);
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      var n = Object.keys(selectedIds).length;
+      if (continueBtn) continueBtn.disabled = n === 0;
+      if (countEl && multi) {
+        countEl.textContent = n
+          ? "Выбрано: " + n + " — можно добавить или снять отметку."
+          : options.selectHint ||
+            "Можно выбрать несколько — отметьте варианты и нажмите «Продолжить».";
+      }
+    }
+
+    cardEl.querySelectorAll(".search-wizard-chip--pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-choice-id") || "";
+        if (!multi) {
+          selectedIds = {};
+          selectedIds[id] = true;
+          syncUi();
+          if (options.autoContinueSingle) {
+            var one = choiceById[id];
+            if (one && options.onContinue) options.onContinue([one]);
+          }
+          return;
+        }
+        if (selectedIds[id]) delete selectedIds[id];
+        else selectedIds[id] = true;
+        syncUi();
+      });
+    });
+
+    if (continueBtn && options.onContinue) {
+      continueBtn.addEventListener("click", function () {
+        var sel = selectedList();
+        if (!sel.length) return;
+        options.onContinue(sel);
+      });
+    }
+    var skipBtn = cardEl.querySelector(".btn-wizard-skip");
+    if (skipBtn && options.onSkip) {
+      skipBtn.addEventListener("click", function () {
+        options.onSkip();
+      });
+    }
+    syncUi();
+  }
+
   function appendPopulationContextToQuery(qRaw, populationId) {
     var map = {
       adult: "Контекст подбора: взрослое население",
@@ -16931,34 +17255,27 @@
     showResultsSection(true);
     window.__searchWizard = { step: "population" };
     updateSearchWizardBar("population", "Шаг 1 · аудитория пациента");
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
-    html +=
-      '<p class="search-wizard-icd-lead">Уточните, для кого подбираем протокол — это сужает список (детские и взрослые КП различаются).</p>';
-    html += '<div class="search-wizard-chips" role="list">';
+    var popScores = inferPopulationScores(qRaw);
     var choices = [
-      { id: "adult", label: "Взрослые (≥18 лет)" },
-      { id: "pediatric", label: "Дети / подростки" },
-      { id: "pregnant", label: "Беременные" },
-      { id: "emergency", label: "Неотложная помощь" },
+      { id: "adult", label: "Взрослые (≥18 лет)", score: popScores.adult },
+      { id: "pediatric", label: "Дети / подростки", score: popScores.pediatric },
+      { id: "pregnant", label: "Беременные", score: popScores.pregnant },
+      { id: "emergency", label: "Неотложная помощь", score: popScores.emergency },
     ];
-    var ci;
-    for (ci = 0; ci < choices.length; ci++) {
-      html +=
-        '<button type="button" class="search-wizard-chip btn-pop-wizard-pick" data-pop="' +
-        escapeHtmlAttr(choices[ci].id) +
-        '" role="listitem">' +
-        escapeHtml(choices[ci].label) +
-        "</button>";
-    }
-    html += "</div>";
-    html +=
-      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-pop-wizard-skip">Пропустить — без уточнения аудитории</button></p>';
-    html += "</div></div>";
-    out.innerHTML = html;
-    out.querySelectorAll(".btn-pop-wizard-pick").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var pop = btn.getAttribute("data-pop") || "";
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead: "Уточните, для кого подбираем протокол — это сужает список (детские и взрослые КП различаются).",
+      choices: choices,
+      multi: false,
+      preselectTop: true,
+      continueLabel: "Продолжить с выбранной аудиторией",
+      skipLabel: "Пропустить — без уточнения аудитории",
+    });
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: choices,
+      multi: false,
+      preselectTop: true,
+      onContinue: function (sel) {
+        var pop = (sel[0] && sel[0].id) || "";
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.population = pop;
         var qInput = document.getElementById("q");
@@ -16968,18 +17285,15 @@
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
           console.error(err);
         });
-      });
-    });
-    var skipBtn = document.getElementById("btn-pop-wizard-skip");
-    if (skipBtn) {
-      skipBtn.addEventListener("click", function () {
+      },
+      onSkip: function () {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.population = "skipped";
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
           console.error(err);
         });
-      });
-    }
+      },
+    });
   }
 
   function renderSearchWizardRubricStep(qRaw) {
@@ -16988,54 +17302,53 @@
     showResultsSection(true);
     window.__searchWizard = { step: "rubric" };
     updateSearchWizardBar("rubric", "Шаг 3 · раздел протоколов");
-    var choices = inferRubricChoicesFromQuery(qRaw);
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
-    html +=
-      '<p class="search-wizard-icd-lead">Уточните раздел каталога — так сузится выдача протоколов (можно пропустить и искать по всем рубрикам).</p>';
-    html += '<div class="search-wizard-chips" role="list">';
-    var ci;
-    for (ci = 0; ci < choices.length; ci++) {
-      html +=
-        '<button type="button" class="search-wizard-chip btn-rubric-wizard-pick" data-rubric-slug="' +
-        escapeHtmlAttr(choices[ci].slug) +
-        '" role="listitem">' +
-        escapeHtml(choices[ci].label) +
-        "</button>";
-    }
-    html +=
-      '<button type="button" class="search-wizard-chip btn-rubric-wizard-pick" data-rubric-slug="" role="listitem">Все рубрики</button>';
-    html += "</div>";
-    html +=
-      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-rubric-wizard-skip">Пропустить — без фильтра рубрик</button></p>';
-    html += "</div></div>";
-    out.innerHTML = html;
-    out.querySelectorAll(".btn-rubric-wizard-pick").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var slug = btn.getAttribute("data-rubric-slug") || "";
+    var inferred = inferRubricChoicesFromQuery(qRaw);
+    var choices = inferred.slice();
+    choices.push({ id: "__all__", slug: "", label: "Все рубрики", score: 55 });
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead: "Уточните раздел каталога — можно отметить несколько рубрик или искать по всем.",
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      continueLabel: "Продолжить с выбранными рубриками",
+      skipLabel: "Пропустить — без фильтра рубрик",
+    });
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      onContinue: function (sel) {
         window.__funnelContext = window.__funnelContext || {};
-        if (slug) {
-          window.__funnelContext.rubric = slug;
-          setSelectedCategorySlugs([slug]);
-        } else {
+        var slugs = [];
+        var si;
+        for (si = 0; si < sel.length; si++) {
+          if (sel[si].slug) slugs.push(sel[si].slug);
+        }
+        if (!slugs.length || sel.some(function (x) { return x.id === "__all__"; })) {
           window.__funnelContext.rubricSkipped = true;
+          window.__funnelContext.rubric_slugs = [];
+          delete window.__funnelContext.rubric;
           setSelectedCategorySlugs([]);
+        } else {
+          window.__funnelContext.rubric_slugs = slugs;
+          window.__funnelContext.rubric = slugs[0];
+          delete window.__funnelContext.rubricSkipped;
+          setSelectedCategorySlugs(slugs);
         }
         runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
           console.error(err);
         });
-      });
-    });
-    var skipBtn = document.getElementById("btn-rubric-wizard-skip");
-    if (skipBtn) {
-      skipBtn.addEventListener("click", function () {
+      },
+      onSkip: function () {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.rubricSkipped = true;
+        window.__funnelContext.rubric_slugs = [];
+        delete window.__funnelContext.rubric;
         runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
           console.error(err);
         });
-      });
-    }
+      },
+    });
   }
 
   function truncateExcerpt(text, maxLen) {
@@ -17176,95 +17489,40 @@
     window.__searchWizard = { step: "icd" };
     updateSearchWizardBar("icd", "Шаг 2 · подбор кода МКБ-10");
     var icd = (data && data.icd) || {};
-    var choices = [];
-    var seenCodes = {};
-    var di;
-    var detected = icd.detected || [];
-    var suggested = icd.suggested || [];
-    var merged = [];
-    for (di = 0; di < detected.length; di++) merged.push(detected[di]);
-    for (di = 0; di < suggested.length; di++) merged.push(suggested[di]);
-    for (di = 0; di < merged.length; di++) {
-      var row = merged[di];
-      if (!row || !row.code) continue;
-      var c = String(row.code).trim();
-      if (!c || seenCodes[c]) continue;
-      seenCodes[c] = true;
-      choices.push({
-        code: c,
-        title_ru: (row.title_ru || "").trim(),
-        appendLine: buildIcdPreflightAppendLine(c, row.title_ru || ""),
-      });
-    }
-    var codes = icd.codes_for_retrieval || [];
-    for (di = 0; di < codes.length; di++) {
-      var c2 = String(codes[di]).trim();
-      if (!c2 || seenCodes[c2]) continue;
-      seenCodes[c2] = true;
-      choices.push({
-        code: c2,
-        title_ru: "",
-        appendLine: buildIcdPreflightAppendLine(c2, ""),
-      });
-    }
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
-    html +=
-      '<p class="search-wizard-icd-lead">По жалобам без кода сначала выберите предполагаемый код МКБ-10 — так быстрее и точнее найдутся протоколы.</p>';
-    if (data && data.hint) {
-      html +=
-        '<p class="icd-preflight-result icd-preflight-result--hint">' +
-        escapeHtml(data.hint) +
-        "</p>";
-    }
-    if (choices.length) {
-      html += '<div class="search-wizard-chips" role="list">';
-      var ci;
-      for (ci = 0; ci < Math.min(choices.length, 8); ci++) {
-        var ch = choices[ci];
-        html +=
-          '<button type="button" class="search-wizard-chip btn-icd-wizard-pick" data-append="' +
-          escapeHtmlAttr(ch.appendLine) +
-          '" role="listitem"><code>' +
-          escapeHtml(ch.code) +
-          "</code>" +
-          (ch.title_ru ? " · " + escapeHtml(ch.title_ru) : "") +
-          "</button>";
-      }
-      html += "</div>";
-    } else {
-      html +=
-        '<p class="search-wizard-icd-lead">Коды не подобраны. Уточните текст запроса или введите МКБ-10 вручную.</p>';
-    }
-    html +=
-      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-icd-wizard-skip">Пропустить — искать по жалобам без кода</button></p>';
-    html += "</div></div>";
-    out.innerHTML = html;
-    out.querySelectorAll(".btn-icd-wizard-pick").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var append = btn.getAttribute("data-append") || "";
-        var qInput = document.getElementById("q");
-        if (qInput && append) {
-          var base = stripToClinicalOnly(qInput.value || "");
-          qInput.value = base ? base + "\n" + append : append;
-        }
-        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(
-          function (err) {
-            console.error(err);
-          }
-        );
-      });
+    var choices = buildIcdWizardChoices(icd).slice(0, 12);
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead: "По жалобам без кода отметьте один или несколько кодов МКБ-10 — так точнее найдутся протоколы.",
+      hint: data && data.hint ? data.hint : "",
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      continueLabel: "Продолжить с выбранными кодами",
+      skipLabel: "Пропустить — искать по жалобам без кода",
+      emptyText: "Коды не подобраны. Уточните текст запроса или введите МКБ-10 вручную.",
     });
-    var skipBtn = document.getElementById("btn-icd-wizard-skip");
-    if (skipBtn) {
-      skipBtn.addEventListener("click", function () {
-        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(
-          function (err) {
-            console.error(err);
-          }
-        );
-      });
-    }
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      onContinue: function (sel) {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.icd_codes = sel.map(function (c) {
+          return c.code;
+        });
+        var qInput = document.getElementById("q");
+        if (qInput) {
+          qInput.value = appendIcdChoicesToQuery(qInput.value || "", sel);
+        }
+        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(function (err) {
+          console.error(err);
+        });
+      },
+      onSkip: function () {
+        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(function (err) {
+          console.error(err);
+        });
+      },
+    });
     var sr = document.getElementById("section-results");
     if (sr) {
       try {
@@ -17359,32 +17617,41 @@
     showResultsSection(true);
     window.__searchWizard = { step: "condition", selectedProto: path };
     updateSearchWizardBar("condition", "Шаг 5 · нозология в протоколе");
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
-    html +=
-      '<p class="search-wizard-icd-lead">В карточке протокола несколько нозологий — выберите подходящую.</p>';
-    html += '<div class="search-wizard-chips" role="list">';
+    var choices = [];
     var ci;
     for (ci = 0; ci < (nav.conditions || []).length; ci++) {
       var cond = nav.conditions[ci];
       var label = cond.name || "Нозология";
       if (cond.icd_match) label += " · МКБ";
-      html +=
-        '<button type="button" class="search-wizard-chip btn-cond-wizard-pick" data-cond-id="' +
-        escapeHtmlAttr(cond.condition_id || "") +
-        '" role="listitem">' +
-        escapeHtml(label) +
-        "</button>";
-    }
-    html += "</div></div></div>";
-    out.innerHTML = html;
-    out.querySelectorAll(".btn-cond-wizard-pick").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var cid = btn.getAttribute("data-cond-id") || "";
-        window.__funnelContext = window.__funnelContext || {};
-        window.__funnelContext.condition_id = cid;
-        renderSearchWizardSectionStep(nav, cid, path);
+      choices.push({
+        id: cond.condition_id || "cond-" + ci,
+        label: label,
+        score: clampWizardScore((cond.icd_match ? 94 : 78) - ci * 4),
+        condition_id: cond.condition_id || "",
       });
+    }
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead: "В карточке протокола несколько нozологий — отметьте подходящие (можно несколько для контекста) или одну для перехода к разделам.",
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      continueLabel: "Открыть разделы выбранной нозологии",
+      selectHint: "Для перехода к цитатам выберите одну нозологию и нажмите «Продолжить».",
+    });
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: choices,
+      multi: true,
+      preselectTop: true,
+      onContinue: function (sel) {
+        var pick = sel[0];
+        if (!pick) return;
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.condition_id = pick.condition_id;
+        window.__funnelContext.condition_ids = sel.map(function (s) {
+          return s.condition_id;
+        });
+        renderSearchWizardSectionStep(nav, pick.condition_id, path);
+      },
     });
   }
 
@@ -17408,46 +17675,49 @@
       if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
       return;
     }
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
-    html +=
-      '<p class="search-wizard-icd-lead">' +
-      escapeHtml((cond && cond.name) || "Раздел") +
-      " — выберите блок для цитат из PDF (без ответа модели).</p>";
-    html += '<div class="search-wizard-chips" role="list">';
+    var secChoices = [];
     var si;
     for (si = 0; si < sections.length; si++) {
       var sec = sections[si];
-      html +=
-        '<button type="button" class="search-wizard-chip btn-section-wizard-pick" data-section-id="' +
-        escapeHtmlAttr(sec.id || "") +
-        '" data-section-label="' +
-        escapeHtmlAttr(sec.label || "") +
-        '" role="listitem">' +
-        escapeHtml(sec.label || sec.id) +
-        " (" +
-        String(sec.count || 0) +
-        ")</button>";
-    }
-    html += "</div>";
-    html +=
-      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-section-wizard-pdf">Только PDF-выдержка из поиска</button></p>';
-    html += "</div></div>";
-    out.innerHTML = html;
-    out.querySelectorAll(".btn-section-wizard-pick").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var sid = btn.getAttribute("data-section-id") || "";
-        var slabel = btn.getAttribute("data-section-label") || "";
-        renderSearchWizardExcerptStep(path, conditionId, sid, slabel);
+      var cnt = Number(sec.count) || 0;
+      secChoices.push({
+        id: sec.id || "sec-" + si,
+        label: (sec.label || sec.id || "Раздел") + " (" + String(cnt) + ")",
+        score: clampWizardScore(Math.min(96, 58 + Math.min(cnt, 24) * 2 - si)),
+        section_id: sec.id || "",
+        section_label: sec.label || "",
       });
+    }
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead:
+        ((cond && cond.name) || "Раздел") +
+        " — отметьте один или несколько блоков; для цитат откройте первый выбранный раздел.",
+      choices: secChoices,
+      multi: true,
+      preselectTop: true,
+      continueLabel: "Показать цитаты",
+      selectHint: "Можно отметить несколько разделов; цитаты покажем для первого выбранного.",
+      skipLabel: "Только PDF-выдержка из поиска",
     });
-    var skipPdf = document.getElementById("btn-section-wizard-pdf");
-    if (skipPdf) {
-      skipPdf.addEventListener("click", function () {
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: secChoices,
+      multi: true,
+      preselectTop: true,
+      onContinue: function (sel) {
+        var pick = sel[0];
+        if (!pick) return;
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.section_id = pick.section_id;
+        window.__funnelContext.section_ids = sel.map(function (s) {
+          return s.section_id;
+        });
+        renderSearchWizardExcerptStep(path, conditionId, pick.section_id, pick.section_label);
+      },
+      onSkip: function () {
         window.__searchWizard = { step: "detail", selectedProto: path };
         if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
-      });
-    }
+      },
+    });
   }
 
   function renderSearchWizardExcerptStep(path, conditionId, sectionId, sectionLabel) {
@@ -20486,10 +20756,10 @@
     var box = document.getElementById("icd-preflight-result");
     if (!box) return;
     var icd = data.icd || {};
-    var codes = icd.codes_for_retrieval || [];
     var hint = data.hint;
     var appendLine = data.append_line;
-    window.__icdPreflightChoices = [];
+    var choices = buildIcdWizardChoices(icd);
+    window.__icdPreflightChoices = choices;
     window.__icdAppendLine = "";
     var html = "";
     if (hint) {
@@ -20498,50 +20768,24 @@
         escapeHtml(hint) +
         "</div>";
     }
-    var choices = [];
-    var seenCodes = {};
-    var showCodesBlock =
-      codes.length ||
-      (icd.detected && icd.detected.length) ||
-      (icd.suggested && icd.suggested.length);
-    if (showCodesBlock) {
-      html += "<p><strong>Предложенные коды МКБ-10:</strong></p><ul class=\"icd-preflight-codes\">";
-      var merged = [];
-      var di;
-      var detected = icd.detected || [];
-      var suggested = icd.suggested || [];
-      for (di = 0; di < detected.length; di++) merged.push(detected[di]);
-      for (di = 0; di < suggested.length; di++) merged.push(suggested[di]);
-      var row;
-      for (di = 0; di < merged.length; di++) {
-        row = merged[di];
-        if (!row || !row.code) continue;
-        var c = String(row.code).trim();
-        if (!c || seenCodes[c]) continue;
-        seenCodes[c] = true;
-        var tr = (row.title_ru || "").trim();
-        var line = buildIcdPreflightAppendLine(c, tr);
-        choices.push({ code: c, title_ru: tr, appendLine: line });
-      }
-      if (!choices.length) {
-        for (di = 0; di < codes.length; di++) {
-          var c2 = String(codes[di]).trim();
-          if (!c2 || seenCodes[c2]) continue;
-          seenCodes[c2] = true;
-          var line2 = buildIcdPreflightAppendLine(c2, "");
-          choices.push({ code: c2, title_ru: "", appendLine: line2 });
-        }
-      }
+    if (choices.length) {
+      html +=
+        '<p><strong>Предложенные коды МКБ-10</strong> <span class="search-wizard-select-hint">(можно несколько)</span>:</p>';
+      html += '<ul class="icd-preflight-codes">';
+      var topScore = choices[0].score;
       var ci;
       for (ci = 0; ci < choices.length; ci++) {
         var ch = choices[ci];
-        var rid = "icd-preflight-radio-" + ci;
+        var rid = "icd-preflight-cb-" + ci;
+        var isTop = ch.score != null && ch.score === topScore;
         html +=
-          '<li class="icd-preflight-codes__item">' +
+          '<li class="icd-preflight-codes__item' +
+          (isTop ? " icd-preflight-codes__item--top" : "") +
+          '">' +
           '<label class="icd-preflight-codes__label" for="' +
           escapeHtmlAttr(rid) +
           '">' +
-          '<input type="radio" name="icd-preflight-choice" id="' +
+          '<input type="checkbox" name="icd-preflight-choice" id="' +
           escapeHtmlAttr(rid) +
           '" value="' +
           String(ci) +
@@ -20552,16 +20796,16 @@
           escapeHtml(ch.code) +
           "</code>" +
           (ch.title_ru ? " - " + escapeHtml(ch.title_ru) : "") +
+          formatWizardRatingBadge(ch.score, isTop) +
           "</label></li>";
       }
       html += "</ul>";
     }
-    window.__icdPreflightChoices = choices;
     if (choices.length) {
-      window.__icdAppendLine = choices[0].appendLine;
+      window.__icdAppendLine = buildIcdMultiAppendLine([choices[0]]);
       html +=
         '<p class="icd-preflight-append-preview" style="margin-top:0.5rem">Будет добавлена строка: <em id="icd-preflight-append-em">' +
-        escapeHtml(choices[0].appendLine) +
+        escapeHtml(window.__icdAppendLine) +
         "</em></p>" +
         '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
     } else if (appendLine) {
@@ -20571,33 +20815,46 @@
         escapeHtml(appendLine) +
         "</em></p>" +
         '<button type="button" class="btn-assist btn-icd-apply" id="btn-icd-apply">Добавить в поле и найти протоколы</button>';
-    } else if (!hint && !showCodesBlock) {
-      html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
-    } else if (!hint && showCodesBlock && !choices.length) {
+    } else if (!hint && !choices.length) {
       html += "<p>Коды не подобраны. Уточните текст или введите МКБ-10 вручную.</p>";
     }
     box.innerHTML = html;
     box.hidden = false;
-    var radios = box.querySelectorAll('input[name="icd-preflight-choice"]');
-    var ri;
-    for (ri = 0; ri < radios.length; ri++) {
-      radios[ri].addEventListener("change", function () {
-        var idx = parseInt(this.value, 10);
-        var chList = window.__icdPreflightChoices;
-        if (!chList || !chList[idx]) return;
-        window.__icdAppendLine = chList[idx].appendLine;
-        var em = document.getElementById("icd-preflight-append-em");
-        if (em) em.textContent = chList[idx].appendLine;
-      });
+
+    function syncIcdPreflightPreview() {
+      var chList = window.__icdPreflightChoices || [];
+      var checked = box.querySelectorAll('input[name="icd-preflight-choice"]:checked');
+      var sel = [];
+      var ri;
+      for (ri = 0; ri < checked.length; ri++) {
+        var idx = parseInt(checked[ri].value, 10);
+        if (chList[idx]) sel.push(chList[idx]);
+      }
+      var line = buildIcdMultiAppendLine(sel);
+      window.__icdAppendLine = line;
+      var em = document.getElementById("icd-preflight-append-em");
+      if (em) em.textContent = line || "—";
     }
+
+    box.querySelectorAll('input[name="icd-preflight-choice"]').forEach(function (cb) {
+      cb.addEventListener("change", syncIcdPreflightPreview);
+    });
+    syncIcdPreflightPreview();
+
     var applyBtn = document.getElementById("btn-icd-apply");
     if (applyBtn) {
       applyBtn.addEventListener("click", function () {
-        var line = window.__icdAppendLine;
+        var chList = window.__icdPreflightChoices || [];
+        var checked = box.querySelectorAll('input[name="icd-preflight-choice"]:checked');
+        var sel = [];
+        var ri;
+        for (ri = 0; ri < checked.length; ri++) {
+          var idx = parseInt(checked[ri].value, 10);
+          if (chList[idx]) sel.push(chList[idx]);
+        }
         var inp = document.getElementById("q");
-        if (line && inp) {
-          var cur = (inp.value || "").trim();
-          inp.value = cur ? cur + "\n\n" + line : line;
+        if (inp && sel.length) {
+          inp.value = appendIcdChoicesToQuery(inp.value || "", sel);
         }
         box.hidden = true;
         box.innerHTML = "";

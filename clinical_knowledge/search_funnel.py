@@ -154,6 +154,7 @@ def handle_search_funnel(
                         "id": code,
                         "label": f"{code} · {title}" if title else code,
                         "confidence": row.get("confidence"),
+                        "score": row.get("score"),
                     }
                 )
         for code in icd_payload.get("codes_for_retrieval") or []:
