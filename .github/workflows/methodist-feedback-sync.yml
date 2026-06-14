@@ -1,0 +1,43 @@
+name: Methodist feedback sync
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Pull feedback from Render
+        env:
+          METHODIST_TOKEN: ${{ secrets.METHODIST_TOKEN }}
+          RENDER_URL: ${{ secrets.RENDER_URL }}
+        run: |
+          if [ -z "$METHODIST_TOKEN" ] || [ -z "$RENDER_URL" ]; then
+            echo "Skip: METHODIST_TOKEN or RENDER_URL not set"
+            exit 0
+          fi
+          bash scripts/pull_methodist_feedback.sh "$RENDER_URL" data/ml/feedback_render
+
+      - name: Export datasets
+        run: |
+          if [ -d data/ml/feedback_render ] && ls data/ml/feedback_render/*.jsonl 1>/dev/null 2>&1; then
+            ML_FEEDBACK_DIR=data/ml/feedback_render python3 scripts/export_training_feedback.py
+            python3 scripts/analyze_priority_cases.py --out ml/reports/priority_triage_ci.md
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: methodist-feedback-${{ github.run_id }}
+          path: |
+            data/ml/feedback_render/
+            ml/datasets/
+            ml/reports/
+          if-no-files-found: ignore

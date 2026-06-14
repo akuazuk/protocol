@@ -1,9 +1,53 @@
 # Приоритетный план: кабинет методиста → данные → обучение → улучшение анализа КЗ
 
 **Проект:** Protocol  
-**Версия:** 1.0  
+**Версия:** 1.1  
 **Дата:** июнь 2026  
 **Связанные документы:** [methodist-workbench-tz.md](./methodist-workbench-tz.md), [ml/README.md](../ml/README.md)
+
+---
+
+## 0. North Star: две опоры качества КЗ
+
+Конечная цель — не «накопить N events в JSONL», а **максимально точный end-to-end анализ КЗ**:
+
+| Опора | Вопрос системы | Компоненты | Главная метрика |
+|-------|----------------|------------|-----------------|
+| **A. Подбор протокола** | Какой КП Минздрава применим к этому КЗ? | RAG, embedder, rubric/ICD routing, `protocol_match` | **Protocol hit@3** на размеченных `retrieval_fix` + методист «верный КП» |
+| **B. Соответствие протоколу** | Насколько КЗ выполняет требования выбранного КП? | `rule_checker`, 8 блоков, medication safety, gates | **consult_gold pass rate** + средний rating методиста ≥ 3.5 |
+
+```mermaid
+flowchart LR
+  KZ[Текст КЗ] --> RAG[Опора A: RAG / match]
+  RAG --> KP[КП в контексте]
+  KP --> RULES[Опора B: rules + 8 блоков]
+  RULES --> SCORE[Итог % + findings]
+  SCORE --> METH[Методист / AI-review]
+  METH --> FB[feedback]
+  FB --> RAG
+  FB --> RULES
+```
+
+**Правило v1.1:** пока в `kz_analysis` часто **пустой** `matched_protocol_paths` / `retrieval_top_paths` — приоритет **A не ниже B**. LoRA embedder без меток `retrieval_fix` не даст end-to-end эффекта (урок embedder exp_001).
+
+### 0.1 Что план уже дал (июнь 2026)
+
+| Сделано | Эффект |
+|---------|--------|
+| Кабинет методиста + AI-review | Сбор меток без Label Studio |
+| r109–r111 engine fixes | Реальный прирост качества B (neoplasm, NSAID, context gates) |
+| Export + pull + дашборд r112 | Видимость прогресса, readiness ~32%, triage для агента |
+| `engine_release_log.json` | Доказуемый «до/после» на re-analyze |
+
+### 0.2 Что план ещё не дал (блокеры цели)
+
+| Пробел | Почему мешает цели |
+|--------|-------------------|
+| Только **1** `retrieval_fix` | Опора A почти не обучается |
+| **5× diagnosis_formula** на один КЗ (pl_1_f) | Шум → методист не доверяет B |
+| Нет **очереди** в UI | Active learning не масштабируется |
+| Нет **batch** + nightly sync | Медленный цикл «fix → verify» |
+| ML deploy отложен | OK — engine даёт больший ROI при <60% readiness |
 
 ---
 
@@ -64,28 +108,46 @@
 
 ### P0 — Инфраструктура данных (1–2 недели)
 
-| # | Задача | Результат | Effort | Impact |
-|---|--------|-----------|--------|--------|
-| P0.1 | **`GET /api/methodist/stats`** | JSON + UI дашборд: pool, readiness, рубрики | 2 д | Видимость прогресса |
-| P0.2 | **`scripts/run_methodist_batch.py`** | Папка PDF → L1 × N, опционально AI-review | 2 д | Массовый прогон |
-| P0.3 | **GitHub Action nightly sync** | pull → export → artifact для агента | 0.5 д | Cursor всегда видит JSON |
-| P0.4 | **`GET /api/methodist/analysis/{id}`** | Снимок api_result без полного текста КЗ | 1 д | Re-analyze / triage |
+| # | Задача | Результат | Effort | Impact | Статус |
+|---|--------|-----------|--------|--------|--------|
+| P0.1 | **`GET /api/methodist/stats`** | JSON + UI дашборд | 2 д | Видимость | ✅ r112 |
+| P0.2 | **`scripts/run_methodist_batch.py`** | Папка PDF → L1 × N, optional AI | 2 д | Масштаб T1 | ⬜ |
+| P0.3 | **GitHub Action nightly sync** | pull → export → artifact | 0.5 д | Cursor + CI | ⬜ |
+| P0.4 | **`GET /api/methodist/analysis/{id}`** | Снимок api_result | 1 д | Triage | ⬜ |
+| P0.5 | **Protocol hit@k в stats** | Метрика опоры A в дашборде | 1 д | Фокус на RAG | ⬜ |
 
-**Критерий приёмки P0:** методист открывает дашборд и видит актуальные цифры с Render; агент может скачать feedback без ручного curl.
+**Критерий приёмки P0:** batch 20+ КЗ за прогон; дашборд показывает readiness + protocol match rate; агент получает feedback без ручного curl.
 
 ---
 
-### P1 — Очередь и качество разметки (2–3 недели)
+### P1 — Очередь, шум правил, retrieval (2–3 недели)
+
+**Трек B (compliance):**
 
 | # | Задача | Результат | Effort | Impact |
 |---|--------|-----------|--------|--------|
-| P1.1 | **`GET /api/methodist/queue`** | pending + priority_cases + random sample | 2 д | FR из ТЗ §4.3 |
-| P1.2 | **UI вкладка «Очередь»** | Таблица кейсов → открыть в «Проверить КЗ» | 3 д | G3 active learning |
-| P1.3 | **Dedup findings в UI/движке** | 5× diagnosis_formula → 1 строка | 1 д | Меньше шума (pl_1_f) |
-| P1.4 | **Venous/thrombosis gate I80.x** | Убрать cardiology FP для флеботромбоза | 1 д | Конкретный кейс пилота |
-| P1.5 | **`scripts/analyze_priority_cases.py`** | Markdown-отчёт для агента после export | 1 д | Auto-triage |
+| P1.3 | **Dedup diagnosis_formula** | 5 FP → 1 finding | 1 д | Доверие к B |
+| P1.4 | **Venous/thrombosis gate I80.x** | pl_1_f без cardiology FP | 1 д | Пилот флеболог |
+| P1.6 | **Rule family gates** | Шаблон gate по ICD+specialty для top-3 override rule_id | 3 д | Системный fix B |
+| P1.7 | **Sparse KZ caps** | Документация/осмотр влияют на treat/safe (report_n_2) | 2 д | Честный % |
 
-**Критерий приёмки P1:** методист разбирает очередь без поиска analysis_id в JSONL; priority_cases уменьшаются после re-analyze.
+**Трек A (protocol match):**
+
+| # | Задача | Результат | Effort | Impact |
+|---|--------|-----------|--------|--------|
+| P1.8 | **UI: «Правильный протокол» обязательнее** | При tag `wrong_protocol` / `missed_protocol` — форма retrieval_fix | 1 д | Метки для LoRA |
+| P1.9 | **Rubric+ICD pre-filter** | Сузить RAG до рубрики до embed search | 2 д | Меньше miss |
+| P1.10 | **Golden protocol pairs** | 20 пар diagnosis→path из размеченных кейсов | 2 д | Eval опоры A |
+
+**UX / active learning:**
+
+| # | Задача | Результат | Effort | Impact |
+|---|--------|-----------|--------|--------|
+| P1.1 | **`GET /api/methodist/queue`** | pending + priority + sample | 2 д | G3 |
+| P1.2 | **UI вкладка «Очередь»** | Клик → прогон в «Проверить КЗ» | 3 д | 20 кейсов/нед |
+| P1.5 | **`analyze_priority_cases.py`** | MD-отчёт для агента | 1 д | Auto-triage |
+
+**Критерий приёмки P1:** priority_cases ↓; ≥5 `retrieval_fix` за месяц; средний rating ↑; очередь без JSONL вручную.
 
 ---
 
@@ -292,16 +354,35 @@ sequenceDiagram
 
 ---
 
-## 8. Метрики успеха пилота
+## 8. Метрики успеха пилота (v1.1 — две опоры)
+
+### Опора A — подбор протокола
+
+| Метрика | Baseline | Цель 3 мес |
+|---------|----------|------------|
+| `retrieval_fix` из feedback | 1 | ≥20 |
+| Protocol hit@3 (на golden pairs) | не замеряется | ≥70% |
+| КЗ с непустым `matched_protocol_paths` | низкий % | ≥80% прогонов L1 |
+| Tag `missed_protocol` / `wrong_protocol` в reviews | есть | −50% |
+
+### Опора B — соответствие протоколу
 
 | Метрика | Baseline | Цель 3 мес |
 |---------|----------|------------|
 | Уникальных размеченных КЗ | ~10 | ≥50 |
 | Средний rating методиста | ~2.5 | ≥3.5 |
 | priority_cases (rating≤2) | 9 | ≤5 |
-| Top-3 rule_id с overrides | neoplasm, pregnancy, diagnosis_formula | −50% FP |
-| retrieval_fix из feedback | 1 | ≥20 |
+| Top-3 rule_id FP (neoplasm, pregnancy, diagnosis_formula) | частые | −50% срабатываний |
 | consult_gold строк | 9 | ≥19 |
+| consult_gold pass rate (regression) | baseline | не ниже baseline |
+
+### Сводная
+
+| readiness_overall_pct | Действие |
+|----------------------|----------|
+| < 40% | Только engine + сбор меток, batch T1 |
+| 40–60% | + очередь, retrieval_fix, rule family gates |
+| > 60% | + LoRA embedder A/B, entailment pilot |
 
 ---
 
@@ -317,13 +398,44 @@ sequenceDiagram
 
 ---
 
-## Приложение A: порядок работ на ближайшую неделю
+## Приложение A: порядок работ (актуальный спринт)
 
-1. ✅ Дашборд ML в кабинете методиста (r112)
-2. `run_methodist_batch.py` — batch L1 + optional AI
-3. GitHub Action nightly sync
-4. Venous I80.x gate + fixture pl_1_f
-5. Re-analyze obgyn case после r109 на Render → pull → verify в дашборде
+**Неделя 1 — закрыть P0 + быстрые wins B**
+
+1. ✅ Дашборд ML (r112)
+2. ✅ `run_methodist_batch.py` — batch L1 (fixtures 16/16)
+3. ✅ GitHub Action `methodist-feedback-sync.yml`
+4. ✅ Venous I80.x gate + tests `test_venous_rule_gates.py`
+5. ✅ Dedup diagnosis_formula (engine + UI)
+6. ✅ `GET /api/methodist/queue` + таблица в дашборде
+7. ✅ `analyze_priority_cases.py`
+8. ⬜ Re-analyze obgyn + pull → verify в дашборде
+
+**Неделя 2 — очередь + опора A**
+
+6. ⬜ `GET /api/methodist/queue` + UI вкладка
+7. ⬜ Усилить форму retrieval_fix при tags wrong/missed protocol
+8. ⬜ Re-analyze obgyn + pull → verify в дашборде
+9. ⬜ `analyze_priority_cases.py` → weekly triage для Cursor
+
+**Неделя 3–4 — системные gates**
+
+10. ⬜ Rule family gates для top override rule_id
+11. ⬜ consult_gold_candidate + 3 новых эталона из priority
+12. ⬜ Protocol hit@k в дашборде и export manifest
+
+---
+
+## Приложение C: готовность агента к выполнению
+
+| Вопрос | Ответ |
+|--------|-------|
+| Готов выполнять план? | **Да** — инфраструктура feedback и дашборд есть; следующий шаг P0.2–P0.4 + P1.3–P1.4 |
+| Что нужно от методиста | 5–10 КЗ/нед с «Правильный протокол» при ошибке RAG; approve AI-review |
+| Что нужно от DevOps | Render persistent disk для feedback; secrets в GitHub Actions |
+| Риск «ML ради ML» | Отложен до readiness >60% и ≥20 retrieval_fix |
+
+**Еженедельный ритуал (30 мин):** pull feedback → export → priority report → 1–2 engine PR → re-analyze на Render → проверка дашборда Δ.
 
 ---
 

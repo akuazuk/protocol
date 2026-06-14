@@ -89,6 +89,55 @@ def _has_pregnancy_context(consult_facts: dict[str, Any]) -> bool:
     return False
 
 
+_VENOUS_ICD_PREFIXES = ("I80", "I81", "I82", "I83", "I86", "I87")
+_ARTERIAL_ICD_PREFIXES = ("I70", "I71", "I72", "I73", "I74", "I75", "I76", "I77", "I78", "I79")
+_ARTERIAL_ONLY_CONDITIONS = frozenset({
+    "cardiology_protocol",
+    "peripheral_artery_disease",
+    "aortic_aneurysm",
+    "aortic_stenosis",
+    "myocardial_infarction",
+    "angina_pectoris",
+    "heart_failure",
+})
+
+
+def _icd_starts_with_any(code: str, prefixes: tuple[str, ...]) -> bool:
+    cu = (code or "").upper().strip()
+    return any(cu.startswith(p) for p in prefixes)
+
+
+def _has_venous_context(consult_facts: dict[str, Any]) -> bool:
+    cons = consult_facts.get("consultation") or {}
+    hints = {str(x).lower() for x in (cons.get("conditions_hint") or []) if x}
+    if hints & {"deep_vein_thrombosis"}:
+        return True
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    if any(_icd_starts_with_any(c, _VENOUS_ICD_PREFIXES) for c in icd_list):
+        return True
+    blob = _text_blob(consult_facts)
+    markers = (
+        "флеботромб", "тромбофлеб", "флебит", "тромбоз вен", "тгв", "тромбоэмбол",
+        "варикоз", "флеболог", "поверхностн", "глубоких вен",
+    )
+    return any(m in blob for m in markers)
+
+
+def _has_arterial_context(consult_facts: dict[str, Any]) -> bool:
+    cons = consult_facts.get("consultation") or {}
+    icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+    if any(_icd_starts_with_any(c, _ARTERIAL_ICD_PREFIXES) for c in icd_list):
+        return True
+    if any(c.startswith(("I20", "I21", "I22", "I24", "I25")) for c in icd_list):
+        return True
+    blob = _text_blob(consult_facts)
+    markers = (
+        "стенокард", "инфаркт", "ишем", "атеросклер", "периферическ", "arter",
+        "аорт", "стеноз", "аневризм", "claudication",
+    )
+    return any(m in blob for m in markers)
+
+
 def _has_condition_context(consult_facts: dict[str, Any], condition_id: str) -> bool:
     """Нозология по hints, маркерам текста или префиксам МКБ из реестра."""
     cons = consult_facts.get("consultation") or {}
@@ -175,7 +224,28 @@ def _condition_applies_to_consult(
         aud = (ctx.get("adult_or_child") or "").lower()
         if aud != "child" and not (isinstance(age, (int, float)) and age < 18):
             return False
-    if not cond_icd and cid not in ("bladder_dysfunction", "neoplasm", "pregnancy", "pediatric_general_surgery"):
+    if cid in _ARTERIAL_ONLY_CONDITIONS:
+        if _has_venous_context(consult_facts) and not _has_arterial_context(consult_facts):
+            return False
+    if cid == "deep_vein_thrombosis":
+        if not _has_venous_context(consult_facts):
+            return False
+        icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
+        superficial_only = bool(icd_list) and all(
+            c.startswith("I80.0") or c.startswith("I80.1") for c in icd_list
+        )
+        if superficial_only:
+            blob = _text_blob(consult_facts)
+            deep_markers = ("глубок", "подколен", "бедренно", "берцов", "тгв", "тромбоз глубок")
+            if not any(m in blob for m in deep_markers):
+                return False
+    if not cond_icd and cid not in (
+        "bladder_dysfunction",
+        "neoplasm",
+        "pregnancy",
+        "pediatric_general_surgery",
+        "deep_vein_thrombosis",
+    ):
         if not _has_condition_context(consult_facts, cid):
             return False
     return True
@@ -426,6 +496,21 @@ def _run_rule(rule: dict[str, Any], consult_facts: dict[str, Any]) -> dict[str, 
     return finding
 
 
+def _dedupe_findings(findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Один failed diagnosis_formula на одинаковый message_ru (pl_1_f: 5→1)."""
+    seen: set[tuple[str, str]] = set()
+    out: list[dict[str, Any]] = []
+    for f in findings:
+        rt = str(f.get("rule_type") or "")
+        if rt == "diagnosis_formula" and not f.get("passed") and not f.get("skipped"):
+            key = (rt, str(f.get("message_ru") or "")[:160])
+            if key in seen:
+                continue
+            seen.add(key)
+        out.append(f)
+    return out
+
+
 def _condition_meta(cid: str, conditions: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
     cond = conditions.get(cid)
     if cond:
@@ -518,12 +603,21 @@ def _resolve_target_conditions(
         base = [cid for cid in rules_map if rules_map.get(cid)]
 
     if not base:
-        base = list(conditions.keys()) or list(rules_map.keys())
+        base = infer_conditions_hints(_text_blob(consult_facts), icd_list)
 
-    if extra_summary := [cid for cid, rs in rules_map.items() if any(r.get("rule_source") == "summary" for r in rs)]:
-        for cid in extra_summary:
-            if cid not in base:
+    if not base and icd_list:
+        for cid, meta in conditions.items():
+            cond_icd = list(meta.get("icd10") or [])
+            if cond_icd and _icd_lists_overlap(cond_icd, icd_list):
                 base.append(cid)
+        base = list(dict.fromkeys(base))
+
+    extra_summary = [
+        cid for cid, rs in rules_map.items() if any(r.get("rule_source") == "summary" for r in rs)
+    ]
+    for cid in extra_summary:
+        if cid not in base:
+            base.append(cid)
 
     filtered = [
         cid
@@ -637,6 +731,7 @@ def run_rule_checker(
                 continue
             all_findings.append(_run_rule(rule, consult_facts))
 
+    all_findings = _dedupe_findings(all_findings)
     failed = [f for f in all_findings if not f.get("passed") and not f.get("skipped")]
     critical = [f for f in failed if f.get("severity") == "critical"]
 

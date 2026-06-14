@@ -6037,7 +6037,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r112-methodist-ml-dashboard"
+BUILD_VERSION = "2026-06-01-r113-methodist-sprint-week1"
 
 
 def _app_version() -> str:
@@ -7233,6 +7233,15 @@ def api_methodist_stats(request: "Request") -> dict:
     from clinical_knowledge.methodist_stats import build_methodist_dashboard_stats
 
     return build_methodist_dashboard_stats()
+
+
+@app.get("/api/methodist/queue")
+def api_methodist_queue(request: "Request", limit: int = Query(50, ge=5, le=200)) -> dict:
+    """Очередь active learning: priority, pending, suspicious."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_queue import build_methodist_queue
+
+    return build_methodist_queue(limit=limit)
 
 
 class MethodistAiReviewIn(BaseModel):

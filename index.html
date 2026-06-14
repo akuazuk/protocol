@@ -8251,6 +8251,25 @@
           </div>
         </section>
         <section class="methodist-ml-section">
+          <h3>Очередь разметки (active learning)</h3>
+          <div id="methodist-ml-queue-meta" class="methodist-ml-meta"></div>
+          <div class="methodist-ml-table-wrap">
+            <table class="methodist-ml-table" id="methodist-ml-table-queue">
+              <thead>
+                <tr>
+                  <th>Причина</th>
+                  <th>analysis_id</th>
+                  <th>Рубрика</th>
+                  <th>Overall %</th>
+                  <th>Failed rules</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="methodist-ml-section">
           <h3>История релизов: движок vs ML</h3>
           <div class="methodist-ml-table-wrap">
             <table class="methodist-ml-table" id="methodist-ml-table-releases">
@@ -12492,6 +12511,59 @@
     }
   }
 
+  function renderMethodistMlQueue(queue) {
+    if (!queue) return;
+    var meta = document.getElementById("methodist-ml-queue-meta");
+    var c = queue.counts || {};
+    if (meta) {
+      meta.textContent =
+        "Priority: " +
+        (c.priority || 0) +
+        " · Pending: " +
+        (c.pending || 0) +
+        " · Suspicious: " +
+        (c.suspicious || 0) +
+        " · Всего KZ: " +
+        (c.total_kz || 0);
+    }
+    var rows = []
+      .concat((queue.priority || []).map(function (r) {
+        return Object.assign({}, r, { _kind: "priority" });
+      }))
+      .concat((queue.pending || []).map(function (r) {
+        return Object.assign({}, r, { _kind: "pending" });
+      }))
+      .concat((queue.suspicious || []).map(function (r) {
+        return Object.assign({}, r, { _kind: "suspicious" });
+      }));
+    var tb = document.querySelector("#methodist-ml-table-queue tbody");
+    if (!tb) return;
+    if (!rows.length) {
+      tb.innerHTML = '<tr><td colspan="6">Очередь пуста — загрузите КЗ в «Проверить КЗ»</td></tr>';
+      return;
+    }
+    tb.innerHTML = rows
+      .map(function (r) {
+        var fr = (r.failed_rule_ids || []).length ? (r.failed_rule_ids || []).join(", ") : "—";
+        return (
+          "<tr><td>" +
+          escapeHtml(r.reason || r._kind || "") +
+          "</td><td><code>" +
+          escapeHtml(String(r.analysis_id || "").slice(0, 8)) +
+          "…</code></td><td>" +
+          escapeHtml(r.rubric_label || "") +
+          "</td><td>" +
+          (r.overall_pct != null ? r.overall_pct + "%" : "—") +
+          "</td><td>" +
+          escapeHtml(String(fr).slice(0, 80)) +
+          "</td><td>" +
+          (r.rating != null ? r.rating : "—") +
+          "</td></tr>"
+        );
+      })
+      .join("");
+  }
+
   function loadMethodistMlDashboard() {
     if (!window.__methodistMode || !window.__methodistToken) return;
     var root = document.getElementById("methodist-ml-dashboard-root");
@@ -12514,6 +12586,19 @@
       })
       .then(function (stats) {
         renderMethodistMlDashboard(stats);
+        return fetch(base + "/api/methodist/queue?limit=30", {
+          headers: {
+            "X-Methodist-Token": window.__methodistToken,
+            "X-Methodist-Reviewer": window.__methodistReviewer || "",
+          },
+        });
+      })
+      .then(function (r) {
+        if (!r || !r.ok) return null;
+        return r.json();
+      })
+      .then(function (queue) {
+        if (queue) renderMethodistMlQueue(queue);
       })
       .catch(function (e) {
         if (errEl) {
@@ -13266,6 +13351,15 @@
     var rc = cr.rules_check || {};
     (rc.findings || []).forEach(function (f) {
       if (f && f.rule_id && !f.skipped) findings.push(f);
+    });
+    var dedupMsg = {};
+    findings = findings.filter(function (f) {
+      if (f.rule_type === "diagnosis_formula" && !f.passed) {
+        var k = String(f.message_ru || f.title_ru || f.rule_id || "");
+        if (dedupMsg[k]) return false;
+        dedupMsg[k] = true;
+      }
+      return true;
     });
     (ctx && ctx.critical_issues ? ctx.critical_issues : saComp.critical_issues || []).forEach(function (issue) {
       if (!issue || typeof issue !== "object") return;
