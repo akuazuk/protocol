@@ -30,12 +30,21 @@ def run_audit(*, strict: bool = False) -> dict:
     gaps_icd: list[str] = []
     gaps_aud: list[str] = []
     invalid_icd: list[dict] = []
+    general_marked: list[dict] = []
 
     valid = pc._valid_icd_codes()
 
     for path, row in sorted(cat.items()):
         if not row.get("icd10_all") and not row.get("general_scope"):
             gaps_icd.append(path)
+        if row.get("general_scope"):
+            general_marked.append(
+                {
+                    "path": path,
+                    "kind": row.get("protocol_kind"),
+                    "label": row.get("scope_label_ru"),
+                }
+            )
         aud = row.get("audience") or "any"
         if aud == "any":
             gaps_aud.append(path)
@@ -51,6 +60,8 @@ def run_audit(*, strict: bool = False) -> dict:
         "invalid_icd_count": len(invalid_icd),
         "gaps_icd_sample": gaps_icd[:15],
         "gaps_aud_sample": gaps_aud[:15],
+        "general_scope_sample": general_marked[:20],
+        "general_scope_count": len(general_marked),
     }
 
     if strict:
@@ -70,10 +81,14 @@ def run_audit(*, strict: bool = False) -> dict:
         f"- With ICD: **{stats['with_icd']}**",
         f"- Without ICD: **{stats['without_icd']}**",
         f"- Audience explicit (not any): **{stats['with_explicit_audience']}**",
+        f"- Marked general_scope: **{stats.get('general_scope_count', 0)}**",
         "",
-        "## PDF without ICD (sample)",
+        "## General / organizational protocols (sample)",
         "",
     ]
+    for item in report.get("general_scope_sample") or []:
+        lines.append(f"- `{item.get('label')}` — `{item.get('path')}`")
+    lines.extend(["", "## PDF without ICD and not general (gaps)", ""])
     for p in gaps_icd[:30]:
         lines.append(f"- `{p}`")
     lines.extend(["", "## PDF with audience=any (sample)", ""])

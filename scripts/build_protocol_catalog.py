@@ -27,18 +27,26 @@ def update_index_csv(rows: list[dict]) -> None:
     with idx_path.open(encoding="utf-8") as f:
         reader = csv.DictReader(f)
         fieldnames = list(reader.fieldnames or [])
-        for col in ("icd10_primary", "icd_count", "audience_confidence"):
+        for col in (
+            "icd10_primary",
+            "icd_count",
+            "audience_confidence",
+            "protocol_kind",
+            "scope_label_ru",
+        ):
             if col not in fieldnames:
                 fieldnames.append(col)
         out_rows = []
         for row in reader:
             path = (row.get("relative_path") or "").replace("\\", "/")
             ent = by_path.get(path) or {}
-            if ent.get("audience") and not row.get("audience"):
+            if ent.get("audience") and (not row.get("audience") or row.get("audience") == "any"):
                 row["audience"] = ent["audience"]
             row["icd10_primary"] = "|".join(ent.get("icd10_primary") or [])
             row["icd_count"] = str(ent.get("icd_count") or 0)
             row["audience_confidence"] = ent.get("audience_source") or ""
+            row["protocol_kind"] = ent.get("protocol_kind") or ""
+            row["scope_label_ru"] = ent.get("scope_label_ru") or ""
             out_rows.append(row)
     with idx_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")

@@ -284,6 +284,9 @@ def lookup_protocols_by_icd(
                 "rag_support": round(conf * 0.9, 4),
                 "icd_lookup_score": round(sc, 2),
                 "audience": row.get("audience"),
+                "protocol_kind": row.get("protocol_kind"),
+                "scope_label_ru": row.get("scope_label_ru"),
+                "general_scope": bool(row.get("general_scope")),
                 "matched_icd_codes": list(query_icd)[:6],
             }
         )

@@ -3955,6 +3955,18 @@
       letter-spacing: 0.02em;
     }
 
+    .assist-proto-scope {
+      display: inline-block;
+      margin: 0.25rem 0 0;
+      padding: 0.12rem 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #5a4a12;
+      background: rgba(255, 214, 102, 0.35);
+      border: 1px solid rgba(180, 140, 40, 0.45);
+      border-radius: 4px;
+    }
+
     .assist-embed-note {
       margin: 0.35rem 0 0;
       font-size: 0.78rem;
@@ -13048,6 +13060,12 @@
       escapeHtml(title) +
       "</a>";
     html += catalogBadgesHtml(pr.path, opts.protocolUiMeta);
+    if (pr.general_scope && pr.scope_label_ru) {
+      html +=
+        '<span class="assist-proto-scope" title="Протокол без одного кода МКБ — широкий или организационный">' +
+        escapeHtml(pr.scope_label_ru) +
+        "</span>";
+    }
     html +=
       '<span class="llm-pct-badge ' +
       confidenceBadgeClass(mScore) +

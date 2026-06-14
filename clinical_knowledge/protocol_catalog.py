@@ -1,4 +1,4 @@
-"""Единый каталог PDF протоколов: МКБ, аудитория, рубрика (478 КП)."""
+"""Единый каталог PDF протоколов: МКБ, аудитория, тип (общий/клинический)."""
 from __future__ import annotations
 
 import csv
@@ -18,19 +18,40 @@ CHUNKS_PATH = ROOT / "output" / "chunks" / "chunks.jsonl"
 SUMMARY_JSON_DIR = ROOT / "data" / "protocol_summaries" / "json"
 ICD_REF_PATH = ROOT / "data" / "icd_reference" / "icd10_who_2016_terminal_codes.json"
 PRIMARY_ICD_LIMIT = 12
+BODY_TEXT_LIMIT = 80_000
 
 _PED_SLUGS = frozenset({"pediatriya"})
 _PED_MARKERS = (
     "д-нас", "дет-нас", "дет нас", "дет_нас", "детс", "дет. нас", "детск",
-    "детей", " дет", " неонат", "новорожд", "pediatr", "дет возраста",
+    "детей", " дет", "неонат", "новорожд", "pediatr", "дет возраста",
 )
 _ADULT_MARKERS = (
     "взросл", "взр ", "взр.", "взр_нас", "в-нас", " в нас", "вз н", "вз_н",
 )
+_BODY_PED = (
+    "детское население", "д-нас", "дет-нас", "детей", "детск", "новорожд",
+    "неонатолог", "грудн", "пedi",
+)
+_BODY_ADULT = (
+    "взрослое население", "в-нас", "взр. нас", "взрослых", "взросл",
+)
+_BODY_PREG = ("беременн", "родильниц", "акушерск", "пrenatal", "пренаталь")
+
+
+def _norm_path(sp: str) -> str:
+    return (sp or "").replace("\\", "/").strip()
+
+
+def _norm_icd(code: str) -> str:
+    return re.sub(r"\s+", "", (code or "").upper().strip())
+
+
+def _norm_blob(text: str) -> str:
+    return re.sub(r"\s+", " ", (text or "").lower().replace("_", " ")).strip()
 
 
 def _infer_audience_from_text(path: str, title: str) -> str | None:
-    blob = re.sub(r"\s+", " ", f"{path} {title}".lower().replace("_", " ").replace("-", " ")).strip()
+    blob = _norm_blob(f"{path} {title}")
     has_p = any(m in blob for m in _PED_MARKERS)
     has_a = any(m in blob for m in _ADULT_MARKERS)
     if has_p and has_a:
@@ -40,24 +61,6 @@ def _infer_audience_from_text(path: str, title: str) -> str | None:
     if has_a:
         return "adult"
     return None
-CATALOG_PATH = ROOT / "data" / "protocol_catalog.jsonl"
-OVERRIDES_PATH = ROOT / "data" / "protocol_audience_overrides.json"
-INDEX_CSV = ROOT / "index.csv"
-CARDS_PATH = ROOT / "output" / "registry" / "protocol_cards.jsonl"
-CHUNKS_PATH = ROOT / "output" / "chunks" / "chunks.jsonl"
-SUMMARY_JSON_DIR = ROOT / "data" / "protocol_summaries" / "json"
-ICD_REF_PATH = ROOT / "data" / "icd_reference" / "icd10_who_2016_terminal_codes.json"
-PRIMARY_ICD_LIMIT = 12
-
-_PED_SLUGS = frozenset({"pediatriya"})
-
-
-def _norm_path(sp: str) -> str:
-    return (sp or "").replace("\\", "/").strip()
-
-
-def _norm_icd(code: str) -> str:
-    return re.sub(r"\s+", "", (code or "").upper().strip())
 
 
 def _read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -101,15 +104,9 @@ def _filter_valid_icd(codes: list[str]) -> list[str]:
         if not c or len(c) < 3 or c in seen:
             continue
         if valid:
-            if c in valid:
+            if c in valid or c[:3] in roots:
                 seen.add(c)
                 out.append(c)
-                continue
-            root = c[:3]
-            if root in roots:
-                seen.add(c)
-                out.append(c)
-                continue
             continue
         seen.add(c)
         out.append(c)
@@ -145,10 +142,13 @@ def _cards_by_path() -> dict[str, dict[str, Any]]:
     return merged
 
 
-def _icd_from_chunks() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+def _chunk_data_by_path() -> tuple[dict[str, list[str]], dict[str, Counter[str]], dict[str, list[str]]]:
+    """path -> text parts, icd freq, icd lists from chunk fields."""
+    texts: dict[str, list[str]] = defaultdict(list)
     freq: dict[str, Counter[str]] = defaultdict(Counter)
+    field_icd: dict[str, list[str]] = defaultdict(list)
     if not CHUNKS_PATH.is_file():
-        return {}, {}
+        return texts, freq, field_icd
     for line in CHUNKS_PATH.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -159,13 +159,17 @@ def _icd_from_chunks() -> tuple[dict[str, list[str]], dict[str, list[str]]]:
         sp = _norm_path(str(c.get("source_path") or ""))
         if not sp:
             continue
+        for key in ("text", "excerpt", "content", "normalized"):
+            val = c.get(key)
+            if isinstance(val, str) and val.strip():
+                texts[sp].append(val.strip())
+                break
         for code in c.get("icd10_codes") or []:
             cc = _norm_icd(str(code))
             if len(cc) >= 3:
                 freq[sp][cc] += 1
-    all_codes = {sp: sorted(cnt) for sp, cnt in freq.items()}
-    by_freq = {sp: [code for code, _ in cnt.most_common()] for sp, cnt in freq.items()}
-    return all_codes, by_freq
+                field_icd[sp].append(cc)
+    return texts, freq, field_icd
 
 
 def _icd_from_summaries() -> dict[str, list[str]]:
@@ -191,34 +195,146 @@ def _icd_from_summaries() -> dict[str, list[str]]:
     return {k: sorted(v) for k, v in out.items()}
 
 
-def _infer_audience(
-    path: str,
+def _icd_from_body_text(
+    *,
     title: str,
+    body: str,
+    extract_icd10,
+    lookup_disease_icd,
+    prioritize_codes,
+    is_symptom_code,
+) -> tuple[list[str], list[str]]:
+    """ICD из текста PDF: title-first, затем частые коды из тела (без шума R/Z)."""
+    sources: list[str] = []
+    icd_set: set[str] = set()
+
+    for src, blob in (("title_nomenclature", title), ("body_nomenclature", body[:20_000])):
+        for code in lookup_disease_icd(blob):
+            c = _norm_icd(code)
+            if c:
+                icd_set.add(c)
+                sources.append(src)
+        for code in extract_icd10(blob):
+            c = _norm_icd(code)
+            if c:
+                icd_set.add(c)
+                sources.append("title_extract" if src.startswith("title") else "body_extract")
+
+    # Частые коды из текста чанков (минимум 2 упоминания), болезни вперёд
+    freq: Counter[str] = Counter()
+    for part in body[:BODY_TEXT_LIMIT].split("\n"):
+        for code in extract_icd10(part):
+            c = _norm_icd(code)
+            if c:
+                freq[c] += 1
+    disease_freq = [(c, n) for c, n in freq.items() if not is_symptom_code(c)]
+    disease_freq.sort(key=lambda x: (-x[1], x[0]))
+    for code, count in disease_freq[:15]:
+        if count >= 2 or (count >= 1 and code[:3] in _norm_blob(title)):
+            if code not in icd_set:
+                icd_set.add(code)
+                sources.append("body_freq")
+
+    ordered = prioritize_codes(sorted(icd_set))
+    return ordered, sorted(set(sources))
+
+
+def _infer_audience_from_body(
+    title: str,
+    body: str,
     specialty_slug: str,
     card_population: str | None,
     override: str | None,
 ) -> tuple[str, str]:
     if override in ("adult", "pediatric", "mixed", "any"):
         return override, "override"
-    aud = _infer_audience_from_text(path, title)
-    if aud == "pediatric":
-        return "pediatric", "filename"
-    if aud == "adult":
-        return "adult", "filename"
-    if aud == "mixed":
-        return "mixed", "filename"
+
+    from_title = _infer_audience_from_text("", title)
+    if from_title:
+        return from_title, "filename"
+
+    blob = _norm_blob(f"{title} {body[:25_000]}")
+    ped_hits = sum(1 for m in _BODY_PED if m in blob)
+    adult_hits = sum(1 for m in _BODY_ADULT if m in blob)
+    preg_hits = sum(1 for m in _BODY_PREG if m in blob)
+
+    if ped_hits and adult_hits:
+        return "mixed", "body_text"
+    if ped_hits >= 2 or ("новорожд" in blob or "неонат" in blob):
+        return "pediatric", "body_text"
+    if adult_hits >= 2:
+        return "adult", "body_text"
+    if preg_hits >= 2 or (
+        specialty_slug == "akusherstvo-ginekologiya"
+        and "женщин" in blob
+        and ped_hits == 0
+    ):
+        return "adult", "body_text_pregnancy"
+
     pop = (card_population or "").strip().lower()
     if pop == "child":
         return "pediatric", "card_population"
     if pop == "adult":
         return "adult", "card_population"
-    if specialty_slug in _PED_SLUGS and "взросл" not in title.lower():
+    if specialty_slug in _PED_SLUGS and "взросл" not in blob:
         return "pediatric", "specialty_slug"
     return "any", "default"
 
 
+def _classify_protocol_kind(
+    title: str,
+    icd_all: list[str],
+    specialty_slug: str,
+    body: str,
+) -> tuple[str, str, bool]:
+    """protocol_kind, scope_label_ru, general_scope."""
+    t = _norm_blob(title)
+    b = _norm_blob(body[:12_000])
+
+    if icd_all:
+        return "clinical", "Клинический КП (есть коды МКБ)", False
+
+    if any(
+        x in t
+        for x in (
+            "поддержка сексуального",
+            "поддержка сексуального и репродуктивного",
+            "медицинское наблюдение и оказание медицинской помощи женщинам в акушерстве",
+            "организация оказания медицинской",
+            "порядок оказания медицинской",
+        )
+    ):
+        return "general_program", "Общий / организационный КП", True
+
+    if "реабилитац" in t:
+        return "rehabilitation", "Реабилитация (широкий охват МКБ)", True
+
+    if any(x in t for x in ("экстракорпоральн", " бесплод", "врт", "оплодотворен")):
+        return "procedural", "Процедурный КП (ВРТ / бесплодие)", True
+
+    if "искусственн" in t and "прерыван" in t:
+        return "procedural", "Процедурный КП (прерывание беременности)", True
+
+    if "алгоритм" in t and ("зно" in t or "онколог" in t or "новообразован" in t):
+        return "oncology_algorithm", "Алгоритм ЗНО (мульти-МКБ)", True
+
+    if "диспансер" in t and not icd_all:
+        return "screening_dispanser", "Диспансерное наблюдение (общий)", True
+
+    if "оказание медицинской помощи" in t and specialty_slug in (
+        "akusherstvo-ginekologiya",
+        "terapiya",
+    ):
+        return "general_care", "Общий КП оказания помощи", True
+
+    if "неонатолог" in t or "неонат" in t:
+        return "clinical", "Клинический КП (неонатология)", False
+
+    return "clinical_pending", "Клинический КП (МКБ не извлечён из текста)", True
+
+
 def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
-    """Собрать каталог из index.csv, cards, chunks, summaries."""
+    """Собрать каталог из index.csv, cards, chunks, summaries, текста PDF."""
     import importlib.util
 
     ent_path = ROOT / "corpus_pipeline" / "entities_extract.py"
@@ -234,12 +350,14 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
     diag_mod = importlib.util.module_from_spec(dspec)
     dspec.loader.exec_module(diag_mod)
     lookup_disease_icd = diag_mod.lookup_disease_icd
+    prioritize_codes = diag_mod.prioritize_codes
+    is_symptom_code = diag_mod.is_symptom_code
 
     if not INDEX_CSV.is_file():
         raise FileNotFoundError(f"Missing {INDEX_CSV}")
 
     cards = _cards_by_path()
-    chunk_all, chunk_freq = _icd_from_chunks()
+    chunk_texts, chunk_freq, chunk_field_icd = _chunk_data_by_path()
     summary_icd = _icd_from_summaries()
     overrides = _load_overrides()
 
@@ -253,12 +371,13 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
             title = row.get("display_title") or re.sub(r"\.pdf$", "", filename, flags=re.I)
             specialty = row.get("category") or ""
             card = cards.get(path) or {}
+            body = " ".join(chunk_texts.get(path, []))[:BODY_TEXT_LIMIT]
 
             sources: set[str] = set()
             icd_set: set[str] = set()
             for src, codes in (
                 ("card", card.get("icd10_all") or card.get("icd10_primary") or []),
-                ("chunks", chunk_all.get(path, [])),
+                ("chunks_field", chunk_field_icd.get(path, [])),
                 ("summary", summary_icd.get(path, [])),
                 ("filename", extract_icd10(f"{filename} {title}")),
                 ("nomenclature", lookup_disease_icd(f"{filename} {title}")),
@@ -269,10 +388,23 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
                         icd_set.add(c)
                         sources.add(src)
 
-            icd_all = _filter_valid_icd(sorted(icd_set))
+            body_icd, body_src = _icd_from_body_text(
+                title=title,
+                body=body,
+                extract_icd10=extract_icd10,
+                lookup_disease_icd=lookup_disease_icd,
+                prioritize_codes=prioritize_codes,
+                is_symptom_code=is_symptom_code,
+            )
+            for c in body_icd:
+                icd_set.add(c)
+            sources.update(body_src)
+
+            icd_all = _filter_valid_icd(prioritize_codes(sorted(icd_set)))
             primary_src = (
-                [ _norm_icd(x) for x in (card.get("icd10_primary") or []) if x ]
-                or chunk_freq.get(path, [])[:PRIMARY_ICD_LIMIT]
+                [_norm_icd(x) for x in (card.get("icd10_primary") or []) if x]
+                or [c for c, _ in chunk_freq.get(path, Counter()).most_common(PRIMARY_ICD_LIMIT)]
+                or body_icd[:PRIMARY_ICD_LIMIT]
                 or icd_all[:PRIMARY_ICD_LIMIT]
             )
             icd_primary = _filter_valid_icd(list(dict.fromkeys(primary_src)))[:PRIMARY_ICD_LIMIT]
@@ -282,13 +414,19 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
             if aud_csv in ("adult", "pediatric", "mixed"):
                 audience, aud_src = aud_csv, "index_csv"
             else:
-                audience, aud_src = _infer_audience(
-                    path,
+                audience, aud_src = _infer_audience_from_body(
                     title,
+                    body,
                     specialty,
                     str(card.get("population") or ""),
                     override,
                 )
+
+            kind, scope_label, general_scope = _classify_protocol_kind(
+                title, icd_all, specialty, body
+            )
+            if icd_all:
+                kind, scope_label, general_scope = "clinical", "Клинический КП (есть коды МКБ)", False
 
             confidence = "high" if icd_primary else ("medium" if icd_all else "low")
             entry = {
@@ -302,7 +440,9 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
                 "icd_sources": sorted(sources),
                 "icd_count": len(icd_all),
                 "confidence": confidence,
-                "general_scope": not icd_all,
+                "protocol_kind": kind,
+                "scope_label_ru": scope_label,
+                "general_scope": general_scope,
             }
             rows.append(entry)
 
@@ -335,9 +475,18 @@ def catalog_stats() -> dict[str, Any]:
     total = len(cat)
     with_icd = sum(1 for r in cat.values() if r.get("icd10_all"))
     with_aud = sum(1 for r in cat.values() if r.get("audience") not in ("", "any", None))
+    by_kind: Counter[str] = Counter()
+    general = 0
+    for r in cat.values():
+        by_kind[str(r.get("protocol_kind") or "unknown")] += 1
+        if r.get("general_scope"):
+            general += 1
     return {
         "total": total,
         "with_icd": with_icd,
         "without_icd": total - with_icd,
         "with_explicit_audience": with_aud,
+        "audience_any": sum(1 for r in cat.values() if r.get("audience") == "any"),
+        "general_scope_count": general,
+        "by_protocol_kind": dict(by_kind),
     }
