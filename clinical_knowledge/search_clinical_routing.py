@@ -38,6 +38,15 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "suppress_when_active": ("heart_failure", "migraine"),
     },
     {
+        "id": "gynecology",
+        "query_markers": ("менстру", "маточ", "яичник", "эндометр", "миома", "кольпит", "цервик", "маstит", "лактац", "мастит"),
+        "icd_prefixes": ("N80", "N81", "N82", "N83", "N84", "N85", "N86", "N87", "N88", "N89", "N90", "N91", "N92", "N93", "N94", "N95"),
+        "slugs": ("akusherstvo-ginekologiya",),
+        "title_strong": ("ginekolog", "гинекolog", "акушer", "акушer", "маточ", "менстру", "эндометр", "яичник", "mastit", "маstit", "лактац", "мастит"),
+        "title_weak": ("женск", "репродукт"),
+        "title_wrong": ("эндокрин", "гипофиз", "надпочеч", "cardio"),
+    },
+    {
         "id": "orvi_uri",
         "query_markers": ("орви", "орз", "простуд", "респираторн", "насморк"),
         "icd_prefixes": ("J06", "J00", "J11", "J20", "J21"),
@@ -62,6 +71,7 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
             "оториноларингологическ",
             "заболеваниями в-нас",
             "заболеваниями в нас",
+            "дистресс",
         ),
     },
     {
@@ -71,7 +81,7 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "slugs": ("otorinolaringologiya",),
         "title_strong": ("отит", "оторin", "уха", "средний отит"),
         "title_weak": ("лор", "оториноларинг"),
-        "title_wrong": ("буллез", "дерматит", "невроген", "урolog"),
+        "title_wrong": ("буллез", "дерматит", "невроген", "урolog", "нейрохирург", "нервной систем"),
     },
     {
         "id": "hypertension",
@@ -132,13 +142,54 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         ),
     },
     {
+        "id": "sinusitis",
+        "query_markers": ("риносинус", "sinusit", "синусит", "синус"),
+        "icd_prefixes": ("J32", "J01"),
+        "slugs": ("otorinolaringologiya",),
+        "title_strong": ("риносинус", "sinusit", "синусит", "синус"),
+        "title_weak": ("otorin", "лор"),
+        "title_wrong": ("vich", "вич", "psikhiatr", "психическ", "инфекциями кожи"),
+    },
+    {
+        "id": "stroke",
+        "query_markers": ("инсульт", "cerebro", "ишемическ инс", "геморrag"),
+        "icd_prefixes": ("I60", "I61", "I62", "I63", "I64", "G45"),
+        "slugs": ("nevrologiya-neyrokhirurgiya",),
+        "title_strong": ("инсульт", "nevrolog", "нейро", "cerebro", "сосудист", "нейроишем", "реабилита"),
+        "title_weak": ("krovoobrash",),
+        "title_wrong": (
+            "инфаркт миокард",
+            "стенокард",
+            "коронар",
+            "акушер",
+            "беремен",
+            "женщинам",
+        ),
+    },
+    {
+        "id": "asthma_pulmonology",
+        "query_markers": ("астм", "бронхosp", "бронхосп", "wheez", "сibil"),
+        "icd_prefixes": ("J45", "J46"),
+        "slugs": ("pulmonologiya-ftiziatriya",),
+        "title_strong": ("астм", "pulmonolog", "бронхosp", "бронхосп"),
+        "title_weak": ("бронхит", "respir", "респиратор"),
+        "title_wrong": (
+            "оториноларингологическ",
+            "заболеваниями в-нас",
+            "заболеваниями в нас",
+            "лор",
+            "фаринг",
+            "риносинус",
+        ),
+    },
+    {
         "id": "allergy_rhinitis",
         "query_markers": ("аллерг", "ринит", "чихан", "зуд в нос", "поллиноз"),
         "icd_prefixes": ("J30",),
         "slugs": ("allergologiya-immunologiya", "otorinolaringologiya"),
         "title_strong": ("аллерг", "ринит", "allerg"),
         "title_weak": ("otorin", "лор"),
-        "title_wrong": ("буллез", "дерматит", "экзем", "придатков кожи", "крапивниц"),
+        "title_wrong": ("буллез", "дерматит", "экзем", "придатков кожи", "крапивниц", "оторinоларингologическ"),
     },
     {
         "id": "lupus",
@@ -154,8 +205,8 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "query_markers": ("ожог", "термическ", "обвар", "отморож"),
         "icd_prefixes": ("T20", "T21", "T22", "T23", "T24", "T25", "T29", "T30", "T31", "T32"),
         "slugs": ("khirurgiya", "anesteziologiya-reanimatologiya"),
-        "title_strong": ("ожог", "термическ", "обожжен"),
-        "title_weak": ("реаним", "anestez"),
+        "title_strong": ("ожог", "термическ", "обожжен", "термической травм"),
+        "title_weak": ("реаним", "anestez", "khirurg"),
         "title_wrong": (
             "урolog",
             "уролог",
@@ -165,6 +216,9 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
             "травма живота",
             "травм живота",
             "живота в стацион",
+            "скорой неотложной",
+            "неотложной медицинской помощи",
+            "респираторного дистресс",
         ),
     },
     {
@@ -190,9 +244,43 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "query_markers": ("цистит", "дизури", "мочеисп", "простат", "почечн колик"),
         "icd_prefixes": ("N30", "N39", "N40", "N20", "N21"),
         "slugs": ("urologiya", "nefrologiya"),
-        "title_strong": ("цистит", "urolog", "урolog", "мочев", "простат"),
+        "title_strong": ("цистит", "urolog", "урolog", "urologiya", "мочев", "простат"),
         "title_weak": ("nefrolog", "почек"),
-        "title_wrong": ("ожог", "cardio"),
+        "title_wrong": ("ожог", "cardio", "nefrologiya", "желчн", "gastroenterolog"),
+    },
+    {
+        "id": "nephrology",
+        "query_markers": ("пиелонеф", "глomerul", "гломерул", "нефроп", "почечн недостат"),
+        "icd_prefixes": ("N10", "N11", "N12", "N13", "N15", "N18", "N19"),
+        "slugs": ("nefrologiya",),
+        "title_strong": ("пиелонеф", "nefrolog", "нефrolog", "нефрolog", "почек", "почеч"),
+        "title_weak": ("urolog", "урolog"),
+        "title_wrong": ("urologiya", "урolog", "цистит", "простат"),
+    },
+    {
+        "id": "infectious",
+        "query_markers": ("диар", "инфекц", "лихорад", "vich", "вич", "сальmonell", "сальмонел"),
+        "icd_prefixes": ("A00", "A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "B20", "B21"),
+        "slugs": ("infektsionnye-zabolevaniya", "gastroenterologiya"),
+        "title_strong": ("infektsion", "инфекц", "диар", "кишеч", "vich", "вич"),
+        "title_weak": ("gastro", "гастр"),
+        "title_wrong": ("перфорат", "кровотеч", "паллиат", "онкolog"),
+    },
+    {
+        "id": "wound",
+        "query_markers": ("рана ", " рана", "раны ", "раной", "ранен", "порез", "колот"),
+        "icd_prefixes": ("S01", "S11", "S21", "S31", "S41", "S51", "S61", "S71", "S81", "S91", "T01", "T11", "T14"),
+        "slugs": ("khirurgiya", "travmatologiya-ortopediya", "anesteziologiya-reanimatologiya"),
+        "title_strong": ("ран", "ранен", "раной", "khirurg", "хирург", "travm"),
+        "title_weak": ("неотлож", "скорой"),
+        "title_wrong": (
+            "травмой живота",
+            "травма живота",
+            "травм живота",
+            "огнестрел",
+            "огнестр",
+            "перелом",
+        ),
     },
     {
         "id": "dermatology",
@@ -219,7 +307,7 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "slugs": ("novoobrazovaniya",),
         "title_strong": ("онкolog", "онколог", "злокач", "новообраз", "зно"),
         "title_weak": (),
-        "title_wrong": ("орви", "гастрит", "паллиат", "фармакотерап"),
+        "title_wrong": ("орви", "гастрит", "паллиат", "фармакотерап", "симптомов при", "глаза", "oftalm", "офтальм"),
     },
     {
         "id": "ophthalmology",
@@ -260,7 +348,7 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
             "рефлюкс",
             "кишечник",
         ),
-        "icd_prefixes": ("K21", "K25", "K26", "K29", "K50", "K51", "K58", "K59", "K92"),
+        "icd_prefixes": ("K21", "K25", "K26", "K29", "K50", "K51", "K58", "K59", "K80", "K81", "K85", "K92"),
         "slugs": ("gastroenterologiya",),
         "title_strong": (
             "gastro",
@@ -362,6 +450,11 @@ def detect_clinical_route_ids(query: str, icd_codes: list[str] | None = None) ->
         if "pregnancy" not in filtered:
             filtered.insert(0, "pregnancy")
         out = filtered
+    preg_ctx = any(
+        m in ql for m in ("беремен", "роды", "плацент", "гестоз", "преэклам", "эклам", "послерод")
+    ) or "контекст подбора: беремен" in ql
+    if "pregnancy" in out and "pregnancy" in icd_only and not preg_ctx:
+        out = [r for r in out if r != "pregnancy"]
     return out
 
 

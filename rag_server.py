@@ -1518,12 +1518,15 @@ def infer_audience_from_query(q: str, routing: dict) -> str | None:
     return None
 
 
+def _norm_audience_blob(text: str) -> str:
+    return re.sub(r"\s+", " ", (text or "").lower().replace("_", " ").replace("-", " ")).strip()
+
+
 def doc_audience_hint(path: str, title: str, routing: dict) -> str | None:
     """pediatric | adult | mixed | None - по названию файла/заголовка."""
-    s = f"{path} {title}".lower().replace("_", " ").replace("-", " ")
-    s = re.sub(r"\s+", " ", s)
-    ped = [p.replace("_", " ").strip() for p in routing.get("pediatric_title_markers") or []]
-    adult_t = [a.replace("_", " ").strip() for a in routing.get("adult_title_markers") or []]
+    s = _norm_audience_blob(f"{path} {title}")
+    ped = [_norm_audience_blob(p) for p in routing.get("pediatric_title_markers") or []]
+    adult_t = [_norm_audience_blob(a) for a in routing.get("adult_title_markers") or []]
     has_p = any(p in s for p in ped if p)
     has_a = any(a in s for a in adult_t if a)
     if has_p and has_a:
@@ -5423,6 +5426,28 @@ def _icd_codes_from_analysis(icd_analysis: dict | None, query: str) -> list[str]
     return list(dict.fromkeys(codes))
 
 
+def _icd_codes_for_clinical_routing(icd_analysis: dict | None, query: str) -> list[str]:
+    """МКБ для rerank/routing: без шумных suggested_lexicon (O69 от «давлен» и т.п.)."""
+    icd = icd_analysis or {}
+    ql = (query or "").upper()
+    codes: list[str] = []
+    for bucket in ("detected",):
+        for row in icd.get(bucket) or []:
+            if isinstance(row, dict) and row.get("code"):
+                codes.append(str(row["code"]))
+    for row in icd.get("suggested") or []:
+        if not isinstance(row, dict) or not row.get("code"):
+            continue
+        if row.get("role") == "suggested_lexicon":
+            continue
+        codes.append(str(row["code"]))
+    for c in icd.get("codes_for_retrieval") or []:
+        codes.append(str(c))
+    for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
+        codes.append(m.group(1).upper())
+    return list(dict.fromkeys(codes))
+
+
 def _rerank_protocols_symptom_only(
     protos: list[dict],
     query: str,
@@ -5436,7 +5461,7 @@ def _rerank_protocols_symptom_only(
         score_path_for_clinical_routes,
     )
 
-    icd_codes = _icd_codes_from_analysis(icd_analysis, query)
+    icd_codes = _icd_codes_for_clinical_routing(icd_analysis, query)
     route_ids = detect_clinical_route_ids(query, icd_codes)
     uri_context = _query_has_throat_or_uri_context(query, icd_analysis)
     ql = (query or "").lower()
@@ -5466,6 +5491,23 @@ def _rerank_protocols_symptom_only(
                 penalty += 18
             if hint == "pediatric":
                 penalty += 14
+        elif not pregnant_query and "pregnancy" not in route_ids:
+            if "akusherstvo-ginekologiya" in path:
+                penalty += 36
+            elif any(k in blob for k in ("женщинам", "послерод", "акушer", "акушер", "репродуктивного возраста")):
+                penalty += 30
+        if "orvi_uri" in route_ids:
+            if any(k in blob for k in ("psikhiatr", "психическ", "аффектив", "depress", "поведенческ")):
+                penalty += 40
+            if any(k in blob for k in ("инфекциями кожи", "кожи и подкожной")):
+                penalty += 18
+            if any(k in blob for k in ("респиратор", "орви", "орз", "простуд")):
+                boost += 12
+        if "otitis" in route_ids or any(str(c).upper().startswith(("H65", "H66", "H67")) for c in icd_codes):
+            if any(k in blob for k in ("оторин", "otorin", "лор", "фаринг", "отит")):
+                boost += 14
+            if any(k in blob for k in ("нейрохирург", "нервной систем", "эпилепс", "врожденн")) and "отит" not in blob:
+                penalty += 22
         if adult_query and hint == "pediatric":
             penalty += 12
         elif not child_query and not pregnant_query and hint == "pediatric":
@@ -5477,16 +5519,52 @@ def _rerank_protocols_symptom_only(
                 penalty += 10
             if "бронхит" in blob and "дет" not in blob and "д-нас" not in blob and "pediatr" not in blob:
                 penalty += 8
+            if has_cough and any(
+                k in blob
+                for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr", "орви", "респиратор")
+            ):
+                boost += 12
         if "orvi_uri" in route_ids or any(c in ql for c in ("орви", "орз")) or any(
             str(c).upper().startswith("J06") for c in icd_codes
         ):
             if any(k in blob for k in ("гепатит", "hepat", "вирусн гепат")):
                 penalty += 16
+            if "оториноларингологическ" in blob and "орви" not in blob and "респиратор" not in blob:
+                penalty += 18
             if "риносинус" in blob and not any(
                 w in ql for w in ("sinus", "синус", "лоб", "лобно", "рinosinus", "риносинус")
             ):
                 if "орви" not in blob and "респиратор" not in blob:
-                    penalty += 10
+                    penalty += 16
+        if any(w in ql for w in ("горл", "ангин", "глот", "отит", "ухо", "фаринг")):
+            if any(k in blob for k in ("оторин", "otorin", "лор", "фаринг", "отит")):
+                boost += 20
+            if any(k in blob for k in ("эпилепс", "врожденн", "нейрохирург")) and "отит" not in blob:
+                penalty += 35
+        if "wound" in route_ids and any(w in ql for w in ("рана", "раны", "раной", "порез")):
+            if not any(w in ql for w in ("травм", "огнестрел", "огнестр", "перелом")):
+                if any(
+                    k in blob
+                    for k in (
+                        "травмой живота",
+                        "травма живота",
+                        "травм живота",
+                        "огнестрел",
+                        "огнестр",
+                        "женщинам",
+                        "акушer",
+                    )
+                ):
+                    penalty += 30
+        if "burn" in route_ids and any(w in ql for w in ("ожог", "термическ", "обвар")):
+            if any(k in blob for k in ("скорой неотложной", "неотложной медицинской помощи")):
+                penalty += 20
+        if any(str(c).upper().startswith("J20") for c in icd_codes) and "дистресс" in blob:
+            if "бронхит" not in blob:
+                penalty += 18
+        if "otitis" in route_ids or any(str(c).upper().startswith("H66") for c in icd_codes):
+            if any(k in blob for k in ("нейрохирург", "нервной систем", "nevrolog")) and "отит" not in blob:
+                penalty += 20
         return penalty, boost
 
     if not uri_context:
@@ -5516,8 +5594,10 @@ def _rerank_protocols_symptom_only(
         if route_ids or child_query or adult_query or pregnant_query:
             ranked = sorted(protos, key=_score_clinical_only)
             ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
+            ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
             return _promote_clinical_route_top1(ranked, query, icd_analysis)
         ranked = _demote_pediatric_for_adult_query(protos, query, routing)
+        ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
         return _promote_clinical_route_top1(ranked, query, icd_analysis)
 
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
@@ -5587,11 +5667,18 @@ def _rerank_protocols_symptom_only(
                 boost += 8
         if child_query and has_cough and (has_fever or "температ" in ql):
             if any(k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr", "орви", "респиратор")):
-                boost += 10
+                boost += 14
             if "бронхит" in blob and not any(
                 k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr")
             ):
-                penalty += 14
+                penalty += 22
+        elif child_query and has_cough:
+            if any(k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr", "орви", "респиратор")):
+                boost += 12
+            if "бронхит" in blob and not any(
+                k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr")
+            ):
+                penalty += 20
         if has_throat and not throat_distress and "эпиглоттит" in blob:
             penalty += 4
         if any(k in blob for k in ("анестезиолог", "анестези", "хирургическ")) and has_throat:
@@ -5607,6 +5694,8 @@ def _rerank_protocols_symptom_only(
                 penalty += 6
             if not has_sinus_hint and "риносинус" in blob and "орви" not in blob:
                 penalty += 12
+            if "оториноларингологическ" in blob and "орви" not in blob and "респиратор" not in blob:
+                penalty += 16
         elif has_throat:
             if "пневмон" in blob:
                 boost += 2
@@ -5632,7 +5721,40 @@ def _rerank_protocols_symptom_only(
 
     ranked = sorted(protos, key=_score_row)
     ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
+    ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
     return _promote_clinical_route_top1(ranked, query, icd_analysis)
+
+
+def _swap_if_clinical_second_beats_first(
+    protos: list[dict],
+    query: str,
+    icd_analysis: dict | None,
+) -> list[dict]:
+    """Если top-1 с отрицательным clinical delta, а #2 с сильным положительным — меняем местами."""
+    if len(protos) < 2:
+        return protos
+    from clinical_knowledge.search_clinical_routing import (
+        detect_clinical_route_ids,
+        score_path_for_clinical_routes,
+    )
+
+    route_ids = detect_clinical_route_ids(query, _icd_codes_for_clinical_routing(icd_analysis, query))
+    if not route_ids:
+        return protos
+
+    def _delta(pr: dict) -> float:
+        path = str(pr.get("path") or "")
+        title = str(pr.get("title") or path)
+        d, matched = score_path_for_clinical_routes(path, title, route_ids=route_ids)
+        return d if matched else 0.0
+
+    d0 = _delta(protos[0])
+    d1 = _delta(protos[1])
+    if d0 < 0 and d1 >= 10.0:
+        out = list(protos)
+        out[0], out[1] = out[1], out[0]
+        return out
+    return protos
 
 
 def _promote_clinical_route_top1(
@@ -5648,19 +5770,26 @@ def _promote_clinical_route_top1(
         score_path_for_clinical_routes,
     )
 
-    icd_codes = _icd_codes_from_analysis(icd_analysis, query)
+    icd_codes = _icd_codes_for_clinical_routing(icd_analysis, query)
     route_ids = detect_clinical_route_ids(query, icd_codes)
     if not route_ids:
         return protos
-    best_idx: int | None = None
-    best_delta = -999.0
-    for i, pr in enumerate(protos[:12]):
+
+    def _route_delta(pr: dict) -> float:
         path = str(pr.get("path") or "")
         title = str(pr.get("title") or path)
         delta, matched = score_path_for_clinical_routes(path, title, route_ids=route_ids)
-        if not matched or delta <= 0:
-            continue
-        if delta > best_delta:
+        return delta if matched else 0.0
+
+    top0_delta = _route_delta(protos[0])
+    if top0_delta >= 8.0:
+        return protos
+
+    best_idx: int | None = None
+    best_delta = max(8.0, top0_delta + 4.0)
+    for i, pr in enumerate(protos[:12]):
+        delta = _route_delta(pr)
+        if delta >= best_delta:
             best_delta = delta
             best_idx = i
     if best_idx is not None and best_idx > 0:
@@ -6776,7 +6905,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r156-probe-routing"
+BUILD_VERSION = "2026-05-31-r159-probe-quality"
 
 
 def _app_version() -> str:
@@ -7268,8 +7397,6 @@ def api_assist(body: AssistIn) -> dict:
         retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
         protos = _build_protocols_from_retrieval(retrieved, prefer_slugs=user_slugs)
         protos = _filter_protocols_by_funnel_audience(protos, q)
-        protos = _rerank_protocols_symptom_only(protos, q, icd_analysis)
-        protos = _filter_protocols_by_funnel_audience(protos, q)
         parsed: dict | None = {"protocols": protos}
         text = ""
         finish = "RETRIEVE_ONLY"
@@ -7277,6 +7404,13 @@ def api_assist(body: AssistIn) -> dict:
         if parsed and protos:
             apply_protocol_confidence_calibration(parsed, retrieved)
             dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
+            if isinstance(parsed.get("protocols"), list) and parsed["protocols"]:
+                parsed["protocols"] = _rerank_protocols_symptom_only(
+                    parsed["protocols"], q, icd_analysis
+                )
+                parsed["protocols"] = _filter_protocols_by_funnel_audience(
+                    parsed["protocols"], q
+                )
     else:
         lines: list[str] = []
         meta_specs: list[str] = []

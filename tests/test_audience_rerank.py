@@ -25,6 +25,19 @@ def test_doc_audience_hint_dет_nas_without_underscore():
     assert hint == "pediatric"
 
 
+def test_doc_audience_hint_d_nas_hyphen_normalized():
+    routing = {
+        "pediatric_title_markers": ["д-нас", "дет нас"],
+        "adult_title_markers": ["в-нас", "взр нас"],
+    }
+    hint = doc_audience_hint(
+        "cardio/ped.pdf",
+        "КП кардиологическими заболеваниями д-нас",
+        routing,
+    )
+    assert hint == "pediatric"
+
+
 def test_adult_query_demotes_pediatric_epiglottitis_with_r07():
     protos = [
         {
@@ -84,6 +97,25 @@ def test_filter_protocols_by_funnel_audience_hard_drop():
     ]
     q = "болит горло и температура 38\nКонтекст подбора: взрослое население"
     assert _filter_protocols_by_funnel_audience(protos, q) == []
+
+
+def test_retrieve_only_rerank_survives_dedupe():
+    """dedupe_protocols_list сортирует по confidence — rerank должен быть после dedupe."""
+    protos = [
+        {
+            "path": "a/adult_bronchitis.pdf",
+            "title": "КП диагностики и лечения острого и хронического бронхита",
+            "confidence_score": 0.98,
+        },
+        {
+            "path": "b/ped_orvi.pdf",
+            "title": "КП Диагностика лечение острых респираторных вирусных инфекций дет_нас",
+            "confidence_score": 0.54,
+        },
+    ]
+    q = "кашель и температура у ребёнка 4 года\nКонтекст подбора: детское население"
+    out = _rerank_protocols_symptom_only(protos, q, None)
+    assert out[0]["path"].endswith("ped_orvi.pdf")
 
 
 def test_methodist_deterministic_wrong_population_adult_top_pediatric():

@@ -118,3 +118,27 @@ def test_score_burn_penalizes_abdominal_trauma():
         route_ids=["burn"],
     )
     assert delta < -10
+
+
+def test_detect_nephrology_route():
+    ids = detect_clinical_route_ids("N10 острый пиелонефрит", ["N10"])
+    assert "nephrology" in ids
+
+
+def test_detect_infectious_route():
+    ids = detect_clinical_route_ids("A09 острая диарея", ["A09"])
+    assert "infectious" in ids
+
+
+def test_detect_wound_route():
+    ids = detect_clinical_route_ids("рана брюшной стенки", [])
+    assert "wound" in ids
+
+
+def test_pregnancy_not_from_lexicon_o_code():
+    ids = detect_clinical_route_ids(
+        "гипертоническая болезнь давление 170/100\nКонтекст подбора: взрослое население",
+        ["O69.2", "R03.1"],
+    )
+    assert "pregnancy" not in ids
+    assert "hypertension" in ids
