@@ -99,6 +99,16 @@ def test_pilot_analytics_demo_ok(client: TestClient) -> None:
     assert "generated_at" in body
 
 
+def test_search_analytics_ok(client: TestClient) -> None:
+    r = client.get("/api/search-analytics")
+    assert r.status_code == 200
+    body = r.json()
+    assert "corpus" in body
+    assert "charts" in body
+    assert "tips_ru" in body
+    assert "generated_at" in body
+
+
 def test_protocol_ui_meta() -> None:
     from rag_server import protocol_ui_meta_for_path
 

@@ -5990,6 +5990,32 @@ def api_pilot_analytics_demo() -> dict:
     )
 
 
+def _load_quality_benchmark_dict() -> dict:
+    if not QUALITY_BENCHMARK_PATH.is_file():
+        return {}
+    try:
+        data = json.loads(QUALITY_BENCHMARK_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+@app.get("/api/search-analytics")
+def api_search_analytics() -> dict:
+    """Статистика поиска протоколов для вкладки «Поиск» (корпус, эталон, телеметрия)."""
+    from clinical_knowledge.search_analytics_public import build_public_search_analytics
+
+    corpus = _corpus_stats_from_index_csv()
+    corpus["chunks_loaded"] = len(_chunks) if _chunks_load_done.is_set() else None
+    corpus["rag_ready"] = _chunks_load_done.is_set()
+    return build_public_search_analytics(
+        corpus=corpus,
+        quality=_load_quality_benchmark_dict(),
+        version=_app_version(),
+        rag_ready=_chunks_load_done.is_set(),
+    )
+
+
 @app.get("/api/quality-benchmark")
 def api_quality_benchmark() -> dict:
     """Эталонные метрики качества подбора (для блока «качество поиска» на главной)."""
@@ -6029,7 +6055,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r122-search-ui-pilot-analytics"
+BUILD_VERSION = "2026-06-01-r123-search-dashboard-on-tab"
 
 
 def _app_version() -> str:
@@ -6629,6 +6655,20 @@ def api_assist(body: AssistIn) -> dict:
             p = str(pr.get("path") or "").strip()
             if p:
                 meta_paths.add(p)
+
+    try:
+        from clinical_knowledge.search_telemetry import log_protocol_search
+
+        log_protocol_search(
+            query=q,
+            retrieved=retrieved,
+            proto_list=proto_list if isinstance(proto_list, list) else [],
+            icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+            user_slugs=user_slugs,
+            audience_inferred=audience_inferred,
+        )
+    except Exception:
+        pass
 
     return {
         "query": q,
