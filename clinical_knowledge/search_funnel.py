@@ -22,6 +22,10 @@ _ICD_LETTER_RUBRICS: dict[str, list[str]] = {
     "O": ["akusherstvo-ginekologiya"],
     "C": ["novoobrazovaniya"],
     "F": ["psikhiatriya-narkologiya"],
+    "L": ["dermatovenerologiya"],
+    "H": ["oftalmologiya"],
+    "M": ["ortopediya-travmatologiya"],
+    "D": ["dermatovenerologiya"],
 }
 
 
@@ -184,9 +188,9 @@ def handle_search_funnel(
 
     if step == 4:
         import rag_server as rs
-        from rag_server import AssistIn
+        from icd_mkb import analyze_query_for_icd
+        from rag_server import AssistIn, clinical_query_for_rag
 
-        rs._require_rag_loaded()
         work_q = q
         pop = str(ctx.get("population") or "").strip()
         if pop and pop != "skipped":
@@ -199,24 +203,57 @@ def handle_search_funnel(
             if icd_line.lower() not in work_q.lower():
                 work_q = f"{work_q}\n{icd_line}" if work_q else icd_line
         slugs = list(category_slugs or ctx.get("rubric_slugs") or [])
-        search_meta: dict[str, Any] = {}
-        try:
-            from clinical_knowledge.search_retrieval import build_protocol_search_context
 
-            search_meta = build_protocol_search_context(
-                query=work_q,
-                icd_codes=icd_codes or None,
-                category_slugs=slugs or None,
-            ).get("search_meta") or {}
-        except Exception:
-            search_meta = {}
-        payload = rs.api_assist(
-            AssistIn(
-                query=work_q,
-                category_slugs=slugs,
-                retrieve_only=True,
-            )
+        icd_analysis = analyze_query_for_icd(work_q, clinical_query_for_rag(work_q))
+        icd_analysis = rs._merge_explicit_icd_into_analysis(icd_analysis, icd_codes or None)
+
+        from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
+
+        lookup = lookup_protocols_by_icd(
+            icd_codes=icd_codes or None,
+            query=work_q,
+            population=pop if pop not in ("", "skipped") else None,
+            rubric_slugs=slugs or None,
         )
+        search_meta: dict[str, Any] = {
+            "icd_lookup_ms": lookup.get("lookup_ms"),
+            "icd_lookup_ambiguous": lookup.get("ambiguous"),
+            "expanded_icd": lookup.get("expanded_icd"),
+        }
+
+        payload: dict[str, Any] | None = None
+        if lookup.get("protocols") and not lookup.get("ambiguous"):
+            payload = format_assist_payload(
+                query=work_q,
+                lookup_result=lookup,
+                icd_analysis=icd_analysis,
+            )
+            payload["icd"] = rs._icd_client_payload(icd_analysis)
+        else:
+            rs._require_rag_loaded()
+            try:
+                from clinical_knowledge.search_retrieval import build_protocol_search_context
+
+                search_meta.update(
+                    (build_protocol_search_context(
+                        query=work_q,
+                        icd_codes=icd_codes or None,
+                        category_slugs=slugs or None,
+                    ).get("search_meta") or {})
+                )
+            except Exception:
+                pass
+            payload = rs.api_assist(
+                AssistIn(
+                    query=work_q,
+                    category_slugs=slugs,
+                    retrieve_only=True,
+                    icd_codes=icd_codes,
+                    funnel_population=pop if pop not in ("", "skipped") else None,
+                    icd_fast_path=True,
+                )
+            )
+
         out["step"] = 4
         out["auto_skip"] = False
         out["assist"] = payload

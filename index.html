@@ -14980,6 +14980,12 @@
         } else if (stepped && wiz.step === "protocols") {
           html +=
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол → нозология → раздел → цитаты. Матрица КЗ — чек-лист для консультативного заключения (кнопка на карточке или автоматически для top-1).</p>';
+          if (data.icd_fast_lookup) {
+            html +=
+              '<p class="assist-note" style="margin:0.35rem 0">Подбор по коду МКБ' +
+              (data.lookup_ms != null ? " · " + data.lookup_ms + " ms" : "") +
+              " — без полного RAG.</p>";
+          }
         } else if (methodistSearch && !citationsOnly) {
           html +=
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>';
@@ -22233,6 +22239,44 @@
             ctrl.abort();
           }, assistTimeoutMs);
           if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
+            var ctxIcd = window.__funnelContext || {};
+            var icdCodes = ctxIcd.icd_codes || [];
+            var cacheKey =
+              icdCodes.join(",") +
+              "|" +
+              (ctxIcd.population || "") +
+              "|" +
+              getSelectedCategorySlugs().join(",") +
+              "|" +
+              qSend.slice(0, 120);
+            if (ctxIcd._icdLookupCacheKey === cacheKey && ctxIcd._icdLookupPayload) {
+              return ctxIcd._icdLookupPayload;
+            }
+            if (icdCodes.length) {
+              return fetch(base + "/api/search/protocols-by-icd", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  query: qSend,
+                  icd_codes: icdCodes,
+                  population: ctxIcd.population || null,
+                  category_slugs: getSelectedCategorySlugs(),
+                }),
+                signal: ctrl.signal,
+              }).then(function (r) {
+                return r.text().then(function (text) {
+                  var j = parseJsonSafe(text);
+                  if (!r.ok || !j) {
+                    throw new Error(
+                      (j && j.detail) || text || "Ошибка быстрого подбора по МКБ"
+                    );
+                  }
+                  window.__funnelContext._icdLookupCacheKey = cacheKey;
+                  window.__funnelContext._icdLookupPayload = j;
+                  return j;
+                });
+              });
+            }
             return callSearchFunnel(4, qSend).then(function (funnel) {
               if (funnel.error) throw new Error(funnel.error);
               return funnel.assist || funnel;
@@ -22246,6 +22290,16 @@
               category_slugs: getSelectedCategorySlugs(),
               inline_clinical_detail: false,
               retrieve_only: retrieveOnly,
+              icd_codes: (window.__funnelContext && window.__funnelContext.icd_codes) || [],
+              funnel_population:
+                (window.__funnelContext && window.__funnelContext.population) || null,
+              icd_fast_path:
+                retrieveOnly &&
+                !!(
+                  window.__funnelContext &&
+                  window.__funnelContext.icd_codes &&
+                  window.__funnelContext.icd_codes.length
+                ),
             }),
             signal: ctrl.signal,
           }).then(function (r) {

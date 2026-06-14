@@ -98,6 +98,16 @@ def main() -> None:
 
     print(f"Записано строк: {len(pdfs)} → {OUT}")
     print(f"JSON для поиска: {OUT_JSON}")
+    try:
+        import subprocess
+
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "build_protocol_catalog.py")],
+            cwd=str(ROOT),
+            check=False,
+        )
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":

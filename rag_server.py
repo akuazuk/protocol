@@ -923,6 +923,13 @@ def _run_load_data_background() -> None:
                 prewarm_icd_summary_index()
             except Exception:
                 pass
+        if env_bool("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", True):
+            try:
+                from clinical_knowledge.protocol_icd_index import prewarm_protocol_icd_index
+
+                prewarm_protocol_icd_index()
+            except Exception:
+                pass
         _chunks_load_error = None
     except SystemExit as e:
         code = e.code
@@ -6511,6 +6518,28 @@ class AssistIn(BaseModel):
         default=False,
         description="true - только RAG ranking без LLM (быстрый пошаговый поиск)",
     )
+    icd_codes: list[str] = Field(
+        default_factory=list,
+        max_length=24,
+        description="Явные коды МКБ из воронки — пропуск повторного подбора",
+    )
+    funnel_population: str | None = Field(
+        default=None,
+        max_length=32,
+        description="adult|pediatric|pregnant|emergency из шага популяции",
+    )
+    icd_fast_path: bool = Field(
+        default=False,
+        description="true — сначала детерминированный lookup по индексу МКБ",
+    )
+
+
+class ProtocolsByIcdIn(BaseModel):
+    query: str = Field(..., min_length=2, max_length=12000)
+    icd_codes: list[str] = Field(..., min_length=1, max_length=24)
+    population: str | None = Field(default=None, max_length=32)
+    category_slugs: list[str] = Field(default_factory=list)
+    limit: int = Field(default=8, ge=1, le=12)
 
 
 class SearchFunnelIn(BaseModel):
@@ -6943,7 +6972,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r162-methodist-eval-inline"
+BUILD_VERSION = "2026-05-31-r163-icd-fast-protocol-lookup"
 
 
 def _app_version() -> str:
@@ -7258,18 +7287,115 @@ def _format_icd_append_line(icd_analysis: dict) -> str | None:
     return "МКБ-10 для поиска протокола: " + "; ".join(parts)
 
 
+def _merge_explicit_icd_into_analysis(
+    icd_analysis: dict,
+    explicit_codes: list[str] | None,
+) -> dict:
+    """Подставляет коды из воронки в icd_analysis (без повторного LLM)."""
+    if not explicit_codes:
+        return icd_analysis
+    from icd_mkb import normalize_icd_code
+
+    out = dict(icd_analysis or {})
+    codes = [
+        normalize_icd_code(str(c))
+        for c in explicit_codes
+        if normalize_icd_code(str(c))
+    ]
+    if not codes:
+        return out
+    out["explicit_icd_in_query"] = True
+    out["codes_for_retrieval"] = list(
+        dict.fromkeys(codes + list(out.get("codes_for_retrieval") or []))
+    )
+    detected = list(out.get("detected") or [])
+    seen = {str(r.get("code") or "").upper() for r in detected if isinstance(r, dict)}
+    for c in codes:
+        if c.upper() not in seen:
+            detected.append({"code": c, "title_ru": "", "confidence": "funnel"})
+    out["detected"] = detected
+    return out
+
+
+def _try_icd_fast_assist(
+    *,
+    query: str,
+    icd_codes: list[str],
+    population: str | None,
+    category_slugs: list[str] | None,
+    icd_analysis: dict,
+) -> dict | None:
+    """Мгновенный ответ из индекса МКБ; None — нужен RAG fallback."""
+    if not icd_codes:
+        return None
+    from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
+
+    lookup = lookup_protocols_by_icd(
+        icd_codes=icd_codes,
+        query=query,
+        population=population,
+        rubric_slugs=category_slugs,
+    )
+    if not lookup.get("protocols"):
+        return None
+    if lookup.get("ambiguous") and os.environ.get("ICD_FAST_STRICT", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
+        return None
+    return format_assist_payload(
+        query=query,
+        lookup_result=lookup,
+        icd_analysis=icd_analysis,
+    )
+
+
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
     _require_rag_loaded()
     model = get_gemini()
     assist_lite = _assist_lite_enabled(assist_full=body.assist_full)
+    skip_refine = bool(body.icd_fast_path or body.icd_codes)
+    skip_icd_gemini = bool(body.icd_fast_path or body.icd_codes)
     icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
-        _infer_icd_pipeline_from_full_query(body.query, model)
+        _infer_icd_pipeline_from_full_query(
+            body.query,
+            model,
+            skip_query_refine=skip_refine,
+            skip_icd_gemini=skip_icd_gemini,
+        )
     )
     if icd_err:
         raise HTTPException(status_code=400, detail=icd_err)
     assert icd_analysis is not None
+    icd_analysis = _merge_explicit_icd_into_analysis(icd_analysis, body.icd_codes or None)
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
+
+    if body.icd_fast_path and body.icd_codes:
+        fast = _try_icd_fast_assist(
+            query=q,
+            icd_codes=list(body.icd_codes),
+            population=body.funnel_population,
+            category_slugs=body.category_slugs or None,
+            icd_analysis=icd_analysis,
+        )
+        if fast:
+            fast["icd"] = _icd_client_payload(icd_analysis)
+            return fast
+
+    icd_lookup_allowlist: list[str] | None = None
+    if body.icd_fast_path and body.icd_codes:
+        from clinical_knowledge.protocol_icd_index import lookup_protocols_by_icd
+
+        lk = lookup_protocols_by_icd(
+            icd_codes=list(body.icd_codes),
+            query=body.query,
+            population=body.funnel_population,
+            rubric_slugs=body.category_slugs or None,
+        )
+        icd_lookup_allowlist = lk.get("path_allowlist") or None
+
     user_slugs = [
         s
         for s in (body.category_slugs or [])
@@ -7288,6 +7414,11 @@ def api_assist(body: AssistIn) -> dict:
         if search_ctx.get("expanded_icd_codes"):
             icd_codes_for_lex = search_ctx["expanded_icd_codes"]
         path_allowlist = search_ctx.get("path_allowlist")
+    if icd_lookup_allowlist:
+        merged_allow = list(
+            dict.fromkeys((path_allowlist or []) + list(icd_lookup_allowlist))
+        )[:15]
+        path_allowlist = merged_allow or icd_lookup_allowlist[:15]
     from clinical_knowledge.search_clinical_routing import (
         detect_clinical_route_ids,
         expand_slugs_for_clinical_routes,
@@ -7334,6 +7465,11 @@ def api_assist(body: AssistIn) -> dict:
         if aud_hint is None:
             aud_hint = infer_audience_from_query(q, _routing)
         allow = path_allowlist if strict_paths else None
+        skip_embed = bool(
+            allow
+            and len(allow) <= 15
+            and body.icd_fast_path
+        )
         rows = retrieve(
             rag_q,
             routing_query=routing_q if routing_q is not None else q,
@@ -7344,6 +7480,7 @@ def api_assist(body: AssistIn) -> dict:
             path_allowlist=allow,
             catalog_path_extra=(search_ctx or {}).get("path_boost"),
             audience_hint=aud_hint,
+            embed_rerank=False if skip_embed else None,
         )
         if not rows and allow:
             rows = retrieve(
@@ -7869,6 +8006,32 @@ def api_icd_suggest(body: IcdSuggestIn) -> dict:
         "append_line": append_line,
         "hint": hint,
     }
+
+
+@app.post("/api/search/protocols-by-icd")
+def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
+    """Мгновенный подбор протоколов по кодам МКБ (без RAG)."""
+    from icd_mkb import analyze_query_for_icd
+
+    from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
+
+    q = body.query.strip()
+    icd_analysis = analyze_query_for_icd(q, clinical_query_for_rag(q))
+    icd_analysis = _merge_explicit_icd_into_analysis(icd_analysis, body.icd_codes)
+    lookup = lookup_protocols_by_icd(
+        icd_codes=body.icd_codes,
+        query=q,
+        population=body.population,
+        rubric_slugs=body.category_slugs or None,
+        limit=body.limit,
+    )
+    payload = format_assist_payload(
+        query=q,
+        lookup_result=lookup,
+        icd_analysis=icd_analysis,
+    )
+    payload["icd"] = _icd_client_payload(icd_analysis)
+    return payload
 
 
 @app.post("/api/search/funnel")
