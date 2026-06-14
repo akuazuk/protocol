@@ -199,6 +199,17 @@ def handle_search_funnel(
             if icd_line.lower() not in work_q.lower():
                 work_q = f"{work_q}\n{icd_line}" if work_q else icd_line
         slugs = list(category_slugs or ctx.get("rubric_slugs") or [])
+        search_meta: dict[str, Any] = {}
+        try:
+            from clinical_knowledge.search_retrieval import build_protocol_search_context
+
+            search_meta = build_protocol_search_context(
+                query=work_q,
+                icd_codes=icd_codes or None,
+                category_slugs=slugs or None,
+            ).get("search_meta") or {}
+        except Exception:
+            search_meta = {}
         payload = rs.api_assist(
             AssistIn(
                 query=work_q,
@@ -209,6 +220,7 @@ def handle_search_funnel(
         out["step"] = 4
         out["auto_skip"] = False
         out["assist"] = payload
+        out["search_meta"] = search_meta
         protos = ((payload.get("llm_json") or {}).get("protocols") or [])[:6]
         out["choices"] = [
             {

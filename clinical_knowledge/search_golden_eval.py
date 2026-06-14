@@ -30,9 +30,11 @@ def dedupe_protocol_paths(retrieved: list[dict[str, Any]], *, limit: int = 8) ->
     seen: set[str] = set()
     out: list[str] = []
     for row in sorted(retrieved, key=lambda r: -float(r.get("score") or 0)):
-        p = str(row.get("path") or "").replace("\\", "/")
+        catalog = str(row.get("catalog_source_path") or "").strip()
+        p = catalog.replace("\\", "/") if catalog else str(row.get("path") or "").replace("\\", "/")
         if not p or p.startswith("summary://"):
-            continue
+            if not catalog:
+                continue
         bk = _basename_key(p)
         if bk in seen:
             continue
@@ -73,12 +75,16 @@ def evaluate_search_golden_row(
     retrieve_fn: Callable[..., list[dict[str, Any]]],
     *,
     max_chunks: int = 12,
+    use_search_context: bool = True,
 ) -> dict[str, Any]:
     query = str(row.get("query") or "").strip()
     expect_empty = bool(row.get("expect_empty"))
     expected = list(row.get("expected_path_contains") or row.get("expected_path") or [])
     if isinstance(expected, str):
         expected = [expected]
+    reject = list(row.get("reject_path_contains") or [])
+    if isinstance(reject, str):
+        reject = [reject]
     category_slugs = list(row.get("category_slugs") or [])
     icd_codes = list(row.get("icd_codes") or [])
 
@@ -93,8 +99,34 @@ def evaluate_search_golden_row(
     if icd_codes:
         kwargs["icd_codes_for_lex"] = icd_codes
 
+    if use_search_context and (query or icd_codes):
+        from clinical_knowledge.search_retrieval import build_protocol_search_context
+
+        ctx = build_protocol_search_context(
+            query=query,
+            icd_codes=icd_codes or None,
+            category_slugs=category_slugs or None,
+        )
+        expanded = ctx.get("expanded_icd_codes")
+        if expanded:
+            kwargs["icd_codes_for_lex"] = expanded
+        if ctx.get("path_boost"):
+            kwargs["path_boost"] = ctx["path_boost"]
+            kwargs["catalog_path_extra"] = ctx["path_boost"]
+        allow = ctx.get("path_allowlist")
+        if allow:
+            kwargs["path_allowlist"] = allow
+
     retrieved = retrieve_fn(query, **kwargs)
+    if not retrieved and kwargs.get("path_allowlist"):
+        kwargs.pop("path_allowlist", None)
+        retrieved = retrieve_fn(query, **kwargs)
     proto_paths = dedupe_protocol_paths(retrieved)
+
+    reject_ok = True
+    if reject and proto_paths:
+        top1 = proto_paths[0].lower()
+        reject_ok = not any(str(r).lower().strip() in top1 for r in reject if r)
 
     if expect_empty:
         ok = len(retrieved) == 0
@@ -110,9 +142,9 @@ def evaluate_search_golden_row(
             "top_paths": proto_paths[:3],
         }
 
-    hit1 = hit_at_k(proto_paths, expected, 1)
-    hit3 = hit_at_k(proto_paths, expected, 3)
-    mrr = reciprocal_rank(proto_paths, expected)
+    hit1 = hit_at_k(proto_paths, expected, 1) and reject_ok
+    hit3 = hit_at_k(proto_paths, expected, 3) and reject_ok
+    mrr = reciprocal_rank(proto_paths, expected) if reject_ok else 0.0
     ok = hit3
     return {
         "id": row.get("id"),
@@ -121,6 +153,7 @@ def evaluate_search_golden_row(
         "ok": ok,
         "hit1": hit1,
         "hit3": hit3,
+        "reject_ok": reject_ok,
         "mrr": round(mrr, 4),
         "n_protocols": len(proto_paths),
         "top_paths": proto_paths[:3],

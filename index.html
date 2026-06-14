@@ -13128,7 +13128,8 @@
     );
   }
 
-  function renderPracticalReviewPanel(cd, matrix, query, meta) {
+  function renderPracticalReviewPanel(cd, matrix, query, meta, panelOpts) {
+    panelOpts = panelOpts || {};
     var html =
       '<div class="practical-review-panel" id="practical-review-panel">';
     html +=
@@ -13179,7 +13180,13 @@
       '<section class="practical-section practical-section--kz" aria-labelledby="practical-kz-title">';
     html +=
       '<h4 class="practical-section-title" id="practical-kz-title">Матрица для консультативного заключения</h4>';
-    html += renderKzMatrixColumn(matrix);
+    if (panelOpts.lazyKzMatrix && !matrix) {
+      html +=
+        '<p class="assist-ai-eval-lead">Матрица КЗ загружается по запросу — меньше ожидание при первом открытии.</p>' +
+        '<button type="button" class="btn-assist btn-practical-load-kz-matrix">Загрузить матрицу КЗ</button>';
+    } else {
+      html += renderKzMatrixColumn(matrix);
+    }
     html += "</section></div>";
     html += renderConsultationTemplateWrapHtml();
     html +=
@@ -13221,9 +13228,18 @@
       enhanceCollapsibleBlocks(outRoot);
       bindProtocolFactsTabs();
     }
+    var lazyBtn = document.querySelector(".btn-practical-load-kz-matrix");
+    if (lazyBtn && panelOpts.offer) {
+      lazyBtn.addEventListener("click", function () {
+        loadProtocolPractical(panelOpts.offer, query, panelOpts.icdCodes || [], {
+          lazyKzMatrix: false,
+        });
+      });
+    }
   }
 
-  function loadProtocolPractical(offer, queryText, icdCodes) {
+  function loadProtocolPractical(offer, queryText, icdCodes, opts) {
+    opts = opts || {};
     if (!offer || !offer.path) return;
     var slot = document.getElementById("practical-review-panel");
     if (slot) {
@@ -13259,6 +13275,7 @@
         path: offer.path,
         title: offer.title || "",
         icd_codes: icdCodes || [],
+        skip_kz_matrix: opts.lazyKzMatrix === true,
         protocol_confidence:
           offer.confidence_score != null && !isNaN(Number(offer.confidence_score))
             ? Number(offer.confidence_score)
@@ -13293,7 +13310,8 @@
           payload.clinical_detail,
           payload.kz_matrix,
           queryText,
-          payload.protocol_ui_meta
+          payload.protocol_ui_meta,
+          { lazyKzMatrix: opts.lazyKzMatrix === true, offer: offer, icdCodes: icdCodes || [] }
         );
         var block = document.getElementById("protocol-detail-block");
         if (block) block.remove();
@@ -15488,13 +15506,23 @@
     var s = stats.search;
     var metaEl = document.getElementById("methodist-search-dash-meta");
     if (metaEl) {
-      metaEl.textContent =
+      var metaLine =
         "Обновлено: " +
         (stats.generated_at || "—") +
         " · поисков (telemetry): " +
         (s.protocol_search_count || 0) +
         " · разметок UI: " +
         (s.search_ui_retrieval_fix || 0);
+      if (s.funnel_step_breakdown && s.funnel_step_breakdown.length) {
+        metaLine +=
+          " · ошибки по шагам: " +
+          s.funnel_step_breakdown
+            .map(function (row) {
+              return "ш" + row.step + "=" + row.count;
+            })
+            .join(", ");
+      }
+      metaEl.textContent = metaLine;
     }
     var kpiGrid = document.getElementById("methodist-search-kpi-grid");
     if (kpiGrid) {
@@ -15630,6 +15658,21 @@
       })
       .then(function (stats) {
         renderMethodistSearchDashboard(stats);
+        return fetch(apiBaseUrl() + "/api/methodist/queue?domain=search&limit=12", {
+          headers: methodistHeaders(),
+        });
+      })
+      .then(function (r) {
+        if (!r || !r.ok) return null;
+        return r.json();
+      })
+      .then(function (queue) {
+        if (!queue || !queue.priority || !queue.priority.length) return;
+        var metaEl = document.getElementById("methodist-search-dash-meta");
+        if (metaEl) {
+          metaEl.textContent +=
+            " · очередь search: " + queue.priority.length + " приоритетных";
+        }
       })
       .catch(function (e) {
         if (errEl) {
@@ -17259,6 +17302,94 @@
     return base ? base + "\n" + line : line;
   }
 
+  function ensureFunnelSessionId() {
+    window.__funnelContext = window.__funnelContext || {};
+    if (!window.__funnelContext.session_id) {
+      window.__funnelContext.session_id =
+        "f-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10);
+    }
+    return window.__funnelContext.session_id;
+  }
+
+  function callSearchFunnel(step, queryText, patchContext) {
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    window.__funnelContext = window.__funnelContext || {};
+    if (patchContext && typeof patchContext === "object") {
+      var pk;
+      for (pk in patchContext) {
+        if (Object.prototype.hasOwnProperty.call(patchContext, pk)) {
+          window.__funnelContext[pk] = patchContext[pk];
+        }
+      }
+    }
+    return fetch(base + "/api/search/funnel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: queryText || "",
+        step: step,
+        context: window.__funnelContext,
+        category_slugs: getSelectedCategorySlugs(),
+        session_id: ensureFunnelSessionId(),
+      }),
+    }).then(function (r) {
+      return r.text().then(function (text) {
+        var j = parseJsonSafe(text);
+        if (!r.ok || !j || typeof j !== "object") {
+          var d = j && j.detail;
+          if (Array.isArray(d)) {
+            d = d
+              .map(function (x) {
+                return x.msg || JSON.stringify(x);
+              })
+              .join("; ");
+          }
+          throw new Error(d || text || r.statusText);
+        }
+        if (j.context && typeof j.context === "object") {
+          window.__funnelContext = Object.assign(window.__funnelContext || {}, j.context);
+        }
+        if (j.session_id) window.__funnelContext.session_id = j.session_id;
+        return j;
+      });
+    });
+  }
+
+  function openSearchDraftKzFromFunnel(path, queryText, icdList, excerptText) {
+    var ctx = window.__funnelContext || {};
+    var qLine = (queryText || "").trim();
+    var block =
+      "Контекст из поиска протокола:\n" +
+      qLine +
+      "\n\nПротокол: " +
+      (path || "") +
+      "\n\nВыдержка:\n" +
+      (excerptText || "").trim();
+    var pc = document.getElementById("patient-context");
+    if (pc) pc.value = block.slice(0, 12000);
+    window.__searchKzPrefill = {
+      path: path,
+      query: qLine,
+      icd_codes: icdList || [],
+      excerpt: excerptText || "",
+    };
+    if (typeof switchMainAppTab === "function") {
+      switchMainAppTab(MAIN_TAB_CONSULT);
+    }
+    var pre = window.__searchKzPrefill;
+    if (pre && pre.path) {
+      loadProtocolPractical(
+        { path: pre.path, title: "", confidence_score: null },
+        pre.query,
+        pre.icd_codes,
+        { lazyKzMatrix: true }
+      );
+    }
+  }
+
   function renderSearchWizardPopulationStep(qRaw) {
     var out = document.getElementById("llm-out");
     if (!out) return;
@@ -17585,10 +17716,22 @@
         if (!health.gemini_configured) {
           throw new Error("На сервере не настроен ключ доступа к обработке запросов.");
         }
-        return fetch(base + "/api/icd-suggest", {
+        return fetch(base + "/api/search/funnel", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: qSend }),
+          body: JSON.stringify({
+            query: qSend,
+            step: 2,
+            context: window.__funnelContext || {},
+            category_slugs: getSelectedCategorySlugs(),
+            session_id: ensureFunnelSessionId(),
+          }),
+        }).catch(function () {
+          return fetch(base + "/api/icd-suggest", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: qSend }),
+          });
         });
       })
       .then(function (r) {
@@ -17604,6 +17747,21 @@
                 .join("; ");
             }
             throw new Error(d || text || r.statusText);
+          }
+          if (j.icd) return j;
+          if (j.choices && j.choices.length) {
+            return {
+              icd: {
+                detected: j.choices.map(function (c) {
+                  return { code: c.id, title_ru: c.label, confidence: c.confidence };
+                }),
+                suggested: [],
+                codes_for_retrieval: j.choices.map(function (c) {
+                  return c.id;
+                }),
+              },
+              query_effective: j.query || qSend,
+            };
           }
           return j;
         });
@@ -17802,12 +17960,30 @@
           '<a class="proto-link" href="' +
           escapeHtmlAttr(safeResourceHref(path)) +
           '" target="_blank" rel="noopener">Открыть PDF</a> · ' +
+          '<button type="button" class="btn-assist btn-search-draft-kz">Оформить черновик КЗ</button> · ' +
           '<button type="button" class="btn-assist btn-proto-explore-excerpt" data-proto-path="' +
           escapeHtmlAttr(path) +
           '">Разобрать протокол (LLM)</button>' +
           "</p>";
         html += "</div></div>";
         out.innerHTML = html;
+        var draftBtn = out.querySelector(".btn-search-draft-kz");
+        if (draftBtn) {
+          draftBtn.addEventListener("click", function () {
+            var exText = "";
+            if (payload && payload.items && payload.items.length) {
+              exText = String(payload.items[0].quote || payload.items[0].text || "");
+            } else if (pdfExcerpt) {
+              exText = pdfExcerpt;
+            }
+            openSearchDraftKzFromFunnel(
+              path,
+              data.query || lastAssistFullQuery || "",
+              icdCodesFromAssistData(data),
+              exText
+            );
+          });
+        }
         var exploreBtn = out.querySelector(".btn-proto-explore-excerpt");
         if (exploreBtn) {
           exploreBtn.addEventListener("click", function () {
@@ -21317,6 +21493,12 @@
           abortTid = setTimeout(function () {
             ctrl.abort();
           }, assistTimeoutMs);
+          if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
+            return callSearchFunnel(4, qSend).then(function (funnel) {
+              if (funnel.error) throw new Error(funnel.error);
+              return funnel.assist || funnel;
+            });
+          }
           return fetch(base + "/api/assist", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

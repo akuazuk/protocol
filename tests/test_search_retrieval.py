@@ -1,6 +1,7 @@
 """ICD-first подбор PDF для воронки поиска протоколов."""
 from __future__ import annotations
 
+from clinical_knowledge.search_golden_eval import load_search_golden
 from clinical_knowledge.search_retrieval import (
     build_protocol_search_context,
     expand_icd_for_protocol_search,
@@ -38,6 +39,18 @@ def test_throat_adult_query_targets_ent_not_anesthesia():
 def test_build_context_sets_allowlist_for_symptom_icd():
     q = "болит горло\nКонтекст подбора: взрослое население\nМКБ-10: R07.0"
     ctx = build_protocol_search_context(query=q, icd_codes=["R07.0"])
+    assert ctx.get("path_allowlist")
+    expanded = ctx.get("expanded_icd_codes") or []
+    assert any(c.startswith("J") for c in expanded)
+
+
+def test_sym11_throat_r07_golden_row():
+    rows = load_search_golden()
+    row = next((r for r in rows if r.get("id") == "sym11"), None)
+    assert row is not None
+    from clinical_knowledge.search_retrieval import build_protocol_search_context
+
+    ctx = build_protocol_search_context(query=row["query"], icd_codes=row.get("icd_codes"))
     assert ctx.get("path_allowlist")
     expanded = ctx.get("expanded_icd_codes") or []
     assert any(c.startswith("J") for c in expanded)

@@ -647,6 +647,12 @@ def _load_summary_rag_chunks() -> list[dict]:
         return []
     out: list[dict] = []
     try:
+        from clinical_knowledge.protocol_summary.icd_index import _protocol_id_to_local_path
+
+        id_to_path = _protocol_id_to_local_path()
+    except Exception:
+        id_to_path = {}
+    try:
         with path.open(encoding="utf-8") as f:
             for idx, line in enumerate(f):
                 line = line.strip()
@@ -659,6 +665,9 @@ def _load_summary_rag_chunks() -> list[dict]:
                 pid = ch.get("protocol_id") or "summary"
                 cid = ch.get("chunk_id") or ch.get("section_type") or "chunk"
                 ch["path"] = f"summary://{pid}/{cid}"
+                catalog = id_to_path.get(str(pid), "")
+                if catalog:
+                    ch["catalog_source_path"] = catalog.replace("\\", "/")
                 ch["lex_text"] = ch.get("text") or ""
                 ch["title"] = ch.get("condition_name") or ch.get("section_type") or ""
                 ch["category"] = ch.get("rubric_slug") or ""
@@ -2622,6 +2631,7 @@ def retrieve(
     icd_codes_for_lex: list[str] | None = None,
     path_boost: list[str] | None = None,
     path_allowlist: list[str] | None = None,
+    catalog_path_extra: list[str] | None = None,
     embed_rerank: bool | None = None,
     audience_hint: str | None = None,
 ) -> list[dict]:
@@ -2744,11 +2754,12 @@ def retrieve(
     )
     for ch in chunk_source:
         pth = ch.get("path") or ""
-        if path_allowlist_set and pth.replace("\\", "/") not in path_allowlist_set:
+        if path_allowlist_set and not _path_matches_allowlist(ch, path_allowlist_set):
             continue
         if aud_filter and aud_strict and use_routing:
+            aud_path = _retrieval_path_for_chunk(ch)
             if _chunk_audience_mismatch(
-                aud_filter, pth, str(ch.get("title") or ""), _routing
+                aud_filter, aud_path, str(ch.get("title") or ""), _routing
             ):
                 continue
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
@@ -2786,9 +2797,10 @@ def retrieve(
                     os.environ.get("RAG_ICD_QUERY_MISS_CHUNK_MULT", "0.62")
                 )
         pth = ch.get("path") or ""
-        if path_boost_set and pth in path_boost_set:
+        catalog_pth = _retrieval_path_for_chunk(ch)
+        if path_boost_set and catalog_pth in path_boost_set:
             post *= path_boost_factor
-        post *= _protocol_meta_icd_boost(pth, icd_norms)
+        post *= _protocol_meta_icd_boost(catalog_pth, icd_norms)
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
             post *= boost_factor
@@ -2877,6 +2889,7 @@ def retrieve(
         pf_ctx = build_retrieval_prefilter_context(
             icd_codes_for_lex,
             sorted(slug_union),
+            extra_catalog_paths=list(catalog_path_extra or []) + list(path_boost or []),
         )
         if pf_ctx.get("active"):
             catalog_paths = pf_ctx["paths"]  # type: ignore[index]
@@ -2973,7 +2986,8 @@ def retrieve(
             )
         else:
             final, lex, mult, ch = row[0], row[1], row[2], row[3]
-        p = ch.get("path") or ""
+        p_raw = ch.get("path") or ""
+        p = _retrieval_path_for_chunk(ch)
         if per_path.get(p, 0) >= max_per_path:
             continue
         bk = _protocol_basename_key(p)
@@ -2993,6 +3007,12 @@ def retrieve(
             "routing_multiplier": round(mult, 4),
             "excerpt": format_excerpt_for_display(ch.get("text") or "", ex_lim),
         }
+        if p_raw.startswith("summary://"):
+            row_out["chunk_source"] = "summary_chunks"
+            row_out["generated_from_summary"] = True
+        catalog = str(ch.get("catalog_source_path") or "").strip()
+        if catalog:
+            row_out["catalog_source_path"] = catalog.replace("\\", "/")
         if cat_out:
             row_out["category"] = cat_out
         # Структурная привязка (если корпус её содержит и RAG_KEEP_STRUCT включён).
@@ -5204,6 +5224,25 @@ def _normalize_protocol_title_key(t: str) -> str:
     return " ".join((t or "").strip().lower().split())
 
 
+def _retrieval_path_for_chunk(ch: dict) -> str:
+    """PDF path для ranking/dedupe: summary-чанки → catalog_source_path."""
+    catalog = str(ch.get("catalog_source_path") or "").strip()
+    if catalog:
+        return catalog.replace("\\", "/")
+    return str(ch.get("path") or "").replace("\\", "/")
+
+
+def _path_matches_allowlist(ch: dict, allow: frozenset[str]) -> bool:
+    if not allow:
+        return True
+    pth = _retrieval_path_for_chunk(ch)
+    if pth in allow:
+        return True
+    from clinical_knowledge.protocol_summary.icd_index import catalog_path_matches_chunk
+
+    return catalog_path_matches_chunk(pth, allow)
+
+
 def dedupe_retrieval_by_basename(
     rows: list[dict],
     *,
@@ -5217,7 +5256,7 @@ def dedupe_retrieval_by_basename(
     for row in rows:
         if not isinstance(row, dict):
             continue
-        p = str(row.get("path") or "")
+        p = _retrieval_path_for_chunk(row)
         bk = _protocol_basename_key(p) or f"__path__:{p}"
         prev = by_base.get(bk)
         if prev is None:
@@ -5248,7 +5287,7 @@ def _build_protocols_from_retrieval(
         max_sc = 1.0
     protos: list[dict] = []
     for row, raw in zip(rows, raw_scores):
-        p = _normalize_protocol_path_key(str(row.get("path") or ""))
+        p = _normalize_protocol_path_key(_retrieval_path_for_chunk(row))
         if not p:
             continue
         meta = _protocols_by_path.get(p) or {}
@@ -6507,7 +6546,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r143-icd-first-protocol-search"
+BUILD_VERSION = "2026-06-01-r144-search-funnel-b1-b2-golden"
 
 
 def _app_version() -> str:
@@ -6880,6 +6919,7 @@ def api_assist(body: AssistIn) -> dict:
             icd_codes_for_lex=icd_codes_for_lex,
             path_boost=icd_path_boost,
             path_allowlist=allow,
+            catalog_path_extra=(search_ctx or {}).get("path_boost"),
             audience_hint=aud_hint,
         )
         if not rows and allow:
@@ -6891,6 +6931,7 @@ def api_assist(body: AssistIn) -> dict:
                 icd_codes_for_lex=icd_codes_for_lex,
                 path_boost=icd_path_boost,
                 path_allowlist=None,
+                catalog_path_extra=(search_ctx or {}).get("path_boost"),
                 audience_hint=aud_hint,
             )
         return rows

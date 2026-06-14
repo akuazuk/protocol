@@ -128,6 +128,7 @@ def build_retrieval_prefilter_context(
     category_slugs: list[str] | None,
     *,
     icd_path_limit: int = 24,
+    extra_catalog_paths: list[str] | None = None,
 ) -> dict[str, frozenset[str] | bool]:
     """Контекст pre-filter до embed rerank: пути PDF по МКБ + slug рубрик."""
     slugs = frozenset(
@@ -139,6 +140,10 @@ def build_retrieval_prefilter_context(
     if icd_codes:
         for p in find_catalog_paths_by_icd_codes(icd_codes, limit=icd_path_limit):
             paths.add(p.replace("\\", "/"))
+    for raw in extra_catalog_paths or []:
+        p = str(raw or "").replace("\\", "/").strip()
+        if p:
+            paths.add(p)
     return {
         "active": bool(paths or slugs),
         "paths": frozenset(paths),
@@ -173,6 +178,9 @@ def chunk_matches_retrieval_prefilter(
 ) -> bool:
     """Чанк проходит pre-filter B2 (рубрика / МКБ-index / summary ICD)."""
     if catalog_paths and catalog_path_matches_chunk(str(ch.get("path") or ""), catalog_paths):
+        return True
+    catalog_src = str(ch.get("catalog_source_path") or "").strip()
+    if catalog_src and catalog_path_matches_chunk(catalog_src, catalog_paths):
         return True
     cat = (ch.get("category") or "").strip()
     if category_slugs and cat in category_slugs:

@@ -37,3 +37,9 @@ jobs:
           # Без ключа API: тесты не должны ходить во внешнюю модель.
           RAG_GEMINI_EMBED_RERANK: "0"
         run: pytest -q
+
+      - name: Search golden (mini corpus)
+        env:
+          RAG_GEMINI_EMBED_RERANK: "0"
+          RAG_CHUNKS_JSONL: tests/fixtures/chunks.mini.jsonl
+        run: pytest tests/test_search_golden.py tests/test_search_retrieval.py -q
