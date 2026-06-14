@@ -6,8 +6,31 @@ from clinical_knowledge.search_clinical_routing import (
 
 
 def test_detect_pregnancy_route():
-    ids = detect_clinical_route_ids("беременность 32 недели головная боль", ["O26"])
+    ids = detect_clinical_route_ids(
+        "беременность 32 недели головная боль отёки\nКонтекст подбора: беременные",
+        [],
+    )
     assert "pregnancy" in ids
+    assert "migraine" not in ids
+    assert "heart_failure" not in ids
+
+
+def test_score_pregnancy_penalizes_pediatric_neurology():
+    bad_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас"
+    )
+    delta, _ = score_path_for_clinical_routes(
+        bad_path,
+        "КП нервной системы детс нас",
+        route_ids=["pregnancy"],
+    )
+    assert delta < -10
+
+
+def test_detect_orvi_route():
+    ids = detect_clinical_route_ids("J06.9 ОРВИ насморк кашель", ["J06.9"])
+    assert "orvi_uri" in ids
 
 
 def test_detect_hypertension_route():

@@ -1542,6 +1542,8 @@ def infer_audience_from_funnel_context(q: str) -> str | None:
         return "child"
     if "контекст подбора: взрослое" in nq or "взрослое население" in nq:
         return "adult"
+    if "контекст подбора: беремен" in nq or "беременные" in nq:
+        return "pregnant"
     return None
 
 
@@ -5319,21 +5321,27 @@ def _demote_pediatric_for_adult_query(
     if not protos:
         return protos
     routing = routing or _routing or {}
-    if _infer_funnel_audience(query, routing) != "adult":
+    if _infer_funnel_audience(query, routing) not in ("adult", "pregnant"):
         return protos
+    obstetric_first: list[dict] = []
     adult_first: list[dict] = []
     pediatric: list[dict] = []
     mixed: list[dict] = []
+    is_pregnant = _infer_funnel_audience(query, routing) == "pregnant"
     for pr in protos:
         path = str(pr.get("path") or "")
         title = str(pr.get("title") or path)
         hint = doc_audience_hint(path, title, routing)
-        if hint == "pediatric":
+        if is_pregnant and "akusherstvo-ginekologiya" in path.lower():
+            obstetric_first.append(pr)
+        elif hint == "pediatric":
             pediatric.append(pr)
         elif hint == "mixed":
             mixed.append(pr)
         else:
             adult_first.append(pr)
+    if is_pregnant and obstetric_first:
+        return obstetric_first + adult_first + mixed + pediatric
     if not adult_first and not mixed:
         return protos
     return adult_first + mixed + pediatric
@@ -5407,29 +5415,52 @@ def _rerank_protocols_symptom_only(
     uri_context = _query_has_throat_or_uri_context(query, icd_analysis)
     ql = (query or "").lower()
     routing = _routing or {}
-    child_query = _infer_funnel_audience(query, routing) == "child"
-    adult_query = _infer_funnel_audience(query, routing) == "adult"
+    aud = _infer_funnel_audience(query, routing)
+    child_query = aud == "child"
+    adult_query = aud == "adult"
+    pregnant_query = aud == "pregnant" or "pregnancy" in route_ids
 
     def _apply_clinical_and_audience(pr: dict, penalty: int, boost: int) -> tuple[int, int]:
         path = str(pr.get("path") or "").lower()
         title = str(pr.get("title") or path).lower()
         blob = path + " " + title
+        hint = doc_audience_hint(path, title, routing)
         if route_ids:
             delta, _ = score_path_for_clinical_routes(path, title, route_ids=route_ids)
             if delta >= 0:
                 boost += int(delta)
             else:
                 penalty += int(-delta)
-        hint = doc_audience_hint(path, title, routing)
+        if pregnant_query:
+            if "akusherstvo-ginekologiya" in path or any(
+                k in blob for k in ("акушер", "беремен", "гинекolog", "гинеколог", "родов", "плацент")
+            ):
+                boost += 8
+            if any(k in blob for k in ("невrolog", "нервн", "нейро", "детс", "д-нас", "дет_")):
+                penalty += 18
+            if hint == "pediatric":
+                penalty += 14
         if adult_query and hint == "pediatric":
             penalty += 12
-        elif not child_query and hint == "pediatric":
+        elif not child_query and not pregnant_query and hint == "pediatric":
             penalty += 2
         if child_query:
             if hint == "pediatric":
                 boost += 3
             elif hint == "adult":
                 penalty += 10
+            if "бронхит" in blob and "дет" not in blob and "д-нас" not in blob and "pediatr" not in blob:
+                penalty += 8
+        if "orvi_uri" in route_ids or any(c in ql for c in ("орви", "орз")) or any(
+            str(c).upper().startswith("J06") for c in icd_codes
+        ):
+            if any(k in blob for k in ("гепатит", "hepat", "вирусн гепат")):
+                penalty += 16
+            if "риносинус" in blob and not any(
+                w in ql for w in ("sinus", "синус", "лоб", "лобно", "рinosinus", "риносинус")
+            ):
+                if "орви" not in blob and "респиратор" not in blob:
+                    penalty += 10
         return penalty, boost
 
     if not uri_context:
@@ -5441,10 +5472,12 @@ def _rerank_protocols_symptom_only(
                 conf = 0.0
             return (penalty - boost, -conf)
 
-        if route_ids or child_query or adult_query:
+        if route_ids or child_query or adult_query or pregnant_query:
             ranked = sorted(protos, key=_score_clinical_only)
-            return _demote_pediatric_for_adult_query(ranked, query, routing)
-        return _demote_pediatric_for_adult_query(protos, query, routing)
+            ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
+            return _promote_clinical_route_top1(ranked, query, icd_analysis)
+        ranked = _demote_pediatric_for_adult_query(protos, query, routing)
+        return _promote_clinical_route_top1(ranked, query, icd_analysis)
 
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
@@ -5512,7 +5545,43 @@ def _rerank_protocols_symptom_only(
         return (penalty - boost, -conf)
 
     ranked = sorted(protos, key=_score_row)
-    return _demote_pediatric_for_adult_query(ranked, query, routing)
+    ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
+    return _promote_clinical_route_top1(ranked, query, icd_analysis)
+
+
+def _promote_clinical_route_top1(
+    protos: list[dict],
+    query: str,
+    icd_analysis: dict | None,
+) -> list[dict]:
+    """Поднимает top-1 по активному клиническому маршруту (беременность, ОРВИ…)."""
+    if len(protos) < 2:
+        return protos
+    from clinical_knowledge.search_clinical_routing import (
+        detect_clinical_route_ids,
+        score_path_for_clinical_routes,
+    )
+
+    icd_codes = _icd_codes_from_analysis(icd_analysis, query)
+    route_ids = detect_clinical_route_ids(query, icd_codes)
+    if not route_ids:
+        return protos
+    best_idx: int | None = None
+    best_delta = -999.0
+    for i, pr in enumerate(protos[:12]):
+        path = str(pr.get("path") or "")
+        title = str(pr.get("title") or path)
+        delta, matched = score_path_for_clinical_routes(path, title, route_ids=route_ids)
+        if not matched or delta <= 0:
+            continue
+        if delta > best_delta:
+            best_delta = delta
+            best_idx = i
+    if best_idx is not None and best_idx > 0:
+        out = list(protos)
+        out.insert(0, out.pop(best_idx))
+        return out
+    return protos
 
 
 def dedupe_parsed_protocols(
@@ -6621,7 +6690,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r149-probe110-artifacts-snapshot"
+BUILD_VERSION = "2026-05-31-r150-search-probe-fixes-kz-auto"
 
 
 def _app_version() -> str:
@@ -6966,11 +7035,37 @@ def api_assist(body: AssistIn) -> dict:
         if search_ctx.get("expanded_icd_codes"):
             icd_codes_for_lex = search_ctx["expanded_icd_codes"]
         path_allowlist = search_ctx.get("path_allowlist")
-    if user_slugs or icd_codes_for_lex:
-        query_specialties: list[str] = []
+    from clinical_knowledge.search_clinical_routing import (
+        detect_clinical_route_ids,
+        expand_slugs_for_clinical_routes,
+    )
+
+    _clinical_routes = detect_clinical_route_ids(q, icd_codes_for_lex or [])
+    _pregnant_ctx = (
+        infer_audience_from_funnel_context(q) == "pregnant" or "pregnancy" in _clinical_routes
+    )
+    if user_slugs or icd_codes_for_lex or _pregnant_ctx or _clinical_routes:
+        query_specialties = []
     else:
         query_specialties = infer_specialties_gemini(q, model)
     boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
+    if _clinical_routes:
+        route_slugs = sorted(
+            expand_slugs_for_clinical_routes(set(boost_merged), q, icd_codes_for_lex or [])
+        )
+        boost_merged = list(dict.fromkeys(route_slugs + boost_merged))
+    if _pregnant_ctx:
+        boost_merged = [
+            s
+            for s in boost_merged
+            if s
+            not in (
+                "nevrologiya-neyrokhirurgiya",
+                "psikhiatriya-narkologiya",
+            )
+        ]
+        if "akusherstvo-ginekologiya" not in boost_merged:
+            boost_merged = ["akusherstvo-ginekologiya"] + boost_merged
     icd_path_boost: list[str] | None = None
     if icd_codes_for_lex:
         from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes

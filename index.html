@@ -8043,6 +8043,17 @@
       color: var(--green-950);
     }
 
+    .assist-kz-auto-hint {
+      margin: 0 0 0.75rem;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--green-950);
+      background: rgba(16, 185, 129, 0.12);
+      border-left: 3px solid var(--green-600);
+      border-radius: 0 8px 8px 0;
+    }
+
     .practical-review-summary {
       margin: 0 0 0.65rem;
       font-size: 0.9rem;
@@ -10535,6 +10546,9 @@
   }
 
   /** Оценка 0-1: приоритет confidence_score от модели, иначе текстовая шкала. */
+  /** Порог авто-загрузки матрицы КЗ после точного подбора протокола (0–1). */
+  var KZ_AUTO_LOAD_MIN_CONFIDENCE = 0.85;
+
   function confidenceFromProtocol(pr) {
     if (pr.confidence_score != null) {
       var num = Number(pr.confidence_score);
@@ -13136,6 +13150,10 @@
       '<div class="practical-review-panel" id="practical-review-panel">';
     html +=
       '<h3 class="practical-review-head">Практический разбор по протоколу</h3>';
+    if (panelOpts.autoKzHint) {
+      html +=
+        '<p class="assist-kz-auto-hint" role="status">Протокол с высоким соответствием запросу — ниже матрица КЗ: отметьте обязательные пункты, чтобы заключение было полным и без типовых ошибок.</p>';
+    }
     if (cd && cd.title) {
       html +=
         '<p class="assist-detail-meta">' +
@@ -13212,13 +13230,14 @@
     }
   }
 
-  function mountPracticalReviewPanel(cd, matrix, query, meta) {
+  function mountPracticalReviewPanel(cd, matrix, query, meta, panelOpts) {
+    panelOpts = panelOpts || {};
     var panel = document.getElementById("practical-review-panel");
     if (!panel) {
       mountKzMatrixSlot(matrix);
       return;
     }
-    var html = renderPracticalReviewPanel(cd, matrix, query, meta);
+    var html = renderPracticalReviewPanel(cd, matrix, query, meta, panelOpts);
     panel.outerHTML = html;
     if (cd && !cd.error) {
       window.__clinicalDetailForTemplate = cd;
@@ -13337,6 +13356,43 @@
         clearTimeout(abortTid);
         if (timerCtl) timerCtl.stop();
       });
+  }
+
+  function maybeAutoLoadPracticalForSearch(data) {
+    if (window.__methodistMode) return;
+    if (!data || !data.llm_json) return;
+    var stepped = isSearchSteppedMode();
+    var wiz = window.__searchWizard || {};
+    if (stepped && wiz.step !== "detail") return;
+    var protos = dedupeProtocolsByPath(data.llm_json.protocols || []);
+    if (!protos.length) return;
+    var target = null;
+    var pi;
+    if (wiz.selectedProto) {
+      for (pi = 0; pi < protos.length; pi++) {
+        if (protos[pi].path === wiz.selectedProto) {
+          target = protos[pi];
+          break;
+        }
+      }
+    }
+    if (!target) target = protos[0];
+    if (confidenceFromProtocol(target) < KZ_AUTO_LOAD_MIN_CONFIDENCE) return;
+    var key = String(target.path || "") + "|" + String(data.query || "");
+    if (window.__autoPracticalLoadKey === key) return;
+    window.__autoPracticalLoadKey = key;
+    var panel = document.getElementById("practical-review-panel");
+    if (!panel) return;
+    panel.hidden = false;
+    panel.outerHTML = renderPracticalReviewLoading(target);
+    loadProtocolPractical(target, data.query || "", icdCodesFromAssistData(data), {
+      lazyKzMatrix: false,
+      autoKzHint: true,
+    });
+    try {
+      var loaded = document.getElementById("practical-review-panel");
+      if (loaded) loaded.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (eScroll) {}
   }
 
   function loadKzMatrixOnly(offer, queryText, icdCodes, clinicalDetail) {
@@ -14332,6 +14388,7 @@
       bindProtocolDetailLoader(data.query || "");
       bindProtoExploreButtons(data.query || "", icdForPractical);
       bindProtoPickButtons(data);
+      maybeAutoLoadPracticalForSearch(data);
       if (stepped) {
         if (wiz.step === "detail") {
           updateSearchWizardBar("detail", "Шаг 6 · выдержка из PDF");

@@ -23,13 +23,42 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
             "неврolog",
             "нervn",
             "нервн",
+            "нервной систем",
             "урolog",
             "уролог",
             "дет_",
             "д-нас",
+            "детс",
             "pediatr",
             "стомат",
             "заболеваниями н",
+            "neyro",
+            "нейро",
+        ),
+        "suppress_when_active": ("heart_failure", "migraine"),
+    },
+    {
+        "id": "orvi_uri",
+        "query_markers": ("орви", "орз", "простуд", "респираторн", "насморк"),
+        "icd_prefixes": ("J06", "J00", "J11", "J20", "J21"),
+        "slugs": (
+            "infektsionnye-zabolevaniya",
+            "pulmonologiya-ftiziatriya",
+            "otorinolaringologiya",
+            "terapiya",
+            "pediatriya",
+        ),
+        "title_strong": ("орви", "орз", "респиратор", "простуд", "гриpp", "грипп"),
+        "title_weak": ("инфекц", "respir"),
+        "title_wrong": (
+            "гепатит",
+            "hepat",
+            "риносинус",
+            "sinusit",
+            "синусит",
+            "трансплант",
+            "паллиат",
+            "онкolog",
         ),
     },
     {
@@ -165,6 +194,12 @@ def _query_blob(query: str) -> str:
     return re.sub(r"\s+", " ", (query or "").lower()).strip()
 
 
+def _title_blob(path: str, title: str) -> str:
+    """Нормализация path/title для подстрок (PDF часто с подчёркиваниями)."""
+    raw = f"{path} {title}".lower().replace("_", " ").replace("-", " ")
+    return re.sub(r"\s+", " ", raw).strip()
+
+
 def _icd_matches_prefixes(codes: list[str], prefixes: tuple[str, ...]) -> bool:
     for raw in codes:
         c = normalize_code(str(raw))
@@ -180,11 +215,16 @@ def _icd_matches_prefixes(codes: list[str], prefixes: tuple[str, ...]) -> bool:
     return False
 
 
+def _route_by_id(rid: str) -> dict[str, Any] | None:
+    return next((r for r in _CLINICAL_ROUTES if r["id"] == rid), None)
+
+
 def detect_clinical_route_ids(query: str, icd_codes: list[str] | None = None) -> list[str]:
     """Активные клинические маршруты по тексту и МКБ (порядок приоритета)."""
     ql = _query_blob(query)
     codes = list(icd_codes or [])
     out: list[str] = []
+    icd_only: set[str] = set()
     for route in _CLINICAL_ROUTES:
         rid = str(route["id"])
         if rid in out:
@@ -195,6 +235,22 @@ def detect_clinical_route_ids(query: str, icd_codes: list[str] | None = None) ->
             continue
         if _icd_matches_prefixes(codes, tuple(route.get("icd_prefixes") or ())):
             out.append(rid)
+            icd_only.add(rid)
+
+    # Беременность + «головная боль/отёки» не должны тянуть мигрень/СН; только акушерство.
+    if "pregnancy" in out and any(m in ql for m in ("беремен", "роды", "плацент", "гест")):
+        preg = _route_by_id("pregnancy")
+        suppress = set(preg.get("suppress_when_active") or ()) if preg else set()
+        filtered: list[str] = []
+        for rid in out:
+            if rid in suppress and rid in icd_only:
+                continue
+            if rid in suppress and rid not in icd_only:
+                continue
+            filtered.append(rid)
+        if "pregnancy" not in filtered:
+            filtered.insert(0, "pregnancy")
+        out = filtered
     return out
 
 
@@ -219,7 +275,7 @@ def score_path_for_clinical_routes(
     route_ids: list[str],
 ) -> tuple[float, list[str]]:
     """Boost (>0) / penalty (<0) для rerank; возвращает (delta, matched_route_ids)."""
-    blob = f"{path} {title}".lower()
+    blob = _title_blob(path, title)
     delta = 0.0
     matched: list[str] = []
     for rid in route_ids:
@@ -230,10 +286,16 @@ def score_path_for_clinical_routes(
         weak = sum(1 for m in route.get("title_weak") or () if m in blob)
         wrong = sum(1 for m in route.get("title_wrong") or () if m in blob)
         if wrong and not strong:
-            delta -= 10.0 + 2.0 * wrong
+            pen = 14.0 + 3.0 * wrong
+            if rid == "pregnancy":
+                pen += 6.0
+            delta -= pen
             matched.append(rid)
         elif strong:
-            delta += 8.0 + 3.0 * strong + 1.0 * weak
+            boost = 8.0 + 3.0 * strong + 1.0 * weak
+            if rid == "pregnancy":
+                boost += 4.0
+            delta += boost
             matched.append(rid)
         elif weak:
             delta += 2.0 * weak
@@ -249,7 +311,7 @@ def title_match_score_for_routes(
     base: float = 8.0,
 ) -> float | None:
     """Скор для strict title-match (None = не подходит)."""
-    blob = f"{path} {title}".lower()
+    blob = _title_blob(path, title)
     best: float | None = None
     for rid in route_ids:
         route = next((r for r in _CLINICAL_ROUTES if r["id"] == rid), None)

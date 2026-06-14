@@ -276,7 +276,12 @@ def _title_match_paths(
             return
         if _domain_mismatch_for_query(sp, title, throat=throat, gi=gi):
             return
-        blob = f"{sp} {title}".lower()
+        blob = f"{sp} {title}".lower().replace("_", " ").replace("-", " ")
+        blob = re.sub(r"\s+", " ", blob).strip()
+        ql = _query_blob(query)
+        if "orvi_uri" in routes or "орви" in ql or "орз" in ql or re.search(r"\bj06", ql):
+            if any(m in blob for m in ("гепатит", "hepat")):
+                return
         if cough_fever and not throat and any(m in blob for m in _COUGH_FEVER_WRONG):
             return
         score = 0.0
@@ -464,6 +469,31 @@ def search_target_protocol_paths(
             continue
         seen_names.add(name)
         deduped.append(sp)
+    if "orvi_uri" in clinical_routes:
+        wrong_markers = (
+            "гепатит",
+            "hepat",
+            "вич",
+            "сифил",
+            "половым пут",
+            "иммунодеф",
+            "маляр",
+            "туберк",
+        )
+        respiratory: list[str] = []
+        rest: list[str] = []
+        for sp in deduped:
+            blob = f"{sp} {Path(sp).stem}".lower().replace("_", " ")
+            if any(m in blob for m in wrong_markers):
+                continue
+            if any(
+                m in blob
+                for m in ("респиратор", "орви", "орз", "respir", "гриpp", "грипп", "простуд", "инфекц")
+            ):
+                respiratory.append(sp)
+            else:
+                rest.append(sp)
+        deduped = respiratory + rest
     return deduped[:limit], meta
 
 
@@ -483,6 +513,15 @@ def build_protocol_search_context(
 
     expanded = meta.get("expanded_icd") or list(icd_codes or [])
     summary_paths = find_catalog_paths_by_icd_codes(expanded, limit=8) if expanded else []
+    clinical_routes = meta.get("clinical_routes") or []
+    ql = _query_blob(query)
+    if "orvi_uri" in clinical_routes or "орви" in ql or "орз" in ql:
+        wrong = ("гепатит", "hepat", "вич", "сифил", "половым пут", "иммунодеф")
+        summary_paths = [
+            p
+            for p in summary_paths
+            if not any(m in f"{p} {Path(p).stem}".lower().replace("_", " ") for m in wrong)
+        ]
     path_boost = list(
         dict.fromkeys(_path_norm(p) for p in (target_paths + summary_paths) if p)
     )
