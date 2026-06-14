@@ -92,6 +92,34 @@ _WRONG_DOMAIN_FOR_THROAT = (
     "мягких тканей",
 )
 _GI_QUERY_MARKERS = ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул", "диар")
+_COUGH_MARKERS = ("кашел", "кашель", "сухой каш")
+_FEVER_MARKERS = ("температ", "лихорад", "жар", "озноб", "субфебрил", "гипертерм")
+_COUGH_FEVER_TITLE_STRONG = (
+    "орви",
+    "орз",
+    "бронхит",
+    "пневмон",
+    "респиратор",
+    "грипп",
+    "инфекц",
+)
+_COUGH_FEVER_TITLE_WEAK = (
+    "фаринг",
+    "ларинг",
+    "оторин",
+    "лор",
+    "трахеит",
+)
+_COUGH_FEVER_WRONG = (
+    "паллиат",
+    "саркоид",
+    "иммунодефиц",
+    "туберкул",
+    "микобактер",
+    "онколог",
+    "трансплант",
+    "реабилит",
+)
 
 
 def _path_norm(sp: str) -> str:
@@ -163,6 +191,20 @@ def _has_gi_context(query: str) -> bool:
     return any(m in ql for m in _GI_QUERY_MARKERS)
 
 
+def _has_cough_fever_context(query: str, icd_codes: list[str]) -> bool:
+    ql = _query_blob(query)
+    has_cough = any(m in ql for m in _COUGH_MARKERS)
+    has_fever = any(m in ql for m in _FEVER_MARKERS)
+    if has_cough and (has_fever or "сух" in ql):
+        return True
+    codes = [normalize_code(c) for c in icd_codes]
+    if any(c.startswith("R05") for c in codes):
+        return True
+    if has_cough and any(c.startswith(("J06", "J20", "J18", "J00", "J11")) for c in codes):
+        return True
+    return False
+
+
 def _domain_mismatch_for_query(path: str, title: str, *, throat: bool, gi: bool) -> bool:
     blob = f"{path} {title}".lower()
     if throat and not gi:
@@ -212,6 +254,7 @@ def _title_match_paths(
     *,
     audience: str | None,
     throat: bool,
+    cough_fever: bool = False,
     limit: int = 8,
 ) -> list[tuple[str, float, str]]:
     """Пути PDF по заголовку/имени файла (protocol_meta + cards registry)."""
@@ -227,6 +270,8 @@ def _title_match_paths(
         if _domain_mismatch_for_query(sp, title, throat=throat, gi=gi):
             return
         blob = f"{sp} {title}".lower()
+        if cough_fever and not throat and any(m in blob for m in _COUGH_FEVER_WRONG):
+            return
         score = 0.0
         if throat:
             strong_hits = sum(1 for m in _URI_TITLE_STRONG if m in blob)
@@ -234,6 +279,19 @@ def _title_match_paths(
                 return
             weak_hits = sum(1 for m in _URI_TITLE_MARKERS if m in blob)
             score = base + 12.0 + 6.0 * strong_hits + 2.0 * max(0, weak_hits - strong_hits)
+            aud = _audience_from_title(sp, title)
+            if audience == "adult" and aud == "adult":
+                score += 10.0
+            elif audience == "child" and aud == "child":
+                score += 10.0
+        elif cough_fever:
+            strong_hits = sum(1 for m in _COUGH_FEVER_TITLE_STRONG if m in blob)
+            weak_hits = sum(1 for m in _COUGH_FEVER_TITLE_WEAK if m in blob)
+            if strong_hits == 0 and weak_hits == 0:
+                return
+            score = base + 10.0 + 7.0 * strong_hits + 2.0 * weak_hits
+            if strong_hits == 0 and weak_hits > 0:
+                score -= 4.0
             aud = _audience_from_title(sp, title)
             if audience == "adult" and aud == "adult":
                 score += 10.0
@@ -252,7 +310,7 @@ def _title_match_paths(
         title = str(row.get("title") or sp)
         consider(sp, title, 8.0, "protocol_meta")
 
-    if throat:
+    if throat or cough_fever:
         try:
             from clinical_knowledge.loader import load_protocol_cards_registry
 
@@ -282,6 +340,7 @@ def search_target_protocol_paths(
     expanded, expand_meta = expand_icd_for_protocol_search(query, icd_codes)
     audience = _infer_audience(query)
     throat = _has_throat_context(query, expanded)
+    cough_fever = _has_cough_fever_context(query, expanded) and not throat
     slugs = sorted(
         expand_specialty_slugs_for_clinical_text(
             expand_specialty_slugs_for_icd(set(category_slugs or []), expanded),
@@ -294,6 +353,15 @@ def search_target_protocol_paths(
                 "otorinolaringologiya",
                 "pulmonologiya-ftiziatriya",
                 "infektsionnye-zabolevaniya",
+                "terapiya",
+            }
+        )
+    elif cough_fever and not slugs:
+        slugs = sorted(
+            {
+                "pulmonologiya-ftiziatriya",
+                "infektsionnye-zabolevaniya",
+                "pediatriya",
                 "terapiya",
             }
         )
@@ -324,14 +392,30 @@ def search_target_protocol_paths(
             continue
         add(sp, registry_meta.get("path_sources", {}).get(sp, "icd_registry"))
 
-    title_hits = _title_match_paths(query, audience=audience, throat=throat, limit=limit)
+    try:
+        from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
+
+        for sp in find_catalog_paths_by_icd_codes(expanded, limit=limit):
+            add(sp, "icd_summary_index")
+    except Exception:
+        pass
+
+    title_hits = _title_match_paths(
+        query,
+        audience=audience,
+        throat=throat,
+        cough_fever=cough_fever,
+        limit=limit,
+    )
+    title_threshold = 18.0 if throat else 16.0 if cough_fever else 18.0
     for sp, sc, src in title_hits:
-        if sc >= 18.0:
+        if sc >= title_threshold:
             add(sp, src)
 
     strict = bool(paths) and (
         expand_meta.get("had_symptom_only")
         or throat
+        or cough_fever
         or bool(registry_paths)
     )
 
@@ -344,6 +428,7 @@ def search_target_protocol_paths(
         "strict": strict,
         "audience": audience,
         "throat_context": throat,
+        "cough_fever_context": cough_fever,
         "registry_meta": registry_meta,
     }
     deduped: list[str] = []

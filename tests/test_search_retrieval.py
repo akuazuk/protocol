@@ -56,6 +56,41 @@ def test_sym11_throat_r07_golden_row():
     assert any(c.startswith("J") for c in expanded)
 
 
+def test_r05_dry_cough_fever_targets_respiratory_not_ent():
+    q = (
+        "сухой кашель и температура 38\n"
+        "Контекст подбора: взрослое население\n"
+        "МКБ-10 для поиска протокола: R05 (R05 - Кашель)"
+    )
+    paths, meta = search_target_protocol_paths(query=q, icd_codes=["R05"])
+    assert meta.get("cough_fever_context") is True
+    assert meta.get("strict") is True
+    assert paths
+    joined = " ".join(paths).lower()
+    assert "бронхит" in joined or "респиратор" in joined or "пневмон" in joined
+    assert "саркоид" not in joined
+    assert "дет_нас" not in joined and "дет нас" not in joined
+
+
+def test_rerank_cough_fever_prefers_bronchitis_over_ent():
+    protos = [
+        {
+            "path": "a/ent.pdf",
+            "title": "Диагностика лечение оториноларингологическими заболеваниями в-нас",
+            "confidence_score": 0.98,
+        },
+        {
+            "path": "b/bronch.pdf",
+            "title": "Диагностика лечения острого и хронического бронхита",
+            "confidence_score": 0.72,
+        },
+    ]
+    icd = {"codes_for_retrieval": ["R05", "J06.9", "J20.9"], "detected": [{"code": "R05"}]}
+    q = "сухой кашель и температура 38\nКонтекст подбора: взрослое население"
+    out = _rerank_protocols_symptom_only(protos, q, icd)
+    assert out[0]["path"].endswith("bronch.pdf")
+
+
 def test_rerank_demotes_anesthesia_and_gi_for_throat():
     protos = [
         {

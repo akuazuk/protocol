@@ -5391,7 +5391,11 @@ def _rerank_protocols_symptom_only(
     gi_mismatch = ("пищевод", "желудк", "двенадцатипер", "гастроэзофаг", "рефлюкс", "гэрб", "срыгив")
     acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
     uri = ("фаринг", "ангин", "тонзилл", "ларинг", "респираторн", "орз", "грипп", "фингит", "оторин", "лор", "уха горла носа")
+    cough_acute = ("бронхит", "пневмон", "орви", "орз", "респиратор", "грипп", "трахеит")
+    ent_only = ("отит", "риносинус", "синусит", "аденоид")
+    wrong_acute = ("паллиат", "саркоид", "иммунодефиц", "трансплант", "онколог")
     has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
+    has_cough = any(w in ql for w in ("кашел", "кашель", "сухой каш"))
     has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
     has_gi = any(w in ql for w in ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул"))
     throat_distress = any(w in ql for w in ("одыш", "дистресс", "синус", "сатурац", "загиб", "трипод"))
@@ -5416,13 +5420,30 @@ def _rerank_protocols_symptom_only(
             penalty += 10
         if has_throat and any(k in blob for k in ("аллерг", "ринит")):
             penalty += 6
+        if (has_cough or has_fever) and any(k in blob for k in wrong_acute):
+            penalty += 8
         boost = 0
-        if "пневмон" in blob:
+        if has_cough and not has_throat:
+            if any(k in blob for k in cough_acute):
+                boost += 5
+            elif any(k in blob for k in ent_only) and not any(k in blob for k in cough_acute):
+                penalty += 6
+        elif has_throat:
+            if "пневмон" in blob:
+                boost += 2
+            elif any(k in blob for k in uri):
+                boost += 2
+            elif any(k in blob for k in acute):
+                boost += 1
+        else:
+            if "пневмон" in blob:
+                boost += 2
+            elif any(k in blob for k in cough_acute):
+                boost += 2
+            elif any(k in blob for k in acute):
+                boost += 1
+        if child_query and has_cough and any(k in blob for k in cough_acute):
             boost += 2
-        elif any(k in blob for k in uri):
-            boost += 2
-        elif any(k in blob for k in acute):
-            boost += 1
         hint = doc_audience_hint(path, title, routing)
         if adult_query and hint == "pediatric":
             penalty += 12
@@ -6546,7 +6567,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r146-funnel-rubric-fetch-fix"
+BUILD_VERSION = "2026-06-01-r147-search-cough-fever-ranking"
 
 
 def _app_version() -> str:
