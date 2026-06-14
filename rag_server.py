@@ -5427,24 +5427,18 @@ def _icd_codes_from_analysis(icd_analysis: dict | None, query: str) -> list[str]
 
 
 def _icd_codes_for_clinical_routing(icd_analysis: dict | None, query: str) -> list[str]:
-    """МКБ для rerank/routing: без шумных suggested_lexicon (O69 от «давлен» и т.п.)."""
+    """МКБ для rerank/routing: только явные коды в тексте запроса (+ detected при explicit ICD)."""
     icd = icd_analysis or {}
-    ql = (query or "").upper()
     codes: list[str] = []
-    for bucket in ("detected",):
-        for row in icd.get(bucket) or []:
-            if isinstance(row, dict) and row.get("code"):
-                codes.append(str(row["code"]))
-    for row in icd.get("suggested") or []:
-        if not isinstance(row, dict) or not row.get("code"):
-            continue
-        if row.get("role") == "suggested_lexicon":
-            continue
-        codes.append(str(row["code"]))
-    for c in icd.get("codes_for_retrieval") or []:
-        codes.append(str(c))
     for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
         codes.append(m.group(1).upper())
+    if icd.get("explicit_icd_in_query"):
+        for bucket in ("detected", "suggested"):
+            for row in icd.get(bucket) or []:
+                if isinstance(row, dict) and row.get("code"):
+                    c = str(row["code"]).upper()
+                    if c not in codes:
+                        codes.append(c)
     return list(dict.fromkeys(codes))
 
 
@@ -5501,8 +5495,8 @@ def _rerank_protocols_symptom_only(
                 penalty += 40
             if any(k in blob for k in ("инфекциями кожи", "кожи и подкожной")):
                 penalty += 18
-            if any(k in blob for k in ("респиратор", "орви", "орз", "простуд")):
-                boost += 12
+            if any(k in blob for k in ("респиратор", "орви", "орз", "простуд", "бронхит")):
+                boost += 14
         if "otitis" in route_ids or any(str(c).upper().startswith(("H65", "H66", "H67")) for c in icd_codes):
             if any(k in blob for k in ("оторин", "otorin", "лор", "фаринг", "отит")):
                 boost += 14
@@ -5542,20 +5536,20 @@ def _rerank_protocols_symptom_only(
             if any(k in blob for k in ("эпилепс", "врожденн", "нейрохирург")) and "отит" not in blob:
                 penalty += 35
         if "wound" in route_ids and any(w in ql for w in ("рана", "раны", "раной", "порез")):
-            if not any(w in ql for w in ("травм", "огнестрел", "огнестр", "перелом")):
+            if not any(w in ql for w in ("перелом",)):
                 if any(
                     k in blob
                     for k in (
                         "травмой живота",
                         "травма живота",
                         "травм живота",
-                        "огнестрел",
-                        "огнестр",
                         "женщинам",
                         "акушer",
                     )
                 ):
                     penalty += 30
+                if any(k in blob for k in ("огнестрел", "огнестр", "ран", "ранен", "khirurg", "хирург")):
+                    boost += 12
         if "burn" in route_ids and any(w in ql for w in ("ожог", "термическ", "обвар")):
             if any(k in blob for k in ("скорой неотложной", "неотложной медицинской помощи")):
                 penalty += 20
@@ -5730,7 +5724,7 @@ def _swap_if_clinical_second_beats_first(
     query: str,
     icd_analysis: dict | None,
 ) -> list[dict]:
-    """Если top-1 с отрицательным clinical delta, а #2 с сильным положительным — меняем местами."""
+    """Поднимает в top-1 протокол с лучшим clinical delta среди top-N, если он заметно лучше текущего."""
     if len(protos) < 2:
         return protos
     from clinical_knowledge.search_clinical_routing import (
@@ -5748,11 +5742,12 @@ def _swap_if_clinical_second_beats_first(
         d, matched = score_path_for_clinical_routes(path, title, route_ids=route_ids)
         return d if matched else 0.0
 
-    d0 = _delta(protos[0])
-    d1 = _delta(protos[1])
-    if d0 < 0 and d1 >= 10.0:
+    window = min(8, len(protos))
+    deltas = [_delta(protos[i]) for i in range(window)]
+    best_i = max(range(window), key=lambda i: deltas[i])
+    if best_i > 0 and deltas[best_i] >= 10.0 and deltas[best_i] > deltas[0] + 4.0:
         out = list(protos)
-        out[0], out[1] = out[1], out[0]
+        out.insert(0, out.pop(best_i))
         return out
     return protos
 
@@ -6905,7 +6900,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r159-probe-quality"
+BUILD_VERSION = "2026-05-31-r160-probe-100"
 
 
 def _app_version() -> str:

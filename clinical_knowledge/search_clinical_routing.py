@@ -75,13 +75,40 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         ),
     },
     {
+        "id": "pharyngitis",
+        "query_markers": ("ангин", "фаринг", "горл", "глот", "тонзилл", "дисфаг", "боль в горл"),
+        "icd_prefixes": ("J02", "J03", "R07"),
+        "slugs": ("otorinolaringologiya",),
+        "title_strong": ("фаринг", "ангин", "тонзилл", "оторин", "лор", "глот"),
+        "title_weak": ("otorinоларинг",),
+        "title_wrong": (
+            "нейрохирург",
+            "нервной систем",
+            "эпилепс",
+            "мигрен",
+            "головн",
+            "psikhiatr",
+        ),
+    },
+    {
         "id": "otitis",
         "query_markers": ("отит", "боль в ух", "ухо ", " ухе", "уха "),
         "icd_prefixes": ("H65", "H66", "H67"),
         "slugs": ("otorinolaringologiya",),
-        "title_strong": ("отит", "оторin", "уха", "средний отит"),
-        "title_weak": ("лор", "оториноларинг"),
-        "title_wrong": ("буллез", "дерматит", "невроген", "урolog", "нейрохирург", "нервной систем"),
+        "title_strong": ("отит", "otorin", "оторин", "уха", "средний отит", "оторinоларинг"),
+        "title_weak": ("лор", "оторinоларинг"),
+        "title_wrong": (
+            "буллез",
+            "дерматит",
+            "невроген",
+            "урolog",
+            "нейрохирург",
+            "нервной систем",
+            "эпилепс",
+            "врожденн",
+            "аномали",
+            "вестибул",
+        ),
     },
     {
         "id": "hypertension",
@@ -271,15 +298,15 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "query_markers": ("рана ", " рана", "раны ", "раной", "ранен", "порез", "колот"),
         "icd_prefixes": ("S01", "S11", "S21", "S31", "S41", "S51", "S61", "S71", "S81", "S91", "T01", "T11", "T14"),
         "slugs": ("khirurgiya", "travmatologiya-ortopediya", "anesteziologiya-reanimatologiya"),
-        "title_strong": ("ран", "ранен", "раной", "khirurg", "хирург", "travm"),
+        "title_strong": ("ран", "ранен", "раной", "ранами", "khirurg", "хирург", "travm", "огнестрел", "огнестр"),
         "title_weak": ("неотлож", "скорой"),
         "title_wrong": (
             "травмой живота",
             "травма живота",
             "травм живота",
-            "огнестрел",
-            "огнестр",
+            "живота в стацион",
             "перелом",
+            "периферич",
         ),
     },
     {
@@ -455,6 +482,14 @@ def detect_clinical_route_ids(query: str, icd_codes: list[str] | None = None) ->
     ) or "контекст подбора: беремен" in ql
     if "pregnancy" in out and "pregnancy" in icd_only and not preg_ctx:
         out = [r for r in out if r != "pregnancy"]
+    if "migraine" in out and not any(m in ql for m in ("мигрен", "головн", "цефалг")):
+        if any(m in ql for m in ("горл", "ангин", "фаринг", "отит", "глот", "тонзилл", "ухо")):
+            out = [r for r in out if r != "migraine"]
+    if "psychiatry" in out:
+        if "orvi_uri" in out or any(m in ql for m in ("насморк", "кашел", "орви", "орз", "простуд")):
+            psych_markers = ("депресс", "тревог", "паническ", "биполяр", "шизофрен", "психоз")
+            if not any(m in ql for m in psych_markers):
+                out = [r for r in out if r != "psychiatry"]
     return out
 
 
