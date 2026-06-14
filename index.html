@@ -4229,6 +4229,47 @@
       line-height: 1.45;
     }
 
+    .assist-refine-bar {
+      margin: 0.75rem 0 0.25rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: rgba(232, 245, 241, 0.65);
+      border: 1px solid rgba(13, 92, 74, 0.18);
+    }
+
+    .assist-refine-lead {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .assist-refine-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .assist-sec--icd-refine {
+      margin-top: 0.65rem;
+    }
+
+    .assist-icd-refine-list {
+      margin: 0.35rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .btn-icd-refine-pick {
+      width: 100%;
+      text-align: left;
+      font-size: 0.82rem;
+      padding: 0.45rem 0.65rem;
+    }
+
     .assist-icd-explicit {
       margin: 0.35rem 0 0.5rem;
       font-size: 0.78rem;
@@ -11859,6 +11900,114 @@
     return html || '<p class="llm-summary-para">' + escapeHtml(t) + "</p>";
   }
 
+  function renderIcdSuggestedActionsHtml(icd) {
+    if (!icd) return "";
+    var rows = [];
+    var seen = {};
+    function add(code, title) {
+      var c = String(code || "").trim();
+      if (!c || seen[c]) return;
+      seen[c] = true;
+      rows.push({ code: c, title: (title || "").trim() });
+    }
+    var det = icd.detected || [];
+    var sug = icd.suggested || [];
+    var i;
+    for (i = 0; i < det.length; i++) {
+      add(det[i].code, det[i].title_ru);
+    }
+    for (i = 0; i < sug.length && rows.length < 10; i++) {
+      add(sug[i].code, sug[i].title_ru);
+    }
+    if (!rows.length) return "";
+    var html =
+      '<div class="assist-sec assist-sec--icd-refine">' +
+      '<span class="assist-sec-label">Уточнить подбор по МКБ</span>' +
+      '<p class="assist-icd-lead">Выберите код — список протоколов обновится. Матрица КЗ откроется только после выбора протокола.</p>' +
+      '<ul class="assist-icd-refine-list">';
+    for (i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      html +=
+        '<li><button type="button" class="btn-assist btn-icd-refine-pick" data-icd-code="' +
+        escapeHtmlAttr(row.code) +
+        '">' +
+        escapeHtml(row.code) +
+        (row.title ? " · " + escapeHtml(row.title.slice(0, 56)) : "") +
+        "</button></li>";
+    }
+    html += "</ul></div>";
+    return html;
+  }
+
+  function renderSearchRefinementActionsHtml() {
+    return (
+      '<div class="assist-refine-bar" role="region" aria-label="Уточнение поиска">' +
+      '<p class="assist-refine-lead">Или измените аудиторию / коды МКБ через шаги воронки — без автоматического открытия практического разбора.</p>' +
+      '<div class="assist-refine-actions">' +
+      '<button type="button" class="btn-assist btn-refine-icd" id="btn-refine-icd">Изменить коды МКБ</button>' +
+      '<button type="button" class="btn-assist btn-refine-population" id="btn-refine-population">Изменить аудиторию</button>' +
+      "</div></div>"
+    );
+  }
+
+  function bindSearchRefinementButtons() {
+    var icdBtn = document.getElementById("btn-refine-icd");
+    if (icdBtn && !icdBtn.getAttribute("data-wired")) {
+      icdBtn.setAttribute("data-wired", "1");
+      icdBtn.addEventListener("click", function () {
+        var data = window.__lastAssistData || {};
+        var icdPayload = { icd: data.icd || {} };
+        if ((data.icd || {}).detected || (data.icd || {}).suggested) {
+          renderSearchWizardIcdStep(icdPayload);
+        } else {
+          runIcdPreflightForWizard().catch(function (err) {
+            console.error(err);
+          });
+        }
+      });
+    }
+    var popBtn = document.getElementById("btn-refine-population");
+    if (popBtn && !popBtn.getAttribute("data-wired")) {
+      popBtn.setAttribute("data-wired", "1");
+      popBtn.addEventListener("click", function () {
+        var qInput = document.getElementById("q");
+        renderSearchWizardPopulationStep((qInput && qInput.value) || lastAssistClinical || "");
+      });
+    }
+    document.querySelectorAll(".btn-icd-refine-pick").forEach(function (btn) {
+      if (btn.getAttribute("data-wired")) return;
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () {
+        var code = btn.getAttribute("data-icd-code") || "";
+        if (!code) return;
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.icd_codes = [code];
+        delete window.__funnelContext._icdLookupCacheKey;
+        delete window.__funnelContext._icdLookupPayload;
+        var qInput = document.getElementById("q");
+        if (qInput) {
+          qInput.value = appendIcdChoicesToQuery(qInput.value || "", [
+            { code: code, title_ru: "" },
+          ]);
+        }
+        window.__searchWizard = { step: "protocols", selectedProto: null };
+        window.__autoPracticalLoadKey = null;
+        var prPanel = document.getElementById("practical-review-panel");
+        if (prPanel) {
+          prPanel.hidden = true;
+          prPanel.innerHTML = "";
+        }
+        runAssist(undefined, {
+          skipIcdGate: true,
+          skipPopulationGate: true,
+          retrieveOnly: true,
+        }).catch(function (err) {
+          console.error(err);
+        });
+      });
+    });
+  }
+
   function formatIcdSectionHtml(icd) {
     if (!icd) return "";
     var det = icd.detected || [];
@@ -12952,20 +13101,6 @@
     if (!high.length) high = protos.slice(0, 3);
     var html = '<div class="proto-nav-hub" role="region" aria-label="Навигация по протоколам">';
     html += renderProtocolNavGuideHtml("pick");
-    if (high.length) {
-      var top = high[0];
-      var topConf = confidenceFromProtocol(top);
-      if (topConf >= KZ_AUTO_LOAD_MIN_CONFIDENCE) {
-        html +=
-          '<div class="proto-nav-top-cta">' +
-          '<p class="proto-nav-top-cta__lead">Рекомендуемый протокол по запросу — ниже откроется матрица КЗ для отметки обязательных пунктов.</p>' +
-          '<button type="button" class="btn-assist btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
-          escapeHtmlAttr(top.path || "") +
-          '">Продолжить: ' +
-          escapeHtml(truncateExcerpt(formatProtocolDisplayTitle(top.path, top.title), 72)) +
-          "</button></div>";
-      }
-    }
     html += '<div class="proto-nav-cards">';
     for (pi = 0; pi < high.length; pi++) {
       html += renderProtocolNavCard(high[pi], data, {
@@ -14121,40 +14256,8 @@
   }
 
   function maybeAutoLoadPracticalForSearch(data) {
-    if (window.__methodistMode) return;
-    if (!data || !data.llm_json) return;
-    var stepped = isSearchSteppedMode();
-    var wiz = window.__searchWizard || {};
-    if (stepped && wiz.step !== "detail" && wiz.step !== "protocols") return;
-    var protos = dedupeProtocolsByPath(data.llm_json.protocols || []);
-    if (!protos.length) return;
-    var target = null;
-    var pi;
-    if (wiz.selectedProto) {
-      for (pi = 0; pi < protos.length; pi++) {
-        if (protos[pi].path === wiz.selectedProto) {
-          target = protos[pi];
-          break;
-        }
-      }
-    }
-    if (!target) target = protos[0];
-    if (confidenceFromProtocol(target) < KZ_AUTO_LOAD_MIN_CONFIDENCE) return;
-    var key = String(target.path || "") + "|" + String(data.query || "");
-    if (window.__autoPracticalLoadKey === key) return;
-    window.__autoPracticalLoadKey = key;
-    var panel = document.getElementById("practical-review-panel");
-    if (!panel) return;
-    panel.hidden = false;
-    panel.outerHTML = renderPracticalReviewLoading(target);
-    loadProtocolPractical(target, data.query || "", icdCodesFromAssistData(data), {
-      lazyKzMatrix: false,
-      autoKzHint: true,
-    });
-    try {
-      var loaded = document.getElementById("practical-review-panel");
-      if (loaded) loaded.scrollIntoView({ behavior: "smooth", block: "start" });
-    } catch (eScroll) {}
+    /* Матрица КЗ / практический разбор — только по явному клику пользователя. */
+    return;
   }
 
   function loadKzMatrixOnly(offer, queryText, icdCodes, clinicalDetail) {
@@ -14860,6 +14963,8 @@
       window.__searchWizard = wiz;
       var compactResults = citationsOnly || methodistSearch || stepped;
       var uiCompact = compactResults || doctorLite;
+      var showRefinement =
+        stepped && wiz.step === "protocols" && !methodistSearch && !citationsOnly;
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
         protocolIcdMentions: protocolIcdMentions,
@@ -14962,8 +15067,12 @@
           "</p>";
       }
 
-      if (!uiCompact) {
+      if (!uiCompact || showRefinement) {
         html += formatIcdSectionHtml(data.icd || {});
+      }
+      if (showRefinement) {
+        html += renderIcdSuggestedActionsHtml(data.icd || {});
+        html += renderSearchRefinementActionsHtml();
       }
 
       if (!rawProtos.length && (stepped || doctorLite || citationsOnly)) {
@@ -15020,7 +15129,7 @@
             '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. <strong>Соответствие %</strong> — насколько протокол подходит к запросу (не вероятность диагноза). Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>';
         } else if (stepped && wiz.step === "protocols") {
           html +=
-            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол → нозология → раздел → цитаты. Матрица КЗ — чек-лист для консультативного заключения (кнопка на карточке или автоматически для top-1).</p>';
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол из списка ниже. Матрица КЗ и практический разбор — только после нажатия «Продолжить с этим протоколом» или «Матрица КЗ» на карточке.</p>';
           if (data.icd_fast_lookup) {
             html +=
               '<p class="assist-note" style="margin:0.35rem 0">Подбор по коду МКБ' +
@@ -15089,7 +15198,7 @@
       html +=
         '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
 
-      if (!uiCompact && j.differential && j.differential.length) {
+      if ((!uiCompact || showRefinement) && j.differential && j.differential.length) {
         html +=
           '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
         html +=
@@ -15206,6 +15315,7 @@
       bindProtoExploreButtons(data.query || "", icdForPractical);
       bindProtoPickButtons(data);
       bindProtocolNavHub(data);
+      bindSearchRefinementButtons();
       maybeAutoLoadPracticalForSearch(data);
       if (stepped) {
         if (wiz.step === "detail") {
