@@ -32,6 +32,18 @@ _HANDLING_MARKERS = (
     "колоноскоп", "анализ", "экг", "гастро",
 )
 
+_ACTION_SYNONYMS: dict[str, tuple[str, ...]] = {
+    "антикоагулянтная терапия": (
+        "антикоагул", "ривароксабан", "ривороксабан", "апиксабан", "варфарин",
+        "гепарин", "ксарелто", "эликвис", "прадакса",
+    ),
+    "контроль узи": ("узи", "ультразвук"),
+    "повторная консультация": ("повторн", "осмотр ", "контрольн", "через месяц", "через недел"),
+    "длительность": ("день", "дней", "недел", "месяц", "курс", "далее по", "раз в день", "раз в сутки"),
+    "контроль безопасности": ("контрол", "осмотр", "узи", "анализ", "кров"),
+    "повторная явка": ("повторн", "осмотр", "контрольн", "через месяц", "через недел"),
+}
+
 
 def _consult_blob(doc: ConsultationDocument) -> str:
     s = doc.sections
@@ -62,6 +74,10 @@ def _match_required_actions(actions_blob: str, required: list[str]) -> tuple[int
     for act in required:
         low = str(act).lower()
         if low in actions_blob:
+            hits += 1
+            continue
+        synonyms = _ACTION_SYNONYMS.get(low, ())
+        if synonyms and any(s in actions_blob for s in synonyms):
             hits += 1
             continue
         if any(tok in actions_blob for tok in low.split() if len(tok) > 4):

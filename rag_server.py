@@ -6037,7 +6037,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r117-venous-gastro-oncology-caps"
+BUILD_VERSION = "2026-06-01-r118-heuristic-facts-safety-follow"
 
 
 def _app_version() -> str:
@@ -7030,6 +7030,15 @@ def _consult_clinical_rules_pipeline(
         return None
 
     facts = extract_consult_facts_heuristic(full_text, demographics_meta=demographics_meta)
+    try:
+        from clinical_knowledge.consult_analysis import facts_from_document
+        from clinical_knowledge.consult_parser import parse_consultation
+
+        doc = parse_consultation(full_text, demographics_meta=demographics_meta)
+        if doc.extraction_quality.parsed_sections_count > 0 or doc.diagnoses:
+            facts = facts_from_document(doc)
+    except Exception:
+        pass
     cons = facts.setdefault("consultation", {})
     icd_merged = [str(c).upper() for c in (merged_icd or []) if c]
     cons["icd10"] = list(dict.fromkeys((cons.get("icd10") or []) + icd_merged))

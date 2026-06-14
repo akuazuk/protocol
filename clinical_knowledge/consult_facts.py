@@ -25,6 +25,32 @@ def _norm(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").lower()).strip()
 
 
+def _extract_diagnosis_block(raw: str) -> str:
+    """Многострочный блок диагноза до «Рекомендации» / «Лечение»."""
+    low = (raw or "").lower()
+    for marker in ("диагноз:", "диагноз\n", "клинический диагноз:", "заключительный диагноз:"):
+        idx = low.find(marker)
+        if idx < 0:
+            continue
+        rest = raw[idx + len(marker) :]
+        lines: list[str] = []
+        for line in rest.splitlines():
+            ls = line.strip()
+            if not ls:
+                if lines:
+                    break
+                continue
+            if re.match(r"^(рекомендац|лечени|заключени|врач:|_{3,})", ls, re.I):
+                break
+            lines.append(ls)
+        if lines:
+            return " ".join(lines)[:2000]
+    m = RE_DIAG_BLOCK.search(raw)
+    if m:
+        return m.group(1).strip()
+    return ""
+
+
 def extract_consult_facts_heuristic(
     text: str,
     *,
@@ -34,11 +60,8 @@ def extract_consult_facts_heuristic(
     raw = text or ""
     low = _norm(raw)
 
-    diagnosis_text = ""
-    m = RE_DIAG_BLOCK.search(raw)
-    if m:
-        diagnosis_text = m.group(1).strip()
-    elif "диагноз" in low:
+    diagnosis_text = _extract_diagnosis_block(raw)
+    if not diagnosis_text and "диагноз" in low:
         for line in raw.split("\n"):
             if "диагноз" in line.lower() and len(line.strip()) > 12:
                 diagnosis_text = line.strip()[:400]
@@ -89,6 +112,7 @@ def extract_consult_facts_heuristic(
             "icd10": icd,
             "conditions_hint": conditions_hint,
             "text_sample": raw[:2000],
+            "clinical_text": raw[:12000],
         },
         "extraction_method": "heuristic",
     }

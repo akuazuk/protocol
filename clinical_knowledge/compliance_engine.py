@@ -260,8 +260,25 @@ def _treatment_assessments(
     return out, treat_score
 
 
-def _follow_up_score(doc: ConsultationDocument, structural: StructuralAssessment) -> float | None:
+def _follow_up_planned(doc: ConsultationDocument) -> bool:
     if doc.follow_up or doc.sections.follow_up_text:
+        return True
+    blob = "\n".join(
+        x for x in [
+            doc.sections.general_recommendations or "",
+            doc.sections.recommendations_exams or "",
+            doc.sections.recommendations_treatment or "",
+        ] if x
+    ).lower()
+    markers = (
+        "контрольн", "повторн", "осмотр ", "через месяц", "через недел",
+        "контроль узи", "дата повтор", "явк",
+    )
+    return any(m in blob for m in markers)
+
+
+def _follow_up_score(doc: ConsultationDocument, structural: StructuralAssessment) -> float | None:
+    if _follow_up_planned(doc):
         return 90.0
     if "follow_up_scheduled" in structural.missing_conditional:
         return 40.0

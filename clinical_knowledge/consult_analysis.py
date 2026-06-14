@@ -45,6 +45,7 @@ def facts_from_document(doc: ConsultationDocument) -> dict[str, Any]:
             "icd10": icd,
             "conditions_hint": hints,
             "text_sample": (doc.raw_text or "")[:2000],
+            "clinical_text": (doc.raw_text or "")[:12000],
         },
         "extraction_method": "structured_parser",
     }

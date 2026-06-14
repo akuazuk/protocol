@@ -58,6 +58,7 @@ def _text_blob(consult_facts: dict[str, Any]) -> str:
     parts = [
         cons.get("diagnosis_text") or "",
         " ".join(cons.get("complaints") or []),
+        cons.get("clinical_text") or "",
         cons.get("text_sample") or "",
     ]
     return _norm(" ".join(parts))
@@ -138,7 +139,22 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
             if primary.startswith(("E55", "E56", "E58", "E59", "E61", "E63", "E64", "E65")):
                 return False
 
-    if condition_id == "functional_dyspepsia" and has_oncology_clinical_suspicion(consult_facts):
+    if condition_id in ("functional_dyspepsia", "gastritis", "gerd") and has_oncology_clinical_suspicion(consult_facts):
         return False
+
+    if condition_id == "neoplasm":
+        if not any(is_oncology_icd(c) for c in icd_list):
+            suspicion_only = any(
+                m in diag
+                for m in (
+                    "нельзя исключить",
+                    "картина опухол",
+                    "опухолевое образование",
+                    "подозрени",
+                )
+            )
+            established = any(m in diag for m in ("злокачествен", "carcinoma", "рак ", "стадия", "tnm"))
+            if suspicion_only and not established:
+                return False
 
     return None

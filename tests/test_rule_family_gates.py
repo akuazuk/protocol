@@ -85,3 +85,26 @@ def test_gastro_1_oncology_suspicion_caps_overall():
     comp = out.get("compliance") or {}
     overall = comp.get("overall_score")
     assert overall is not None and overall <= 75.0
+
+
+def test_gastro_heuristic_facts_multiline_diagnosis_oncology():
+    text = (FIXTURES / "gastro_1.txt").read_text(encoding="utf-8")
+    from clinical_knowledge.consult_facts import extract_consult_facts_heuristic
+    from clinical_knowledge.rule_family_gates import has_oncology_clinical_suspicion
+
+    facts = extract_consult_facts_heuristic(text)
+    assert "опухол" in (facts.get("consultation") or {}).get("diagnosis_text", "").lower()
+    assert has_oncology_clinical_suspicion(facts)
+    ids = _failed_rule_ids(text)
+    assert not any("8e7327d9" in r or "functional_dyspepsia" in r for r in ids)
+
+
+def test_f1_p_rich_safety_and_follow_scores():
+    from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+    text = (FIXTURES / "f1_p_rich.txt").read_text(encoding="utf-8")
+    out = analyze_consultation_text(text, consultation_id="f1_p_rich", with_markdown=False)
+    comp = out.get("compliance") or {}
+    bd = comp.get("score_breakdown") or {}
+    assert (bd.get("safety_score") or 0) >= 75.0
+    assert (bd.get("follow_up_score") or 0) >= 85.0

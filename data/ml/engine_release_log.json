@@ -129,8 +129,32 @@
           "note": "Cap при опухоли сигмы + K30"
         }
       ]
+    },
+    {
+      "version": "2026-06-01-r118",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Structured facts on Render + F_1_p safety/follow",
+      "summary": "Rules pipeline через parser; multiline diagnosis в heuristic; thrombosis DOAC handled; follow-up из рекомендаций.",
+      "fixes": [
+        "rag_server: facts_from_document для rule_checker",
+        "consult_facts: multiline diagnosis + clinical_text 12k",
+        "safety_checker: синонимы антикоагулянтов/контроля",
+        "compliance_engine: follow_up из general_recommendations",
+        "gate gastritis/gerd/dyspepsia при oncology suspicion"
+      ],
+      "metrics": [
+        {
+          "case_label": "F_1_p",
+          "before_safety_score": 55,
+          "after_safety_score": 80,
+          "before_follow_up_score": 55,
+          "after_follow_up_score": 90
+        }
+      ]
     }
   ],
+  "ml_experiments": [
     {
       "id": "embedder_exp_001",
       "date": "2026-05",
