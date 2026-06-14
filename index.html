@@ -11747,6 +11747,8 @@
         retrieval: data.retrieval || [],
         icd_codes: icd,
         retrieve_only: data.retrieve_only === true,
+        funnel_context: getSearchFunnelContextForFeedback(),
+        audience_inferred: data.audience_inferred || null,
       }),
     })
       .then(function (r) {
@@ -16961,9 +16963,18 @@
     opts = opts || {};
     if (opts.skipPopulationGate) return false;
     if (!isSearchSteppedMode()) return false;
-    if (queryHasPopulationHint(qRaw)) return false;
-    if (window.__funnelContext && window.__funnelContext.population) return false;
+    if (window.__funnelContext && window.__funnelContext.populationConfirmed) return false;
     return true;
+  }
+
+  function stripPopulationContextFromQuery(qRaw) {
+    return String(qRaw || "")
+      .split("\n")
+      .filter(function (line) {
+        return !/^Контекст подбора:/i.test(String(line || "").trim());
+      })
+      .join("\n")
+      .trim();
   }
 
   function clampWizardScore(n) {
@@ -17244,8 +17255,7 @@
     };
     var line = map[populationId] || "";
     if (!line) return qRaw;
-    var base = stripToClinicalOnly(qRaw || "");
-    if (base.indexOf(line) >= 0) return base;
+    var base = stripPopulationContextFromQuery(stripToClinicalOnly(qRaw || ""));
     return base ? base + "\n" + line : line;
   }
 
@@ -17255,7 +17265,12 @@
     showResultsSection(true);
     window.__searchWizard = { step: "population" };
     updateSearchWizardBar("population", "Шаг 1 · аудитория пациента");
-    var popScores = inferPopulationScores(qRaw);
+    var qInput = document.getElementById("q");
+    if (qInput) {
+      qInput.value = stripPopulationContextFromQuery(qInput.value || qRaw);
+    }
+    var clinicalQ = stripPopulationContextFromQuery(qRaw);
+    var popScores = inferPopulationScores(clinicalQ);
     var choices = [
       { id: "adult", label: "Взрослые (≥18 лет)", score: popScores.adult },
       { id: "pediatric", label: "Дети / подростки", score: popScores.pediatric },
@@ -17278,9 +17293,13 @@
         var pop = (sel[0] && sel[0].id) || "";
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.population = pop;
+        window.__funnelContext.populationConfirmed = true;
         var qInput = document.getElementById("q");
         if (qInput) {
-          qInput.value = appendPopulationContextToQuery(qInput.value || qRaw, pop);
+          qInput.value = appendPopulationContextToQuery(
+            stripPopulationContextFromQuery(qInput.value || clinicalQ),
+            pop
+          );
         }
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
           console.error(err);
@@ -17289,6 +17308,7 @@
       onSkip: function () {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.population = "skipped";
+        window.__funnelContext.populationConfirmed = true;
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
           console.error(err);
         });
@@ -21134,6 +21154,10 @@
         return;
       }
       qRaw = prep.query;
+      if (!opts.skipPopulationGate && queryOverride == null) {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.populationConfirmed = false;
+      }
       if (needsPopulationStep(qRaw, opts)) {
         renderSearchWizardPopulationStep(qRaw);
         resolve();

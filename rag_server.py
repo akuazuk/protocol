@@ -1511,11 +1511,12 @@ def infer_audience_from_query(q: str, routing: dict) -> str | None:
 
 def doc_audience_hint(path: str, title: str, routing: dict) -> str | None:
     """pediatric | adult | mixed | None - по названию файла/заголовка."""
-    s = f"{path} {title}".lower()
-    ped = routing.get("pediatric_title_markers") or []
-    adult_t = routing.get("adult_title_markers") or []
-    has_p = any(p in s for p in ped)
-    has_a = any(a in s for a in adult_t)
+    s = f"{path} {title}".lower().replace("_", " ").replace("-", " ")
+    s = re.sub(r"\s+", " ", s)
+    ped = [p.replace("_", " ").strip() for p in routing.get("pediatric_title_markers") or []]
+    adult_t = [a.replace("_", " ").strip() for a in routing.get("adult_title_markers") or []]
+    has_p = any(p in s for p in ped if p)
+    has_a = any(a in s for a in adult_t if a)
     if has_p and has_a:
         return "mixed"
     if has_p:
@@ -5265,22 +5266,43 @@ def _build_protocols_from_retrieval(
     return dedupe_protocols_list(protos, prefer_slugs=prefer_slugs)
 
 
-def _rerank_protocols_symptom_only(
+def _infer_funnel_audience(query: str, routing: dict | None = None) -> str | None:
+    routing = routing or _routing or {}
+    return infer_audience_from_funnel_context(query) or infer_audience_from_query(query, routing)
+
+
+def _demote_pediatric_for_adult_query(
     protos: list[dict],
     query: str,
-    icd_analysis: dict | None,
+    routing: dict | None = None,
 ) -> list[dict]:
-    """Понижает маловероятные КП при symptom-only (кашель/лихорадка без МКБ)."""
+    """Переносит явно детские КП в конец списка при запросе для взрослых."""
     if not protos:
         return protos
-    icd = icd_analysis or {}
-    explicit = bool(icd.get("explicit_icd_in_query"))
-    detected = icd.get("detected") or []
-    suggested = icd.get("suggested") or []
-    if explicit or detected or suggested:
+    routing = routing or _routing or {}
+    if _infer_funnel_audience(query, routing) != "adult":
         return protos
+    adult_first: list[dict] = []
+    pediatric: list[dict] = []
+    mixed: list[dict] = []
+    for pr in protos:
+        path = str(pr.get("path") or "")
+        title = str(pr.get("title") or path)
+        hint = doc_audience_hint(path, title, routing)
+        if hint == "pediatric":
+            pediatric.append(pr)
+        elif hint == "mixed":
+            mixed.append(pr)
+        else:
+            adult_first.append(pr)
+    if not adult_first and not mixed:
+        return protos
+    return adult_first + mixed + pediatric
+
+
+def _query_has_throat_or_uri_context(query: str, icd_analysis: dict | None) -> bool:
     ql = (query or "").lower()
-    if not any(
+    if any(
         w in ql
         for w in (
             "кашел",
@@ -5294,19 +5316,47 @@ def _rerank_protocols_symptom_only(
             "насморк",
             "ангин",
             "фаринг",
+            "дисфаг",
         )
     ):
+        return True
+    icd = icd_analysis or {}
+    codes: list[str] = []
+    for bucket in ("detected", "suggested"):
+        for row in icd.get(bucket) or []:
+            if isinstance(row, dict) and row.get("code"):
+                codes.append(str(row["code"]).upper())
+    for c in icd.get("codes_for_retrieval") or []:
+        codes.append(str(c).upper())
+    for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
+        codes.append(m.group(1).upper())
+    for code in codes:
+        if code.startswith(("R07", "J0", "J2", "J06")):
+            return True
+    return False
+
+
+def _rerank_protocols_symptom_only(
+    protos: list[dict],
+    query: str,
+    icd_analysis: dict | None,
+) -> list[dict]:
+    """Понижает маловероятные КП при жалобах/ОРИ и учитывает аудиторию воронки."""
+    if not protos:
         return protos
+    if not _query_has_throat_or_uri_context(query, icd_analysis):
+        return _demote_pediatric_for_adult_query(protos, query)
+    ql = (query or "").lower()
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
     acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
     uri = ("фаринг", "ангин", "тонзилл", "ларинг", "респираторн", "орз", "грипп", "фингит")
     has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
+    has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
+    throat_distress = any(w in ql for w in ("одыш", "дистресс", "синус", "сатурац", "загиб", "трипод"))
     routing = _routing or {}
-    aud_inferred = infer_audience_from_funnel_context(query) or infer_audience_from_query(
-        query, routing
-    )
-    child_query = aud_inferred == "child"
+    child_query = _infer_funnel_audience(query, routing) == "child"
+    adult_query = _infer_funnel_audience(query, routing) == "adult"
 
     def _score_row(pr: dict) -> tuple[int, float]:
         path = str(pr.get("path") or "").lower()
@@ -5317,6 +5367,10 @@ def _rerank_protocols_symptom_only(
             penalty += 2
         if has_fever and any(k in blob for k in chronic_mismatch):
             penalty += 3
+        if has_throat and not throat_distress and "эпиглоттит" in blob:
+            penalty += 4
+        if any(k in blob for k in ("анестезиолог", "хирургическ")) and has_throat:
+            penalty += 2
         boost = 0
         if "пневмон" in blob:
             boost += 2
@@ -5324,10 +5378,13 @@ def _rerank_protocols_symptom_only(
             boost += 2
         elif any(k in blob for k in acute):
             boost += 1
-        if not child_query:
-            hint = doc_audience_hint(path, title, routing)
-            if hint == "pediatric":
-                penalty += 2
+        hint = doc_audience_hint(path, title, routing)
+        if adult_query and hint == "pediatric":
+            penalty += 6
+        elif not child_query and hint == "pediatric":
+            penalty += 2
+        if child_query and hint == "adult":
+            penalty += 3
         try:
             conf = float(pr.get("confidence_score") or 0.0)
         except (TypeError, ValueError):
@@ -5335,7 +5392,7 @@ def _rerank_protocols_symptom_only(
         return (penalty - boost, -conf)
 
     ranked = sorted(protos, key=_score_row)
-    return ranked
+    return _demote_pediatric_for_adult_query(ranked, query, routing)
 
 
 def dedupe_parsed_protocols(
@@ -6444,7 +6501,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r141-funnel-multi-select-ratings"
+BUILD_VERSION = "2026-06-01-r142-adult-audience-population-first"
 
 
 def _app_version() -> str:
@@ -7806,6 +7863,8 @@ class MethodistSearchAiReviewIn(BaseModel):
     retrieval: list[dict[str, Any]] = Field(default_factory=list)
     icd_codes: list[str] | None = None
     retrieve_only: bool = False
+    funnel_context: dict[str, Any] | None = None
+    audience_inferred: str | None = None
 
 
 @app.post("/api/methodist/search-ai-review")
@@ -7828,6 +7887,8 @@ def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiRe
         "retrieval": body.retrieval or [],
         "icd_codes": icd_codes,
         "retrieve_only": bool(body.retrieve_only),
+        "funnel_context": body.funnel_context if isinstance(body.funnel_context, dict) else None,
+        "audience_inferred": (body.audience_inferred or "").strip() or None,
     }
     llm_json = payload["llm_json"]
     if isinstance(llm_json, dict) and body.retrieval and not llm_json.get("protocols"):

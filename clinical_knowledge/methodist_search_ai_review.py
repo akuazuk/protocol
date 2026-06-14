@@ -245,7 +245,47 @@ _SYMPTOM_COMMON_QUERY_WORDS = (
     "насморк",
     "орви",
     "простуд",
+    "горл",
+    "глот",
+    "дисфаг",
 )
+
+
+def _protocol_audience_hint(path: str, title: str) -> str | None:
+    try:
+        import rag_server as rs
+
+        return rs.doc_audience_hint(path, title, rs._routing or {})
+    except Exception:
+        blob = f"{path} {title}".lower()
+        if any(x in blob for x in ("дет нас", "детск", "детс", "pediatr")):
+            return "pediatric"
+        if any(x in blob for x in ("взросл", "взр нас", "взр.")):
+            return "adult"
+        return None
+
+
+def _query_audience_hint(query: str, funnel_context: dict | None = None) -> str | None:
+    try:
+        import rag_server as rs
+
+        aud = rs.infer_audience_from_funnel_context(query)
+        if aud:
+            return aud
+        fc = funnel_context or {}
+        pop = str(fc.get("population") or "").strip().lower()
+        if pop == "pediatric":
+            return "child"
+        if pop in ("adult", "pregnant", "emergency"):
+            return "adult"
+        return rs.infer_audience_from_query(query, rs._routing or {})
+    except Exception:
+        ql = (query or "").lower()
+        if "детское население" in ql or "контекст подбора: детское" in ql:
+            return "child"
+        if "взрослое население" in ql or "контекст подбора: взрослое" in ql:
+            return "adult"
+        return None
 
 
 def _query_has_icd_hint(query: str, icd_codes: list[str] | None) -> bool:
@@ -261,12 +301,16 @@ def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict
     protos = (assist_payload.get("llm_json") or {}).get("protocols") or []
     icd = assist_payload.get("icd_codes") or []
     retrieve_only = bool(assist_payload.get("retrieve_only"))
+    funnel_context = assist_payload.get("funnel_context") if isinstance(
+        assist_payload.get("funnel_context"), dict
+    ) else None
 
     has_icd = _query_has_icd_hint(query, icd if isinstance(icd, list) else [])
     symptom_only = not has_icd
 
     top1 = protos[0] if protos and isinstance(protos[0], dict) else {}
     top_path = str(top1.get("path") or "")
+    top_title = str(top1.get("title") or "")
     top_base = _basename(top_path).lower()
 
     tags: list[str] = []
@@ -275,6 +319,27 @@ def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict
     rating = 4
     top1_rel: bool | None = True
     retrieval_fix: dict[str, str] | None = None
+
+    query_aud = _query_audience_hint(query, funnel_context)
+    top_aud = _protocol_audience_hint(top_path, top_title) if top_path else None
+    if query_aud == "adult" and top_aud == "pediatric":
+        tags.append("wrong_population")
+        top1_rel = False
+        rating = min(rating, 2)
+        verdict = "wrong"
+        improvements.extend(
+            [
+                "При «взрослое население» в воронке отфильтровывать/опускать детские КП (дет нас, детск).",
+                "Усилить doc_audience_hint для «дет нас» без подчёркивания в названии PDF.",
+                "Проверить шаг 1 воронки: population=adult должен попадать в funnel_context feedback.",
+            ]
+        )
+        if top_path:
+            retrieval_fix = {
+                "rejected_path": top_path,
+                "chosen_path": "",
+                "note": "Top-1 детский КП при контексте взрослого пациента.",
+            }
 
     if symptom_only:
         tags.append("query_too_vague")
