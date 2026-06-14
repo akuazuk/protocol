@@ -81,6 +81,27 @@
           "note": "Нет acute_bronchitis FP; RAG paths для ОРВИ"
         }
       ]
+    },
+    {
+      "version": "2026-06-01-r116",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Batch triage + E55 thyroid gate",
+      "summary": "clients_consult batch 13/13; kard_1 без thyroid formula при E55 primary.",
+      "fixes": [
+        "thyroid_disease gate: E55/E58/E59 primary без E03-E06",
+        "review_batch_priority_cases.py + batch REPORT.md"
+      ],
+      "metrics": [
+        {
+          "case_label": "kard_1 E55.9",
+          "note": "Нет thyroid diagnosis_formula FP"
+        },
+        {
+          "case_label": "batch clients_consult",
+          "note": "13/13 L1; report_n_1/2 60-62% — P1.7 отложен"
+        }
+      ]
     }
   ],
   "ml_experiments": [

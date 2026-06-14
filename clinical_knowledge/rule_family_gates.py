@@ -44,7 +44,7 @@ def expand_specialty_slugs_for_icd(
             )
         if root.startswith("D25") or root.startswith(("N80", "N81", "N82", "N83", "N84", "N85", "N86", "N87", "N88", "N89", "N90", "N91", "N92", "N93", "N94", "N95", "N97")):
             out.add("akusherstvo-ginekologiya")
-        if root.startswith(("E03", "E04", "E05", "E06")):
+        if root.startswith(("E03", "E04", "E05", "E06", "E55", "E58", "E59")):
             out.add("endokrinologiya-narusheniya-obmena-veshchestv")
     return out
 
@@ -95,6 +95,13 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
         if icd_list and not any(c.startswith("L") for c in icd_list):
             blob = _text_blob(consult_facts)
             if not any(m in blob for m in ("дерматит", "экзем", "кож", "сып")):
+                return False
+
+    if condition_id == "thyroid_disease":
+        thyroid_icds = [c for c in icd_list if c.startswith(("E03", "E04", "E05", "E06"))]
+        if not thyroid_icds and icd_list:
+            primary = icd_list[0]
+            if primary.startswith(("E55", "E56", "E58", "E59", "E61", "E63", "E64", "E65")):
                 return False
 
     return None

@@ -58,3 +58,14 @@ def test_j06_expanded_slugs_find_urti_protocol():
         "specialty_slugs"
     )
     assert any("респиратор" in p.lower() or "орви" in p.lower() or "вирус" in p.lower() for p in paths)
+
+
+def test_kard_1_e55_no_thyroid_diagnosis_formula():
+    from clinical_knowledge.text_extract import extract_text_from_path
+
+    pdf = FIXTURES.parents[1] / "clients_consult" / "kard_1.pdf"
+    if not pdf.is_file():
+        return
+    text = extract_text_from_path(pdf)
+    ids = _failed_rule_ids(text)
+    assert not any("thyroid" in r or "2d00ba03" in r for r in ids)
