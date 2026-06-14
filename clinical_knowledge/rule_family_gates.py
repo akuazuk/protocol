@@ -40,6 +40,16 @@ def expand_specialty_slugs_for_icd(
                     "pulmonologiya-ftiziatriya",
                     "infektsionnye-zabolevaniya",
                     "terapiya",
+                    "otorinolaringologiya",
+                }
+            )
+        if root.startswith("R07") or c.startswith("R07"):
+            out.update(
+                {
+                    "otorinolaringologiya",
+                    "pulmonologiya-ftiziatriya",
+                    "infektsionnye-zabolevaniya",
+                    "terapiya",
                 }
             )
         if root.startswith("D25") or root.startswith(("N80", "N81", "N82", "N83", "N84", "N85", "N86", "N87", "N88", "N89", "N90", "N91", "N92", "N93", "N94", "N95", "N97")):

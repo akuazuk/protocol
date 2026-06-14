@@ -5349,10 +5349,12 @@ def _rerank_protocols_symptom_only(
     ql = (query or "").lower()
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
+    gi_mismatch = ("пищевод", "желудк", "двенадцатипер", "гастроэзофаг", "рефлюкс", "гэрб", "срыгив")
     acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
-    uri = ("фаринг", "ангин", "тонзилл", "ларинг", "респираторн", "орз", "грипп", "фингит")
+    uri = ("фаринг", "ангин", "тонзилл", "ларинг", "респираторн", "орз", "грипп", "фингит", "оторин", "лор", "уха горла носа")
     has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
     has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
+    has_gi = any(w in ql for w in ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул"))
     throat_distress = any(w in ql for w in ("одыш", "дистресс", "синус", "сатурац", "загиб", "трипод"))
     routing = _routing or {}
     child_query = _infer_funnel_audience(query, routing) == "child"
@@ -5366,11 +5368,15 @@ def _rerank_protocols_symptom_only(
         if any(k in blob for k in rare) and not any(k in ql for k in rare):
             penalty += 2
         if has_fever and any(k in blob for k in chronic_mismatch):
-            penalty += 3
+            penalty += 5
+        if has_throat and not has_gi and any(k in blob for k in gi_mismatch):
+            penalty += 8
         if has_throat and not throat_distress and "эпиглоттит" in blob:
             penalty += 4
-        if any(k in blob for k in ("анестезиолог", "хирургическ")) and has_throat:
-            penalty += 2
+        if any(k in blob for k in ("анестезиолог", "анестези", "хирургическ")) and has_throat:
+            penalty += 10
+        if has_throat and any(k in blob for k in ("аллерг", "ринит")):
+            penalty += 6
         boost = 0
         if "пневмон" in blob:
             boost += 2
@@ -5380,7 +5386,7 @@ def _rerank_protocols_symptom_only(
             boost += 1
         hint = doc_audience_hint(path, title, routing)
         if adult_query and hint == "pediatric":
-            penalty += 6
+            penalty += 12
         elif not child_query and hint == "pediatric":
             penalty += 2
         if child_query and hint == "adult":
@@ -6501,7 +6507,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r142-adult-audience-population-first"
+BUILD_VERSION = "2026-06-01-r143-icd-first-protocol-search"
 
 
 def _app_version() -> str:
@@ -6833,6 +6839,19 @@ def api_assist(body: AssistIn) -> dict:
         for s in (body.category_slugs or [])
         if isinstance(s, str) and s in ALLOWED_SPECIALTY_SLUGS
     ]
+    search_ctx: dict | None = None
+    path_allowlist: list[str] | None = None
+    if icd_codes_for_lex or q:
+        from clinical_knowledge.search_retrieval import build_protocol_search_context
+
+        search_ctx = build_protocol_search_context(
+            query=q,
+            icd_codes=icd_codes_for_lex,
+            category_slugs=user_slugs or None,
+        )
+        if search_ctx.get("expanded_icd_codes"):
+            icd_codes_for_lex = search_ctx["expanded_icd_codes"]
+        path_allowlist = search_ctx.get("path_allowlist")
     if user_slugs or icd_codes_for_lex:
         query_specialties: list[str] = []
     else:
@@ -6843,20 +6862,38 @@ def api_assist(body: AssistIn) -> dict:
         from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
 
         icd_path_boost = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=8) or None
+    if search_ctx and search_ctx.get("path_boost"):
+        icd_path_boost = list(
+            dict.fromkeys((icd_path_boost or []) + list(search_ctx["path_boost"]))
+        ) or None
 
-    def _assist_retrieve(rag_q: str, *, routing_q: str | None = None) -> list[dict]:
+    def _assist_retrieve(rag_q: str, *, routing_q: str | None = None, strict_paths: bool = True) -> list[dict]:
         aud_hint = infer_audience_from_funnel_context(q)
         if aud_hint is None:
             aud_hint = infer_audience_from_query(q, _routing)
-        return retrieve(
+        allow = path_allowlist if strict_paths else None
+        rows = retrieve(
             rag_q,
             routing_query=routing_q if routing_q is not None else q,
             category_boost=boost_merged or None,
             user_category_slugs=user_slugs or None,
             icd_codes_for_lex=icd_codes_for_lex,
             path_boost=icd_path_boost,
+            path_allowlist=allow,
             audience_hint=aud_hint,
         )
+        if not rows and allow:
+            rows = retrieve(
+                rag_q,
+                routing_query=routing_q if routing_q is not None else q,
+                category_boost=boost_merged or None,
+                user_category_slugs=user_slugs or None,
+                icd_codes_for_lex=icd_codes_for_lex,
+                path_boost=icd_path_boost,
+                path_allowlist=None,
+                audience_hint=aud_hint,
+            )
+        return rows
 
     retrieved = _assist_retrieve(q_rag)
     query_spelling_correction: dict | None = None
