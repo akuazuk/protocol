@@ -268,6 +268,19 @@ def _load_search_golden_snapshot() -> dict[str, Any] | None:
         return None
 
 
+def _load_search_probe_snapshot() -> dict[str, Any] | None:
+    p = Path(__file__).resolve().parents[1] / "data" / "ml" / "search_probe_snapshot.json"
+    if not p.is_file():
+        return None
+    try:
+        import json
+
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def _compute_search_domain_stats(
     events: list[dict[str, Any]],
     retrieval_fixes: list[dict[str, Any]],
@@ -389,6 +402,7 @@ def _compute_search_domain_stats(
             continue
 
     golden_snapshot = _load_search_golden_snapshot()
+    probe_snapshot = _load_search_probe_snapshot()
 
     return {
         "telemetry": telemetry,
@@ -415,6 +429,7 @@ def _compute_search_domain_stats(
             for step, cnt in sorted(funnel_step_counts.items())
         ],
         "golden_eval_snapshot": golden_snapshot,
+        "probe_eval_snapshot": probe_snapshot,
         "charts": {
             "labels_by_day": fixes_by_day,
             "tags": [{"tag": t, "label": TAG_LABELS.get(t, t), "count": c} for t, c in tag_counts.most_common(8)],

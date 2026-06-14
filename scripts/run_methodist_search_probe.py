@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_FIXTURE = ROOT / "tests" / "fixtures" / "search_methodist_probe.jsonl"
 DEFAULT_OUT = ROOT / "data" / "ml" / "reports" / "methodist_search_probe_latest.jsonl"
 DEFAULT_MD = ROOT / "data" / "ml" / "reports" / "methodist_search_probe_latest.md"
+DEFAULT_SNAPSHOT = ROOT / "data" / "ml" / "search_probe_snapshot.json"
 
 _POPULATION_LINE = {
     "adult": "Контекст подбора: взрослое население",
@@ -313,10 +314,41 @@ def main() -> int:
     md = _markdown(summary, args.fixture, BUILD_VERSION)
     args.md.write_text(md, encoding="utf-8")
 
+    dated = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    dated_jsonl = args.out.parent / f"methodist_search_probe_{dated}.jsonl"
+    dated_md = args.md.parent / f"methodist_search_probe_{dated}.md"
+    dated_jsonl.write_text(args.out.read_text(encoding="utf-8"), encoding="utf-8")
+    dated_md.write_text(md, encoding="utf-8")
+
+    snapshot = {
+        "kind": "methodist_search_probe",
+        "generated_at": summary["generated_at"],
+        "build_version": BUILD_VERSION,
+        "fixture": str(args.fixture.relative_to(ROOT)) if args.fixture.is_relative_to(ROOT) else str(args.fixture),
+        "n_total": summary["n_total"],
+        "n_ok": summary["n_ok"],
+        "n_error": summary["n_error"],
+        "avg_ai_rating": summary.get("avg_ai_rating"),
+        "expected_hit1_pct": summary.get("expected_hit1_pct"),
+        "expected_hit3_pct": summary.get("expected_hit3_pct"),
+        "verdict_counts": summary.get("verdict_counts"),
+        "tag_counts": summary.get("tag_counts"),
+        "group_counts": summary.get("group_counts"),
+        "reject_in_top1_count": summary.get("reject_in_top1_count"),
+        "top1_not_relevant_count": summary.get("top1_not_relevant_count"),
+        "worst_ids": [r.get("id") for r in (summary.get("worst") or [])[:5] if r.get("id")],
+        "report_jsonl": str(args.out.relative_to(ROOT)) if args.out.is_relative_to(ROOT) else str(args.out),
+        "report_md": str(args.md.relative_to(ROOT)) if args.md.is_relative_to(ROOT) else str(args.md),
+    }
+    DEFAULT_SNAPSHOT.parent.mkdir(parents=True, exist_ok=True)
+    DEFAULT_SNAPSHOT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     print()
     print(md)
     print(f"JSONL: {args.out}")
     print(f"Markdown: {args.md}")
+    print(f"Dated: {dated_jsonl}")
+    print(f"Snapshot: {DEFAULT_SNAPSHOT}")
     return 0 if not summary.get("n_error") else 1
 
 
