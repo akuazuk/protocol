@@ -2952,6 +2952,40 @@
       display: block !important;
     }
 
+    /* Methodist search: без маркетингового шапки и блока «Материалы проекта» */
+    body.methodist-mode #panel-main-search .site-header__top,
+    body.methodist-mode #panel-main-search .site-header__legal-note,
+    body.methodist-mode #panel-main-search .hero-intro,
+    body.methodist-mode #panel-main-search .search-quick-start,
+    body.methodist-mode #panel-main-search .search-stats-promo,
+    body.methodist-mode #panel-main-search #section-help,
+    body.methodist-mode #panel-main-search .search-panel__hint,
+    body.methodist-mode #panel-main-search .query-form-hint,
+    body.methodist-mode #panel-main-search .search-panel__badge,
+    body.methodist-mode #site-bottom-zone,
+    body.methodist-mode #section-footer p:first-of-type,
+    body.methodist-mode .site-footer-doc-links {
+      display: none !important;
+    }
+
+    body.methodist-mode #panel-main-search .site-header {
+      margin: 0 0 0.5rem;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    body.methodist-mode #panel-main-search .site-header__bottom {
+      margin: 0;
+      padding: 0;
+    }
+
+    body.methodist-mode #section-footer p:last-of-type {
+      margin: 0;
+      text-align: center;
+    }
+
     .search-methodist-grid--compact {
       grid-template-columns: 1fr 1fr;
     }
@@ -9085,7 +9119,6 @@
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-ml-dash-refresh">Обновить</button>
-            <a href="docs/methodist-ml-priority-plan.md" class="btn-ml-dash-refresh" target="_blank" rel="noopener">План (MD)</a>
           </div>
         </div>
         <div id="methodist-ml-dash-error" class="methodist-ml-error" hidden></div>
@@ -9279,8 +9312,6 @@
           <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener">Архитектура (HTML)</a>
           <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener">Архитектура (PDF)</a>
           <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener">Чек-лист перед подписью</a>
-          <a href="docs/roadmap-mis.md" target="_blank" rel="noopener">Этап 2: МИС</a>
-          <a href="docs/deployment-belarus.md" target="_blank" rel="noopener">Развёртывание в РБ</a>
         </p>
       </div>
     </section>
@@ -9291,13 +9322,16 @@
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
         Не замена очной консультации.
       </p>
-      <p style="margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); opacity: 0.85">
-        <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener noreferrer">Архитектура Protocol (PDF)</a>
-        ·
-        <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener noreferrer">HTML</a>
-        ·
-        <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener noreferrer">Чек-лист перед подписью</a>
-        · Версия: <span id="build-version-badge">…</span>
+      <p class="site-footer-meta" style="margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); opacity: 0.85">
+        <span class="site-footer-doc-links">
+          <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener noreferrer">Архитектура Protocol (PDF)</a>
+          ·
+          <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener noreferrer">HTML</a>
+          ·
+          <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener noreferrer">Чек-лист перед подписью</a>
+          ·
+        </span>
+        <span class="site-footer-version">Версия: <span id="build-version-badge">…</span></span>
       </p>
     </footer>
   </div>
