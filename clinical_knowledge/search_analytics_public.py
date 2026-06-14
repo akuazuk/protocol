@@ -1,4 +1,4 @@
-"""Публичная аналитика поиска протоколов для вкладки «Поиск» (без ПДн)."""
+"""Публичная аналитика: поиск протоколов + обезличенные метрики КЗ (без ПДн)."""
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -25,22 +25,53 @@ def build_public_search_analytics(
     version: str | None = None,
     rag_ready: bool | None = None,
 ) -> dict[str, Any]:
+    from clinical_knowledge.pilot_analytics_public import build_public_pilot_analytics
     from clinical_knowledge.search_telemetry import aggregate_protocol_search, iter_protocol_search_events
 
     corpus = corpus or {}
     quality = quality or {}
     events = iter_protocol_search_events()
     telemetry = aggregate_protocol_search(events)
-    has_live = telemetry["total_searches"] > 0
+    has_search_live = telemetry["total_searches"] > 0
 
-    categories = (corpus.get("categories_top") or [])[:10]
+    pilot = build_public_pilot_analytics(corpus=corpus, version=version, rag_ready=rag_ready)
+    pilot_charts = pilot.get("charts") or {}
+    has_kz_live = bool(pilot.get("live"))
+
+    categories = (corpus.get("categories_top") or [])[:12]
     passed = int(quality.get("queries_passed") or 0)
     total_q = int(quality.get("queries_total") or 0)
     failed = max(0, total_q - passed) if total_q else 0
 
+    verdict = pilot.get("verdict_breakdown") or {}
+    verdict_chart = [
+        {"label": k or "?", "count": int(v)}
+        for k, v in verdict.items()
+        if v and int(v) > 0
+    ]
+
+    events_by_type = pilot_charts.get("events_by_type") or []
+    # Переименуем для UI
+    event_labels = {
+        "protocol_search": "поиск протокола",
+        "kz_analysis": "прогон КЗ",
+        "analysis_review": "оценка методиста",
+        "retrieval_fix": "retrieval_fix",
+        "methodist_override": "override правила",
+    }
+    events_chart = [
+        {
+            "type": row.get("type") or "",
+            "label": event_labels.get(str(row.get("type") or ""), str(row.get("type") or "")),
+            "count": int(row.get("count") or 0),
+        }
+        for row in events_by_type
+        if int(row.get("count") or 0) > 0
+    ]
+
     return {
         "generated_at": _utc_now(),
-        "live": has_live,
+        "live": has_search_live or has_kz_live,
         "version": version,
         "rag_ready": rag_ready,
         "corpus": {
@@ -58,9 +89,21 @@ def build_public_search_analytics(
             "title": quality.get("title"),
         },
         "telemetry": telemetry,
+        "kz": {
+            "kz_runs_total": pilot.get("kz_runs_total"),
+            "unique_kz": pilot.get("unique_kz"),
+            "reviews_total": pilot.get("reviews_total"),
+            "avg_compliance_pct": pilot.get("avg_compliance_pct"),
+            "risk_zone_rate_pct": pilot.get("risk_zone_rate_pct"),
+            "protocol_hit_at_3_pct": pilot.get("protocol_hit_at_3_pct"),
+            "readiness_overall_pct": pilot.get("readiness_overall_pct"),
+            "retrieval_fix_count": pilot.get("retrieval_fix_count"),
+            "priority_cases": pilot.get("priority_cases"),
+            "engine_releases_count": pilot.get("engine_releases_count"),
+        },
         "charts": {
             "categories_top": categories,
-            "activity_by_day": telemetry.get("activity_by_day") or [],
+            "search_activity_by_day": telemetry.get("activity_by_day") or [],
             "benchmark_pass_fail": [
                 {"label": "эталон OK", "count": passed},
                 {"label": "не прошли", "count": failed},
@@ -68,11 +111,20 @@ def build_public_search_analytics(
             if total_q
             else [],
             "confidence_buckets": telemetry.get("confidence_buckets") or [],
+            "kz_compliance_buckets": pilot_charts.get("compliance_buckets") or [],
+            "rating_histogram": pilot_charts.get("rating_histogram") or [],
+            "rubric_kz_runs": pilot_charts.get("rubric_kz_runs") or [],
+            "kz_activity_by_day": pilot_charts.get("activity_by_day") or [],
+            "tags_top": pilot_charts.get("tags_top") or [],
+            "readiness_items": pilot_charts.get("readiness_items") or [],
+            "events_by_type": events_chart,
+            "verdict_breakdown": verdict_chart,
         },
         "tips_ru": SEARCH_USAGE_TIPS_RU,
         "note_ru": (
-            "Статистика поиска обновляется при каждом запросе; тексты запросов не сохраняются."
-            if has_live
-            else "После первых поисков здесь появятся обезличенные метрики использования."
+            "Данные обновляются при каждом запросе; тексты запросов и КЗ не показываются."
+            if (has_search_live or has_kz_live)
+            else "После первых поисков и прогонов КЗ здесь появятся обезличенные метрики."
         ),
+        "period_label": pilot.get("period_label"),
     }

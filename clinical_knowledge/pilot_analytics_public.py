@@ -146,6 +146,7 @@ def build_public_pilot_analytics(
             "tags_top": (charts.get("tags_top") or [])[:6],
         },
         "engine_releases_count": len(stats.get("engine_releases") or []),
+        "verdict_breakdown": stats.get("verdict_breakdown") or {},
         "note_ru": (
             "Данные обновляются при каждом запросе; персональные данные и тексты КЗ не показываются."
             if has_real

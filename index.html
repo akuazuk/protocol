@@ -7087,109 +7087,248 @@
       line-height: 1.45;
     }
 
-    .search-dashboard {
-      margin: 0 0 1rem;
-      border-radius: 16px;
-      border: 1px solid rgba(26, 138, 114, 0.28);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(232, 245, 241, 0.35) 100%);
-      padding: 0.75rem 0.9rem 0.85rem;
-      box-shadow: 0 6px 22px rgba(6, 61, 53, 0.06);
+    .search-stats-promo {
+      margin: 0 0 0.85rem;
+      text-align: center;
     }
 
-    .search-dashboard__head {
+    .btn-go-analytics-tab {
+      font-size: 0.84rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(26, 138, 114, 0.12) 0%, rgba(255, 255, 255, 0.95) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      font-weight: 650;
+      color: var(--green-900);
+      cursor: pointer;
+    }
+
+    .btn-go-analytics-tab:hover {
+      background: rgba(232, 245, 241, 0.9);
+    }
+
+    .analytics-tab-page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.5rem 0 2rem;
+    }
+
+    .analytics-hero {
+      border-radius: 20px;
+      padding: 1.1rem 1.25rem 1rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #0d5c4a 0%, #1a8a72 42%, #2ec4a0 100%);
+      color: #fff;
+      box-shadow: 0 12px 40px rgba(6, 61, 53, 0.22);
+    }
+
+    .analytics-hero__eyebrow {
+      margin: 0 0 0.35rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.88;
+    }
+
+    .analytics-hero h2 {
+      margin: 0 0 0.35rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .analytics-hero__lead {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      opacity: 0.92;
+      max-width: 52rem;
+    }
+
+    .analytics-toolbar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.45rem 0.75rem;
-      margin-bottom: 0.55rem;
+      gap: 0.5rem 0.75rem;
+      margin: 0.85rem 0 1rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(26, 138, 114, 0.2);
     }
 
-    .search-dashboard__head h3 {
-      margin: 0;
+    .analytics-toolbar__updated {
       flex: 1 1 auto;
-      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 0.95rem;
-      color: var(--green-950);
-    }
-
-    .search-dashboard__updated {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--muted);
     }
 
-    .search-dashboard__head button {
-      font-size: 0.78rem;
-      padding: 0.3rem 0.55rem;
-      border-radius: 8px;
-      border: 1px solid rgba(26, 138, 114, 0.35);
-      background: #fff;
-      cursor: pointer;
+    .analytics-toolbar__live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 650;
       color: var(--green-800);
-      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(232, 245, 241, 0.85);
     }
 
-    .search-dashboard-layout {
+    .analytics-toolbar__live::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+    }
+
+    .analytics-toolbar button {
+      font-size: 0.8rem;
+      padding: 0.38rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.4);
+      background: var(--green-800);
+      color: #fff;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .analytics-toolbar button:hover {
+      background: var(--green-900);
+    }
+
+    .analytics-kpi-grid {
       display: grid;
-      grid-template-columns: minmax(12rem, 1fr) minmax(0, 2fr);
-      gap: 0.75rem 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+      gap: 0.55rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .analytics-kpi {
+      border-radius: 14px;
+      padding: 0.55rem 0.65rem;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.15);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
+    }
+
+    .analytics-kpi strong {
+      display: block;
+      font-size: 1.25rem;
+      line-height: 1.15;
+      color: var(--green-900);
+    }
+
+    .analytics-kpi span {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .analytics-kpi--accent {
+      background: linear-gradient(145deg, rgba(232, 245, 241, 0.9) 0%, #fff 100%);
+      border-color: rgba(26, 138, 114, 0.28);
+    }
+
+    .analytics-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .analytics-section__title {
+      margin: 0 0 0.65rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 1rem;
+      color: var(--green-950);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .analytics-section__title::before {
+      content: "";
+      width: 4px;
+      height: 1.1em;
+      border-radius: 4px;
+      background: var(--green-700);
+    }
+
+    .analytics-layout {
+      display: grid;
+      grid-template-columns: minmax(13rem, 1fr) minmax(0, 2.4fr);
+      gap: 0.85rem 1rem;
       align-items: start;
     }
 
-    @media (max-width: 820px) {
-      .search-dashboard-layout {
+    @media (max-width: 900px) {
+      .analytics-layout {
         grid-template-columns: 1fr;
       }
     }
 
-    .search-dashboard-tips {
+    .analytics-tips {
       margin: 0;
-      padding: 0.55rem 0.65rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px dashed rgba(26, 138, 114, 0.3);
+      padding: 0.65rem 0.75rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px dashed rgba(26, 138, 114, 0.32);
       font-size: 0.78rem;
       line-height: 1.45;
     }
 
-    .search-dashboard-tips h4 {
-      margin: 0 0 0.35rem;
+    .analytics-tips h4 {
+      margin: 0 0 0.4rem;
       font-size: 0.82rem;
       color: var(--green-900);
     }
 
-    .search-dashboard-tips ul {
+    .analytics-tips ul {
       margin: 0;
-      padding-left: 1.1rem;
+      padding-left: 1.05rem;
     }
 
-    .search-dashboard-tips li + li {
-      margin-top: 0.25rem;
-    }
-
-    .search-dashboard-charts {
+    .analytics-charts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
-      gap: 0.55rem;
+      grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+      gap: 0.65rem;
     }
 
-    .search-chart-card {
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(26, 138, 114, 0.15);
-      padding: 0.45rem 0.5rem 0.55rem;
-      min-height: 9rem;
+    .analytics-chart-card {
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+      padding: 0.55rem 0.6rem 0.65rem;
+      min-height: 10.5rem;
+      box-shadow: 0 4px 16px rgba(6, 61, 53, 0.04);
     }
 
-    .search-chart-card h4 {
-      margin: 0 0 0.25rem;
-      font-size: 0.72rem;
-      font-weight: 650;
+    .analytics-chart-card h4 {
+      margin: 0 0 0.3rem;
+      font-size: 0.74rem;
+      font-weight: 700;
       color: var(--green-900);
     }
 
-    .search-chart-card canvas {
+    .analytics-chart-card canvas {
       width: 100% !important;
-      height: 7.5rem !important;
+      height: 8.5rem !important;
+    }
+
+    .analytics-chart-card--wide {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 720px) {
+      .analytics-chart-card--wide {
+        grid-column: span 1;
+      }
+    }
+
+    .analytics-note {
+      margin: 0.75rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
     .search-session-stat {
@@ -7644,6 +7783,19 @@
           <span class="app-main-tab-sub">запрос, МКБ-10 и рубрики каталога</span>
         </span>
       </button>
+      <button type="button" role="tab" id="tab-analytics-stats" aria-selected="false" aria-controls="panel-analytics-stats">
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title">Статистика поиска</span>
+          <span class="app-main-tab-sub">корпус, качество подбора и метрики КЗ</span>
+        </span>
+      </button>
     </div>
 
     <div class="demo-cases-bar" id="demo-cases-bar" hidden>
@@ -7723,40 +7875,11 @@
 
       <div class="search-icd-detect" id="search-icd-detect" hidden></div>
 
-      <section class="search-dashboard" id="search-dashboard" aria-labelledby="search-dashboard-title">
-        <div class="search-dashboard__head">
-          <h3 id="search-dashboard-title">Статистика и качество поиска протоколов</h3>
-          <span class="search-dashboard__updated" id="search-dashboard-updated">Загрузка…</span>
-          <button type="button" id="search-dashboard-refresh">Обновить</button>
-        </div>
-        <div id="search-dashboard-kpis" class="pilot-stat-grid"></div>
-        <div class="search-dashboard-layout">
-          <div class="search-dashboard-tips" id="search-dashboard-tips-wrap">
-            <h4>Как пользоваться поиском</h4>
-            <ul id="search-dashboard-tips"></ul>
-            <p class="search-session-stat" id="search-session-stat"></p>
-          </div>
-          <div class="search-dashboard-charts" id="search-dashboard-charts">
-            <div class="search-chart-card">
-              <h4>Протоколы по рубрикам</h4>
-              <canvas id="search-chart-rubrics" aria-label="Распределение по рубрикам"></canvas>
-            </div>
-            <div class="search-chart-card">
-              <h4>Поиски по дням</h4>
-              <canvas id="search-chart-activity" aria-label="Активность поиска"></canvas>
-            </div>
-            <div class="search-chart-card">
-              <h4>Эталон eval</h4>
-              <canvas id="search-chart-benchmark" aria-label="Эталонные запросы"></canvas>
-            </div>
-            <div class="search-chart-card">
-              <h4>Top score выдачи</h4>
-              <canvas id="search-chart-confidence" aria-label="Распределение confidence"></canvas>
-            </div>
-          </div>
-        </div>
-        <p class="info-panel-note" id="search-dashboard-note" style="margin:0.45rem 0 0"></p>
-      </section>
+      <p class="search-stats-promo">
+        <button type="button" class="btn-go-analytics-tab" id="btn-go-analytics-tab">
+          Статистика и качество поиска →
+        </button>
+      </p>
 
       <div id="section-filters" class="section-anchor section-block--filters">
         <details class="ctx-panel" id="ctx-panel">
@@ -7977,6 +8100,97 @@
       </section>
     </div>
     <!-- /#panel-main-search -->
+
+    <div id="panel-analytics-stats" role="tabpanel" aria-labelledby="tab-analytics-stats" hidden>
+      <div class="analytics-tab-page">
+        <header class="analytics-hero">
+          <p class="analytics-hero__eyebrow">Live · обезличенные агрегаты</p>
+          <h2 id="analytics-tab-title">Статистика и качество поиска протоколов</h2>
+          <p class="analytics-hero__lead">
+            Корпус Минздрава РБ, эталонные запросы eval, телеметрия поиска и сводные метрики проверок КЗ без персональных данных.
+          </p>
+        </header>
+
+        <div class="analytics-toolbar">
+          <span class="analytics-toolbar__live" id="analytics-live-badge" hidden>online</span>
+          <span class="analytics-toolbar__updated" id="analytics-tab-updated">Загрузка…</span>
+          <button type="button" id="analytics-tab-refresh">Обновить данные</button>
+        </div>
+
+        <div id="analytics-kpi-search" class="analytics-kpi-grid"></div>
+
+        <section class="analytics-section" aria-labelledby="analytics-search-section-title">
+          <h3 class="analytics-section__title" id="analytics-search-section-title">Поиск протоколов</h3>
+          <div class="analytics-layout">
+            <div class="analytics-tips">
+              <h4>Как пользоваться поиском</h4>
+              <ul id="analytics-tips-list"></ul>
+              <p class="search-session-stat" id="search-session-stat"></p>
+            </div>
+            <div class="analytics-charts-grid">
+              <div class="analytics-chart-card analytics-chart-card--wide">
+                <h4>Протоколы по рубрикам каталога</h4>
+                <canvas id="chart-an-rubrics" aria-label="Рубрики"></canvas>
+              </div>
+              <div class="analytics-chart-card">
+                <h4>Поиски по дням</h4>
+                <canvas id="chart-an-search-activity" aria-label="Поиски"></canvas>
+              </div>
+              <div class="analytics-chart-card">
+                <h4>Эталон eval (pass/fail)</h4>
+                <canvas id="chart-an-benchmark" aria-label="Эталон"></canvas>
+              </div>
+              <div class="analytics-chart-card">
+                <h4>Top score выдачи</h4>
+                <canvas id="chart-an-confidence" aria-label="Confidence"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section" aria-labelledby="analytics-kz-section-title">
+          <h3 class="analytics-section__title" id="analytics-kz-section-title">Проверки КЗ (обезличенно)</h3>
+          <div id="analytics-kpi-kz" class="analytics-kpi-grid"></div>
+          <div class="analytics-charts-grid">
+            <div class="analytics-chart-card">
+              <h4>КЗ по зонам %</h4>
+              <canvas id="chart-an-kz-compliance" aria-label="Compliance"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Оценки методиста</h4>
+              <canvas id="chart-an-ratings" aria-label="Ratings"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Прогоны КЗ по рубрикам</h4>
+              <canvas id="chart-an-kz-rubrics" aria-label="KZ rubrics"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Активность (все события)</h4>
+              <canvas id="chart-an-kz-activity" aria-label="Activity"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Типы событий</h4>
+              <canvas id="chart-an-events-type" aria-label="Events"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Теги методиста</h4>
+              <canvas id="chart-an-tags" aria-label="Tags"></canvas>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Вердикты оценок</h4>
+              <canvas id="chart-an-verdicts" aria-label="Verdicts"></canvas>
+            </div>
+            <div class="analytics-chart-card analytics-chart-card--wide">
+              <h4>Готовность данных для ML</h4>
+              <canvas id="chart-an-readiness" aria-label="ML readiness"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <p class="analytics-note" id="analytics-tab-note"></p>
+      </div>
+    </div>
+    <!-- /#panel-analytics-stats -->
 
     <div
       id="panel-consult-review"
@@ -8641,7 +8855,7 @@
     <section class="site-bottom-zone" id="site-bottom-zone" aria-labelledby="site-bottom-title">
       <h2 id="site-bottom-title" class="site-bottom-zone__title">Материалы проекта</h2>
       <p class="site-bottom-zone__lead">
-        Презентация, архитектура и учебные кейсы. Статистика поиска — на вкладке «Поиск протоколов» выше.
+        Презентация, архитектура и учебные кейсы. Статистика — вкладка «Статистика поиска».
       </p>
 
       <details class="training-panel" id="training-panel">
@@ -11980,7 +12194,9 @@
     if (!out) return;
     showResultsSection(true);
     bumpSearchSessionStat();
-    loadSearchDashboard();
+    if (document.getElementById("panel-analytics-stats") && !document.getElementById("panel-analytics-stats").hidden) {
+      loadAnalyticsTab();
+    }
     lastAssistFullQuery = data.query || "";
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
@@ -12497,6 +12713,7 @@
   /** Вкладка «Поиск» / «Проверка PDF» + клиент проверки консультаций (данные сохраняются при переключении). */
   var MAIN_TAB_SEARCH = "search";
   var MAIN_TAB_CONSULT = "consult";
+  var MAIN_TAB_ANALYTICS = "analytics";
   var MAIN_TAB_ML_STATS = "ml-stats";
   var MAIN_TAB_QUEUE = "queue";
   var METHODIST_RETRIEVAL_PROTOCOL_TAGS = ["wrong_protocol", "missed_protocol"];
@@ -14771,18 +14988,25 @@
     return hasAny ? html : "";
   }
 
-  var __searchDashboardCharts = {};
-  var __searchDashboardPollId = null;
+  var __analyticsCharts = {};
+  var __analyticsPollId = null;
   var SEARCH_SESSION_COUNT_KEY = "protocol_search_session_count";
 
-  function destroySearchDashboardChart(key) {
-    if (__searchDashboardCharts[key]) {
-      __searchDashboardCharts[key].destroy();
-      delete __searchDashboardCharts[key];
+  var VERDICT_LABELS_RU = {
+    correct: "верно",
+    mostly_correct: "в основном верно",
+    partially_wrong: "частично неверно",
+    wrong: "неверно",
+  };
+
+  function destroyAnalyticsChart(key) {
+    if (__analyticsCharts[key]) {
+      __analyticsCharts[key].destroy();
+      delete __analyticsCharts[key];
     }
   }
 
-  function formatDashboardUpdatedAt(iso) {
+  function formatAnalyticsUpdatedAt(iso) {
     if (!iso) return "—";
     try {
       var d = new Date(iso);
@@ -14792,19 +15016,22 @@
         month: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
+        second: "2-digit",
       });
     } catch (e) {
       return iso;
     }
   }
 
-  function dashboardStatCell(value, label) {
+  function analyticsKpiCell(value, label, accent) {
     return (
-      '<div class="pilot-stat"><strong>' +
+      '<div class="analytics-kpi' +
+      (accent ? " analytics-kpi--accent" : "") +
+      '"><strong>' +
       escapeHtml(String(value)) +
-      "</strong> " +
+      "</strong><span>" +
       escapeHtml(label) +
-      "</div>"
+      "</span></div>"
     );
   }
 
@@ -14828,198 +15055,321 @@
     }
   }
 
-  function renderSearchDashboardKpis(d) {
-    var kpis = document.getElementById("search-dashboard-kpis");
-    if (!kpis) return;
+  function renderAnalyticsSearchKpis(d) {
+    var el = document.getElementById("analytics-kpi-search");
+    if (!el) return;
     var corpus = d.corpus || {};
     var qb = d.quality_benchmark || {};
     var tel = d.telemetry || {};
     var passPct = qb.pass_rate_pct != null ? qb.pass_rate_pct + "%" : "—";
-    kpis.innerHTML =
-      dashboardStatCell(corpus.protocols_in_index || "—", "PDF в каталоге") +
-      dashboardStatCell(corpus.rubrics_in_index || 24, "рубрик МЗ") +
-      dashboardStatCell(corpus.chunks_loaded || "—", "фрагментов RAG") +
-      dashboardStatCell(passPct, "эталон eval") +
-      dashboardStatCell(tel.total_searches || 0, "поисков (все)") +
-      dashboardStatCell(tel.unique_queries || 0, "уник. запросов") +
-      dashboardStatCell(
-        tel.with_icd_pct != null ? tel.with_icd_pct + "%" : "—",
-        "с кодом МКБ"
-      ) +
-      dashboardStatCell(
+    el.innerHTML =
+      analyticsKpiCell(corpus.protocols_in_index || "—", "PDF в каталоге", true) +
+      analyticsKpiCell(corpus.rubrics_in_index || 24, "рубрик МЗ") +
+      analyticsKpiCell(corpus.chunks_loaded || "—", "фрагментов RAG") +
+      analyticsKpiCell(passPct, "эталон eval", true) +
+      analyticsKpiCell(tel.total_searches || 0, "поисков") +
+      analyticsKpiCell(tel.unique_queries || 0, "уник. запросов") +
+      analyticsKpiCell(tel.with_icd_pct != null ? tel.with_icd_pct + "%" : "—", "с кодом МКБ") +
+      analyticsKpiCell(
         tel.avg_top_confidence_pct != null ? tel.avg_top_confidence_pct + "%" : "—",
         "ср. top score"
       );
   }
 
-  function renderSearchDashboardTips(d) {
-    var ul = document.getElementById("search-dashboard-tips");
-    if (!ul) return;
-    var tips = d.tips_ru || [];
-    ul.innerHTML = "";
-    var ti;
-    for (ti = 0; ti < tips.length; ti++) {
-      var li = document.createElement("li");
-      li.textContent = tips[ti];
-      ul.appendChild(li);
-    }
+  function renderAnalyticsKzKpis(d) {
+    var el = document.getElementById("analytics-kpi-kz");
+    if (!el) return;
+    var kz = d.kz || {};
+    el.innerHTML =
+      analyticsKpiCell(kz.kz_runs_total || 0, "прогонов КЗ", true) +
+      analyticsKpiCell(kz.unique_kz || 0, "уник. КЗ") +
+      analyticsKpiCell(kz.reviews_total || 0, "оценок методиста") +
+      analyticsKpiCell(kz.avg_compliance_pct != null ? kz.avg_compliance_pct + "%" : "—", "ср. % соответствия", true) +
+      analyticsKpiCell(kz.risk_zone_rate_pct != null ? kz.risk_zone_rate_pct + "%" : "—", "зона риска <70%") +
+      analyticsKpiCell(kz.protocol_hit_at_3_pct != null ? kz.protocol_hit_at_3_pct + "%" : "—", "hit@3 протокол") +
+      analyticsKpiCell(kz.retrieval_fix_count || 0, "retrieval_fix") +
+      analyticsKpiCell(kz.priority_cases || 0, "приоритетных кейсов");
   }
 
-  function renderSearchDashboardCharts(d) {
+  function renderAnalyticsTips(d) {
+    var ul = document.getElementById("analytics-tips-list");
+    if (!ul) return;
+    ul.innerHTML = "";
+    (d.tips_ru || []).forEach(function (tip) {
+      var li = document.createElement("li");
+      li.textContent = tip;
+      ul.appendChild(li);
+    });
+  }
+
+  function renderAnalyticsCharts(d) {
     if (typeof Chart === "undefined") return;
     var charts = (d && d.charts) || {};
+    var chartOpts = { maintainAspectRatio: false, plugins: { legend: { display: false } } };
 
-    destroySearchDashboardChart("rubrics");
+    destroyAnalyticsChart("rubrics");
     var cats = charts.categories_top || [];
-    var rubCanvas = document.getElementById("search-chart-rubrics");
+    var rubCanvas = document.getElementById("chart-an-rubrics");
     if (rubCanvas && cats.length) {
-      __searchDashboardCharts.rubrics = new Chart(rubCanvas, {
+      __analyticsCharts.rubrics = new Chart(rubCanvas, {
         type: "bar",
         data: {
           labels: cats.map(function (c) {
             var lb = c.label || c.slug || "";
-            return lb.length > 18 ? lb.slice(0, 16) + "…" : lb;
+            return lb.length > 22 ? lb.slice(0, 20) + "…" : lb;
           }),
-          datasets: [
-            {
-              data: cats.map(function (c) {
-                return c.count;
-              }),
-              backgroundColor: "#1a8a72",
-            },
-          ],
+          datasets: [{ data: cats.map(function (c) { return c.count; }), backgroundColor: "#1a8a72" }],
         },
-        options: {
-          indexAxis: "y",
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-        },
+        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
       });
     }
 
-    destroySearchDashboardChart("activity");
-    var act = charts.activity_by_day || [];
-    var actCanvas = document.getElementById("search-chart-activity");
-    if (actCanvas && act.length) {
-      __searchDashboardCharts.activity = new Chart(actCanvas, {
+    destroyAnalyticsChart("searchAct");
+    var sAct = charts.search_activity_by_day || [];
+    var sActEl = document.getElementById("chart-an-search-activity");
+    if (sActEl && sAct.length) {
+      __analyticsCharts.searchAct = new Chart(sActEl, {
         type: "line",
         data: {
-          labels: act.map(function (a) {
-            return a.date;
-          }),
-          datasets: [
-            {
-              label: "Поиски",
-              data: act.map(function (a) {
-                return a.count;
-              }),
-              borderColor: "#0d5c4a",
-              backgroundColor: "rgba(26, 138, 114, 0.15)",
-              fill: true,
-              tension: 0.3,
-            },
-          ],
+          labels: sAct.map(function (a) { return a.date; }),
+          datasets: [{
+            label: "Поиски",
+            data: sAct.map(function (a) { return a.count; }),
+            borderColor: "#0d5c4a",
+            backgroundColor: "rgba(26, 138, 114, 0.15)",
+            fill: true,
+            tension: 0.3,
+          }],
         },
-        options: { maintainAspectRatio: false, plugins: { legend: { display: false } } },
+        options: chartOpts,
       });
     }
 
-    destroySearchDashboardChart("benchmark");
+    destroyAnalyticsChart("benchmark");
     var bench = charts.benchmark_pass_fail || [];
-    var benchCanvas = document.getElementById("search-chart-benchmark");
-    if (benchCanvas && bench.length && bench.some(function (b) {
-      return b.count > 0;
-    })) {
-      __searchDashboardCharts.benchmark = new Chart(benchCanvas, {
+    var benchEl = document.getElementById("chart-an-benchmark");
+    if (benchEl && bench.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.benchmark = new Chart(benchEl, {
         type: "doughnut",
         data: {
-          labels: bench.map(function (b) {
-            return b.label;
-          }),
-          datasets: [
-            {
-              data: bench.map(function (b) {
-                return b.count;
-              }),
-              backgroundColor: ["#1a8a72", "#f87171"],
-            },
-          ],
+          labels: bench.map(function (b) { return b.label; }),
+          datasets: [{ data: bench.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#f87171"] }],
         },
         options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } },
       });
     }
 
-    destroySearchDashboardChart("confidence");
+    destroyAnalyticsChart("confidence");
     var conf = charts.confidence_buckets || [];
-    var confCanvas = document.getElementById("search-chart-confidence");
-    if (confCanvas && conf.length) {
-      __searchDashboardCharts.confidence = new Chart(confCanvas, {
+    var confEl = document.getElementById("chart-an-confidence");
+    if (confEl && conf.length) {
+      __analyticsCharts.confidence = new Chart(confEl, {
         type: "bar",
         data: {
-          labels: conf.map(function (b) {
-            return b.label;
+          labels: conf.map(function (b) { return b.label; }),
+          datasets: [{ data: conf.map(function (b) { return b.count; }), backgroundColor: "#2563eb" }],
+        },
+        options: Object.assign({}, chartOpts, { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+      });
+    }
+
+    destroyAnalyticsChart("kzComp");
+    var kzComp = charts.kz_compliance_buckets || [];
+    var kzCompEl = document.getElementById("chart-an-kz-compliance");
+    if (kzCompEl && kzComp.length) {
+      __analyticsCharts.kzComp = new Chart(kzCompEl, {
+        type: "doughnut",
+        data: {
+          labels: kzComp.map(function (b) { return b.label; }),
+          datasets: [{ data: kzComp.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#2ec4a0", "#f87171", "#94a3b8"] }],
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom" } } },
+      });
+    }
+
+    destroyAnalyticsChart("ratings");
+    var ratings = charts.rating_histogram || [];
+    var ratEl = document.getElementById("chart-an-ratings");
+    if (ratEl) {
+      var rLabels = ["1", "2", "3", "4", "5"];
+      var rData = rLabels.map(function (k) {
+        var hit = 0;
+        var ri;
+        for (ri = 0; ri < ratings.length; ri++) {
+          if (String(ratings[ri].rating) === k) hit = ratings[ri].count;
+        }
+        return hit;
+      });
+      if (rData.some(function (v) { return v > 0; })) {
+        __analyticsCharts.ratings = new Chart(ratEl, {
+          type: "bar",
+          data: {
+            labels: rLabels,
+            datasets: [{ data: rData, backgroundColor: "#1a8a72" }],
+          },
+          options: Object.assign({}, chartOpts, { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+        });
+      }
+    }
+
+    destroyAnalyticsChart("kzRub");
+    var kzRub = charts.rubric_kz_runs || [];
+    var kzRubEl = document.getElementById("chart-an-kz-rubrics");
+    if (kzRubEl && kzRub.length) {
+      __analyticsCharts.kzRub = new Chart(kzRubEl, {
+        type: "bar",
+        data: {
+          labels: kzRub.map(function (r) {
+            var lb = r.rubric || r.slug || "";
+            return lb.length > 20 ? lb.slice(0, 18) + "…" : lb;
           }),
-          datasets: [
-            {
-              data: conf.map(function (b) {
-                return b.count;
-              }),
-              backgroundColor: "#2563eb",
-            },
-          ],
+          datasets: [{ data: kzRub.map(function (r) { return r.count; }), backgroundColor: "#0d5c4a" }],
         },
-        options: {
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+      });
+    }
+
+    destroyAnalyticsChart("kzAct");
+    var kzAct = charts.kz_activity_by_day || [];
+    var kzActEl = document.getElementById("chart-an-kz-activity");
+    if (kzActEl && kzAct.length) {
+      __analyticsCharts.kzAct = new Chart(kzActEl, {
+        type: "line",
+        data: {
+          labels: kzAct.map(function (a) { return a.date; }),
+          datasets: [{
+            data: kzAct.map(function (a) { return a.count; }),
+            borderColor: "#d97706",
+            backgroundColor: "rgba(217, 119, 6, 0.12)",
+            fill: true,
+            tension: 0.3,
+          }],
         },
+        options: chartOpts,
+      });
+    }
+
+    destroyAnalyticsChart("evType");
+    var evTypes = charts.events_by_type || [];
+    var evEl = document.getElementById("chart-an-events-type");
+    if (evEl && evTypes.length) {
+      __analyticsCharts.evType = new Chart(evEl, {
+        type: "doughnut",
+        data: {
+          labels: evTypes.map(function (e) { return e.label || e.type; }),
+          datasets: [{
+            data: evTypes.map(function (e) { return e.count; }),
+            backgroundColor: ["#1a8a72", "#2ec4a0", "#0d5c4a", "#2563eb", "#d97706", "#f87171"],
+          }],
+        },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 9 } } } } },
+      });
+    }
+
+    destroyAnalyticsChart("tags");
+    var tags = charts.tags_top || [];
+    var tagsEl = document.getElementById("chart-an-tags");
+    if (tagsEl && tags.length) {
+      __analyticsCharts.tags = new Chart(tagsEl, {
+        type: "bar",
+        data: {
+          labels: tags.map(function (t) {
+            var lb = t.label || t.tag || "";
+            return lb.length > 18 ? lb.slice(0, 16) + "…" : lb;
+          }),
+          datasets: [{ data: tags.map(function (t) { return t.count; }), backgroundColor: "#d97706" }],
+        },
+        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+      });
+    }
+
+    destroyAnalyticsChart("verdicts");
+    var verdicts = charts.verdict_breakdown || [];
+    var verEl = document.getElementById("chart-an-verdicts");
+    if (verEl && verdicts.length) {
+      __analyticsCharts.verdicts = new Chart(verEl, {
+        type: "bar",
+        data: {
+          labels: verdicts.map(function (v) {
+            return VERDICT_LABELS_RU[v.label] || v.label;
+          }),
+          datasets: [{ data: verdicts.map(function (v) { return v.count; }), backgroundColor: "#6366f1" }],
+        },
+        options: Object.assign({}, chartOpts, { indexAxis: "y" }),
+      });
+    }
+
+    destroyAnalyticsChart("readiness");
+    var ready = charts.readiness_items || [];
+    var readyEl = document.getElementById("chart-an-readiness");
+    if (readyEl && ready.length) {
+      __analyticsCharts.readiness = new Chart(readyEl, {
+        type: "bar",
+        data: {
+          labels: ready.map(function (it) {
+            var lb = it.label || "";
+            return lb.length > 28 ? lb.slice(0, 26) + "…" : lb;
+          }),
+          datasets: [{ data: ready.map(function (it) { return it.pct != null ? it.pct : 0; }), backgroundColor: "#2563eb" }],
+        },
+        options: Object.assign({}, chartOpts, { indexAxis: "y", scales: { x: { max: 100 } } }),
       });
     }
   }
 
-  function loadSearchDashboard() {
-    var panel = document.getElementById("search-dashboard");
-    var note = document.getElementById("search-dashboard-note");
-    var updated = document.getElementById("search-dashboard-updated");
+  function loadAnalyticsTab() {
+    var panel = document.getElementById("panel-analytics-stats");
     if (!panel) return;
+    var updated = document.getElementById("analytics-tab-updated");
+    var note = document.getElementById("analytics-tab-note");
+    var liveBadge = document.getElementById("analytics-live-badge");
     if (updated) updated.textContent = "Обновление…";
     fetch(apiBaseUrl() + "/api/search-analytics", { cache: "no-store" })
-      .then(function (r) {
-        return r.ok ? r.json() : null;
-      })
+      .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
         if (!d) {
           if (updated) updated.textContent = "Нет данных";
           return;
         }
-        renderSearchDashboardKpis(d);
-        renderSearchDashboardTips(d);
-        renderSearchDashboardCharts(d);
+        renderAnalyticsSearchKpis(d);
+        renderAnalyticsKzKpis(d);
+        renderAnalyticsTips(d);
+        renderAnalyticsCharts(d);
         refreshSearchSessionStatDisplay();
+        if (liveBadge) liveBadge.hidden = !d.live;
         if (updated) {
-          var liveTag = d.live ? " · live" : " · корпус";
           updated.textContent =
-            "Обновлено: " + formatDashboardUpdatedAt(d.generated_at) + liveTag;
+            "Обновлено: " +
+            formatAnalyticsUpdatedAt(d.generated_at) +
+            (d.version ? " · " + d.version : "");
         }
-        if (note) note.textContent = d.note_ru || "";
+        if (note) {
+          note.textContent = (d.note_ru || "") + (d.period_label ? " " + d.period_label + "." : "");
+        }
       })
       .catch(function () {
         if (updated) updated.textContent = "Статистика недоступна";
       });
   }
 
-  function initSearchDashboard() {
-    var btn = document.getElementById("search-dashboard-refresh");
-    if (btn) {
-      btn.addEventListener("click", function () {
-        loadSearchDashboard();
+  function initAnalyticsTab() {
+    var btn = document.getElementById("analytics-tab-refresh");
+    if (btn && !btn.getAttribute("data-wired")) {
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () { loadAnalyticsTab(); });
+    }
+    var goBtn = document.getElementById("btn-go-analytics-tab");
+    if (goBtn && !goBtn.getAttribute("data-wired")) {
+      goBtn.setAttribute("data-wired", "1");
+      goBtn.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_ANALYTICS);
       });
     }
-    if (__searchDashboardPollId !== null) {
-      clearInterval(__searchDashboardPollId);
-    }
-    __searchDashboardPollId = setInterval(loadSearchDashboard, 60000);
-    loadSearchDashboard();
+    if (__analyticsPollId !== null) clearInterval(__analyticsPollId);
+    __analyticsPollId = setInterval(function () {
+      var p = document.getElementById("panel-analytics-stats");
+      if (p && !p.hidden) loadAnalyticsTab();
+    }, 60000);
   }
 
   function loadTrainingCasesChips() {
@@ -15914,21 +16264,28 @@
   function switchMainAppTab(which) {
     var tabSearch = document.getElementById("tab-main-search");
     var tabConsult = document.getElementById("tab-consult-review");
+    var tabAnalytics = document.getElementById("tab-analytics-stats");
     var tabMl = document.getElementById("tab-methodist-ml-stats");
     var tabQueue = document.getElementById("tab-methodist-queue");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
+    var panelAnalytics = document.getElementById("panel-analytics-stats");
     var panelMl = document.getElementById("panel-methodist-ml-stats");
     var panelQueue = document.getElementById("panel-methodist-queue");
     if (!tabSearch || !tabConsult || !panelSearch || !panelConsult) return;
     var isConsult = which === MAIN_TAB_CONSULT;
     var isMl = which === MAIN_TAB_ML_STATS;
     var isQueue = which === MAIN_TAB_QUEUE;
-    var isSearch = !isConsult && !isMl && !isQueue;
+    var isAnalytics = which === MAIN_TAB_ANALYTICS;
+    var isSearch = which === MAIN_TAB_SEARCH;
     tabSearch.setAttribute("aria-selected", isSearch ? "true" : "false");
     tabConsult.setAttribute("aria-selected", isConsult ? "true" : "false");
     tabSearch.tabIndex = isSearch ? 0 : -1;
     tabConsult.tabIndex = isConsult ? 0 : -1;
+    if (tabAnalytics) {
+      tabAnalytics.setAttribute("aria-selected", isAnalytics ? "true" : "false");
+      tabAnalytics.tabIndex = isAnalytics ? 0 : -1;
+    }
     if (tabMl) {
       tabMl.setAttribute("aria-selected", isMl ? "true" : "false");
       tabMl.tabIndex = isMl ? 0 : -1;
@@ -15939,6 +16296,7 @@
     }
     panelSearch.hidden = !isSearch;
     panelConsult.hidden = !isConsult;
+    if (panelAnalytics) panelAnalytics.hidden = !isAnalytics;
     if (panelMl) panelMl.hidden = !isMl;
     if (panelQueue) panelQueue.hidden = !isQueue;
     try {
@@ -15948,6 +16306,9 @@
       } else if (isQueue) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#methodist-queue");
         if (typeof loadMethodistQueuePanel === "function") loadMethodistQueuePanel();
+      } else if (isAnalytics) {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
+        if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
       } else if (isConsult) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#consult-review");
       } else {
@@ -16840,6 +17201,7 @@
   function initMainAppTabsAndConsultReview() {
     var ts = document.getElementById("tab-main-search");
     var tc = document.getElementById("tab-consult-review");
+    var ta = document.getElementById("tab-analytics-stats");
     var tml = document.getElementById("tab-methodist-ml-stats");
     var tq = document.getElementById("tab-methodist-queue");
     var tablist = document.getElementById("app-main-tabs");
@@ -16851,6 +17213,12 @@
     tc.addEventListener("click", function () {
       switchMainAppTab(MAIN_TAB_CONSULT);
     });
+    if (ta && !ta.getAttribute("data-wired")) {
+      ta.setAttribute("data-wired", "1");
+      ta.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_ANALYTICS);
+      });
+    }
     if (tml && !tml.getAttribute("data-wired")) {
       tml.setAttribute("data-wired", "1");
       tml.addEventListener("click", function () {
@@ -16888,6 +17256,7 @@
         if (window.__methodistMode && tq && !tq.hidden) tabs.push(tq);
         if (window.__methodistMode && tml && !tml.hidden) tabs.push(tml);
         tabs.push(tc);
+        if (ta) tabs.push(ta);
         var idx = tabs.findIndex(function (t) {
           return t.getAttribute("aria-selected") === "true";
         });
@@ -16897,6 +17266,7 @@
         else idx = Math.max(0, idx - 1);
         tabs[idx].focus();
         if (tabs[idx] === ts) switchMainAppTab(MAIN_TAB_SEARCH);
+        else if (tabs[idx] === ta) switchMainAppTab(MAIN_TAB_ANALYTICS);
         else if (tabs[idx] === tml) switchMainAppTab(MAIN_TAB_ML_STATS);
         else if (tabs[idx] === tq) switchMainAppTab(MAIN_TAB_QUEUE);
         else switchMainAppTab(MAIN_TAB_CONSULT);
@@ -16909,6 +17279,8 @@
         switchMainAppTab(MAIN_TAB_ML_STATS);
       } else if (h === "#methodist-queue" && window.__methodistMode) {
         switchMainAppTab(MAIN_TAB_QUEUE);
+      } else if (h === "#analytics-stats" || h === "#analytics") {
+        switchMainAppTab(MAIN_TAB_ANALYTICS);
       } else if (h === "#search" || h === "#/search") {
         switchMainAppTab(MAIN_TAB_SEARCH);
       } else {
@@ -17783,7 +18155,7 @@
   initDemoCasesBar();
   initSearchQuickStart();
   initDeployStatusBanner();
-  initSearchDashboard();
+  initAnalyticsTab();
   initCitationsOnlyToggle();
   loadBuildVersionBadge();
   loadTrainingCasesChips();

@@ -105,8 +105,10 @@ def test_search_analytics_ok(client: TestClient) -> None:
     body = r.json()
     assert "corpus" in body
     assert "charts" in body
+    assert "kz" in body
     assert "tips_ru" in body
     assert "generated_at" in body
+    assert "kz_compliance_buckets" in body["charts"] or "rating_histogram" in body["charts"]
 
 
 def test_protocol_ui_meta() -> None:
