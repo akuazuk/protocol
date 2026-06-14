@@ -222,7 +222,7 @@ def handle_search_funnel(
         }
 
         payload: dict[str, Any] | None = None
-        if lookup.get("protocols") and not lookup.get("ambiguous"):
+        if lookup.get("protocols"):
             payload = format_assist_payload(
                 query=work_q,
                 lookup_result=lookup,

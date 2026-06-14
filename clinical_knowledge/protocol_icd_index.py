@@ -239,15 +239,15 @@ def lookup_protocols_by_icd(
         for p in prefix_idx.get(_icd_root(code), []):
             candidate_paths.add(p)
 
-    if not candidate_paths and query_icd:
-        for row in cat.values():
-            if row.get("general_scope"):
-                candidate_paths.add(str(row["path"]))
     if not candidate_paths:
         for slug in rubric_set:
             for row in cat.values():
                 if row.get("specialty_slug") == slug:
                     candidate_paths.add(str(row["path"]))
+    if not candidate_paths:
+        for row in cat.values():
+            if row.get("general_scope"):
+                candidate_paths.add(str(row["path"]))
 
     query_tokens = _title_tokens(query)
     scored: list[tuple[float, dict[str, Any], list[str]]] = []

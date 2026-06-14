@@ -10232,6 +10232,24 @@
     return out;
   }
 
+  function normalizeFunnelIcdCodes(raw) {
+    if (!raw || !raw.length) return [];
+    var out = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < raw.length; i++) {
+      var item = raw[i];
+      var c =
+        item && typeof item === "object" && item.code != null
+          ? String(item.code).trim()
+          : String(item || "").trim();
+      if (!c || seen[c]) continue;
+      seen[c] = true;
+      out.push(c);
+    }
+    return out;
+  }
+
   function rubricSlugsForIcdCode(code) {
     var letter = (code || "").charAt(0).toUpperCase();
     var i;
@@ -14946,6 +14964,11 @@
 
       if (!uiCompact) {
         html += formatIcdSectionHtml(data.icd || {});
+      }
+
+      if (!rawProtos.length && (stepped || doctorLite || citationsOnly)) {
+        html +=
+          '<p class="assist-note assist-note--empty-protos">По выбранному коду МКБ в каталоге не найдено точного совпадения. Уточните запрос, выберите другой код или повторите поиск — будет выполнен полный отбор по PDF.</p>';
       }
 
       if (!uiCompact && data.red_flags && data.red_flags.length) {
@@ -22258,7 +22281,7 @@
           }, assistTimeoutMs);
           if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
             var ctxIcd = window.__funnelContext || {};
-            var icdCodes = ctxIcd.icd_codes || [];
+            var icdCodes = normalizeFunnelIcdCodes(ctxIcd.icd_codes || []);
             var cacheKey =
               icdCodes.join(",") +
               "|" +
@@ -22287,6 +22310,17 @@
                   if (!r.ok || !j) {
                     throw new Error(
                       (j && j.detail) || text || "Ошибка быстрого подбора по МКБ"
+                    );
+                  }
+                  var fastProtos = ((j.llm_json || {}).protocols || []).length;
+                  if (!fastProtos) {
+                    delete window.__funnelContext._icdLookupCacheKey;
+                    delete window.__funnelContext._icdLookupPayload;
+                    return callSearchFunnel(4, qSend, { icd_codes: icdCodes }).then(
+                      function (funnel) {
+                        if (funnel.error) throw new Error(funnel.error);
+                        return funnel.assist || funnel;
+                      }
                     );
                   }
                   window.__funnelContext._icdLookupCacheKey = cacheKey;

@@ -56,3 +56,19 @@ def test_format_assist_payload_shape():
     payload = pii.format_assist_payload(query="орви", lookup_result=lookup, icd_analysis={})
     assert payload.get("icd_fast_lookup") is True
     assert isinstance((payload.get("llm_json") or {}).get("protocols"), list)
+
+
+def test_lookup_rubric_fallback_when_icd_missing_from_catalog():
+    """C50.9 may be absent in catalog ICD lists — rubric novoobrazovaniya must still match."""
+    pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
+    pii._inverted_index.cache_clear()
+    result = pii.lookup_protocols_by_icd(
+        icd_codes=["C50.9"],
+        query="рак молочной железы",
+        population="adult",
+        limit=5,
+    )
+    protos = result.get("protocols") or []
+    assert protos, "expected oncology protocols via rubric fallback for C50.9"
+    paths = " ".join(p.get("path", "") for p in protos).lower()
+    assert "novoobrazovaniya" in paths

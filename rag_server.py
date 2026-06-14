@@ -6972,7 +6972,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r164-protocol-scope-labels"
+BUILD_VERSION = "2026-05-31-r165-icd-lookup-fallback-fix"
 
 
 def _app_version() -> str:
@@ -7337,12 +7337,6 @@ def _try_icd_fast_assist(
         rubric_slugs=category_slugs,
     )
     if not lookup.get("protocols"):
-        return None
-    if lookup.get("ambiguous") and os.environ.get("ICD_FAST_STRICT", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    ):
         return None
     return format_assist_payload(
         query=query,
