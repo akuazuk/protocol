@@ -5162,6 +5162,46 @@ def _build_protocols_from_retrieval(
     return dedupe_protocols_list(protos, prefer_slugs=prefer_slugs)
 
 
+def _rerank_protocols_symptom_only(
+    protos: list[dict],
+    query: str,
+    icd_analysis: dict | None,
+) -> list[dict]:
+    """Понижает маловероятные КП при symptom-only (кашель/лихорадка без МКБ)."""
+    if not protos:
+        return protos
+    icd = icd_analysis or {}
+    explicit = bool(icd.get("explicit_icd_in_query"))
+    detected = icd.get("detected") or []
+    suggested = icd.get("suggested") or []
+    if explicit or detected or suggested:
+        return protos
+    ql = (query or "").lower()
+    if not any(w in ql for w in ("кашел", "температ", "лихорад", "озноб", "орви", "простуд")):
+        return protos
+    rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
+    acute = ("пневмон", "орви", "бронхит", "орз", "остры", "неотложн", "жаропонижа")
+
+    def _score_row(pr: dict) -> tuple[int, float]:
+        path = str(pr.get("path") or "").lower()
+        title = str(pr.get("title") or path).lower()
+        blob = path + " " + title
+        penalty = 0
+        if any(k in blob for k in rare) and not any(k in ql for k in rare):
+            penalty += 2
+        boost = 0
+        if any(k in blob for k in acute):
+            boost += 1
+        try:
+            conf = float(pr.get("confidence_score") or 0.0)
+        except (TypeError, ValueError):
+            conf = 0.0
+        return (penalty - boost, -conf)
+
+    ranked = sorted(protos, key=_score_row)
+    return ranked
+
+
 def dedupe_parsed_protocols(
     parsed: dict | None,
     *,
@@ -6260,7 +6300,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r134-search-stepped-compact"
+BUILD_VERSION = "2026-06-01-r135-search-funnel-methodist-fallback"
 
 
 def _app_version() -> str:
@@ -6671,6 +6711,7 @@ def api_assist(body: AssistIn) -> dict:
         assist_lite = True
         retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
         protos = _build_protocols_from_retrieval(retrieved, prefer_slugs=user_slugs)
+        protos = _rerank_protocols_symptom_only(protos, q, icd_analysis)
         parsed: dict | None = {"protocols": protos}
         text = ""
         finish = "RETRIEVE_ONLY"
@@ -7574,6 +7615,7 @@ class MethodistSearchAiReviewIn(BaseModel):
     llm_json: dict[str, Any] = Field(default_factory=dict)
     retrieval: list[dict[str, Any]] = Field(default_factory=list)
     icd_codes: list[str] | None = None
+    retrieve_only: bool = False
 
 
 @app.post("/api/methodist/search-ai-review")
@@ -7581,29 +7623,56 @@ def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiRe
     """ИИ оценивает выдачу поиска; методист только одобряет или правит."""
     _require_methodist_auth(request)
     from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled
-    from clinical_knowledge.methodist_search_ai_review import run_methodist_search_ai_review
+    from clinical_knowledge.methodist_search_ai_review import (
+        build_deterministic_search_ai_review,
+        run_methodist_search_ai_review,
+    )
 
     if not methodist_ai_review_enabled():
         raise HTTPException(status_code=404, detail="METHODIST_AI_REVIEW отключён на сервере.")
-    if not (os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")):
-        raise HTTPException(status_code=503, detail="GOOGLE_API_KEY не настроен для AI-оценки.")
 
+    icd_codes = list(body.icd_codes or [])
     payload = {
         "query": body.query.strip(),
         "llm_json": body.llm_json or {},
         "retrieval": body.retrieval or [],
-        "icd_codes": body.icd_codes or [],
+        "icd_codes": icd_codes,
+        "retrieve_only": bool(body.retrieve_only),
     }
-    try:
-        ai_review = run_methodist_search_ai_review(payload)
-    except ValueError as e:
-        raise HTTPException(status_code=502, detail=str(e)[:240]) from e
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Ошибка AI-оценки поиска: {str(e)[:200]}") from e
+    llm_json = payload["llm_json"]
+    if isinstance(llm_json, dict) and body.retrieval and not llm_json.get("protocols"):
+        rows = dedupe_retrieval_by_basename(body.retrieval)
+        llm_json = dict(llm_json)
+        llm_json["protocols"] = _build_protocols_from_retrieval(rows)
+        payload["llm_json"] = llm_json
 
-    return {"ok": True, "ai_review": ai_review}
+    ai_review: dict
+    fallback = False
+    fallback_reason = ""
+    if not (os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")):
+        ai_review = build_deterministic_search_ai_review(payload)
+        fallback = True
+        fallback_reason = "GOOGLE_API_KEY не настроен"
+    else:
+        try:
+            ai_review = run_methodist_search_ai_review(payload)
+        except HTTPException as e:
+            if e.status_code in (401, 403, 404):
+                raise
+            ai_review = build_deterministic_search_ai_review(payload)
+            fallback = True
+            fallback_reason = str(e.detail)[:200]
+        except (ValueError, Exception) as e:
+            ai_review = build_deterministic_search_ai_review(payload)
+            fallback = True
+            fallback_reason = str(e)[:200]
+
+    return {
+        "ok": True,
+        "ai_review": ai_review,
+        "fallback": fallback,
+        "fallback_reason": fallback_reason if fallback else None,
+    }
 
 
 @app.post("/api/methodist/ai-review")

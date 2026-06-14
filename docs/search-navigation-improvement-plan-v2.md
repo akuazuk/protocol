@@ -172,6 +172,7 @@
 
 ## 9. Связанные документы
 
+- [search-funnel-v1.md](./search-funnel-v1.md) — воронка 0–7, issues фаз B/C  
 - `docs/search-methodist-roadmap.md` — v1.1 baseline  
 - `docs/methodist-workbench-tz.md` — КЗ workbench  
 - `clinical_knowledge/methodist_search_ai_review.py` — промпт поиска

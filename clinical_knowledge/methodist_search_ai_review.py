@@ -194,6 +194,124 @@ def _try_parse_json(t: str) -> dict[str, Any] | None:
         return None
 
 
+_SYMPTOM_RARE_TITLE_KEYWORDS = (
+    "саркоид",
+    "микобактер",
+    "туберкул",
+    "лихорадка ку",
+    "орфан",
+)
+_SYMPTOM_COMMON_QUERY_WORDS = (
+    "кашел",
+    "температ",
+    "лихорад",
+    "озноб",
+    "насморк",
+    "орви",
+    "простуд",
+)
+
+
+def _query_has_icd_hint(query: str, icd_codes: list[str] | None) -> bool:
+    if icd_codes:
+        return True
+    return bool(re.search(r"\b[A-TV-ZА-ЯЁ]\s*\d{2}(?:\s*[.,/\-]\s*\d{1,4})?\b", query, re.I))
+
+
+def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict[str, Any]:
+    """Оценка выдачи без LLM — для retrieve_only и при сбое Gemini."""
+    query = (assist_payload.get("query") or "").strip()
+    ql = query.lower()
+    protos = (assist_payload.get("llm_json") or {}).get("protocols") or []
+    icd = assist_payload.get("icd_codes") or []
+    retrieve_only = bool(assist_payload.get("retrieve_only"))
+
+    has_icd = _query_has_icd_hint(query, icd if isinstance(icd, list) else [])
+    symptom_only = not has_icd
+
+    top1 = protos[0] if protos and isinstance(protos[0], dict) else {}
+    top_path = str(top1.get("path") or "")
+    top_base = _basename(top_path).lower()
+
+    tags: list[str] = []
+    improvements: list[str] = []
+    verdict = "mostly_correct"
+    rating = 4
+    top1_rel: bool | None = True
+    retrieval_fix: dict[str, str] | None = None
+
+    if symptom_only:
+        tags.append("query_too_vague")
+        improvements.append(
+            "Включить обязательный шаг МКБ-10 в воронке перед списком протоколов (symptom-only)."
+        )
+        rating = 3
+        verdict = "partially_wrong"
+
+    common_symptoms = any(w in ql for w in _SYMPTOM_COMMON_QUERY_WORDS)
+    rare_top = any(k in top_base for k in _SYMPTOM_RARE_TITLE_KEYWORDS)
+    query_mentions_rare = any(k in ql for k in _SYMPTOM_RARE_TITLE_KEYWORDS)
+
+    if symptom_only and common_symptoms and rare_top and not query_mentions_rare:
+        if "wrong_protocol" not in tags:
+            tags.append("wrong_protocol")
+        top1_rel = False
+        rating = min(rating, 2)
+        verdict = "partially_wrong"
+        improvements.extend(
+            [
+                "При symptom-only понизить вес редких КП (саркоидоз, микобактериоз, ТБ) без кода МКБ.",
+                "Summary-first: boost overview-чанков с МКБ J06/J18/J20 для острых респираторных жалоб.",
+                "Усилить шаг «популяция» (взрослые/дети) перед retrieval.",
+            ]
+        )
+        if top_path:
+            retrieval_fix = {
+                "rejected_path": top_path,
+                "chosen_path": "",
+                "note": "Top-1 маловероятен для симптомного запроса без МКБ; укажите верный КП.",
+            }
+
+    if retrieve_only and not symptom_only:
+        improvements.append(
+            "Retrieve-only: ranking только по RAG; для аудита достаточно, для симптомов нужен шаг МКБ."
+        )
+
+    if not improvements:
+        improvements = [
+            "Накапливать retrieval_fix для golden set (фаза B3).",
+            "Проверить Hit@3 на дашборде «Поиск · оценки».",
+        ]
+
+    summary_parts = [
+        f"Детерминированная оценка ({len(protos)} протокол(ов) в выдаче).",
+    ]
+    if symptom_only:
+        summary_parts.append(
+            "Запрос без явного МКБ/диагноза — релевантность top-1 ограничена."
+        )
+    if top_path:
+        summary_parts.append(f"Top-1: {_basename(top_path)}.")
+    if top1_rel is False:
+        summary_parts.append("Top-1 клинически сомнителен для формулировки запроса.")
+
+    return {
+        "ranking_verdict": verdict,
+        "ranking_rating": rating,
+        "tags": list(dict.fromkeys(tags)),
+        "summary_ru": " ".join(summary_parts)[:2000],
+        "engine_improvements_ru": improvements[:10],
+        "system_notes_ru": (
+            "Оценка без LLM (retrieve_only или сбой Gemini). "
+            "Методист подтверждает или правит вручную."
+        )[:2000],
+        "retrieval_fix": retrieval_fix,
+        "top1_relevant": top1_rel,
+        "confidence": "low" if symptom_only else "medium",
+        "review_source": "deterministic_fallback",
+    }
+
+
 def run_methodist_search_ai_review(
     assist_payload: dict[str, Any],
     *,
@@ -211,9 +329,17 @@ def run_methodist_search_ai_review(
         parse_json_fn = parse_json_fn or rs._try_parse_json
         get_model_fn = get_model_fn or rs.get_methodist_gemini
 
-    model = get_model_fn()
+    try:
+        model = get_model_fn()
+    except Exception as exc:
+        raise ValueError(f"Модель методиста недоступна: {exc!s}") from exc
+
     prompt = _build_prompt(assist_payload)
-    resp = generate_fn(model, prompt)
+    try:
+        resp = generate_fn(model, prompt)
+    except Exception as exc:
+        raise ValueError(f"Вызов модели: {exc!s}") from exc
+
     txt = extract_text_fn(resp)
     parsed = parse_json_fn(txt) if parse_json_fn else _try_parse_json(txt)
     if not parsed:

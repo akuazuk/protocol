@@ -11487,7 +11487,15 @@
             : "");
     }
     if (summary) summary.textContent = ai.summary_ru || "";
-    if (notes) notes.textContent = ai.system_notes_ru ? "Замечания: " + ai.system_notes_ru : "";
+    if (notes) {
+      var noteTxt = ai.system_notes_ru ? "Замечания: " + ai.system_notes_ru : "";
+      if (ai.review_source === "deterministic_fallback") {
+        noteTxt =
+          (noteTxt ? noteTxt + " " : "") +
+          "Источник: детерминированная оценка (без LLM).";
+      }
+      notes.textContent = noteTxt;
+    }
     if (impList) {
       impList.innerHTML = (ai.engine_improvements_ru || [])
         .map(function (t) {
@@ -11519,8 +11527,7 @@
     if (title) title.textContent = "ИИ оценивает подбор протоколов…";
     if (body) body.hidden = true;
     var llm = (data && data.llm_json) || {};
-    var icd = [];
-    if (data && data.icd_detected) icd = data.icd_detected;
+    var icd = icdCodesFromAssistData(data || {});
     fetch(apiBaseUrl() + "/api/methodist/search-ai-review", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
@@ -11529,6 +11536,7 @@
         llm_json: llm,
         retrieval: data.retrieval || [],
         icd_codes: icd,
+        retrieve_only: data.retrieve_only === true,
       }),
     })
       .then(function (r) {
@@ -11544,7 +11552,15 @@
         if (!ai) throw new Error("Пустой ответ AI-оценки поиска");
         window.__searchLastAiReview = ai;
         renderSearchMethodistAiReviewUi(ai);
-        setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
+        if (payload.fallback) {
+          setSearchMethodistStatus(
+            "Оценка без LLM (fallback): " +
+              (payload.fallback_reason || "модель недоступна") +
+              " — проверьте и при необходимости правьте."
+          );
+        } else {
+          setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
+        }
       })
       .catch(function (e) {
         setSearchMethodistAiFlowState("methodist-search-ai-failed");
@@ -14008,9 +14024,9 @@
       bindProtoPickButtons(data);
       if (stepped) {
         if (wiz.step === "detail") {
-          updateSearchWizardBar("detail", "Шаг 3 · выдержка из PDF");
+          updateSearchWizardBar("detail", "Шаг 4 · выдержка из PDF");
         } else {
-          updateSearchWizardBar("protocols", "Шаг 2 · список протоколов");
+          updateSearchWizardBar("protocols", "Шаг 3 · список протоколов");
         }
       } else {
         updateSearchWizardBar(null);
@@ -16645,6 +16661,92 @@
     return re.test(q);
   }
 
+  function queryHasPopulationHint(raw) {
+    return /(\bдет|\bдети|\bребен|\bребён|\bноворожд|\bберемен|\bгрудн|\bвзросл|\bпожил|\bподрост|\bинфант)/i.test(
+      String(raw || "")
+    );
+  }
+
+  function needsPopulationStep(qRaw, opts) {
+    opts = opts || {};
+    if (opts.skipPopulationGate) return false;
+    if (!isSearchSteppedMode()) return false;
+    if (queryHasPopulationHint(qRaw)) return false;
+    if (window.__funnelContext && window.__funnelContext.population) return false;
+    return true;
+  }
+
+  function appendPopulationContextToQuery(qRaw, populationId) {
+    var map = {
+      adult: "Контекст подбора: взрослое население",
+      pediatric: "Контекст подбора: детское население",
+      pregnant: "Контекст подбора: беременные",
+      emergency: "Контекст подбора: неотложная помощь",
+    };
+    var line = map[populationId] || "";
+    if (!line) return qRaw;
+    var base = stripToClinicalOnly(qRaw || "");
+    if (base.indexOf(line) >= 0) return base;
+    return base ? base + "\n" + line : line;
+  }
+
+  function renderSearchWizardPopulationStep(qRaw) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "population" };
+    updateSearchWizardBar("population", "Шаг 1 · аудитория пациента");
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+    html +=
+      '<p class="search-wizard-icd-lead">Уточните, для кого подбираем протокол — это сужает список (детские и взрослые КП различаются).</p>';
+    html += '<div class="search-wizard-chips" role="list">';
+    var choices = [
+      { id: "adult", label: "Взрослые (≥18 лет)" },
+      { id: "pediatric", label: "Дети / подростки" },
+      { id: "pregnant", label: "Беременные" },
+      { id: "emergency", label: "Неотложная помощь" },
+    ];
+    var ci;
+    for (ci = 0; ci < choices.length; ci++) {
+      html +=
+        '<button type="button" class="search-wizard-chip btn-pop-wizard-pick" data-pop="' +
+        escapeHtmlAttr(choices[ci].id) +
+        '" role="listitem">' +
+        escapeHtml(choices[ci].label) +
+        "</button>";
+    }
+    html += "</div>";
+    html +=
+      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-pop-wizard-skip">Пропустить — без уточнения аудитории</button></p>';
+    html += "</div></div>";
+    out.innerHTML = html;
+    out.querySelectorAll(".btn-pop-wizard-pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var pop = btn.getAttribute("data-pop") || "";
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.population = pop;
+        var qInput = document.getElementById("q");
+        if (qInput) {
+          qInput.value = appendPopulationContextToQuery(qInput.value || qRaw, pop);
+        }
+        runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
+          console.error(err);
+        });
+      });
+    });
+    var skipBtn = document.getElementById("btn-pop-wizard-skip");
+    if (skipBtn) {
+      skipBtn.addEventListener("click", function () {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.population = "skipped";
+        runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
+          console.error(err);
+        });
+      });
+    }
+  }
+
   function truncateExcerpt(text, maxLen) {
     var t = String(text || "").trim();
     if (!t || !maxLen || t.length <= maxLen) return t;
@@ -16704,7 +16806,7 @@
     }
     if (bar) bar.hidden = false;
     if (lbl) lbl.textContent = label || "";
-    if (backBtn) backBtn.hidden = step === "icd";
+    if (backBtn) backBtn.hidden = false;
   }
 
   function searchWizardBack() {
@@ -16723,9 +16825,10 @@
       }
       return;
     }
-    if (wiz.step === "protocols" || wiz.step === "icd") {
+    if (wiz.step === "protocols" || wiz.step === "icd" || wiz.step === "population") {
       wiz.step = "query";
       window.__searchWizard = wiz;
+      window.__funnelContext = {};
       updateSearchWizardBar(null);
       showResultsSection(false);
       var qEl = document.getElementById("q");
@@ -16742,7 +16845,7 @@
     if (!out) return;
     showResultsSection(true);
     window.__searchWizard = { step: "icd" };
-    updateSearchWizardBar("icd", "Шаг 1 · подбор кода МКБ-10");
+    updateSearchWizardBar("icd", "Шаг 2 · подбор кода МКБ-10");
     var icd = (data && data.icd) || {};
     var choices = [];
     var seenCodes = {};
@@ -20206,6 +20309,11 @@
         return;
       }
       qRaw = prep.query;
+      if (needsPopulationStep(qRaw, opts)) {
+        renderSearchWizardPopulationStep(qRaw);
+        resolve();
+        return;
+      }
       if (
         !opts.skipIcdGate &&
         isSearchSteppedMode() &&
@@ -20231,8 +20339,9 @@
           : buildFullQuery(qRaw);
       var retrieveOnly =
         opts.retrieveOnly === true ||
-        (!window.__methodistMode &&
-          (isCitationsOnlyMode() || isSearchSteppedMode()));
+        isCitationsOnlyMode() ||
+        isSearchSteppedMode() ||
+        !!window.__methodistMode;
       var assistStart = Date.now();
       var assistTick = null;
       var abortTid = null;
