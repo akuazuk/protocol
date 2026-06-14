@@ -6743,7 +6743,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r152-gi-routing-search-progress-ui"
+BUILD_VERSION = "2026-05-31-r153-protocol-nav-hub-matrix"
 
 
 def _app_version() -> str:
