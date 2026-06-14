@@ -32,14 +32,9 @@ def _icd_root(code: str) -> str:
 
 
 def _is_oncology_icd(code: str) -> bool:
-    c = (code or "").upper().strip()
-    if not c:
-        return False
-    if c.startswith("C"):
-        return True
-    if c.startswith("D") and len(c) >= 3 and c[1:3].isdigit():
-        return 0 <= int(c[1:3]) <= 48
-    return False
+    from clinical_knowledge.rule_family_gates import is_oncology_icd
+
+    return is_oncology_icd(code)
 
 
 def _has_oncology_context(consult_facts: dict[str, Any]) -> bool:
@@ -239,6 +234,11 @@ def _condition_applies_to_consult(
             deep_markers = ("глубок", "подколен", "бедренно", "берцов", "тгв", "тромбоз глубок")
             if not any(m in blob for m in deep_markers):
                 return False
+    from clinical_knowledge.rule_family_gates import condition_family_applies
+
+    family = condition_family_applies(cid, consult_facts)
+    if family is False:
+        return False
     if not cond_icd and cid not in (
         "bladder_dysfunction",
         "neoplasm",

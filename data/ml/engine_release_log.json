@@ -58,13 +58,29 @@
       "metrics": []
     },
     {
-      "version": "2026-06-01-r111",
-      "date": "2026-06-13",
+      "version": "2026-06-01-r115",
+      "date": "2026-06-01",
       "type": "engine",
-      "title": "AI review gold fallback",
-      "summary": "Этап 2 методиста не падает при пустом kz_compliance_gold от Gemini.",
-      "fixes": [],
-      "metrics": []
+      "title": "Rule family gates + RAG ICD pre-filter",
+      "summary": "D25 не ЗНО; ОРВИ без bronchitis/TB/asthma FP; J06 title fallback; golden_protocol_pairs.",
+      "fixes": [
+        "is_oncology_icd: D10-D36 доброкач. исключены",
+        "rule_family_gates: acute_bronchitis, obesity/thyroid, URTI vs TB/pneumonia/asthma",
+        "consult_retrieval: expand_specialty_slugs_for_icd + ORVI title fallback",
+        "build_golden_protocol_pairs.py"
+      ],
+      "metrics": [
+        {
+          "text_hash_short": "obgyn_61",
+          "case_label": "feedback_obgyn_61 (D25.2 миома)",
+          "note": "Нет neoplasm diagnosis_formula FP"
+        },
+        {
+          "text_hash_short": "urvi_j06",
+          "case_label": "feedback_urvi_j06",
+          "note": "Нет acute_bronchitis FP; RAG paths для ОРВИ"
+        }
+      ]
     }
   ],
   "ml_experiments": [

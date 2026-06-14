@@ -92,12 +92,18 @@ CONDITION_BY_ID: dict[str, ConditionDef] = {c.condition_id: c for c in CONDITION
 
 def infer_conditions_hints(text_low: str, icd_codes: Iterable[str]) -> list[str]:
     """Нозологии по тексту КЗ и кодам МКБ."""
+    from clinical_knowledge.rule_family_gates import is_oncology_icd
+
     low = text_low or ""
     icd_up = [str(c).upper().strip() for c in icd_codes if c]
     out: list[str] = []
     for c in CONDITIONS:
         if any(m in low for m in c.text_markers):
             out.append(c.condition_id)
+            continue
+        if c.condition_id == "neoplasm":
+            if any(is_oncology_icd(code) for code in icd_up):
+                out.append(c.condition_id)
             continue
         for pref in c.icd_prefixes:
             if any(code.startswith(pref.upper()) for code in icd_up):

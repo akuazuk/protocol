@@ -128,7 +128,7 @@ flowchart LR
 |---|--------|-----------|--------|--------|
 | P1.3 | **Dedup diagnosis_formula** | 5 FP → 1 finding | 1 д | Доверие к B |
 | P1.4 | **Venous/thrombosis gate I80.x** | pl_1_f без cardiology FP | 1 д | Пилот флеболог |
-| P1.6 | **Rule family gates** | Шаблон gate по ICD+specialty для top-3 override rule_id | 3 д | Системный fix B |
+| P1.6 | **Rule family gates** | Шаблон gate по ICD+specialty для top-3 override rule_id | 3 д | Системный fix B | ✅ r115 |
 | P1.7 | **Sparse KZ caps** | Документация/осмотр влияют на treat/safe (report_n_2) | 2 д | Честный % |
 
 **Трек A (protocol match):**
@@ -136,8 +136,8 @@ flowchart LR
 | # | Задача | Результат | Effort | Impact |
 |---|--------|-----------|--------|--------|
 | P1.8 | **UI: «Правильный протокол» обязательнее** | При tag `wrong_protocol` / `missed_protocol` — форма retrieval_fix | 1 д | Метки для LoRA |
-| P1.9 | **Rubric+ICD pre-filter** | Сузить RAG до рубрики до embed search | 2 д | Меньше miss |
-| P1.10 | **Golden protocol pairs** | 20 пар diagnosis→path из размеченных кейсов | 2 д | Eval опоры A |
+| P1.9 | **Rubric+ICD pre-filter** | Сузить RAG до рубрики до embed search | 2 д | Меньше miss | ✅ r115 |
+| P1.10 | **Golden protocol pairs** | 20 пар diagnosis→path из размеченных кейсов | 2 д | Eval опоры A | 🟡 seed 2 |
 
 **UX / active learning:**
 
@@ -410,7 +410,8 @@ sequenceDiagram
 6. ✅ `GET /api/methodist/analysis/{id}` + вкладка «Очередь» (r114)
 7. ✅ Protocol hit@k в дашборде (r114)
 8. ✅ UI retrieval_fix обязателен при wrong/missed protocol (r114)
-9. ⬜ Re-analyze obgyn + pull → verify в дашборде
+9. ✅ Rule family gates + RAG pre-filter (r115)
+10. ⬜ Re-analyze obgyn + pull → verify в дашборде
 
 **Неделя 2 — очередь + опора A**
 

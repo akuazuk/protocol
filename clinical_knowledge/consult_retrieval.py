@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from clinical_knowledge.rule_family_gates import expand_specialty_slugs_for_icd
+
 
 def _icd_root(code: str) -> str:
     c = (code or "").upper().strip()
@@ -91,7 +93,7 @@ def consult_target_protocol_paths(
     primary_icd = diag or merged
     icd_roots = {_icd_root(c) for c in primary_icd}
     icd_full = set(primary_icd)
-    slugs = set(specialty_slugs or [])
+    slugs = expand_specialty_slugs_for_icd(set(specialty_slugs or []), primary_icd)
 
     if primary_icd:
         # Лучший балл на КАЖДЫЙ PDF (а не на каждую секцию), иначе PDF с многими
@@ -118,6 +120,22 @@ def consult_target_protocol_paths(
                 add(sp, "icd_registry_match")
             if len(paths) >= limit:
                 break
+
+    if not paths and primary_icd:
+        icd_roots = {_icd_root(c) for c in primary_icd}
+        if icd_roots & {"J06", "J00", "J02", "J03", "J04", "J05"} or any(
+            r.startswith("J06") for r in icd_roots
+        ):
+            urti_markers = ("орви", "респиратор", "вирусн", "орз", "орви", "инфекц")
+            for card in load_protocol_cards_registry():
+                if slugs and card.get("specialty_slug") not in slugs:
+                    continue
+                sp = _path_norm(str(card.get("source_path") or ""))
+                if not sp or sp in seen:
+                    continue
+                blob = f"{card.get('title') or ''} {sp}".lower()
+                if any(m in blob for m in urti_markers):
+                    add(sp, "icd_title_urti_fallback")
 
     meta: dict[str, Any] = {
         "primary_icd": primary_icd[:12],
