@@ -2817,6 +2817,52 @@ def retrieve(
     )
 
     embed_meta: dict = {"used": False}
+    prefilter_meta: dict[str, Any] = {"used": False}
+
+    prefilter_on = os.environ.get("RAG_PREFILTER_BEFORE_EMBED", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    if prefilter_on and scored and (icd_norms or user_slugs or boost_set):
+        from clinical_knowledge.protocol_summary.icd_index import (
+            build_retrieval_prefilter_context,
+            chunk_matches_retrieval_prefilter,
+        )
+
+        slug_union = frozenset(user_slugs | boost_set)
+        pf_ctx = build_retrieval_prefilter_context(
+            icd_codes_for_lex,
+            sorted(slug_union),
+        )
+        if pf_ctx.get("active"):
+            catalog_paths = pf_ctx["paths"]  # type: ignore[index]
+            cat_slugs = pf_ctx["slugs"]  # type: ignore[index]
+            pool_before = len(scored)
+            filtered_rows = [
+                row
+                for row in scored
+                if chunk_matches_retrieval_prefilter(
+                    row[4],
+                    catalog_paths=catalog_paths,  # type: ignore[arg-type]
+                    category_slugs=cat_slugs,  # type: ignore[arg-type]
+                    icd_norms=icd_norms,
+                )
+            ]
+            min_ratio = float(os.environ.get("RAG_PREFILTER_MIN_KEEP_RATIO", "0.35"))
+            min_abs = int(os.environ.get("RAG_PREFILTER_MIN_KEEP", "12"))
+            min_keep = max(min_abs, int(pool_before * min_ratio))
+            if len(filtered_rows) >= min_keep:
+                scored = filtered_rows
+                prefilter_meta = {
+                    "used": True,
+                    "pool_before": pool_before,
+                    "pool_after": len(scored),
+                    "reduction_pct": round(100.0 * (1.0 - len(scored) / pool_before), 1),
+                    "routing_version": int(_routing.get("version", 1)) if _routing else 1,
+                    "icd_catalog_paths": len(catalog_paths),  # type: ignore[arg-type]
+                    "category_slugs": sorted(cat_slugs)[:8],  # type: ignore[arg-type]
+                }
 
     embed_on = (
         embed_rerank
@@ -2866,6 +2912,7 @@ def retrieve(
             work_rows = scored
             embed_meta = {"used": False, "error": str(e)[:240]}
 
+    embed_meta["prefilter"] = prefilter_meta
     _set_retrieval_embed_meta(embed_meta)
     per_path: dict[str, int] = {}
     per_basename: dict[str, int] = {}
@@ -6314,7 +6361,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r136-search-funnel-b1-c3-queue"
+BUILD_VERSION = "2026-06-01-r137-search-funnel-b2-c4-summary-excerpt"
 
 
 def _app_version() -> str:
@@ -7616,6 +7663,22 @@ def api_protocol_summary_nav(
 
     icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
     return build_protocol_summary_nav(path.strip(), query=query, icd_codes=icd_codes)
+
+
+@app.get("/api/protocol-summary-excerpt")
+def api_protocol_summary_excerpt(
+    path: str = Query(..., min_length=3, max_length=512),
+    condition_id: str = Query(..., min_length=1, max_length=128),
+    section_id: str = Query(..., min_length=2, max_length=32),
+) -> dict:
+    """Цитаты из Protocol Summary по разделу (без LLM) — шаг 7 воронки."""
+    from clinical_knowledge.protocol_summary.nav import build_section_excerpt
+
+    allowed = {"criteria", "exams", "treatment", "red_flags", "follow_up"}
+    sid = section_id.strip()
+    if sid not in allowed:
+        raise HTTPException(status_code=400, detail=f"section_id must be one of: {', '.join(sorted(allowed))}")
+    return build_section_excerpt(path.strip(), condition_id=condition_id.strip(), section_id=sid)
 
 
 @app.get("/api/methodist/analysis/{analysis_id}")

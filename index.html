@@ -14118,7 +14118,9 @@
       bindProtoPickButtons(data);
       if (stepped) {
         if (wiz.step === "detail") {
-          updateSearchWizardBar("detail", "Шаг 5 · выдержка из PDF");
+          updateSearchWizardBar("detail", "Шаг 6 · выдержка из PDF");
+        } else if (wiz.step === "excerpt") {
+          updateSearchWizardBar("excerpt", "Шаг 7 · цитаты из карточки");
         } else {
           updateSearchWizardBar("protocols", "Шаг 4 · список протоколов");
         }
@@ -16961,7 +16963,45 @@
 
   function searchWizardBack() {
     var wiz = window.__searchWizard || { step: "query" };
+    var ctx = window.__funnelContext || {};
+    var nav = ctx.summary_nav;
+    if (wiz.step === "excerpt") {
+      if (ctx.condition_id && nav && nav.available) {
+        renderSearchWizardSectionStep(nav, ctx.condition_id, ctx.protocol_path || wiz.selectedProto);
+      } else if (window.__lastAssistData) {
+        wiz.step = "detail";
+        window.__searchWizard = wiz;
+        renderLlmOut(window.__lastAssistData);
+      }
+      return;
+    }
+    if (wiz.step === "section") {
+      if (nav && nav.conditions && nav.conditions.length > 1) {
+        renderSearchWizardConditionStep(nav, ctx.protocol_path || wiz.selectedProto);
+      } else if (window.__lastAssistData) {
+        wiz.step = "protocols";
+        wiz.selectedProto = null;
+        window.__searchWizard = wiz;
+        renderLlmOut(window.__lastAssistData);
+      }
+      return;
+    }
+    if (wiz.step === "condition") {
+      wiz.step = "protocols";
+      wiz.selectedProto = null;
+      delete ctx.condition_id;
+      window.__searchWizard = wiz;
+      window.__funnelContext = ctx;
+      if (window.__lastAssistData) {
+        renderLlmOut(window.__lastAssistData);
+      }
+      return;
+    }
     if (wiz.step === "detail") {
+      if (ctx.summary_nav && ctx.summary_nav.available && ctx.condition_id && nav) {
+        renderSearchWizardSectionStep(nav, ctx.condition_id, ctx.protocol_path || wiz.selectedProto);
+        return;
+      }
       wiz.step = "protocols";
       wiz.selectedProto = null;
       window.__searchWizard = wiz;
@@ -17159,6 +17199,249 @@
       });
   }
 
+  function fetchProtocolSummaryNavForWizard(path, queryText, icdList) {
+    var url =
+      apiBaseUrl() +
+      "/api/protocol-summary-nav?path=" +
+      encodeURIComponent(path) +
+      "&query=" +
+      encodeURIComponent(queryText || "");
+    if (icdList && icdList.length) {
+      url += "&icd=" + encodeURIComponent(icdList.join(","));
+    }
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      return r.ok ? r.json() : null;
+    });
+  }
+
+  function renderSearchWizardConditionStep(nav, path) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "condition", selectedProto: path };
+    updateSearchWizardBar("condition", "Шаг 5 · нозология в протоколе");
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+    html +=
+      '<p class="search-wizard-icd-lead">В карточке протокола несколько нозологий — выберите подходящую.</p>';
+    html += '<div class="search-wizard-chips" role="list">';
+    var ci;
+    for (ci = 0; ci < (nav.conditions || []).length; ci++) {
+      var cond = nav.conditions[ci];
+      var label = cond.name || "Нозология";
+      if (cond.icd_match) label += " · МКБ";
+      html +=
+        '<button type="button" class="search-wizard-chip btn-cond-wizard-pick" data-cond-id="' +
+        escapeHtmlAttr(cond.condition_id || "") +
+        '" role="listitem">' +
+        escapeHtml(label) +
+        "</button>";
+    }
+    html += "</div></div></div>";
+    out.innerHTML = html;
+    out.querySelectorAll(".btn-cond-wizard-pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var cid = btn.getAttribute("data-cond-id") || "";
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.condition_id = cid;
+        renderSearchWizardSectionStep(nav, cid, path);
+      });
+    });
+  }
+
+  function renderSearchWizardSectionStep(nav, conditionId, path) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "section", selectedProto: path };
+    updateSearchWizardBar("section", "Шаг 6 · раздел протокола");
+    var cond = null;
+    var ci;
+    for (ci = 0; ci < (nav.conditions || []).length; ci++) {
+      if (nav.conditions[ci].condition_id === conditionId) {
+        cond = nav.conditions[ci];
+        break;
+      }
+    }
+    var sections = (cond && cond.sections) || [];
+    if (!sections.length) {
+      window.__searchWizard = { step: "detail", selectedProto: path };
+      if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+      return;
+    }
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+    html +=
+      '<p class="search-wizard-icd-lead">' +
+      escapeHtml((cond && cond.name) || "Раздел") +
+      " — выберите блок для цитат из PDF (без ответа модели).</p>";
+    html += '<div class="search-wizard-chips" role="list">';
+    var si;
+    for (si = 0; si < sections.length; si++) {
+      var sec = sections[si];
+      html +=
+        '<button type="button" class="search-wizard-chip btn-section-wizard-pick" data-section-id="' +
+        escapeHtmlAttr(sec.id || "") +
+        '" data-section-label="' +
+        escapeHtmlAttr(sec.label || "") +
+        '" role="listitem">' +
+        escapeHtml(sec.label || sec.id) +
+        " (" +
+        String(sec.count || 0) +
+        ")</button>";
+    }
+    html += "</div>";
+    html +=
+      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-section-wizard-pdf">Только PDF-выдержка из поиска</button></p>';
+    html += "</div></div>";
+    out.innerHTML = html;
+    out.querySelectorAll(".btn-section-wizard-pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var sid = btn.getAttribute("data-section-id") || "";
+        var slabel = btn.getAttribute("data-section-label") || "";
+        renderSearchWizardExcerptStep(path, conditionId, sid, slabel);
+      });
+    });
+    var skipPdf = document.getElementById("btn-section-wizard-pdf");
+    if (skipPdf) {
+      skipPdf.addEventListener("click", function () {
+        window.__searchWizard = { step: "detail", selectedProto: path };
+        if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+      });
+    }
+  }
+
+  function renderSearchWizardExcerptStep(path, conditionId, sectionId, sectionLabel) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "excerpt", selectedProto: path };
+    updateSearchWizardBar("excerpt", "Шаг 7 · цитаты из карточки");
+    out.innerHTML =
+      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
+      '<p class="search-wizard-icd-lead">Загрузка цитат…</p></div></div>';
+    var url =
+      apiBaseUrl() +
+      "/api/protocol-summary-excerpt?path=" +
+      encodeURIComponent(path) +
+      "&condition_id=" +
+      encodeURIComponent(conditionId) +
+      "&section_id=" +
+      encodeURIComponent(sectionId);
+    fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (payload) {
+        var data = window.__lastAssistData || {};
+        var excerptMap = ragExcerptByPath(data.retrieval || []);
+        var pdfExcerpt = excerptMap[path] || "";
+        var html =
+          '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+        html +=
+          '<p class="assist-sec-label">' +
+          escapeHtml(sectionLabel || payload.section_label || "Раздел") +
+          "</p>";
+        if (payload && payload.available && payload.items && payload.items.length) {
+          html += '<ul class="assist-proto-excerpt-list">';
+          var ii;
+          for (ii = 0; ii < payload.items.length; ii++) {
+            var it = payload.items[ii];
+            html += "<li>";
+            if (it.page_start) {
+              html +=
+                '<span class="assist-catalog-badge">стр. ' +
+                escapeHtml(String(it.page_start)) +
+                "</span> ";
+            }
+            html += escapeHtml(it.quote || it.text || "");
+            html += "</li>";
+          }
+          html += "</ul>";
+        } else {
+          html +=
+            '<p class="assist-ai-eval-lead">Карточка без цитат для этого раздела — показана PDF-выдержка из поиска.</p>';
+        }
+        if (pdfExcerpt) {
+          html +=
+            '<details class="assist-proto-excerpt-fold"><summary>Фрагмент из индекса PDF</summary><p class="assist-proto-excerpt">' +
+            escapeHtml(truncateExcerpt(pdfExcerpt, 480)) +
+            "</p></details>";
+        }
+        html +=
+          '<p class="assist-proto-actions">' +
+          '<a class="proto-link" href="' +
+          escapeHtmlAttr(safeResourceHref(path)) +
+          '" target="_blank" rel="noopener">Открыть PDF</a> · ' +
+          '<button type="button" class="btn-assist btn-proto-explore-excerpt" data-proto-path="' +
+          escapeHtmlAttr(path) +
+          '">Разобрать протокол (LLM)</button>' +
+          "</p>";
+        html += "</div></div>";
+        out.innerHTML = html;
+        var exploreBtn = out.querySelector(".btn-proto-explore-excerpt");
+        if (exploreBtn) {
+          exploreBtn.addEventListener("click", function () {
+            window.__searchWizard = { step: "detail", selectedProto: path };
+            renderLlmOut(data);
+            var protos = (data.llm_json && data.llm_json.protocols) || [];
+            var pi;
+            for (pi = 0; pi < protos.length; pi++) {
+              if (protos[pi].path === path) {
+                loadProtocolDetailExpand(
+                  {
+                    path: path,
+                    title: protos[pi].title || "",
+                    confidence_score: protos[pi].confidence_score,
+                  },
+                  data.query || lastAssistFullQuery || "",
+                  undefined
+                );
+                break;
+              }
+            }
+          });
+        }
+      })
+      .catch(function () {
+        window.__searchWizard = { step: "detail", selectedProto: path };
+        if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+      });
+  }
+
+  function openProtocolWizardFlow(path) {
+    if (!path || !window.__lastAssistData) return;
+    if (!isSearchSteppedMode()) {
+      window.__searchWizard = { step: "detail", selectedProto: path };
+      renderLlmOut(window.__lastAssistData);
+      return;
+    }
+    var data = window.__lastAssistData;
+    var q = data.query || lastAssistFullQuery || "";
+    var icd = icdCodesFromAssistData(data);
+    fetchProtocolSummaryNavForWizard(path, q, icd)
+      .then(function (nav) {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.protocol_path = path;
+        window.__funnelContext.summary_nav = nav;
+        if (!nav || !nav.available || !nav.conditions || !nav.conditions.length) {
+          window.__searchWizard = { step: "detail", selectedProto: path };
+          renderLlmOut(data);
+          return;
+        }
+        if (nav.conditions.length === 1) {
+          window.__funnelContext.condition_id = nav.conditions[0].condition_id;
+          renderSearchWizardSectionStep(nav, nav.conditions[0].condition_id, path);
+          return;
+        }
+        renderSearchWizardConditionStep(nav, path);
+      })
+      .catch(function () {
+        window.__searchWizard = { step: "detail", selectedProto: path };
+        renderLlmOut(data);
+      });
+  }
+
   function bindProtoPickButtons(data) {
     document.querySelectorAll(".btn-proto-pick").forEach(function (btn) {
       if (btn.getAttribute("data-wired")) return;
@@ -17166,11 +17449,7 @@
       btn.addEventListener("click", function () {
         var path = btn.getAttribute("data-proto-path") || "";
         if (!path || !window.__lastAssistData) return;
-        window.__searchWizard = {
-          step: "detail",
-          selectedProto: path,
-        };
-        renderLlmOut(window.__lastAssistData);
+        openProtocolWizardFlow(path);
         var sr = document.getElementById("section-results");
         if (sr) {
           try {

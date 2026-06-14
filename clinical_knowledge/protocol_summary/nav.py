@@ -126,6 +126,129 @@ def _condition_nav(cond: ConditionSummary, *, query: str = "", icd_codes: list[s
     }
 
 
+def _append_excerpt_item(
+    out: list[dict[str, Any]],
+    *,
+    label: str,
+    text: str,
+    source_ref: Any,
+    limit: int,
+) -> None:
+    if len(out) >= limit:
+        return
+    sr = source_ref
+    quote = ""
+    page_start = None
+    section_title = None
+    if sr is not None:
+        quote = str(getattr(sr, "quote", None) or "").strip()
+        page_start = getattr(sr, "page_start", None)
+        section_title = getattr(sr, "section_title", None)
+    body = (quote or text or "").strip()
+    if not body:
+        return
+    out.append(
+        {
+            "label": label,
+            "text": (text or body)[:400],
+            "quote": body[:800],
+            "page_start": page_start,
+            "section_title": section_title,
+        }
+    )
+
+
+def _collect_section_excerpt_items(cond: ConditionSummary, section_id: str, *, limit: int = 12) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    if section_id == "criteria":
+        for block in (cond.clinical_criteria, cond.diagnostic_criteria):
+            if block is None:
+                continue
+            for item in block.required + block.optional + block.exclusion:
+                _append_excerpt_item(
+                    out,
+                    label="критерий",
+                    text=item.text,
+                    source_ref=item.source_ref,
+                    limit=limit,
+                )
+        if cond.diagnosis_structure:
+            for comp in cond.diagnosis_structure.required_components + cond.diagnosis_structure.optional_components:
+                _append_excerpt_item(
+                    out,
+                    label="компонент диагноза",
+                    text=comp.name or comp.description or "",
+                    source_ref=comp.source_ref,
+                    limit=limit,
+                )
+    elif section_id == "exams":
+        for exam in cond.required_exams + cond.conditional_exams:
+            _append_excerpt_item(
+                out,
+                label=exam.name,
+                text=exam.name,
+                source_ref=exam.source_ref,
+                limit=limit,
+            )
+    elif section_id == "treatment":
+        tb = cond.treatment
+        if tb:
+            for item in tb.drugs + tb.drug_groups + tb.non_drug + tb.procedures + tb.surgery:
+                txt = getattr(item, "text", None) or getattr(item, "drug_name", None) or getattr(item, "drug_group", None) or ""
+                _append_excerpt_item(out, label="лечение", text=str(txt), source_ref=item.source_ref, limit=limit)
+    elif section_id == "red_flags":
+        for rf in cond.red_flags:
+            _append_excerpt_item(out, label="красный флаг", text=rf.text, source_ref=rf.source_ref, limit=limit)
+    elif section_id == "follow_up":
+        for fu in cond.follow_up + cond.hospitalization + cond.routing:
+            _append_excerpt_item(
+                out,
+                label="наблюдение",
+                text=getattr(fu, "text", None) or getattr(fu, "indication", None) or "",
+                source_ref=fu.source_ref,
+                limit=limit,
+            )
+    return out
+
+
+def build_section_excerpt(
+    catalog_path: str,
+    *,
+    condition_id: str,
+    section_id: str,
+) -> dict[str, Any]:
+    """Цитаты из Protocol Summary по разделу (без LLM)."""
+    summary = find_summary_by_catalog_path(catalog_path)
+    if summary is None:
+        return {"available": False, "path": catalog_path, "llm_used": False}
+    cond: ConditionSummary | None = None
+    for c in summary.conditions:
+        if c.condition_id == condition_id:
+            cond = c
+            break
+    if cond is None:
+        return {
+            "available": False,
+            "path": catalog_path,
+            "error": "condition_not_found",
+            "llm_used": False,
+        }
+    items = _collect_section_excerpt_items(cond, section_id)
+    section_label = next((lbl for sid, lbl, _f in _SECTION_SPECS if sid == section_id), section_id)
+    return {
+        "available": bool(items),
+        "path": catalog_path,
+        "protocol_id": summary.protocol_id,
+        "title": summary.source.title or "",
+        "condition_id": condition_id,
+        "condition_name": cond.name,
+        "section_id": section_id,
+        "section_label": section_label,
+        "items": items,
+        "llm_used": False,
+    }
+
+
 def build_protocol_summary_nav(
     catalog_path: str,
     *,

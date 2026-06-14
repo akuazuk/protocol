@@ -4,6 +4,8 @@ from __future__ import annotations
 import pytest
 
 from clinical_knowledge.protocol_summary.icd_index import (
+    build_retrieval_prefilter_context,
+    chunk_matches_retrieval_prefilter,
     find_catalog_paths_by_icd_codes,
     find_summary_refs_by_icd,
     prewarm_icd_summary_index,
@@ -53,3 +55,20 @@ def test_retrieve_icd_boosts_with_path_boost(retrieve_fn) -> None:
     assert out
     top_path = out[0].get("path") or ""
     assert any(p in top_path or top_path in p for p in paths) or top_path
+
+
+def test_prefilter_context_active_with_icd_and_slug():
+    ctx = build_retrieval_prefilter_context(["J18.9"], ["gastroenterologiya"])
+    assert ctx["active"] is True
+    assert ctx["slugs"]
+
+
+def test_chunk_matches_prefilter_by_category():
+    ch = {"path": "x/y.pdf", "category": "gastroenterologiya"}
+    ctx = build_retrieval_prefilter_context(None, ["gastroenterologiya"])
+    assert chunk_matches_retrieval_prefilter(
+        ch,
+        catalog_paths=ctx["paths"],  # type: ignore[arg-type]
+        category_slugs=ctx["slugs"],  # type: ignore[arg-type]
+        icd_norms=[],
+    )

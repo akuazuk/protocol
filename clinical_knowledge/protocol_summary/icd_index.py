@@ -123,6 +123,74 @@ def find_catalog_paths_by_icd_codes(codes: list[str], *, limit: int = 8) -> list
     return paths
 
 
+def build_retrieval_prefilter_context(
+    icd_codes: list[str] | None,
+    category_slugs: list[str] | None,
+    *,
+    icd_path_limit: int = 24,
+) -> dict[str, frozenset[str] | bool]:
+    """Контекст pre-filter до embed rerank: пути PDF по МКБ + slug рубрик."""
+    slugs = frozenset(
+        s.strip()
+        for s in (category_slugs or [])
+        if isinstance(s, str) and s.strip()
+    )
+    paths: set[str] = set()
+    if icd_codes:
+        for p in find_catalog_paths_by_icd_codes(icd_codes, limit=icd_path_limit):
+            paths.add(p.replace("\\", "/"))
+    return {
+        "active": bool(paths or slugs),
+        "paths": frozenset(paths),
+        "slugs": slugs,
+    }
+
+
+def _norm_catalog_path(p: str) -> str:
+    return p.replace("\\", "/").strip().lower()
+
+
+def catalog_path_matches_chunk(chunk_path: str, catalog_paths: frozenset[str]) -> bool:
+    p = _norm_catalog_path(chunk_path)
+    if not p or not catalog_paths:
+        return False
+    name = Path(p).name
+    for raw in catalog_paths:
+        np = _norm_catalog_path(raw)
+        if not np:
+            continue
+        if p == np or p.endswith(np) or np.endswith(p) or name == Path(np).name:
+            return True
+    return False
+
+
+def chunk_matches_retrieval_prefilter(
+    ch: dict,
+    *,
+    catalog_paths: frozenset[str],
+    category_slugs: frozenset[str],
+    icd_norms: list[str],
+) -> bool:
+    """Чанк проходит pre-filter B2 (рубрика / МКБ-index / summary ICD)."""
+    if catalog_paths and catalog_path_matches_chunk(str(ch.get("path") or ""), catalog_paths):
+        return True
+    cat = (ch.get("category") or "").strip()
+    if category_slugs and cat in category_slugs:
+        return True
+    if not (ch.get("generated_from_summary") or ch.get("chunk_source") == "summary_chunks"):
+        return False
+    if category_slugs and cat in category_slugs:
+        return True
+    if icd_norms:
+        for raw in ch.get("icd10_codes") or []:
+            c = _norm_icd(str(raw)).lower()
+            if not c:
+                continue
+            if any(c == n or c.startswith(n) or n.startswith(c) for n in icd_norms):
+                return True
+    return False
+
+
 def clear_icd_summary_index_cache() -> None:
     _icd_to_summary_refs.cache_clear()
     _protocol_id_to_local_path.cache_clear()
