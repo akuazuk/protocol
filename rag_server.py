@@ -5124,6 +5124,44 @@ def dedupe_retrieval_by_basename(
     return [by_base[k] for k in order if k in by_base]
 
 
+def _build_protocols_from_retrieval(
+    retrieved: list[dict],
+    *,
+    prefer_slugs: list[str] | None = None,
+) -> list[dict]:
+    """Список протоколов только из RAG (без вызова LLM для ranking)."""
+    rows = dedupe_retrieval_by_basename(retrieved, prefer_slugs=prefer_slugs)
+    if not rows:
+        return []
+    raw_scores: list[float] = []
+    for row in rows:
+        try:
+            raw_scores.append(float(row.get("score") or row.get("lexical_score") or 0.0))
+        except (TypeError, ValueError):
+            raw_scores.append(0.0)
+    max_sc = max(raw_scores) if raw_scores else 1.0
+    if max_sc <= 0:
+        max_sc = 1.0
+    protos: list[dict] = []
+    for row, raw in zip(rows, raw_scores):
+        p = _normalize_protocol_path_key(str(row.get("path") or ""))
+        if not p:
+            continue
+        meta = _protocols_by_path.get(p) or {}
+        title = str(meta.get("title") or p.rsplit("/", 1)[-1])
+        conf = min(0.97, max(0.38, 0.35 + 0.62 * (raw / max_sc)))
+        rag_sup = min(0.95, max(0.2, conf * 0.88))
+        protos.append(
+            {
+                "path": p,
+                "title": title,
+                "confidence_score": round(conf, 4),
+                "rag_support": round(rag_sup, 4),
+            }
+        )
+    return dedupe_protocols_list(protos, prefer_slugs=prefer_slugs)
+
+
 def dedupe_parsed_protocols(
     parsed: dict | None,
     *,
@@ -5794,6 +5832,10 @@ class AssistIn(BaseModel):
         default=False,
         description="true - полный JSON (summary, differential); false - lite (только protocols, быстрее)",
     )
+    retrieve_only: bool = Field(
+        default=False,
+        description="true - только RAG ranking без LLM (быстрый пошаговый поиск)",
+    )
 
 
 class IcdSuggestIn(BaseModel):
@@ -6218,7 +6260,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r133-search-ai-review-dashboard"
+BUILD_VERSION = "2026-06-01-r134-search-stepped-compact"
 
 
 def _app_version() -> str:
@@ -6615,119 +6657,135 @@ def api_assist(body: AssistIn) -> dict:
                     filter_retrieval_by_audience(r2, q, _routing)
                 )
 
-    maybe_refine_icd_with_gemini_after_retrieve(
-        model,
-        q_rag,
-        icd_analysis,
-        retrieved,
-    )
+    retrieve_only = bool(body.retrieve_only)
 
-    lines = []
-    meta_specs: list[str] = []
-    for i, r in enumerate(retrieved, 1):
-        cat = ""
-        p = r["path"]
-        if p in _protocols_by_path:
-            cat = _protocols_by_path[p].get("category") or ""
-        pm = _protocol_meta.get(p)
-        if pm and pm.get("specialty_ru"):
-            meta_specs.append(pm["specialty_ru"])
-        sc = r.get("score")
-        lx = r.get("lexical_score")
-        rm = r.get("routing_multiplier")
-        lines.append(
-            f"[{i}] path={p}\n"
-            f"рубрика={cat}\n"
-            f"тип_фрагмента={r['kind']}\n"
-            f"score={sc} lexical_score={lx} routing_multiplier={rm}\n"
-            f"текст:\n{r['excerpt']}\n"
+    if not retrieve_only:
+        maybe_refine_icd_with_gemini_after_retrieve(
+            model,
+            q_rag,
+            icd_analysis,
+            retrieved,
         )
-    context = "\n---\n".join(lines)
 
-    hint_block = ""
-    if meta_specs:
-        hint_block = (
-            "Справочно рубрики отобранных фрагментов: "
-            + ", ".join(sorted(set(meta_specs)))
-            + "\n\n"
+    if retrieve_only:
+        assist_lite = True
+        retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
+        protos = _build_protocols_from_retrieval(retrieved, prefer_slugs=user_slugs)
+        parsed: dict | None = {"protocols": protos}
+        text = ""
+        finish = "RETRIEVE_ONLY"
+        retry_used = False
+        if parsed and protos:
+            apply_protocol_confidence_calibration(parsed, retrieved)
+            dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
+    else:
+        lines: list[str] = []
+        meta_specs: list[str] = []
+        for i, r in enumerate(retrieved, 1):
+            cat = ""
+            p = r["path"]
+            if p in _protocols_by_path:
+                cat = _protocols_by_path[p].get("category") or ""
+            pm = _protocol_meta.get(p)
+            if pm and pm.get("specialty_ru"):
+                meta_specs.append(pm["specialty_ru"])
+            sc = r.get("score")
+            lx = r.get("lexical_score")
+            rm = r.get("routing_multiplier")
+            lines.append(
+                f"[{i}] path={p}\n"
+                f"рубрика={cat}\n"
+                f"тип_фрагмента={r['kind']}\n"
+                f"score={sc} lexical_score={lx} routing_multiplier={rm}\n"
+                f"текст:\n{r['excerpt']}\n"
+            )
+        context = "\n---\n".join(lines)
+
+        hint_block = ""
+        if meta_specs:
+            hint_block = (
+                "Справочно рубрики отобранных фрагментов: "
+                + ", ".join(sorted(set(meta_specs)))
+                + "\n\n"
+            )
+        icd_block = _icd_block_for_prompt(icd_analysis)
+        if icd_block:
+            icd_block = icd_block + "\n\n"
+        user_block = (
+            icd_block
+            + hint_block
+            + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}\n\n"
+            + ASSIST_USER_CONTEXT_GUIDE
         )
-    icd_block = _icd_block_for_prompt(icd_analysis)
-    if icd_block:
-        icd_block = icd_block + "\n\n"
-    user_block = (
-        icd_block
-        + hint_block
-        + f"Запрос пользователя:\n{q}\n\nФрагменты протоколов:\n{context}\n\n"
-        + ASSIST_USER_CONTEXT_GUIDE
-    )
-    full_prompt = (
-        (SYSTEM_JSON_LITE if assist_lite else SYSTEM_JSON)
-        + "\n\n---\n\n"
-        + user_block
-    )
-    prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
-    if len(full_prompt) > prompt_limit:
-        full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
-    retry_used = False
-
-    def _one_call(prompt: str) -> tuple[object, str, dict | None]:
-        try:
-            r = generate_gemini(model, prompt)
-        except HTTPException:
-            raise
-        except Exception as e:
-            raise HTTPException(status_code=502, detail=f"Модель: {e!s}") from e
-
-        pf = getattr(r, "prompt_feedback", None)
-        if pf is not None and getattr(pf, "block_reason", None):
-            raise HTTPException(
-                status_code=502,
-                detail=f"Запрос отклонён моделью: {pf.block_reason}",
-            )
-
-        txt = _extract_gemini_text(r)
-        if not txt:
-            raise HTTPException(
-                status_code=502,
-                detail="Пустой ответ модели (блокировка контента или сбой). Попробуйте другую формулировку.",
-            )
-        return r, txt, _try_parse_json(txt)
-
-    try:
-        resp, text, parsed = _one_call(full_prompt)
-    except HTTPException:
-        raise
-
-    finish = _gemini_finish_reason(resp)
-    do_retry = os.environ.get("GEMINI_ASSIST_RETRY", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
-    if do_retry and (parsed is None or _finish_hits_max(resp)):
-        retry_prompt = (
-            (SYSTEM_JSON_LITE_RETRY if assist_lite else SYSTEM_JSON_RETRY)
+        full_prompt = (
+            (SYSTEM_JSON_LITE if assist_lite else SYSTEM_JSON)
             + "\n\n---\n\n"
             + user_block
         )
-        if len(retry_prompt) > prompt_limit:
-            retry_prompt = retry_prompt[: prompt_limit - 80] + "\n…[обрезано]"
+        prompt_limit = int(os.environ.get("GEMINI_PROMPT_MAX_CHARS", "28000"))
+        if len(full_prompt) > prompt_limit:
+            full_prompt = full_prompt[: prompt_limit - 80] + "\n…[обрезано для лимита контекста]"
+        retry_used = False
+
+        def _one_call(prompt: str) -> tuple[object, str, dict | None]:
+            try:
+                r = generate_gemini(model, prompt)
+            except HTTPException:
+                raise
+            except Exception as e:
+                raise HTTPException(status_code=502, detail=f"Модель: {e!s}") from e
+
+            pf = getattr(r, "prompt_feedback", None)
+            if pf is not None and getattr(pf, "block_reason", None):
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Запрос отклонён моделью: {pf.block_reason}",
+                )
+
+            txt = _extract_gemini_text(r)
+            if not txt:
+                raise HTTPException(
+                    status_code=502,
+                    detail="Пустой ответ модели (блокировка контента или сбой). Попробуйте другую формулировку.",
+                )
+            return r, txt, _try_parse_json(txt)
+
         try:
-            resp2, text2, parsed2 = _one_call(retry_prompt)
+            resp, text, parsed = _one_call(full_prompt)
         except HTTPException:
-            pass
-        else:
-            retry_used = True
-            resp, text, parsed = resp2, text2, parsed2
-            finish = _gemini_finish_reason(resp)
+            raise
 
-    if parsed and isinstance(parsed, dict):
-        apply_protocol_confidence_calibration(parsed, retrieved)
-        dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
-        if assist_lite:
-            _strip_assist_verbose_fields(parsed)
+        finish = _gemini_finish_reason(resp)
+        do_retry = os.environ.get("GEMINI_ASSIST_RETRY", "1").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        )
+        if do_retry and (parsed is None or _finish_hits_max(resp)):
+            retry_prompt = (
+                (SYSTEM_JSON_LITE_RETRY if assist_lite else SYSTEM_JSON_RETRY)
+                + "\n\n---\n\n"
+                + user_block
+            )
+            if len(retry_prompt) > prompt_limit:
+                retry_prompt = retry_prompt[: prompt_limit - 80] + "\n…[обрезано]"
+            try:
+                resp2, text2, parsed2 = _one_call(retry_prompt)
+            except HTTPException:
+                pass
+            else:
+                retry_used = True
+                resp, text, parsed = resp2, text2, parsed2
+                finish = _gemini_finish_reason(resp)
 
-    retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
+        if parsed and isinstance(parsed, dict):
+            apply_protocol_confidence_calibration(parsed, retrieved)
+            dedupe_parsed_protocols(parsed, prefer_slugs=user_slugs)
+            if assist_lite:
+                _strip_assist_verbose_fields(parsed)
+
+    if not retrieve_only:
+        retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
 
     icd_payload = _icd_client_payload(icd_analysis)
     diag_mode = _diagnostic_mode_summary(icd_payload, retrieved)
@@ -6878,6 +6936,7 @@ def api_assist(body: AssistIn) -> dict:
         "chunk_vote_majority": chunk_vote_majority,
         "confidence_second_pass_used": confidence_second_pass_used,
         "assist_lite": assist_lite,
+        "retrieve_only": retrieve_only,
     }
 
 

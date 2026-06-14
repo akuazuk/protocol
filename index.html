@@ -7784,6 +7784,131 @@
       color: var(--green-900);
     }
 
+    .search-wizard-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.85rem;
+      margin: 0 0 0.65rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 10px;
+      background: rgba(232, 245, 241, 0.55);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      font-size: 0.82rem;
+    }
+
+    .search-wizard-step-label {
+      font-weight: 650;
+      color: var(--green-900);
+    }
+
+    .search-wizard-icd {
+      margin: 0.5rem 0 0.75rem;
+    }
+
+    .search-wizard-icd-lead {
+      margin: 0 0 0.55rem;
+      font-size: 0.86rem;
+      color: var(--green-900);
+    }
+
+    .search-wizard-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0 0 0.65rem;
+    }
+
+    .search-wizard-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.42rem 0.72rem;
+      border-radius: 999px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      color: var(--green-900);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .search-wizard-chip:hover,
+    .search-wizard-chip:focus-visible {
+      background: rgba(232, 245, 241, 0.95);
+      border-color: var(--green-700);
+    }
+
+    .search-wizard-chip code {
+      font-size: 0.78rem;
+    }
+
+    .search-wizard-skip {
+      margin: 0;
+      font-size: 0.8rem;
+    }
+
+    body.search-has-results #panel-main-search .search-panel__hint,
+    body.search-has-results #query-form-hint,
+    body.search-has-results #section-help,
+    body.search-has-results .search-mode-toolbar .info-panel-note {
+      display: none;
+    }
+
+    .assist-proto-list--compact .assist-proto-list > li,
+    ul.assist-proto-list.assist-proto-list--compact > li {
+      padding: 0.55rem 0.65rem;
+      margin-bottom: 0.45rem;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .assist-proto-excerpt--fold {
+      margin: 0.35rem 0 0;
+      border: none;
+      padding: 0;
+    }
+
+    .assist-proto-excerpt--fold summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--muted);
+      list-style: none;
+    }
+
+    .assist-proto-excerpt--fold summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .assist-proto-excerpt--fold summary::before {
+      content: "▸ ";
+      color: var(--green-700);
+    }
+
+    .assist-proto-excerpt--fold[open] summary::before {
+      content: "▾ ";
+    }
+
+    .assist-proto-excerpt--fold blockquote {
+      margin: 0.35rem 0 0;
+    }
+
+    .assist-search-meta--compact {
+      font-size: 0.8rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .btn-proto-pick {
+      margin-top: 0.35rem;
+      font-size: 0.82rem;
+    }
+
+    .assist-card--stepped .assist-hr {
+      margin: 0.65rem 0;
+    }
+
     .assist-catalog-badge {
       display: inline-block;
       margin-left: 0.35rem;
@@ -8375,6 +8500,10 @@
             <input type="checkbox" id="citations-only-mode" />
             Только цитаты из протоколов (без краткого ответа модели)
           </label>
+          <label>
+            <input type="checkbox" id="search-stepped-mode" />
+            Пошаговый подбор (коды → список → протокол)
+          </label>
           <span class="info-panel-note" style="margin: 0">Для аудита: видны PDF-выдержки и ссылки, без краткой интерпретации сервиса.</span>
         </div>
         <div class="search-panel__head">
@@ -8517,6 +8646,10 @@
           <button type="button" class="btn-link-nav" id="btn-back-to-query">
             Изменить запрос
           </button>
+        </div>
+        <div id="search-wizard-bar" class="search-wizard-bar" hidden role="navigation" aria-label="Шаги подбора протокола">
+          <button type="button" class="btn-link-nav" id="btn-search-wizard-back">← Назад</button>
+          <span id="search-wizard-step-label" class="search-wizard-step-label"></span>
         </div>
         <div id="llm-out" class="llm-out"></div>
 
@@ -10382,6 +10515,7 @@
   function showResultsSection(visible) {
     var sec = document.getElementById("section-results");
     if (sec) sec.hidden = !visible;
+    document.body.classList.toggle("search-has-results", !!visible);
     updateScrollFabVisibility();
   }
 
@@ -11877,7 +12011,7 @@
       html +=
         '<span class="assist-proto-meta">' + escapeHtml(sub) + "</span>";
     }
-    if (ragN > 0) {
+    if (ragN > 0 && !opts.steppedList && !opts.compactResults) {
       html +=
         '<span class="assist-pct assist-pct-rag" title="Нормализованный скор отбора RAG (лексика, рубрики, эмбеддинг) по этому протоколу"> · фрагмент ' +
         pct01(ragN) +
@@ -11887,7 +12021,7 @@
       html +=
         '<span class="assist-pct assist-pct--warn" title="Слабая опора в отобранных фрагментах"> · слабая опора в отборе</span>';
     }
-    if (pr.match_reason && !opts.citationsOnly && (!opts.doctorLite || opts.isTopProtocol)) {
+    if (pr.match_reason && !opts.citationsOnly && (!opts.doctorLite || opts.isTopProtocol) && !opts.steppedList) {
       html +=
         '<p class="assist-reason"><strong>Оценка ИИ:</strong> ' + escapeHtml(pr.match_reason) + "</p>";
     }
@@ -11900,12 +12034,30 @@
     }
     var cit = excerptForProtocol(pr, excerptByPath);
     if (cit) {
-      html +=
-        '<blockquote class="assist-proto-excerpt" cite="' +
-        escapeHtmlAttr(href) +
-        '"><span class="assist-proto-excerpt-label">Содержит информацию о</span><p class="assist-proto-excerpt-text">' +
-        escapeHtml(cit) +
-        "</p></blockquote>";
+      var previewLen = opts.excerptPreviewLen || 0;
+      var showFull = opts.steppedDetail || !previewLen;
+      var citShow = showFull ? cit : truncateExcerpt(cit, previewLen);
+      if (opts.excerptFold && !opts.steppedDetail && cit.length > (previewLen || 120)) {
+        html +=
+          '<details class="assist-proto-excerpt assist-proto-excerpt--fold">' +
+          '<summary class="assist-proto-excerpt-summary">' +
+          escapeHtml(truncateExcerpt(cit, previewLen || 120)) +
+          "</summary>" +
+          '<blockquote class="assist-proto-excerpt" cite="' +
+          escapeHtmlAttr(href) +
+          '"><span class="assist-proto-excerpt-label">Выдержка из PDF</span><p class="assist-proto-excerpt-text">' +
+          escapeHtml(cit) +
+          "</p></blockquote></details>";
+      } else {
+        html +=
+          '<blockquote class="assist-proto-excerpt" cite="' +
+          escapeHtmlAttr(href) +
+          '"><span class="assist-proto-excerpt-label">' +
+          (opts.steppedList ? "Фрагмент" : "Содержит информацию о") +
+          '</span><p class="assist-proto-excerpt-text">' +
+          escapeHtml(citShow) +
+          "</p></blockquote>";
+      }
     }
     var icdTop = icdMentionsForProtocol(pr, protocolIcdMentions);
     if (icdTop && icdTop.length && !opts.doctorLite) {
@@ -11950,7 +12102,21 @@
       }
       html += "</ul></details>";
     }
-    if (!opts.compactResults) {
+    if (opts.steppedList) {
+      html +=
+        '<p class="assist-proto-actions">' +
+        '<button type="button" class="btn-assist btn-proto-pick" data-proto-path="' +
+        escapeHtmlAttr(pr.path || "") +
+        '">Открыть выдержку</button>' +
+        "</p>";
+    } else if (
+      opts.steppedDetail ||
+      !opts.citationsOnly ||
+      !!window.__methodistMode
+    ) {
+      var exploreLbl = opts.citationsOnly
+        ? "Разобрать протокол"
+        : "Разобрать протокол (выдержка + матрица КЗ)";
       html +=
         '<p class="assist-proto-actions">' +
         '<button type="button" class="btn-assist btn-proto-explore" data-proto-path="' +
@@ -11959,7 +12125,9 @@
         escapeHtmlAttr(title) +
         '" data-proto-confidence="' +
         escapeHtmlAttr(String(mScore)) +
-        '">Разобрать протокол (выдержка + матрица КЗ)</button>' +
+        '">' +
+        exploreLbl +
+        "</button>" +
         "</p>";
     }
     html += "</li>";
@@ -13424,8 +13592,22 @@
     return n;
   }
 
-  function buildAssistSearchMetaHtml(data, rawProtos) {
+  function buildAssistSearchMetaHtml(data, rawProtos, compact) {
     var parts = [];
+    if (compact) {
+      if (rawProtos && rawProtos.length) {
+        var top = confidenceFromProtocol(rawProtos[0]);
+        parts.push(
+          rawProtos.length + " протокол(ов) · до " + Math.round(pct01(top)) + "%"
+        );
+      }
+      if (!parts.length) return "";
+      return (
+        '<p class="assist-search-meta assist-search-meta--compact">' +
+        escapeHtml(parts.join(" · ")) +
+        "</p>"
+      );
+    }
     var retr = data.retrieval || [];
     if (retr.length) {
       var uniqPdf = uniqueRetrievalBasenameCount(retr);
@@ -13485,6 +13667,7 @@
     if (document.getElementById("panel-analytics-stats") && !document.getElementById("panel-analytics-stats").hidden) {
       loadAnalyticsTab();
     }
+    window.__lastAssistData = data;
     lastAssistFullQuery = data.query || "";
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
@@ -13496,8 +13679,15 @@
       var protocolIcdMentions = data.protocol_icd_mentions || {};
       var citationsOnly = isCitationsOnlyMode();
       var methodistSearch = !!window.__methodistMode;
-      var doctorLite = data.assist_lite === true;
-      var compactResults = citationsOnly || methodistSearch;
+      var doctorLite = data.assist_lite === true || data.retrieve_only === true;
+      var stepped = isSearchSteppedMode();
+      var wiz = window.__searchWizard || { step: "protocols" };
+      if (stepped && wiz.step !== "detail") {
+        wiz.step = "protocols";
+        wiz.selectedProto = null;
+      }
+      window.__searchWizard = wiz;
+      var compactResults = citationsOnly || methodistSearch || stepped;
       var uiCompact = compactResults || doctorLite;
       var protoRenderOpts = {
         excerptByPath: excerptByPath,
@@ -13506,8 +13696,24 @@
         citationsOnly: citationsOnly,
         compactResults: compactResults,
         doctorLite: doctorLite,
+        excerptFold: stepped || citationsOnly,
+        excerptPreviewLen: stepped ? 140 : citationsOnly ? 200 : 0,
+        steppedList: stepped && wiz.step === "protocols",
+        steppedDetail: stepped && wiz.step === "detail",
+        showExplore: stepped && wiz.step === "detail",
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
+      if (stepped && wiz.step === "detail" && wiz.selectedProto) {
+        var filtered = [];
+        var fp;
+        for (fp = 0; fp < rawProtos.length; fp++) {
+          if (rawProtos[fp].path === wiz.selectedProto) {
+            filtered.push(rawProtos[fp]);
+            break;
+          }
+        }
+        if (filtered.length) rawProtos = filtered;
+      }
       var high = [];
       var low = [];
       var hi;
@@ -13518,12 +13724,24 @@
           low.push(rawProtos[hi]);
         }
       }
+      if (stepped && wiz.step === "protocols") {
+        high = high.slice(0, 4);
+        low = low.slice(0, 2);
+      } else if (citationsOnly && !stepped) {
+        high = high.slice(0, 5);
+        low = low.slice(0, 2);
+      }
       var html =
         '<div class="assist-card' +
         (citationsOnly ? " assist-card--citations-only" : "") +
         (doctorLite ? " assist-card--doctor-lite" : "") +
+        (stepped ? " assist-card--stepped" : "") +
         '"><div class="assist-card-inner">';
-      html += buildAssistSearchMetaHtml(data, rawProtos);
+      html += buildAssistSearchMetaHtml(
+        data,
+        high.concat(low),
+        stepped || citationsOnly
+      );
       if (window.__assistUndoSnapshot) {
         html +=
           '<div class="assist-undo-bar" role="region" aria-label="Откат подбора">' +
@@ -13537,10 +13755,10 @@
           '<div class="assist-lead">' + formatSummaryHtml(j.summary) + "</div>";
       }
 
-      if (citationsOnly) {
+      if (citationsOnly && !stepped) {
         html +=
           '<p class="assist-source-note"><strong>Режим «только цитаты»:</strong> показаны выдержки из PDF протоколов Минздрава и ссылки; краткий ответ модели скрыт.</p>';
-      } else if (!doctorLite) {
+      } else if (!citationsOnly && !doctorLite && !stepped) {
         html +=
           '<p class="assist-source-note">Краткий ответ сформирован по отобранным фрагментам PDF протоколов; полный текст и актуальность - в файле на сайте Минздрава.</p>';
       }
@@ -13605,19 +13823,25 @@
 
       if (rawProtos.length) {
         html += '<hr class="assist-hr" /><div class="assist-sec">';
-        html +=
-          '<span class="assist-sec-label">' +
-          (citationsOnly
-            ? "Протоколы · цитаты из PDF"
-            : methodistSearch
-              ? "Протоколы · оценка для разметки"
-              : doctorLite
-                ? "Протоколы"
-                : "Протоколы · оценка релевантности ИИ") +
-          "</span>";
-        if (!citationsOnly && !methodistSearch && !doctorLite) {
+        var secLabel;
+        if (stepped && wiz.step === "detail") {
+          secLabel = "Выдержка из PDF";
+        } else if (citationsOnly || stepped) {
+          secLabel = "Протоколы · выберите PDF";
+        } else if (methodistSearch) {
+          secLabel = "Протоколы · оценка для разметки";
+        } else if (doctorLite) {
+          secLabel = "Протоколы";
+        } else {
+          secLabel = "Протоколы · оценка релевантности ИИ";
+        }
+        html += '<span class="assist-sec-label">' + secLabel + "</span>";
+        if (!citationsOnly && !methodistSearch && !doctorLite && !stepped) {
           html +=
             '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. <strong>Соответствие %</strong> — насколько протокол подходит к запросу (не вероятность диагноза). Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>';
+        } else if (stepped && wiz.step === "protocols") {
+          html +=
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Краткий список по отбору фрагментов. Нажмите «Открыть выдержку» — затем при необходимости «Разобрать протокол».</p>';
         } else if (methodistSearch && !citationsOnly) {
           html +=
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>';
@@ -13626,8 +13850,12 @@
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол по выдержке из PDF. Для черновика КЗ нажмите «Разобрать протокол» у нужного пункта.</p>';
         }
         var protoRank = 0;
+        var listCls = stepped ? " assist-proto-list--compact" : "";
         if (high.length) {
-          html += '<p class="llm-proto-sub">Выше соответствие запросу</p><ul class="assist-proto-list">';
+          if (!(stepped && wiz.step === "detail")) {
+            html += '<p class="llm-proto-sub">Выше соответствие запросу</p>';
+          }
+          html += '<ul class="assist-proto-list' + listCls + '">';
           for (hi = 0; hi < high.length; hi++) {
             html += renderProtoLi(
               high[hi],
@@ -13640,9 +13868,11 @@
           }
           html += "</ul>";
         }
-        if (low.length) {
+        if (low.length && !(stepped && wiz.step === "detail")) {
           html +=
-            '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="assist-proto-list">';
+            '<p class="llm-proto-sub weak">Слабее соответствие (всё равно можно открыть PDF)</p><ul class="assist-proto-list' +
+            listCls +
+            '">';
           for (hi = 0; hi < low.length; hi++) {
             html += renderProtoLi(
               low[hi],
@@ -13775,6 +14005,16 @@
       bindAssistUndoButton();
       bindProtocolDetailLoader(data.query || "");
       bindProtoExploreButtons(data.query || "", icdForPractical);
+      bindProtoPickButtons(data);
+      if (stepped) {
+        if (wiz.step === "detail") {
+          updateSearchWizardBar("detail", "Шаг 3 · выдержка из PDF");
+        } else {
+          updateSearchWizardBar("protocols", "Шаг 2 · список протоколов");
+        }
+      } else {
+        updateSearchWizardBar(null);
+      }
       populateSearchMethodistPanel(data);
       if (!uiCompact) {
         bindProtocolSummaryNav(data);
@@ -16384,22 +16624,307 @@
   }
 
   var CITATIONS_ONLY_KEY = "rag_citations_only";
+  var SEARCH_STEPPED_KEY = "rag_search_stepped";
 
   function isCitationsOnlyMode() {
     var el = document.getElementById("citations-only-mode");
     return !!(el && el.checked);
   }
 
+  function isSearchSteppedMode() {
+    if (window.__methodistMode) return false;
+    var el = document.getElementById("search-stepped-mode");
+    return !!(el && el.checked);
+  }
+
+  function queryHasIcdInText(raw) {
+    var q = String(raw || "");
+    if (!q.trim()) return false;
+    var re =
+      /\b[A-TV-ZА-ЯЁ]\s*\d{2}(?:\s*[.,/\-]\s*\d{1,4})?\b/i;
+    return re.test(q);
+  }
+
+  function truncateExcerpt(text, maxLen) {
+    var t = String(text || "").trim();
+    if (!t || !maxLen || t.length <= maxLen) return t;
+    return t.slice(0, maxLen).trim() + "…";
+  }
+
   function initCitationsOnlyToggle() {
     var el = document.getElementById("citations-only-mode");
     if (!el) return;
     try {
-      el.checked = localStorage.getItem(CITATIONS_ONLY_KEY) === "1";
-    } catch (e) {}
+      var stored = localStorage.getItem(CITATIONS_ONLY_KEY);
+      el.checked = stored === null ? true : stored === "1";
+    } catch (e) {
+      el.checked = true;
+    }
     el.addEventListener("change", function () {
       try {
         localStorage.setItem(CITATIONS_ONLY_KEY, el.checked ? "1" : "0");
       } catch (e) {}
+    });
+  }
+
+  function initSearchSteppedToggle() {
+    var el = document.getElementById("search-stepped-mode");
+    if (!el) return;
+    try {
+      var stored = localStorage.getItem(SEARCH_STEPPED_KEY);
+      el.checked = stored === null ? true : stored === "1";
+    } catch (e) {
+      el.checked = true;
+    }
+    el.addEventListener("change", function () {
+      try {
+        localStorage.setItem(SEARCH_STEPPED_KEY, el.checked ? "1" : "0");
+      } catch (e) {}
+      if (!el.checked) {
+        window.__searchWizard = { step: "query" };
+        updateSearchWizardBar(null);
+      }
+    });
+    var backBtn = document.getElementById("btn-search-wizard-back");
+    if (backBtn && !backBtn.getAttribute("data-wired")) {
+      backBtn.setAttribute("data-wired", "1");
+      backBtn.addEventListener("click", function () {
+        searchWizardBack();
+      });
+    }
+  }
+
+  function updateSearchWizardBar(step, label) {
+    var bar = document.getElementById("search-wizard-bar");
+    var lbl = document.getElementById("search-wizard-step-label");
+    var backBtn = document.getElementById("btn-search-wizard-back");
+    if (!isSearchSteppedMode() || !step || step === "query") {
+      if (bar) bar.hidden = true;
+      return;
+    }
+    if (bar) bar.hidden = false;
+    if (lbl) lbl.textContent = label || "";
+    if (backBtn) backBtn.hidden = step === "icd";
+  }
+
+  function searchWizardBack() {
+    var wiz = window.__searchWizard || { step: "query" };
+    if (wiz.step === "detail") {
+      wiz.step = "protocols";
+      wiz.selectedProto = null;
+      window.__searchWizard = wiz;
+      var prPanel = document.getElementById("practical-review-panel");
+      if (prPanel) {
+        prPanel.hidden = true;
+        prPanel.innerHTML = "";
+      }
+      if (window.__lastAssistData) {
+        renderLlmOut(window.__lastAssistData);
+      }
+      return;
+    }
+    if (wiz.step === "protocols" || wiz.step === "icd") {
+      wiz.step = "query";
+      window.__searchWizard = wiz;
+      updateSearchWizardBar(null);
+      showResultsSection(false);
+      var qEl = document.getElementById("q");
+      if (qEl) {
+        try {
+          qEl.focus();
+        } catch (e) {}
+      }
+    }
+  }
+
+  function renderSearchWizardIcdStep(data) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "icd" };
+    updateSearchWizardBar("icd", "Шаг 1 · подбор кода МКБ-10");
+    var icd = (data && data.icd) || {};
+    var choices = [];
+    var seenCodes = {};
+    var di;
+    var detected = icd.detected || [];
+    var suggested = icd.suggested || [];
+    var merged = [];
+    for (di = 0; di < detected.length; di++) merged.push(detected[di]);
+    for (di = 0; di < suggested.length; di++) merged.push(suggested[di]);
+    for (di = 0; di < merged.length; di++) {
+      var row = merged[di];
+      if (!row || !row.code) continue;
+      var c = String(row.code).trim();
+      if (!c || seenCodes[c]) continue;
+      seenCodes[c] = true;
+      choices.push({
+        code: c,
+        title_ru: (row.title_ru || "").trim(),
+        appendLine: buildIcdPreflightAppendLine(c, row.title_ru || ""),
+      });
+    }
+    var codes = icd.codes_for_retrieval || [];
+    for (di = 0; di < codes.length; di++) {
+      var c2 = String(codes[di]).trim();
+      if (!c2 || seenCodes[c2]) continue;
+      seenCodes[c2] = true;
+      choices.push({
+        code: c2,
+        title_ru: "",
+        appendLine: buildIcdPreflightAppendLine(c2, ""),
+      });
+    }
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+    html +=
+      '<p class="search-wizard-icd-lead">По жалобам без кода сначала выберите предполагаемый код МКБ-10 — так быстрее и точнее найдутся протоколы.</p>';
+    if (data && data.hint) {
+      html +=
+        '<p class="icd-preflight-result icd-preflight-result--hint">' +
+        escapeHtml(data.hint) +
+        "</p>";
+    }
+    if (choices.length) {
+      html += '<div class="search-wizard-chips" role="list">';
+      var ci;
+      for (ci = 0; ci < Math.min(choices.length, 8); ci++) {
+        var ch = choices[ci];
+        html +=
+          '<button type="button" class="search-wizard-chip btn-icd-wizard-pick" data-append="' +
+          escapeHtmlAttr(ch.appendLine) +
+          '" role="listitem"><code>' +
+          escapeHtml(ch.code) +
+          "</code>" +
+          (ch.title_ru ? " · " + escapeHtml(ch.title_ru) : "") +
+          "</button>";
+      }
+      html += "</div>";
+    } else {
+      html +=
+        '<p class="search-wizard-icd-lead">Коды не подобраны. Уточните текст запроса или введите МКБ-10 вручную.</p>';
+    }
+    html +=
+      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-icd-wizard-skip">Пропустить — искать по жалобам без кода</button></p>';
+    html += "</div></div>";
+    out.innerHTML = html;
+    out.querySelectorAll(".btn-icd-wizard-pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var append = btn.getAttribute("data-append") || "";
+        var qInput = document.getElementById("q");
+        if (qInput && append) {
+          var base = stripToClinicalOnly(qInput.value || "");
+          qInput.value = base ? base + "\n" + append : append;
+        }
+        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(
+          function (err) {
+            console.error(err);
+          }
+        );
+      });
+    });
+    var skipBtn = document.getElementById("btn-icd-wizard-skip");
+    if (skipBtn) {
+      skipBtn.addEventListener("click", function () {
+        runAssist(undefined, { skipIcdGate: true, retrieveOnly: true }).catch(
+          function (err) {
+            console.error(err);
+          }
+        );
+      });
+    }
+    var sr = document.getElementById("section-results");
+    if (sr) {
+      try {
+        sr.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {}
+    }
+  }
+
+  function runIcdPreflightForWizard() {
+    var qInput = document.getElementById("q");
+    var raw = ((qInput || {}).value || "").trim();
+    var prep = preprocessSearchQuery(raw);
+    if (!prep.ok) {
+      alert(prep.message);
+      return Promise.reject(new Error("invalid_query"));
+    }
+    raw = prep.query;
+    if (qInput) qInput.value = raw;
+    var qSend =
+      raw.indexOf("=== Контекст пациента ===") === 0
+        ? raw
+        : buildFullQuery(raw);
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(
+      baseEl && baseEl.value ? baseEl.value : ""
+    );
+    var out = document.getElementById("llm-out");
+    setSearchBusy(true);
+    showResultsSection(true);
+    if (out) {
+      out.innerHTML =
+        '<div class="assist-loading assist-loading--compact" role="status"><div class="assist-loading__title">Подбор кодов МКБ-10</div><p class="assist-loading__hint">Сопоставление с справочником…</p></div>';
+    }
+    return fetch(base + "/health")
+      .then(function (h) {
+        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+        return h.json();
+      })
+      .then(function (health) {
+        if (!health.gemini_configured) {
+          throw new Error("На сервере не настроен ключ доступа к обработке запросов.");
+        }
+        return fetch(base + "/api/icd-suggest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: qSend }),
+        });
+      })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!r.ok || !j || typeof j !== "object") {
+            var d = j && j.detail;
+            if (Array.isArray(d)) {
+              d = d
+                .map(function (x) {
+                  return x.msg || JSON.stringify(x);
+                })
+                .join("; ");
+            }
+            throw new Error(d || text || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (data) {
+        renderSearchWizardIcdStep(data);
+      })
+      .finally(function () {
+        setSearchBusy(false);
+      });
+  }
+
+  function bindProtoPickButtons(data) {
+    document.querySelectorAll(".btn-proto-pick").forEach(function (btn) {
+      if (btn.getAttribute("data-wired")) return;
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () {
+        var path = btn.getAttribute("data-proto-path") || "";
+        if (!path || !window.__lastAssistData) return;
+        window.__searchWizard = {
+          step: "detail",
+          selectedProto: path,
+        };
+        renderLlmOut(window.__lastAssistData);
+        var sr = document.getElementById("section-results");
+        if (sr) {
+          try {
+            sr.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (e) {}
+        }
+      });
     });
   }
 
@@ -19681,6 +20206,21 @@
         return;
       }
       qRaw = prep.query;
+      if (
+        !opts.skipIcdGate &&
+        isSearchSteppedMode() &&
+        !queryHasIcdInText(qRaw)
+      ) {
+        runIcdPreflightForWizard()
+          .then(function () {
+            resolve();
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+        return;
+      }
+      window.__searchWizard = { step: "protocols", selectedProto: null };
       var qInputNormalize = document.getElementById("q");
       if (qInputNormalize && queryOverride == null) {
         qInputNormalize.value = qRaw;
@@ -19689,6 +20229,10 @@
         qRaw.indexOf("=== Контекст пациента ===") === 0
           ? qRaw
           : buildFullQuery(qRaw);
+      var retrieveOnly =
+        opts.retrieveOnly === true ||
+        (!window.__methodistMode &&
+          (isCitationsOnlyMode() || isSearchSteppedMode()));
       var assistStart = Date.now();
       var assistTick = null;
       var abortTid = null;
@@ -19741,6 +20285,11 @@
 
       setSearchBusy(true);
       showResultsSection(true);
+      var prPanel = document.getElementById("practical-review-panel");
+      if (prPanel) {
+        prPanel.hidden = true;
+        prPanel.innerHTML = "";
+      }
       var useMobileTimerOverlay =
         typeof window.matchMedia === "function" &&
         window.matchMedia("(max-width: 640px)").matches;
@@ -19748,12 +20297,26 @@
         if (useMobileTimerOverlay) {
           out.innerHTML =
             '<p class="assist-mobile-placeholder" role="status">Результат появится здесь после подбора.</p>';
-          showAssistTimerOverlay();
+          showAssistTimerOverlay(
+            retrieveOnly ? "Отбор протоколов" : undefined,
+            retrieveOnly
+              ? "Поиск фрагментов в PDF без краткого ответа модели."
+              : undefined
+          );
+        } else if (retrieveOnly) {
+          out.innerHTML =
+            '<div class="assist-loading assist-loading--compact" role="status" aria-live="polite">' +
+            '<div class="assist-loading__title">Отбор протоколов</div>' +
+            '<div class="assist-loading__timer"><span class="assist-timer-num">0</span><span class="assist-timer-unit">сек</span></div>' +
+            '<p class="assist-loading__hint">Поиск фрагментов в PDF (без краткого ответа модели)…</p>' +
+            "</div>";
         } else {
           out.innerHTML = getAssistLoadingHtml();
         }
       }
-      startAssistHintRotation();
+      if (!retrieveOnly) {
+        startAssistHintRotation();
+      }
       if (st) st.textContent = "";
       assistTick = setInterval(function () {
         var sec = Math.floor((Date.now() - assistStart) / 1000);
@@ -19781,12 +20344,12 @@
           return h.json();
         })
         .then(function (health) {
-          if (!health.gemini_configured) {
+          if (!retrieveOnly && !health.gemini_configured) {
             throw new Error(
               "На сервере не настроен ключ доступа к сервису обработки. Обратитесь к администратору."
             );
           }
-          var assistTimeoutMs = 240000;
+          var assistTimeoutMs = retrieveOnly ? 120000 : 240000;
           var ctrl = new AbortController();
           abortTid = setTimeout(function () {
             ctrl.abort();
@@ -19798,6 +20361,7 @@
               query: qSend,
               category_slugs: getSelectedCategorySlugs(),
               inline_clinical_detail: false,
+              retrieve_only: retrieveOnly,
             }),
             signal: ctrl.signal,
           });
@@ -19880,6 +20444,7 @@
   initDeployStatusBanner();
   initAnalyticsTab();
   initCitationsOnlyToggle();
+  initSearchSteppedToggle();
   loadBuildVersionBadge();
   loadTrainingCasesChips();
   initConsultDemoTextButton();
