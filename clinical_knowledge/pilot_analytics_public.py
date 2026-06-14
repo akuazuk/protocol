@@ -112,6 +112,22 @@ def build_public_pilot_analytics(
 
     readiness_items = ml.get("items") or []
 
+    block_overrides = [
+        {"block_key": row.get("block_key") or "?", "label": row.get("block_key") or "?", "count": int(row.get("count") or 0)}
+        for row in (stats.get("block_overrides_top") or [])[:8]
+        if int(row.get("count") or 0) > 0
+    ]
+
+    pm = protocol_match or {}
+    total_kz_pm = int(pm.get("total_kz_runs") or kz_total or 0)
+    with_matched = int(pm.get("kz_with_matched_protocol") or 0)
+    kz_protocol_match = []
+    if total_kz_pm > 0:
+        kz_protocol_match = [
+            {"label": "протокол сопоставлен", "count": with_matched},
+            {"label": "без сопоставления", "count": max(0, total_kz_pm - with_matched)},
+        ]
+
     out: dict[str, Any] = {
         "generated_at": _utc_now(),
         "live": has_real,
@@ -144,6 +160,8 @@ def build_public_pilot_analytics(
                 for it in readiness_items[:6]
             ],
             "tags_top": (charts.get("tags_top") or [])[:6],
+            "block_overrides_top": block_overrides,
+            "kz_protocol_match": kz_protocol_match,
         },
         "engine_releases_count": len(stats.get("engine_releases") or []),
         "verdict_breakdown": stats.get("verdict_breakdown") or {},

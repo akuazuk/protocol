@@ -39,6 +39,16 @@ def build_public_search_analytics(
     has_kz_live = bool(pilot.get("live"))
 
     categories = (corpus.get("categories_top") or [])[:12]
+    years_top = (corpus.get("years_top") or [])[:8]
+    post_mz = int(corpus.get("protocols_post_mz") or 0)
+    total_index = int(corpus.get("protocols_in_index") or 0)
+    post_mz_chart: list[dict[str, Any]] = []
+    if total_index > 0:
+        post_mz_chart = [
+            {"label": "пост МЗ", "count": post_mz},
+            {"label": "прочие PDF", "count": max(0, total_index - post_mz)},
+        ]
+
     passed = int(quality.get("queries_passed") or 0)
     total_q = int(quality.get("queries_total") or 0)
     failed = max(0, total_q - passed) if total_q else 0
@@ -103,6 +113,8 @@ def build_public_search_analytics(
         },
         "charts": {
             "categories_top": categories,
+            "years_top": years_top,
+            "post_mz_breakdown": post_mz_chart,
             "search_activity_by_day": telemetry.get("activity_by_day") or [],
             "benchmark_pass_fail": [
                 {"label": "эталон OK", "count": passed},
@@ -111,6 +123,10 @@ def build_public_search_analytics(
             if total_q
             else [],
             "confidence_buckets": telemetry.get("confidence_buckets") or [],
+            "icd_usage": telemetry.get("icd_usage") or [],
+            "rubric_filter_usage": telemetry.get("rubric_filter_usage") or [],
+            "protocols_returned_buckets": telemetry.get("protocols_returned_buckets") or [],
+            "audience_breakdown": telemetry.get("audience_breakdown") or [],
             "kz_compliance_buckets": pilot_charts.get("compliance_buckets") or [],
             "rating_histogram": pilot_charts.get("rating_histogram") or [],
             "rubric_kz_runs": pilot_charts.get("rubric_kz_runs") or [],
@@ -119,6 +135,8 @@ def build_public_search_analytics(
             "readiness_items": pilot_charts.get("readiness_items") or [],
             "events_by_type": events_chart,
             "verdict_breakdown": verdict_chart,
+            "block_overrides_top": pilot_charts.get("block_overrides_top") or [],
+            "kz_protocol_match": pilot_charts.get("kz_protocol_match") or [],
         },
         "tips_ru": SEARCH_USAGE_TIPS_RU,
         "note_ru": (

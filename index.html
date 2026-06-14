@@ -7381,6 +7381,21 @@
       min-height: 17rem;
     }
 
+    .analytics-chart-desc {
+      margin: 0.65rem 0 0;
+      padding-top: 0.55rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.1);
+      font-size: 0.76rem;
+      line-height: 1.48;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .analytics-chart-desc strong {
+      color: var(--green-900);
+      font-weight: 650;
+    }
+
     @media (max-width: 719px) {
       .analytics-chart-card--wide {
         grid-column: span 1;
@@ -8179,31 +8194,67 @@
           <button type="button" id="analytics-tab-refresh">Обновить данные</button>
         </div>
 
-        <div id="analytics-kpi-search" class="analytics-kpi-grid"></div>
+        <div id="analytics-kpi-corpus" class="analytics-kpi-grid"></div>
 
-        <section class="analytics-section" aria-labelledby="analytics-search-section-title">
-          <h3 class="analytics-section__title" id="analytics-search-section-title">Поиск протоколов</h3>
-          <details class="analytics-tips-collapsible">
-            <summary>Как пользоваться поиском (рекомендации)</summary>
-            <ul id="analytics-tips-list"></ul>
-            <p class="search-session-stat" id="search-session-stat"></p>
-          </details>
+        <section class="analytics-section" aria-labelledby="analytics-corpus-section-title">
+          <h3 class="analytics-section__title" id="analytics-corpus-section-title">Корпус PDF Минздрава РБ</h3>
           <div class="analytics-charts-grid">
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Протоколы по рубрикам каталога</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-rubrics" aria-label="Рубрики"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> число PDF в локальном index.csv по рубрикам каталога МЗ. <strong>Интерпретация:</strong> покрытие корпуса для RAG; не отражает частоту поисков.</p>
             </div>
+            <div class="analytics-chart-card">
+              <h4>Годы в названиях PDF</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-years" aria-label="Годы"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> распределение протоколов по году из имени файла. <strong>Интерпретация:</strong> актуальность каталога; свежие посты МЗ повышают доверие к выдаче.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Посты МЗ vs прочие PDF</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-post-mz" aria-label="Пост МЗ"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> доля файлов с официальной пометкой постановления МЗ. <strong>Интерпретация:</strong> «пост МЗ» — приоритетный источник нормативных текстов.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-section" aria-labelledby="analytics-search-section-title">
+          <h3 class="analytics-section__title" id="analytics-search-section-title">Поиск и качество выдачи</h3>
+          <div id="analytics-kpi-search" class="analytics-kpi-grid"></div>
+          <div class="analytics-charts-grid">
             <div class="analytics-chart-card">
               <h4>Поиски по дням</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-search-activity" aria-label="Поиски"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> обезличенные события <code>protocol_search</code> по дате (UTC). <strong>Интерпретация:</strong> активность пилота; текст запросов не сохраняется.</p>
             </div>
             <div class="analytics-chart-card">
-              <h4>Эталон eval (pass/fail)</h4>
+              <h4>Эталон eval (pass / fail)</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-benchmark" aria-label="Эталон"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> offline-набор эталонных запросов с ожидаемым протоколом. <strong>Интерпретация:</strong> «эталон OK» — top выдачи совпал с эталоном; fail — регрессия ретривера.</p>
             </div>
             <div class="analytics-chart-card">
-              <h4>Top score выдачи</h4>
+              <h4>Top score выдачи (confidence)</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-confidence" aria-label="Confidence"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> <code>confidence_score</code> лучшего протокола (0–100%). <strong>Интерпретация:</strong> ≥85% — высокая уверенность; 70–84% — проверьте выдержки; &lt;70% — уточните запрос или откройте PDF вручную.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Код МКБ-10 в запросе</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-icd" aria-label="МКБ"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> доля поисков с хотя бы одним кодом МКБ-10. <strong>Интерпретация:</strong> запрос с кодом обычно точнее сужает рубрику и релевантность.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Число протоколов в ответе</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-protos-count" aria-label="Протоколов"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> сколько протоколов вернул сервис после фильтрации. <strong>Интерпретация:</strong> 0 — слишком узкий запрос; 6+ — широкая выдача, нужен код МКБ или рубрика.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Аудитория (возраст)</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-audience" aria-label="Аудитория"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> выбранная или выведенная аудитория (взрослые / детские). <strong>Интерпретация:</strong> помогает отделить педиатрические протоколы от взрослых.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Фильтр рубрик каталога</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-rubric-filter" aria-label="Рубрики"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> использование ручного фильтра рубрик при поиске. <strong>Интерпретация:</strong> фильтр снижает шум, если профиль заболевания уже известен.</p>
             </div>
           </div>
         </section>
@@ -8213,36 +8264,54 @@
           <div id="analytics-kpi-kz" class="analytics-kpi-grid"></div>
           <div class="analytics-charts-grid">
             <div class="analytics-chart-card">
-              <h4>КЗ по зонам %</h4>
+              <h4>КЗ по зонам соответствия %</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-kz-compliance" aria-label="Compliance"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> <code>compliance_overall_pct</code> по последнему прогону на уникальное КЗ. <strong>Интерпретация:</strong> ≥85% — зелёная зона; 70–84% — доработать; &lt;70% — зона риска перед подписью.</p>
             </div>
             <div class="analytics-chart-card">
-              <h4>Оценки методиста</h4>
+              <h4>Оценки методиста (1–5)</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-ratings" aria-label="Ratings"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> экспертная оценка качества разбора КЗ движком. <strong>Интерпретация:</strong> не оценка пациента; 4–5 — движок полезен, 1–2 — нужны правки правил или RAG.</p>
+            </div>
+            <div class="analytics-chart-card">
+              <h4>Сопоставление протокола в КЗ</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-protocol-match" aria-label="Protocol match"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> есть ли у прогона КЗ сопоставленный PDF протокола. <strong>Интерпретация:</strong> без сопоставления блоки соответствия менее надёжны.</p>
             </div>
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Прогоны КЗ по рубрикам</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-kz-rubrics" aria-label="KZ rubrics"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> число прогонов КЗ по рубрикам каталога. <strong>Интерпретация:</strong> где накоплен опыт пилота; рубрики с малым N — метрики ещё шумные.</p>
             </div>
             <div class="analytics-chart-card">
-              <h4>Активность (все события)</h4>
+              <h4>Активность пилота по дням</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-kz-activity" aria-label="Activity"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> все события журнала (поиск, КЗ, оценки) по дате. <strong>Интерпретация:</strong> общая нагрузка на систему обратной связи.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Типы событий</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-events-type" aria-label="Events"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> счётчики <code>event_type</code> в feedback. <strong>Интерпретация:</strong> баланс между поиском, прогонами КЗ и expert review.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Теги методиста</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-tags" aria-label="Tags"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> частые метки ошибок (wrong_protocol, missed_protocol и др.). <strong>Интерпретация:</strong> куда направлять доработку RAG и правил.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Вердикты оценок</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-verdicts" aria-label="Verdicts"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> согласие методиста с выводами движка (agree / partial / disagree). <strong>Интерпретация:</strong> доля disagree — прямой сигнал качества автоматизации.</p>
+            </div>
+            <div class="analytics-chart-card analytics-chart-card--wide">
+              <h4>Спорные блоки КЗ</h4>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-block-overrides" aria-label="Block overrides"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> блоки рубрики, где методист чаще не согласен с движком. <strong>Интерпретация:</strong> приоритет для правил compliance и парсера КЗ.</p>
             </div>
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Готовность данных для ML</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-readiness" aria-label="ML readiness"></canvas></div>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> прогресс к порогам разметки (% от цели: reviews, retrieval_fix, golden queries). <strong>Интерпретация:</strong> 100% по строке — порог достигнут; дообучение embedder только после накопления пар.</p>
             </div>
           </div>
         </section>
@@ -15115,24 +15184,45 @@
     }
   }
 
+  function renderAnalyticsCorpusKpis(d) {
+    var el = document.getElementById("analytics-kpi-corpus");
+    if (!el) return;
+    var corpus = d.corpus || {};
+    var postMz = corpus.protocols_post_mz;
+    el.innerHTML =
+      analyticsKpiCell(corpus.protocols_in_index || "—", "PDF в каталоге", true) +
+      analyticsKpiCell(postMz != null ? postMz : "—", "постов МЗ") +
+      analyticsKpiCell(corpus.rubrics_in_index || "—", "рубрик") +
+      analyticsKpiCell(corpus.chunks_loaded || "—", "фрагментов RAG", true) +
+      analyticsKpiCell(d.rag_ready ? "да" : "нет", "RAG готов") +
+      analyticsKpiCell(
+        corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : "—",
+        "обновление index.csv"
+      );
+  }
+
   function renderAnalyticsSearchKpis(d) {
     var el = document.getElementById("analytics-kpi-search");
     if (!el) return;
-    var corpus = d.corpus || {};
     var qb = d.quality_benchmark || {};
     var tel = d.telemetry || {};
     var passPct = qb.pass_rate_pct != null ? qb.pass_rate_pct + "%" : "—";
     el.innerHTML =
-      analyticsKpiCell(corpus.protocols_in_index || "—", "PDF в каталоге", true) +
-      analyticsKpiCell(corpus.rubrics_in_index || 24, "рубрик МЗ") +
-      analyticsKpiCell(corpus.chunks_loaded || "—", "фрагментов RAG") +
-      analyticsKpiCell(passPct, "эталон eval", true) +
-      analyticsKpiCell(tel.total_searches || 0, "поисков") +
+      analyticsKpiCell(passPct, "эталон eval pass", true) +
+      analyticsKpiCell(
+        qb.queries_total != null ? qb.queries_passed + "/" + qb.queries_total : "—",
+        "запросов eval"
+      ) +
+      analyticsKpiCell(tel.total_searches || 0, "поисков live") +
       analyticsKpiCell(tel.unique_queries || 0, "уник. запросов") +
-      analyticsKpiCell(tel.with_icd_pct != null ? tel.with_icd_pct + "%" : "—", "с кодом МКБ") +
+      analyticsKpiCell(tel.with_icd_pct != null ? tel.with_icd_pct + "%" : "—", "с кодом МКБ", true) +
       analyticsKpiCell(
         tel.avg_top_confidence_pct != null ? tel.avg_top_confidence_pct + "%" : "—",
         "ср. top score"
+      ) +
+      analyticsKpiCell(
+        tel.avg_protocols_returned != null ? tel.avg_protocols_returned : "—",
+        "ср. протоколов в ответе"
       );
   }
 
@@ -15151,18 +15241,7 @@
       analyticsKpiCell(kz.priority_cases || 0, "приоритетных кейсов");
   }
 
-  function renderAnalyticsTips(d) {
-    var ul = document.getElementById("analytics-tips-list");
-    if (!ul) return;
-    ul.innerHTML = "";
-    (d.tips_ru || []).forEach(function (tip) {
-      var li = document.createElement("li");
-      li.textContent = tip;
-      ul.appendChild(li);
-    });
-  }
-
-  function renderAnalyticsCharts(d) {
+  function renderAnalyticsKzKpis(d) {
     if (typeof Chart === "undefined") return;
     var charts = (d && d.charts) || {};
     var fontFamily = "'DM Sans', 'Outfit', system-ui, sans-serif";
@@ -15263,6 +15342,34 @@
       });
     }
 
+    destroyAnalyticsChart("years");
+    var years = charts.years_top || [];
+    var yearsEl = document.getElementById("chart-an-years");
+    if (yearsEl && years.length) {
+      __analyticsCharts.years = new Chart(yearsEl, {
+        type: "bar",
+        data: {
+          labels: years.map(function (y) { return y.year || "?"; }),
+          datasets: barDs(years.map(function (y) { return y.count; }), "#2ec4a0"),
+        },
+        options: barOpts({ scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+      });
+    }
+
+    destroyAnalyticsChart("postMz");
+    var pmz = charts.post_mz_breakdown || [];
+    var pmzEl = document.getElementById("chart-an-post-mz");
+    if (pmzEl && pmz.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.postMz = new Chart(pmzEl, {
+        type: "doughnut",
+        data: {
+          labels: pmz.map(function (b) { return b.label; }),
+          datasets: [{ data: pmz.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#94a3b8"], borderWidth: 0 }],
+        },
+        options: doughnutOpts(),
+      });
+    }
+
     destroyAnalyticsChart("searchAct");
     var sAct = charts.search_activity_by_day || [];
     var sActEl = document.getElementById("chart-an-search-activity");
@@ -15310,6 +15417,66 @@
       });
     }
 
+    destroyAnalyticsChart("icd");
+    var icd = charts.icd_usage || [];
+    var icdEl = document.getElementById("chart-an-icd");
+    if (icdEl && icd.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.icd = new Chart(icdEl, {
+        type: "doughnut",
+        data: {
+          labels: icd.map(function (b) { return b.label; }),
+          datasets: [{ data: icd.map(function (b) { return b.count; }), backgroundColor: ["#2563eb", "#cbd5e1"], borderWidth: 0 }],
+        },
+        options: doughnutOpts(),
+      });
+    }
+
+    destroyAnalyticsChart("protosCount");
+    var pBuckets = charts.protocols_returned_buckets || [];
+    var pCountEl = document.getElementById("chart-an-protos-count");
+    if (pCountEl && pBuckets.length) {
+      __analyticsCharts.protosCount = new Chart(pCountEl, {
+        type: "bar",
+        data: {
+          labels: pBuckets.map(function (b) { return b.label; }),
+          datasets: barDs(pBuckets.map(function (b) { return b.count; }), "#0d5c4a"),
+        },
+        options: barOpts({ scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }),
+      });
+    }
+
+    destroyAnalyticsChart("audience");
+    var aud = charts.audience_breakdown || [];
+    var audEl = document.getElementById("chart-an-audience");
+    if (audEl && aud.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.audience = new Chart(audEl, {
+        type: "doughnut",
+        data: {
+          labels: aud.map(function (b) { return b.label; }),
+          datasets: [{
+            data: aud.map(function (b) { return b.count; }),
+            backgroundColor: ["#1a8a72", "#d97706", "#6366f1", "#94a3b8"],
+            borderWidth: 0,
+          }],
+        },
+        options: doughnutOpts(),
+      });
+    }
+
+    destroyAnalyticsChart("rubricFilter");
+    var rf = charts.rubric_filter_usage || [];
+    var rfEl = document.getElementById("chart-an-rubric-filter");
+    if (rfEl && rf.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.rubricFilter = new Chart(rfEl, {
+        type: "doughnut",
+        data: {
+          labels: rf.map(function (b) { return b.label; }),
+          datasets: [{ data: rf.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#e2e8f0"], borderWidth: 0 }],
+        },
+        options: doughnutOpts(),
+      });
+    }
+
     destroyAnalyticsChart("kzComp");
     var kzComp = charts.kz_compliance_buckets || [];
     var kzCompEl = document.getElementById("chart-an-kz-compliance");
@@ -15319,6 +15486,20 @@
         data: {
           labels: kzComp.map(function (b) { return b.label; }),
           datasets: [{ data: kzComp.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#2ec4a0", "#f87171", "#94a3b8"], borderWidth: 0 }],
+        },
+        options: doughnutOpts(),
+      });
+    }
+
+    destroyAnalyticsChart("kzProtoMatch");
+    var kzPm = charts.kz_protocol_match || [];
+    var kzPmEl = document.getElementById("chart-an-kz-protocol-match");
+    if (kzPmEl && kzPm.some(function (b) { return b.count > 0; })) {
+      __analyticsCharts.kzProtoMatch = new Chart(kzPmEl, {
+        type: "doughnut",
+        data: {
+          labels: kzPm.map(function (b) { return b.label; }),
+          datasets: [{ data: kzPm.map(function (b) { return b.count; }), backgroundColor: ["#1a8a72", "#f87171"], borderWidth: 0 }],
         },
         options: doughnutOpts(),
       });
@@ -15436,6 +15617,23 @@
       });
     }
 
+    destroyAnalyticsChart("blockOverrides");
+    var blocks = charts.block_overrides_top || [];
+    var blockEl = document.getElementById("chart-an-block-overrides");
+    if (blockEl && blocks.length) {
+      __analyticsCharts.blockOverrides = new Chart(blockEl, {
+        type: "bar",
+        data: {
+          labels: blocks.map(function (b) {
+            var lb = b.label || b.block_key || "";
+            return lb.length > 26 ? lb.slice(0, 24) + "…" : lb;
+          }),
+          datasets: barDs(blocks.map(function (b) { return b.count; }), "#f87171"),
+        },
+        options: Object.assign(barOpts(), { indexAxis: "y" }),
+      });
+    }
+
     destroyAnalyticsChart("readiness");
     var ready = charts.readiness_items || [];
     var readyEl = document.getElementById("chart-an-readiness");
@@ -15468,11 +15666,10 @@
           if (updated) updated.textContent = "Нет данных";
           return;
         }
+        renderAnalyticsCorpusKpis(d);
         renderAnalyticsSearchKpis(d);
         renderAnalyticsKzKpis(d);
-        renderAnalyticsTips(d);
         renderAnalyticsCharts(d);
-        refreshSearchSessionStatDisplay();
         if (liveBadge) liveBadge.hidden = !d.live;
         if (updated) {
           updated.textContent =

@@ -83,6 +83,12 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
             "with_icd_pct": None,
             "avg_top_confidence_pct": None,
             "avg_protocols_returned": None,
+            "activity_by_day": [],
+            "confidence_buckets": [],
+            "icd_usage": [],
+            "rubric_filter_usage": [],
+            "protocols_returned_buckets": [],
+            "audience_breakdown": [],
         }
 
     unique_hashes: set[str] = set()
@@ -118,6 +124,45 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
         {"label": "<70%", "count": sum(1 for c in confs if c < 70)},
     ]
 
+    icd_usage: list[dict[str, Any]] = []
+    rubric_filter_usage: list[dict[str, Any]] = []
+    protocols_buckets: list[dict[str, Any]] = []
+    audience_labels = {
+        "adult": "взрослые",
+        "child": "детские",
+        "pediatric": "детские",
+        "mixed": "смешанные",
+    }
+    audience_counts: Counter[str] = Counter()
+    if total:
+        icd_usage = [
+            {"label": "с кодом МКБ", "count": icd_n},
+            {"label": "без МКБ", "count": max(0, total - icd_n)},
+        ]
+        with_rubric = sum(1 for ev in events if int(ev.get("rubric_filters") or 0) > 0)
+        rubric_filter_usage = [
+            {"label": "с фильтром рубрик", "count": with_rubric},
+            {"label": "без фильтра", "count": max(0, total - with_rubric)},
+        ]
+        pb = {"0": 0, "1–2": 0, "3–5": 0, "6+": 0}
+        for ev in events:
+            np = ev.get("n_protocols")
+            if not isinstance(np, int):
+                continue
+            if np <= 0:
+                pb["0"] += 1
+            elif np <= 2:
+                pb["1–2"] += 1
+            elif np <= 5:
+                pb["3–5"] += 1
+            else:
+                pb["6+"] += 1
+        protocols_buckets = [{"label": k, "count": v} for k, v in pb.items() if v > 0]
+        for ev in events:
+            aud = str(ev.get("audience") or "").strip().lower() or "не указано"
+            audience_counts[audience_labels.get(aud, aud if aud != "не указано" else "не указано")] += 1
+    audience_breakdown = [{"label": k, "count": v} for k, v in audience_counts.most_common()]
+
     return {
         "total_searches": total,
         "unique_queries": len(unique_hashes),
@@ -126,4 +171,8 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
         "avg_protocols_returned": round(sum(protos) / len(protos), 1) if protos else None,
         "activity_by_day": activity,
         "confidence_buckets": [b for b in conf_buckets if b["count"]],
+        "icd_usage": icd_usage,
+        "rubric_filter_usage": rubric_filter_usage,
+        "protocols_returned_buckets": protocols_buckets,
+        "audience_breakdown": audience_breakdown,
     }
