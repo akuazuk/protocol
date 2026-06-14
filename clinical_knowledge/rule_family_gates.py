@@ -98,6 +98,19 @@ def expand_specialty_slugs_for_clinical_text(
     return out
 
 
+def _has_thyroid_diagnosis_context(diag: str, icd_list: list[str]) -> bool:
+    if any(c.startswith(("E03", "E04", "E05", "E06")) for c in icd_list):
+        return True
+    markers = ("гипотиреоз", "гипертиреоз", "тиреоидит", " аит", "аит,", "зоб ")
+    return any(m in diag for m in markers) or ("щитовид" in diag and "?" in diag)
+
+
+def _is_dyspepsia_primary_visit(diag: str, icd_list: list[str]) -> bool:
+    if any(c.startswith("K30") for c in icd_list):
+        return True
+    return bool(diag) and "диспепс" in diag and "гастрит" not in diag
+
+
 def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -> bool | None:
     """None — использовать стандартную логику rule_checker."""
     cons = consult_facts.get("consultation") or {}
@@ -107,11 +120,17 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
     if condition_id == "acute_bronchitis":
         has_bronchitis_icd = any(c.startswith(("J20", "J21")) for c in icd_list)
         has_bronchitis_text = "бронхит" in diag
-        urti_only = bool(icd_list) and all(
-            c.startswith(("J00", "J01", "J02", "J03", "J04", "J05", "J06")) for c in icd_list
-        )
-        if urti_only and not has_bronchitis_icd and not has_bronchitis_text:
-            return False
+        if not has_bronchitis_icd and not has_bronchitis_text:
+            ent_prefixes = ("H65", "H66", "H67", "H68", "H69", "H70", "H71", "H72", "H73", "H74", "H75", "J01", "J02", "J03", "J32")
+            if icd_list and all(any(c.startswith(p) for p in ent_prefixes) for c in icd_list):
+                return False
+            if any(c.startswith(ent_prefixes) for c in icd_list):
+                return False
+            urti_only = bool(icd_list) and all(
+                c.startswith(("J00", "J01", "J02", "J03", "J04", "J05", "J06")) for c in icd_list
+            )
+            if urti_only:
+                return False
 
     if condition_id == "obesity":
         if icd_list and all(c.startswith(("E03", "E04", "E05", "E06")) for c in icd_list):
@@ -133,10 +152,18 @@ def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -
                 return False
 
     if condition_id == "thyroid_disease":
-        thyroid_icds = [c for c in icd_list if c.startswith(("E03", "E04", "E05", "E06"))]
-        if not thyroid_icds and icd_list:
-            primary = icd_list[0]
-            if primary.startswith(("E55", "E56", "E58", "E59", "E61", "E63", "E64", "E65")):
+        if not _has_thyroid_diagnosis_context(diag, icd_list):
+            return False
+
+    if condition_id == "gastritis":
+        if _is_dyspepsia_primary_visit(diag, icd_list):
+            if not any(c.startswith("K29") for c in icd_list) and "гастрит" not in diag:
+                return False
+
+    if condition_id == "abdominal_trauma":
+        if not any(c.startswith("S36") for c in icd_list):
+            complaints = _norm(" ".join(cons.get("complaints") or []))
+            if "травм" not in diag and "травм" not in complaints:
                 return False
 
     if condition_id in ("functional_dyspepsia", "gastritis", "gerd") and has_oncology_clinical_suspicion(consult_facts):

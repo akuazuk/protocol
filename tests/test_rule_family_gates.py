@@ -114,3 +114,45 @@ def test_f1_p_rich_safety_and_follow_scores():
     bd = comp.get("score_breakdown") or {}
     assert (bd.get("safety_score") or 0) >= 75.0
     assert (bd.get("follow_up_score") or 0) >= 85.0
+
+
+def _pdf_text(name: str) -> str | None:
+    from clinical_knowledge.text_extract import extract_text_from_path
+
+    pdf = FIXTURES.parents[1] / "clients_consult" / name
+    if not pdf.is_file():
+        return None
+    return extract_text_from_path(pdf)
+
+
+def test_report_ter_1_no_gastritis_thyroid_trauma_rules():
+    text = _pdf_text("report_ter_1.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids(text)
+    assert not any(
+        x in r
+        for r in ids
+        for x in ("gastritis", "abdominal_trauma", "thyroid", "2d00ba03", "9f9e0fb1", "5e8308e8")
+    )
+
+
+def test_report_lor_1_no_bronchitis_formula_and_better_safety():
+    from clinical_knowledge.consult_analysis import analyze_consultation_text
+
+    text = _pdf_text("report_lor_1.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids(text)
+    assert not any("acute_bronchitis" in r or "e6302486" in r for r in ids)
+    out = analyze_consultation_text(text, consultation_id="report_lor_1", with_markdown=False)
+    bd = (out.get("compliance") or {}).get("score_breakdown") or {}
+    assert (bd.get("safety_score") or 0) >= 75.0
+
+
+def test_report_urolofg_2_no_thyroid_formula():
+    text = _pdf_text("report_urolofg_2.pdf")
+    if not text:
+        return
+    ids = _failed_rule_ids(text)
+    assert not any("thyroid" in r or "2d00ba03" in r for r in ids)

@@ -152,6 +152,56 @@
           "after_follow_up_score": 90
         }
       ]
+    },
+    {
+      "version": "2026-06-01-r119",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "Pregnancy anamnesis gate + batch 20",
+      "summary": "Беременность только при активном контексте; batch 20 KZ artifacts.",
+      "fixes": [
+        "pregnancy_context: «беременности - 1» ≠ текущая беременность",
+        "pregnancy rules требуют _has_pregnancy_context"
+      ],
+      "metrics": []
+    },
+    {
+      "version": "2026-06-01-r120",
+      "date": "2026-06-01",
+      "type": "engine",
+      "title": "ENT/GI/thyroid gates + LOR safety waiver",
+      "summary": "Меньше ложных diagnosis_formula и severe_infection на ЛОР/терапии/урологии.",
+      "fixes": [
+        "acute_bronchitis: gate при ENT МКБ (H65/J01) без J20/J21",
+        "thyroid/gastritis/abdominal_trauma: только по диагнозу, не шаблон осмотра",
+        "condition_registry: убран «кашель»/«живот»/«щитовид» как триггеры hints",
+        "severe_infection: waiver «гнойн» при локальном ЛОР-контексте"
+      ],
+      "metrics": [
+        {
+          "case_label": "report_lor_1",
+          "before_overall_pct": 55.0,
+          "after_overall_pct": 86.1,
+          "before_safety_score": 45,
+          "after_safety_score": 100,
+          "before_failed_rules": 1,
+          "after_failed_rules": 0
+        },
+        {
+          "case_label": "report_ter_1",
+          "before_overall_pct": 88.6,
+          "after_overall_pct": 88.6,
+          "before_failed_rules": 6,
+          "after_failed_rules": 1,
+          "note": "Осталась только functional_dyspepsia formula"
+        },
+        {
+          "case_label": "report_urolofg_2",
+          "before_failed_rules": 1,
+          "after_failed_rules": 0,
+          "note": "Убрано ложное thyroid из осмотра «ЩЖ не увеличена»"
+        }
+      ]
     }
   ],
   "ml_experiments": [

@@ -93,6 +93,15 @@ def _match_required_actions(actions_blob: str, required: list[str]) -> tuple[int
     return hits, len(required)
 
 
+_ENT_LOCALIZED_INFECTION = (
+    "отит", "синусит", "этмоид", "гайморит", "паратонзилл", "фарингит", "тонзиллит", "ринит",
+)
+
+
+def _localized_ent_infection(blob: str) -> bool:
+    return any(m in blob for m in _ENT_LOCALIZED_INFECTION)
+
+
 def run_safety_checks(doc: ConsultationDocument) -> list[SafetyAssessment]:
     """Возвращает список SafetyAssessment по найденным красным флагам."""
     red_flags: dict[str, dict[str, Any]] = load_red_flags()
@@ -104,6 +113,8 @@ def run_safety_checks(doc: ConsultationDocument) -> list[SafetyAssessment]:
         keywords = [str(k).lower() for k in (cfg.get("keywords") or [])]
         hit = next((k for k in keywords if k and k in blob), None)
         if not hit:
+            continue
+        if flag_id == "severe_infection" and hit == "гнойн" and _localized_ent_infection(blob):
             continue
         severity = str(cfg.get("severity") or "medium")
         required = [str(a) for a in (cfg.get("required_actions") or cfg.get("expected_actions") or [])]
