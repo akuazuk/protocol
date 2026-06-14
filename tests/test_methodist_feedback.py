@@ -296,6 +296,18 @@ def test_api_ml_feedback_export_ok_with_token(feedback_env):
         assert "feedback/analysis_review.jsonl" in tar.getnames()
 
 
+def test_retrieval_fix_wrong_protocol_requires_rejected_path():
+    with pytest.raises(ValueError, match="rejected_path"):
+        validate_and_normalize_event(
+            {
+                "event_type": "retrieval_fix",
+                "reviewer": "test",
+                "chosen_path": "minzdrav_protocols/x/right.pdf",
+                "tags": ["wrong_protocol"],
+            }
+        )
+
+
 def test_api_ml_feedback_forbidden_without_token(feedback_env):
     pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient

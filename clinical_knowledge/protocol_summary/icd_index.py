@@ -81,5 +81,48 @@ def prewarm_icd_summary_index() -> int:
     return len(_icd_to_summary_refs())
 
 
+@lru_cache(maxsize=1)
+def _protocol_id_to_local_path() -> dict[str, str]:
+    """protocol_id → catalog local_path из json карточек."""
+    out: dict[str, str] = {}
+    ddir = _data_json_dir()
+    if not ddir.is_dir():
+        return out
+    for path in sorted(ddir.glob("*.json")):
+        try:
+            data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        protocol_id = str(data.get("protocol_id") or path.stem)
+        src = data.get("source") if isinstance(data.get("source"), dict) else {}
+        lp = str((src or {}).get("local_path") or "").strip()
+        if protocol_id and lp:
+            out[protocol_id] = lp.replace("\\", "/")
+    return out
+
+
+def find_catalog_paths_by_icd_codes(codes: list[str], *, limit: int = 8) -> list[str]:
+    """Пути PDF в каталоге по кодам МКБ (summary index → source.local_path)."""
+    if not codes:
+        return []
+    id_map = _protocol_id_to_local_path()
+    paths: list[str] = []
+    seen: set[str] = set()
+    for raw in codes:
+        code = str(raw or "").strip()
+        if not code:
+            continue
+        for pid, _cid in find_summary_refs_by_icd(code, limit=4):
+            lp = id_map.get(pid)
+            if not lp or lp in seen:
+                continue
+            seen.add(lp)
+            paths.append(lp)
+            if len(paths) >= limit:
+                return paths
+    return paths
+
+
 def clear_icd_summary_index_cache() -> None:
     _icd_to_summary_refs.cache_clear()
+    _protocol_id_to_local_path.cache_clear()

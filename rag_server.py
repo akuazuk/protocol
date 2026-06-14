@@ -2770,10 +2770,24 @@ def retrieve(
                 post *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
         if ch.get("generated_from_summary") or ch.get("chunk_source") == "summary_chunks":
             ps_mode = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "legacy").strip().lower()
+            summary_boost = 1.0
             if ps_mode == "hybrid":
-                post *= float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.55"))
+                summary_boost = float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.55"))
             elif ps_mode == "summary":
-                post *= float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.75"))
+                summary_boost = float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.75"))
+            elif icd_norms:
+                summary_boost = float(os.environ.get("RAG_SUMMARY_ICD_FIRST_BOOST", "1.85"))
+            if summary_boost > 1.0:
+                post *= summary_boost
+            if icd_norms:
+                chunk_icd = ch.get("icd10_codes") or []
+                for raw_icd in chunk_icd:
+                    c = normalize_icd_code(str(raw_icd)).strip().lower()
+                    if not c:
+                        continue
+                    if any(c == n or c.startswith(n) or n.startswith(c) for n in icd_norms):
+                        post *= float(os.environ.get("RAG_SUMMARY_ICD_MATCH_BOOST", "1.25"))
+                        break
         raw_rows.append((lex, bm25_s, mult, ch, post))
     if not raw_rows:
         return []
@@ -6300,7 +6314,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r135-search-funnel-methodist-fallback"
+BUILD_VERSION = "2026-06-01-r136-search-funnel-b1-c3-queue"
 
 
 def _app_version() -> str:
@@ -6637,13 +6651,23 @@ def api_assist(body: AssistIn) -> dict:
     else:
         query_specialties = infer_specialties_gemini(q, model)
     boost_merged = list(dict.fromkeys((query_specialties or []) + user_slugs))
-    retrieved = retrieve(
-        q_rag,
-        routing_query=q,
-        category_boost=boost_merged or None,
-        user_category_slugs=user_slugs or None,
-        icd_codes_for_lex=icd_codes_for_lex,
-    )
+    icd_path_boost: list[str] | None = None
+    if icd_codes_for_lex:
+        from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
+
+        icd_path_boost = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=8) or None
+
+    def _assist_retrieve(rag_q: str, *, routing_q: str | None = None) -> list[dict]:
+        return retrieve(
+            rag_q,
+            routing_query=routing_q if routing_q is not None else q,
+            category_boost=boost_merged or None,
+            user_category_slugs=user_slugs or None,
+            icd_codes_for_lex=icd_codes_for_lex,
+            path_boost=icd_path_boost,
+        )
+
+    retrieved = _assist_retrieve(q_rag)
     query_spelling_correction: dict | None = None
     if not retrieved and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
         "1",
@@ -6653,13 +6677,7 @@ def api_assist(body: AssistIn) -> dict:
         fixed, changed = fix_query_spelling_medical(q_rag, model)
         if changed and fixed.strip():
             q_llm = apply_clinical_correction(q, fixed)
-            retrieved = retrieve(
-                fixed,
-                routing_query=q_llm,
-                category_boost=boost_merged or None,
-                user_category_slugs=user_slugs or None,
-                icd_codes_for_lex=icd_codes_for_lex,
-            )
+            retrieved = _assist_retrieve(fixed, routing_q=q_llm)
             if retrieved:
                 q = q_llm
                 query_spelling_correction = {
@@ -6691,6 +6709,7 @@ def api_assist(body: AssistIn) -> dict:
                 category_boost=boost2,
                 user_category_slugs=user_slugs or None,
                 icd_codes_for_lex=icd_codes_for_lex,
+                path_boost=icd_path_boost,
             )
             if r2:
                 retrieved, audience_inferred, audience_fallback = (
@@ -7559,12 +7578,17 @@ def api_methodist_stats(request: "Request") -> dict:
 
 
 @app.get("/api/methodist/queue")
-def api_methodist_queue(request: "Request", limit: int = Query(50, ge=5, le=200)) -> dict:
+def api_methodist_queue(
+    request: "Request",
+    limit: int = Query(50, ge=5, le=200),
+    domain: str | None = Query(None, description="kz (default) | search"),
+) -> dict:
     """Очередь active learning: priority, pending, suspicious."""
     _require_methodist_auth(request)
     from clinical_knowledge.methodist_queue import build_methodist_queue
 
-    return build_methodist_queue(limit=limit)
+    dom = (domain or "").strip().lower() or None
+    return build_methodist_queue(limit=limit, domain=dom)
 
 
 @app.get("/api/methodist/protocol-search")

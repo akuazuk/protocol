@@ -275,6 +275,9 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
     elif et == "retrieval_fix":
         if not (out.get("chosen_path") or "").strip():
             raise ValueError("retrieval_fix: chosen_path обязателен")
+        tags = [str(t).strip() for t in (out.get("tags") or []) if str(t).strip()]
+        if "wrong_protocol" in tags and not (out.get("rejected_path") or "").strip():
+            raise ValueError("retrieval_fix: rejected_path обязателен при теге wrong_protocol")
 
     elif et == "search_review":
         if not (out.get("reviewer") or "").strip():

@@ -8676,6 +8676,7 @@
           <div class="search-methodist-grid search-methodist-grid--compact">
             <div>
               <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
+              <p class="consult-hint-small" style="margin:0.15rem 0 0.35rem">При теге «Неверный КП» поле обязательно.</p>
               <select id="search-methodist-rejected">
                 <option value="">— не указано —</option>
               </select>
@@ -9817,6 +9818,81 @@
     saveSpecialtySelection();
     var panel = document.getElementById("specialty-panel");
     if (panel && !panel.open) panel.open = true;
+  }
+
+  function setSelectedCategorySlugs(slugs) {
+    var set = {};
+    var i;
+    for (i = 0; i < (slugs || []).length; i++) set[slugs[i]] = true;
+    var boxes = document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]');
+    for (i = 0; i < boxes.length; i++) {
+      boxes[i].checked = !!set[boxes[i].value];
+    }
+    saveSpecialtySelection();
+  }
+
+  function inferRubricChoicesFromQuery(qRaw) {
+    var slugs = [];
+    var seen = {};
+    var codes = extractIcdCodesFromQuery(qRaw);
+    var ci;
+    for (ci = 0; ci < codes.length; ci++) {
+      var sug = rubricSlugsForIcdCode(codes[ci]);
+      var sj;
+      for (sj = 0; sj < sug.length; sj++) {
+        if (!seen[sug[sj]]) {
+          seen[sug[sj]] = true;
+          slugs.push(sug[sj]);
+        }
+      }
+    }
+    var ql = String(qRaw || "").toLowerCase();
+    var symptomMaps = [
+      {
+        re: /кашел|кашл|мокрот|одыш|бронх|легк/,
+        slugs: ["pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya", "pediatriya"],
+      },
+      {
+        re: /температ|лихорад|жар\b/,
+        slugs: ["infektsionnye-zabolevaniya", "pulmonologiya-ftiziatriya", "pediatriya"],
+      },
+      {
+        re: /живот|тошн|рвот|стул|понос|диаре|изжог|гастр/,
+        slugs: ["gastroenterologiya"],
+      },
+      {
+        re: /сердц|гипертен|давлен|аритм/,
+        slugs: ["bolezni-sistemy-krovoobrashcheniya"],
+      },
+    ];
+    var si;
+    for (si = 0; si < symptomMaps.length; si++) {
+      if (symptomMaps[si].re.test(ql)) {
+        var sk;
+        for (sk = 0; sk < symptomMaps[si].slugs.length; sk++) {
+          var slug = symptomMaps[si].slugs[sk];
+          if (!seen[slug]) {
+            seen[slug] = true;
+            slugs.push(slug);
+          }
+        }
+      }
+    }
+    var out = [];
+    for (i = 0; i < slugs.length && out.length < 6; i++) {
+      out.push({ slug: slugs[i], label: rubricLabelFromSlug(slugs[i]) });
+    }
+    return out;
+  }
+
+  function needsRubricStep(qRaw, opts) {
+    opts = opts || {};
+    if (opts.skipRubricGate) return false;
+    if (!isSearchSteppedMode()) return false;
+    if (getSelectedCategorySlugs().length) return false;
+    var ctx = window.__funnelContext || {};
+    if (ctx.rubric || ctx.rubricSkipped) return false;
+    return inferRubricChoicesFromQuery(qRaw).length > 1;
   }
 
   function updateSearchIcdDetect() {
@@ -11603,6 +11679,12 @@
       });
   }
 
+  function searchMethodistRequiresRejected(tags, rejected) {
+    if (!tags || tags.indexOf("wrong_protocol") < 0) return null;
+    if (String(rejected || "").trim()) return null;
+    return "При теге «Неверный КП» укажите ошибочный top-протокол в поле «Система ошибочно выбрала».";
+  }
+
   function saveSearchMethodistAiApproved() {
     var ai = window.__searchLastAiReview;
     if (!ai) {
@@ -11613,12 +11695,19 @@
     var queryText = data.query || lastAssistFullQuery || "";
     var topPaths = searchRetrievalTopPaths(data);
     var rf = ai.retrieval_fix;
+    var tags = ai.tags || [];
+    var rejectedForCheck = (rf && rf.rejected_path) || (topPaths[0] || "");
+    var rejErr = searchMethodistRequiresRejected(tags, rejectedForCheck);
+    if (rejErr) {
+      setSearchMethodistStatus(rejErr);
+      return;
+    }
     if (rf && rf.chosen_path) {
       postSearchMethodistFeedback(
         {
           event_type: "retrieval_fix",
           query: queryText,
-          rejected_path: rf.rejected_path || null,
+          rejected_path: rf.rejected_path || topPaths[0] || null,
           chosen_path: rf.chosen_path,
           source: "protocol_search_ui",
           reviewer: window.__methodistReviewer || "",
@@ -11847,6 +11936,11 @@
     document.querySelectorAll(".search-methodist-tag-cb:checked").forEach(function (cb) {
       tags.push(cb.value);
     });
+    var rejErr = searchMethodistRequiresRejected(tags, rejected);
+    if (rejErr) {
+      setSearchMethodistStatus(rejErr);
+      return;
+    }
     var noteEl = document.getElementById("search-methodist-note");
     var note = noteEl ? String(noteEl.value || "").trim() : "";
     var body = {
@@ -14024,9 +14118,9 @@
       bindProtoPickButtons(data);
       if (stepped) {
         if (wiz.step === "detail") {
-          updateSearchWizardBar("detail", "Шаг 4 · выдержка из PDF");
+          updateSearchWizardBar("detail", "Шаг 5 · выдержка из PDF");
         } else {
-          updateSearchWizardBar("protocols", "Шаг 3 · список протоколов");
+          updateSearchWizardBar("protocols", "Шаг 4 · список протоколов");
         }
       } else {
         updateSearchWizardBar(null);
@@ -16747,6 +16841,62 @@
     }
   }
 
+  function renderSearchWizardRubricStep(qRaw) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "rubric" };
+    updateSearchWizardBar("rubric", "Шаг 3 · раздел протоколов");
+    var choices = inferRubricChoicesFromQuery(qRaw);
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--citations-only"><div class="assist-card-inner">';
+    html +=
+      '<p class="search-wizard-icd-lead">Уточните раздел каталога — так сузится выдача протоколов (можно пропустить и искать по всем рубрикам).</p>';
+    html += '<div class="search-wizard-chips" role="list">';
+    var ci;
+    for (ci = 0; ci < choices.length; ci++) {
+      html +=
+        '<button type="button" class="search-wizard-chip btn-rubric-wizard-pick" data-rubric-slug="' +
+        escapeHtmlAttr(choices[ci].slug) +
+        '" role="listitem">' +
+        escapeHtml(choices[ci].label) +
+        "</button>";
+    }
+    html +=
+      '<button type="button" class="search-wizard-chip btn-rubric-wizard-pick" data-rubric-slug="" role="listitem">Все рубрики</button>';
+    html += "</div>";
+    html +=
+      '<p class="search-wizard-skip"><button type="button" class="btn-link-nav" id="btn-rubric-wizard-skip">Пропустить — без фильтра рубрик</button></p>';
+    html += "</div></div>";
+    out.innerHTML = html;
+    out.querySelectorAll(".btn-rubric-wizard-pick").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var slug = btn.getAttribute("data-rubric-slug") || "";
+        window.__funnelContext = window.__funnelContext || {};
+        if (slug) {
+          window.__funnelContext.rubric = slug;
+          setSelectedCategorySlugs([slug]);
+        } else {
+          window.__funnelContext.rubricSkipped = true;
+          setSelectedCategorySlugs([]);
+        }
+        runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
+          console.error(err);
+        });
+      });
+    });
+    var skipBtn = document.getElementById("btn-rubric-wizard-skip");
+    if (skipBtn) {
+      skipBtn.addEventListener("click", function () {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.rubricSkipped = true;
+        runAssist(undefined, { skipRubricGate: true }).catch(function (err) {
+          console.error(err);
+        });
+      });
+    }
+  }
+
   function truncateExcerpt(text, maxLen) {
     var t = String(text || "").trim();
     if (!t || !maxLen || t.length <= maxLen) return t;
@@ -16825,7 +16975,7 @@
       }
       return;
     }
-    if (wiz.step === "protocols" || wiz.step === "icd" || wiz.step === "population") {
+    if (wiz.step === "protocols" || wiz.step === "icd" || wiz.step === "population" || wiz.step === "rubric") {
       wiz.step = "query";
       window.__searchWizard = wiz;
       window.__funnelContext = {};
@@ -20326,6 +20476,11 @@
           .catch(function (err) {
             reject(err);
           });
+        return;
+      }
+      if (needsRubricStep(qRaw, opts)) {
+        renderSearchWizardRubricStep(qRaw);
+        resolve();
         return;
       }
       window.__searchWizard = { step: "protocols", selectedProto: null };
