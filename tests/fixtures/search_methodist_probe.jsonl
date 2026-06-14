@@ -1,0 +1,110 @@
+{"id": "probe01", "group": "uri_adult", "query": "сухой кашель и температура 38", "population": "adult", "expected_contains": ["бронхит", "респиратор", "орви"], "reject_contains": ["саркоид", "паллиат"]}
+{"id": "probe02", "group": "uri_adult", "query": "сухой кашель и температура 38", "population": "adult", "expected_contains": ["бронхит", "респиратор"], "reject_contains": ["саркоид"], "icd_codes": ["R05"]}
+{"id": "probe03", "group": "uri_adult", "query": "болит горло и трудно глотать", "population": "adult", "expected_contains": ["оторin", "лор", "фаринг"], "reject_contains": ["анестез", "гэрб"], "icd_codes": ["R07.0"]}
+{"id": "probe04", "group": "uri_adult", "query": "кашель и температура 39", "population": "adult", "expected_contains": ["pulmonolog", "бронхит", "орви"], "reject_contains": ["саркоид"]}
+{"id": "probe05", "group": "uri_adult", "query": "насморк кашель слабость 5 дней", "population": "adult", "expected_contains": ["орви", "респиратор"], "reject_contains": ["трансплант"]}
+{"id": "probe06", "group": "uri_adult", "query": "J06.9 ОРВИ насморк кашель", "population": "adult", "expected_contains": ["орви", "респиратор"], "reject_contains": [], "icd_codes": ["J06.9"]}
+{"id": "probe07", "group": "uri_adult", "query": "J18.9 пневмония кашель одышка", "population": "adult", "expected_contains": ["пневмон", "pulmonolog"], "reject_contains": [], "icd_codes": ["J18.9"]}
+{"id": "probe08", "group": "uri_adult", "query": "J45.9 бронхиальная астма приступ", "population": "adult", "expected_contains": ["астм", "pulmonolog"], "reject_contains": [], "icd_codes": ["J45.9"]}
+{"id": "probe09", "group": "uri_pediatric", "query": "кашель и температура у ребёнка 4 года", "population": "pediatric", "expected_contains": ["pediatr", "дет", "орви"], "reject_contains": []}
+{"id": "probe10", "group": "uri_pediatric", "query": "кашель", "population": "pediatric", "expected_contains": ["pediatr", "орви", "респиратор"], "reject_contains": []}
+{"id": "probe11", "group": "uri_pediatric", "query": "ORVI у ребенка 2 года насморк", "population": "pediatric", "expected_contains": ["pediatr", "орви", "дет"], "reject_contains": []}
+{"id": "probe12", "group": "pulmonology", "query": "острый бронхит кашель", "population": "adult", "expected_contains": ["бронхит", "pulmonolog"], "reject_contains": []}
+{"id": "probe13", "group": "pulmonology", "query": "пневмония внебольничная", "population": "adult", "expected_contains": ["пневмон", "pulmonolog"], "reject_contains": []}
+{"id": "probe14", "group": "pulmonology", "query": "J20.9 острый бронхит", "population": "adult", "expected_contains": ["бронхит"], "reject_contains": [], "icd_codes": ["J20.9"]}
+{"id": "probe15", "group": "ent", "query": "ангина гнойная боль в горле", "population": "adult", "expected_contains": ["оториноларинг", "фаринг", "ангин"], "reject_contains": []}
+{"id": "probe16", "group": "ent", "query": "J02.9 фарингит", "population": "adult", "expected_contains": ["фаринг", "оторin", "лор"], "reject_contains": [], "icd_codes": ["J02.9"]}
+{"id": "probe17", "group": "ent", "query": "J03.9 тонзиллит", "population": "adult", "expected_contains": ["оториноларинг", "тонзилл", "ангин"], "reject_contains": [], "icd_codes": ["J03.9"]}
+{"id": "probe18", "group": "ent", "query": "отит средний боль в ухе", "population": "adult", "expected_contains": ["отит", "оториноларинг"], "reject_contains": []}
+{"id": "probe19", "group": "ent", "query": "H66.9 отит", "population": "adult", "expected_contains": ["отит", "оториноларинг"], "reject_contains": [], "icd_codes": ["H66.9"]}
+{"id": "probe20", "group": "ent_allergy", "query": "аллергический ринит зуд чихание", "population": "adult", "expected_contains": ["ринит", "allergolog", "оториноларинг"], "reject_contains": ["буллез", "дерматит"]}
+{"id": "probe21", "group": "ent_allergy", "query": "J30.4 аллергический ринит", "population": "adult", "expected_contains": ["ринит", "allerg"], "reject_contains": ["буллез"], "icd_codes": ["J30.4"]}
+{"id": "probe22", "group": "ent", "query": "хронический риносинусит гнойные выделения", "population": "adult", "expected_contains": ["риносинус", "sinus", "otorin"], "reject_contains": []}
+{"id": "probe23", "group": "cardiology", "query": "гипертоническая болезнь давление 170/100", "population": "adult", "expected_contains": ["гипертенз", "krovoobrash"], "reject_contains": ["варикоз", "вен "]}
+{"id": "probe24", "group": "cardiology", "query": "I10 эссенциальная гипертензия", "population": "adult", "expected_contains": ["гипертенз"], "reject_contains": [], "icd_codes": ["I10"], "category_slugs": ["bolezni-sistemy-krovoobrashcheniya"]}
+{"id": "probe25", "group": "cardiology", "query": "I21 инфаркт миокарда", "population": "adult", "expected_contains": ["инфаркт", "krovoobrash"], "reject_contains": [], "icd_codes": ["I21"]}
+{"id": "probe26", "group": "cardiology", "query": "I50.9 сердечная недостаточность одышка", "population": "adult", "expected_contains": ["сердечн", "недостат"], "reject_contains": [], "icd_codes": ["I50.9"]}
+{"id": "probe27", "group": "cardiology", "query": "I48 фибрилляция предсердий", "population": "adult", "expected_contains": ["фibrill", "аритм", "krovoobrash"], "reject_contains": [], "icd_codes": ["I48"]}
+{"id": "probe28", "group": "cardiology", "query": "I20 стенокардия за грудиной", "population": "adult", "expected_contains": ["стенокард", "krovoobrash"], "reject_contains": [], "icd_codes": ["I20"]}
+{"id": "probe29", "group": "cardiology", "query": "артериальная гипертензия головная боль", "population": "adult", "expected_contains": ["гипертенз", "krovoobrash"], "reject_contains": []}
+{"id": "probe30", "group": "cardiology", "query": "хроническая сердечная недостаточность отёки", "population": "adult", "expected_contains": ["сердечн", "недостат"], "reject_contains": []}
+{"id": "probe31", "group": "cardiology", "query": "I25 ишемическая болезнь сердца", "population": "adult", "expected_contains": ["ишем", "krovoobrash", "cardio"], "reject_contains": [], "icd_codes": ["I25"]}
+{"id": "probe32", "group": "cardiology", "query": "I63 ишемический инсульт", "population": "adult", "expected_contains": ["инсульт", "nevrolog"], "reject_contains": [], "icd_codes": ["I63"]}
+{"id": "probe33", "group": "endocrinology", "query": "E11.9 сахарный диабет 2 типа", "population": "adult", "expected_contains": ["диабет", "endokrin"], "reject_contains": [], "icd_codes": ["E11.9"]}
+{"id": "probe34", "group": "endocrinology", "query": "E10 сахарный диабет 1 типа", "population": "adult", "expected_contains": ["диабет", "endokrin"], "reject_contains": [], "icd_codes": ["E10"]}
+{"id": "probe35", "group": "endocrinology", "query": "E03 гипотиреоз слабость", "population": "adult", "expected_contains": ["гипотиреоз", "endokrin", "щитовид"], "reject_contains": [], "icd_codes": ["E03"]}
+{"id": "probe36", "group": "endocrinology", "query": "E05 тиреотоксикоз", "population": "adult", "expected_contains": ["тиреотокс", "endokrin"], "reject_contains": [], "icd_codes": ["E05"]}
+{"id": "probe37", "group": "endocrinology", "query": "E66 ожирение", "population": "adult", "expected_contains": ["ожирен", "endokrin"], "reject_contains": [], "icd_codes": ["E66"]}
+{"id": "probe38", "group": "endocrinology", "query": "сахарный диабет жажда полиурия", "population": "adult", "expected_contains": ["диабет", "endokrin"], "reject_contains": []}
+{"id": "probe39", "group": "endocrinology", "query": "гипотиреоз АIT", "population": "adult", "expected_contains": ["гипотиреоз", "endokrin"], "reject_contains": []}
+{"id": "probe40", "group": "gastroenterology", "query": "K29 гастрит изжога", "population": "adult", "expected_contains": ["гастрит", "gastroenterolog"], "reject_contains": [], "icd_codes": ["K29"]}
+{"id": "probe41", "group": "gastroenterology", "query": "K85 острый панкреатит", "population": "adult", "expected_contains": ["панкреатит", "gastro"], "reject_contains": [], "icd_codes": ["K85"]}
+{"id": "probe42", "group": "gastroenterology", "query": "K80 желчнокаменная болезнь", "population": "adult", "expected_contains": ["желчн", "gastro"], "reject_contains": [], "icd_codes": ["K80"]}
+{"id": "probe43", "group": "gastroenterology", "query": "K57 дивертикулез", "population": "adult", "expected_contains": ["дивертик", "gastro"], "reject_contains": [], "icd_codes": ["K57"]}
+{"id": "probe44", "group": "gastroenterology", "query": "K50 болезнь Крона", "population": "adult", "expected_contains": ["крона", "gastro"], "reject_contains": [], "icd_codes": ["K50"]}
+{"id": "probe45", "group": "gastroenterology", "query": "острая боль в животе тошнота", "population": "adult", "expected_contains": ["gastroenterolog", "khirurg"], "reject_contains": []}
+{"id": "probe46", "group": "gastroenterology", "query": "K21 ГЭРБ изжога", "population": "adult", "expected_contains": ["рефлюкс", "гэрб", "gastro"], "reject_contains": [], "icd_codes": ["K21"]}
+{"id": "probe47", "group": "gastroenterology", "query": "K92 желудочное кровотечение", "population": "adult", "expected_contains": ["gastro", "кровотеч"], "reject_contains": [], "icd_codes": ["K92"]}
+{"id": "probe48", "group": "gastroenterology", "query": "диспепсия bloating после еды", "population": "adult", "expected_contains": ["dиспепс", "gastro", "гастрит"], "reject_contains": []}
+{"id": "probe49", "group": "gastroenterology", "query": "K74 цирроз печени", "population": "adult", "expected_contains": ["цирроз", "gastro", "печен"], "reject_contains": [], "icd_codes": ["K74"]}
+{"id": "probe50", "group": "neurology", "query": "G43 мигрень с аурой", "population": "adult", "expected_contains": ["мигрен", "nevrolog"], "reject_contains": [], "icd_codes": ["G43"]}
+{"id": "probe51", "group": "neurology", "query": "головная боль мигрень", "population": "adult", "expected_contains": ["мигрен", "nevrolog", "головн"], "reject_contains": []}
+{"id": "probe52", "group": "neurology", "query": "G40 эпилепсия приступ", "population": "adult", "expected_contains": ["эпилеп", "nevrolog"], "reject_contains": [], "icd_codes": ["G40"]}
+{"id": "probe53", "group": "neurology", "query": "G35 рассеянный склероз", "population": "adult", "expected_contains": ["склероз", "nevrolog"], "reject_contains": [], "icd_codes": ["G35"]}
+{"id": "probe54", "group": "neurology", "query": "G20 болезнь Паркинсона", "population": "adult", "expected_contains": ["паркинсон", "nevrolog"], "reject_contains": [], "icd_codes": ["G20"]}
+{"id": "probe55", "group": "neurology", "query": "R51 головная боль", "population": "adult", "expected_contains": ["головн", "nevrolog"], "reject_contains": [], "icd_codes": ["R51"]}
+{"id": "probe56", "group": "neurology", "query": "ишемический инсульт слабость руки", "population": "adult", "expected_contains": ["инсульт", "nevrolog"], "reject_contains": []}
+{"id": "probe57", "group": "neurology", "query": "G45 ТИА", "population": "adult", "expected_contains": ["инсульт", "nevrolog", "cerebro"], "reject_contains": [], "icd_codes": ["G45"]}
+{"id": "probe58", "group": "nephrology", "query": "N18 хроническая болезнь почек", "population": "adult", "expected_contains": ["nefrolog", "почек"], "reject_contains": [], "icd_codes": ["N18"]}
+{"id": "probe59", "group": "nephrology", "query": "N17 острое повреждение почек", "population": "adult", "expected_contains": ["nefrolog", "почек"], "reject_contains": [], "icd_codes": ["N17"]}
+{"id": "probe60", "group": "urology", "query": "N30 цистит дизурия", "population": "adult", "expected_contains": ["цистит", "urolog"], "reject_contains": [], "icd_codes": ["N30"]}
+{"id": "probe61", "group": "urology", "query": "N20 мочекаменная болезнь", "population": "adult", "expected_contains": ["мочекам", "urolog"], "reject_contains": [], "icd_codes": ["N20"]}
+{"id": "probe62", "group": "urology", "query": "N40 аденома простаты", "population": "adult", "expected_contains": ["простат", "urolog"], "reject_contains": [], "icd_codes": ["N40"]}
+{"id": "probe63", "group": "urology", "query": "цистит жжение при мочеиспускании", "population": "adult", "expected_contains": ["цистит", "urolog"], "reject_contains": []}
+{"id": "probe64", "group": "urology", "query": "N39 инфекция мочевых путей", "population": "adult", "expected_contains": ["urolog", "цистит", "мочев"], "reject_contains": [], "icd_codes": ["N39"]}
+{"id": "probe65", "group": "nephrology", "query": "N10 острый пиелонефрит", "population": "adult", "expected_contains": ["пиелонеф", "nefrolog"], "reject_contains": [], "icd_codes": ["N10"]}
+{"id": "probe66", "group": "rheumatology", "query": "M32.9 системная красная волчанка", "population": "adult", "expected_contains": ["revmatolog", "волчан"], "reject_contains": ["буллез"], "icd_codes": ["M32.9"]}
+{"id": "probe67", "group": "rheumatology", "query": "красная волчанка суставы сыпь", "population": "adult", "expected_contains": ["revmatolog", "волчан"], "reject_contains": ["буллез"]}
+{"id": "probe68", "group": "rheumatology", "query": "M05 ревматоидный артрит", "population": "adult", "expected_contains": ["revmatolog", "артрит"], "reject_contains": [], "icd_codes": ["M05"]}
+{"id": "probe69", "group": "rheumatology", "query": "M17 гонартроз", "population": "adult", "expected_contains": ["артроз", "revmatolog", "ortoped"], "reject_contains": [], "icd_codes": ["M17"]}
+{"id": "probe70", "group": "rheumatology", "query": "M54 радикулопатия поясница", "population": "adult", "expected_contains": ["позвон", "nevrolog", "revmatolog"], "reject_contains": [], "icd_codes": ["M54"]}
+{"id": "probe71", "group": "rheumatology", "query": "M79 фибromyalgia миalgia", "population": "adult", "expected_contains": ["revmatolog", "nevrolog"], "reject_contains": [], "icd_codes": ["M79"]}
+{"id": "probe72", "group": "rheumatology", "query": "M10 подагра", "population": "adult", "expected_contains": ["подагр", "revmatolog"], "reject_contains": [], "icd_codes": ["M10"]}
+{"id": "probe73", "group": "psychiatry", "query": "F32 депрессивный эпизод", "population": "adult", "expected_contains": ["psikhiatr", "депресс"], "reject_contains": [], "icd_codes": ["F32"]}
+{"id": "probe74", "group": "psychiatry", "query": "F41 тревожное расстройство", "population": "adult", "expected_contains": ["psikhiatr", "тревог"], "reject_contains": [], "icd_codes": ["F41"]}
+{"id": "probe75", "group": "psychiatry", "query": "F20 шизофрения", "population": "adult", "expected_contains": ["psikhiatr", "шизофрен"], "reject_contains": [], "icd_codes": ["F20"]}
+{"id": "probe76", "group": "psychiatry", "query": "F10 алкогольная зависимость", "population": "adult", "expected_contains": ["narkolog", "psikhiatr", "алкогол"], "reject_contains": [], "icd_codes": ["F10"]}
+{"id": "probe77", "group": "psychiatry", "query": "депрессия апатия сонливость", "population": "adult", "expected_contains": ["psikhiatr", "депресс"], "reject_contains": []}
+{"id": "probe78", "group": "psychiatry", "query": "F31 биполярное расстройство", "population": "adult", "expected_contains": ["psikhiatr", "аффектив"], "reject_contains": [], "icd_codes": ["F31"]}
+{"id": "probe79", "group": "obstetrics", "query": "беременность 32 недели головная боль отёки", "population": "pregnant", "expected_contains": ["akusher", "беремен", "ginekolog", "родов"], "reject_contains": ["нervn", "неврolog", "дет_"]}
+{"id": "probe80", "group": "obstetrics", "query": "O14 преэклампсия беременная", "population": "pregnant", "expected_contains": ["akusher", "преэклам", "беремен"], "reject_contains": [], "icd_codes": ["O14"]}
+{"id": "probe81", "group": "obstetrics", "query": "O80 роды", "population": "pregnant", "expected_contains": ["akusher", "род"], "reject_contains": [], "icd_codes": ["O80"]}
+{"id": "probe82", "group": "obstetrics", "query": "N80 миoma матки", "population": "adult", "expected_contains": ["ginekolog", "akusher", "миом"], "reject_contains": [], "icd_codes": ["N80"]}
+{"id": "probe83", "group": "obstetrics", "query": "N92 обильные менструации", "population": "adult", "expected_contains": ["ginekolog", "akusher"], "reject_contains": [], "icd_codes": ["N92"]}
+{"id": "probe84", "group": "obstetrics", "query": "D25 миома матки", "population": "adult", "expected_contains": ["ginekolog", "миом"], "reject_contains": [], "icd_codes": ["D25"]}
+{"id": "probe85", "group": "obstetrics", "query": "O26 ведение беременности", "population": "pregnant", "expected_contains": ["akusher", "беремен"], "reject_contains": [], "icd_codes": ["O26"]}
+{"id": "probe86", "group": "obstetrics", "query": "маstит лактация", "population": "adult", "expected_contains": ["akusher", "ginekolog", "m mastit"], "reject_contains": []}
+{"id": "probe87", "group": "surgery", "query": "ожог термический рука 2 степени", "population": "adult", "expected_contains": ["ожог", "термическ", "khirurg"], "reject_contains": ["урolog"]}
+{"id": "probe88", "group": "surgery", "query": "T30 ожог кипятком", "population": "adult", "expected_contains": ["ожог", "термическ"], "reject_contains": ["урolog"], "icd_codes": ["T30"]}
+{"id": "probe89", "group": "surgery", "query": "S06 сотрясение мозга", "population": "adult", "expected_contains": ["череп", "nevrolog", "travm"], "reject_contains": [], "icd_codes": ["S06"]}
+{"id": "probe90", "group": "surgery", "query": "S72 перелом бедра", "population": "adult", "expected_contains": ["перелом", "travm", "ortoped"], "reject_contains": [], "icd_codes": ["S72"]}
+{"id": "probe91", "group": "surgery", "query": "K35 острый аппендицит", "population": "adult", "expected_contains": ["аппендиц", "khirurg"], "reject_contains": [], "icd_codes": ["K35"]}
+{"id": "probe92", "group": "surgery", "query": "K40 паховая грыжа", "population": "adult", "expected_contains": ["грыж", "khirurg"], "reject_contains": [], "icd_codes": ["K40"]}
+{"id": "probe93", "group": "surgery", "query": "рана брюшной стенки", "population": "adult", "expected_contains": ["ран", "khirurg", "travm"], "reject_contains": []}
+{"id": "probe94", "group": "surgery", "query": "S01 рана головы", "population": "adult", "expected_contains": ["ран", "travm", "khirurg"], "reject_contains": [], "icd_codes": ["S01"]}
+{"id": "probe95", "group": "oncology", "query": "C50 рак молочной железы", "population": "adult", "expected_contains": ["novoobraz", "онкolog", "злокач"], "reject_contains": [], "icd_codes": ["C50"]}
+{"id": "probe96", "group": "oncology", "query": "C18 рак толстой кишки", "population": "adult", "expected_contains": ["novoobraz", "онкolog", "кишк"], "reject_contains": [], "icd_codes": ["C18"]}
+{"id": "probe97", "group": "oncology", "query": "подозрение на злокачественное новообразование", "population": "adult", "expected_contains": ["novoobraz", "онкolog"], "reject_contains": []}
+{"id": "probe98", "group": "hematology", "query": "D50 железодефицитная анемия", "population": "adult", "expected_contains": ["анем", "gematolog"], "reject_contains": [], "icd_codes": ["D50"]}
+{"id": "probe99", "group": "hematology", "query": "D64 анемия слабость", "population": "adult", "expected_contains": ["анем", "gematolog"], "reject_contains": [], "icd_codes": ["D64"]}
+{"id": "probe100", "group": "infectious", "query": "A09 острая диарея", "population": "adult", "expected_contains": ["infektsion", "диар"], "reject_contains": [], "icd_codes": ["A09"]}
+{"id": "probe101", "group": "infectious", "query": "B20 ВИЧ инфекция", "population": "adult", "expected_contains": ["vich", "infektsion"], "reject_contains": [], "icd_codes": ["B20"]}
+{"id": "probe102", "group": "dermatology", "query": "L20 атопический дерматит", "population": "adult", "expected_contains": ["dermat", "дерматит"], "reject_contains": [], "icd_codes": ["L20"]}
+{"id": "probe103", "group": "dermatology", "query": "L40 псoriasis", "population": "adult", "expected_contains": ["psorias", "dermat"], "reject_contains": [], "icd_codes": ["L40"]}
+{"id": "probe104", "group": "ophthalmology", "query": "H10 конъюнктивит", "population": "adult", "expected_contains": ["oftalm", "конъюнктив"], "reject_contains": [], "icd_codes": ["H10"]}
+{"id": "probe105", "group": "ophthalmology", "query": "H40 глаукома", "population": "adult", "expected_contains": ["глаук", "oftalm"], "reject_contains": [], "icd_codes": ["H40"]}
+{"id": "probe106", "group": "stomatology", "query": "K02 кариес зуб", "population": "adult", "expected_contains": ["stomat", "кaries", "зуб"], "reject_contains": [], "icd_codes": ["K02"]}
+{"id": "probe107", "group": "stomatology", "query": "K04 пulpit зуб", "population": "adult", "expected_contains": ["stomat", "пulpit", "зуб"], "reject_contains": [], "icd_codes": ["K04"]}
+{"id": "probe108", "group": "mixed", "query": "кашель бронхит J20", "population": "adult", "expected_contains": ["бронхит", "pulmonolog"], "reject_contains": []}
+{"id": "probe109", "group": "mixed", "query": "E11 полиурия жажда", "population": "adult", "expected_contains": ["диабет", "endokrin"], "reject_contains": []}
+{"id": "probe110", "group": "mixed", "query": "N39.0 цистит дизурия", "population": "adult", "expected_contains": ["цистит", "urolog"], "reject_contains": []}

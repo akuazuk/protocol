@@ -5375,17 +5375,77 @@ def _query_has_throat_or_uri_context(query: str, icd_analysis: dict | None) -> b
     return False
 
 
+def _icd_codes_from_analysis(icd_analysis: dict | None, query: str) -> list[str]:
+    codes: list[str] = []
+    icd = icd_analysis or {}
+    for bucket in ("detected", "suggested"):
+        for row in icd.get(bucket) or []:
+            if isinstance(row, dict) and row.get("code"):
+                codes.append(str(row["code"]))
+    for c in icd.get("codes_for_retrieval") or []:
+        codes.append(str(c))
+    for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
+        codes.append(m.group(1).upper())
+    return list(dict.fromkeys(codes))
+
+
 def _rerank_protocols_symptom_only(
     protos: list[dict],
     query: str,
     icd_analysis: dict | None,
 ) -> list[dict]:
-    """Понижает маловероятные КП при жалобах/ОРИ и учитывает аудиторию воронки."""
+    """Понижает маловероятные КП по клиническому контексту, жалобам/ОРИ и аудитории."""
     if not protos:
         return protos
-    if not _query_has_throat_or_uri_context(query, icd_analysis):
-        return _demote_pediatric_for_adult_query(protos, query)
+    from clinical_knowledge.search_clinical_routing import (
+        detect_clinical_route_ids,
+        score_path_for_clinical_routes,
+    )
+
+    icd_codes = _icd_codes_from_analysis(icd_analysis, query)
+    route_ids = detect_clinical_route_ids(query, icd_codes)
+    uri_context = _query_has_throat_or_uri_context(query, icd_analysis)
     ql = (query or "").lower()
+    routing = _routing or {}
+    child_query = _infer_funnel_audience(query, routing) == "child"
+    adult_query = _infer_funnel_audience(query, routing) == "adult"
+
+    def _apply_clinical_and_audience(pr: dict, penalty: int, boost: int) -> tuple[int, int]:
+        path = str(pr.get("path") or "").lower()
+        title = str(pr.get("title") or path).lower()
+        blob = path + " " + title
+        if route_ids:
+            delta, _ = score_path_for_clinical_routes(path, title, route_ids=route_ids)
+            if delta >= 0:
+                boost += int(delta)
+            else:
+                penalty += int(-delta)
+        hint = doc_audience_hint(path, title, routing)
+        if adult_query and hint == "pediatric":
+            penalty += 12
+        elif not child_query and hint == "pediatric":
+            penalty += 2
+        if child_query:
+            if hint == "pediatric":
+                boost += 3
+            elif hint == "adult":
+                penalty += 10
+        return penalty, boost
+
+    if not uri_context:
+        def _score_clinical_only(pr: dict) -> tuple[int, float]:
+            penalty, boost = _apply_clinical_and_audience(pr, 0, 0)
+            try:
+                conf = float(pr.get("confidence_score") or 0.0)
+            except (TypeError, ValueError):
+                conf = 0.0
+            return (penalty - boost, -conf)
+
+        if route_ids or child_query or adult_query:
+            ranked = sorted(protos, key=_score_clinical_only)
+            return _demote_pediatric_for_adult_query(ranked, query, routing)
+        return _demote_pediatric_for_adult_query(protos, query, routing)
+
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
     gi_mismatch = ("пищевод", "желудк", "двенадцатипер", "гастроэзофаг", "рефлюкс", "гэрб", "срыгив")
@@ -5399,9 +5459,7 @@ def _rerank_protocols_symptom_only(
     has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
     has_gi = any(w in ql for w in ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул"))
     throat_distress = any(w in ql for w in ("одыш", "дистресс", "синус", "сатурац", "загиб", "трипод"))
-    routing = _routing or {}
-    child_query = _infer_funnel_audience(query, routing) == "child"
-    adult_query = _infer_funnel_audience(query, routing) == "adult"
+    has_sinus_hint = any(w in ql for w in ("синус", "риносинус", "лоб", "лобно", "maxillar"))
 
     def _score_row(pr: dict) -> tuple[int, float]:
         path = str(pr.get("path") or "").lower()
@@ -5428,6 +5486,8 @@ def _rerank_protocols_symptom_only(
                 boost += 5
             elif any(k in blob for k in ent_only) and not any(k in blob for k in cough_acute):
                 penalty += 6
+            if not has_sinus_hint and "риносинус" in blob and "орви" not in blob:
+                penalty += 12
         elif has_throat:
             if "пневмон" in blob:
                 boost += 2
@@ -5444,13 +5504,7 @@ def _rerank_protocols_symptom_only(
                 boost += 1
         if child_query and has_cough and any(k in blob for k in cough_acute):
             boost += 2
-        hint = doc_audience_hint(path, title, routing)
-        if adult_query and hint == "pediatric":
-            penalty += 12
-        elif not child_query and hint == "pediatric":
-            penalty += 2
-        if child_query and hint == "adult":
-            penalty += 3
+        penalty, boost = _apply_clinical_and_audience(pr, penalty, boost)
         try:
             conf = float(pr.get("confidence_score") or 0.0)
         except (TypeError, ValueError):
@@ -6567,7 +6621,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r147-search-cough-fever-ranking"
+BUILD_VERSION = "2026-06-01-r148-clinical-search-routing-probe110"
 
 
 def _app_version() -> str:

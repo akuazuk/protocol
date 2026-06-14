@@ -54,6 +54,16 @@ def expand_specialty_slugs_for_icd(
             )
         if root.startswith("D25") or root.startswith(("N80", "N81", "N82", "N83", "N84", "N85", "N86", "N87", "N88", "N89", "N90", "N91", "N92", "N93", "N94", "N95", "N97")):
             out.add("akusherstvo-ginekologiya")
+        if c.startswith("O") or root.startswith("O"):
+            out.add("akusherstvo-ginekologiya")
+        if root.startswith(("I10", "I11", "I12", "I13", "I15", "I50")):
+            out.update({"bolezni-sistemy-krovoobrashcheniya", "terapiya"})
+        if root.startswith(("M32", "M05", "M06")):
+            out.add("revmatologiya")
+        if root.startswith("J30"):
+            out.update({"allergologiya-immunologiya", "otorinolaringologiya"})
+        if c.startswith("T2") or c.startswith("T3"):
+            out.update({"khirurgiya", "anesteziologiya-reanimatologiya"})
         if root.startswith(("E03", "E04", "E05", "E06", "E55", "E58", "E59")):
             out.add("endokrinologiya-narusheniya-obmena-veshchestv")
     return out
@@ -105,6 +115,12 @@ def expand_specialty_slugs_for_clinical_text(
     low = _norm(text or "")
     if any(m in low for m in _ONCOLOGY_SUSPICION_MARKERS):
         out.update({"novoobrazovaniya", "gastroenterologiya", "khirurgiya"})
+    try:
+        from clinical_knowledge.search_clinical_routing import expand_slugs_for_clinical_routes
+
+        out = expand_slugs_for_clinical_routes(out, text or "", None)
+    except Exception:
+        pass
     return out
 
 
