@@ -10108,6 +10108,15 @@
       .replace(/^(?:КП[\s_]*\d*[._\s-]*|кп[\s_]*\d*[._\s-]*)/i, "")
       .replace(/(?:_оф\.?\s*опубл\.?|_офиц\.?|оф\.?\s*опубл\.?).*$/i, "")
       .trim();
+    name = name.replace(/[»«]/g, "");
+    name = name
+      .replace(/\bд-нас\b/gi, "детское население")
+      .replace(/\bдет-нас\b/gi, "детское население")
+      .replace(/\bдетс\s+нас\b/gi, "детское население")
+      .replace(/\bдет\s+нас\b/gi, "детское население")
+      .replace(/\bвзр\.?\s*нас(?:еление)?\b/gi, "взрослое население")
+      .replace(/\bв-нас\b/gi, "взрослое население")
+      .replace(/\bвзр\s+нас\b/gi, "взрослое население");
     name = name.replace(/\(\s+/g, "(").replace(/\s+\)/g, ")").replace(/\s+/g, " ").trim();
     return name;
   }
@@ -10811,8 +10820,10 @@
     for (i = 0; i < retrieval.length; i++) {
       var r = retrieval[i];
       var p = r.path;
+      if (r.generated_from_summary) continue;
       var ex = (r.excerpt || "").trim();
       if (!p || !ex) continue;
+      if (/^Протокол:\s/.test(ex) && /Нозология:/.test(ex)) continue;
       if (!m[p] || ex.length > m[p].length) m[p] = ex;
       var nk = normalizeProtocolPath(p);
       if (nk && nk !== p && (!m[nk] || ex.length > m[nk].length)) {

@@ -230,17 +230,27 @@ def _protocol_display_title(path: str = "", title: str | None = None) -> str:
 
 
 def protocol_ui_meta_for_path(path: str) -> dict:
-    """Метаданные КП для UI: год, пост МЗ, аудитория (из index.csv и имени файла)."""
+    """Метаданные КП для UI: год, пост МЗ, аудитория (index.csv и имя файла)."""
+    from clinical_knowledge.protocol_audience import audience_hint_ru, infer_protocol_audience
+
     fn = Path(path).name if path else ""
-    nb = _norm_query(fn)
     row = _load_index_csv_by_path().get(path.strip(), {}) if path else {}
+    aud_csv = (row.get("audience") or "").strip().lower()
     audience: list[str] = []
-    if any(x in nb for x in ("д-нас", "детс", "детей", "дет ", "неонат", "новорож")):
+    if aud_csv in ("pediatric", "child"):
         audience.append("детское население")
-    if any(x in nb for x in ("взр", "взросл")):
+    elif aud_csv == "adult":
         audience.append("взрослое население")
-    if "беремен" in nb:
+    elif aud_csv == "mixed":
+        audience.append("дети и взрослые")
+    else:
+        hint = infer_protocol_audience(path or "", fn)
+        label = audience_hint_ru(hint)
+        if label:
+            audience.append(label)
+    if "беремен" in _norm_query(fn):
         audience.append("беременность")
+    nb = _norm_query(fn)
     post_csv = (row.get("has_post_mz") or "").strip().lower() == "yes"
     post_fn = any(x in nb for x in ("пост_мз", "post_mz", "постановление_мз", "постановление мз"))
     year = (row.get("years_in_filename") or "").strip() or None
@@ -1523,7 +1533,20 @@ def _norm_audience_blob(text: str) -> str:
 
 
 def doc_audience_hint(path: str, title: str, routing: dict) -> str | None:
-    """pediatric | adult | mixed | None - по названию файла/заголовка."""
+    """pediatric | adult | mixed | None - по index.csv, названию файла/заголовка."""
+    from clinical_knowledge.protocol_audience import infer_protocol_audience
+
+    row = _load_index_csv_by_path().get((path or "").strip(), {})
+    aud_csv = (row.get("audience") or "").strip().lower()
+    if aud_csv in ("pediatric", "child"):
+        return "pediatric"
+    if aud_csv == "adult":
+        return "adult"
+    if aud_csv == "mixed":
+        return "mixed"
+    hint = infer_protocol_audience(path, title)
+    if hint:
+        return hint
     s = _norm_audience_blob(f"{path} {title}")
     ped = [_norm_audience_blob(p) for p in routing.get("pediatric_title_markers") or []]
     adult_t = [_norm_audience_blob(a) for a in routing.get("adult_title_markers") or []]
@@ -5297,7 +5320,8 @@ def _build_protocols_from_retrieval(
         if not p:
             continue
         meta = _protocols_by_path.get(p) or {}
-        title = str(meta.get("title") or p.rsplit("/", 1)[-1])
+        raw_title = str(meta.get("title") or p.rsplit("/", 1)[-1])
+        title = _protocol_display_title(p, raw_title)
         conf = min(0.97, max(0.38, 0.35 + 0.62 * (raw / max_sc)))
         rag_sup = min(0.95, max(0.2, conf * 0.88))
         protos.append(
@@ -5503,9 +5527,9 @@ def _rerank_protocols_symptom_only(
             if any(k in blob for k in ("нейрохирург", "нервной систем", "эпилепс", "врожденн")) and "отит" not in blob:
                 penalty += 22
         if adult_query and hint == "pediatric":
-            penalty += 12
+            penalty += 48
         elif not child_query and not pregnant_query and hint == "pediatric":
-            penalty += 2
+            penalty += 8
         if child_query:
             if hint == "pediatric":
                 boost += 3
@@ -5556,6 +5580,18 @@ def _rerank_protocols_symptom_only(
         if any(str(c).upper().startswith("J20") for c in icd_codes) and "дистресс" in blob:
             if "бронхит" not in blob:
                 penalty += 18
+        if "dermatology_appendage" in route_ids or any(
+            str(c).upper().startswith(("L60", "L61", "L62", "L63", "L64", "L65", "L66", "L67", "L68"))
+            for c in icd_codes
+        ):
+            if any(k in blob for k in ("придатков", "ногт", "оних", "L60")):
+                boost += 18
+            if any(k in blob for k in ("папулосквамоз", "псориаз")) and not any(
+                k in ql for k in ("папулосквамоз", "псориаз", "бляшк")
+            ):
+                penalty += 22
+            if adult_query and hint == "pediatric":
+                penalty += 20
         if "otitis" in route_ids or any(str(c).upper().startswith("H66") for c in icd_codes):
             if any(k in blob for k in ("нейрохирург", "нервной систем", "nevrolog")) and "отит" not in blob:
                 penalty += 20
@@ -5589,10 +5625,12 @@ def _rerank_protocols_symptom_only(
             ranked = sorted(protos, key=_score_clinical_only)
             ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
             ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
-            return _promote_clinical_route_top1(ranked, query, icd_analysis)
+            ranked = _promote_clinical_route_top1(ranked, query, icd_analysis)
+            return _filter_protocols_by_funnel_audience(ranked, query, routing)
         ranked = _demote_pediatric_for_adult_query(protos, query, routing)
         ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
-        return _promote_clinical_route_top1(ranked, query, icd_analysis)
+        ranked = _promote_clinical_route_top1(ranked, query, icd_analysis)
+        return _filter_protocols_by_funnel_audience(ranked, query, routing)
 
     rare = ("саркоид", "микобактер", "туберкул", "лихорадка ку")
     chronic_mismatch = ("аллерг", "ринит", "хобл", "реабилит", "реабилитац", "интерстициальн")
@@ -5716,7 +5754,8 @@ def _rerank_protocols_symptom_only(
     ranked = sorted(protos, key=_score_row)
     ranked = _demote_pediatric_for_adult_query(ranked, query, routing)
     ranked = _swap_if_clinical_second_beats_first(ranked, query, icd_analysis)
-    return _promote_clinical_route_top1(ranked, query, icd_analysis)
+    ranked = _promote_clinical_route_top1(ranked, query, icd_analysis)
+    return _filter_protocols_by_funnel_audience(ranked, query, routing)
 
 
 def _swap_if_clinical_second_beats_first(
@@ -5899,6 +5938,10 @@ def _truncate_excerpt_for_ui(text: str, max_chars: int) -> str:
 
 def format_excerpt_for_display(raw: str, max_chars: int) -> str:
     """Пайплайн для фрагмента КП в ответе API и промпте."""
+    from clinical_knowledge.protocol_audience import is_synthetic_summary_excerpt
+
+    if is_synthetic_summary_excerpt(raw or ""):
+        return ""
     t = _normalize_pdf_hyphenation(raw or "")
     t = _collapse_whitespace_for_excerpt(t)
     t = _strip_leading_word_fragment(t)
@@ -6900,7 +6943,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r160-probe-100"
+BUILD_VERSION = "2026-05-31-r161-audience-titles"
 
 
 def _app_version() -> str:

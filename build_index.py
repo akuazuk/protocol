@@ -5,11 +5,18 @@ from __future__ import annotations
 import csv
 import json
 import re
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from clinical_knowledge.protocol_audience import infer_protocol_audience
+from clinical_knowledge.protocol_links import beautify_protocol_title
+
 DATA = ROOT / "minzdrav_protocols"
 OUT = ROOT / "index.csv"
 OUT_JSON = ROOT / "protocols.json"
@@ -65,11 +72,15 @@ def main() -> None:
                 "years_in_filename",
                 "has_post_mz",
                 "same_basename_count",
+                "audience",
+                "display_title",
             ]
         )
         for p in pdfs:
             rel = p.relative_to(ROOT)
             name = p.name
+            aud = infer_protocol_audience(str(rel).replace("\\", "/"), name) or ""
+            display = beautify_protocol_title(name)
             w.writerow(
                 [
                     str(rel).replace("\\", "/"),
@@ -80,6 +91,8 @@ def main() -> None:
                     guess_years(name),
                     "yes" if ("пост_МЗ" in name or "постановление_МЗ" in name) else "no",
                     dup_count[name],
+                    aud,
+                    display,
                 ]
             )
 

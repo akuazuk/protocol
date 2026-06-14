@@ -69,7 +69,9 @@ def beautify_protocol_title(raw: str | None) -> str:
     name = re.sub(r"\(\s+", "(", name)
     name = re.sub(r"\s+\)", ")", name)
     name = re.sub(r"\s+", " ", name).strip()
-    return name
+    from clinical_knowledge.protocol_audience import expand_protocol_title_abbreviations
+
+    return expand_protocol_title_abbreviations(name)
 
 
 def protocol_display_name(
