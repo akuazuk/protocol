@@ -2986,6 +2986,62 @@
       text-align: center;
     }
 
+    .search-methodist-ai-panel {
+      margin: 0 0 0.85rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: rgba(232, 245, 241, 0.55);
+    }
+
+    .search-methodist-ai-panel.is-loading {
+      opacity: 0.85;
+    }
+
+    .search-methodist-ai-panel h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.88rem;
+      color: var(--green-900);
+    }
+
+    .search-methodist-ai-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      font-size: 0.78rem;
+      margin: 0.35rem 0;
+    }
+
+    .search-methodist-ai-improvements {
+      margin: 0.35rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.78rem;
+      color: #374151;
+    }
+
+    .search-methodist-ai-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.55rem;
+    }
+
+    .search-methodist-manual-wrap {
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed rgba(217, 119, 6, 0.35);
+    }
+
+    body.methodist-search-ai-pending .search-methodist-manual-wrap,
+    body.methodist-search-ai-ready .search-methodist-manual-wrap {
+      display: none;
+    }
+
+    body.methodist-search-ai-failed .search-methodist-manual-wrap,
+    body:not(.methodist-search-ai-pending):not(.methodist-search-ai-ready) .search-methodist-manual-wrap {
+      display: block;
+    }
+
     .search-methodist-grid--compact {
       grid-template-columns: 1fr 1fr;
     }
@@ -6201,11 +6257,19 @@
       display: none;
     }
 
+    #tab-methodist-search-stats {
+      display: none;
+    }
+
     body.methodist-mode #tab-methodist-ml-stats {
       display: flex;
     }
 
     body.methodist-mode #tab-methodist-queue {
+      display: flex;
+    }
+
+    body.methodist-mode #tab-methodist-search-stats {
       display: flex;
     }
 
@@ -8118,6 +8182,18 @@
           <span class="app-main-tab-sub">база для обучения, прогресс движка и ML</span>
         </span>
       </button>
+      <button type="button" role="tab" id="tab-methodist-search-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-search-stats" hidden>
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title">Поиск · оценки</span>
+          <span class="app-main-tab-sub">AI-разметка retrieval и улучшения RAG</span>
+        </span>
+      </button>
       <button type="button" role="tab" id="tab-main-search" aria-selected="false" aria-controls="panel-main-search">
         <span class="app-main-tab-visual" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -8445,10 +8521,25 @@
         <div id="llm-out" class="llm-out"></div>
 
         <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
-          <h3>Разметка выдачи поиска</h3>
+          <h3>Оценка выдачи поиска</h3>
           <p class="search-methodist-panel__lead">
-            Сохраните исправление top-протокола как <code>retrieval_fix</code> для обучения RAG. Текст запроса — только в защищённый feedback.
+            ИИ оценивает подбор протоколов; методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> — данные идут в RAG и движок.
           </p>
+          <section id="search-methodist-ai-panel" class="search-methodist-ai-panel" hidden aria-live="polite">
+            <h4 id="search-methodist-ai-title">ИИ оценивает выдачу…</h4>
+            <div id="search-methodist-ai-body" hidden>
+              <div class="search-methodist-ai-metrics" id="search-methodist-ai-metrics"></div>
+              <p class="search-methodist-panel__lead" id="search-methodist-ai-summary" style="margin:0.35rem 0"></p>
+              <p class="consult-hint-small" id="search-methodist-ai-notes" style="margin:0"></p>
+              <ul class="search-methodist-ai-improvements" id="search-methodist-ai-improvements"></ul>
+              <div class="search-methodist-ai-actions">
+                <button type="button" class="btn-assist" id="search-methodist-ai-approve">Одобрить оценку ИИ</button>
+                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-edit">Править вручную</button>
+                <button type="button" class="btn-assist btn-toolbar-clear" id="search-methodist-ai-reject">Отклонить ИИ</button>
+              </div>
+            </div>
+          </section>
+          <div class="search-methodist-manual-wrap" id="search-methodist-manual-wrap">
           <div class="search-methodist-grid search-methodist-grid--compact">
             <div>
               <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
@@ -8475,6 +8566,7 @@
           <div class="search-methodist-actions">
             <button type="button" class="btn-assist" id="search-methodist-save">Сохранить retrieval_fix</button>
             <span class="search-methodist-status" id="search-methodist-status" role="status" aria-live="polite"></span>
+          </div>
           </div>
         </section>
         </section>
@@ -9238,6 +9330,69 @@
         <section class="methodist-ml-section">
           <h3>ML-эксперименты (offline)</h3>
           <div id="methodist-ml-experiments"></div>
+        </section>
+      </div>
+    </div>
+
+    <div
+      id="panel-methodist-search-stats"
+      class="panel-methodist-search-stats"
+      role="tabpanel"
+      aria-labelledby="tab-methodist-search-stats"
+      hidden
+    >
+      <div id="methodist-search-dashboard-root" class="methodist-ml-dashboard consult-hide-print">
+        <div class="methodist-ml-dashboard__hero">
+          <div>
+            <h2>Поиск протоколов · оценки и улучшения RAG</h2>
+            <p>
+              ИИ оценивает каждую выдачу; методист подтверждает или правит. Здесь — накопленные метрики Hit@k,
+              теги ошибок retrieval и приоритетные правки для движка поиска.
+            </p>
+          </div>
+          <div class="methodist-ml-dashboard__hero-actions">
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-search-dash-refresh">Обновить</button>
+          </div>
+        </div>
+        <div id="methodist-search-dash-error" class="methodist-ml-error" hidden></div>
+        <div id="methodist-search-dash-meta" class="methodist-ml-meta"></div>
+        <div id="methodist-search-kpi-grid" class="methodist-ml-kpi-grid"></div>
+        <div class="methodist-ml-two-col">
+          <section class="methodist-ml-section">
+            <h3>Готовность разметки поиска</h3>
+            <div id="methodist-search-readiness-list" class="methodist-ml-readiness-list"></div>
+          </section>
+          <section class="methodist-ml-section">
+            <h3>Теги ошибок retrieval</h3>
+            <div class="methodist-ml-chart-box"><canvas id="methodist-search-chart-tags" aria-label="Теги поиска"></canvas></div>
+          </section>
+        </div>
+        <section class="methodist-ml-section">
+          <h3>Приоритетные улучшения движка (из AI-оценок)</h3>
+          <div class="methodist-ml-table-wrap">
+            <table class="methodist-ml-table" id="methodist-search-table-improvements">
+              <thead><tr><th>Рекомендация</th><th>Частота</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="methodist-ml-section">
+          <h3>Последние разметки (без текста запроса)</h3>
+          <div class="methodist-ml-table-wrap">
+            <table class="methodist-ml-table" id="methodist-search-table-recent">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Тип</th>
+                  <th>Rejected</th>
+                  <th>Chosen</th>
+                  <th>Теги</th>
+                  <th>AI ✓</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </section>
       </div>
     </div>
@@ -11137,6 +11292,218 @@
     { id: "query_too_vague", label: "Запрос слишком общий" },
   ];
 
+  function setSearchMethodistAiFlowState(state) {
+    document.body.classList.remove(
+      "methodist-search-ai-pending",
+      "methodist-search-ai-ready",
+      "methodist-search-ai-failed"
+    );
+    if (state) document.body.classList.add(state);
+  }
+
+  function applySearchAiReviewToForm(ai) {
+    if (!ai) return;
+    document.querySelectorAll(".search-methodist-tag-cb").forEach(function (cb) {
+      cb.checked = (ai.tags || []).indexOf(cb.value) >= 0;
+    });
+    var noteEl = document.getElementById("search-methodist-note");
+    var noteParts = [];
+    if (ai.summary_ru) noteParts.push(ai.summary_ru);
+    if (ai.system_notes_ru) noteParts.push("Ошибки системы: " + ai.system_notes_ru);
+    var imps = ai.engine_improvements_ru || [];
+    if (imps.length) noteParts.push("Правки RAG: " + imps.join("; "));
+    if (noteEl) noteEl.value = noteParts.join("\n\n").slice(0, 500);
+    if (ai.retrieval_fix) {
+      var rejSel = document.getElementById("search-methodist-rejected");
+      if (rejSel && ai.retrieval_fix.rejected_path) rejSel.value = ai.retrieval_fix.rejected_path;
+      var chosenInp = document.getElementById("search-methodist-chosen");
+      if (chosenInp && ai.retrieval_fix.chosen_path) chosenInp.value = ai.retrieval_fix.chosen_path;
+    }
+  }
+
+  function renderSearchMethodistAiReviewUi(ai) {
+    var panel = document.getElementById("search-methodist-ai-panel");
+    var title = document.getElementById("search-methodist-ai-title");
+    var body = document.getElementById("search-methodist-ai-body");
+    var metrics = document.getElementById("search-methodist-ai-metrics");
+    var summary = document.getElementById("search-methodist-ai-summary");
+    var notes = document.getElementById("search-methodist-ai-notes");
+    var impList = document.getElementById("search-methodist-ai-improvements");
+    if (!panel || !ai) return;
+    panel.hidden = false;
+    panel.classList.remove("is-loading");
+    if (title) {
+      title.textContent =
+        "ИИ-оценка · " +
+        (ai.model_used || window.__methodistAiReviewModel || "Gemini") +
+        " · уверенность " +
+        (ai.confidence || "medium");
+    }
+    if (metrics) {
+      metrics.innerHTML =
+        "<span>Ранжирование: <strong>" +
+        String(ai.ranking_rating) +
+        "/5</strong> · " +
+        escapeHtml(methodistVerdictRu(ai.ranking_verdict)) +
+        "</span>" +
+        (ai.top1_relevant === true
+          ? '<span>Top-1: релевантен</span>'
+          : ai.top1_relevant === false
+            ? '<span>Top-1: не релевантен</span>'
+            : "");
+    }
+    if (summary) summary.textContent = ai.summary_ru || "";
+    if (notes) notes.textContent = ai.system_notes_ru ? "Замечания: " + ai.system_notes_ru : "";
+    if (impList) {
+      impList.innerHTML = (ai.engine_improvements_ru || [])
+        .map(function (t) {
+          return "<li>" + escapeHtml(t) + "</li>";
+        })
+        .join("");
+    }
+    if (body) body.hidden = false;
+    setSearchMethodistAiFlowState("methodist-search-ai-ready");
+    applySearchAiReviewToForm(ai);
+  }
+
+  function requestSearchMethodistAiReview(data) {
+    if (!window.__methodistMode || !window.__methodistAiReviewEnabled || !window.__methodistToken) {
+      setSearchMethodistAiFlowState("");
+      var pOff = document.getElementById("search-methodist-ai-panel");
+      if (pOff) pOff.hidden = true;
+      return;
+    }
+    window.__searchLastAiReview = null;
+    setSearchMethodistAiFlowState("methodist-search-ai-pending");
+    var panel = document.getElementById("search-methodist-ai-panel");
+    var title = document.getElementById("search-methodist-ai-title");
+    var body = document.getElementById("search-methodist-ai-body");
+    if (panel) {
+      panel.hidden = false;
+      panel.classList.add("is-loading");
+    }
+    if (title) title.textContent = "ИИ оценивает подбор протоколов…";
+    if (body) body.hidden = true;
+    var llm = (data && data.llm_json) || {};
+    var icd = [];
+    if (data && data.icd_detected) icd = data.icd_detected;
+    fetch(apiBaseUrl() + "/api/methodist/search-ai-review", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
+      body: JSON.stringify({
+        query: data.query || lastAssistFullQuery || "",
+        llm_json: llm,
+        retrieval: data.retrieval || [],
+        icd_codes: icd,
+      }),
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || "HTTP " + r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (payload) {
+        var ai = payload && payload.ai_review;
+        if (!ai) throw new Error("Пустой ответ AI-оценки поиска");
+        window.__searchLastAiReview = ai;
+        renderSearchMethodistAiReviewUi(ai);
+        setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
+      })
+      .catch(function (e) {
+        setSearchMethodistAiFlowState("methodist-search-ai-failed");
+        if (panel) panel.classList.remove("is-loading");
+        if (title) {
+          title.textContent =
+            "AI-оценка недоступна: " + methodistApiErrorRu(e.message || e) + ". Заполните форму вручную.";
+        }
+        if (body) body.hidden = true;
+      });
+  }
+
+  function searchRetrievalTopPaths(data) {
+    return uniqueRetrievalPaths(data || window.__lastAssistData || {});
+  }
+
+  function postSearchMethodistFeedback(body, okMsg) {
+    setSearchMethodistStatus("Сохранение…");
+    return fetch(apiBaseUrl() + "/api/ml/feedback", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
+      body: JSON.stringify(body),
+    })
+      .then(function (r) {
+        return r.json().then(function (j) {
+          return { ok: r.ok, body: j };
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          setSearchMethodistStatus((res.body && res.body.detail) || "Ошибка сохранения");
+          return false;
+        }
+        setSearchMethodistStatus(okMsg || "Сохранено.");
+        return true;
+      })
+      .catch(function () {
+        setSearchMethodistStatus("Сеть недоступна.");
+        return false;
+      });
+  }
+
+  function saveSearchMethodistAiApproved() {
+    var ai = window.__searchLastAiReview;
+    if (!ai) {
+      setSearchMethodistStatus("Нет AI-оценки.");
+      return;
+    }
+    var data = window.__lastAssistData || {};
+    var queryText = data.query || lastAssistFullQuery || "";
+    var topPaths = searchRetrievalTopPaths(data);
+    var rf = ai.retrieval_fix;
+    if (rf && rf.chosen_path) {
+      postSearchMethodistFeedback(
+        {
+          event_type: "retrieval_fix",
+          query: queryText,
+          rejected_path: rf.rejected_path || null,
+          chosen_path: rf.chosen_path,
+          source: "protocol_search_ui",
+          reviewer: window.__methodistReviewer || "",
+          tags: ai.tags || [],
+          retrieval_top_paths: topPaths,
+          ranking_rating: ai.ranking_rating,
+          ranking_verdict: ai.ranking_verdict,
+          ai_review: ai,
+          methodist_approved: true,
+          review_source: "ai_assisted",
+          note: (rf.note || ai.summary_ru || "").slice(0, 500),
+        },
+        "Одобрено: retrieval_fix сохранён."
+      );
+      return;
+    }
+    postSearchMethodistFeedback(
+      {
+        event_type: "search_review",
+        query: queryText,
+        retrieval_top_paths: topPaths,
+        ranking_rating: ai.ranking_rating,
+        ranking_verdict: ai.ranking_verdict,
+        methodist_verdict: "agree",
+        tags: ai.tags || [],
+        ai_review: ai,
+        methodist_approved: true,
+        review_source: "ai_assisted",
+        reviewer: window.__methodistReviewer || "",
+        note: (ai.summary_ru || "").slice(0, 500),
+      },
+      "Одобрено: выдача верна (search_review)."
+    );
+  }
+
   function initSearchMethodistPanel() {
     var tagsEl = document.getElementById("search-methodist-tags");
     if (tagsEl && !tagsEl.getAttribute("data-wired")) {
@@ -11157,6 +11524,28 @@
     if (saveBtn && !saveBtn.getAttribute("data-wired")) {
       saveBtn.setAttribute("data-wired", "1");
       saveBtn.addEventListener("click", saveSearchMethodistRetrievalFix);
+    }
+    var aiApprove = document.getElementById("search-methodist-ai-approve");
+    if (aiApprove && !aiApprove.getAttribute("data-wired")) {
+      aiApprove.setAttribute("data-wired", "1");
+      aiApprove.addEventListener("click", saveSearchMethodistAiApproved);
+    }
+    var aiEdit = document.getElementById("search-methodist-ai-edit");
+    if (aiEdit && !aiEdit.getAttribute("data-wired")) {
+      aiEdit.setAttribute("data-wired", "1");
+      aiEdit.addEventListener("click", function () {
+        setSearchMethodistAiFlowState("");
+        setSearchMethodistStatus("Ручная правка — измените поля и сохраните.");
+      });
+    }
+    var aiReject = document.getElementById("search-methodist-ai-reject");
+    if (aiReject && !aiReject.getAttribute("data-wired")) {
+      aiReject.setAttribute("data-wired", "1");
+      aiReject.addEventListener("click", function () {
+        window.__searchLastAiReview = null;
+        setSearchMethodistAiFlowState("methodist-search-ai-failed");
+        setSearchMethodistStatus("ИИ отклонён — заполните форму вручную.");
+      });
     }
     var chosenInp = document.getElementById("search-methodist-chosen");
     if (chosenInp && !chosenInp.getAttribute("data-wired")) {
@@ -11236,6 +11625,9 @@
       cb.checked = false;
     });
     setSearchMethodistStatus("");
+    window.__searchLastAiReview = null;
+    setSearchMethodistAiFlowState("");
+    requestSearchMethodistAiReview(data);
   }
 
   function searchMethodistProtocolAutocomplete(q) {
@@ -11314,7 +11706,10 @@
       chosen_path: chosen,
       source: "protocol_search_ui",
       reviewer: window.__methodistReviewer || "",
+      retrieval_top_paths: searchRetrievalTopPaths(data),
+      review_source: window.__searchLastAiReview ? "ai_assisted_edited" : "manual",
     };
+    if (window.__searchLastAiReview) body.ai_review = window.__searchLastAiReview;
     if (note) body.note = note;
     if (tags.length) body.tags = tags;
     setSearchMethodistStatus("Сохранение…");
@@ -13628,6 +14023,7 @@
   var MAIN_TAB_ANALYTICS = "analytics";
   var MAIN_TAB_ML_STATS = "ml-stats";
   var MAIN_TAB_QUEUE = "queue";
+  var MAIN_TAB_SEARCH_STATS = "search-stats";
   var METHODIST_RETRIEVAL_PROTOCOL_TAGS = ["wrong_protocol", "missed_protocol"];
   var __methodistMlCharts = {};
 
@@ -13858,6 +14254,7 @@
     document.title = active ? "Кабинет методиста · Protocol" : APP_DEFAULT_TITLE;
     var tabMl = document.getElementById("tab-methodist-ml-stats");
     var tabQueue = document.getElementById("tab-methodist-queue");
+    var tabSearchStats = document.getElementById("tab-methodist-search-stats");
     if (tabMl) {
       if (active) {
         tabMl.removeAttribute("hidden");
@@ -13871,6 +14268,10 @@
     if (tabQueue) {
       if (active) tabQueue.removeAttribute("hidden");
       else tabQueue.setAttribute("hidden", "");
+    }
+    if (tabSearchStats) {
+      if (active) tabSearchStats.removeAttribute("hidden");
+      else tabSearchStats.setAttribute("hidden", "");
     }
     if (!active) setMethodistAiFlowState("");
     if (active) {
@@ -14525,6 +14926,167 @@
         if (errEl) {
           errEl.hidden = false;
           errEl.textContent = "Не удалось загрузить статистику: " + methodistApiErrorRu(e.message || e);
+        }
+      })
+      .finally(function () {
+        if (root) root.classList.remove("is-loading");
+      });
+  }
+
+  var __methodistSearchCharts = {};
+
+  function renderMethodistSearchDashboard(stats) {
+    if (!stats || !stats.search) return;
+    var s = stats.search;
+    var metaEl = document.getElementById("methodist-search-dash-meta");
+    if (metaEl) {
+      metaEl.textContent =
+        "Обновлено: " +
+        (stats.generated_at || "—") +
+        " · поисков (telemetry): " +
+        (s.protocol_search_count || 0) +
+        " · разметок UI: " +
+        (s.search_ui_retrieval_fix || 0);
+    }
+    var kpiGrid = document.getElementById("methodist-search-kpi-grid");
+    if (kpiGrid) {
+      var kpis = [
+        { label: "Поисков (telemetry)", value: s.protocol_search_count || 0, sub: "без текста запроса" },
+        { label: "retrieval_fix (UI)", value: s.search_ui_retrieval_fix || 0, sub: "source=protocol_search_ui", accent: true },
+        { label: "search_review", value: s.search_review_count || 0, sub: "верная выдача без fix" },
+        { label: "AI одобрено", value: (s.ai_approved_labels || 0) + " / " + (s.ai_assisted_labels || 0), sub: "methodist_approved / ai_assisted" },
+        { label: "Hit@1", value: s.hit_at_1_pct != null ? s.hit_at_1_pct + "%" : "—", sub: "по " + (s.labeled_with_top_paths || 0) + " разметок" },
+        { label: "Hit@3", value: s.hit_at_3_pct != null ? s.hit_at_3_pct + "%" : "—", sub: "цель ≥60%", accent: true },
+        { label: "Ручная разметка", value: s.manual_labels || 0, sub: "без AI" },
+        { label: "Готовность", value: ((s.readiness && s.readiness.overall_pct) || 0) + "%", sub: "пороги 20/30/15" },
+      ];
+      kpiGrid.innerHTML = kpis
+        .map(function (k) {
+          return (
+            '<div class="methodist-ml-kpi' +
+            (k.accent ? " methodist-ml-kpi--accent" : "") +
+            '"><div class="methodist-ml-kpi__label">' +
+            escapeHtml(k.label) +
+            '</div><div class="methodist-ml-kpi__value">' +
+            escapeHtml(String(k.value)) +
+            '</div><div class="methodist-ml-kpi__sub">' +
+            escapeHtml(k.sub) +
+            "</div></div>"
+          );
+        })
+        .join("");
+    }
+    var readList = document.getElementById("methodist-search-readiness-list");
+    if (readList) {
+      readList.innerHTML = ((s.readiness && s.readiness.items) || [])
+        .map(function (it) {
+          return (
+            '<div class="methodist-ml-readiness-item"><div class="methodist-ml-readiness-item__head"><span>' +
+            escapeHtml(it.label) +
+            "</span><span><strong>" +
+            it.current +
+            "</strong> / " +
+            it.target +
+            " (" +
+            it.pct +
+            '%)</span></div><div class="methodist-ml-readiness-bar"><span class="' +
+            methodistMlBarClass(it.pct) +
+            '" style="width:' +
+            Math.min(100, it.pct) +
+            '%"></span></div></div>'
+          );
+        })
+        .join("");
+    }
+    var impTb = document.querySelector("#methodist-search-table-improvements tbody");
+    if (impTb) {
+      var imps = s.engine_improvements_top || [];
+      impTb.innerHTML = imps.length
+        ? imps
+            .map(function (r) {
+              return "<tr><td>" + escapeHtml(r.text) + "</td><td>" + r.count + "</td></tr>";
+            })
+            .join("")
+        : '<tr><td colspan="2">Пока нет накопленных AI-рекомендаций</td></tr>';
+    }
+    var recTb = document.querySelector("#methodist-search-table-recent tbody");
+    if (recTb) {
+      var rec = s.recent_labels || [];
+      recTb.innerHTML = rec.length
+        ? rec
+            .map(function (r) {
+              return (
+                "<tr><td>" +
+                escapeHtml(r.ts || "") +
+                "</td><td>" +
+                escapeHtml(r.event_type || "") +
+                "</td><td>" +
+                escapeHtml(r.rejected_short || "—") +
+                "</td><td>" +
+                escapeHtml(r.chosen_short || "—") +
+                "</td><td>" +
+                escapeHtml((r.tags || []).join(", ")) +
+                "</td><td>" +
+                (r.methodist_approved ? "✓" : "—") +
+                "</td></tr>"
+              );
+            })
+            .join("")
+        : '<tr><td colspan="6">Разметок поиска пока нет — выполните поиск на вкладке «Поиск протоколов»</td></tr>';
+    }
+    if (typeof Chart !== "undefined") {
+      var tagCanvas = document.getElementById("methodist-search-chart-tags");
+      if (tagCanvas) {
+        if (__methodistSearchCharts.tags) {
+          try {
+            __methodistSearchCharts.tags.destroy();
+          } catch (e1) {}
+        }
+        var tagData = (s.charts && s.charts.tags) || [];
+        __methodistSearchCharts.tags = new Chart(tagCanvas, {
+          type: "bar",
+          data: {
+            labels: tagData.map(function (t) {
+              return t.label || t.tag;
+            }),
+            datasets: [
+              {
+                label: "Разметки",
+                data: tagData.map(function (t) {
+                  return t.count;
+                }),
+                backgroundColor: "rgba(26, 138, 114, 0.55)",
+              },
+            ],
+          },
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } },
+        });
+      }
+    }
+  }
+
+  function loadMethodistSearchDashboard() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var root = document.getElementById("methodist-search-dashboard-root");
+    var errEl = document.getElementById("methodist-search-dash-error");
+    if (root) root.classList.add("is-loading");
+    if (errEl) errEl.hidden = true;
+    fetch(apiBaseUrl() + "/api/methodist/stats", { headers: methodistHeaders() })
+      .then(function (r) {
+        if (!r.ok) {
+          return r.text().then(function (t) {
+            throw new Error(t || r.status);
+          });
+        }
+        return r.json();
+      })
+      .then(function (stats) {
+        renderMethodistSearchDashboard(stats);
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось загрузить: " + methodistApiErrorRu(e.message || e);
         }
       })
       .finally(function () {
@@ -17385,15 +17947,18 @@
     var tabAnalytics = document.getElementById("tab-analytics-stats");
     var tabMl = document.getElementById("tab-methodist-ml-stats");
     var tabQueue = document.getElementById("tab-methodist-queue");
+    var tabSearchStats = document.getElementById("tab-methodist-search-stats");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
     var panelAnalytics = document.getElementById("panel-analytics-stats");
     var panelMl = document.getElementById("panel-methodist-ml-stats");
     var panelQueue = document.getElementById("panel-methodist-queue");
+    var panelSearchStats = document.getElementById("panel-methodist-search-stats");
     if (!tabSearch || !tabConsult || !panelSearch || !panelConsult) return;
     var isConsult = which === MAIN_TAB_CONSULT;
     var isMl = which === MAIN_TAB_ML_STATS;
     var isQueue = which === MAIN_TAB_QUEUE;
+    var isSearchStats = which === MAIN_TAB_SEARCH_STATS;
     var isAnalytics = which === MAIN_TAB_ANALYTICS;
     var isSearch = which === MAIN_TAB_SEARCH;
     tabSearch.setAttribute("aria-selected", isSearch ? "true" : "false");
@@ -17412,21 +17977,37 @@
       tabQueue.setAttribute("aria-selected", isQueue ? "true" : "false");
       tabQueue.tabIndex = isQueue ? 0 : -1;
     }
+    if (tabSearchStats) {
+      tabSearchStats.setAttribute("aria-selected", isSearchStats ? "true" : "false");
+      tabSearchStats.tabIndex = isSearchStats ? 0 : -1;
+    }
     panelSearch.hidden = !isSearch;
     panelConsult.hidden = !isConsult;
     if (panelAnalytics) panelAnalytics.hidden = !isAnalytics;
     if (panelMl) panelMl.hidden = !isMl;
     if (panelQueue) panelQueue.hidden = !isQueue;
-    document.body.classList.remove("app-tab-search", "app-tab-consult", "app-tab-analytics", "app-tab-ml", "app-tab-queue");
+    if (panelSearchStats) panelSearchStats.hidden = !isSearchStats;
+    document.body.classList.remove(
+      "app-tab-search",
+      "app-tab-consult",
+      "app-tab-analytics",
+      "app-tab-ml",
+      "app-tab-queue",
+      "app-tab-search-stats"
+    );
     if (isSearch) document.body.classList.add("app-tab-search");
     else if (isConsult) document.body.classList.add("app-tab-consult");
     else if (isAnalytics) document.body.classList.add("app-tab-analytics");
     else if (isMl) document.body.classList.add("app-tab-ml");
     else if (isQueue) document.body.classList.add("app-tab-queue");
+    else if (isSearchStats) document.body.classList.add("app-tab-search-stats");
     try {
       if (isMl) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#ml-dashboard");
         if (typeof loadMethodistMlDashboard === "function") loadMethodistMlDashboard();
+      } else if (isSearchStats) {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#search-dashboard");
+        if (typeof loadMethodistSearchDashboard === "function") loadMethodistSearchDashboard();
       } else if (isQueue) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#methodist-queue");
         if (typeof loadMethodistQueuePanel === "function") loadMethodistQueuePanel();
@@ -18328,6 +18909,7 @@
     var ta = document.getElementById("tab-analytics-stats");
     var tml = document.getElementById("tab-methodist-ml-stats");
     var tq = document.getElementById("tab-methodist-queue");
+    var tss = document.getElementById("tab-methodist-search-stats");
     var tablist = document.getElementById("app-main-tabs");
     if (!ts || !tc) return;
 
@@ -18355,11 +18937,24 @@
         switchMainAppTab(MAIN_TAB_QUEUE);
       });
     }
+    if (tss && !tss.getAttribute("data-wired")) {
+      tss.setAttribute("data-wired", "1");
+      tss.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+      });
+    }
     var refreshBtn = document.getElementById("methodist-ml-dash-refresh");
     if (refreshBtn && !refreshBtn.getAttribute("data-wired")) {
       refreshBtn.setAttribute("data-wired", "1");
       refreshBtn.addEventListener("click", function () {
         loadMethodistMlDashboard();
+      });
+    }
+    var searchDashRefresh = document.getElementById("methodist-search-dash-refresh");
+    if (searchDashRefresh && !searchDashRefresh.getAttribute("data-wired")) {
+      searchDashRefresh.setAttribute("data-wired", "1");
+      searchDashRefresh.addEventListener("click", function () {
+        loadMethodistSearchDashboard();
       });
     }
     var queueRefresh = document.getElementById("methodist-queue-refresh");
@@ -18379,6 +18974,7 @@
         var tabs = [ts];
         if (window.__methodistMode && tq && !tq.hidden) tabs.push(tq);
         if (window.__methodistMode && tml && !tml.hidden) tabs.push(tml);
+        if (window.__methodistMode && tss && !tss.hidden) tabs.push(tss);
         tabs.push(tc);
         if (ta) tabs.push(ta);
         var idx = tabs.findIndex(function (t) {
@@ -18392,6 +18988,7 @@
         if (tabs[idx] === ts) switchMainAppTab(MAIN_TAB_SEARCH);
         else if (tabs[idx] === ta) switchMainAppTab(MAIN_TAB_ANALYTICS);
         else if (tabs[idx] === tml) switchMainAppTab(MAIN_TAB_ML_STATS);
+        else if (tabs[idx] === tss) switchMainAppTab(MAIN_TAB_SEARCH_STATS);
         else if (tabs[idx] === tq) switchMainAppTab(MAIN_TAB_QUEUE);
         else switchMainAppTab(MAIN_TAB_CONSULT);
       });
@@ -18401,6 +18998,8 @@
       var h = window.location.hash || "";
       if (h === "#ml-dashboard" && window.__methodistMode) {
         switchMainAppTab(MAIN_TAB_ML_STATS);
+      } else if (h === "#search-dashboard" && window.__methodistMode) {
+        switchMainAppTab(MAIN_TAB_SEARCH_STATS);
       } else if (h === "#methodist-queue" && window.__methodistMode) {
         switchMainAppTab(MAIN_TAB_QUEUE);
       } else if (h === "#analytics-stats" || h === "#analytics") {

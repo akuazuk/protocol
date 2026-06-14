@@ -47,3 +47,15 @@ def test_empty_feedback_dir():
     stats = build_methodist_dashboard_stats(feedback_dir=Path("/tmp/nonexistent_feedback_xyz"))
     assert stats["summary"]["total_events"] == 0
     assert stats["summary"]["unique_kz"] == 0
+    assert "search" in stats
+    assert stats["search"]["protocol_search_count"] == 0
+
+
+def test_search_domain_in_dashboard():
+    if not FEEDBACK_RENDER.is_dir():
+        return
+    stats = build_methodist_dashboard_stats(feedback_dir=FEEDBACK_RENDER)
+    search = stats.get("search") or {}
+    assert "protocol_search_count" in search
+    assert "readiness" in search
+    assert isinstance(search.get("recent_labels"), list)

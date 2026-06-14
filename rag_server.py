@@ -6218,7 +6218,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r132-methodist-search-ui-cleanup"
+BUILD_VERSION = "2026-06-01-r133-search-ai-review-dashboard"
 
 
 def _app_version() -> str:
@@ -7508,6 +7508,43 @@ def api_methodist_analysis(request: "Request", analysis_id: str) -> dict:
 
 class MethodistAiReviewIn(BaseModel):
     analysis_id: str = Field(min_length=8, description="UUID прогона из kz_analysis")
+
+
+class MethodistSearchAiReviewIn(BaseModel):
+    query: str = Field(min_length=1, max_length=12000)
+    llm_json: dict[str, Any] = Field(default_factory=dict)
+    retrieval: list[dict[str, Any]] = Field(default_factory=list)
+    icd_codes: list[str] | None = None
+
+
+@app.post("/api/methodist/search-ai-review")
+def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiReviewIn) -> dict:
+    """ИИ оценивает выдачу поиска; методист только одобряет или правит."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_ai_review import methodist_ai_review_enabled
+    from clinical_knowledge.methodist_search_ai_review import run_methodist_search_ai_review
+
+    if not methodist_ai_review_enabled():
+        raise HTTPException(status_code=404, detail="METHODIST_AI_REVIEW отключён на сервере.")
+    if not (os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")):
+        raise HTTPException(status_code=503, detail="GOOGLE_API_KEY не настроен для AI-оценки.")
+
+    payload = {
+        "query": body.query.strip(),
+        "llm_json": body.llm_json or {},
+        "retrieval": body.retrieval or [],
+        "icd_codes": body.icd_codes or [],
+    }
+    try:
+        ai_review = run_methodist_search_ai_review(payload)
+    except ValueError as e:
+        raise HTTPException(status_code=502, detail=str(e)[:240]) from e
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Ошибка AI-оценки поиска: {str(e)[:200]}") from e
+
+    return {"ok": True, "ai_review": ai_review}
 
 
 @app.post("/api/methodist/ai-review")

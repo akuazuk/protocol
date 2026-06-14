@@ -32,9 +32,16 @@ ML_READINESS_THRESHOLDS: dict[str, Any] = {
     "ai_approved_reviews": {"target": 20, "label": "AI-оценок, одобренных методистом"},
 }
 
+SEARCH_READINESS_THRESHOLDS: dict[str, Any] = {
+    "search_retrieval_fix": {"target": 20, "label": "retrieval_fix из вкладки поиска"},
+    "search_reviews": {"target": 30, "label": "Оценок поиска (search_review + AI-одобрено)"},
+    "search_ai_approved": {"target": 15, "label": "AI-оценок поиска, одобренных методистом"},
+}
+
 TAG_LABELS: dict[str, str] = {
     "wrong_protocol": "Неверный КП в RAG",
     "missed_protocol": "Не нашли нужный КП",
+    "query_too_vague": "Запрос слишком общий",
     "false_positive_rule": "Ложное замечание правила",
     "missed_issue": "Пропущена ошибка в КЗ",
     "wrong_population": "Ошибка популяции",
@@ -239,6 +246,148 @@ def _compute_protocol_match_stats(
     }
 
 
+def _short_path(path: str) -> str:
+    p = (path or "").replace("\\", "/").strip()
+    return p.rsplit("/", 1)[-1][:72] if p else ""
+
+
+def _compute_search_domain_stats(
+    events: list[dict[str, Any]],
+    retrieval_fixes: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """KPI поиска протоколов: телеметрия, разметка, Hit@k, AI-оценки."""
+    from clinical_knowledge.search_telemetry import aggregate_protocol_search
+
+    protocol_searches = [e for e in events if e.get("event_type") == "protocol_search"]
+    search_reviews = [e for e in events if e.get("event_type") == "search_review"]
+    search_ui_fixes = [
+        f
+        for f in retrieval_fixes
+        if str(f.get("source") or "") == "protocol_search_ui"
+        or f.get("review_source") == "ai_assisted"
+    ]
+
+    tag_counts: Counter[str] = Counter()
+    for ev in search_ui_fixes + search_reviews:
+        for tag in ev.get("tags") or []:
+            tag_counts[str(tag)] += 1
+
+    ai_assisted = sum(
+        1
+        for ev in search_ui_fixes + search_reviews
+        if ev.get("review_source") == "ai_assisted" or ev.get("ai_review")
+    )
+    ai_approved = sum(
+        1
+        for ev in search_ui_fixes + search_reviews
+        if ev.get("methodist_approved") is True
+    )
+    manual_only = sum(
+        1
+        for ev in search_ui_fixes
+        if not ev.get("ai_review") and ev.get("review_source") != "ai_assisted"
+    )
+
+    labeled = 0
+    hit1 = 0
+    hit3 = 0
+    for fix in search_ui_fixes:
+        chosen = (fix.get("chosen_path") or "").strip()
+        top = list(fix.get("retrieval_top_paths") or [])
+        if not chosen or not top:
+            continue
+        labeled += 1
+        if chosen in top[:1]:
+            hit1 += 1
+        if chosen in top[:3]:
+            hit3 += 1
+
+    improvements: Counter[str] = Counter()
+    for ev in search_ui_fixes + search_reviews:
+        ai = ev.get("ai_review") if isinstance(ev.get("ai_review"), dict) else ev
+        for imp in ai.get("engine_improvements_ru") or []:
+            s = str(imp).strip()
+            if s:
+                improvements[s[:120]] += 1
+
+    recent: list[dict[str, Any]] = []
+    combined = sorted(
+        search_ui_fixes + search_reviews,
+        key=lambda r: r.get("ts") or "",
+        reverse=True,
+    )
+    for ev in combined[:15]:
+        recent.append(
+            {
+                "ts": (ev.get("ts") or "")[:19],
+                "event_type": ev.get("event_type"),
+                "query_hash": (ev.get("query_hash") or "")[:12] or None,
+                "rejected_short": _short_path(str(ev.get("rejected_path") or "")),
+                "chosen_short": _short_path(str(ev.get("chosen_path") or "")),
+                "tags": list(ev.get("tags") or [])[:4],
+                "methodist_approved": ev.get("methodist_approved"),
+                "ranking_rating": ev.get("ranking_rating"),
+                "reviewer": ev.get("reviewer"),
+            }
+        )
+
+    telemetry = aggregate_protocol_search(protocol_searches)
+    search_fix_count = len([f for f in retrieval_fixes if str(f.get("source") or "") == "protocol_search_ui"])
+
+    readiness_items = [
+        {
+            "key": "search_retrieval_fix",
+            "label": SEARCH_READINESS_THRESHOLDS["search_retrieval_fix"]["label"],
+            "current": search_fix_count,
+            "target": SEARCH_READINESS_THRESHOLDS["search_retrieval_fix"]["target"],
+            "pct": _pct(search_fix_count, SEARCH_READINESS_THRESHOLDS["search_retrieval_fix"]["target"]),
+        },
+        {
+            "key": "search_reviews",
+            "label": SEARCH_READINESS_THRESHOLDS["search_reviews"]["label"],
+            "current": len(search_reviews) + ai_approved,
+            "target": SEARCH_READINESS_THRESHOLDS["search_reviews"]["target"],
+            "pct": _pct(len(search_reviews) + ai_approved, SEARCH_READINESS_THRESHOLDS["search_reviews"]["target"]),
+        },
+        {
+            "key": "search_ai_approved",
+            "label": SEARCH_READINESS_THRESHOLDS["search_ai_approved"]["label"],
+            "current": ai_approved,
+            "target": SEARCH_READINESS_THRESHOLDS["search_ai_approved"]["target"],
+            "pct": _pct(ai_approved, SEARCH_READINESS_THRESHOLDS["search_ai_approved"]["target"]),
+        },
+    ]
+    readiness_overall = round(sum(r["pct"] for r in readiness_items) / len(readiness_items), 1) if readiness_items else 0.0
+
+    fixes_by_day = _events_by_day(search_ui_fixes + search_reviews)
+
+    return {
+        "telemetry": telemetry,
+        "protocol_search_count": len(protocol_searches),
+        "search_ui_retrieval_fix": search_fix_count,
+        "search_review_count": len(search_reviews),
+        "ai_assisted_labels": ai_assisted,
+        "ai_approved_labels": ai_approved,
+        "manual_labels": manual_only,
+        "labeled_with_top_paths": labeled,
+        "hit_at_1_pct": _pct(hit1, labeled) if labeled else None,
+        "hit_at_3_pct": _pct(hit3, labeled) if labeled else None,
+        "tag_counts": [
+            {"tag": t, "label": TAG_LABELS.get(t, t), "count": c}
+            for t, c in tag_counts.most_common(10)
+        ],
+        "engine_improvements_top": [
+            {"text": t, "count": c} for t, c in improvements.most_common(12)
+        ],
+        "readiness": {"overall_pct": readiness_overall, "items": readiness_items},
+        "recent_labels": recent,
+        "charts": {
+            "labels_by_day": fixes_by_day,
+            "tags": [{"tag": t, "label": TAG_LABELS.get(t, t), "count": c} for t, c in tag_counts.most_common(8)],
+        },
+    }
+
+
 def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict[str, Any]:
     """Полная статистика для GET /api/methodist/stats."""
     from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
@@ -394,6 +543,7 @@ def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict
     engine_log = _load_engine_releases()
     reanalysis = _compute_reanalysis_deltas(kz_events)
     protocol_match = _compute_protocol_match_stats(kz_events, reviews, retrieval_fixes)
+    search = _compute_search_domain_stats(events, retrieval_fixes)
 
     try:
         from rag_server import BUILD_VERSION  # type: ignore
@@ -421,6 +571,7 @@ def build_methodist_dashboard_stats(*, feedback_dir: Path | None = None) -> dict
             "kz_with_matched_protocol_pct": protocol_match.get("kz_with_matched_protocol_pct"),
         },
         "protocol_match": protocol_match,
+        "search": search,
         "pool": {
             "in_training_pool": len(unique_hashes_kz),
             "labeled_reviews": len(reviews),

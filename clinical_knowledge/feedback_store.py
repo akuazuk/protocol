@@ -27,6 +27,7 @@ _VALID_TAGS = frozenset({
     "score_misleading",
     "wrong_diagnosis_block",
     "wrong_treatment_block",
+    "query_too_vague",
     "other",
 })
 _VALID_KZ_COMPLIANCE_GOLD = frozenset({
@@ -274,6 +275,13 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
     elif et == "retrieval_fix":
         if not (out.get("chosen_path") or "").strip():
             raise ValueError("retrieval_fix: chosen_path обязателен")
+
+    elif et == "search_review":
+        if not (out.get("reviewer") or "").strip():
+            raise ValueError("search_review: reviewer обязателен")
+        verdict = str(out.get("methodist_verdict") or out.get("ranking_verdict") or "").strip()
+        if verdict and verdict not in _VALID_VERDICTS:
+            raise ValueError("search_review: неверный verdict")
 
     elif et == "kz_analysis":
         if not (out.get("analysis_id") or "").strip():
