@@ -8675,6 +8675,20 @@
           <div class="search-methodist-manual-wrap" id="search-methodist-manual-wrap">
           <div class="search-methodist-grid search-methodist-grid--compact">
             <div>
+              <label for="search-methodist-funnel-step">Шаг воронки (ошибка)</label>
+              <select id="search-methodist-funnel-step">
+                <option value="">— авто / из ИИ —</option>
+                <option value="0">0 · запрос</option>
+                <option value="1">1 · популяция</option>
+                <option value="2">2 · МКБ</option>
+                <option value="3">3 · рубрика</option>
+                <option value="4">4 · протокол</option>
+                <option value="5">5 · нозология</option>
+                <option value="6">6 · раздел</option>
+                <option value="7">7 · цитаты</option>
+              </select>
+            </div>
+            <div>
               <label for="search-methodist-rejected">Система ошибочно выбрала (top)</label>
               <p class="consult-hint-small" style="margin:0.15rem 0 0.35rem">При теге «Неверный КП» поле обязательно.</p>
               <select id="search-methodist-rejected">
@@ -11499,8 +11513,55 @@
     { id: "wrong_protocol", label: "Неверный КП" },
     { id: "missed_protocol", label: "Не нашли КП" },
     { id: "wrong_population", label: "Ошибка популяции" },
+    { id: "wrong_icd_suggestion", label: "Ошибка МКБ" },
+    { id: "wrong_rubric", label: "Неверная рубрика" },
+    { id: "wrong_condition", label: "Неверная нозология" },
+    { id: "wrong_section", label: "Неверный раздел" },
     { id: "query_too_vague", label: "Запрос слишком общий" },
   ];
+
+  function getSearchFunnelContextForFeedback() {
+    var ctx = window.__funnelContext || {};
+    var q = (window.__lastAssistData && window.__lastAssistData.query) || lastAssistFullQuery || "";
+    return {
+      population: ctx.population || null,
+      rubric: ctx.rubric || null,
+      protocol_path: ctx.protocol_path || (window.__searchWizard && window.__searchWizard.selectedProto) || null,
+      condition_id: ctx.condition_id || null,
+      icd_codes: extractIcdCodesFromQuery(q),
+    };
+  }
+
+  function getMethodistFunnelStepForFeedback() {
+    var sel = document.getElementById("search-methodist-funnel-step");
+    if (sel && sel.value !== "") {
+      var n = parseInt(sel.value, 10);
+      if (!isNaN(n)) return n;
+    }
+    var ai = window.__searchLastAiReview;
+    if (ai && ai.suggested_funnel_step != null && ai.suggested_funnel_step !== "") {
+      return ai.suggested_funnel_step;
+    }
+    var wiz = window.__searchWizard || {};
+    var map = {
+      population: 1,
+      icd: 2,
+      rubric: 3,
+      protocols: 4,
+      condition: 5,
+      section: 6,
+      excerpt: 7,
+      detail: 6,
+    };
+    return map[wiz.step] != null ? map[wiz.step] : 4;
+  }
+
+  function appendSearchFunnelFeedbackFields(body) {
+    var step = getMethodistFunnelStepForFeedback();
+    if (step != null && !isNaN(step)) body.funnel_step = step;
+    body.funnel_context = getSearchFunnelContextForFeedback();
+    return body;
+  }
 
   function setSearchMethodistAiFlowState(state) {
     document.body.classList.remove(
@@ -11528,6 +11589,10 @@
       if (rejSel && ai.retrieval_fix.rejected_path) rejSel.value = ai.retrieval_fix.rejected_path;
       var chosenInp = document.getElementById("search-methodist-chosen");
       if (chosenInp && ai.retrieval_fix.chosen_path) chosenInp.value = ai.retrieval_fix.chosen_path;
+    }
+    var funnelSel = document.getElementById("search-methodist-funnel-step");
+    if (funnelSel && ai.suggested_funnel_step != null && ai.suggested_funnel_step !== "") {
+      funnelSel.value = String(ai.suggested_funnel_step);
     }
   }
 
@@ -11704,7 +11769,7 @@
     }
     if (rf && rf.chosen_path) {
       postSearchMethodistFeedback(
-        {
+        appendSearchFunnelFeedbackFields({
           event_type: "retrieval_fix",
           query: queryText,
           rejected_path: rf.rejected_path || topPaths[0] || null,
@@ -11719,13 +11784,13 @@
           methodist_approved: true,
           review_source: "ai_assisted",
           note: (rf.note || ai.summary_ru || "").slice(0, 500),
-        },
+        }),
         "Одобрено: retrieval_fix сохранён."
       );
       return;
     }
     postSearchMethodistFeedback(
-      {
+      appendSearchFunnelFeedbackFields({
         event_type: "search_review",
         query: queryText,
         retrieval_top_paths: topPaths,
@@ -11738,7 +11803,7 @@
         review_source: "ai_assisted",
         reviewer: window.__methodistReviewer || "",
         note: (ai.summary_ru || "").slice(0, 500),
-      },
+      }),
       "Одобрено: выдача верна (search_review)."
     );
   }
@@ -11943,7 +12008,7 @@
     }
     var noteEl = document.getElementById("search-methodist-note");
     var note = noteEl ? String(noteEl.value || "").trim() : "";
-    var body = {
+    var body = appendSearchFunnelFeedbackFields({
       event_type: "retrieval_fix",
       query: queryText,
       rejected_path: rejected || null,
@@ -11952,7 +12017,7 @@
       reviewer: window.__methodistReviewer || "",
       retrieval_top_paths: searchRetrievalTopPaths(data),
       review_source: window.__searchLastAiReview ? "ai_assisted_edited" : "manual",
-    };
+    });
     if (window.__searchLastAiReview) body.ai_review = window.__searchLastAiReview;
     if (note) body.note = note;
     if (tags.length) body.tags = tags;

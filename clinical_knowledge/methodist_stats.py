@@ -45,6 +45,10 @@ TAG_LABELS: dict[str, str] = {
     "false_positive_rule": "Ложное замечание правила",
     "missed_issue": "Пропущена ошибка в КЗ",
     "wrong_population": "Ошибка популяции",
+    "wrong_rubric": "Неверная рубрика",
+    "wrong_condition": "Неверная нозология",
+    "wrong_section": "Неверный раздел",
+    "wrong_icd_suggestion": "Ошибка МКБ",
     "score_misleading": "Итоговый % вводит в заблуждение",
     "wrong_diagnosis_block": "Неверно оценён блок «Диагноз»",
     "wrong_treatment_block": "Неверно оценён блок «Лечение»",
@@ -251,6 +255,19 @@ def _short_path(path: str) -> str:
     return p.rsplit("/", 1)[-1][:72] if p else ""
 
 
+def _load_search_golden_snapshot() -> dict[str, Any] | None:
+    p = Path(__file__).resolve().parents[1] / "data" / "ml" / "search_golden_snapshot.json"
+    if not p.is_file():
+        return None
+    try:
+        import json
+
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def _compute_search_domain_stats(
     events: list[dict[str, Any]],
     retrieval_fixes: list[dict[str, Any]],
@@ -361,6 +378,18 @@ def _compute_search_domain_stats(
 
     fixes_by_day = _events_by_day(search_ui_fixes + search_reviews)
 
+    funnel_step_counts: Counter[int] = Counter()
+    for ev in search_ui_fixes + search_reviews:
+        fs = ev.get("funnel_step")
+        if fs is None:
+            continue
+        try:
+            funnel_step_counts[int(fs)] += 1
+        except (TypeError, ValueError):
+            continue
+
+    golden_snapshot = _load_search_golden_snapshot()
+
     return {
         "telemetry": telemetry,
         "protocol_search_count": len(protocol_searches),
@@ -381,6 +410,11 @@ def _compute_search_domain_stats(
         ],
         "readiness": {"overall_pct": readiness_overall, "items": readiness_items},
         "recent_labels": recent,
+        "funnel_step_breakdown": [
+            {"step": step, "count": cnt}
+            for step, cnt in sorted(funnel_step_counts.items())
+        ],
+        "golden_eval_snapshot": golden_snapshot,
         "charts": {
             "labels_by_day": fixes_by_day,
             "tags": [{"tag": t, "label": TAG_LABELS.get(t, t), "count": c} for t, c in tag_counts.most_common(8)],

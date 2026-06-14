@@ -10,8 +10,30 @@ SEARCH_VALID_TAGS = frozenset({
     "missed_protocol",
     "wrong_population",
     "query_too_vague",
+    "wrong_rubric",
+    "wrong_condition",
+    "wrong_section",
+    "wrong_icd_suggestion",
     "other",
 })
+
+_TAG_TO_FUNNEL_STEP = {
+    "query_too_vague": 0,
+    "wrong_population": 1,
+    "wrong_icd_suggestion": 2,
+    "wrong_rubric": 3,
+    "wrong_protocol": 4,
+    "missed_protocol": 4,
+    "wrong_condition": 5,
+    "wrong_section": 6,
+}
+
+
+def suggested_funnel_step_from_tags(tags: list[str]) -> int | None:
+    for tag in tags:
+        if tag in _TAG_TO_FUNNEL_STEP:
+            return _TAG_TO_FUNNEL_STEP[tag]
+    return None
 
 SYSTEM_METHODIST_SEARCH_AI_REVIEW = """Ты методист-врач методслужбы и аудитор качества поиска клинических протоколов Минздрава РБ в ПО «Protocol».
 
@@ -28,8 +50,9 @@ SYSTEM_METHODIST_SEARCH_AI_REVIEW = """Ты методист-врач метод
 2) engine_improvements_ru — 3-7 конкретных правок для ДВИЖКА поиска в проекте (RAG, embed rerank, routing, dedup, ICD pipeline).
    Примеры: «при I10 поднимать кардиологический КП», «отфильтровать детский протокол», «усилить match по коду K64».
 3) retrieval_fix — если top-1 неверен или нужный КП не в top-3: rejected_path (ошибочный top) и chosen_path (правильный PDF из каталога или пусто если неизвестен).
-4) tags — wrong_protocol, missed_protocol, wrong_population, query_too_vague, other.
+4) tags — wrong_protocol, missed_protocol, wrong_population, query_too_vague, wrong_rubric, wrong_condition, wrong_section, wrong_icd_suggestion, other.
 5) top1_relevant — true если первый протокол клинически уместен для запроса (даже если порядок остальных неверен).
+6) suggested_funnel_step — 0–7, на каком шаге воронки вероятнее всего ошибка (если есть).
 
 Если выдача полностью верна (top-1 релевантен, порядок разумный): ranking_verdict=correct, retrieval_fix=null, tags=[].
 
@@ -46,6 +69,7 @@ SYSTEM_METHODIST_SEARCH_AI_REVIEW = """Ты методист-врач метод
   "system_notes_ru": "<где ошиблась система: top, пропуск, популяция>",
   "tags": ["..."],
   "top1_relevant": true|false,
+  "suggested_funnel_step": <0-7|null>,
   "retrieval_fix": {"rejected_path": "", "chosen_path": "", "note": ""} | null,
   "confidence": "high|medium|low"
 }"""
@@ -166,6 +190,17 @@ def normalize_search_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
     if conf not in _VALID_CONFIDENCE:
         conf = "medium"
 
+    suggested_step = raw.get("suggested_funnel_step")
+    if suggested_step is not None and suggested_step != "":
+        try:
+            suggested_step = int(suggested_step)
+            if suggested_step < 0 or suggested_step > 7:
+                suggested_step = None
+        except (TypeError, ValueError):
+            suggested_step = None
+    else:
+        suggested_step = suggested_funnel_step_from_tags(tags)
+
     return {
         "ranking_verdict": verdict,
         "ranking_rating": rating,
@@ -176,6 +211,7 @@ def normalize_search_ai_review(raw: dict[str, Any]) -> dict[str, Any]:
         "retrieval_fix": retrieval_fix,
         "top1_relevant": top1,
         "confidence": conf,
+        "suggested_funnel_step": suggested_step,
         "review_source": "ai_assisted",
     }
 
@@ -308,6 +344,7 @@ def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict
         "retrieval_fix": retrieval_fix,
         "top1_relevant": top1_rel,
         "confidence": "low" if symptom_only else "medium",
+        "suggested_funnel_step": suggested_funnel_step_from_tags(tags),
         "review_source": "deterministic_fallback",
     }
 

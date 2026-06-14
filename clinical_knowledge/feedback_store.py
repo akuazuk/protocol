@@ -30,6 +30,42 @@ _VALID_TAGS = frozenset({
     "query_too_vague",
     "other",
 })
+_VALID_SEARCH_FUNNEL_TAGS = frozenset({
+    "wrong_protocol",
+    "missed_protocol",
+    "wrong_population",
+    "query_too_vague",
+    "wrong_rubric",
+    "wrong_condition",
+    "wrong_section",
+    "wrong_icd_suggestion",
+    "other",
+})
+
+
+def _normalize_funnel_feedback_fields(out: dict[str, Any]) -> None:
+    fs = out.get("funnel_step")
+    if fs is not None and fs != "":
+        try:
+            fs_i = int(fs)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("funnel_step должен быть целым 0–7") from exc
+        if fs_i < 0 or fs_i > 7:
+            raise ValueError("funnel_step должен быть 0–7")
+        out["funnel_step"] = fs_i
+    fc = out.get("funnel_context")
+    if fc is not None and fc != "":
+        if not isinstance(fc, dict):
+            raise ValueError("funnel_context должен быть JSON-объектом")
+        out["funnel_context"] = fc
+    tags = out.get("tags")
+    if isinstance(tags, list):
+        for tag in tags:
+            t = str(tag).strip()
+            if t and t not in _VALID_SEARCH_FUNNEL_TAGS:
+                raise ValueError(f"retrieval_fix/search_review: неизвестный тег {t!r}")
+
+
 _VALID_KZ_COMPLIANCE_GOLD = frozenset({
     "compliant",
     "mostly_compliant",
@@ -278,6 +314,7 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
         tags = [str(t).strip() for t in (out.get("tags") or []) if str(t).strip()]
         if "wrong_protocol" in tags and not (out.get("rejected_path") or "").strip():
             raise ValueError("retrieval_fix: rejected_path обязателен при теге wrong_protocol")
+        _normalize_funnel_feedback_fields(out)
 
     elif et == "search_review":
         if not (out.get("reviewer") or "").strip():
@@ -285,6 +322,7 @@ def validate_and_normalize_event(event: dict[str, Any]) -> dict[str, Any]:
         verdict = str(out.get("methodist_verdict") or out.get("ranking_verdict") or "").strip()
         if verdict and verdict not in _VALID_VERDICTS:
             raise ValueError("search_review: неверный verdict")
+        _normalize_funnel_feedback_fields(out)
 
     elif et == "kz_analysis":
         if not (out.get("analysis_id") or "").strip():

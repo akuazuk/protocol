@@ -308,6 +308,29 @@ def test_retrieval_fix_wrong_protocol_requires_rejected_path():
         )
 
 
+def test_retrieval_fix_funnel_step_validation():
+    with pytest.raises(ValueError, match="funnel_step"):
+        validate_and_normalize_event(
+            {
+                "event_type": "retrieval_fix",
+                "reviewer": "test",
+                "chosen_path": "minzdrav_protocols/x/right.pdf",
+                "funnel_step": 99,
+            }
+        )
+    out = validate_and_normalize_event(
+        {
+            "event_type": "retrieval_fix",
+            "reviewer": "test",
+            "chosen_path": "minzdrav_protocols/x/right.pdf",
+            "funnel_step": 4,
+            "funnel_context": {"population": "adult"},
+            "tags": ["wrong_rubric"],
+        }
+    )
+    assert out["funnel_step"] == 4
+
+
 def test_api_ml_feedback_forbidden_without_token(feedback_env):
     pytest.importorskip("fastapi")
     from fastapi.testclient import TestClient

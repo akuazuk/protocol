@@ -25,6 +25,7 @@ def test_deterministic_flags_symptom_only_cough_fever():
     assert out["review_source"] == "deterministic_fallback"
     assert "query_too_vague" in out["tags"]
     assert out["top1_relevant"] is False
+    assert out.get("suggested_funnel_step") in (0, 2, 4)
     assert out["retrieval_fix"] is not None
     assert "микобактер" in out["retrieval_fix"]["rejected_path"].lower() or out["retrieval_fix"][
         "rejected_path"

@@ -53,7 +53,7 @@ from retrieval_bm25 import build_bm25_index
 
 load_project_env(ROOT)
 
-from typing import Annotated, Iterable
+from typing import Annotated, Any, Iterable
 
 try:
     from fastapi import FastAPI, HTTPException, File, Form, Query, Request, UploadFile
@@ -1525,11 +1525,34 @@ def doc_audience_hint(path: str, title: str, routing: dict) -> str | None:
     return None
 
 
+def infer_audience_from_funnel_context(q: str) -> str | None:
+    """Аудитория из строк «Контекст подбора: …» (шаг 1 воронки)."""
+    nq = _norm_query(q)
+    if "контекст подбора: детское" in nq or "детское население" in nq:
+        return "child"
+    if "контекст подбора: взрослое" in nq or "взрослое население" in nq:
+        return "adult"
+    return None
+
+
+def _chunk_audience_mismatch(aud: str, path: str, title: str, routing: dict) -> bool:
+    hint = doc_audience_hint(path, title, routing)
+    if hint is None or hint == "mixed":
+        return False
+    if aud == "adult" and hint == "pediatric":
+        return True
+    if aud == "child" and hint == "adult":
+        return True
+    return False
+
+
 def filter_retrieval_by_audience(
     rows: list[dict], rq: str, routing: dict
 ) -> tuple[list[dict], str | None, bool]:
     """Отбрасывает чанки с явно несовпадающей аудиторией (дет/взросл)."""
     aud = infer_audience_from_query(rq, routing)
+    if aud is None:
+        aud = infer_audience_from_funnel_context(rq)
     if aud is None or not rows:
         return rows, aud, False
 
@@ -2599,6 +2622,7 @@ def retrieve(
     path_boost: list[str] | None = None,
     path_allowlist: list[str] | None = None,
     embed_rerank: bool | None = None,
+    audience_hint: str | None = None,
 ) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
@@ -2609,6 +2633,7 @@ def retrieve(
     icd_codes_for_lex - нормализованные коды МКБ-10: дополнительные лексические токены и усиление чанков, где встречается код.
     path_boost - пути PDF протоколов (source_path): усиление чанков из matched protocol cards.
     path_allowlist - если задан, учитываются только чанки с path из этого списка (строгий режим КЗ).
+    audience_hint - 'adult' | 'child' из воронки; фильтр несовместимых PDF до embed rerank.
     """
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
@@ -2626,6 +2651,18 @@ def retrieve(
     user_penalty = float(os.environ.get("RAG_USER_CATEGORY_PENALTY", "0.32"))
     user_uncertain = float(os.environ.get("RAG_USER_CATEGORY_UNCERTAIN", "0.78"))
     rq = routing_query if routing_query is not None else query
+    aud_filter: str | None = None
+    if use_routing:
+        aud_filter = (audience_hint or "").strip().lower() or None
+        if aud_filter not in ("adult", "child"):
+            aud_filter = infer_audience_from_query(rq, _routing)
+        if aud_filter is None:
+            aud_filter = infer_audience_from_funnel_context(rq)
+    aud_strict = os.environ.get("RAG_AUDIENCE_FILTER", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
     icd_lex = icd_tokens_for_lex(icd_codes_for_lex or [])
     # Коды вида J20.9 в самом запросе не попадают в tokenize_ru - извлекаем отдельно.
     icd_from_query = icd_tokens_for_lex(extract_icd_codes_raw(query))
@@ -2708,6 +2745,11 @@ def retrieve(
         pth = ch.get("path") or ""
         if path_allowlist_set and pth.replace("\\", "/") not in path_allowlist_set:
             continue
+        if aud_filter and aud_strict and use_routing:
+            if _chunk_audience_mismatch(
+                aud_filter, pth, str(ch.get("title") or ""), _routing
+            ):
+                continue
         lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
             ch.get("title") or ""
         )
@@ -5939,6 +5981,14 @@ class AssistIn(BaseModel):
     )
 
 
+class SearchFunnelIn(BaseModel):
+    query: str = Field(..., min_length=2, max_length=12000)
+    step: int = Field(default=0, ge=0, le=7)
+    context: dict[str, Any] = Field(default_factory=dict)
+    category_slugs: list[str] = Field(default_factory=list)
+    session_id: str | None = Field(default=None, max_length=64)
+
+
 class IcdSuggestIn(BaseModel):
     """Подбор кодов МКБ-10 по жалобам до полного поиска протоколов (шаг 1)."""
 
@@ -6361,7 +6411,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r137-search-funnel-b2-c4-summary-excerpt"
+BUILD_VERSION = "2026-06-01-r138-search-funnel-b3-b6-c2-c5"
 
 
 def _app_version() -> str:
@@ -6705,6 +6755,9 @@ def api_assist(body: AssistIn) -> dict:
         icd_path_boost = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=8) or None
 
     def _assist_retrieve(rag_q: str, *, routing_q: str | None = None) -> list[dict]:
+        aud_hint = infer_audience_from_funnel_context(q)
+        if aud_hint is None:
+            aud_hint = infer_audience_from_query(q, _routing)
         return retrieve(
             rag_q,
             routing_query=routing_q if routing_q is not None else q,
@@ -6712,6 +6765,7 @@ def api_assist(body: AssistIn) -> dict:
             user_category_slugs=user_slugs or None,
             icd_codes_for_lex=icd_codes_for_lex,
             path_boost=icd_path_boost,
+            audience_hint=aud_hint,
         )
 
     retrieved = _assist_retrieve(q_rag)
@@ -6757,6 +6811,8 @@ def api_assist(body: AssistIn) -> dict:
                 user_category_slugs=user_slugs or None,
                 icd_codes_for_lex=icd_codes_for_lex,
                 path_boost=icd_path_boost,
+                audience_hint=infer_audience_from_funnel_context(q)
+                or infer_audience_from_query(q, _routing),
             )
             if r2:
                 retrieved, audience_inferred, audience_fallback = (
@@ -7194,6 +7250,20 @@ def api_icd_suggest(body: IcdSuggestIn) -> dict:
         "append_line": append_line,
         "hint": hint,
     }
+
+
+@app.post("/api/search/funnel")
+def api_search_funnel(body: SearchFunnelIn) -> dict:
+    """Единый контракт шагов воронки 0–7 (C5)."""
+    from clinical_knowledge.search_funnel import handle_search_funnel
+
+    return handle_search_funnel(
+        query=body.query.strip(),
+        step=int(body.step),
+        context=body.context,
+        category_slugs=list(body.category_slugs or []),
+        session_id=body.session_id,
+    )
 
 
 @app.post("/api/consultation-template")
