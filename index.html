@@ -2953,11 +2953,17 @@
       margin-top: 1rem;
     }
 
-    #panel-main-search #search-methodist-panel {
-      display: none !important;
+    #panel-main-search .search-methodist-inline-mount {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(186, 210, 230, 0.55);
     }
 
-    /* Methodist search: без маркетингового шапки и блока «Материалы проекта» */
+    #panel-main-search .search-methodist-inline-mount .search-methodist-panel {
+      display: block !important;
+    }
+
+    /* На вкладке «Поиск · оценки» панель живёт в #search-methodist-panel-home */
     body.methodist-mode #panel-main-search .site-header__top,
     body.methodist-mode #panel-main-search .site-header__legal-note,
     body.methodist-mode #panel-main-search .hero-intro,
@@ -9828,10 +9834,11 @@
           </div>
         </div>
         <div id="methodist-search-dash-error" class="methodist-ml-error" hidden></div>
+        <div id="search-methodist-panel-home">
         <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
           <h3>Оценка последней выдачи</h3>
           <p class="search-methodist-panel__lead">
-            После поиска на вкладке «Поиск протоколов» здесь появляется ИИ-оценка. Методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> — данные идут в RAG и движок.
+            После каждого поиска здесь (и под результатами на вкладке «Поиск протоколов») появляется ИИ-оценка. Методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> — данные идут в RAG и движок.
           </p>
           <section id="search-methodist-ai-panel" class="search-methodist-ai-panel" hidden aria-live="polite">
             <h4 id="search-methodist-ai-title">ИИ оценивает выдачу…</h4>
@@ -9893,6 +9900,7 @@
           </div>
           </div>
         </section>
+        </div>
         <div id="methodist-search-dash-meta" class="methodist-ml-meta"></div>
         <div id="methodist-search-kpi-grid" class="methodist-ml-kpi-grid"></div>
         <div class="methodist-ml-two-col">
@@ -12013,6 +12021,38 @@
     return !!(tab && tab.getAttribute("aria-selected") === "true");
   }
 
+  function isMainSearchTabActive() {
+    var tab = document.getElementById("tab-main-search");
+    return !!(tab && tab.getAttribute("aria-selected") === "true");
+  }
+
+  function relocateSearchMethodistPanelToInline() {
+    var panel = document.getElementById("search-methodist-panel");
+    var mount = document.getElementById("search-methodist-inline-mount");
+    if (!panel || !mount || !window.__methodistMode) return;
+    if (panel.parentElement !== mount) mount.appendChild(panel);
+  }
+
+  function relocateSearchMethodistPanelToHome() {
+    var panel = document.getElementById("search-methodist-panel");
+    var home = document.getElementById("search-methodist-panel-home");
+    if (!panel || !home) return;
+    if (panel.parentElement !== home) home.appendChild(panel);
+  }
+
+  function syncSearchMethodistPanelPlacement() {
+    if (!window.__methodistMode) return;
+    if (isSearchStatsTabActive()) {
+      relocateSearchMethodistPanelToHome();
+      return;
+    }
+    if (isMainSearchTabActive() && document.getElementById("search-methodist-inline-mount")) {
+      relocateSearchMethodistPanelToInline();
+    } else {
+      relocateSearchMethodistPanelToHome();
+    }
+  }
+
   function ensurePracticalReviewPanel() {
     var slot = document.getElementById("practical-review-panel");
     if (slot) return slot;
@@ -12035,7 +12075,8 @@
     var notes = document.getElementById("search-methodist-ai-notes");
     var impList = document.getElementById("search-methodist-ai-improvements");
     if (!panel || !ai) return;
-    if (parentPanel && isSearchStatsTabActive()) parentPanel.hidden = false;
+    syncSearchMethodistPanelPlacement();
+    if (parentPanel && window.__methodistMode) parentPanel.hidden = false;
     panel.hidden = false;
     panel.classList.remove("is-loading");
     var outDone = document.getElementById("llm-out");
@@ -12130,24 +12171,20 @@
         if (!ai) throw new Error("Пустой ответ AI-оценки поиска");
         window.__searchLastAiReview = ai;
         window.__searchReviewKey = String((data && data.query) || lastAssistFullQuery || "");
-        if (isSearchStatsTabActive()) {
-          renderSearchMethodistAiReviewUi(ai);
-          if (payload.fallback) {
-            setSearchMethodistStatus(
-              "Оценка без LLM (fallback): " +
-                (payload.fallback_reason || "модель недоступна") +
-                " — проверьте и при необходимости правьте."
-            );
-          } else {
-            setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
-          }
+        renderSearchMethodistAiReviewUi(ai);
+        if (payload.fallback) {
+          setSearchMethodistStatus(
+            "Оценка без LLM (fallback): " +
+              (payload.fallback_reason || "модель недоступна") +
+              " — проверьте и при необходимости правьте."
+          );
         } else {
-          setSearchMethodistAiFlowState("methodist-search-ai-ready");
+          setSearchMethodistStatus("ИИ-оценка готова — одобрите или правьте.");
         }
       })
       .catch(function (e) {
         setSearchMethodistAiFlowState("methodist-search-ai-failed");
-        if (!isSearchStatsTabActive()) return;
+        syncSearchMethodistPanelPlacement();
         if (parentPanel) parentPanel.hidden = false;
         if (aiPanel) {
           aiPanel.hidden = false;
@@ -12528,6 +12565,7 @@
     setSearchMethodistStatus("");
     var reviewKey = String((data && data.query) || lastAssistFullQuery || "");
     if (window.__searchReviewKey === reviewKey && window.__searchLastAiReview) {
+      renderSearchMethodistAiReviewUi(window.__searchLastAiReview);
       return;
     }
     window.__searchLastAiReview = null;
@@ -15099,6 +15137,11 @@
           '<p class="assist-note" style="margin-top:0.5rem">Выполнен повторный запрос: первый ответ был неполным или не удалось обработать ответ сервера.</p>';
       }
 
+      if (methodistSearch) {
+        html +=
+          '<div id="search-methodist-inline-mount" class="search-methodist-inline-mount" aria-label="Оценка выдачи для методиста"></div>';
+      }
+
       html += "</div></div>";
       window.__clinicalDetailForTemplate = null;
       window.__lastConsultationTemplateRaw = "";
@@ -15129,6 +15172,7 @@
         updateSearchWizardBar(null);
       }
       populateSearchMethodistPanel(data);
+      syncSearchMethodistPanelPlacement();
       if (!uiCompact) {
         bindProtocolSummaryNav(data);
       }
@@ -20570,6 +20614,10 @@
     else if (isMl) document.body.classList.add("app-tab-ml");
     else if (isQueue) document.body.classList.add("app-tab-queue");
     else if (isSearchStats) document.body.classList.add("app-tab-search-stats");
+    syncSearchMethodistPanelPlacement();
+    if (isSearchStats && typeof mountPendingSearchReviewWorkbench === "function") {
+      mountPendingSearchReviewWorkbench();
+    }
     try {
       if (isMl) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#ml-dashboard");
