@@ -7317,6 +7317,59 @@ def _merge_explicit_icd_into_analysis(
     return out
 
 
+def _normalize_icd_code_list(codes: list[str] | None) -> list[str]:
+    from icd_mkb import normalize_icd_code
+
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in codes or []:
+        nc = normalize_icd_code(str(raw))
+        if nc and nc not in seen:
+            seen.add(nc)
+            out.append(nc)
+    return out
+
+
+def _icd_codes_for_fast_lookup(
+    *,
+    body_codes: list[str] | None,
+    icd_analysis: dict,
+) -> list[str]:
+    """Коды для ICD lookup: явные из воронки, иначе из текста запроса (codes_for_retrieval)."""
+    explicit = _normalize_icd_code_list(body_codes)
+    if explicit:
+        return explicit
+    return _normalize_icd_code_list(icd_analysis.get("codes_for_retrieval"))
+
+
+def _icd_fast_auto_enabled() -> bool:
+    return os.environ.get("RAG_ICD_FAST_AUTO", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def _search_skip_llm_on_retrieve_only() -> bool:
+    return os.environ.get("RAG_SEARCH_SKIP_LLM_ON_RETRIEVE_ONLY", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def _build_search_timing(**fields: object) -> dict[str, int | str]:
+    out: dict[str, int | str] = {}
+    for key, val in fields.items():
+        if val is None:
+            continue
+        if key.endswith("_ms") and isinstance(val, (int, float)):
+            out[key] = int(round(float(val)))
+        else:
+            out[key] = val  # type: ignore[assignment]
+    return out
+
+
 def _try_icd_fast_assist(
     *,
     query: str,
@@ -7347,11 +7400,14 @@ def _try_icd_fast_assist(
 
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
+    t_start = time.perf_counter()
     _require_rag_loaded()
     model = get_gemini()
+    retrieve_only = bool(body.retrieve_only)
     assist_lite = _assist_lite_enabled(assist_full=body.assist_full)
-    skip_refine = bool(body.icd_fast_path or body.icd_codes)
-    skip_icd_gemini = bool(body.icd_fast_path or body.icd_codes)
+    skip_llm_search = retrieve_only and _search_skip_llm_on_retrieve_only()
+    skip_refine = skip_llm_search or bool(body.icd_fast_path or body.icd_codes)
+    skip_icd_gemini = skip_llm_search or bool(body.icd_fast_path or body.icd_codes)
     icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
         _infer_icd_pipeline_from_full_query(
             body.query,
@@ -7360,30 +7416,43 @@ def api_assist(body: AssistIn) -> dict:
             skip_icd_gemini=skip_icd_gemini,
         )
     )
+    t_icd_done = time.perf_counter()
     if icd_err:
         raise HTTPException(status_code=400, detail=icd_err)
     assert icd_analysis is not None
     icd_analysis = _merge_explicit_icd_into_analysis(icd_analysis, body.icd_codes or None)
     icd_codes_for_lex = icd_analysis.get("codes_for_retrieval") or None
 
-    if body.icd_fast_path and body.icd_codes:
+    fast_icd_codes = _icd_codes_for_fast_lookup(
+        body_codes=body.icd_codes or None,
+        icd_analysis=icd_analysis,
+    )
+    use_icd_fast = bool(body.icd_fast_path) or (_icd_fast_auto_enabled() and bool(fast_icd_codes))
+
+    if use_icd_fast and fast_icd_codes:
         fast = _try_icd_fast_assist(
             query=q,
-            icd_codes=list(body.icd_codes),
+            icd_codes=fast_icd_codes,
             population=body.funnel_population,
             category_slugs=body.category_slugs or None,
             icd_analysis=icd_analysis,
         )
         if fast:
             fast["icd"] = _icd_client_payload(icd_analysis)
+            fast["search_timing"] = _build_search_timing(
+                path="icd_fast_lookup",
+                total_ms=(time.perf_counter() - t_start) * 1000,
+                icd_pipeline_ms=(t_icd_done - t_start) * 1000,
+                lookup_ms=fast.get("lookup_ms"),
+            )
             return fast
 
     icd_lookup_allowlist: list[str] | None = None
-    if body.icd_fast_path and body.icd_codes:
+    if use_icd_fast and fast_icd_codes:
         from clinical_knowledge.protocol_icd_index import lookup_protocols_by_icd
 
         lk = lookup_protocols_by_icd(
-            icd_codes=list(body.icd_codes),
+            icd_codes=fast_icd_codes,
             query=body.query,
             population=body.funnel_population,
             rubric_slugs=body.category_slugs or None,
@@ -7422,7 +7491,7 @@ def api_assist(body: AssistIn) -> dict:
     _pregnant_ctx = (
         infer_audience_from_funnel_context(q) == "pregnant" or "pregnancy" in _clinical_routes
     )
-    if user_slugs or icd_codes_for_lex or _pregnant_ctx or _clinical_routes:
+    if user_slugs or icd_codes_for_lex or _pregnant_ctx or _clinical_routes or skip_llm_search:
         query_specialties = []
     else:
         query_specialties = infer_specialties_gemini(q, model)
@@ -7462,7 +7531,7 @@ def api_assist(body: AssistIn) -> dict:
         skip_embed = bool(
             allow
             and len(allow) <= 15
-            and body.icd_fast_path
+            and (use_icd_fast or icd_lookup_allowlist or retrieve_only)
         )
         rows = retrieve(
             rag_q,
@@ -7491,12 +7560,17 @@ def api_assist(body: AssistIn) -> dict:
             rows, _, _ = filter_retrieval_by_audience(rows, q, _routing)
         return rows
 
+    t_retrieve_start = time.perf_counter()
     retrieved = _assist_retrieve(q_rag)
     query_spelling_correction: dict | None = None
-    if not retrieved and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
-        "1",
-        "true",
-        "yes",
+    if (
+        not retrieved
+        and not skip_llm_search
+        and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        )
     ):
         fixed, changed = fix_query_spelling_medical(q_rag, model)
         if changed and fixed.strip():
@@ -7821,6 +7895,15 @@ def api_assist(body: AssistIn) -> dict:
     except Exception:
         pass
 
+    t_total = time.perf_counter()
+    search_path = "retrieve_only" if retrieve_only else ("assist_lite" if assist_lite else "assist_llm")
+    search_timing = _build_search_timing(
+        path=search_path,
+        total_ms=(t_total - t_start) * 1000,
+        icd_pipeline_ms=(t_icd_done - t_start) * 1000,
+        retrieve_ms=(t_total - t_retrieve_start) * 1000,
+    )
+
     return {
         "query": q,
         "retrieval": retrieved,
@@ -7850,6 +7933,7 @@ def api_assist(body: AssistIn) -> dict:
         "confidence_second_pass_used": confidence_second_pass_used,
         "assist_lite": assist_lite,
         "retrieve_only": retrieve_only,
+        "search_timing": search_timing,
     }
 
 
@@ -8009,6 +8093,7 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
 
     from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
 
+    t_start = time.perf_counter()
     q = body.query.strip()
     icd_analysis = analyze_query_for_icd(q, clinical_query_for_rag(q))
     icd_analysis = _merge_explicit_icd_into_analysis(icd_analysis, body.icd_codes)
@@ -8025,6 +8110,11 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
         icd_analysis=icd_analysis,
     )
     payload["icd"] = _icd_client_payload(icd_analysis)
+    payload["search_timing"] = _build_search_timing(
+        path="icd_fast_lookup",
+        total_ms=(time.perf_counter() - t_start) * 1000,
+        lookup_ms=lookup.get("lookup_ms"),
+    )
     return payload
 
 

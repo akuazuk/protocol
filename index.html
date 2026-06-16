@@ -10291,6 +10291,29 @@
     return out;
   }
 
+  /** S4: коды МКБ из текста запроса → funnel (до поиска, для icd_fast_path). */
+  function syncFunnelIcdFromQuery(qRaw) {
+    var codes = extractIcdCodesFromQuery(qRaw);
+    if (!codes.length) return;
+    window.__funnelContext = window.__funnelContext || {};
+    var merged = normalizeFunnelIcdCodes(
+      (window.__funnelContext.icd_codes || []).concat(codes)
+    );
+    if (!merged.length) return;
+    var prev = (window.__funnelContext.icd_codes || []).join(",");
+    if (prev === merged.join(",")) return;
+    window.__funnelContext.icd_codes = merged;
+    delete window.__funnelContext._icdLookupCacheKey;
+    delete window.__funnelContext._icdLookupPayload;
+  }
+
+  function funnelIcdCodesForSearch(qText) {
+    var ctx = window.__funnelContext || {};
+    var fromCtx = normalizeFunnelIcdCodes(ctx.icd_codes || []);
+    if (fromCtx.length) return fromCtx;
+    return extractIcdCodesFromQuery(qText || "");
+  }
+
   function rubricSlugsForIcdCode(code) {
     var letter = (code || "").charAt(0).toUpperCase();
     var i;
@@ -22229,6 +22252,7 @@
       }
       qRaw = prep.query;
       syncPopulationGateForQuery(qRaw, opts);
+      syncFunnelIcdFromQuery(qRaw);
       if (needsPopulationStep(qRaw, opts)) {
         renderSearchWizardPopulationStep(qRaw);
         resolve();
@@ -22391,7 +22415,11 @@
           }, assistTimeoutMs);
           if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
             var ctxIcd = window.__funnelContext || {};
-            var icdCodes = normalizeFunnelIcdCodes(ctxIcd.icd_codes || []);
+            var icdCodes = funnelIcdCodesForSearch(qSend);
+            if (icdCodes.length && !normalizeFunnelIcdCodes(ctxIcd.icd_codes || []).length) {
+              window.__funnelContext = ctxIcd;
+              window.__funnelContext.icd_codes = icdCodes;
+            }
             var cacheKey =
               icdCodes.join(",") +
               "|" +
@@ -22452,16 +22480,10 @@
               category_slugs: getSelectedCategorySlugs(),
               inline_clinical_detail: false,
               retrieve_only: retrieveOnly,
-              icd_codes: (window.__funnelContext && window.__funnelContext.icd_codes) || [],
+              icd_codes: funnelIcdCodesForSearch(qSend),
               funnel_population:
                 (window.__funnelContext && window.__funnelContext.population) || null,
-              icd_fast_path:
-                retrieveOnly &&
-                !!(
-                  window.__funnelContext &&
-                  window.__funnelContext.icd_codes &&
-                  window.__funnelContext.icd_codes.length
-                ),
+              icd_fast_path: !!funnelIcdCodesForSearch(qSend).length,
             }),
             signal: ctrl.signal,
           }).then(function (r) {
