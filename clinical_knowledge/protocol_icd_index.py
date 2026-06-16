@@ -69,6 +69,8 @@ def _population_to_audience(population: str | None) -> str | None:
         return "child"
     if p in ("pregnant", "беремен"):
         return "adult"
+    if p in ("emergency", "неотлож"):
+        return "adult"
     return None
 
 

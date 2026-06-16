@@ -1628,6 +1628,13 @@ def infer_audience_from_funnel_context(q: str) -> str | None:
         return "adult"
     if "контекст подбора: беремен" in nq or "беременные" in nq:
         return "pregnant"
+    if "контекст подбора: неотлож" in nq or "неотложная помощь" in nq:
+        if any(
+            x in nq
+            for x in ("ребен", "ребён", "детск", "новорожд", "грудн", "младен", "педиатр")
+        ):
+            return "child"
+        return "adult"
     return None
 
 
@@ -5500,6 +5507,15 @@ def build_hybrid_search_payload(
         aud_hint = "child" if population in ("pediatric", "child") else "adult"
     elif population == "pregnant":
         aud_hint = "pregnant"
+    elif population == "emergency":
+        ql_em = (query or "").lower()
+        if any(
+            x in ql_em
+            for x in ("ребен", "ребён", "детск", "новорожд", "грудн", "младен", "педиатр")
+        ):
+            aud_hint = "child"
+        else:
+            aud_hint = "adult"
 
     path_boost: list[str] | None = path_allowlist
     if icd_codes_for_lex:
@@ -5569,6 +5585,9 @@ def build_hybrid_search_payload(
     merged = hybrid_merge_protocols(
         icd_protos, rag_protos, icd_weight=icd_w, rag_weight=rag_w
     )
+    if merged:
+        merged = _rerank_protocols_symptom_only(merged, query, icd_analysis)
+        merged = _filter_protocols_by_funnel_audience(merged, query)
 
     return {
         "query": query,
@@ -7235,7 +7254,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r174-icd-lexicon-profiles"
+BUILD_VERSION = "2026-06-16-r175-emergency-protocol-rerank"
 
 
 def _app_version() -> str:
