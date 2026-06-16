@@ -17,8 +17,13 @@ import json
 import re
 import sys
 import time
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from icd_mkb import extract_icd_codes_raw, normalize_icd_code
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -27,6 +32,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PDF_ROOT = ROOT / "minzdrav_protocols"
 OUT_DIR = ROOT / "output" / "rich_chunks"
 META_DIR = ROOT / "output" / "rich_meta"
+CATALOG_PATH = ROOT / "data" / "protocol_catalog.jsonl"
 CHUNKS_FILE = OUT_DIR / "rich_chunks.jsonl"
 MANIFEST_FILE = OUT_DIR / "_manifest.json"
 ERRORS_FILE = OUT_DIR / "_errors.jsonl"
@@ -175,6 +181,17 @@ CHUNK_TYPE_MAP = [
     (re.compile(r"термин|определени|понятие", re.I), "terms"),
 ]
 
+# Чанки, где коды из текста должны явно попадать в icd10_codes и embedding_ready_text.
+_ICD_ENRICH_CHUNK_TYPES = frozenset(
+    {
+        "diagnostics",
+        "classification",
+        "criteria_block",
+        "treatment",
+        "prevention",
+    }
+)
+
 
 # ---------------------------------------------------------------------------
 # Helper functions
@@ -212,12 +229,110 @@ def table_to_markdown(rows: list[list[Any]]) -> str:
 def extract_icd10(text: str) -> list[str]:
     seen: set[str] = set()
     out: list[str] = []
-    for m in ICD10_RE.finditer(text or ""):
-        code = m.group(1).upper()
-        if code not in seen:
+    for raw in extract_icd_codes_raw(text or ""):
+        code = normalize_icd_code(raw)
+        if code and code not in seen:
             seen.add(code)
             out.append(code)
     return out
+
+
+@lru_cache(maxsize=1)
+def _protocol_catalog_icd_by_path() -> dict[str, dict[str, list[str]]]:
+    """МКБ из data/protocol_catalog.jsonl (icd10_primary / icd10_all)."""
+    out: dict[str, dict[str, list[str]]] = {}
+    if not CATALOG_PATH.is_file():
+        return out
+    for line in CATALOG_PATH.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        path = str(row.get("path") or "").replace("\\", "/").strip()
+        if not path:
+            continue
+        primary = [
+            normalize_icd_code(str(c))
+            for c in (row.get("icd10_primary") or [])
+            if normalize_icd_code(str(c))
+        ]
+        all_codes = [
+            normalize_icd_code(str(c))
+            for c in (row.get("icd10_all") or [])
+            if normalize_icd_code(str(c))
+        ]
+        out[path] = {"primary": primary, "all": all_codes}
+    return out
+
+
+def catalog_icd_for_path(rel_path: str) -> dict[str, list[str]]:
+    key = (rel_path or "").replace("\\", "/").strip()
+    return _protocol_catalog_icd_by_path().get(key, {"primary": [], "all": []})
+
+
+def merge_icd10_code_lists(*sources: list[str] | tuple[str, ...], max_codes: int = 24) -> list[str]:
+    """Уникальные коды МКБ в порядке приоритета источников."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for src in sources:
+        for raw in src or []:
+            code = normalize_icd_code(str(raw))
+            if not code or code in seen:
+                continue
+            seen.add(code)
+            out.append(code)
+            if len(out) >= max_codes:
+                return out
+    return out
+
+
+def build_chunk_icd10_codes(
+    *,
+    chunk_text: str,
+    chunk_type: str,
+    protocol_primary: list[str],
+    protocol_all: list[str],
+    catalog_primary: list[str],
+    catalog_all: list[str],
+) -> list[str]:
+    """icd10_codes чанка: метаданные протокола + коды из текста (для диагнозов/показаний)."""
+    text_codes = extract_icd10(chunk_text)
+    doc_primary = merge_icd10_code_lists(catalog_primary, protocol_primary, max_codes=12)
+    if chunk_type in _ICD_ENRICH_CHUNK_TYPES:
+        return merge_icd10_code_lists(
+            text_codes,
+            doc_primary,
+            catalog_all,
+            protocol_all,
+            max_codes=28,
+        )
+    return merge_icd10_code_lists(text_codes, doc_primary, max_codes=18)
+
+
+def build_embedding_ready_text(
+    *,
+    section_title: str,
+    chunk_text: str,
+    icd_codes: list[str],
+    populations: list[str],
+    chunk_type: str,
+) -> str:
+    """Текст для эмбеддинга/лексики; для диагнозов/показаний дублирует МКБ из текста."""
+    emb_text = section_title + "\n" + chunk_text
+    if icd_codes:
+        icd_line = "МКБ-10: " + ", ".join(icd_codes[:12])
+        emb_text = icd_line + "\n" + emb_text
+        if chunk_type in _ICD_ENRICH_CHUNK_TYPES:
+            text_codes = extract_icd10(chunk_text)
+            extra = [c for c in text_codes if c in icd_codes]
+            if extra:
+                emb_text = "МКБ-10: " + ", ".join(extra[:10]) + "\n" + emb_text
+    if populations:
+        emb_text = "Популяция: " + ", ".join(populations) + "\n" + emb_text
+    return emb_text
 
 
 def extract_populations(text: str) -> list[str]:
@@ -604,6 +719,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
     specialty_slug = pdf_path.parent.name
     specialty_ru_name = SPECIALTY_RU.get(specialty_slug, specialty_slug)
     did = doc_id(rel_path)
+    catalog_icd = catalog_icd_for_path(rel_path)
 
     # --- Extract text page by page ---
     pages: list[tuple[int, str]] = []
@@ -651,7 +767,14 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                         md_part = md
                     chunk_idx = len(table_chunks)
                     chunk_id = f"{did}_tbl_p{i}_{tidx}_{bi}_{chunk_idx}"
-                    icd = extract_icd10(md_part)
+                    icd = build_chunk_icd10_codes(
+                        chunk_text=md_part,
+                        chunk_type="table",
+                        protocol_primary=[],
+                        protocol_all=[],
+                        catalog_primary=catalog_icd.get("primary") or [],
+                        catalog_all=catalog_icd.get("all") or [],
+                    )
                     table_chunks.append({
                         "chunk_id": chunk_id,
                         "doc_id": did,
@@ -667,7 +790,13 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                         "page_to": i,
                         "text": md_part,
                         "table_caption": caption,
-                        "embedding_ready_text": (caption + "\n" if caption else "") + md_part,
+                        "embedding_ready_text": build_embedding_ready_text(
+                            section_title=caption or "Таблица",
+                            chunk_text=md_part,
+                            icd_codes=icd,
+                            populations=extract_populations(md_part),
+                            chunk_type="table",
+                        ),
                         "icd10_codes": icd,
                         "population": extract_populations(md_part),
                         "age_range": extract_age_ranges(md_part),
@@ -722,9 +851,18 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
     meta["total_pages"] = total_pages
     meta["language"] = "ru"
     meta["extraction_confidence"] = extraction_confidence
+    meta["icd10_catalog_primary"] = catalog_icd.get("primary") or []
+    meta["icd10_catalog_all"] = catalog_icd.get("all") or []
     # Global ICD from all text
     meta["icd10_all"] = extract_icd10(full_text)
     meta["icd10_primary"] = extract_icd10(first_text)
+    meta["icd10_protocol"] = merge_icd10_code_lists(
+        meta["icd10_catalog_primary"],
+        meta["icd10_primary"],
+        meta["icd10_catalog_all"],
+        meta["icd10_all"],
+        max_codes=32,
+    )
     meta["population"] = extract_populations(full_text)
     meta["related_protocols"] = meta.get("related_protocols", [])
 
@@ -757,10 +895,17 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             if not chunk_text.strip():
                 continue
             chunk_id = f"{did}_s{sec_idx}_c{ci}"
-            icd = extract_icd10(chunk_text)
             pops = extract_populations(chunk_text)
             care = extract_care_settings(chunk_text)
             ctype = guess_chunk_type(sec_title, chunk_text)
+            icd = build_chunk_icd10_codes(
+                chunk_text=chunk_text,
+                chunk_type=ctype,
+                protocol_primary=meta.get("icd10_primary") or [],
+                protocol_all=meta.get("icd10_all") or [],
+                catalog_primary=meta.get("icd10_catalog_primary") or [],
+                catalog_all=meta.get("icd10_catalog_all") or [],
+            )
 
             # Page mapping: find which page this chunk falls on (approx)
             # We use offset position in full_text
@@ -774,11 +919,13 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                         page_to = ps_pno
                         break
 
-            emb_text = sec_title + "\n" + chunk_text
-            if icd:
-                emb_text = "МКБ-10: " + ", ".join(icd[:8]) + "\n" + emb_text
-            if pops:
-                emb_text = "Популяция: " + ", ".join(pops) + "\n" + emb_text
+            emb_text = build_embedding_ready_text(
+                section_title=sec_title,
+                chunk_text=chunk_text,
+                icd_codes=icd,
+                populations=pops,
+                chunk_type=ctype,
+            )
 
             chunks_out.append({
                 "chunk_id": chunk_id,
@@ -829,7 +976,26 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             })
             chunk_global_idx += 1
 
-    # Merge table chunks
+    # Merge table chunks (re-enrich ICD after protocol-level meta is known)
+    for ch in table_chunks:
+        md_part = str(ch.get("text") or "")
+        caption = str(ch.get("table_caption") or "Таблица")
+        icd = build_chunk_icd10_codes(
+            chunk_text=md_part,
+            chunk_type="table",
+            protocol_primary=meta.get("icd10_primary") or [],
+            protocol_all=meta.get("icd10_all") or [],
+            catalog_primary=meta.get("icd10_catalog_primary") or [],
+            catalog_all=meta.get("icd10_catalog_all") or [],
+        )
+        ch["icd10_codes"] = icd
+        ch["embedding_ready_text"] = build_embedding_ready_text(
+            section_title=caption,
+            chunk_text=md_part,
+            icd_codes=icd,
+            populations=extract_populations(md_part),
+            chunk_type="table",
+        )
     chunks_out.extend(table_chunks)
 
     return {"chunks": chunks_out, "meta": meta, "errors": errors}

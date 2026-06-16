@@ -119,7 +119,30 @@ _CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
         ("R50.9", 17.0),
         ("J06.9", 16.5),
     ],
+    "rectal_bleeding": [
+        ("K64.9", 22.0),
+        ("K62.5", 21.5),
+        ("K92.2", 21.0),
+        ("K92.1", 20.5),
+        ("K62.9", 19.5),
+        ("K62.6", 19.0),
+    ],
+    "rectal": [
+        ("K64.9", 18.0),
+        ("K62.9", 17.5),
+        ("K62.5", 17.0),
+    ],
+    "stool_blood": [
+        ("K92.2", 18.0),
+        ("K92.1", 17.5),
+        ("K92.0", 17.0),
+    ],
 }
+
+_RECTAL_MARKERS = ("задн", "проход", "анус", "прямок", "геморро", "переанал")
+_STOOL_MARKERS = ("кал", "стул", "копр", "дефекац")
+# Короткие токены (≤4) не ищем подстрокой: «кале» ≠ «раскаленными», «калечащие».
+_LEX_SHORT_WORD_MAX = 4
 
 
 def _norm_icd_code(s: str) -> str:
@@ -448,8 +471,48 @@ def _has_cough_fever_complaint(qlow: str) -> bool:
     return _has_fever_in_complaint(qlow) or "сух" in qlow
 
 
+def _has_rectal_complaint(qlow: str) -> bool:
+    if any(m in qlow for m in _RECTAL_MARKERS):
+        return True
+    return "шишк" in qlow and any(x in qlow for x in ("проход", "задн", "анус"))
+
+
+def _has_stool_blood_complaint(qlow: str) -> bool:
+    if "кров" not in qlow:
+        return False
+    return any(m in qlow for m in _STOOL_MARKERS) or "мелен" in qlow
+
+
+def _has_rectal_bleeding_complaint(qlow: str) -> bool:
+    if _has_stool_blood_complaint(qlow):
+        return True
+    if "кров" in qlow and _has_rectal_complaint(qlow):
+        return True
+    return _has_rectal_complaint(qlow) and (
+        "шишк" in qlow or "воспал" in qlow or "бол" in qlow
+    )
+
+
+def _lex_word_in_title(word: str, tlow: str) -> bool:
+    """Совпадение слова в названии МКБ; короткие токены - только целым словом."""
+    if len(word) > _LEX_SHORT_WORD_MAX:
+        return word in tlow
+    pat = re.compile(rf"(?<![а-яё]){re.escape(word)}(?![а-яё])", re.IGNORECASE)
+    return bool(pat.search(tlow))
+
+
+def _penalize_external_cause_for_clinical(qlow: str, code: str, score: float) -> float:
+    """Снижает T/X/Y/Z при явной клинической жалобе (не травма/осложнение лечения)."""
+    cu = code.upper()
+    if not cu or cu[0] not in "TXYZ":
+        return score
+    if _has_rectal_bleeding_complaint(qlow) or _has_cough_fever_complaint(qlow):
+        return score * 0.08
+    return score
+
+
 def _clinical_icd_hint_rows(text: str) -> list[dict]:
-    """Приоритетные коды по типовым сочетаниям жалоб (кашель + температура и т.п.)."""
+    """Приоритетные коды по типовым сочетаниям жалоб."""
     qlow = _complaint_blob(text)
     if len(qlow) < 3:
         return []
@@ -459,6 +522,12 @@ def _clinical_icd_hint_rows(text: str) -> list[dict]:
         profile = "cough"
     elif _has_fever_in_complaint(qlow):
         profile = "fever"
+    elif _has_rectal_bleeding_complaint(qlow):
+        profile = "rectal_bleeding"
+    elif _has_rectal_complaint(qlow):
+        profile = "rectal"
+    elif _has_stool_blood_complaint(qlow):
+        profile = "stool_blood"
     else:
         return []
     out: list[dict] = []
@@ -508,6 +577,12 @@ def _icd_extra_roots(text: str) -> list[str]:
         extra.extend(["верхнечелюстн", "верхнечелюстной", "гайморова"])
     if "риносинусит" in s or "синусит" in s:
         extra.append("синусит")
+    if "кровь" in s and any(m in s for m in _STOOL_MARKERS):
+        extra.extend(["мелен", "кровотеч", "желудочно-кишечн"])
+    if ("задн" in s and "проход" in s) or "геморро" in s:
+        extra.extend(["заднего прохода", "прямой киш", "геморро"])
+    if "шишк" in s and ("проход" in s or "задн" in s or "геморро" in s):
+        extra.extend(["геморро", "геморроид"])
     return extra
 
 
@@ -526,7 +601,7 @@ def _lexicon_score_one_row(
     tlow = title.lower().replace("ё", "е")
     score = 0.0
     for w in words:
-        if w not in tlow:
+        if not _lex_word_in_title(w, tlow):
             continue
         if w in _RU_WEAK_ADJ:
             score += 1.0
@@ -540,7 +615,7 @@ def _lexicon_score_one_row(
     if len(qlow) >= 6 and qlow in tlow:
         score += 8.0
     if words and len(tlow) <= 48:
-        hit = sum(1 for w in words if w in tlow)
+        hit = sum(1 for w in words if _lex_word_in_title(w, tlow))
         if hit >= 2:
             score += 2.5
     if len(tlow) > 55:
@@ -551,6 +626,9 @@ def _lexicon_score_one_row(
         and "лихорад" in tlow
     ):
         score *= 0.12
+    if _has_rectal_bleeding_complaint(qlow) and code.upper().startswith("T") and "инородн" in tlow:
+        score *= 0.15
+    score = _penalize_external_cause_for_clinical(qlow, code, score)
     if score <= 0:
         return 0.0
     # Раньше: +1.8 ко всем *.9 без контекста - тянуло «неуточнённ» коды из-за частицы «для» и т.п.

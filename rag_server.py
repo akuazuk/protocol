@@ -7179,7 +7179,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r170-fix-icd-cough-fever"
+BUILD_VERSION = "2026-06-16-r172-rich-chunk-icd-enrichment"
 
 
 def _app_version() -> str:

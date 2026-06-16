@@ -35,3 +35,24 @@ def test_analyze_uses_lexicon_query_not_refined_rag() -> None:
     assert codes
     assert codes[0] in ("J06.9", "J20.9", "R50.9", "R05")
     assert "A25" not in codes[:4]
+
+
+def test_rectal_bleeding_suggests_gi_not_foreign_body() -> None:
+    q = "кровь в кале и шишки воспаленные в заднем проходе"
+    codes = [s["code"] for s in suggest_icd_from_russian(q, max_results=8)]
+    assert codes[0] in ("K64.9", "K62.5", "K92.2", "K92.1", "K62.9")
+    assert "T18.5" not in codes[:4]
+    assert "Y44.6" not in codes[:4]
+    assert "X18" not in codes[:4]
+    assert "Z91.7" not in codes[:4]
+    assert any(c.startswith(("K64", "K62", "K92")) for c in codes[:4])
+
+
+def test_short_word_kale_no_substring_false_positives() -> None:
+    """«кале» не должно матчить «раскаленными» / «калечащие»."""
+    from icd_mkb import ru_lexicon_scored_entries
+
+    q = "кровь в кале"
+    codes = [r["code"] for r in ru_lexicon_scored_entries(q)[:10]]
+    assert "X18" not in codes
+    assert "Z91.7" not in codes
