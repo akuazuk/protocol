@@ -25,6 +25,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from icd_mkb import extract_icd_codes_raw, normalize_icd_code
 
+from clinical_knowledge.protocol_catalog import normalize_protocol_title
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -238,9 +240,9 @@ def extract_icd10(text: str) -> list[str]:
 
 
 @lru_cache(maxsize=1)
-def _protocol_catalog_icd_by_path() -> dict[str, dict[str, list[str]]]:
-    """МКБ из data/protocol_catalog.jsonl (icd10_primary / icd10_all)."""
-    out: dict[str, dict[str, list[str]]] = {}
+def _protocol_catalog_by_path() -> dict[str, dict[str, Any]]:
+    """Полные строки data/protocol_catalog.jsonl."""
+    out: dict[str, dict[str, Any]] = {}
     if not CATALOG_PATH.is_file():
         return out
     for line in CATALOG_PATH.read_text(encoding="utf-8").splitlines():
@@ -252,25 +254,183 @@ def _protocol_catalog_icd_by_path() -> dict[str, dict[str, list[str]]]:
         except json.JSONDecodeError:
             continue
         path = str(row.get("path") or "").replace("\\", "/").strip()
-        if not path:
-            continue
-        primary = [
-            normalize_icd_code(str(c))
-            for c in (row.get("icd10_primary") or [])
-            if normalize_icd_code(str(c))
-        ]
-        all_codes = [
-            normalize_icd_code(str(c))
-            for c in (row.get("icd10_all") or [])
-            if normalize_icd_code(str(c))
-        ]
-        out[path] = {"primary": primary, "all": all_codes}
+        if path:
+            out[path] = row
     return out
 
 
-def catalog_icd_for_path(rel_path: str) -> dict[str, list[str]]:
+def catalog_row_for_path(rel_path: str) -> dict[str, Any]:
     key = (rel_path or "").replace("\\", "/").strip()
-    return _protocol_catalog_icd_by_path().get(key, {"primary": [], "all": []})
+    return dict(_protocol_catalog_by_path().get(key) or {})
+
+
+def catalog_icd_for_path(rel_path: str) -> dict[str, list[str]]:
+    row = catalog_row_for_path(rel_path)
+    primary = [
+        normalize_icd_code(str(c))
+        for c in (row.get("icd10_primary") or [])
+        if normalize_icd_code(str(c))
+    ]
+    all_codes = [
+        normalize_icd_code(str(c))
+        for c in (row.get("icd10_all") or [])
+        if normalize_icd_code(str(c))
+    ]
+    return {"primary": primary, "all": all_codes}
+
+
+def icd_weights_for_codes(
+    codes: list[str], protocol_weights: dict[str, int] | dict[str, float]
+) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for raw in codes:
+        c = normalize_icd_code(str(raw))
+        if not c:
+            continue
+        w = protocol_weights.get(c)
+        if w is None:
+            continue
+        try:
+            out[c] = int(round(float(w)))
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+_CHUNK_TYPE_LABELS_RU = {
+    "diagnostics": "диагностика",
+    "treatment": "лечение",
+    "prevention": "профилактика",
+    "rehabilitation": "реабилитация",
+    "classification": "классификация МКБ",
+    "criteria_block": "показания и критерии",
+    "pharmacotherapy": "фармакотерапия",
+    "routing": "маршрутизация",
+    "table": "таблицы",
+    "algorithm": "алгоритмы",
+    "body": "общие положения",
+}
+
+
+def build_protocol_overview_chunk(
+    *,
+    doc_id: str,
+    rel_path: str,
+    meta: dict[str, Any],
+    catalog_row: dict[str, Any],
+    section_titles: list[str],
+    chunk_type_counts: dict[str, int],
+) -> dict[str, Any]:
+    """Один синтетический чанк-оглавление протокола для RAG и ICD-boost."""
+    title_norm = str(
+        catalog_row.get("display_title_normalized")
+        or meta.get("protocol_title")
+        or meta.get("file_name")
+        or ""
+    ).strip()
+    icd = list(meta.get("icd10_protocol") or [])
+    weights = {
+        normalize_icd_code(str(k)): int(v)
+        for k, v in (catalog_row.get("icd10_weights") or meta.get("icd10_weights") or {}).items()
+        if normalize_icd_code(str(k))
+    }
+    content_tags = list(catalog_row.get("content_tags") or meta.get("content_tags") or [])
+    section_tags = list(catalog_row.get("section_tags") or meta.get("section_tags") or [])
+    pops = list(meta.get("population") or [])
+
+    lines = [f"Клинический протокол: {title_norm}"]
+    if meta.get("specialty_ru"):
+        lines.append(f"Рубрика: {meta['specialty_ru']}")
+    if catalog_row.get("scope_label_ru"):
+        lines.append(f"Тип: {catalog_row['scope_label_ru']}")
+    if pops:
+        lines.append("Популяция: " + ", ".join(pops[:4]))
+    if icd:
+        icd_parts = []
+        for c in icd[:14]:
+            w = weights.get(c)
+            icd_parts.append(f"{c} ({w}%)" if w else c)
+        lines.append("МКБ-10: " + ", ".join(icd_parts))
+    if content_tags:
+        lines.append("Метки: " + ", ".join(content_tags[:10]))
+    if section_tags:
+        lines.append("Разделы протокола: " + "; ".join(section_tags[:8]))
+    elif section_titles:
+        uniq: list[str] = []
+        seen: set[str] = set()
+        for t in section_titles:
+            s = re.sub(r"\s+", " ", (t or "").strip())[:70]
+            if s and s.lower() not in seen:
+                seen.add(s.lower())
+                uniq.append(s)
+            if len(uniq) >= 8:
+                break
+        if uniq:
+            lines.append("Разделы: " + "; ".join(uniq))
+    if chunk_type_counts:
+        parts = []
+        for ctype, cnt in sorted(chunk_type_counts.items(), key=lambda x: -x[1])[:7]:
+            label = _CHUNK_TYPE_LABELS_RU.get(ctype, ctype)
+            parts.append(f"{label} ({cnt})")
+        lines.append("Содержание протокола: " + ", ".join(parts))
+
+    text = "\n".join(lines)
+    emb = build_embedding_ready_text(
+        section_title="Описание протокола",
+        chunk_text=text,
+        icd_codes=icd,
+        populations=pops,
+        chunk_type="protocol_overview",
+    )
+    return {
+        "chunk_id": f"{doc_id}_overview",
+        "doc_id": doc_id,
+        "source_path": rel_path,
+        "file_name": meta.get("file_name") or "",
+        "specialty_slug": meta.get("specialty_slug") or "",
+        "specialty_ru": meta.get("specialty_ru") or "",
+        "chunk_type": "protocol_overview",
+        "section_title": "Описание протокола",
+        "section_path": ["Описание протокола"],
+        "section_number": "",
+        "page_from": 1,
+        "page_to": max(1, int(meta.get("total_pages") or 1)),
+        "text": text,
+        "embedding_ready_text": emb,
+        "protocol_title": title_norm,
+        "protocol_title_normalized": title_norm,
+        "approval_date": meta.get("approval_date") or "",
+        "approval_number": meta.get("approval_number") or "",
+        "approval_body": meta.get("approval_body") or "",
+        "replaces": meta.get("replaces") or [],
+        "related_protocols": meta.get("related_protocols") or [],
+        "has_tables": bool(meta.get("has_tables")),
+        "has_algorithms": bool(meta.get("has_algorithms")),
+        "total_pages": meta.get("total_pages"),
+        "language": "ru",
+        "icd10_codes": icd[:24],
+        "icd10_weights": weights,
+        "content_tags": content_tags,
+        "section_tags": section_tags,
+        "population": pops,
+        "age_range": [],
+        "sex": [],
+        "care_setting": extract_care_settings(text),
+        "conditions": [],
+        "drugs": [],
+        "procedures": [],
+        "lab_tests": [],
+        "imaging": [],
+        "durations": [],
+        "dosages": [],
+        "severity": [],
+        "keywords": keywords_from_text(text, 24),
+        "extraction_confidence": meta.get("extraction_confidence"),
+        "is_preamble_filtered": False,
+        "chunk_has_table": False,
+        "chunk_is_empty": False,
+        "is_protocol_overview": True,
+    }
 
 
 def merge_icd10_code_lists(*sources: list[str] | tuple[str, ...], max_codes: int = 24) -> list[str]:
@@ -719,6 +879,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
     specialty_slug = pdf_path.parent.name
     specialty_ru_name = SPECIALTY_RU.get(specialty_slug, specialty_slug)
     did = doc_id(rel_path)
+    catalog_row = catalog_row_for_path(rel_path)
     catalog_icd = catalog_icd_for_path(rel_path)
 
     # --- Extract text page by page ---
@@ -863,6 +1024,15 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
         meta["icd10_all"],
         max_codes=32,
     )
+    meta["display_title_normalized"] = (
+        catalog_row.get("display_title_normalized")
+        or normalize_protocol_title(meta.get("protocol_title") or "", pdf_path.name)
+    )
+    meta["icd10_weights"] = dict(catalog_row.get("icd10_weights") or {})
+    meta["content_tags"] = list(catalog_row.get("content_tags") or [])
+    meta["section_tags"] = list(catalog_row.get("section_tags") or [])
+    meta["protocol_kind"] = catalog_row.get("protocol_kind") or ""
+    meta["scope_label_ru"] = catalog_row.get("scope_label_ru") or ""
     meta["population"] = extract_populations(full_text)
     meta["related_protocols"] = meta.get("related_protocols", [])
 
@@ -871,8 +1041,12 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
 
     # --- Chunk building ---
     chunk_global_idx = 0
+    section_titles: list[str] = []
+    chunk_type_counts: dict[str, int] = {}
+    protocol_icd_weights = meta.get("icd10_weights") or {}
     for sec_idx, section in enumerate(sections):
         sec_title = section["title"]
+        section_titles.append(sec_title)
         sec_number = section["number"]
         sec_text = section["text"]
 
@@ -898,6 +1072,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             pops = extract_populations(chunk_text)
             care = extract_care_settings(chunk_text)
             ctype = guess_chunk_type(sec_title, chunk_text)
+            chunk_type_counts[ctype] = chunk_type_counts.get(ctype, 0) + 1
             icd = build_chunk_icd10_codes(
                 chunk_text=chunk_text,
                 chunk_type=ctype,
@@ -943,7 +1118,8 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "text": chunk_text,
                 "embedding_ready_text": emb_text,
                 # --- Protocol-level metadata (repeated per chunk) ---
-                "protocol_title": meta["protocol_title"],
+                "protocol_title": meta["display_title_normalized"] or meta["protocol_title"],
+                "protocol_title_normalized": meta["display_title_normalized"],
                 "approval_date": meta["approval_date"],
                 "approval_number": meta["approval_number"],
                 "approval_body": meta["approval_body"],
@@ -955,6 +1131,9 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "language": "ru",
                 # --- Entities ---
                 "icd10_codes": icd,
+                "icd10_weights": icd_weights_for_codes(icd, protocol_icd_weights),
+                "content_tags": meta.get("content_tags") or [],
+                "section_tags": meta.get("section_tags") or [],
                 "population": pops,
                 "age_range": extract_age_ranges(chunk_text),
                 "sex": [],
@@ -989,6 +1168,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             catalog_all=meta.get("icd10_catalog_all") or [],
         )
         ch["icd10_codes"] = icd
+        ch["icd10_weights"] = icd_weights_for_codes(icd, meta.get("icd10_weights") or {})
         ch["embedding_ready_text"] = build_embedding_ready_text(
             section_title=caption,
             chunk_text=md_part,
@@ -997,6 +1177,16 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             chunk_type="table",
         )
     chunks_out.extend(table_chunks)
+
+    overview = build_protocol_overview_chunk(
+        doc_id=did,
+        rel_path=rel_path,
+        meta=meta,
+        catalog_row=catalog_row,
+        section_titles=section_titles,
+        chunk_type_counts=chunk_type_counts,
+    )
+    chunks_out.insert(0, overview)
 
     return {"chunks": chunks_out, "meta": meta, "errors": errors}
 

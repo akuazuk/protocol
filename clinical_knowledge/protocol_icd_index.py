@@ -214,12 +214,23 @@ def _score_entry(
     reasons: list[str] = []
     score = 0.0
 
+    weights = row.get("icd10_weights") or {}
+
     for code in query_icd:
+        wf = 1.0
+        if weights:
+            w = weights.get(code)
+            if w is not None:
+                wf = max(0.35, min(1.0, float(w) / 100.0))
+            elif code in primary:
+                wf = 0.92
+            elif code in all_icd:
+                wf = 0.42
         if code in primary:
-            score += 100.0
-            reasons.append(f"exact {code} in icd10_primary")
+            score += 100.0 * wf
+            reasons.append(f"exact {code} in icd10_primary ({int(wf*100)}%)")
         elif code in all_icd:
-            score += 22.0
+            score += 22.0 * wf
             reasons.append(f"secondary {code} in icd10_all")
             if primary and not _primary_covers_code(primary, code):
                 score -= 35.0
@@ -451,6 +462,20 @@ def lookup_protocols_by_icd(
         path = str(row.get("path") or "")
         title = str(row.get("display_title") or Path(path).name)
         conf = min(0.97, max(0.42, 0.38 + 0.55 * (sc / max(max_sc, 1.0))))
+        weights = row.get("icd10_weights") or {}
+        matched_pcts: list[float] = []
+        for code in query_icd:
+            w = weights.get(code)
+            if w is not None:
+                matched_pcts.append(float(w))
+            elif code in {_norm_icd(x) for x in (row.get("icd10_primary") or [])}:
+                matched_pcts.append(90.0)
+            elif code in {_norm_icd(x) for x in (row.get("icd10_all") or [])}:
+                matched_pcts.append(float(weights.get(code, 35)))
+        rel_pct = round(
+            max(matched_pcts) if matched_pcts else min(97.0, 100.0 * sc / max(max_sc, 1.0)),
+            1,
+        )
         protocols.append(
             {
                 "path": path,
@@ -458,6 +483,7 @@ def lookup_protocols_by_icd(
                 "confidence_score": round(conf, 4),
                 "rag_support": round(conf * 0.9, 4),
                 "icd_lookup_score": round(sc, 2),
+                "icd_relevance_pct": rel_pct,
                 "audience": row.get("audience"),
                 "protocol_kind": row.get("protocol_kind"),
                 "scope_label_ru": row.get("scope_label_ru"),

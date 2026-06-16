@@ -94,6 +94,119 @@ def _valid_icd_codes() -> frozenset[str]:
     return frozenset(codes)
 
 
+def normalize_protocol_title(title: str, filename: str = "") -> str:
+    """Единое читаемое название без даты, № постановления и префикса «КП»."""
+    raw = (title or filename or "").strip()
+    s = raw.replace("_", " ").replace("-", " ")
+    s = re.sub(r"\.pdf$", "", s, flags=re.I)
+    s = re.sub(r"^(?:кп|клинический\s+протокол)\s*[«\"']?", "", s, flags=re.I)
+    s = re.sub(r"\s*пост\.?\s*мз.*$", "", s, flags=re.I)
+    s = re.sub(r"\d{1,2}[./]\d{1,2}[./]\d{2,4}(?:\s*г\.?)?", " ", s)
+    s = re.sub(r"№\s*[\d\-а-яА-ЯёЁ/]+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip(" «»\"'")
+    return (s[:280] if s else raw[:280])
+
+
+def compute_icd10_relevance_weights(
+    *,
+    icd_primary: list[str],
+    icd_all: list[str],
+    title: str,
+    body: str,
+    chunk_freq: Counter[str] | None = None,
+) -> dict[str, int]:
+    """Рейтинг соответствия кода МКБ протоколу, 0-100 % (primary выше secondary)."""
+    weights: dict[str, int] = {}
+    title_blob = _norm_blob(title)
+    body_blob = _norm_blob(body[:40_000])
+    primary_set = {_norm_icd(c) for c in icd_primary if _norm_icd(c)}
+    freq = chunk_freq or Counter()
+    max_freq = max(freq.values()) if freq else 1
+
+    for i, raw in enumerate(icd_primary[:PRIMARY_ICD_LIMIT]):
+        code = _norm_icd(raw)
+        if not code:
+            continue
+        pct = 94 - min(22, i * 2)
+        if code.lower() in title_blob or code.replace(".", "").lower() in title_blob:
+            pct = min(100, pct + 6)
+        if code.lower() in body_blob[:12_000]:
+            pct = min(100, pct + 4)
+        weights[code] = max(weights.get(code, 0), pct)
+
+    for code, cnt in freq.most_common(28):
+        nc = _norm_icd(code)
+        if not nc or nc in weights:
+            continue
+        if nc not in {_norm_icd(x) for x in icd_all}:
+            continue
+        pct = int(32 + 38 * (cnt / max(max_freq, 1)))
+        if cnt >= 2:
+            pct += 8
+        if nc.lower() in title_blob:
+            pct = min(88, pct + 10)
+        weights[nc] = min(88, pct)
+
+    for raw in icd_all:
+        nc = _norm_icd(raw)
+        if not nc or nc in weights:
+            continue
+        weights[nc] = 28
+
+    return dict(sorted(weights.items(), key=lambda x: (-x[1], x[0]))[:36])
+
+
+def extract_content_tags(
+    title: str,
+    body: str,
+    specialty_slug: str,
+    protocol_kind: str,
+    audience: str,
+) -> list[str]:
+    """Тематические метки протокола для поиска и overview-чанка."""
+    blob = _norm_blob(f"{title} {body[:12_000]}")
+    tags: list[str] = []
+    if protocol_kind:
+        tags.append(f"kind:{protocol_kind}")
+    if specialty_slug:
+        tags.append(f"rubric:{specialty_slug}")
+    if audience and audience != "any":
+        tags.append(f"audience:{audience}")
+    markers = (
+        ("diagnostics", ("диагност", "обследован", "критери")),
+        ("treatment", ("лечен", "терапи", "операц")),
+        ("prevention", ("профилакт",)),
+        ("rehabilitation", ("реабилит",)),
+        ("pharmacotherapy", ("фармако", "препарат")),
+        ("routing", ("маршрутизац", "госпитализац")),
+        ("classification", ("классификац", "мкб", "шифр")),
+        ("criteria", ("показан", "противопоказ")),
+    )
+    for tag, needles in markers:
+        if any(n in blob for n in needles):
+            tags.append(tag)
+    return tags[:14]
+
+
+def extract_section_tags_from_text(body: str) -> list[str]:
+    """Крупные разделы из текста PDF (заголовки глав/блоков)."""
+    tags: list[str] = []
+    seen: set[str] = set()
+    pat = re.compile(
+        r"(?mi)^(?:ГЛАВА\s+\d+|(?:ДИАГНОСТИКА|ЛЕЧЕНИЕ|ПРОФИЛАКТИКА|РЕАБИЛИТАЦИЯ|"
+        r"ДИСПАНСЕРНОЕ|МАРШРУТИЗАЦИЯ|ФАРМАКОТЕРАПИЯ|КЛАССИФИКАЦИЯ|ПОКАЗАНИЯ|КРИТЕРИИ))"
+    )
+    for m in pat.finditer(body or ""):
+        s = re.sub(r"\s+", " ", m.group(0)).strip()[:80]
+        low = s.lower()
+        if s and low not in seen:
+            seen.add(low)
+            tags.append(s)
+        if len(tags) >= 12:
+            break
+    return tags
+
+
 def _filter_valid_icd(codes: list[str]) -> list[str]:
     valid = _valid_icd_codes()
     roots = {c[:3] for c in valid if len(c) >= 3}
@@ -429,20 +542,36 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
                 kind, scope_label, general_scope = "clinical", "Клинический КП (есть коды МКБ)", False
 
             confidence = "high" if icd_primary else ("medium" if icd_all else "low")
+            title_norm = normalize_protocol_title(title, filename)
+            icd_weights = compute_icd10_relevance_weights(
+                icd_primary=icd_primary,
+                icd_all=icd_all,
+                title=title_norm,
+                body=body,
+                chunk_freq=chunk_freq.get(path),
+            )
+            content_tags = extract_content_tags(
+                title_norm, body, specialty, kind, audience
+            )
+            section_tags = extract_section_tags_from_text(body)
             entry = {
                 "path": path,
                 "specialty_slug": specialty,
                 "display_title": title,
+                "display_title_normalized": title_norm,
                 "audience": audience,
                 "audience_source": aud_src,
                 "icd10_primary": icd_primary,
                 "icd10_all": icd_all,
+                "icd10_weights": icd_weights,
                 "icd_sources": sorted(sources),
                 "icd_count": len(icd_all),
                 "confidence": confidence,
                 "protocol_kind": kind,
                 "scope_label_ru": scope_label,
                 "general_scope": general_scope,
+                "content_tags": content_tags,
+                "section_tags": section_tags,
             }
             rows.append(entry)
 

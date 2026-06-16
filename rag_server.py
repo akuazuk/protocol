@@ -772,6 +772,13 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                     icd = row.get("icd10_codes")
                     if isinstance(icd, list) and icd:
                         slim["icd10_codes"] = [str(x).upper() for x in icd][:16]
+                    icd_w = row.get("icd10_weights")
+                    if isinstance(icd_w, dict) and icd_w:
+                        slim["icd10_weights"] = {
+                            str(k).upper(): int(v)
+                            for k, v in list(icd_w.items())[:16]
+                            if k
+                        }
                 if not memory_saver:
                     ert = (row.get("embedding_ready_text") or "").strip()
                     if ert and ert != text:
@@ -812,7 +819,7 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
             }
             if "lex_text" in row:
                 rec["lex_text"] = row["lex_text"]
-            for fld in ("section_path", "section_title", "point_numbers", "icd10_codes"):
+            for fld in ("section_path", "section_title", "point_numbers", "icd10_codes", "icd10_weights"):
                 if fld in row:
                     rec[fld] = row[fld]
             if row.get("page_from"):
@@ -1901,6 +1908,43 @@ def confidence_for_detailed_extraction(score: object) -> bool:
     return x >= min_s
 
 
+def _protocol_catalog_icd_boost(path: str, icd_norms: list[str]) -> float:
+    """Усиление по рейтингу МКБ из protocol_catalog (icd10_weights, %)."""
+    if not icd_norms:
+        return 1.0
+    try:
+        from clinical_knowledge.protocol_catalog import load_protocol_catalog
+
+        row = load_protocol_catalog().get((path or "").replace("\\", "/"))
+    except Exception:
+        return 1.0
+    if not row:
+        return 1.0
+    weights = row.get("icd10_weights") or {}
+    primary = {
+        normalize_icd_code(str(x)).lower()
+        for x in (row.get("icd10_primary") or [])
+        if normalize_icd_code(str(x))
+    }
+    best_pct = 0
+    for raw in icd_norms:
+        c = normalize_icd_code(str(raw).upper())
+        if not c:
+            continue
+        w = weights.get(c)
+        if w is not None:
+            try:
+                best_pct = max(best_pct, int(round(float(w))))
+            except (TypeError, ValueError):
+                pass
+        elif c.lower() in primary:
+            best_pct = max(best_pct, 88)
+    if best_pct <= 0:
+        return 1.0
+    scale = float(os.environ.get("RAG_ICD_CATALOG_WEIGHT_SCALE", "0.95"))
+    return min(2.25, 1.0 + (best_pct / 100.0) * scale)
+
+
 def _protocol_meta_icd_boost(path: str, icd_norms: list[str]) -> float:
     """Усиление, если в protocol_meta заданы icd_codes/mkb_codes и они пересекаются с запросом."""
     if not icd_norms:
@@ -2875,6 +2919,7 @@ def retrieve(
         if path_boost_set and catalog_pth in path_boost_set:
             post *= path_boost_factor
         post *= _protocol_meta_icd_boost(catalog_pth, icd_norms)
+        post *= _protocol_catalog_icd_boost(catalog_pth, icd_norms)
         cat = (ch.get("category") or "").strip()
         if boost_set and cat in boost_set:
             post *= boost_factor
@@ -7179,7 +7224,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r172-rich-chunk-icd-enrichment"
+BUILD_VERSION = "2026-06-16-r173-icd-relevance-ratings"
 
 
 def _app_version() -> str:

@@ -47,7 +47,7 @@ def test_embedding_ready_text_duplicates_text_icd_for_diagnostics() -> None:
 
 
 def test_catalog_lookup_loads_primary_codes() -> None:
-    rows = _brc._protocol_catalog_icd_by_path()
+    rows = _brc._protocol_catalog_by_path()
     assert len(rows) >= 100
-    sample = next(v for v in rows.values() if v.get("primary"))
-    assert sample["primary"]
+    sample = next(v for v in rows.values() if v.get("icd10_primary"))
+    assert sample["icd10_primary"]

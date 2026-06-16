@@ -30,6 +30,7 @@ _CHUNK_TYPE_LABELS: dict[str, str] = {
     "appendix": "Приложение",
     "terms": "Термины",
     "body": "Текст",
+    "protocol_overview": "Описание протокола",
 }
 
 _POP_TO_AUDIENCE: dict[str, frozenset[str]] = {
@@ -73,6 +74,11 @@ def enrich_lex_source(ch: dict[str, Any]) -> str:
         vals = ch.get(key) or []
         if isinstance(vals, list) and vals:
             parts.append(" ".join(str(v) for v in vals[:12]))
+    weights = ch.get("icd10_weights") or {}
+    if isinstance(weights, dict) and weights:
+        parts.append(
+            " ".join(f"{k}{int(v)}%" for k, v in list(weights.items())[:10])
+        )
     sec = (ch.get("section_title") or "").strip()
     if sec:
         parts.append(sec)
@@ -119,12 +125,12 @@ def chunk_type_multiplier(
     intents = detect_query_intent(query, icd_codes)
     mult = 1.0
     boosts = {
-        "diagnostics": ("diagnostics", "criteria_block", "classification"),
-        "treatment": ("treatment", "pharmacotherapy", "drug_list"),
+        "diagnostics": ("diagnostics", "criteria_block", "classification", "protocol_overview"),
+        "treatment": ("treatment", "pharmacotherapy", "drug_list", "protocol_overview"),
         "table": ("table", "drug_list"),
-        "classification": ("classification",),
-        "criteria_block": ("criteria_block", "diagnostics"),
-        "prevention": ("prevention",),
+        "classification": ("classification", "protocol_overview"),
+        "criteria_block": ("criteria_block", "diagnostics", "protocol_overview"),
+        "prevention": ("prevention", "protocol_overview"),
     }
     for intent in intents:
         if ctype in boosts.get(intent, ()):
@@ -135,6 +141,8 @@ def chunk_type_multiplier(
         mult *= 0.7
     if ctype == "table" and "table" not in intents:
         mult *= 0.85
+    if ctype == "protocol_overview":
+        mult *= 1.48 if icd_codes else 1.18
     return mult
 
 
