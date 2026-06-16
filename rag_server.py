@@ -6897,6 +6897,10 @@ class ProtocolPracticalIn(BaseModel):
         default=False,
         description="Только clinical_detail (без второго вызова LLM для матрицы)",
     )
+    mode: str = Field(
+        default="lite",
+        description="lite — rich-чанки без LLM; full — разбор моделью (медленнее)",
+    )
 
 
 class ConsultComplianceScreenIn(BaseModel):
@@ -7263,7 +7267,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r177-nav-condition-dedupe"
+BUILD_VERSION = "2026-06-16-r178-practical-lite-funnel"
 
 
 def _app_version() -> str:
@@ -8326,6 +8330,32 @@ def api_protocol_practical(body: ProtocolPracticalIn) -> dict:
     pth = body.path.strip()
     if not pth or pth not in _chunks_by_path:
         raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
+    mode = (body.mode or "lite").strip().lower()
+    if mode not in ("lite", "full"):
+        raise HTTPException(status_code=400, detail="mode должен быть lite или full")
+    icd_norm = _icd_codes_from_query_and_analysis(q, body.icd_codes or None)
+    meta = _protocol_meta.get(pth) or {}
+    title_line = _protocol_display_title(pth, body.title.strip() or meta.get("title"))
+
+    if mode == "lite":
+        from clinical_knowledge.protocol_practical_lite import build_clinical_detail_lite
+
+        chunks = get_rich_chunks_for_path(pth) or list(_chunks_by_path.get(pth) or [])
+        clinical_detail = build_clinical_detail_lite(
+            pth, q, title_line, chunks, icd_norm or None
+        )
+        kz_matrix: dict | None = None
+        if not body.skip_kz_matrix:
+            kz_matrix = kz_matrix_from_clinical_detail_heuristic(
+                clinical_detail, pth, title_line, icd_norm
+            )
+        return {
+            "mode": "lite",
+            "clinical_detail": clinical_detail,
+            "kz_matrix": kz_matrix,
+            "protocol_ui_meta": protocol_ui_meta_for_path(pth),
+        }
+
     model = get_gemini()
     pc = body.protocol_confidence
     if pc is not None:
@@ -8360,6 +8390,7 @@ def api_protocol_practical(body: ProtocolPracticalIn) -> dict:
             clinical_detail=clinical_detail,
         )
     return {
+        "mode": "full",
         "clinical_detail": clinical_detail,
         "kz_matrix": kz_matrix,
         "protocol_ui_meta": protocol_ui_meta_for_path(pth),
