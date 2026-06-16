@@ -5777,6 +5777,9 @@ def _rerank_protocols_symptom_only(
     child_query = aud == "child"
     adult_query = aud == "adult"
     pregnant_query = aud == "pregnant" or "pregnancy" in route_ids
+    has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
+    has_cough = any(w in ql for w in ("кашел", "кашель", "сухой каш"))
+    has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
 
     def _apply_clinical_and_audience(pr: dict, penalty: int, boost: int) -> tuple[int, int]:
         path = str(pr.get("path") or "").lower()
@@ -5929,9 +5932,6 @@ def _rerank_protocols_symptom_only(
     cough_acute = ("бронхит", "пневмон", "орви", "орз", "респиратор", "грипп", "трахеит")
     ent_only = ("отит", "риносинус", "синусит", "аденоид")
     wrong_acute = ("паллиат", "саркоид", "иммунодефиц", "трансплант", "онколог")
-    has_fever = any(w in ql for w in ("температ", "лихорад", "жар", "озноб"))
-    has_cough = any(w in ql for w in ("кашел", "кашель", "сухой каш"))
-    has_throat = any(w in ql for w in ("горл", "глот", "дисфаг", "глотать", "глотан"))
     has_gi = any(w in ql for w in ("живот", "изжог", "тошн", "рвот", "желуд", "кишеч", "стул"))
     has_functional_gi = any(
         w in ql
@@ -5995,11 +5995,13 @@ def _rerank_protocols_symptom_only(
                 penalty += 22
         elif child_query and has_cough:
             if any(k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr", "орви", "респиратор")):
-                boost += 12
+                boost += 16
             if "бронхит" in blob and not any(
                 k in blob for k in ("дет нас", "дет_нас", "д-нас", "детс", "pediatr")
             ):
-                penalty += 20
+                penalty += 24
+            if not has_fever and doc_audience_hint(path, title, routing) == "adult":
+                penalty += 14
         if has_throat and not throat_distress and "эпиглоттит" in blob:
             penalty += 4
         if any(k in blob for k in ("анестезиолог", "анестези", "хирургическ")) and has_throat:
@@ -6010,13 +6012,20 @@ def _rerank_protocols_symptom_only(
             penalty += 8
         if has_cough and not has_throat:
             if any(k in blob for k in cough_acute):
-                boost += 5
+                boost += 7
             elif any(k in blob for k in ent_only) and not any(k in blob for k in cough_acute):
-                penalty += 6
+                penalty += 10
             if not has_sinus_hint and "риносинус" in blob and "орви" not in blob:
-                penalty += 12
+                penalty += 14
             if "оториноларингологическ" in blob and "орви" not in blob and "респиратор" not in blob:
-                penalty += 16
+                penalty += 22
+            if adult_query and has_fever and "бронхит" in blob and "орви" not in blob and "респиратор" not in blob:
+                if "оториноларингологическ" in blob or "уха горла носа" in blob:
+                    penalty += 18
+                else:
+                    penalty += 8
+            if adult_query and has_fever and any(k in blob for k in ("респиратор", "орви", "орз", "пневмон")):
+                boost += 6
         elif has_throat:
             if "пневмон" in blob:
                 boost += 2
@@ -7254,7 +7263,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r175-emergency-protocol-rerank"
+BUILD_VERSION = "2026-06-16-r176-proto-nav-ui-probe"
 
 
 def _app_version() -> str:
@@ -9015,6 +9024,27 @@ def api_methodist_search_ai_review(request: "Request", body: MethodistSearchAiRe
         "fallback": fallback,
         "fallback_reason": fallback_reason if fallback else None,
         "artifact_id": artifact_id,
+    }
+
+
+class MethodistSearchProbeIn(BaseModel):
+    limit: int = Field(default=15, ge=1, le=120, description="Сколько кейсов из fixture прогнать")
+    group: str | None = Field(default=None, max_length=80, description="Фильтр по group в fixture")
+
+
+@app.post("/api/methodist/search-probe")
+def api_methodist_search_probe(request: "Request", body: MethodistSearchProbeIn) -> dict:
+    """Batch-прогон fixture probe поиска протоколов (как scripts/run_methodist_search_probe.py)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.methodist_search_probe_runner import run_probe_batch
+
+    _require_rag_loaded()
+    reports, summary = run_probe_batch(limit=body.limit, group=(body.group or "").strip() or None)
+    summary["build_version"] = BUILD_VERSION
+    return {
+        "ok": True,
+        "summary": summary,
+        "reports": reports,
     }
 
 

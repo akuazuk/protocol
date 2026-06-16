@@ -8291,8 +8291,61 @@
     .proto-nav-card__actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
+      gap: 0.35rem;
       align-items: center;
+    }
+
+    .proto-nav-card__actions .btn-proto-action {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.36rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      line-height: 1.3;
+      box-shadow: none;
+      text-shadow: none;
+      transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+    }
+
+    .proto-nav-card__actions .btn-proto-action:disabled,
+    .proto-nav-card__actions .btn-proto-action.is-busy {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    .proto-nav-card__actions .btn-proto-action--primary {
+      background: var(--green-700);
+      color: #fff;
+      border: 1px solid rgba(13, 92, 74, 0.4);
+    }
+
+    .proto-nav-card__actions .btn-proto-action--primary:hover:not(:disabled) {
+      background: var(--green-800);
+    }
+
+    .proto-nav-card__actions .btn-proto-action--secondary {
+      background: #fff;
+      color: var(--green-800);
+      border: 1px solid rgba(26, 138, 114, 0.32);
+    }
+
+    .proto-nav-card__actions .btn-proto-action--secondary:hover:not(:disabled) {
+      background: rgba(232, 245, 241, 0.95);
+    }
+
+    .proto-nav-card__actions .btn-proto-action--link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      background: transparent;
+      color: var(--green-800);
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      font-weight: 600;
+    }
+
+    .proto-nav-card__actions .btn-proto-action--link:hover {
+      background: rgba(232, 245, 241, 0.7);
     }
 
     .proto-nav-card__actions .btn-proto-pick--primary {
@@ -9884,6 +9937,7 @@
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-search-dash-refresh">Обновить</button>
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-search-run-probe" title="Прогон fixture probe (как scripts/run_methodist_search_probe.py)">Тест-пакет probe</button>
           </div>
         </div>
         <div id="methodist-search-dash-error" class="methodist-ml-error" hidden></div>
@@ -13096,13 +13150,15 @@
     }
     html += '<div class="proto-nav-card__actions">';
     html +=
-      '<button type="button" class="btn-assist btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
+      '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-pick" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
+      '" title="' +
+      (isTop ? "Перейти к матрице КЗ и выдержке" : "Навигация по протоколу") +
       '">' +
-      (isTop ? "Продолжить с этим протоколом" : "Навигация по протоколу") +
+      (isTop ? "Продолжить" : "Навигация") +
       "</button>";
     html +=
-      '<button type="button" class="btn-assist btn-proto-matrix" data-proto-path="' +
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-matrix" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '" data-proto-title="' +
       escapeHtmlAttr(pr.title || "") +
@@ -13110,7 +13166,7 @@
       escapeHtmlAttr(String(conf)) +
       '">Матрица КЗ</button>';
     html +=
-      '<a class="btn-assist btn-link-nav" href="' +
+      '<a class="btn-proto-action btn-proto-action--link" href="' +
       href +
       '" target="_blank" rel="noopener noreferrer">PDF</a>';
     html += "</div></article>";
@@ -16723,6 +16779,75 @@
     }
   }
 
+  function runMethodistSearchProbe(limit) {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var btn = document.getElementById("methodist-search-run-probe");
+    var errEl = document.getElementById("methodist-search-dash-error");
+    var metaEl = document.getElementById("methodist-search-dash-meta");
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Probe…";
+    }
+    if (errEl) errEl.hidden = true;
+    if (metaEl) {
+      metaEl.textContent = "Прогон probe-пакета… (может занять 1-3 мин)";
+    }
+    fetch(apiBaseUrl() + "/api/methodist/search-probe", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
+      body: JSON.stringify({ limit: limit || 15 }),
+    })
+      .then(function (r) {
+        return r.text().then(function (text) {
+          var j = parseJsonSafe(text);
+          if (!r.ok) {
+            var d = j && j.detail;
+            throw new Error(typeof d === "string" ? d : text || r.statusText);
+          }
+          return j;
+        });
+      })
+      .then(function (payload) {
+        var s = (payload && payload.summary) || {};
+        var worst = s.worst || [];
+        var lines = [
+          "Probe: " + String(s.n_ok || 0) + "/" + String(s.n_total || 0),
+          "avg rating " + String(s.avg_ai_rating != null ? s.avg_ai_rating : "—"),
+          "hit@1 " + (s.expected_hit1_pct != null ? Math.round(s.expected_hit1_pct * 100) + "%" : "—"),
+        ];
+        if (metaEl) {
+          metaEl.innerHTML =
+            "<strong>Последний probe</strong> · " +
+            escapeHtml(lines.join(" · ")) +
+            (worst.length
+              ? '<br><span class="consult-hint-small">Слабые: ' +
+                escapeHtml(
+                  worst
+                    .slice(0, 4)
+                    .map(function (w) {
+                      return (w.id || "?") + " r" + String(w.ai_rating != null ? w.ai_rating : "?");
+                    })
+                    .join(", ")
+                ) +
+                "</span>"
+              : "");
+        }
+        window.__lastMethodistSearchProbe = payload;
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Probe не удался: " + methodistApiErrorRu(e.message || e);
+        }
+      })
+      .finally(function () {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Тест-пакет probe";
+        }
+      });
+  }
+
   function loadMethodistSearchDashboard() {
     if (!window.__methodistMode || !window.__methodistToken) return;
     var root = document.getElementById("methodist-search-dashboard-root");
@@ -19161,14 +19286,14 @@
       });
   }
 
-  function openProtocolWizardFlow(path) {
-    if (!path || !window.__lastAssistData) return;
+  function openProtocolWizardFlow(path, assistData) {
+    var data = assistData || window.__lastAssistData;
+    if (!path || !data) return;
     if (!isSearchSteppedMode()) {
       window.__searchWizard = { step: "detail", selectedProto: path };
-      renderLlmOut(window.__lastAssistData);
+      renderLlmOut(data);
       return;
     }
-    var data = window.__lastAssistData;
     var q = data.query || lastAssistFullQuery || "";
     var icd = icdCodesFromAssistData(data);
     fetchProtocolSummaryNavForWizard(path, q, icd)
@@ -19194,22 +19319,40 @@
       });
   }
 
-  function bindProtoPickButtons(data) {
-    document.querySelectorAll(".btn-proto-pick").forEach(function (btn) {
-      if (btn.getAttribute("data-wired")) return;
-      btn.setAttribute("data-wired", "1");
-      btn.addEventListener("click", function () {
-        var path = btn.getAttribute("data-proto-path") || "";
-        if (!path || !window.__lastAssistData) return;
-        openProtocolWizardFlow(path);
-        var sr = document.getElementById("section-results");
-        if (sr) {
-          try {
-            sr.scrollIntoView({ behavior: "smooth", block: "start" });
-          } catch (e) {}
+  function initProtoNavDelegation() {
+    var root = document.getElementById("llm-out");
+    if (!root || root._protoNavDelegated) return;
+    root._protoNavDelegated = true;
+    root.addEventListener("click", function (ev) {
+      var pick = ev.target && ev.target.closest ? ev.target.closest(".btn-proto-pick") : null;
+      if (!pick || !root.contains(pick)) return;
+      ev.preventDefault();
+      var path = pick.getAttribute("data-proto-path") || "";
+      var data = window.__lastAssistData;
+      if (!path || !data) return;
+      pick.disabled = true;
+      pick.classList.add("is-busy");
+      openProtocolWizardFlow(path, data);
+      var sr = document.getElementById("section-results");
+      if (sr) {
+        try {
+          sr.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (eScroll) {}
+      }
+      window.setTimeout(function () {
+        if (pick.isConnected) {
+          pick.disabled = false;
+          pick.classList.remove("is-busy");
         }
-      });
+      }, 1200);
     });
+  }
+
+  function bindProtoPickButtons(data) {
+    initProtoNavDelegation();
+    if (data && !window.__lastAssistData) {
+      window.__lastAssistData = data;
+    }
   }
 
   function catalogBadgesHtml(path, protocolUiMeta) {
@@ -21765,6 +21908,13 @@
         loadMethodistSearchDashboard();
       });
     }
+    var searchProbeBtn = document.getElementById("methodist-search-run-probe");
+    if (searchProbeBtn && !searchProbeBtn.getAttribute("data-wired")) {
+      searchProbeBtn.setAttribute("data-wired", "1");
+      searchProbeBtn.addEventListener("click", function () {
+        runMethodistSearchProbe(15);
+      });
+    }
     var queueRefresh = document.getElementById("methodist-queue-refresh");
     if (queueRefresh && !queueRefresh.getAttribute("data-wired")) {
       queueRefresh.setAttribute("data-wired", "1");
@@ -22653,6 +22803,7 @@
       }
     });
   initConsultationTemplateDelegation();
+  initProtoNavDelegation();
   initMethodistWorkbench();
 })();
   </script>

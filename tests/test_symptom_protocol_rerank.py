@@ -50,3 +50,22 @@ def test_symptom_only_demotes_pediatric_orvi_without_child_context():
     icd = {"explicit_icd_in_query": False, "detected": [], "suggested": []}
     out = _rerank_protocols_symptom_only(protos, "кашель и температура 38", icd)
     assert out[0]["path"].endswith("пневмония.pdf")
+
+
+def test_pediatric_cough_prefers_child_orvi_over_adult_bronchitis():
+  protos = [
+      {
+          "path": "a/бронхит_взр.pdf",
+          "title": "КП диагностики и лечения острого и хронического бронхита",
+          "confidence_score": 0.95,
+      },
+      {
+          "path": "b/орви_дет.pdf",
+          "title": "Диагностика лечение острых респираторных вирусных инфекций дет нас",
+          "confidence_score": 0.82,
+      },
+  ]
+  icd = {"explicit_icd_in_query": False, "detected": [], "suggested": []}
+  q = "кашель\nКонтекст подбора: детское население"
+  out = _rerank_protocols_symptom_only(protos, q, icd)
+  assert "орви" in out[0]["path"].lower() or "респиратор" in out[0]["title"].lower()
