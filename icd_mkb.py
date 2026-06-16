@@ -84,6 +84,7 @@ _RU_STOP = frozenset(
     пациент пациентка симптом симптомы
     для при или без над под про как что это все всех между через
     дифференциальная гипотеза подбора протокола протокол протокола
+    после
     """.split()
 )
 
@@ -137,7 +138,167 @@ _CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
         ("K92.1", 17.5),
         ("K92.0", 17.0),
     ],
+    "hypertension": [
+        ("I10", 22.0),
+        ("I11.9", 21.5),
+        ("R03.0", 21.0),
+        ("I15.9", 20.5),
+    ],
+    "gastritis_gerd": [
+        ("K29.7", 22.0),
+        ("K21.9", 21.5),
+        ("K29.5", 21.0),
+        ("K29.9", 20.5),
+    ],
+    "dyspepsia": [
+        ("K30", 22.0),
+        ("K31.9", 21.5),
+        ("R14", 21.0),
+        ("K59.0", 20.0),
+    ],
+    "uti": [
+        ("N39.0", 22.0),
+        ("N30.0", 21.5),
+        ("N30.9", 21.0),
+        ("N39.9", 20.5),
+    ],
+    "alcohol_use": [
+        ("F10.2", 22.0),
+        ("F10.3", 21.5),
+        ("F10.0", 21.0),
+        ("F10.9", 20.5),
+    ],
+    "menopause": [
+        ("N95.1", 22.0),
+        ("N95.9", 21.5),
+        ("E28.3", 20.5),
+        ("R23.2", 20.0),
+    ],
+    "urticaria": [
+        ("L50.9", 22.0),
+        ("L50.0", 21.5),
+        ("T78.3", 21.0),
+        ("L50.1", 20.5),
+    ],
+    "anaphylaxis": [
+        ("T78.2", 22.0),
+        ("T78.4", 21.5),
+        ("T78.0", 21.0),
+        ("W57", 20.5),
+    ],
+    "thermal_burn": [
+        ("T23.0", 22.0),
+        ("T22.0", 21.5),
+        ("T31.0", 21.0),
+        ("T24.0", 20.5),
+    ],
+    "sore_throat": [
+        ("R07.0", 22.0),
+        ("J02.9", 21.5),
+        ("J03.9", 21.0),
+        ("J06.9", 20.0),
+    ],
+    "chest_pain": [
+        ("R07.4", 22.0),
+        ("I20.9", 21.5),
+        ("I21.9", 21.0),
+        ("R07", 20.5),
+    ],
+    "gastroenteritis": [
+        ("A09", 22.0),
+        ("K59.1", 21.5),
+        ("R11", 21.0),
+        ("A08.4", 20.0),
+    ],
+    "parkinson": [
+        ("G20", 22.0),
+        ("G20.9", 21.5),
+        ("R25.1", 20.0),
+    ],
+    "gout": [
+        ("M10", 22.0),
+        ("M10.9", 21.5),
+        ("M79.6", 20.0),
+    ],
+    "conjunctivitis": [
+        ("H10.9", 22.0),
+        ("H10", 21.5),
+        ("B30.9", 20.5),
+    ],
+    "depression": [
+        ("F32", 22.0),
+        ("F32.9", 21.5),
+        ("F33", 21.0),
+        ("R45.2", 20.0),
+    ],
+    "uri_pediatric": [
+        ("J06.9", 22.0),
+        ("J00", 21.5),
+        ("J20.9", 21.0),
+        ("R50.9", 20.0),
+    ],
+    "asthma": [
+        ("J45.9", 22.0),
+        ("J45", 21.5),
+        ("J46", 21.0),
+    ],
+    "ckd": [
+        ("N18.9", 22.0),
+        ("N18", 21.5),
+        ("N19", 21.0),
+        ("N17.9", 20.0),
+    ],
+    "vulvovaginitis": [
+        ("N76.0", 22.0),
+        ("B37.3", 21.5),
+        ("N89.8", 21.0),
+        ("N77.1", 20.0),
+    ],
+    "herpes_labialis": [
+        ("B00.1", 22.0),
+        ("B00.9", 21.5),
+        ("B00", 21.0),
+    ],
+    "eye_pain": [
+        ("H57.1", 22.0),
+        ("H57", 21.5),
+        ("H10.9", 20.5),
+        ("H44.3", 20.0),
+    ],
+    "adenoids": [
+        ("J35.2", 22.0),
+        ("J35", 21.5),
+        ("J35.9", 21.0),
+        ("R06.5", 20.0),
+    ],
+    "co_poisoning": [
+        ("T58.0", 22.0),
+        ("T58", 21.5),
+        ("X47", 21.0),
+        ("T59.9", 20.0),
+    ],
+    "foreign_body_airway": [
+        ("T17.9", 22.0),
+        ("T17", 21.5),
+        ("T18.0", 21.0),
+        ("W79", 20.0),
+    ],
 }
+
+# Коды-«последствия» и отдалённые исходы - шум при острых жалобах.
+_SEQUELAE_CODE_STEMS = frozenset(
+    {
+        "B90",
+        "B91",
+        "B92",
+        "B93",
+        "B94",
+        "E64",
+        "E68",
+        "G53",
+        "H95",
+    }
+)
 
 _RECTAL_MARKERS = ("задн", "проход", "анус", "прямок", "геморро", "переанал")
 _STOOL_MARKERS = ("кал", "стул", "копр", "дефекац")
@@ -493,6 +654,457 @@ def _has_rectal_bleeding_complaint(qlow: str) -> bool:
     )
 
 
+def _has_sequelae_intent(qlow: str) -> bool:
+    return any(
+        x in qlow
+        for x in (
+            "последств",
+            "перенес",
+            "перенесен",
+            "перенесён",
+            "ранее болел",
+            "в анамнезе заболев",
+            "отдаленн",
+            "отдалённ",
+        )
+    )
+
+
+def _is_sequelae_code(code: str) -> bool:
+    cu = _norm_icd_code(code).upper()
+    if len(cu) < 3:
+        return False
+    stem = cu[:3] if cu[1:3].isdigit() else cu[:2]
+    if stem in _SEQUELAE_CODE_STEMS:
+        return True
+    if cu.startswith("B9") and len(cu) >= 3 and cu[1:3].isdigit():
+        return True
+    return False
+
+
+def _is_sequelae_title(tlow: str) -> bool:
+    if "последств" in tlow or "отдаленн" in tlow or "отдалённ" in tlow:
+        return True
+    if "после " in tlow and any(
+        x in tlow
+        for x in (
+            "родов",
+            "операц",
+            "мастоид",
+            "туберкул",
+            "полиомиел",
+            "лепр",
+            "трахом",
+        )
+    ):
+        return True
+    return False
+
+
+def _has_hypertension_complaint(qlow: str) -> bool:
+    if re.search(r"\b1[2-9]\d/\d{2,3}\b", qlow) or re.search(r"\b20\d/\d{2,3}\b", qlow):
+        return True
+    if "гипертон" in qlow or "гипертенз" in qlow:
+        return True
+    return "давлен" in qlow and bool(re.search(r"\b\d{2,3}/\d{2,3}\b", qlow))
+
+
+def _has_gastritis_gerd_complaint(qlow: str) -> bool:
+    return "гастрит" in qlow or "изжог" in qlow or "гэрб" in qlow
+
+
+def _has_dyspepsia_complaint(qlow: str) -> bool:
+    return any(x in qlow for x in ("диспепс", "вздут", "метеоризм", "тяжесть в живот"))
+
+
+def _has_uti_complaint(qlow: str) -> bool:
+    if "цистит" in qlow:
+        return True
+    if "мочев" in qlow and "инфекц" in qlow:
+        return True
+    return ("жжен" in qlow or "рез" in qlow) and "моч" in qlow
+
+
+def _has_pregnancy_ob_context(qlow: str) -> bool:
+    return any(
+        x in qlow
+        for x in (
+            "беремен",
+            "роды",
+            "послерод",
+            "новорожд",
+            "гестацион",
+            "плацент",
+            "лактац",
+            "грудн",
+            "после род",
+        )
+    )
+
+
+def _has_alcohol_use_complaint(qlow: str) -> bool:
+    if "алкогол" not in qlow:
+        return False
+    return any(
+        x in qlow
+        for x in ("зависим", "абстиненц", "злоупотреб", "похмель", "отмен", "синдром отмен")
+    )
+
+
+def _has_menopause_complaint(qlow: str) -> bool:
+    return any(x in qlow for x in ("климакс", "менопауз", "прилив"))
+
+
+def _has_urticaria_complaint(qlow: str) -> bool:
+    return "крапивниц" in qlow or ("сып" in qlow and "зуд" in qlow)
+
+
+def _has_anaphylaxis_complaint(qlow: str) -> bool:
+    return "анафилакс" in qlow or ("отек квинке" in qlow.replace("ё", "е"))
+
+
+def _has_thermal_burn_complaint(qlow: str) -> bool:
+    if "ожог" not in qlow:
+        return False
+    if "солнеч" in qlow:
+        return False
+    return any(
+        x in qlow
+        for x in ("рук", "кист", "кипят", "термич", "кипяток", "пар", "пальц")
+    )
+
+
+def _has_sore_throat_complaint(qlow: str) -> bool:
+    if "ангин" in qlow:
+        return True
+    return "горл" in qlow and any(x in qlow for x in ("бол", "глот", "перш", "трудно"))
+
+
+def _has_chest_pain_complaint(qlow: str) -> bool:
+    return ("груд" in qlow or "загрудин" in qlow) and "бол" in qlow
+
+
+def _has_gastroenteritis_complaint(qlow: str) -> bool:
+    if "понос" in qlow or "диаре" in qlow:
+        return "рвот" in qlow or "инфекц" in qlow or "кишечн" in qlow
+    return "рвот" in qlow and "кишечн" in qlow
+
+
+def _has_parkinson_complaint(qlow: str) -> bool:
+    return "паркинсон" in qlow or ("тремор" in qlow and "ригид" in qlow)
+
+
+def _has_gout_complaint(qlow: str) -> bool:
+    return "подагр" in qlow
+
+
+def _has_conjunctivitis_complaint(qlow: str) -> bool:
+    return "конъюнктивит" in qlow or (
+        "глаз" in qlow and any(x in qlow for x in ("покрасн", "конъюнкт", "слезотеч"))
+    )
+
+
+def _has_depression_complaint(qlow: str) -> bool:
+    return "депресс" in qlow or ("апат" in qlow and "сонлив" in qlow)
+
+
+def _has_pediatric_uri_complaint(qlow: str) -> bool:
+    if not any(x in qlow for x in ("ребен", "ребён", "дет", "грудн", "младен")):
+        return False
+    return any(x in qlow for x in ("орви", "насмор", "кашел", "кашель"))
+
+
+def _has_asthma_complaint(qlow: str) -> bool:
+    return "астм" in qlow or ("удуш" in qlow and "кашел" in qlow)
+
+
+def _has_ckd_complaint(qlow: str) -> bool:
+    if "хронич" in qlow and "почек" in qlow:
+        return True
+    return ("почек" in qlow or "нефропат" in qlow) and "отек" in qlow
+
+
+def _has_vulvovaginitis_complaint(qlow: str) -> bool:
+    if "вульвовагинит" in qlow:
+        return True
+    return "зуд" in qlow and "выделен" in qlow and any(x in qlow for x in ("вульв", "вагин"))
+
+
+def _has_herpes_labialis_complaint(qlow: str) -> bool:
+    return "герпес" in qlow and any(x in qlow for x in ("губ", "пузырьк", "губе"))
+
+
+def _has_eye_pain_complaint(qlow: str) -> bool:
+    return "глаз" in qlow and any(x in qlow for x in ("бол", "светобоязн", "боль"))
+
+
+def _has_adenoids_complaint(qlow: str) -> bool:
+    return "аденоид" in qlow or ("храп" in qlow and any(x in qlow for x in ("ребен", "дет", "грудн")))
+
+
+def _has_co_poisoning_complaint(qlow: str) -> bool:
+    return "угарн" in qlow or ("угар" in qlow and "газ" in qlow)
+
+
+def _has_foreign_body_airway_complaint(qlow: str) -> bool:
+    return "инородн" in qlow and any(x in qlow for x in ("дыхат", "трахе", "бронх", "гортан"))
+
+
+def _is_family_history_title(tlow: str) -> bool:
+    return any(
+        x in tlow
+        for x in (
+            "семейном анамнезе",
+            "в семейном анамнезе",
+            "семейный анамнез",
+            "наследственн",
+        )
+    )
+
+
+def _is_insect_bite_complaint(qlow: str) -> bool:
+    return any(x in qlow for x in ("пчел", "ос", "шершен", "комар", "клещ", "насеком"))
+
+
+def _penalize_sequelae_for_acute(qlow: str, code: str, title: str, score: float) -> float:
+    if _has_sequelae_intent(qlow):
+        return score
+    tlow = title.lower().replace("ё", "е")
+    if _is_sequelae_code(code) or _is_sequelae_title(tlow):
+        return score * 0.05
+    return score
+
+
+def _penalize_compression_for_bp(qlow: str, code: str, title: str, score: float) -> float:
+    if not _has_hypertension_complaint(qlow):
+        return score
+    tlow = title.lower().replace("ё", "е")
+    cu = code.upper()
+    if "сдавлен" in tlow or "удушен" in tlow or "удавлен" in tlow:
+        return score * 0.04
+    if cu.startswith("G93") or cu.startswith("G95"):
+        return score * 0.06
+    if cu.startswith("W") and "давлен" in tlow:
+        return score * 0.05
+    if cu.startswith("Y") and ("удуш" in tlow or "удавл" in tlow):
+        return score * 0.05
+    return score
+
+
+def _penalize_obstetric_without_context(qlow: str, code: str, score: float) -> float:
+    if _has_pregnancy_ob_context(qlow):
+        return score
+    cu = code.upper()
+    if not cu.startswith(("O", "P")):
+        return score
+    if _has_uti_complaint(qlow) and cu.startswith("O"):
+        return score * 0.06
+    if cu.startswith("P"):
+        return score * 0.08
+    return score
+
+
+def _penalize_family_history_z(qlow: str, code: str, title: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("Z"):
+        return score
+    tlow = title.lower().replace("ё", "е")
+    if not _is_family_history_title(tlow):
+        return score
+    if _has_alcohol_use_complaint(qlow):
+        return score * 0.04
+    return score * 0.35
+
+
+def _penalize_exotic_bite_fever(qlow: str, code: str, title: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("A"):
+        return score
+    tlow = title.lower().replace("ё", "е")
+    if "укус" not in tlow:
+        return score
+    if _is_insect_bite_complaint(qlow) and "крыс" not in qlow:
+        return score * 0.05
+    return score
+
+
+def _penalize_sunburn_for_thermal(qlow: str, code: str, score: float) -> float:
+    if not _has_thermal_burn_complaint(qlow):
+        return score
+    cu = code.upper()
+    if cu.startswith("L55"):
+        return score * 0.06
+    return score
+
+
+def _penalize_z_for_acute_complaint(qlow: str, code: str, title: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("Z"):
+        return score
+    if _has_sequelae_intent(qlow) or "скрининг" in qlow:
+        return score
+    tlow = title.lower().replace("ё", "е")
+    if _is_family_history_title(tlow):
+        return score * 0.35
+    if any(x in tlow for x in ("отлучен", "проблем", "наблюден", "профилакт")):
+        return score * 0.06
+    return score * 0.4
+
+
+def _penalize_infant_death_for_uri(qlow: str, code: str, score: float) -> float:
+    if code.upper() != "R95":
+        return score
+    if any(x in qlow for x in ("орви", "насмор", "кашел", "кашель", "ринит")):
+        return score * 0.02
+    return score
+
+
+def _penalize_sti_pharynx_without_context(qlow: str, code: str, title: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("A"):
+        return score
+    tlow = title.lower().replace("ё", "е")
+    if "фаринг" in qlow and "гонокок" in tlow:
+        return score * 0.04
+    return score
+
+
+def _penalize_poisoning_without_intent(qlow: str, code: str, title: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("T") or "отравлен" not in title.lower():
+        return score
+    if "отравлен" in qlow or "яд" in qlow:
+        return score
+    return score * 0.08
+
+
+def _penalize_drug_complication_y(qlow: str, code: str, score: float) -> float:
+    cu = code.upper()
+    if not cu.startswith("Y"):
+        return score
+    if _has_asthma_complaint(qlow) or _has_cough_fever_complaint(qlow):
+        return score * 0.04
+    return score * 0.25
+
+
+def _clinical_hint_profile(qlow: str) -> str | None:
+    """Определяет профиль клинической подсказки (приоритет - более специфичные)."""
+    if _has_anaphylaxis_complaint(qlow):
+        return "anaphylaxis"
+    if _has_foreign_body_airway_complaint(qlow):
+        return "foreign_body_airway"
+    if _has_co_poisoning_complaint(qlow):
+        return "co_poisoning"
+    if _has_thermal_burn_complaint(qlow):
+        return "thermal_burn"
+    if _has_adenoids_complaint(qlow):
+        return "adenoids"
+    if _has_pediatric_uri_complaint(qlow):
+        return "uri_pediatric"
+    if _has_asthma_complaint(qlow):
+        return "asthma"
+    if _has_cough_fever_complaint(qlow):
+        return "cough_fever"
+    if _has_chest_pain_complaint(qlow):
+        return "chest_pain"
+    if _has_sore_throat_complaint(qlow):
+        return "sore_throat"
+    if _has_rectal_bleeding_complaint(qlow):
+        return "rectal_bleeding"
+    if _has_hypertension_complaint(qlow):
+        return "hypertension"
+    if _has_alcohol_use_complaint(qlow):
+        return "alcohol_use"
+    if _has_menopause_complaint(qlow):
+        return "menopause"
+    if _has_uti_complaint(qlow) and not _has_pregnancy_ob_context(qlow):
+        return "uti"
+    if _has_gastritis_gerd_complaint(qlow):
+        return "gastritis_gerd"
+    if _has_dyspepsia_complaint(qlow):
+        return "dyspepsia"
+    if _has_gastroenteritis_complaint(qlow):
+        return "gastroenteritis"
+    if _has_urticaria_complaint(qlow):
+        return "urticaria"
+    if _has_conjunctivitis_complaint(qlow):
+        return "conjunctivitis"
+    if _has_parkinson_complaint(qlow):
+        return "parkinson"
+    if _has_gout_complaint(qlow):
+        return "gout"
+    if _has_depression_complaint(qlow):
+        return "depression"
+    if _has_ckd_complaint(qlow):
+        return "ckd"
+    if _has_vulvovaginitis_complaint(qlow):
+        return "vulvovaginitis"
+    if _has_herpes_labialis_complaint(qlow):
+        return "herpes_labialis"
+    if _has_eye_pain_complaint(qlow):
+        return "eye_pain"
+    if _has_cough_in_complaint(qlow):
+        return "cough"
+    if _has_fever_in_complaint(qlow):
+        return "fever"
+    if _has_rectal_complaint(qlow):
+        return "rectal"
+    if _has_stool_blood_complaint(qlow):
+        return "stool_blood"
+    return None
+
+
+def clinical_hints_confident(text: str, *, min_score: float = 19.0) -> bool:
+    """True, если клинические подсказки дают уверенный top-1 без Gemini."""
+    qlow = _complaint_blob(strip_funnel_context_lines(text or ""))
+    profile = _clinical_hint_profile(qlow)
+    if not profile:
+        return False
+    hints = _CLINICAL_ICD_HINTS.get(profile) or []
+    if not hints:
+        return False
+    return float(hints[0][1]) >= min_score
+
+
+def filter_icd_pool_for_complaint(scored: list[dict], text: str) -> list[dict]:
+    """Предфильтр пула для Gemini: убирает явный лексический шум по типу жалобы."""
+    lq = strip_funnel_context_lines(text or "")
+    qlow = _complaint_blob(lq)
+    if not qlow:
+        return list(scored)
+    out: list[dict] = []
+    for row in scored:
+        code = str(row.get("code") or "")
+        title = str(row.get("title_ru") or "")
+        tlow = title.lower().replace("ё", "е")
+        sc = float(row.get("lex_score") or row.get("score") or 0)
+        if row.get("match_method") == "clinical_hint":
+            out.append(row)
+            continue
+        if sc <= 0:
+            continue
+        if not _has_sequelae_intent(qlow) and (
+            _is_sequelae_code(code) or _is_sequelae_title(tlow)
+        ):
+            continue
+        if _has_hypertension_complaint(qlow) and (
+            "сдавлен" in tlow or (code.upper().startswith("W") and "давлен" in tlow)
+        ):
+            continue
+        if _has_alcohol_use_complaint(qlow) and _is_family_history_title(tlow):
+            continue
+        if _has_uti_complaint(qlow) and not _has_pregnancy_ob_context(qlow):
+            cu = code.upper()
+            if cu.startswith("P") or (
+                cu.startswith("O") and "мочев" in tlow and "беремен" not in tlow
+            ):
+                continue
+        if _is_insect_bite_complaint(qlow) and code.upper().startswith("A") and "крыс" in tlow:
+            continue
+        out.append(row)
+    return out if out else list(scored)
+
+
 def _lex_word_in_title(word: str, tlow: str) -> bool:
     """Совпадение слова в названии МКБ; короткие токены - только целым словом."""
     if len(word) > _LEX_SHORT_WORD_MAX:
@@ -516,19 +1128,8 @@ def _clinical_icd_hint_rows(text: str) -> list[dict]:
     qlow = _complaint_blob(text)
     if len(qlow) < 3:
         return []
-    if _has_cough_fever_complaint(qlow):
-        profile = "cough_fever"
-    elif _has_cough_in_complaint(qlow):
-        profile = "cough"
-    elif _has_fever_in_complaint(qlow):
-        profile = "fever"
-    elif _has_rectal_bleeding_complaint(qlow):
-        profile = "rectal_bleeding"
-    elif _has_rectal_complaint(qlow):
-        profile = "rectal"
-    elif _has_stool_blood_complaint(qlow):
-        profile = "stool_blood"
-    else:
+    profile = _clinical_hint_profile(qlow)
+    if not profile:
         return []
     out: list[dict] = []
     for code, score in _CLINICAL_ICD_HINTS[profile]:
@@ -583,6 +1184,20 @@ def _icd_extra_roots(text: str) -> list[str]:
         extra.extend(["заднего прохода", "прямой киш", "геморро"])
     if "шишк" in s and ("проход" in s or "задн" in s or "геморро" in s):
         extra.extend(["геморро", "геморроид"])
+    if "гипертон" in s or "гипертенз" in s or re.search(r"\d{2,3}/\d{2,3}", s):
+        extra.extend(["гипертенз", "артериальн", "эссенциальн"])
+    if "климакс" in s or "менопауз" in s or "прилив" in s:
+        extra.extend(["менопауз", "климактер", "прилив"])
+    if "цистит" in s or ("мочев" in s and "инфекц" in s):
+        extra.extend(["мочевых пут", "цистит", "уретрит"])
+    if "алкогол" in s and ("зависим" in s or "абстиненц" in s):
+        extra.extend(["алкогольн", "зависимост"])
+    if "крапивниц" in s:
+        extra.append("крапивница")
+    if "анафилакс" in s:
+        extra.extend(["анафилакт", "аллергическ"])
+    if "ожог" in s and "солнеч" not in s:
+        extra.extend(["термическ", "ожог"])
     return extra
 
 
@@ -629,6 +1244,17 @@ def _lexicon_score_one_row(
     if _has_rectal_bleeding_complaint(qlow) and code.upper().startswith("T") and "инородн" in tlow:
         score *= 0.15
     score = _penalize_external_cause_for_clinical(qlow, code, score)
+    score = _penalize_sequelae_for_acute(qlow, code, title, score)
+    score = _penalize_compression_for_bp(qlow, code, title, score)
+    score = _penalize_obstetric_without_context(qlow, code, score)
+    score = _penalize_family_history_z(qlow, code, title, score)
+    score = _penalize_exotic_bite_fever(qlow, code, title, score)
+    score = _penalize_sunburn_for_thermal(qlow, code, score)
+    score = _penalize_z_for_acute_complaint(qlow, code, title, score)
+    score = _penalize_infant_death_for_uri(qlow, code, score)
+    score = _penalize_sti_pharynx_without_context(qlow, code, title, score)
+    score = _penalize_poisoning_without_intent(qlow, code, title, score)
+    score = _penalize_drug_complication_y(qlow, code, score)
     if score <= 0:
         return 0.0
     # Раньше: +1.8 ко всем *.9 без контекста - тянуло «неуточнённ» коды из-за частицы «для» и т.п.
@@ -640,15 +1266,8 @@ def _lexicon_score_one_row(
     return score
 
 
-def ru_lexicon_scored_entries(text: str) -> list[dict]:
-    """
-    Все коды с положительным лексическим score, по убыванию score;
-    на каждый код - строка с максимальным score (агрегация по коду).
-    """
-    if not text or len(text.strip()) < 3:
-        return []
-    words = _ru_words(text)
-    qlow = text.lower().replace("ё", "е").strip()
+def _ru_lexicon_scored_entries_uncached(words: list[str], qlow: str) -> list[dict]:
+    """Внутренний скоринг без кэша (words и qlow уже нормализованы)."""
     best: dict[str, tuple[float, str, str]] = {}
     for row in _ru_rows():
         code = (row.get("code") or "").strip()
@@ -678,26 +1297,42 @@ def ru_lexicon_scored_entries(text: str) -> list[dict]:
     return out
 
 
+@lru_cache(maxsize=1024)
+def _ru_lexicon_cache_key(text: str) -> tuple[tuple[str, ...], str]:
+    """Ключ кэша: нормализованные слова + qlow."""
+    words = tuple(_ru_words(text))
+    qlow = text.lower().replace("ё", "е").strip()
+    return words, qlow
+
+
+def ru_lexicon_scored_entries(text: str) -> list[dict]:
+    """
+    Все коды с положительным лексическим score, по убыванию score;
+    на каждый код - строка с максимальным score (агрегация по коду).
+    """
+    text = strip_funnel_context_lines(text or "")
+    if not text or len(text.strip()) < 3:
+        return []
+    words, qlow = _ru_lexicon_cache_key(text)
+    return _ru_lexicon_scored_entries_uncached(list(words), qlow)
+
+
+def clear_ru_lexicon_cache() -> None:
+    """Сброс LRU-кэша лексикона (тесты / hot reload)."""
+    _ru_lexicon_cache_key.cache_clear()
+
+
 def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
     """Лексическое сопоставление запроса с русскими названиями МКБ (без LLM)."""
     text = strip_funnel_context_lines(text or "")
     if not text or len(text.strip()) < 3:
         return []
-    words = _ru_words(text)
-    qlow = text.lower().replace("ё", "е").strip()
-    scored: list[tuple[float, str, str]] = []
-    for row in _ru_rows():
-        code = (row.get("code") or "").strip()
-        if not ICD10_TERMINAL_RU_RE.match(code):
-            continue
-        title = (row.get("title_ru") or "").strip()
-        if not title:
-            continue
-        sc = _lexicon_score_one_row(words, qlow, code, title)
-        if sc <= 0:
-            continue
-        scored.append((sc, code, title))
-    scored.sort(key=lambda x: -x[0])
+    scored_rows = ru_lexicon_scored_entries(text)
+    scored: list[tuple[float, str, str]] = [
+        (float(r.get("lex_score") or 0), str(r["code"]), str(r.get("title_ru") or ""))
+        for r in scored_rows
+        if r.get("code")
+    ]
 
     def _stem(c: str) -> str:
         c = _norm_icd_code(c)

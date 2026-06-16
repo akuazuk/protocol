@@ -38,15 +38,18 @@ from env_load import load_project_env
 from icd_mkb import (
     ICD10_CODE_RE,
     analyze_query_for_icd,
+    clinical_hints_confident,
     count_icd_code_mentions,
     describe_code,
     extract_icd_codes_diagnosis_focused,
     extract_icd_codes_raw,
+    filter_icd_pool_for_complaint,
     icd_tokens_for_lex,
     merge_clinical_icd_hints,
     normalize_text_for_icd_scan,
     normalize_icd_code,
     ru_lexicon_scored_entries,
+    strip_funnel_context_lines,
     text_mentions_icd_code,
 )
 
@@ -496,6 +499,13 @@ SYSTEM_CLINICAL_QUERY_REFINE = """Ты помощник врача. Ниже - �
 SYSTEM_ICD_POOL_SELECT = """Ты помощник врача. По клиническому запросу (жалобы, симптомы) выбери до 5 кодов МКБ-10 ТОЛЬКО из списка allowed ниже.
 Запрещено: коды вне списка, выдуманные обозначения, текст вне JSON.
 Дублируй поле code ТОЧНО как в списке (латиница и цифры).
+Правила отбора:
+- При острой жалобе пациента НЕ выбирай коды «Последствия…», «отдалённые последствия», Z-коды семейного анамнеза.
+- «Давление 140/90» и гипертония - I10/I11/R03, не «сдавление» органов.
+- Инфекция мочевых путей у взрослой женщины без беременности - N39/N30, не O86/P39.
+- Алкогольная зависимость/абстиненция - F10, не Z81 (семейный анамнез).
+- Ожог кипятком/термический - T20-T32, не L55 (солнечный).
+- Анафилаксия/укус пчелы - T78/W57, не A25 (крысы).
 Верни ОДИН JSON-объект (без markdown):
 {"codes":[{"code":"J20.9","rationale":"одно короткое предложение"}]}
 Если ни один код из списка не подходит - {"codes":[]}."""
@@ -1364,6 +1374,7 @@ def _refine_icd_analysis_with_gemini(
         return
     lq = (lexicon_query or rag_query).strip()
     scored = merge_clinical_icd_hints(ru_lexicon_scored_entries(lq), lq)
+    scored = filter_icd_pool_for_complaint(scored, lq)
     if not scored:
         return
     n_lex = max(1, min(int(os.environ.get("RAG_ICD_LEX_TOP", "12")), 40))
@@ -7224,7 +7235,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r173-icd-relevance-ratings"
+BUILD_VERSION = "2026-06-16-r174-icd-lexicon-profiles"
 
 
 def _app_version() -> str:
@@ -7481,9 +7492,12 @@ def _infer_icd_pipeline_from_full_query(
             None,
             "Пустой текст жалобы - заполните блок «Жалобы и вопрос»",
         )
+    lq_lex = strip_funnel_context_lines(q_rag_lexicon)
+    hints_confident = clinical_hints_confident(lq_lex)
     query_clinical_refinement: dict | None = None
     if (
         not skip_query_refine
+        and not hints_confident
         and os.environ.get("RAG_GEMINI_QUERY_REFINE", "1").strip().lower() in (
             "1",
             "true",
@@ -7503,6 +7517,7 @@ def _infer_icd_pipeline_from_full_query(
     )
     if (
         not skip_icd_gemini
+        and not hints_confident
         and pre_icd_infer_on
         and not icd_analysis.get("explicit_icd_in_query")
         and not (icd_analysis.get("detected") or [])
