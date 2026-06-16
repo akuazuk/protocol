@@ -7263,7 +7263,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r176-proto-nav-ui-probe"
+BUILD_VERSION = "2026-06-16-r177-nav-condition-dedupe"
 
 
 def _app_version() -> str:

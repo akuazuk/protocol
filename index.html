@@ -8021,6 +8021,16 @@
       line-height: 1.25;
     }
 
+    .search-wizard-chip__sub {
+      display: block;
+      width: 100%;
+      margin-top: 0.2rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      line-height: 1.35;
+      color: #64748b;
+    }
+
     .search-wizard-chip--selected {
       background: rgba(26, 138, 114, 0.16);
       border-color: var(--green-700);
@@ -18458,10 +18468,18 @@
           '<span class="search-wizard-chip__label">' +
           escapeHtml(ch.label || String(ch.id)) +
           "</span>";
+        if (ch.subtitle) {
+          html +=
+            '<span class="search-wizard-chip__sub">' +
+            escapeHtml(ch.subtitle) +
+            "</span>";
+        }
         if (ch.fitTier) {
           html += formatWizardFitBadge(ch.fitTier);
-        } else {
+        } else if (ch.score != null) {
           html += formatWizardRatingBadge(ch.score, isTop);
+        } else if (isTop) {
+          html += '<span class="search-wizard-chip__rating search-wizard-chip__rating--top">топ</span>';
         }
         html += "</button>";
       }
@@ -19057,33 +19075,43 @@
   function renderSearchWizardConditionStep(nav, path) {
     var out = document.getElementById("llm-out");
     if (!out) return;
+    var conds = nav.conditions || [];
+    if (conds.length === 1) {
+      window.__funnelContext = window.__funnelContext || {};
+      window.__funnelContext.condition_id = conds[0].condition_id;
+      renderSearchWizardSectionStep(nav, conds[0].condition_id, path);
+      return;
+    }
     showResultsSection(true);
     window.__searchWizard = { step: "condition", selectedProto: path };
     updateSearchWizardBar("condition", "Шаг 5 · нозология в протоколе");
     var choices = [];
     var ci;
-    for (ci = 0; ci < (nav.conditions || []).length; ci++) {
-      var cond = nav.conditions[ci];
-      var label = cond.name || "Нозология";
-      if (cond.icd_match) label += " · МКБ";
+    for (ci = 0; ci < conds.length; ci++) {
+      var cond = conds[ci];
+      var label = cond.display_label || cond.name || "Нозология";
+      var fitTier = cond.icd_match ? "high" : cond.name_match ? "medium" : "low";
       choices.push({
         id: cond.condition_id || "cond-" + ci,
         label: label,
-        score: clampWizardScore((cond.icd_match ? 94 : 78) - ci * 4),
+        subtitle: cond.match_reason || "",
+        score: cond.relevance_score != null ? cond.relevance_score : null,
+        fitTier: fitTier,
         condition_id: cond.condition_id || "",
       });
     }
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "В карточке протокола несколько нozологий — отметьте подходящие (можно несколько для контекста) или одну для перехода к разделам.",
+      lead:
+        "В карточке протокола несколько нозологий (после объединения дублей автоизвлечения). Выберите одну строку — откроются разделы с цитатами. Процент или метка «МКБ» показывают соответствие вашему запросу, а не вероятность диагноза.",
       choices: choices,
-      multi: true,
+      multi: false,
       preselectTop: true,
       continueLabel: "Открыть разделы выбранной нозологии",
-      selectHint: "Для перехода к цитатам выберите одну нозологию и нажмите «Продолжить».",
+      selectHint: "Выберите одну нозологию и нажмите «Открыть разделы».",
     });
     wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
       choices: choices,
-      multi: true,
+      multi: false,
       preselectTop: true,
       onContinue: function (sel) {
         var pick = sel[0];
