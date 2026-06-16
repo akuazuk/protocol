@@ -630,7 +630,7 @@ SYSTEM_CONSULT_RAG_SECOND_PASS_QUERY = """Ты помощник врача. Пе
 
 
 def _jsonl_chunk_files() -> list[Path]:
-    """Порядок: один файл из RAG_CHUNKS_JSONL, либо glob из RAG_CHUNKS_JSONL_GLOB, либо части corpus_chunks_parts."""
+    """Порядок: RAG_CHUNKS_JSONL → RAG_CHUNKS_JSONL_GLOB → rich_chunks → corpus_chunks_parts."""
     base = _chunks_data_root()
     one = (os.environ.get("RAG_CHUNKS_JSONL") or "").strip()
     if one:
@@ -644,6 +644,13 @@ def _jsonl_chunk_files() -> list[Path]:
         if not paths:
             raise SystemExit(f"RAG_CHUNKS_JSONL_GLOB: нет файлов по шаблону {gl!r} в {base}")
         return paths
+    if env_bool("RAG_USE_RICH_CHUNKS", True):
+        for candidate in (
+            base / "output" / "rich_chunks" / "rich_chunks.jsonl",
+            ROOT / "output" / "rich_chunks" / "rich_chunks.jsonl",
+        ):
+            if candidate.is_file():
+                return [candidate.resolve()]
     return sorted(base.glob(CORPUS_CHUNKS_PARTS_GLOB))
 
 
@@ -706,6 +713,8 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
     Без промежуточного списка «всех сырых строк» - сразу группировка по path и только
     нужные поля (экономия RAM). lex_text хранится только если отличается от text.
     """
+    from clinical_knowledge.rich_chunk_search import should_skip_rich_chunk_row
+
     memory_saver = _memory_saver_enabled()
     keep_struct = env_bool("RAG_KEEP_STRUCT", True)
     lex_cap = int(os.environ.get("RAG_LEXICAL_MAX_CHARS", "0") or "0")
@@ -725,6 +734,11 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                 p = (row.get("source_path") or "").strip()
                 if not p:
                     continue
+                is_rich = bool(row.get("doc_id") or row.get("protocol_title"))
+                if is_rich:
+                    row["rich_chunk"] = True
+                    if should_skip_rich_chunk_row(row):
+                        continue
                 text = (row.get("text") or "").strip()
                 slim: dict = {
                     "page_from": int(row.get("page_from") or 0),
@@ -733,6 +747,14 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                     "text": text,
                     "chunk_type": (row.get("chunk_type") or "body").strip() or "body",
                 }
+                if is_rich:
+                    slim["rich_chunk"] = True
+                    spec = (row.get("specialty_slug") or "").strip()
+                    if spec:
+                        slim["specialty_slug"] = spec
+                    pops = row.get("population")
+                    if isinstance(pops, list) and pops:
+                        slim["chunk_population"] = [str(x) for x in pops][:8]
                 if keep_struct:
                     sec_path = row.get("section_path")
                     if isinstance(sec_path, list) and sec_path:
@@ -795,6 +817,12 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                 rec["page_from"] = row["page_from"]
             if row.get("page_to"):
                 rec["page_to"] = row["page_to"]
+            if row.get("rich_chunk"):
+                rec["rich_chunk"] = True
+                if row.get("specialty_slug"):
+                    rec["category"] = row["specialty_slug"]
+                if row.get("chunk_population"):
+                    rec["chunk_population"] = row["chunk_population"]
             if isinstance(row.get("embedding"), list):
                 rec["embedding"] = row["embedding"]
                 if row.get("embedding_model"):
@@ -2682,6 +2710,13 @@ def retrieve(
     path_allowlist - если задан, учитываются только чанки с path из этого списка (строгий режим КЗ).
     audience_hint - 'adult' | 'child' из воронки; фильтр несовместимых PDF до embed rerank.
     """
+    from clinical_knowledge.rich_chunk_search import (
+        build_chunk_match_reason,
+        chunk_population_penalty,
+        chunk_type_multiplier,
+        enrich_lex_source,
+    )
+
     if max_chunks is None:
         max_chunks = int(os.environ.get("RAG_MAX_CHUNKS", "6"))
     use_routing = os.environ.get("RAG_ROUTING", "1").strip().lower() in (
@@ -2798,9 +2833,7 @@ def retrieve(
                 aud_filter, aud_path, str(ch.get("title") or ""), _routing
             ):
                 continue
-        lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (
-            ch.get("title") or ""
-        )
+        lex_src = enrich_lex_source(ch)
         low = lex_src.lower()
         lex_icd = normalize_text_for_icd_scan(lex_src).lower()
         lex = 0.0
@@ -2847,7 +2880,7 @@ def retrieve(
                 post *= user_penalty
             else:
                 post *= user_uncertain
-        if (ch.get("kind") or "").strip() == "table_block":
+        if (ch.get("kind") or "").strip() in ("table_block", "table"):
             ql = (query or "").lower()
             if (
                 any(c.isdigit() for c in query)
@@ -2859,6 +2892,8 @@ def retrieve(
                 or "сут" in ql
             ):
                 post *= float(os.environ.get("RAG_TABLE_BLOCK_BOOST", "1.14"))
+        post *= chunk_type_multiplier(query, ch, icd_codes=icd_norms)
+        post *= chunk_population_penalty(aud_filter, ch)
         if ch.get("generated_from_summary") or ch.get("chunk_source") == "summary_chunks":
             ps_mode = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "legacy").strip().lower()
             summary_boost = 1.0
@@ -3059,6 +3094,9 @@ def retrieve(
                 sec_title = str(sp[-1]).strip()
         if sec_title:
             row_out["section_title"] = sec_title
+        chunk_icd = ch.get("icd10_codes")
+        if isinstance(chunk_icd, list) and chunk_icd:
+            row_out["icd10_codes"] = chunk_icd[:12]
         pf = int(ch.get("page_from") or 0)
         pt = int(ch.get("page_to") or 0)
         if pf:
@@ -3069,6 +3107,8 @@ def retrieve(
             row_out["point_numbers"] = pts[:12]
         if rerank_used:
             row_out["embedding_rerank"] = True
+        row_out["match_reason"] = build_chunk_match_reason(row_out, icd_norms or None)
+        row_out["chunk_type"] = ch.get("kind") or ch.get("chunk_type") or "body"
         out.append(row_out)
         if len(out) >= max_chunks:
             break
@@ -5307,8 +5347,11 @@ def _build_protocols_from_retrieval(
     retrieved: list[dict],
     *,
     prefer_slugs: list[str] | None = None,
+    icd_codes: list[str] | None = None,
 ) -> list[dict]:
     """Список протоколов только из RAG (без вызова LLM для ranking)."""
+    from clinical_knowledge.rich_chunk_search import build_chunk_match_reason
+
     rows = dedupe_retrieval_by_basename(retrieved, prefer_slugs=prefer_slugs)
     if not rows:
         return []
@@ -5331,15 +5374,174 @@ def _build_protocols_from_retrieval(
         title = _protocol_display_title(p, raw_title)
         conf = min(0.97, max(0.38, 0.35 + 0.62 * (raw / max_sc)))
         rag_sup = min(0.95, max(0.2, conf * 0.88))
-        protos.append(
-            {
-                "path": p,
-                "title": title,
-                "confidence_score": round(conf, 4),
-                "rag_support": round(rag_sup, 4),
-            }
-        )
+        match_reason = row.get("match_reason") or build_chunk_match_reason(row, icd_codes)
+        entry: dict = {
+            "path": p,
+            "title": title,
+            "confidence_score": round(conf, 4),
+            "rag_support": round(rag_sup, 4),
+            "match_reason": match_reason,
+        }
+        if row.get("section_title"):
+            entry["section_title"] = row.get("section_title")
+        if row.get("page_from"):
+            entry["page_from"] = row.get("page_from")
+        if row.get("chunk_type"):
+            entry["best_chunk_type"] = row.get("chunk_type")
+        protos.append(entry)
     return dedupe_protocols_list(protos, prefer_slugs=prefer_slugs)
+
+
+def build_hybrid_search_payload(
+    *,
+    query: str,
+    icd_codes: list[str] | None,
+    population: str | None,
+    category_slugs: list[str] | None,
+    icd_analysis: dict | None,
+    lookup_result: dict | None,
+) -> dict:
+    """Гибрид ICD lookup + rich-chunk RAG для шага 4 воронки."""
+    from clinical_knowledge.rich_chunk_search import (
+        hybrid_merge_protocols,
+        query_wants_tables,
+    )
+
+    lookup = lookup_result or {}
+    icd_protos = list(lookup.get("protocols") or [])
+    match_reasons = lookup.get("match_reasons") or {}
+    for pr in icd_protos:
+        p = str(pr.get("path") or "")
+        reasons = match_reasons.get(p) or []
+        if reasons and not pr.get("match_reason"):
+            pr["match_reason"] = ", ".join(str(r) for r in reasons[:2])[:70]
+
+    user_slugs = [
+        s for s in (category_slugs or []) if isinstance(s, str) and s in ALLOWED_SPECIALTY_SLUGS
+    ]
+    icd_codes_for_lex = list(icd_codes or [])
+    if icd_analysis:
+        icd_codes_for_lex = list(
+            dict.fromkeys(
+                icd_codes_for_lex
+                + [str(c) for c in (icd_analysis.get("codes_for_retrieval") or []) if c]
+            )
+        )
+
+    path_allowlist = lookup.get("path_allowlist") or None
+    if not path_allowlist and icd_protos:
+        path_allowlist = [str(p.get("path") or "") for p in icd_protos if p.get("path")][:15]
+
+    aud_hint = infer_audience_from_funnel_context(query)
+    if aud_hint is None:
+        aud_hint = infer_audience_from_query(query, _routing)
+    if population in ("adult", "pediatric", "child"):
+        aud_hint = "child" if population in ("pediatric", "child") else "adult"
+    elif population == "pregnant":
+        aud_hint = "pregnant"
+
+    path_boost: list[str] | None = path_allowlist
+    if icd_codes_for_lex:
+        try:
+            from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
+
+            extra = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=8) or []
+            path_boost = list(dict.fromkeys((path_boost or []) + extra)) or None
+        except Exception:
+            pass
+
+    retrieved = retrieve(
+        query,
+        routing_query=query,
+        user_category_slugs=user_slugs or None,
+        icd_codes_for_lex=icd_codes_for_lex or None,
+        path_boost=path_boost,
+        path_allowlist=path_allowlist,
+        audience_hint=aud_hint,
+        max_chunks=int(os.environ.get("RAG_HYBRID_MAX_CHUNKS", "12")),
+        max_per_path=int(os.environ.get("RAG_HYBRID_MAX_PER_PATH", "3")),
+    )
+    if not retrieved and path_allowlist:
+        retrieved = retrieve(
+            query,
+            routing_query=query,
+            user_category_slugs=user_slugs or None,
+            icd_codes_for_lex=icd_codes_for_lex or None,
+            path_boost=path_boost,
+            path_allowlist=None,
+            audience_hint=aud_hint,
+            max_chunks=int(os.environ.get("RAG_HYBRID_MAX_CHUNKS", "12")),
+        )
+        retrieved, _, _ = filter_retrieval_by_audience(retrieved, query, _routing)
+
+    table_rows: list[dict] = []
+    if query_wants_tables(query) and retrieved:
+        top_paths = [str(r.get("path") or "") for r in retrieved[:6] if r.get("path")]
+        for ch in _chunks:
+            p = str(ch.get("path") or "").replace("\\", "/")
+            if p not in {tp.replace("\\", "/") for tp in top_paths}:
+                continue
+            kind = (ch.get("kind") or "").strip().lower()
+            if kind != "table":
+                continue
+            table_rows.append(
+                {
+                    "path": p,
+                    "kind": "table",
+                    "text": (ch.get("text") or "")[:900],
+                    "page_from": ch.get("page_from"),
+                    "section_title": ch.get("section_title"),
+                }
+            )
+            if len(table_rows) >= 4:
+                break
+
+    retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
+    rag_protos = _build_protocols_from_retrieval(
+        retrieved,
+        prefer_slugs=user_slugs,
+        icd_codes=icd_codes_for_lex,
+    )
+    rag_protos = _filter_protocols_by_funnel_audience(rag_protos, query)
+    icd_w = env_float("RAG_HYBRID_ICD_WEIGHT", 0.4)
+    rag_w = env_float("RAG_HYBRID_RAG_WEIGHT", 0.6)
+    merged = hybrid_merge_protocols(
+        icd_protos, rag_protos, icd_weight=icd_w, rag_weight=rag_w
+    )
+
+    return {
+        "query": query,
+        "retrieve_only": True,
+        "assist_lite": True,
+        "hybrid_search": True,
+        "icd_fast_lookup": bool(icd_protos),
+        "lookup_ms": lookup.get("lookup_ms", 0),
+        "icd_lookup_ambiguous": lookup.get("ambiguous", False),
+        "match_reasons": match_reasons,
+        "llm_json": {
+            "protocols": merged[:8],
+            "icd_codes": (icd_analysis or {}).get("detected") or [],
+            "table_excerpts": table_rows,
+        },
+        "icd": icd_analysis,
+        "expanded_icd_codes": lookup.get("expanded_icd") or icd_codes_for_lex,
+        "finish_reason": "HYBRID_SEARCH",
+        "retrieved_count": len(retrieved),
+    }
+
+
+def get_rich_chunks_for_path(path: str) -> list[dict]:
+    """Чанки одного PDF из загруженного RAG-индекса."""
+    norm = path.replace("\\", "/").strip()
+    if not norm:
+        return []
+    chunks = _chunks_by_path.get(norm) or []
+    if chunks:
+        return chunks
+    for p, rows in _chunks_by_path.items():
+        if p.replace("\\", "/") == norm or p.endswith(norm.split("/")[-1]):
+            return rows
+    return []
 
 
 def _infer_funnel_audience(query: str, routing: dict | None = None) -> str | None:
@@ -6972,7 +7174,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r168-icd-symptom-expand-reliable-search"
+BUILD_VERSION = "2026-06-16-r169-rich-chunk-hybrid-search"
 
 
 def _app_version() -> str:
@@ -7644,7 +7846,11 @@ def api_assist(body: AssistIn) -> dict:
     if retrieve_only:
         assist_lite = True
         retrieved = dedupe_retrieval_by_basename(retrieved, prefer_slugs=user_slugs)
-        protos = _build_protocols_from_retrieval(retrieved, prefer_slugs=user_slugs)
+        protos = _build_protocols_from_retrieval(
+            retrieved,
+            prefer_slugs=user_slugs,
+            icd_codes=icd_codes_for_lex,
+        )
         protos = _filter_protocols_by_funnel_audience(protos, q)
         parsed: dict | None = {"protocols": protos}
         text = ""
@@ -8600,22 +8806,33 @@ def api_protocol_summary_nav(
     query: str = Query("", max_length=12000),
     icd: str = Query("", max_length=256),
 ) -> dict:
-    """Оглавление Protocol Summary для навигации по протоколу в UI поиска."""
-    from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
+    """Оглавление Protocol Summary или rich-чанков для навигации по протоколу."""
+    from clinical_knowledge.search_funnel import _resolve_protocol_nav
 
     icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
-    return build_protocol_summary_nav(path.strip(), query=query, icd_codes=icd_codes)
+    _require_rag_loaded()
+    return _resolve_protocol_nav(path.strip(), query=query, icd_codes=icd_codes)
 
 
 @app.get("/api/protocol-summary-excerpt")
 def api_protocol_summary_excerpt(
     path: str = Query(..., min_length=3, max_length=512),
     condition_id: str = Query(..., min_length=1, max_length=128),
-    section_id: str = Query(..., min_length=2, max_length=32),
+    section_id: str = Query(..., min_length=2, max_length=128),
 ) -> dict:
-    """Цитаты из Protocol Summary по разделу (без LLM) — шаг 7 воронки."""
+    """Цитаты из Summary или rich-чанков по разделу (без LLM) — шаг 7 воронки."""
+    from clinical_knowledge.rich_chunk_search import build_rich_section_excerpt
     from clinical_knowledge.protocol_summary.nav import build_section_excerpt
+    from clinical_knowledge.search_funnel import _resolve_protocol_nav
 
+    _require_rag_loaded()
+    nav = _resolve_protocol_nav(path.strip(), query="", icd_codes=None)
+    if nav.get("source") == "rich_chunks":
+        return build_rich_section_excerpt(
+            nav,
+            condition_id=condition_id.strip(),
+            section_id=section_id.strip(),
+        )
     allowed = {"criteria", "exams", "treatment", "red_flags", "follow_up"}
     sid = section_id.strip()
     if sid not in allowed:

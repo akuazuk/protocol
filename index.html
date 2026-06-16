@@ -13088,6 +13088,12 @@
         escapeHtml(truncateExcerpt(cit, isTop ? 280 : 200)) +
         "</p>";
     }
+    if (pr.match_reason) {
+      html +=
+        '<p class="proto-nav-card__match-reason"><span class="proto-nav-match-label">Совпадение:</span> ' +
+        escapeHtml(String(pr.match_reason)) +
+        "</p>";
+    }
     html += '<div class="proto-nav-card__actions">';
     html +=
       '<button type="button" class="btn-assist btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
@@ -13194,8 +13200,13 @@
         }
         if (!badge) return;
         if (nav && nav.available && nav.conditions && nav.conditions.length) {
-          badge.textContent = "есть оглавление Summary";
-          badge.title = "Доступны шаги: нозология → раздел → цитаты";
+          if (nav.source === "rich_chunks") {
+            badge.textContent = "разделы из протокола";
+            badge.title = "Навигация по rich-чанкам: раздел → цитата";
+          } else {
+            badge.textContent = "есть оглавление Summary";
+            badge.title = "Доступны шаги: нозология → раздел → цитаты";
+          }
         } else {
           badge.textContent = "PDF + матрица КЗ";
           badge.title = "Карточка Summary не найдена — выдержка из поиска и матрица КЗ";

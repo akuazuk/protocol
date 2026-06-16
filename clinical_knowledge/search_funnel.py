@@ -87,6 +87,29 @@ def _infer_rubric_choices(q: str, icd_codes: list[str]) -> list[dict[str, str]]:
     return [{"id": s, "label": s.replace("-", " ")} for s in slugs[:6]]
 
 
+def _resolve_protocol_nav(
+    path: str,
+    *,
+    query: str,
+    icd_codes: list[str] | None,
+) -> dict[str, Any]:
+    """Summary YAML nav или fallback на rich-чанки."""
+    from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
+
+    nav = build_protocol_summary_nav(path, query=query, icd_codes=icd_codes or None)
+    if nav.get("available"):
+        return nav
+    import rag_server as rs
+
+    rs._require_rag_loaded()
+    chunks = rs.get_rich_chunks_for_path(path)
+    if not chunks:
+        return nav
+    from clinical_knowledge.rich_chunk_search import build_rich_protocol_nav
+
+    return build_rich_protocol_nav(chunks, path=path, query=query, icd_codes=icd_codes)
+
+
 def handle_search_funnel(
     *,
     query: str,
@@ -189,7 +212,7 @@ def handle_search_funnel(
     if step == 4:
         import rag_server as rs
         from icd_mkb import analyze_query_for_icd
-        from rag_server import AssistIn, clinical_query_for_rag
+        from rag_server import clinical_query_for_rag
 
         work_q = q
         pop = str(ctx.get("population") or "").strip()
@@ -207,7 +230,7 @@ def handle_search_funnel(
         icd_analysis = analyze_query_for_icd(work_q, clinical_query_for_rag(work_q))
         icd_analysis = rs._merge_explicit_icd_into_analysis(icd_analysis, icd_codes or None)
 
-        from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
+        from clinical_knowledge.protocol_icd_index import lookup_protocols_by_icd
 
         lookup = lookup_protocols_by_icd(
             icd_codes=icd_codes or None,
@@ -219,40 +242,32 @@ def handle_search_funnel(
             "icd_lookup_ms": lookup.get("lookup_ms"),
             "icd_lookup_ambiguous": lookup.get("ambiguous"),
             "expanded_icd": lookup.get("expanded_icd"),
+            "hybrid_search": True,
         }
 
-        payload: dict[str, Any] | None = None
-        if lookup.get("protocols"):
-            payload = format_assist_payload(
-                query=work_q,
-                lookup_result=lookup,
-                icd_analysis=icd_analysis,
-            )
-            payload["icd"] = rs._icd_client_payload(icd_analysis)
-        else:
-            rs._require_rag_loaded()
-            try:
-                from clinical_knowledge.search_retrieval import build_protocol_search_context
+        rs._require_rag_loaded()
+        try:
+            from clinical_knowledge.search_retrieval import build_protocol_search_context
 
-                search_meta.update(
-                    (build_protocol_search_context(
-                        query=work_q,
-                        icd_codes=icd_codes or None,
-                        category_slugs=slugs or None,
-                    ).get("search_meta") or {})
-                )
-            except Exception:
-                pass
-            payload = rs.api_assist(
-                AssistIn(
+            search_meta.update(
+                (build_protocol_search_context(
                     query=work_q,
-                    category_slugs=slugs,
-                    retrieve_only=True,
-                    icd_codes=icd_codes,
-                    funnel_population=pop if pop not in ("", "skipped") else None,
-                    icd_fast_path=True,
-                )
+                    icd_codes=icd_codes or None,
+                    category_slugs=slugs or None,
+                ).get("search_meta") or {})
             )
+        except Exception:
+            pass
+
+        payload = rs.build_hybrid_search_payload(
+            query=work_q,
+            icd_codes=icd_codes or None,
+            population=pop if pop not in ("", "skipped") else None,
+            category_slugs=slugs or None,
+            icd_analysis=icd_analysis,
+            lookup_result=lookup,
+        )
+        payload["icd"] = rs._icd_client_payload(icd_analysis)
 
         out["step"] = 4
         out["auto_skip"] = False
@@ -271,15 +286,13 @@ def handle_search_funnel(
         return out
 
     if step == 5:
-        from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
-
         path = str(ctx.get("protocol_path") or "").strip()
         if not path:
             out["step"] = 5
             out["error"] = "protocol_path обязателен"
             return out
         icd_codes = list(ctx.get("icd_codes") or [])
-        nav = build_protocol_summary_nav(path, query=q, icd_codes=icd_codes or None)
+        nav = _resolve_protocol_nav(path, query=q, icd_codes=icd_codes or None)
         out["step"] = 5
         if not nav.get("available"):
             out["auto_skip"] = True
@@ -305,8 +318,6 @@ def handle_search_funnel(
         return out
 
     if step == 6:
-        from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
-
         path = str(ctx.get("protocol_path") or "").strip()
         cid = str(ctx.get("condition_id") or "").strip()
         if not path or not cid:
@@ -314,7 +325,7 @@ def handle_search_funnel(
             out["error"] = "protocol_path и condition_id обязательны"
             return out
         icd_codes = list(ctx.get("icd_codes") or [])
-        nav = build_protocol_summary_nav(path, query=q, icd_codes=icd_codes or None)
+        nav = _resolve_protocol_nav(path, query=q, icd_codes=icd_codes or None)
         cond = next((c for c in nav.get("conditions") or [] if c.get("condition_id") == cid), None)
         sections = (cond or {}).get("sections") or []
         out["step"] = 6
@@ -330,18 +341,33 @@ def handle_search_funnel(
         return out
 
     if step >= 7:
-        from clinical_knowledge.protocol_summary.nav import build_section_excerpt
-
         path = str(ctx.get("protocol_path") or "").strip()
         cid = str(ctx.get("condition_id") or "").strip()
         sid = str(ctx.get("section_id") or "criteria").strip()
         out["step"] = 7
         if path and cid and sid:
-            excerpt = build_section_excerpt(path, condition_id=cid, section_id=sid)
-            out["excerpt"] = excerpt
-            out["llm_used"] = False
-            if excerpt.get("items"):
-                out["source_ref"] = excerpt["items"][0]
+            icd_codes = list(ctx.get("icd_codes") or [])
+            nav = _resolve_protocol_nav(path, query=q, icd_codes=icd_codes or None)
+            if nav.get("source") == "rich_chunks":
+                from clinical_knowledge.rich_chunk_search import build_rich_section_excerpt
+
+                excerpt = build_rich_section_excerpt(
+                    nav, condition_id=cid, section_id=sid
+                )
+                out["excerpt"] = excerpt
+                out["llm_used"] = False
+                out["nav_source"] = "rich_chunks"
+                if excerpt.get("source_ref"):
+                    out["source_ref"] = excerpt["source_ref"]
+            else:
+                from clinical_knowledge.protocol_summary.nav import build_section_excerpt
+
+                excerpt = build_section_excerpt(path, condition_id=cid, section_id=sid)
+                out["excerpt"] = excerpt
+                out["llm_used"] = False
+                out["nav_source"] = "summary"
+                if excerpt.get("items"):
+                    out["source_ref"] = excerpt["items"][0]
         out["pdf_href"] = f"/api/protocol-pdf?path={path}" if path else None
         return out
 
