@@ -96,6 +96,31 @@ _RU_WEAK_ADJ = frozenset(
     """.split()
 )
 
+_COUGH_MARKERS = ("кашел", "кашель", "сухой каш")
+_FEVER_MARKERS = ("температ", "лихорад", "жар", "озноб", "субфебрил", "гипертерм")
+_FUNNEL_CONTEXT_PREFIX = "контекст подбора:"
+
+# Частые коды при ОРВИ/бронхите; выше лексического шума («сухой синдром», экзотические лихорадки A**).
+_CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
+    "cough_fever": [
+        ("J06.9", 22.0),
+        ("J20.9", 21.5),
+        ("R50.9", 21.0),
+        ("R05", 20.5),
+        ("J00", 19.5),
+        ("J11", 19.0),
+    ],
+    "cough": [
+        ("R05", 18.0),
+        ("J06.9", 17.5),
+        ("J20.9", 17.0),
+    ],
+    "fever": [
+        ("R50.9", 17.0),
+        ("J06.9", 16.5),
+    ],
+}
+
 
 def _norm_icd_code(s: str) -> str:
     s = (s or "").strip().upper().replace(",", ".").replace(" ", "")
@@ -391,6 +416,90 @@ def resolve_extracted_codes(codes: list[str]) -> list[dict]:
     return out
 
 
+def _complaint_blob(text: str) -> str:
+    return re.sub(r"\s+", " ", (text or "").lower().replace("ё", "е")).strip()
+
+
+def strip_funnel_context_lines(text: str) -> str:
+    """Убирает служебные строки воронки («Контекст подбора: …») из текста для лексикона МКБ."""
+    lines: list[str] = []
+    for line in (text or "").splitlines():
+        low = line.strip().lower()
+        if low.startswith(_FUNNEL_CONTEXT_PREFIX):
+            continue
+        lines.append(line)
+    return "\n".join(lines).strip()
+
+
+def _has_cough_in_complaint(qlow: str) -> bool:
+    return any(m in qlow for m in _COUGH_MARKERS)
+
+
+def _has_fever_in_complaint(qlow: str) -> bool:
+    if any(m in qlow for m in _FEVER_MARKERS):
+        return True
+    return bool(re.search(r"\b3[89]\d?\b", qlow) or re.search(r"\b40\b", qlow))
+
+
+def _has_cough_fever_complaint(qlow: str) -> bool:
+    has_cough = _has_cough_in_complaint(qlow)
+    if not has_cough:
+        return False
+    return _has_fever_in_complaint(qlow) or "сух" in qlow
+
+
+def _clinical_icd_hint_rows(text: str) -> list[dict]:
+    """Приоритетные коды по типовым сочетаниям жалоб (кашель + температура и т.п.)."""
+    qlow = _complaint_blob(text)
+    if len(qlow) < 3:
+        return []
+    if _has_cough_fever_complaint(qlow):
+        profile = "cough_fever"
+    elif _has_cough_in_complaint(qlow):
+        profile = "cough"
+    elif _has_fever_in_complaint(qlow):
+        profile = "fever"
+    else:
+        return []
+    out: list[dict] = []
+    for code, score in _CLINICAL_ICD_HINTS[profile]:
+        info = describe_code(code)
+        if not info.get("title_ru"):
+            continue
+        out.append(
+            {
+                "code": code,
+                "title_ru": info.get("title_ru"),
+                "title_en": info.get("title_en"),
+                "lex_score": score,
+                "match_method": "clinical_hint",
+            }
+        )
+    return out
+
+
+def merge_clinical_icd_hints(scored: list[dict], text: str) -> list[dict]:
+    """Подмешивает клинические подсказки в начало лексического пула (для Gemini и suggest)."""
+    hints = _clinical_icd_hint_rows(text)
+    if not hints:
+        return list(scored)
+    by_code = {str(x.get("code") or ""): dict(x) for x in scored if x.get("code")}
+    merged: list[dict] = []
+    seen: set[str] = set()
+    for row in hints + scored:
+        code = str(row.get("code") or "").strip()
+        if not code or code in seen:
+            continue
+        seen.add(code)
+        base = by_code.get(code, {})
+        item = dict(base)
+        item.update(row)
+        if row.get("match_method") == "clinical_hint":
+            item["match_method"] = "clinical_hint"
+        merged.append(item)
+    return merged
+
+
 def _icd_extra_roots(text: str) -> list[str]:
     """Подсказки к МКБ: разговорное «гайморит» ↔ формулировки справочника («верхнечелюстной»)."""
     s = text.lower().replace("ё", "е")
@@ -436,6 +545,12 @@ def _lexicon_score_one_row(
             score += 2.5
     if len(tlow) > 55:
         score -= min(4.0, (len(tlow) - 55) * 0.06)
+    if (
+        _has_cough_fever_complaint(qlow)
+        and code.upper().startswith("A")
+        and "лихорад" in tlow
+    ):
+        score *= 0.12
     if score <= 0:
         return 0.0
     # Раньше: +1.8 ко всем *.9 без контекста - тянуло «неуточнённ» коды из-за частицы «для» и т.п.
@@ -487,6 +602,7 @@ def ru_lexicon_scored_entries(text: str) -> list[dict]:
 
 def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
     """Лексическое сопоставление запроса с русскими названиями МКБ (без LLM)."""
+    text = strip_funnel_context_lines(text or "")
     if not text or len(text.strip()) < 3:
         return []
     words = _ru_words(text)
@@ -514,6 +630,26 @@ def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
     out: list[dict] = []
     seen: set[str] = set()
     stems_used: set[str] = set()
+
+    for hint in _clinical_icd_hint_rows(text):
+        n = _norm_icd_code(str(hint.get("code") or ""))
+        if not n or n in seen:
+            continue
+        st = _stem(n)
+        if st in stems_used:
+            continue
+        seen.add(n)
+        stems_used.add(st)
+        out.append(
+            {
+                "code": n,
+                "title_ru": hint.get("title_ru"),
+                "title_en": hint.get("title_en"),
+                "match_method": "clinical_hint",
+                "score": round(float(hint.get("lex_score") or 0), 2),
+            }
+        )
+
     for score, code, title in scored:
         n = _norm_icd_code(code)
         if n in seen:
@@ -538,12 +674,20 @@ def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
     return out
 
 
-def analyze_query_for_icd(full_query: str, rag_query: str) -> dict:
+def analyze_query_for_icd(
+    full_query: str,
+    rag_query: str,
+    *,
+    lexicon_query: str | None = None,
+) -> dict:
     """
     Объединяет: коды из полного запроса и RAG-части + лексические гипотезы по русскому тексту.
 
     Если в тексте явно указаны коды МКБ - используются только они (после проверки по русскому
     справочнику из Excel); лексические гипотезы не подмешиваются.
+
+    lexicon_query: исходная жалоба до LLM-уточнения (чтобы «температура» не превращалась в «лихорадка»
+    только для подбора МКБ).
     """
     combined = f"{full_query}\n{rag_query}"
     extracted = extract_icd_codes_raw(combined)
@@ -566,8 +710,9 @@ def analyze_query_for_icd(full_query: str, rag_query: str) -> dict:
         explicit_codes_in_query = False
 
     suggested: list[dict] = []
-    if rag_query.strip() and not explicit_codes_in_query:
-        suggested = suggest_icd_from_russian(rag_query, max_results=8)
+    lq = strip_funnel_context_lines((lexicon_query or rag_query or full_query).strip())
+    if lq and not explicit_codes_in_query:
+        suggested = suggest_icd_from_russian(lq, max_results=8)
 
     det_set = {d["code"] for d in detected_valid}
     suggested = [s for s in suggested if s["code"] not in det_set]

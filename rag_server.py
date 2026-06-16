@@ -43,6 +43,7 @@ from icd_mkb import (
     extract_icd_codes_diagnosis_focused,
     extract_icd_codes_raw,
     icd_tokens_for_lex,
+    merge_clinical_icd_hints,
     normalize_text_for_icd_scan,
     normalize_icd_code,
     ru_lexicon_scored_entries,
@@ -484,6 +485,7 @@ SYSTEM_CLINICAL_QUERY_REFINE = """Ты помощник врача. Ниже - �
 - Не добавляй симптомы, жалобы, диагнозы и обстоятельства, которых нет во входном тексте.
 - Не приписывай пациенту пол, возраст и сопутствующие болезни, если их нет во входе (если в дополнительном контексте ниже указаны возраст/пол - можно использовать только для согласования формулировок «ребёнок/взрослый», без выдумок).
 - Разговорные названия замени на клинические эквиваленты там, где это однозначно (например «гайморит» → можно уточнить «острый/хронический верхнечелюстной синусит» только если степень остроты явно следует из текста; иначе оставь «гайморит» или нейтрально «синусит верхнечелюстной пазухи»).
+- Не заменяй «температура»/«жар» на «лихорадка», если в тексте есть другие симптомы (кашель, насморк, боль в горле и т.п.) - оставь исходные слова жалобы.
 - Не ставь окончательный клинический диагноз; это подготовка текста к поиску, не заключение.
 - Исправь опечатки в медицинских терминах.
 - Сохрани структуру: если несколько предложений - не сливай в одно без необходимости; итог не длиннее исходного более чем на ~30% (не раздувай).
@@ -1339,6 +1341,8 @@ def _refine_icd_analysis_with_gemini(
     rag_query: str,
     icd_analysis: dict,
     model,
+    *,
+    lexicon_query: str | None = None,
 ) -> None:
     """Уточнение suggested и codes_for_retrieval: Gemini выбирает только из лексического топа (без k-NN по умолчанию)."""
     if icd_analysis.get("explicit_icd_in_query"):
@@ -1351,7 +1355,8 @@ def _refine_icd_analysis_with_gemini(
         return
     if not (rag_query or "").strip():
         return
-    scored = ru_lexicon_scored_entries(rag_query)
+    lq = (lexicon_query or rag_query).strip()
+    scored = merge_clinical_icd_hints(ru_lexicon_scored_entries(lq), lq)
     if not scored:
         return
     n_lex = max(1, min(int(os.environ.get("RAG_ICD_LEX_TOP", "12")), 40))
@@ -7174,7 +7179,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r169-rich-chunk-hybrid-search"
+BUILD_VERSION = "2026-06-16-r170-fix-icd-cough-fever"
 
 
 def _app_version() -> str:
@@ -7422,6 +7427,7 @@ def _infer_icd_pipeline_from_full_query(
     """
     q = (full_query or "").strip()
     q_rag = clinical_query_for_rag(q)
+    q_rag_lexicon = q_rag
     if not q_rag:
         return (
             None,
@@ -7444,7 +7450,7 @@ def _infer_icd_pipeline_from_full_query(
             q_rag = q_rag_new
             q = apply_clinical_correction(q, q_rag)
             query_clinical_refinement = rmeta
-    icd_analysis = analyze_query_for_icd(q, q_rag)
+    icd_analysis = analyze_query_for_icd(q, q_rag, lexicon_query=q_rag_lexicon)
     pre_icd_infer_on = os.environ.get("RAG_ICD_PRE_RETRIEVE_INFER", "1").strip().lower() in (
         "1",
         "true",
@@ -7456,7 +7462,9 @@ def _infer_icd_pipeline_from_full_query(
         and not icd_analysis.get("explicit_icd_in_query")
         and not (icd_analysis.get("detected") or [])
     ):
-        _refine_icd_analysis_with_gemini(q_rag, icd_analysis, model)
+        _refine_icd_analysis_with_gemini(
+            q_rag, icd_analysis, model, lexicon_query=q_rag_lexicon
+        )
     return icd_analysis, q, q_rag, query_clinical_refinement, None
 
 
