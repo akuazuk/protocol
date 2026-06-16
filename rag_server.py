@@ -6972,7 +6972,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-05-31-r167-no-auto-practical-refine"
+BUILD_VERSION = "2026-06-01-r168-icd-symptom-expand-reliable-search"
 
 
 def _app_version() -> str:
@@ -7381,7 +7381,11 @@ def _try_icd_fast_assist(
     """Мгновенный ответ из индекса МКБ; None — нужен RAG fallback."""
     if not icd_codes:
         return None
-    from clinical_knowledge.protocol_icd_index import format_assist_payload, lookup_protocols_by_icd
+    from clinical_knowledge.protocol_icd_index import (
+        format_assist_payload,
+        icd_fast_lookup_trusted,
+        lookup_protocols_by_icd,
+    )
 
     lookup = lookup_protocols_by_icd(
         icd_codes=icd_codes,
@@ -7390,6 +7394,8 @@ def _try_icd_fast_assist(
         rubric_slugs=category_slugs,
     )
     if not lookup.get("protocols"):
+        return None
+    if not icd_fast_lookup_trusted(query, lookup, icd_codes=icd_codes):
         return None
     return format_assist_payload(
         query=query,

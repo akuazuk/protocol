@@ -4,6 +4,27 @@ from __future__ import annotations
 from clinical_knowledge.methodist_search_ai_review import build_deterministic_search_ai_review
 
 
+def test_deterministic_flags_palliative_on_cough_fever():
+    out = build_deterministic_search_ai_review(
+        {
+            "query": "кашель и температура 39",
+            "llm_json": {
+                "protocols": [
+                    {
+                        "path": "minzdrav_protocols/palliativnaya-pomoshch/КП_Фармакотерапия.pdf",
+                        "title": "Фармакотерапия основных патологических симптомов",
+                        "confidence_score": 0.94,
+                    }
+                ],
+            },
+            "icd_codes": ["R05"],
+            "retrieve_only": True,
+        }
+    )
+    assert out["top1_relevant"] is False
+    assert "wrong_protocol" in out["tags"]
+
+
 def test_deterministic_flags_symptom_only_cough_fever():
     out = build_deterministic_search_ai_review(
         {

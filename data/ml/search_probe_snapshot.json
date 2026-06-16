@@ -1,51 +1,36 @@
 {
   "kind": "methodist_search_probe",
-  "generated_at": "2026-06-14T18:05:29.298700+00:00",
-  "build_version": "2026-05-31-r160-probe-100",
+  "generated_at": "2026-06-16T07:13:43.294829+00:00",
+  "build_version": "2026-06-01-r168-icd-symptom-expand-reliable-search",
   "fixture": "tests/fixtures/search_methodist_probe.jsonl",
-  "n_total": 111,
-  "n_ok": 111,
+  "n_total": 15,
+  "n_ok": 15,
   "n_error": 0,
-  "avg_ai_rating": 4.0,
-  "expected_hit1_pct": 1.0,
-  "expected_hit3_pct": 1.0,
+  "avg_ai_rating": 3.73,
+  "expected_hit1_pct": 0.6,
+  "expected_hit3_pct": 0.6,
   "verdict_counts": {
-    "mostly_correct": 111
+    "mostly_correct": 11,
+    "partially_wrong": 4
   },
-  "tag_counts": {},
+  "tag_counts": {
+    "query_too_vague": 4
+  },
   "group_counts": {
-    "uri_adult": 9,
+    "uri_adult": 8,
     "uri_pediatric": 3,
     "pulmonology": 3,
-    "ent": 6,
-    "ent_allergy": 2,
-    "cardiology": 10,
-    "endocrinology": 7,
-    "gastroenterology": 10,
-    "neurology": 8,
-    "nephrology": 3,
-    "urology": 5,
-    "rheumatology": 7,
-    "psychiatry": 6,
-    "obstetrics": 8,
-    "surgery": 8,
-    "oncology": 3,
-    "hematology": 2,
-    "infectious": 2,
-    "dermatology": 2,
-    "ophthalmology": 2,
-    "stomatology": 2,
-    "mixed": 3
+    "ent": 1
   },
   "reject_in_top1_count": 0,
   "top1_not_relevant_count": 0,
   "worst_ids": [
-    "probe01",
     "probe02",
     "probe03",
     "probe04",
-    "probe05"
+    "probe10",
+    "probe01"
   ],
-  "report_jsonl": "data/ml/reports/probe_r160.jsonl",
-  "report_md": "data/ml/reports/probe_r160.md"
+  "report_jsonl": "data/ml/reports/methodist_search_probe_latest.jsonl",
+  "report_md": "data/ml/reports/methodist_search_probe_latest.md"
 }

@@ -230,6 +230,11 @@ def _try_parse_json(t: str) -> dict[str, Any] | None:
         return None
 
 
+_SYMPTOM_PALLIATIVE_TITLE_KEYWORDS = (
+    "паллиат",
+    "фармакотерап",
+    "симптомов при",
+)
 _SYMPTOM_RARE_TITLE_KEYWORDS = (
     "саркоид",
     "микобактер",
@@ -289,9 +294,18 @@ def _query_audience_hint(query: str, funnel_context: dict | None = None) -> str 
 
 
 def _query_has_icd_hint(query: str, icd_codes: list[str] | None) -> bool:
-    if icd_codes:
+    try:
+        from clinical_knowledge.diagnosis_icd import is_symptom_code, normalize_code
+    except ImportError:
+        is_symptom_code = lambda c: str(c).upper().startswith("R")  # noqa: E731
+        normalize_code = lambda c: str(c).upper().strip()  # noqa: E731
+    codes = [normalize_code(str(c)) for c in (icd_codes or []) if normalize_code(str(c))]
+    if any(not is_symptom_code(c) for c in codes):
         return True
-    return bool(re.search(r"\b[A-TV-ZА-ЯЁ]\s*\d{2}(?:\s*[.,/\-]\s*\d{1,4})?\b", query, re.I))
+    for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
+        if not is_symptom_code(m.group(1)):
+            return True
+    return False
 
 
 def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict[str, Any]:
@@ -371,6 +385,27 @@ def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict
                 "rejected_path": top_path,
                 "chosen_path": "",
                 "note": "Top-1 маловероятен для симптомного запроса без МКБ; укажите верный КП.",
+            }
+
+    palliative_top = any(k in top_base for k in _SYMPTOM_PALLIATIVE_TITLE_KEYWORDS)
+    query_mentions_palliative = any(k in ql for k in ("паллиат", "хоспис", "неизлечим"))
+    if common_symptoms and palliative_top and not query_mentions_palliative:
+        if "wrong_protocol" not in tags:
+            tags.append("wrong_protocol")
+        top1_rel = False
+        rating = min(rating, 2)
+        verdict = "partially_wrong"
+        improvements.extend(
+            [
+                "Симптом-код R* разворачивать в J06/J20 перед ICD lookup; паллиативный КП не для острой ОРВИ.",
+                "При кашле/температуре boost респираторных КП, штраф palliativnaya-pomoshch.",
+            ]
+        )
+        if top_path:
+            retrieval_fix = {
+                "rejected_path": top_path,
+                "chosen_path": "",
+                "note": "Паллиативный КП не подходит для острых респираторных жалоб без контекста паллиативной помощи.",
             }
 
     if retrieve_only and not symptom_only:

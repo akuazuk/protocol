@@ -26,6 +26,18 @@ _diag = _load_module("_diag_icd", "clinical_knowledge/diagnosis_icd.py")
 normalize_code = _diag.normalize_code
 prioritize_codes = _diag.prioritize_codes
 enrich_diagnosis_codes = _diag.enrich_diagnosis_codes
+is_symptom_code = _diag.is_symptom_code
+
+# R* → болезни (как в search_retrieval.expand_icd_for_protocol_search)
+_SYMPTOM_ICD_EXPAND: dict[str, list[str]] = {
+    "R07": ["J02.9", "J06.9"],
+    "R07.0": ["J02.9", "J06.9"],
+    "R07.2": ["J03.9", "J02.9"],
+    "R07.3": ["J02.9"],
+    "R05": ["J06.9", "J20.9"],
+    "R50": ["J06.9", "J18.9"],
+    "R51": ["J06.9", "G43.9"],
+}
 
 _ICD_RUBRIC: dict[str, list[str]] = {
     "I": ["bolezni-sistemy-krovoobrashcheniya"],
@@ -87,13 +99,50 @@ def _primary_covers_code(primary: set[str], code: str) -> bool:
     return False
 
 
+def _acute_respiratory_query(query: str) -> bool:
+    ql = (query or "").lower()
+    cough = any(s in ql for s in ("кашел", "кашель", "сухой каш"))
+    fever = any(s in ql for s in ("температ", "лихорад", "жар", "озноб"))
+    uri = any(s in ql for s in ("орви", "орз", "насморк", "простуд", "респиратор"))
+    return (cough and fever) or (cough and uri) or (fever and uri) or cough or fever
+
+
+def _palliative_context_in_query(query: str) -> bool:
+    ql = (query or "").lower()
+    return any(s in ql for s in ("паллиат", "хоспис", "неизлечим", "терминальн"))
+
+
+def _is_palliative_protocol(path: str, title: str) -> bool:
+    blob = f"{path} {title}".lower()
+    return "palliativnaya-pomoshch" in blob or any(
+        k in blob for k in ("паллиат", "фармакотерап", "симптомов при")
+    )
+
+
 def _symptom_title_boost(query: str, title: str) -> tuple[float, list[str]]:
     """Бонус/штраф по симптомам в запросе vs тема протокола в названии."""
     ql = (query or "").lower()
     tl = (title or "").lower()
     score = 0.0
     reasons: list[str] = []
+    cough_q = any(s in ql for s in ("кашел", "кашель", "сухой каш"))
+    fever_q = any(s in ql for s in ("температ", "лихорад", "жар", "озноб"))
     throat_q = any(s in ql for s in ("горл", "глот", "фаринг", "ангин"))
+    if (cough_q or fever_q) and _is_palliative_protocol("", title) and not _palliative_context_in_query(query):
+        score -= 130.0
+        reasons.append("symptom↔title palliative penalty")
+    if cough_q or fever_q:
+        if cough_q and any(
+            t in tl for t in ("орви", "респиратор", "бронхит", "пневмон", "трахеит", "инфекц")
+        ):
+            score += 30.0
+            reasons.append("symptom↔title cough/fever URI")
+    if throat_q and not cough_q:
+        if any(t in tl for t in ("пневмон", "бронхит")) and not any(
+            t in tl for t in ("фаринг", "оторин", "горл", "ангин", "тонзилл")
+        ):
+            score -= 55.0
+            reasons.append("symptom↔title throat vs pulm penalty")
     if throat_q:
         if any(t in tl for t in ("фаринг", "ангин", "тонзил", "горл", "орви", "тонзилл")):
             score += 28.0
@@ -224,6 +273,11 @@ def _score_entry(
         score += sym_sc
         reasons.extend(sym_reasons)
 
+    if _acute_respiratory_query(query_text) and _is_palliative_protocol(path, title):
+        if not _palliative_context_in_query(query_text):
+            score -= 90.0
+            reasons.append("acute URI vs palliative path")
+
     aud = str(row.get("audience") or "any")
     if request_aud == "adult" and aud == "adult":
         score += 15.0
@@ -242,22 +296,48 @@ def _norm_icd(code: str) -> str:
     return normalize_code(code)
 
 
+def _expand_symptom_icd_codes(query: str, icd_codes: list[str]) -> list[str]:
+    """R* из воронки разворачиваем в коды болезней (J06/J20…), как в RAG retrieval."""
+    raw = [normalize_code(str(c)) for c in icd_codes if normalize_code(str(c))]
+    if not raw or not all(is_symptom_code(c) for c in raw):
+        return raw
+    expanded = list(raw)
+    seen = set(expanded)
+    for c in list(raw):
+        root = c[:3] if len(c) >= 3 else c
+        for add in _SYMPTOM_ICD_EXPAND.get(c, _SYMPTOM_ICD_EXPAND.get(root, [])):
+            if add not in seen:
+                seen.add(add)
+                expanded.append(add)
+    ql = (query or "").lower()
+    throat = any(s in ql for s in ("горл", "глот", "фаринг", "ангин", "тонзилл", "дисфаг"))
+    cough = any(s in ql for s in ("кашел", "кашель", "сухой каш"))
+    if throat and not cough:
+        expanded = [c for c in expanded if not c.startswith("J06")]
+    elif cough and not throat:
+        expanded = [c for c in expanded if not c.startswith("J02")]
+    ordered, _ = enrich_diagnosis_codes(query, expanded)
+    return prioritize_codes(list(ordered))
+
+
 def _expand_icd_for_lookup(
     query: str,
     icd_codes: list[str] | None,
     *,
     explicit_only: bool = False,
 ) -> list[str]:
-    """explicit_only: не подмешивать J02/J06 из жалоб, если код уже выбран в воронке."""
+    """explicit_only: не подмешивать коды из жалоб, если передан код болезни (не R/Z)."""
     raw: list[str] = list(icd_codes or [])
+    normalized = [normalize_code(str(c)) for c in raw if normalize_code(str(c))]
+    if normalized and all(is_symptom_code(c) for c in normalized):
+        return _expand_symptom_icd_codes(query, normalized)
     if explicit_only:
         out: list[str] = []
         seen: set[str] = set()
-        for c in raw:
-            nc = normalize_code(str(c))
-            if nc and nc not in seen:
-                seen.add(nc)
-                out.append(nc)
+        for c in normalized:
+            if c not in seen:
+                seen.add(c)
+                out.append(c)
         return out
     for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
         raw.append(m.group(1).upper())
@@ -299,11 +379,16 @@ def lookup_protocols_by_icd(
             "expanded_icd": [],
         }
 
-    use_explicit_only = explicit_icd_only or bool(icd_codes)
+    normalized_in = [normalize_code(str(c)) for c in (icd_codes or []) if normalize_code(str(c))]
+    symptom_only_input = bool(normalized_in) and all(is_symptom_code(c) for c in normalized_in)
+    use_explicit_only = explicit_icd_only or (bool(icd_codes) and not symptom_only_input)
     expanded = _expand_icd_for_lookup(query, icd_codes, explicit_only=use_explicit_only)
     query_icd = {normalize_code(c) for c in expanded if c}
     query_roots = {_icd_root(c) for c in query_icd}
     rubric_set = {s.strip() for s in (rubric_slugs or []) if s}
+    if symptom_only_input:
+        for code in normalized_in:
+            rubric_set.update(_ICD_RUBRIC.get(code[:1].upper(), []))
     if not rubric_set:
         for code in list(query_icd)[:3]:
             letter = code[:1].upper()
@@ -321,7 +406,7 @@ def lookup_protocols_by_icd(
         for p in prefix_idx.get(_icd_root(code), []):
             candidate_paths.add(p)
 
-    if not candidate_paths:
+    if not candidate_paths or symptom_only_input:
         for slug in rubric_set:
             for row in cat.values():
                 if row.get("specialty_slug") == slug:
@@ -398,6 +483,43 @@ def lookup_protocols_by_icd(
         "expanded_icd": expanded[:12],
         "path_allowlist": [p["path"] for p in protocols[:15]],
     }
+
+
+def icd_fast_lookup_trusted(
+    query: str,
+    lookup_result: dict[str, Any],
+    *,
+    icd_codes: list[str] | None = None,
+) -> bool:
+    """False — top-1 явно не подходит; нужен RAG fallback."""
+    protos = lookup_result.get("protocols") or []
+    if not protos:
+        return False
+    top = protos[0] if isinstance(protos[0], dict) else {}
+    path = str(top.get("path") or "")
+    title = str(top.get("title") or "")
+    if _acute_respiratory_query(query) and _is_palliative_protocol(path, title):
+        if not _palliative_context_in_query(query):
+            return False
+    codes = [normalize_code(str(c)) for c in (icd_codes or []) if normalize_code(str(c))]
+    if codes and all(is_symptom_code(c) for c in codes) and _acute_respiratory_query(query):
+        blob = f"{path} {title}".lower()
+        if not any(
+            k in blob
+            for k in (
+                "орви",
+                "респиратор",
+                "бронхит",
+                "пневмон",
+                "оториноларинг",
+                "отоларинг",
+                "фаринг",
+                "ангин",
+                "pulmonolog",
+            )
+        ):
+            return False
+    return True
 
 
 def format_assist_payload(

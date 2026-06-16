@@ -74,8 +74,43 @@ def test_lookup_rubric_fallback_when_icd_missing_from_catalog():
     assert "novoobrazovaniya" in paths
 
 
+def test_lookup_r05_cough_fever_not_palliative():
+    """R05 + кашель/температура: не паллиативная фармакотерапия симптомов."""
+    pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
+    pii._inverted_index.cache_clear()
+    q = "сухой кашель и температура 38\nКонтекст подбора: взрослое население"
+    result = pii.lookup_protocols_by_icd(
+        icd_codes=["R05"],
+        query=q,
+        population="adult",
+        limit=6,
+    )
+    protos = result.get("protocols") or []
+    assert protos, "expected respiratory protocols for R05 + cough/fever"
+    expanded = result.get("expanded_icd") or []
+    assert any(c.startswith("J") for c in expanded), "R05 should expand to disease ICD"
+    top_path = (protos[0].get("path") or "").lower()
+    assert "palliativnaya" not in top_path
+    assert "фармакотерап" not in (protos[0].get("title") or "").lower()
+
+
+def test_icd_fast_lookup_trusted_rejects_palliative_on_cough():
+    pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
+    lookup = {
+        "protocols": [
+            {
+                "path": "minzdrav_protocols/palliativnaya-pomoshch/КП_Фармакотерапия.pdf",
+                "title": "Фармакотерапия симптомов",
+            }
+        ]
+    }
+    assert pii.icd_fast_lookup_trusted(
+        "кашель и температура 39", lookup, icd_codes=["R05"]
+    ) is False
+
+
 def test_lookup_sore_throat_r07_excludes_hiv_and_pediatric():
-    """R07.0 + adult: не подмешивать J02 из жалоб; ВИЧ и детские КП не должны быть top."""
+    """R07.0 + горло: разворот в J02; ВИЧ и детские КП не должны быть top."""
     pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
     pii._inverted_index.cache_clear()
     q = (
