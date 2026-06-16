@@ -5316,7 +5316,7 @@ def dedupe_protocols_list(
     *,
     prefer_slugs: list[str] | None = None,
 ) -> list:
-    """Один PDF (basename) и один title — с максимальным confidence_score."""
+    """Один PDF (basename) и один title - с максимальным confidence_score."""
     if not protocols:
         return []
     by_path: dict[str, dict] = {}
@@ -5392,7 +5392,7 @@ def dedupe_retrieval_by_basename(
     *,
     prefer_slugs: list[str] | None = None,
 ) -> list[dict]:
-    """Один фрагмент на уникальный PDF (basename) — убирает копии в разных рубриках."""
+    """Один фрагмент на уникальный PDF (basename) - убирает копии в разных рубриках."""
     if not rows:
         return []
     by_base: dict[str, dict] = {}
@@ -6812,7 +6812,7 @@ class AssistIn(BaseModel):
     icd_codes: list[str] = Field(
         default_factory=list,
         max_length=24,
-        description="Явные коды МКБ из воронки — пропуск повторного подбора",
+        description="Явные коды МКБ из воронки - пропуск повторного подбора",
     )
     funnel_population: str | None = Field(
         default=None,
@@ -6821,7 +6821,7 @@ class AssistIn(BaseModel):
     )
     icd_fast_path: bool = Field(
         default=False,
-        description="true — сначала детерминированный lookup по индексу МКБ",
+        description="true - сначала детерминированный lookup по индексу МКБ",
     )
 
 
@@ -6899,8 +6899,23 @@ class ProtocolPracticalIn(BaseModel):
     )
     mode: str = Field(
         default="lite",
-        description="lite — rich-чанки без LLM; full — разбор моделью (медленнее)",
+        description="lite - rich-чанки без LLM; full - разбор моделью (медленнее)",
     )
+
+
+class ProtocolPracticalSectionIn(BaseModel):
+    """Один раздел практического разбора (препараты, лечение, …) без LLM."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    path: str = Field(..., min_length=1, max_length=2048)
+    title: str = Field(default="", max_length=2000)
+    section: str = Field(
+        ...,
+        min_length=3,
+        max_length=32,
+        description="investigations, medications, treatment_methods, monitoring_frequency, care_algorithms",
+    )
+    icd_codes: list[str] = Field(default_factory=list, max_length=24)
 
 
 class ConsultComplianceScreenIn(BaseModel):
@@ -7267,7 +7282,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r178-practical-lite-funnel"
+BUILD_VERSION = "2026-06-16-r179-practical-quick-sections"
 
 
 def _app_version() -> str:
@@ -7680,7 +7695,7 @@ def _try_icd_fast_assist(
     category_slugs: list[str] | None,
     icd_analysis: dict,
 ) -> dict | None:
-    """Мгновенный ответ из индекса МКБ; None — нужен RAG fallback."""
+    """Мгновенный ответ из индекса МКБ; None - нужен RAG fallback."""
     if not icd_codes:
         return None
     from clinical_knowledge.protocol_icd_index import (
@@ -8397,6 +8412,33 @@ def api_protocol_practical(body: ProtocolPracticalIn) -> dict:
     }
 
 
+@app.post("/api/protocol-practical-section")
+def api_protocol_practical_section(body: ProtocolPracticalSectionIn) -> dict:
+    """Быстрый разбор одного раздела протокола из rich-чанков (без LLM)."""
+    _require_rag_loaded()
+    from clinical_knowledge.protocol_practical_lite import (
+        build_practical_section,
+        normalize_practical_section,
+    )
+
+    q = body.query.strip()
+    pth = body.path.strip()
+    if not pth or pth not in _chunks_by_path:
+        raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
+    sec = normalize_practical_section(body.section)
+    if not sec:
+        raise HTTPException(
+            status_code=400,
+            detail="section: investigations, medications, treatment_methods, monitoring_frequency, care_algorithms",
+        )
+    icd_norm = _icd_codes_from_query_and_analysis(q, body.icd_codes or None)
+    meta = _protocol_meta.get(pth) or {}
+    title_line = _protocol_display_title(pth, body.title.strip() or meta.get("title"))
+    chunks = get_rich_chunks_for_path(pth) or list(_chunks_by_path.get(pth) or [])
+    payload = build_practical_section(pth, q, title_line, chunks, sec, icd_norm or None)
+    return payload
+
+
 @app.post("/api/icd-suggest")
 def api_icd_suggest(body: IcdSuggestIn) -> dict:
     """Та же логика МКБ, что в начале /api/assist, без RAG и без ответа LLM по протоколам."""
@@ -8459,7 +8501,7 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
 
 @app.post("/api/search/funnel")
 def api_search_funnel(body: SearchFunnelIn) -> dict:
-    """Единый контракт шагов воронки 0–7 (C5)."""
+    """Единый контракт шагов воронки 0-7 (C5)."""
     from clinical_knowledge.search_funnel import handle_search_funnel
 
     return handle_search_funnel(
@@ -8947,7 +8989,7 @@ def api_protocol_summary_excerpt(
     condition_id: str = Query(..., min_length=1, max_length=128),
     section_id: str = Query(..., min_length=2, max_length=128),
 ) -> dict:
-    """Цитаты из Summary или rich-чанков по разделу (без LLM) — шаг 7 воронки."""
+    """Цитаты из Summary или rich-чанков по разделу (без LLM) - шаг 7 воронки."""
     from clinical_knowledge.rich_chunk_search import build_rich_section_excerpt
     from clinical_knowledge.protocol_summary.nav import build_section_excerpt
     from clinical_knowledge.search_funnel import _resolve_protocol_nav

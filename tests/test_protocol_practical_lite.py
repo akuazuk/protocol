@@ -47,3 +47,23 @@ def test_clinical_detail_lite_has_extraction_lists():
     ex = cd["extraction"]
     assert ex.get("investigations") or ex.get("treatment_methods")
     assert cd.get("lite_sections")
+
+
+def test_build_practical_section_medications():
+    from clinical_knowledge.protocol_practical_lite import build_practical_section
+
+    chunks = [
+        _chunk("Рентгенография органов грудной клетки", "diagnostics"),
+        _chunk("Амоксициллин 500 мг 3 раза в сутки 5-7 дней", "pharmacotherapy"),
+    ]
+    out = build_practical_section(
+        "minzdrav_protocols/x/kp.pdf",
+        "острый бронхит",
+        "КП бронхит",
+        chunks,
+        "medications",
+        ["J20.9"],
+    )
+    assert out["section"] == "medications"
+    assert out["items"]
+    assert any("Амоксициллин" in it for it in out["items"])

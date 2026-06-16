@@ -1,4 +1,4 @@
-"""Быстрый практический разбор без LLM — цитаты из rich-чанков + эвристическая матрица КЗ."""
+"""Быстрый практический разбор без LLM - цитаты из rich-чанков + эвристическая матрица КЗ."""
 from __future__ import annotations
 
 import re
@@ -10,6 +10,14 @@ from clinical_knowledge.rich_chunk_search import (
     chunk_type_multiplier,
     detect_query_intent,
 )
+
+SECTION_CHUNK_TYPES: dict[str, tuple[str, ...]] = {
+    "investigations": ("diagnostics", "criteria_block", "table"),
+    "medications": ("pharmacotherapy", "drug_list"),
+    "treatment_methods": ("treatment",),
+    "monitoring_frequency": ("prevention", "dispensary"),
+    "care_algorithms": ("algorithm",),
+}
 
 _TYPE_TO_FIELD: dict[str, str] = {
     "diagnostics": "investigations",
@@ -162,6 +170,72 @@ def build_extraction_from_chunks(
         extraction["monitoring_followup"] = monitoring[0][:400]
         extraction["monitoring_frequency"] = monitoring[0][:400]
     return extraction
+
+
+def normalize_practical_section(raw: str | None) -> str | None:
+    if not raw or not isinstance(raw, str):
+        return None
+    x = raw.strip().lower()
+    if x == "monitoring":
+        x = "monitoring_frequency"
+    if x == "algorithms":
+        x = "care_algorithms"
+    if x in SECTION_CHUNK_TYPES:
+        return x
+    return None
+
+
+def build_practical_section(
+    path: str,
+    query: str,
+    title: str,
+    chunks: list[dict[str, Any]],
+    section: str,
+    icd_codes: list[str] | None = None,
+) -> dict[str, Any]:
+    """Один раздел практического разбора из rich-чанков (без LLM)."""
+    sec = normalize_practical_section(section)
+    if not sec:
+        raise ValueError(f"Неизвестный раздел: {section}")
+    allowed = set(SECTION_CHUNK_TYPES[sec])
+    filtered = [ch for ch in chunks if _chunk_type(ch) in allowed]
+    picked = _pick_chunks(filtered, query, icd_codes, limit=10)
+    items: list[str] = []
+    cites: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for ch in picked:
+        ctype = _chunk_type(ch)
+        label = (ch.get("section_title") or "").strip() or _CHUNK_TYPE_LABELS.get(ctype, ctype)
+        text = (ch.get("text") or "").strip()
+        if text:
+            cites.append(
+                {
+                    "label": label[:120],
+                    "chunk_type": ctype,
+                    "text": text[:1200],
+                    "page_from": ch.get("page_from"),
+                    "page_to": ch.get("page_to"),
+                }
+            )
+        for bullet in _lines_as_bullets(text, limit=8):
+            key = bullet[:80].lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            items.append(bullet)
+            if len(items) >= 12:
+                break
+        if len(items) >= 12:
+            break
+    has_rich = any(ch.get("rich_chunk") for ch in chunks)
+    return {
+        "path": path,
+        "title": title,
+        "section": sec,
+        "items": items[:12],
+        "cites": cites[:3],
+        "source": "rich_chunks" if has_rich else "chunks_lite",
+    }
 
 
 def build_clinical_detail_lite(
