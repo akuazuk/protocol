@@ -865,6 +865,7 @@ def _use_jsonl_chunks() -> bool:
 
 def _enrich_chunks_from_index() -> None:
     """Заголовок и рубрика из protocols.json / protocol_meta для routing и retrieve."""
+    catalog: dict[str, dict] | None = None
     for ch in _chunks:
         p = ch.get("path") or ""
         if not p:
@@ -876,6 +877,21 @@ def _enrich_chunks_from_index() -> None:
             ch["title"] = _protocol_display_title(p, raw_title or Path(p).stem)
         if not (ch.get("category") or "").strip():
             ch["category"] = (pr.get("category") or pm.get("category") or "").strip()
+        if ch.get("rich_chunk") and not ch.get("icd10_weights"):
+            if catalog is None:
+                try:
+                    from clinical_knowledge.protocol_catalog import load_protocol_catalog
+
+                    catalog = load_protocol_catalog()
+                except Exception:
+                    catalog = {}
+            norm_p = str(p).replace("\\", "/")
+            cat_row = (catalog or {}).get(norm_p) or {}
+            weights = cat_row.get("icd10_weights") or {}
+            if isinstance(weights, dict) and weights:
+                ch["icd10_weights"] = {
+                    str(k).upper(): int(v) for k, v in list(weights.items())[:16] if k
+                }
 
 
 def load_data() -> None:
@@ -5472,6 +5488,7 @@ def build_hybrid_search_payload(
     """Гибрид ICD lookup + rich-chunk RAG для шага 4 воронки."""
     from clinical_knowledge.rich_chunk_search import (
         hybrid_merge_protocols,
+        hybrid_pin_trusted_icd_top1,
         query_wants_tables,
     )
 
@@ -5582,8 +5599,29 @@ def build_hybrid_search_payload(
     rag_protos = _filter_protocols_by_funnel_audience(rag_protos, query)
     icd_w = env_float("RAG_HYBRID_ICD_WEIGHT", 0.4)
     rag_w = env_float("RAG_HYBRID_RAG_WEIGHT", 0.6)
+    try:
+        from clinical_knowledge.protocol_icd_index import _acute_respiratory_query
+        from icd_mkb import is_symptom_code, normalize_code
+
+        codes_norm = [normalize_code(str(c)) for c in (icd_codes or []) if normalize_code(str(c))]
+        symptom_acute = bool(codes_norm) and all(is_symptom_code(c) for c in codes_norm)
+        if symptom_acute or (_acute_respiratory_query(query) and not codes_norm):
+            icd_w = env_float("RAG_HYBRID_ICD_WEIGHT_SYMPTOM", 0.62)
+            rag_w = max(0.05, 1.0 - icd_w)
+        elif icd_protos and not lookup.get("ambiguous"):
+            icd_w = env_float("RAG_HYBRID_ICD_WEIGHT_STRONG", 0.58)
+            rag_w = max(0.05, 1.0 - icd_w)
+    except Exception:
+        pass
     merged = hybrid_merge_protocols(
         icd_protos, rag_protos, icd_weight=icd_w, rag_weight=rag_w
+    )
+    merged = hybrid_pin_trusted_icd_top1(
+        merged,
+        icd_protos,
+        query=query,
+        ambiguous=bool(lookup.get("ambiguous")),
+        icd_codes=icd_codes_for_lex or None,
     )
     if merged:
         merged = _rerank_protocols_symptom_only(merged, query, icd_analysis)
@@ -7282,7 +7320,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r179-practical-quick-sections"
+BUILD_VERSION = "2026-06-01-r180-hybrid-probe-chunks"
 
 
 def _app_version() -> str:

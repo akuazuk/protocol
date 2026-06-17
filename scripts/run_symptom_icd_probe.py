@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import ssl
 import sys
 import time
 import urllib.error
@@ -23,6 +24,17 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_FIXTURE = ROOT / "tests" / "fixtures" / "symptom_icd_probe_100.jsonl"
 DEFAULT_OUT = ROOT / "data" / "ml" / "reports" / "symptom_icd_probe_latest.jsonl"
 DEFAULT_MD = ROOT / "data" / "ml" / "reports" / "symptom_icd_probe_latest.md"
+
+
+def _ssl_ctx() -> ssl.SSLContext:
+    ctx = ssl.create_default_context()
+    try:
+        import certifi
+
+        ctx.load_verify_locations(certifi.where())
+    except ImportError:
+        pass
+    return ctx
 
 _TRAUMA_MARKERS = re.compile(
     r"травм|перелом|ушиб|рана|ожог|отравлен|инородн|авар|дтп|падени|удар",
@@ -387,6 +399,12 @@ def _enrich_protocol_review(
     }
 
 
+def _remote_funnel(
+    base: str,
+    query: str,
+    step: int,
+    context: dict[str, Any],
+) -> tuple[dict[str, Any], int]:
     url = base.rstrip("/") + "/api/search/funnel"
     payload = json.dumps({"query": query, "step": step, "context": context}).encode("utf-8")
     req = urllib.request.Request(
@@ -396,7 +414,7 @@ def _enrich_protocol_review(
         method="POST",
     )
     t0 = time.perf_counter()
-    with urllib.request.urlopen(req, timeout=120) as resp:
+    with urllib.request.urlopen(req, timeout=120, context=_ssl_ctx()) as resp:
         body = json.loads(resp.read().decode("utf-8"))
     return body, int((time.perf_counter() - t0) * 1000)
 

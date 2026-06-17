@@ -52,11 +52,15 @@ def should_skip_rich_chunk_row(row: dict[str, Any]) -> bool:
     if row.get("chunk_is_empty"):
         return True
     text = (row.get("text") or "").strip()
+    ctype = (row.get("chunk_type") or "body").strip().lower()
+    if ctype != "protocol_overview" and len(text) < 80:
+        return True
     if len(text) < 40:
         return True
-    ctype = (row.get("chunk_type") or "body").strip().lower()
     head = text[:120].lower()
     if any(m in head for m in _PREAMBLE_MARKERS):
+        return True
+    if ctype == "terms" and not (row.get("icd10_codes") or row.get("icd10_weights")):
         return True
     if ctype in _LOW_SIGNAL_TYPES and not (row.get("icd10_codes") or []):
         if row.get("is_preamble_filtered") or "постановление" in head:
@@ -135,14 +139,26 @@ def chunk_type_multiplier(
     for intent in intents:
         if ctype in boosts.get(intent, ()):
             mult *= 1.35
-    if ctype in _LOW_SIGNAL_TYPES and "classification" not in intents:
+    if ctype == "terms":
+        mult *= 0.35
+    elif ctype in _LOW_SIGNAL_TYPES and "classification" not in intents:
         mult *= 0.55
     if ctype == "appendix":
         mult *= 0.7
     if ctype == "table" and "table" not in intents:
         mult *= 0.85
     if ctype == "protocol_overview":
-        mult *= 1.48 if icd_codes else 1.18
+        if icd_codes:
+            weights = ch.get("icd10_weights") or {}
+            icd_set = {str(c).upper() for c in icd_codes}
+            overlap = bool(weights) and any(
+                str(k).upper() in icd_set
+                or any(c.startswith(str(k).upper()[:3]) for c in icd_set if len(str(k)) >= 3)
+                for k in weights
+            )
+            mult *= 2.0 if overlap else 1.48
+        else:
+            mult *= 1.18
     return mult
 
 
@@ -288,6 +304,38 @@ def hybrid_merge_protocols(
 
     out.sort(key=lambda x: -float(x.get("confidence_score") or 0))
     return out
+
+
+def hybrid_pin_trusted_icd_top1(
+    merged: list[dict[str, Any]],
+    icd_protocols: list[dict[str, Any]],
+    *,
+    query: str,
+    ambiguous: bool = False,
+    icd_codes: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Не отдавать RAG top-1 поверх доверенного ICD fast lookup."""
+    if ambiguous or not merged or not icd_protocols:
+        return merged
+    from clinical_knowledge.protocol_icd_index import icd_fast_lookup_trusted
+
+    lookup_result = {"protocols": icd_protocols}
+    if not icd_fast_lookup_trusted(query, lookup_result, icd_codes=icd_codes):
+        return merged
+    icd_path = str(icd_protocols[0].get("path") or "").replace("\\", "/")
+    if not icd_path:
+        return merged
+    idx = next(
+        (i for i, pr in enumerate(merged) if str(pr.get("path") or "").replace("\\", "/") == icd_path),
+        None,
+    )
+    if idx is None or idx == 0:
+        return merged
+    out = list(merged)
+    pinned = dict(out[idx])
+    pinned["hybrid_icd_pinned"] = True
+    out.pop(idx)
+    return [pinned] + out
 
 
 def query_wants_tables(query: str) -> bool:

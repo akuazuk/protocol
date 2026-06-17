@@ -121,6 +121,38 @@ def _is_palliative_protocol(path: str, title: str) -> bool:
     )
 
 
+def _chronic_respiratory_context_in_query(query: str) -> bool:
+    ql = (query or "").lower()
+    return any(
+        s in ql
+        for s in (
+            "хобл",
+            "обструкт",
+            "хроническ",
+            "синусит",
+            "риносинус",
+            "copd",
+            "давно каш",
+            "годами",
+        )
+    )
+
+
+def _is_chronic_respiratory_mismatch_protocol(path: str, title: str) -> bool:
+    blob = f"{path} {title}".lower()
+    return any(
+        k in blob
+        for k in (
+            "хобл",
+            "обструкт",
+            "хроническ",
+            "синусит",
+            "риносинус",
+            "copd",
+        )
+    )
+
+
 def _symptom_title_boost(query: str, title: str) -> tuple[float, list[str]]:
     """Бонус/штраф по симптомам в запросе vs тема протокола в названии."""
     ql = (query or "").lower()
@@ -290,6 +322,14 @@ def _score_entry(
         if not _palliative_context_in_query(query_text):
             score -= 90.0
             reasons.append("acute URI vs palliative path")
+
+    if (
+        _acute_respiratory_query(query_text)
+        and not _chronic_respiratory_context_in_query(query_text)
+        and _is_chronic_respiratory_mismatch_protocol(path, title)
+    ):
+        score -= 75.0
+        reasons.append("acute URI vs chronic COPD/sinusitis")
 
     aud = str(row.get("audience") or "any")
     if request_aud == "adult" and aud == "adult":
@@ -529,6 +569,12 @@ def icd_fast_lookup_trusted(
     if _acute_respiratory_query(query) and _is_palliative_protocol(path, title):
         if not _palliative_context_in_query(query):
             return False
+    if (
+        _acute_respiratory_query(query)
+        and not _chronic_respiratory_context_in_query(query)
+        and _is_chronic_respiratory_mismatch_protocol(path, title)
+    ):
+        return False
     codes = [normalize_code(str(c)) for c in (icd_codes or []) if normalize_code(str(c))]
     if codes and all(is_symptom_code(c) for c in codes) and _acute_respiratory_query(query):
         blob = f"{path} {title}".lower()

@@ -7,6 +7,7 @@ from clinical_knowledge.rich_chunk_search import (
     chunk_type_multiplier,
     detect_query_intent,
     hybrid_merge_protocols,
+    hybrid_pin_trusted_icd_top1,
     should_skip_rich_chunk_row,
 )
 
@@ -21,10 +22,64 @@ def test_should_skip_preamble_chunk():
     assert should_skip_rich_chunk_row(row) is True
 
 
+def test_should_skip_short_non_overview_chunk():
+    row = {
+        "doc_id": "abc",
+        "chunk_type": "body",
+        "text": "Короткий фрагмент без смысла.",
+    }
+    assert should_skip_rich_chunk_row(row) is True
+
+
+def test_should_skip_terms_without_icd():
+    row = {
+        "doc_id": "abc",
+        "chunk_type": "terms",
+        "text": "Термины и определения используемые в настоящем клиническом протоколе медицинской помощи.",
+    }
+    assert should_skip_rich_chunk_row(row) is True
+
+
+def test_hybrid_pin_trusted_icd_top1():
+    icd = [{"path": "minzdrav_protocols/a/orvi.pdf", "title": "ОРВИ", "confidence_score": 0.88}]
+    rag = [
+        {"path": "minzdrav_protocols/a/copd.pdf", "title": "ХОБЛ", "confidence_score": 0.95},
+        {"path": "minzdrav_protocols/a/orvi.pdf", "title": "ОРВИ", "confidence_score": 0.7},
+    ]
+    merged = hybrid_merge_protocols(icd, rag, icd_weight=0.62, rag_weight=0.38)
+    assert merged[0]["path"].endswith("copd.pdf")
+    pinned = hybrid_pin_trusted_icd_top1(
+        merged,
+        icd,
+        query="кашель и температура 38",
+        ambiguous=False,
+        icd_codes=["J06.9"],
+    )
+    assert pinned[0]["path"].endswith("orvi.pdf")
+    assert pinned[0].get("hybrid_icd_pinned") is True
+
+
 def test_chunk_type_multiplier_treatment_intent():
     ch = {"rich_chunk": True, "chunk_type": "treatment", "kind": "treatment", "text": "назначают терапию"}
     mult = chunk_type_multiplier("лечение антибиотиками", ch)
     assert mult > 1.0
+
+
+def test_chunk_type_multiplier_overview_icd_overlap():
+    ch = {
+        "rich_chunk": True,
+        "chunk_type": "protocol_overview",
+        "kind": "protocol_overview",
+        "icd10_weights": {"J06.9": 95},
+    }
+    mult = chunk_type_multiplier("кашель", ch, icd_codes=["J06.9"])
+    assert mult >= 2.0
+
+
+def test_chunk_type_multiplier_terms_low():
+    ch = {"rich_chunk": True, "chunk_type": "terms", "kind": "terms", "text": "термины"}
+    mult = chunk_type_multiplier("кашель", ch)
+    assert mult <= 0.4
 
 
 def test_hybrid_merge_prefers_both_signals():

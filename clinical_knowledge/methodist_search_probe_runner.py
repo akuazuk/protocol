@@ -59,27 +59,66 @@ def _top_paths(data: dict[str, Any], n: int = 5) -> list[str]:
     return out
 
 
+def _infer_probe_icd_codes(query: str, row: dict[str, Any]) -> list[str]:
+    """МКБ для воронки: из фикстуры или lexicon (как шаг 2 UI без Gemini)."""
+    explicit = [str(c).strip() for c in (row.get("icd_codes") or []) if str(c).strip()]
+    if explicit:
+        return explicit
+    from icd_mkb import analyze_query_for_icd
+    from rag_server import clinical_query_for_rag
+
+    analysis = analyze_query_for_icd(query, clinical_query_for_rag(query))
+    codes: list[str] = []
+    seen: set[str] = set()
+    for bucket in ("detected", "suggested"):
+        for r in (analysis.get(bucket) or []):
+            if not isinstance(r, dict):
+                continue
+            c = str(r.get("code") or "").strip()
+            if c and c not in seen:
+                seen.add(c)
+                codes.append(c)
+    for c in (analysis.get("codes_for_retrieval") or []):
+        cs = str(c).strip()
+        if cs and cs not in seen:
+            seen.add(cs)
+            codes.append(cs)
+    return codes[:8]
+
+
 def run_single_probe(row: dict[str, Any]) -> dict[str, Any]:
     from clinical_knowledge.methodist_search_ai_review import build_deterministic_search_ai_review
-    from fastapi import HTTPException
-    from rag_server import AssistIn, api_assist
+    from clinical_knowledge.search_funnel import handle_search_funnel
 
     q = build_probe_query(row)
     slugs = [s for s in (row.get("category_slugs") or []) if isinstance(s, str)]
+    icd_codes = _infer_probe_icd_codes(q, row)
+    ctx: dict[str, Any] = {"population": row.get("population"), "icd_codes": icd_codes}
+    if slugs:
+        ctx["rubric_slugs"] = slugs
     t0 = __import__("time").perf_counter()
     try:
-        data = api_assist(AssistIn(query=q, category_slugs=slugs, retrieve_only=True))
-    except HTTPException as exc:
-        detail = exc.detail
-        if not isinstance(detail, str):
-            detail = str(detail)
-        return {
-            "id": row.get("id"),
-            "group": row.get("group"),
-            "query": q,
-            "error": detail,
-            "latency_ms": int((__import__("time").perf_counter() - t0) * 1000),
-        }
+        import rag_server as rs
+
+        rs._require_rag_loaded()
+        body = handle_search_funnel(
+            query=q,
+            step=4,
+            context=ctx,
+            category_slugs=slugs or None,
+            session_id="methodist-probe",
+        )
+        if body.get("error"):
+            return {
+                "id": row.get("id"),
+                "group": row.get("group"),
+                "query": q,
+                "error": str(body.get("error")),
+                "latency_ms": int((__import__("time").perf_counter() - t0) * 1000),
+            }
+        data = dict(body.get("assist") or {})
+        if not data.get("icd") and body.get("icd"):
+            data["icd"] = body["icd"]
     except Exception as exc:
         return {
             "id": row.get("id"),
@@ -99,7 +138,7 @@ def run_single_probe(row: dict[str, Any]) -> dict[str, Any]:
         except (TypeError, ValueError):
             top_conf = None
 
-    icd_codes = list(row.get("icd_codes") or [])
+    icd_codes = list(dict.fromkeys(icd_codes))
     for bucket in ("detected", "suggested"):
         for r in (data.get("icd") or {}).get(bucket) or []:
             if isinstance(r, dict) and r.get("code"):
@@ -114,8 +153,9 @@ def run_single_probe(row: dict[str, Any]) -> dict[str, Any]:
             "retrieval": data.get("retrieval") or [],
             "icd_codes": icd_codes,
             "retrieve_only": True,
-            "funnel_context": {"population": row.get("population")},
+            "funnel_context": {"population": row.get("population"), "icd_codes": icd_codes},
             "audience_inferred": data.get("audience_inferred"),
+            "hybrid_search": data.get("hybrid_search"),
         }
     )
 

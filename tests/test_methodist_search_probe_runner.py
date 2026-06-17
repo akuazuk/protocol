@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from clinical_knowledge.methodist_search_probe_runner import (
+    _infer_probe_icd_codes,
     build_probe_query,
     summarize_probe_reports,
 )
@@ -18,6 +19,11 @@ def test_build_probe_query_population_and_icd():
     assert "кашель" in q
     assert "детское население" in q
     assert "J06.9" in q
+
+
+def test_infer_probe_icd_codes_from_fixture():
+    codes = _infer_probe_icd_codes("кашель", {"icd_codes": ["J06.9"]})
+    assert codes == ["J06.9"]
 
 
 def test_summarize_probe_reports_hit_rates():
