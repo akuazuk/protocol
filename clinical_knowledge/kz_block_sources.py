@@ -32,7 +32,7 @@ ALIGNMENT_CARD_ORDER: tuple[str, ...] = (
 )
 
 ALIGNMENT_CARD_TITLES: dict[str, str] = {
-    "diagnosis": "Диагноз и коды МКБ-10",
+    "diagnosis": "Диагноз и коды",
     "complaints": "Жалобы",
     "anamnesis": "Анамнез",
     "objective_status": "Объективный статус",

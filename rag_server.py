@@ -7322,7 +7322,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r182-kz-deterministic-alignment"
+BUILD_VERSION = "2026-06-01-r183-fix-kz-diagnosis-label"
 
 
 def _app_version() -> str:

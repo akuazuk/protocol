@@ -146,6 +146,21 @@ def _card(
     }
 
 
+def _mkb_reference_line(code: str, title: str | None) -> str:
+    """Строка эталона МКБ без дублирования кода (N72: N72 - …)."""
+    c = (code or "").strip()
+    t = (title or "").strip()
+    if not c:
+        return t
+    if not t:
+        return c
+    upper_t = t.upper()
+    c_base = c.upper()
+    if upper_t.startswith(c_base) or upper_t.startswith(c_base.replace(".", "")):
+        return t
+    return f"{c} - {t}"
+
+
 def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str, Any]:
     diag_text = doc.sections.diagnosis_text or ""
     if not diag_text and doc.diagnoses:
@@ -165,7 +180,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
         title = icd_mkb.ru_title(code)
         desc = icd_mkb.describe_code(code)
         if valid and title:
-            mkb_excerpts.append(f"{code}: {title}")
+            mkb_excerpts.append(_mkb_reference_line(code, title))
             match = _title_match_score(d.diagnosis_name or d.raw_text or diag_text, title)
             if match >= 0.35:
                 scores.append(95)
@@ -179,7 +194,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
             scores.append(72)
             comments.append(f"Код {code} найден в справочнике МКБ.")
             if desc.get("title_ru"):
-                mkb_excerpts.append(f"{code}: {desc['title_ru']}")
+                mkb_excerpts.append(_mkb_reference_line(code, str(desc["title_ru"])))
         else:
             scores.append(30)
             comments.append(f"Код {code} не найден в русском справочнике МКБ-10.")
@@ -189,7 +204,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
             for code in icd_codes[:3]:
                 if icd_mkb.is_code_in_ru_reference(code):
                     title = icd_mkb.ru_title(code)
-                    mkb_excerpts.append(f"{code}: {title or '—'}")
+                    mkb_excerpts.append(_mkb_reference_line(code, title or "—"))
             scores.append(60)
             comments.append("Диагнозы структурно не разобраны; коды извлечены из текста.")
         else:
@@ -200,7 +215,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
     return _card(
         "diagnosis",
         score_pct=score,
-        comment_ru=" ".join(comments) or "Оценка по справочнику МКБ-10.",
+        comment_ru=" · ".join(comments) or "Оценка по справочнику МКБ-10.",
         conclusion_excerpt=_excerpt(diag_text),
         protocol_excerpt="; ".join(mkb_excerpts)[:400],
         protocol_section="Справочник МКБ-10 (RU)",

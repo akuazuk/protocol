@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from clinical_knowledge.consult_alignment import (
+    _mkb_reference_line,
     build_consult_alignment,
     merge_alignment_into_review,
 )
@@ -60,6 +61,13 @@ def _fake_chunks(path: str) -> list[dict]:
     return []
 
 
+def test_mkb_reference_line_no_duplicate_code():
+    assert _mkb_reference_line("N72", "N72 - Воспалительная болезнь шейки матки") == (
+        "N72 - Воспалительная болезнь шейки матки"
+    )
+    assert _mkb_reference_line("E03.9", "Гипотиреоз неуточненный") == "E03.9 - Гипотиреоз неуточненный"
+
+
 def test_diagnosis_card_uses_mkb_not_kp():
     doc = parse_consultation(MG_1, consultation_id="mg1")
     out = build_consult_alignment(
@@ -70,6 +78,7 @@ def test_diagnosis_card_uses_mkb_not_kp():
     )
     diag = next(c for c in out["alignment_cards"] if c["block_id"] == "diagnosis")
     assert diag["source_kind"] == "mkb"
+    assert diag["name_ru"] == "Диагноз и коды"
     assert diag["score_pct"] >= 70
     assert "МКБ" in diag["protocol_section"] or diag["protocol_excerpt"]
 

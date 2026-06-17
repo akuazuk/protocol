@@ -22409,6 +22409,8 @@
   function renderConsultSourceBadge(c) {
     var label = c.source_label || c.source_kind || "";
     if (!label) return "";
+    var name = String(c.name_ru || c.name || "");
+    if (name && label && name.indexOf(label) >= 0) return "";
     var cls = consultSourceBadgeClass(c.source_kind || "");
     return (
       '<span class="consult-source-badge ' +
