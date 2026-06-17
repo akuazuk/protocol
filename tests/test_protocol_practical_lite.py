@@ -47,6 +47,25 @@ def test_clinical_detail_lite_has_extraction_lists():
     ex = cd["extraction"]
     assert ex.get("investigations") or ex.get("treatment_methods")
     assert cd.get("lite_sections")
+    blocks = cd.get("clinical_blocks") or {}
+    assert blocks.get("diagnostics")
+    assert blocks.get("treatment")
+
+
+def test_clinical_blocks_medication_focus():
+    chunks = [
+        _chunk("Амоксициллин 500 мг 3 раза в сутки 5-7 дней", "pharmacotherapy"),
+        _chunk("Симптоматическая терапия, постельный режим", "treatment"),
+    ]
+    cd = build_clinical_detail_lite(
+        "minzdrav_protocols/x/kp.pdf",
+        "антибиотики при бронхите",
+        "КП бронхит",
+        chunks,
+        ["J20.9"],
+    )
+    meds = (cd.get("clinical_blocks") or {}).get("treatment", {}).get("medications") or []
+    assert any("Амоксициллин" in m for m in meds)
 
 
 def test_build_practical_section_medications():

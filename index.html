@@ -8487,6 +8487,135 @@
       text-align: left;
     }
 
+    .practical-clinical-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1rem;
+      margin: 0.65rem 0 0.5rem;
+    }
+
+    @media (max-width: 720px) {
+      .practical-clinical-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .practical-clinical-col {
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .practical-clinical-col--focus {
+      border-color: rgba(16, 185, 129, 0.45);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.12);
+    }
+
+    .practical-clinical-col__title {
+      margin: 0 0 0.45rem;
+      font-size: 0.88rem;
+      font-weight: 650;
+      color: #0f766e;
+    }
+
+    .practical-clinical-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #1e293b;
+    }
+
+    .practical-clinical-list li + li {
+      margin-top: 0.35rem;
+    }
+
+    .practical-clinical-subtitle {
+      margin: 0.55rem 0 0.25rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .practical-clinical-empty {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .practical-clinical-cite {
+      margin: 0.5rem 0 0;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      background: rgba(241, 245, 249, 0.9);
+      font-size: 0.74rem;
+      line-height: 1.4;
+      color: #475569;
+    }
+
+    .practical-clinical-cite__label {
+      display: block;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 0.2rem;
+    }
+
+    .process-progress {
+      margin: 0.5rem 0 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(186, 210, 230, 0.55);
+      background: linear-gradient(165deg, rgba(240, 249, 255, 0.75) 0%, rgba(248, 250, 252, 0.95) 100%);
+    }
+
+    .process-progress__title {
+      margin: 0 0 0.55rem;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .process-progress__track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(203, 213, 225, 0.55);
+      overflow: hidden;
+      margin: 0 0 0.65rem;
+    }
+
+    .process-progress__fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(125, 211, 192, 0.85), rgba(147, 197, 253, 0.9));
+      transition: width 0.35s ease;
+    }
+
+    .process-progress__steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+      font-size: 0.74rem;
+      color: #64748b;
+    }
+
+    .process-progress__step {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .process-progress__step.is-done { color: #059669; }
+    .process-progress__step.is-active { color: #0369a1; font-weight: 600; }
+    .process-progress__step.is-pending { color: #94a3b8; }
+
+    .practical-review-panel--loading .process-progress {
+      margin-bottom: 0.5rem;
+    }
+
     .practical-funnel-bar {
       display: flex;
       flex-wrap: wrap;
@@ -12869,29 +12998,27 @@
     return paths;
   }
 
-  function getSearchFunnelProgressSteps(activeStep) {
-    var steps = [
-      { id: "population", label: "Аудитория" },
-      { id: "icd", label: "МКБ-10" },
-      { id: "retrieve", label: "Поиск PDF" },
-      { id: "ai_review", label: "Оценка ИИ" },
-    ];
-    var order = ["population", "icd", "retrieve", "ai_review"];
+  function buildProcessProgressHtml(title, steps, activeStep) {
+    var order = steps.map(function (s) {
+      return s.id;
+    });
     var activeIdx = order.indexOf(activeStep);
-    if (activeIdx < 0) activeIdx = 2;
-    var pct = Math.round(((activeIdx + 0.45) / steps.length) * 100);
+    if (activeIdx < 0) activeIdx = 0;
+    var pct = Math.round(((activeIdx + 0.45) / Math.max(steps.length, 1)) * 100);
     var html =
-      '<div class="search-funnel-progress" role="status" aria-live="polite">' +
-      '<p class="search-funnel-progress__title">Подбор протоколов</p>' +
-      '<div class="search-funnel-progress__track" aria-hidden="true">' +
-      '<div class="search-funnel-progress__fill" style="width:' +
+      '<div class="process-progress" role="status" aria-live="polite">' +
+      '<p class="process-progress__title">' +
+      escapeHtml(String(title || "Выполняется")) +
+      "</p>" +
+      '<div class="process-progress__track" aria-hidden="true">' +
+      '<div class="process-progress__fill" style="width:' +
       String(pct) +
       '%"></div></div>' +
-      '<div class="search-funnel-progress__steps">';
+      '<div class="process-progress__steps">';
     var si;
     for (si = 0; si < steps.length; si++) {
       var st = steps[si];
-      var cls = "search-funnel-progress__step ";
+      var cls = "process-progress__step ";
       if (si < activeIdx) cls += "is-done";
       else if (si === activeIdx) cls += "is-active";
       else cls += "is-pending";
@@ -12907,6 +13034,65 @@
     }
     html += "</div></div>";
     return html;
+  }
+
+  function getSearchFunnelProgressSteps(activeStep) {
+    var steps = [
+      { id: "context", label: "Контекст" },
+      { id: "icd", label: "МКБ-10" },
+      { id: "icd_lookup", label: "Индекс МКБ" },
+      { id: "retrieve", label: "Поиск в PDF" },
+      { id: "merge", label: "Ранжирование" },
+      { id: "ai_review", label: "Готово" },
+    ];
+    return buildProcessProgressHtml("Подбор протоколов", steps, activeStep).replace(
+      /process-progress/g,
+      "search-funnel-progress"
+    ).replace(/process-progress__/g, "search-funnel-progress__");
+  }
+
+  function getPracticalLoadingProgressHtml(activeStep) {
+    var steps = [
+      { id: "protocol", label: "Протокол" },
+      { id: "diagnostics", label: "Диагностика" },
+      { id: "treatment", label: "Лечение" },
+      { id: "ready", label: "Готово" },
+    ];
+    return buildProcessProgressHtml(
+      "Обследование и лечение по протоколу",
+      steps,
+      activeStep || "protocol"
+    );
+  }
+
+  function setAssistSearchProgress(stepId, hint) {
+    var out = document.getElementById("llm-out");
+    if (!out || out.querySelector(".assist-mobile-placeholder")) return;
+    var html = renderSearchLoadingHtml({
+      retrieveOnly: true,
+      progressStep: stepId,
+      hint: hint,
+    });
+    out.innerHTML = html;
+  }
+
+  function animatePracticalLoadingProgress(slot) {
+    if (!slot) return null;
+    var order = ["protocol", "diagnostics", "treatment", "ready"];
+    var idx = 0;
+    slot.innerHTML =
+      getPracticalLoadingProgressHtml(order[0]) +
+      '<p class="assist-detail-meta practical-loading-hint">Подбор обследований и лечения из текста протокола…</p>';
+    var tid = setInterval(function () {
+      idx = Math.min(idx + 1, order.length - 2);
+      var prog = slot.querySelector(".process-progress");
+      if (prog) {
+        prog.outerHTML = getPracticalLoadingProgressHtml(order[idx]);
+      }
+    }, 1800);
+    return function () {
+      clearInterval(tid);
+    };
   }
 
   function renderSearchLoadingHtml(opts) {
@@ -13597,9 +13783,7 @@
       !opts.citationsOnly ||
       !!window.__methodistMode
     ) {
-      var exploreLbl = opts.citationsOnly
-        ? "Разобрать протокол"
-        : "Разобрать протокол (выдержка + матрица КЗ)";
+      var exploreLbl = "Обследование и лечение";
       html +=
         '<p class="assist-proto-actions">' +
         '<button type="button" class="btn-assist btn-proto-explore" data-proto-path="' +
@@ -14333,92 +14517,35 @@
   }
 
   function bindPracticalQuickPanel(panelOpts, query, liteSections) {
-    var wrap = document.querySelector("#practical-review-panel .practical-quick-facts");
-    if (!wrap) return;
-    var fetched = {};
-    wrap._practicalOnTabActivate = function (tabKey) {
-      updatePracticalQuickCitesForTab(wrap, tabKey, liteSections || []);
-      if (countFactItems((window.__clinicalDetailForTemplate || {}).extraction, tabKey) > 0) {
-        return;
-      }
-      if (fetched[tabKey] || !panelOpts.offer) return;
-      fetched[tabKey] = "loading";
-      var pending = document.querySelector(
-        "#practical-review-panel .practical-quick-section-pending"
-      );
-      if (pending) {
-        pending.hidden = false;
-        pending.textContent = "Подбор раздела из протокола…";
-      }
-      fetchPracticalSection(
-        panelOpts.offer,
-        query,
-        panelOpts.icdCodes || [],
-        tabKey
-      )
-        .then(function (payload) {
-          fetched[tabKey] = "done";
-          var cd = window.__clinicalDetailForTemplate || { extraction: {} };
-          cd.extraction = mergePracticalSectionIntoExtraction(
-            cd.extraction,
-            tabKey,
-            payload
-          );
-          if (payload.cites && payload.cites.length) {
-            cd.lite_sections = (cd.lite_sections || []).concat(payload.cites);
-            liteSections = cd.lite_sections;
-          }
-          window.__clinicalDetailForTemplate = cd;
-          var panel = wrap.querySelector(
-            '.assist-fact-tab-panel[data-fact-tab="' + tabKey + '"] .assist-fact-tab-panel-inner'
-          );
-          if (panel) {
-            panel.innerHTML = buildFactTabPanelInnerHtml(tabKey, cd.extraction);
-          }
-          refreshPracticalQuickTabBadges(wrap, cd.extraction);
-          updatePracticalQuickCitesForTab(wrap, tabKey, liteSections);
-        })
-        .catch(function () {
-          fetched[tabKey] = "error";
-        })
-        .finally(function () {
-          if (pending) pending.hidden = true;
+    var panel = document.getElementById("practical-review-panel");
+    if (!panel) return;
+    document
+      .querySelectorAll("#practical-review-panel .btn-practical-section-llm")
+      .forEach(function (llmBtn) {
+        if (llmBtn.getAttribute("data-wired-section-llm")) return;
+        llmBtn.setAttribute("data-wired-section-llm", "1");
+        llmBtn.addEventListener("click", function () {
+          if (!panelOpts.offer) return;
+          var focus = llmBtn.getAttribute("data-extract-focus") || "investigations";
+          loadPracticalSectionLlm(panelOpts.offer, query, focus, panelOpts);
         });
-    };
-    wrap._factsTabsBound = false;
-    bindProtocolFactsTabs();
+      });
     var copyBtn = document.querySelector(
       "#practical-review-panel .btn-practical-section-copy"
     );
     if (copyBtn && !copyBtn.getAttribute("data-wired-copy")) {
       copyBtn.setAttribute("data-wired-copy", "1");
       copyBtn.addEventListener("click", function () {
-        var key = getActivePracticalFactTabKey(wrap);
-        var panel = wrap.querySelector(
-          '.assist-fact-tab-panel[data-fact-tab="' + key + '"] .assist-fact-tab-panel-inner'
-        );
-        if (!panel) return;
-        var text = panel.innerText || panel.textContent || "";
+        var grid = document.querySelector("#practical-review-panel .practical-clinical-grid");
+        if (!grid) return;
+        var text = grid.innerText || grid.textContent || "";
         if (!text.trim()) return;
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text.trim()).catch(function () {});
         }
       });
     }
-    var llmBtn = document.querySelector(
-      "#practical-review-panel .btn-practical-section-llm"
-    );
-    if (llmBtn && !llmBtn.getAttribute("data-wired-section-llm")) {
-      llmBtn.setAttribute("data-wired-section-llm", "1");
-      llmBtn.addEventListener("click", function () {
-        if (!panelOpts.offer) return;
-        var focus =
-          llmBtn.getAttribute("data-extract-focus") ||
-          getActivePracticalFactTabKey(wrap);
-        loadPracticalSectionLlm(panelOpts.offer, query, focus, panelOpts);
-      });
-    }
-    var prefetchKeys = ["medications", "treatment_methods"];
+    var prefetchKeys = ["investigations", "medications", "treatment_methods"];
     var pi;
     for (pi = 0; pi < prefetchKeys.length; pi++) {
       (function (pk) {
@@ -14440,8 +14567,15 @@
               pk,
               payload
             );
+            if (payload.cites && payload.cites.length) {
+              cd.lite_sections = (cd.lite_sections || []).concat(payload.cites);
+            }
+            cd.clinical_blocks = null;
             window.__clinicalDetailForTemplate = cd;
-            refreshPracticalQuickTabBadges(wrap, cd.extraction);
+            var grid = panel.querySelector(".practical-clinical-grid");
+            if (grid) {
+              grid.outerHTML = renderPracticalClinicalGrid(cd, query);
+            }
           })
           .catch(function () {});
       })(prefetchKeys[pi]);
@@ -14585,7 +14719,7 @@
     );
     return (
       '<div class="practical-review-panel practical-review-panel--loading" id="practical-review-panel">' +
-      '<h3 class="practical-review-head">Рекомендации по протоколу</h3>' +
+      '<h3 class="practical-review-head">Обследование и лечение</h3>' +
       '<p class="assist-detail-meta">' +
       escapeHtml(String(titleLine)) +
       " - загрузка рекомендаций…</p>" +
@@ -14863,6 +14997,124 @@
     return html;
   }
 
+  function renderPracticalClinicalCite(cite) {
+    if (!cite || !cite.text) return "";
+    var label = cite.label || cite.chunk_type || "Раздел";
+    var page =
+      cite.page_from != null
+        ? " · стр. " +
+          String(cite.page_from) +
+          (cite.page_to && cite.page_to !== cite.page_from ? "-" + cite.page_to : "")
+        : "";
+    return (
+      '<blockquote class="practical-clinical-cite">' +
+      '<span class="practical-clinical-cite__label">' +
+      escapeHtml(String(label)) +
+      escapeHtml(page) +
+      "</span>" +
+      escapeHtml(String(cite.text).slice(0, 380)) +
+      "</blockquote>"
+    );
+  }
+
+  function renderPracticalClinicalList(items, emptyLabel) {
+    if (!items || !items.length) {
+      return (
+        '<p class="practical-clinical-empty">' +
+        escapeHtml(emptyLabel || "В протоколе не найдено явных пунктов для этого запроса.") +
+        "</p>"
+      );
+    }
+    var html = '<ul class="practical-clinical-list">';
+    var i;
+    for (i = 0; i < items.length; i++) {
+      html += "<li>" + escapeHtml(String(items[i])) + "</li>";
+    }
+    html += "</ul>";
+    return html;
+  }
+
+  function renderPracticalClinicalGrid(cd, query) {
+    var blocks = (cd && cd.clinical_blocks) || {};
+    var ex = (cd && cd.extraction) || {};
+    var diag = blocks.diagnostics || {};
+    var treat = blocks.treatment || {};
+    var focus = blocks.query_focus || "diagnostics";
+    var diagItems = diag.items || ex.investigations || [];
+    var medItems = treat.medications || ex.medications || [];
+    var treatItems = treat.methods || ex.treatment_methods || [];
+    var diagCites = diag.cites || [];
+    var treatCites = treat.cites || [];
+    var html =
+      '<div class="practical-clinical-grid" role="region" aria-label="Обследование и лечение по протоколу">';
+    html +=
+      '<div class="practical-clinical-col' +
+      (focus === "diagnostics" ? " practical-clinical-col--focus" : "") +
+      '">';
+    html +=
+      '<h4 class="practical-clinical-col__title">' +
+      escapeHtml(diag.title || "Обследование и диагностика") +
+      "</h4>";
+    html += renderPracticalClinicalList(
+      diagItems,
+      "Нет выделенных обследований — откройте PDF или уточните запрос (симптомы, МКБ)."
+    );
+    if (diagCites.length) {
+      html += renderPracticalClinicalCite(diagCites[0]);
+    }
+    html += "</div>";
+    html +=
+      '<div class="practical-clinical-col' +
+      (focus === "treatment" ? " practical-clinical-col--focus" : "") +
+      '">';
+    html +=
+      '<h4 class="practical-clinical-col__title">' +
+      escapeHtml(treat.title || "Лечение и препараты") +
+      "</h4>";
+    if (treatItems.length) {
+      html += '<p class="practical-clinical-subtitle">Методы лечения</p>';
+      html += renderPracticalClinicalList(treatItems, "");
+    }
+    if (medItems.length) {
+      html += '<p class="practical-clinical-subtitle">Препараты и дозы</p>';
+      html += renderPracticalClinicalList(medItems, "");
+    }
+    if (!treatItems.length && !medItems.length) {
+      html += renderPracticalClinicalList(
+        [],
+        "Нет выделенного лечения или препаратов — проверьте раздел «Лечение» в PDF."
+      );
+    }
+    if (treatCites.length) {
+      html += renderPracticalClinicalCite(treatCites[0]);
+    }
+    html += "</div></div>";
+    var alg = blocks.algorithms || ex.care_algorithms || [];
+    var mon = (blocks.monitoring && blocks.monitoring.text) || "";
+    if (alg.length || mon) {
+      html += '<details class="assist-collapsible practical-clinical-extra"><summary>Наблюдение и алгоритмы</summary><div class="practical-clinical-extra__body">';
+      if (mon) {
+        html +=
+          '<p class="practical-clinical-subtitle">Наблюдение</p><p class="assist-detail-body">' +
+          escapeHtml(mon) +
+          "</p>";
+      }
+      if (alg.length) {
+        html += '<p class="practical-clinical-subtitle">Алгоритмы</p>';
+        html += renderPracticalClinicalList(alg, "");
+      }
+      html += "</div></details>";
+    }
+    html +=
+      '<div class="practical-quick-section-actions">' +
+      '<button type="button" class="btn-assist btn-practical-section-llm" data-extract-focus="investigations">Уточнить обследование (ИИ)</button>' +
+      '<button type="button" class="btn-assist btn-practical-section-llm" data-extract-focus="medications">Уточнить препараты (ИИ)</button>' +
+      '<button type="button" class="btn-assist btn-practical-section-copy">Скопировать раздел</button>' +
+      "</div>";
+    html += '<p class="practical-quick-section-pending" hidden aria-live="polite"></p>';
+    return html;
+  }
+
   function renderPracticalReviewPanel(cd, matrix, query, meta, panelOpts) {
     panelOpts = panelOpts || {};
     var mode = panelOpts.mode || (cd && cd.llm_used === false ? "lite" : "full");
@@ -14877,7 +15129,7 @@
       '<div class="practical-review-panel" id="practical-review-panel">';
     html += '<header class="practical-quick-header">';
     html +=
-      '<h3 class="practical-review-head">Рекомендации по протоколу</h3>';
+      '<h3 class="practical-review-head">Обследование и лечение</h3>';
     if (cd && cd.title) {
       html +=
         '<p class="practical-quick-meta assist-detail-meta">' +
@@ -14891,7 +15143,7 @@
     html += catalogBadgesHtml(pthMeta, metaMap);
     var sourceBits = [];
     if (isLite && !panelOpts.upgradingToFull) {
-      sourceBits.push("быстрый разбор из протокола");
+      sourceBits.push("из текста протокола");
       sourceBits.push("без ожидания ИИ");
     } else {
       sourceBits.push("разбор с ИИ");
@@ -14904,16 +15156,15 @@
       escapeHtml(sourceBits.join(" · ")) +
       "</p>";
     html +=
-      '<section class="practical-section practical-section--quick" aria-label="Разделы протокола">';
+      '<section class="practical-section practical-section--clinical" aria-label="Клинические рекомендации из протокола">';
     if (cd && !cd.error) {
-      var ex = cd.extraction || {};
       var qForBlock = query || "";
       if (!isPediatricProtocolForAdult(cd, qForBlock)) {
-        html += renderPracticalQuickFactsBlock(ex, cd, query, liteSections);
-      } else if (ex.diagnosis) {
+        html += renderPracticalClinicalGrid(cd, query);
+      } else if ((cd.extraction || {}).diagnosis) {
         html +=
           '<p class="assist-detail-label">Диагноз</p><div class="assist-detail-body">' +
-          formatSummaryHtml(String(ex.diagnosis)) +
+          formatSummaryHtml(String(cd.extraction.diagnosis)) +
           "</div>";
       }
     } else if (cd && cd.error) {
@@ -15001,13 +15252,7 @@
       (cd && cd.lite_sections) || []
     );
     if (panelOpts.initialSection) {
-      var initSec = panelOpts.initialSection;
-      if (initSec === "monitoring") initSec = "monitoring_frequency";
-      if (initSec === "algorithms") initSec = "care_algorithms";
-      var qWrap = document.querySelector("#practical-review-panel .practical-quick-facts");
-      if (qWrap && typeof qWrap._activateFactTab === "function") {
-        qWrap._activateFactTab(initSec);
-      }
+      /* legacy: вкладки заменены двухколоночной сеткой */
     }
     var lazyBtn = document.querySelector(".btn-practical-load-kz-matrix");
     if (lazyBtn && panelOpts.offer) {
@@ -15042,18 +15287,13 @@
     slot.hidden = false;
     slot.className = "practical-review-panel practical-review-panel--loading";
     var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
-    var loadHint =
-      reqMode === "full"
-        ? "разбор моделью"
-        : "рекомендации из протокола";
-    slot.innerHTML =
-      '<h3 class="practical-review-head">Рекомендации по протоколу</h3>' +
-      '<p class="assist-detail-meta">' +
-      escapeHtml(String(titleLine)) +
-      " - загрузка: " +
-      loadHint +
-      "…</p>" +
-      getDetailLoadingHtml();
+    var stopPracticalAnim = animatePracticalLoadingProgress(slot);
+    slot.insertAdjacentHTML(
+      "beforeend",
+      '<p class="assist-detail-meta practical-loading-title">' +
+        escapeHtml(String(titleLine)) +
+        "</p>"
+    );
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -15147,6 +15387,7 @@
       .finally(function () {
         clearTimeout(abortTid);
         if (timerCtl) timerCtl.stop();
+        if (stopPracticalAnim) stopPracticalAnim();
       });
   }
 
@@ -23350,8 +23591,8 @@
         } else if (retrieveOnly) {
           out.innerHTML = renderSearchLoadingHtml({
             retrieveOnly: true,
-            progressStep: "retrieve",
-            hint: "Поиск фрагментов в PDF (без краткого ответа модели)…",
+            progressStep: "context",
+            hint: "Проверка запроса и контекста…",
           });
         } else {
           out.innerHTML = getAssistLoadingHtml();
@@ -23375,6 +23616,8 @@
         }
       }, 500);
 
+      var assistMergeProgressTid = null;
+
       fetch(base + "/health")
         .then(function (h) {
           if (!h.ok) {
@@ -23384,6 +23627,12 @@
                 "). Повторите попытку позже или обратитесь к администратору."
             );
           }
+          setAssistSearchProgress(
+            funnelIcdCodesForSearch(qSend).length ? "icd" : "icd_lookup",
+            funnelIcdCodesForSearch(qSend).length
+              ? "Сопоставление кодов МКБ-10 с индексом протоколов…"
+              : "Подбор протоколов по индексу МКБ и тексту запроса…"
+          );
           return h.json();
         })
         .then(function (health) {
@@ -23397,6 +23646,10 @@
           abortTid = setTimeout(function () {
             ctrl.abort();
           }, assistTimeoutMs);
+          setAssistSearchProgress("retrieve", "Поиск релевантных фрагментов в PDF…");
+          assistMergeProgressTid = setTimeout(function () {
+            setAssistSearchProgress("merge", "Сведение индекса МКБ и результатов поиска…");
+          }, 2800);
           if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
             var ctxIcd = window.__funnelContext || {};
             var icdCodes = funnelIcdCodesForSearch(qSend);
@@ -23496,6 +23749,11 @@
           });
         })
         .then(function (data) {
+          if (assistMergeProgressTid) {
+            clearTimeout(assistMergeProgressTid);
+            assistMergeProgressTid = null;
+          }
+          setAssistSearchProgress("ai_review", "Формирование списка протоколов…");
           clearAssistTick();
           renderLlmOut(data);
           clearSpecialtySelectionAndCollapse();
@@ -23509,6 +23767,10 @@
           resolve();
         })
         .catch(function (err) {
+          if (assistMergeProgressTid) {
+            clearTimeout(assistMergeProgressTid);
+            assistMergeProgressTid = null;
+          }
           var msg = String(err.message || err);
           if (err && err.name === "AbortError") {
             msg =
