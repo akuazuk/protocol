@@ -374,6 +374,14 @@ def load_chunks_exact(chunks_path: Path, source_path: str) -> list[dict[str, Any
 def _score_logical_doc(chunks: list[dict[str, Any]]) -> int:
     blob = _collapse_ws(" ".join((c.get("text") or "") for c in chunks))
     score = 0
+    rich_types = frozenset({
+        "diagnostics", "criteria_block", "table", "pharmacotherapy",
+        "treatment", "drug_list", "dispensary", "prevention",
+    })
+    for c in chunks:
+        ct = (c.get("chunk_type") or c.get("kind") or "").strip().lower()
+        if ct in rich_types:
+            score += 1
     for _, pat in CONDITION_DIAG_PATTERNS:
         if pat.search(blob):
             score += 3

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
@@ -13,6 +14,26 @@ CATALOG_RULES_DIR = CATALOG_DIR / "rules"
 COVERAGE_PATH = CATALOG_DIR / "rules_coverage_report.json"
 DEFAULT_REGISTRY = ROOT / "output" / "registry" / "protocol_cards.jsonl"
 DEFAULT_CHUNKS = ROOT / "output" / "chunks" / "chunks.jsonl"
+RICH_CHUNKS = ROOT / "output" / "rich_chunks" / "rich_chunks.jsonl"
+
+
+def resolve_chunks_path(explicit: Path | None = None) -> Path:
+    """Путь к корпусу чанков: env RAG_CHUNKS_JSONL → rich_chunks → legacy chunks."""
+    if explicit is not None and explicit.is_file():
+        return explicit
+    env = (os.environ.get("RAG_CHUNKS_JSONL") or "").strip()
+    if env:
+        p = Path(env).expanduser()
+        if p.is_file():
+            return p.resolve()
+    if RICH_CHUNKS.is_file():
+        return RICH_CHUNKS
+    base = (os.environ.get("RAG_CHUNKS_DIR") or "").strip()
+    if base:
+        rich = Path(base) / "output" / "rich_chunks" / "rich_chunks.jsonl"
+        if rich.is_file():
+            return rich
+    return DEFAULT_CHUNKS
 
 
 def catalog_registry_path() -> Path:
@@ -234,7 +255,7 @@ def build_catalog_rules(
     registry_jsonl: Path | None = None,
 ) -> dict[str, Any]:
     """Полный цикл: extract → merge → coverage report."""
-    cp = chunks_path or DEFAULT_CHUNKS
+    cp = chunks_path or resolve_chunks_path()
     reg = registry_jsonl or catalog_registry_path()
     index = build_chunks_index(cp)
     extracted, meta = extract_rules_all_catalog_pdfs(cp, reg, chunks_index=index)

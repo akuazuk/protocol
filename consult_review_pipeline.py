@@ -531,6 +531,32 @@ def iter_consult_review_pipeline(
         except Exception:
             structured_analysis = None
 
+    # --- Детерминированные карточки согласования (МКБ / КП / НПА) ---
+    alignment_result = None
+    if rs.env_bool("CONSULT_ALIGNMENT_ENABLED", True):
+        try:
+            from clinical_knowledge.consult_alignment import (
+                build_consult_alignment,
+                merge_alignment_into_review,
+            )
+            from clinical_knowledge.consult_parser import parse_consultation
+
+            align_doc = parse_consultation(
+                full_text,
+                consultation_id=(content_signature or "consult")[:16] or "consult",
+            )
+            alignment_result = build_consult_alignment(
+                align_doc,
+                protocol_paths=list(paths_used or []),
+                icd_codes=list(merged_icd or diag_codes_list or []),
+                get_chunks=rs.get_rich_chunks_for_path,
+                query=q_rag or q,
+            )
+            if isinstance(review, dict):
+                merge_alignment_into_review(review, alignment_result)
+        except Exception:
+            alignment_result = None
+
     if isinstance(review, dict):
         try:
             from clinical_knowledge.consult_overall_score import apply_hybrid_overall_compliance
@@ -578,6 +604,8 @@ def iter_consult_review_pipeline(
     }
     if clinical_rules is not None:
         result["clinical_rules"] = clinical_rules
+    if alignment_result is not None:
+        result["alignment"] = alignment_result
     if structured_analysis is not None:
         result["structured_analysis"] = structured_analysis
     if report_markdown:

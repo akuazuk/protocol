@@ -1226,6 +1226,21 @@
 
     .consult-crit-name { font-weight: 650; color: #2d4a42; }
 
+    .consult-source-badge {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.06rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 650;
+      vertical-align: middle;
+      letter-spacing: 0.01em;
+    }
+    .consult-source-badge.src-mkb { background: #e8eef8; color: #3d5080; }
+    .consult-source-badge.src-kp { background: #e4f0ea; color: #2d5a48; }
+    .consult-source-badge.src-completeness { background: #f0f0ec; color: #5a5a50; }
+    .consult-source-badge.src-regulation { background: #f5efe6; color: #7a5a30; }
+
     .consult-crit-excerpt {
       margin-top: 0.35rem;
       font-size: 0.76rem;
@@ -9803,9 +9818,9 @@
               <span class="consult-score-card__sub" id="consult-struct-meta"></span>
             </div>
             <div class="consult-score-card tier-mid" id="consult-score-llm-card" hidden>
-              <span class="consult-score-card__label">Среднее LLM</span>
+              <span class="consult-score-card__label">Критерии согласования</span>
               <span class="consult-score-card__value" id="consult-llm-avg-pct"> - </span>
-              <span class="consult-score-card__sub">пояснения модели</span>
+              <span class="consult-score-card__sub" id="consult-llm-meta">детерминированные</span>
             </div>
           </div>
           <p class="consult-score-legend" id="consult-score-legend" hidden></p>
@@ -10050,7 +10065,7 @@
                     <th scope="col">Итог</th>
                     <th scope="col">Комментарий</th>
                     <th scope="col">Фрагмент КЗ</th>
-                    <th scope="col">Фрагмент протокола</th>
+                    <th scope="col">Эталон / источник</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -22384,6 +22399,28 @@
     return "";
   }
 
+  function consultSourceBadgeClass(kind) {
+    if (kind === "mkb") return "src-mkb";
+    if (kind === "kp") return "src-kp";
+    if (kind === "regulation") return "src-regulation";
+    return "src-completeness";
+  }
+
+  function renderConsultSourceBadge(c) {
+    var label = c.source_label || c.source_kind || "";
+    if (!label) return "";
+    var cls = consultSourceBadgeClass(c.source_kind || "");
+    return (
+      '<span class="consult-source-badge ' +
+      cls +
+      '" title="' +
+      escapeHtml(c.protocol_section || "") +
+      '">' +
+      escapeHtml(label) +
+      "</span>"
+    );
+  }
+
   function renderConsultReviewResult(data, res, st) {
     window.__consultReviewLastPayload = data;
     if (st) st.textContent = "Готово.";
@@ -22433,10 +22470,18 @@
         : null;
     var llmCard = document.getElementById("consult-score-llm-card");
     var llmEl = document.getElementById("consult-llm-avg-pct");
+    var criteriaSource = rev.criteria_source || "";
     if (llmCard && llmEl && llmAvg != null) {
       llmCard.hidden = false;
       llmEl.textContent = llmAvg + "%";
       applyConsultScoreTier(llmCard, llmAvg);
+      var llmMeta = document.getElementById("consult-llm-meta");
+      if (llmMeta) {
+        llmMeta.textContent =
+          criteriaSource === "deterministic_alignment"
+            ? "детерминированные критерии"
+            : "критерии модели";
+      }
     } else if (llmCard) {
       llmCard.hidden = true;
     }
@@ -22447,7 +22492,7 @@
     if (legendEl) {
       var legendParts = [];
       legendParts.push(
-        "<strong>Итог</strong> - детерминированный гибрид (75% структурный + 25% правила протокола)" +
+        "<strong>Итог</strong> - детерминированный гибрид (80% структурный + 20% правила протокола)" +
           (rev.overall_compliance_cap_ru
             ? ", с ограничением: " + escapeHtml(String(rev.overall_compliance_cap_ru))
             : rev.overall_compliance_pre_cap_pct != null &&
@@ -22467,7 +22512,7 @@
       }
       legendParts.push(
         "<strong>Структурный</strong> - восемь блоков по правилам (оформление, диагноз, лечение…). " +
-          "<strong>LLM</strong> - пояснения по цитатам, на блокировку не влияет."
+          "<strong>Критерии</strong> - детерминированное сравнение (МКБ / КП / полнота / НПА), на блокировку не влияют."
       );
       legendEl.innerHTML = legendParts.join(" ");
       legendEl.hidden = false;
@@ -22528,7 +22573,10 @@
         var tr = document.createElement("tr");
         var tdName = document.createElement("td");
         tdName.innerHTML =
-          '<span class="consult-crit-name">' + escapeHtml(c.name_ru || c.name || "") + "</span>";
+          '<span class="consult-crit-name">' +
+          escapeHtml(c.name_ru || c.name || "") +
+          "</span>" +
+          renderConsultSourceBadge(c);
         var tdPct = document.createElement("td");
         if (score != null && !isNaN(score)) {
           tdPct.innerHTML = renderMiniDonutSvg(score, 44);
@@ -22546,7 +22594,11 @@
         tdKz.textContent = c.conclusion_excerpt || "";
         var tdProto = document.createElement("td");
         tdProto.className = "consult-crit-excerpt";
-        tdProto.textContent = c.protocol_excerpt || "";
+        var protoText = c.protocol_excerpt || "";
+        if (c.protocol_page) {
+          protoText = (protoText ? protoText + " " : "") + "(стр. " + c.protocol_page + ")";
+        }
+        tdProto.textContent = protoText;
         tr.appendChild(tdName);
         tr.appendChild(tdPct);
         tr.appendChild(tdVer);

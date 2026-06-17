@@ -36,6 +36,13 @@ from .requirement_checker import run_requirement_check
 from .safety_checker import apply_safety_cap_to_score, has_unhandled_critical, run_safety_checks
 from .scoring import compute_overall, sync_score_aliases
 
+try:
+    import icd_mkb
+except ImportError:
+    icd_mkb = None  # type: ignore[assignment]
+
+from .dispensary_regulations import follow_up_mentioned_in_text, lookup_follow_up_expectations
+
 _ROUTING_MARKERS = (
     "консультац", "направлен", "госпитализац", "маршрут", "дообследован",
     "повторн", "контрол", "узи", "биопси", "онколог",
@@ -124,6 +131,11 @@ def _diagnosis_assessments(
         else:  # confirmed
             root = _icd_root(d.icd10_code)
             has_proto = bool(root and root in match_roots) or bool(appl)
+            mkb_valid = False
+            mkb_title = None
+            if d.icd10_code and icd_mkb is not None:
+                mkb_valid = icd_mkb.is_code_in_ru_reference(d.icd10_code)
+                mkb_title = icd_mkb.ru_title(d.icd10_code)
             if not d.icd10_code:
                 missing.append("Код МКБ-10 для диагноза.")
                 issues.append(
@@ -134,16 +146,39 @@ def _diagnosis_assessments(
                         field_target="diagnosis",
                     )
                 )
+            elif icd_mkb is not None and not mkb_valid:
+                missing.append(f"Код {d.icd10_code} отсутствует в справочнике МКБ-10.")
+                issues.append(
+                    ComplianceIssue(
+                        issue_type="invalid_icd_code",
+                        severity="high",
+                        message_ru=f"Код МКБ-10 {d.icd10_code} не найден в русском справочнике.",
+                        field_target="diagnosis",
+                    )
+                )
+            elif mkb_title:
+                found.append(f"Код {d.icd10_code} — {mkb_title[:80]}.")
             if has_proto:
                 status = "supported"
-                found.append("Найден применимый протокол по диагнозу/МКБ.")
+                if not any("Код" in x for x in found):
+                    found.append("Найден применимый протокол по диагнозу/МКБ.")
                 for m in appl[:1]:
                     if m.get("source_path"):
                         refs.append(SourceRef(local_path=m.get("source_path"), protocol_id=str(m.get("protocol_id") or "") or None))
-                scores.append(90.0 if d.icd10_code else 70.0)
+                if icd_mkb is not None and d.icd10_code:
+                    if mkb_valid:
+                        scores.append(92.0 if mkb_title else 80.0)
+                    else:
+                        scores.append(35.0)
+                else:
+                    scores.append(90.0 if d.icd10_code else 70.0)
             else:
                 status = "insufficient_data"
                 missing.append("Применимый протокол для диагноза не найден.")
+                if icd_mkb is not None and d.icd10_code:
+                    scores.append(75.0 if mkb_valid else 35.0)
+                elif d.icd10_code:
+                    scores.append(65.0)
 
         out.append(
             DiagnosisAssessment(
@@ -278,11 +313,25 @@ def _follow_up_planned(doc: ConsultationDocument) -> bool:
 
 
 def _follow_up_score(doc: ConsultationDocument, structural: StructuralAssessment) -> float | None:
-    if _follow_up_planned(doc):
-        return 90.0
+    icd_codes = [d.icd10_code for d in doc.diagnoses if d.icd10_code]
+    reg = lookup_follow_up_expectations(icd_codes)
+    blob = "\n".join(
+        x for x in [
+            doc.sections.follow_up_text or "",
+            doc.sections.general_recommendations or "",
+            doc.sections.recommendations_treatment or "",
+        ] if x
+    )
+    if doc.follow_up:
+        blob += "\n" + "\n".join(f.raw_text or "" for f in doc.follow_up)
+
+    if _follow_up_planned(doc) or follow_up_mentioned_in_text(blob, min_months=reg.get("min_interval_months")):
+        return 92.0 if reg.get("follow_up_hints") else 90.0
     if "follow_up_scheduled" in structural.missing_conditional:
         return 40.0
     if doc.sections.recommendations_treatment or doc.medications:
+        if reg.get("follow_up_hints"):
+            return 48.0
         return 55.0
     return None
 
