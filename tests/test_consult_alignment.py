@@ -78,7 +78,7 @@ def test_diagnosis_card_uses_mkb_not_kp():
     )
     diag = next(c for c in out["alignment_cards"] if c["block_id"] == "diagnosis")
     assert diag["source_kind"] == "mkb"
-    assert diag["name_ru"] == "Диагноз и коды"
+    assert diag["name_ru"] == "Диагноз и коды (МКБ-10)"
     assert diag["score_pct"] >= 70
     assert "МКБ" in diag["protocol_section"] or diag["protocol_excerpt"]
 

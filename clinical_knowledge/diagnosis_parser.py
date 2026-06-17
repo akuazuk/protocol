@@ -19,7 +19,11 @@ SUSPECTED_MARKERS = (
 )
 EXCLUDED_MARKERS = ("исключен", "снят диагноз", "данных за ... не получено")
 PRIMARY_MARKERS = ("основн",)
-SECONDARY_MARKERS = ("сопутств", "фон", "осложнени")
+SECONDARY_MARKERS = ("сопутств", "соп.", "соп:", "фон", "осложнени")
+_JUNK_DIAG_LINE_RE = re.compile(
+    r"^(?:соп\.?\s*:?\s*)?(?:мкб[-\s]?10?)\.?\s*$",
+    re.IGNORECASE,
+)
 MALIGNANCY_MARKERS = (
     "нельзя исключить инвазию", "злокачествен", "образование кишки",
     "опухолев", "c-r", "сr ", "новообразование",
@@ -78,6 +82,45 @@ def _split_diagnosis_lines(diagnosis_block: str) -> list[str]:
     return parts
 
 
+def _is_junk_diagnosis_line(line: str) -> bool:
+    t = (line or "").strip()
+    if len(t) < 3:
+        return True
+    if _JUNK_DIAG_LINE_RE.match(t):
+        return True
+    if t.upper() in ("МКБ", "МКБ.", "МКБ-10"):
+        return True
+    if re.match(r"^соп\.?\s*:", t, re.IGNORECASE):
+        rest = re.sub(r"^соп\.?\s*:\s*", "", t, count=1, flags=re.IGNORECASE).strip()
+        if not RE_LEADING_ICD.match(rest) and not extract_icd10(rest):
+            return True
+    return False
+
+
+def _merge_clinical_continuations(parts: list[str]) -> list[str]:
+    """Склеивает клиническое уточнение после «;» с предыдущим кодом МКБ (не отдельный диагноз)."""
+    if not parts:
+        return parts
+    out: list[str] = []
+    for line in parts:
+        if _is_junk_diagnosis_line(line):
+            continue
+        if not out:
+            out.append(line)
+            continue
+        prev = out[-1]
+        prev_has_icd = bool(RE_LEADING_ICD.match(prev.strip()))
+        cur_has_icd = bool(RE_LEADING_ICD.match(line.strip()))
+        low = line.lower()
+        is_secondary = any(mk in low for mk in SECONDARY_MARKERS)
+        is_primary_labeled = any(mk in low for mk in PRIMARY_MARKERS)
+        if prev_has_icd and not cur_has_icd and not is_secondary and not is_primary_labeled:
+            out[-1] = (prev + "; " + line).strip()
+        else:
+            out.append(line)
+    return out
+
+
 def parse_diagnoses(
     diagnosis_block: str,
     *,
@@ -85,7 +128,7 @@ def parse_diagnoses(
 ) -> list[ConsultationDiagnosis]:
     """Разбирает блок диагноза(ов) в список ConsultationDiagnosis."""
     out: list[ConsultationDiagnosis] = []
-    lines = _split_diagnosis_lines(diagnosis_block)
+    lines = _merge_clinical_continuations(_split_diagnosis_lines(diagnosis_block))
     for i, line in enumerate(lines):
         low = line.lower()
         icd = None

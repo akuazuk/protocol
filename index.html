@@ -1226,9 +1226,16 @@
 
     .consult-crit-name { font-weight: 650; color: #2d4a42; }
 
+    .consult-crit-name-cell {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
     .consult-source-badge {
       display: inline-block;
-      margin-left: 0.35rem;
+      margin-left: 0;
       padding: 0.06rem 0.35rem;
       border-radius: 4px;
       font-size: 0.68rem;
@@ -22408,7 +22415,7 @@
 
   function renderConsultSourceBadge(c) {
     var label = c.source_label || c.source_kind || "";
-    if (!label) return "";
+    if (!label || c.source_kind === "mkb") return "";
     var name = String(c.name_ru || c.name || "");
     if (name && label && name.indexOf(label) >= 0) return "";
     var cls = consultSourceBadgeClass(c.source_kind || "");
@@ -22574,6 +22581,7 @@
         var score = c.score_pct != null ? Number(c.score_pct) : null;
         var tr = document.createElement("tr");
         var tdName = document.createElement("td");
+        tdName.className = "consult-crit-name-cell";
         tdName.innerHTML =
           '<span class="consult-crit-name">' +
           escapeHtml(c.name_ru || c.name || "") +
