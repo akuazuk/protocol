@@ -36,6 +36,7 @@ def run_probe(cases_path: Path, *, min_score: float = 22.0) -> list[dict]:
             paths, meta = consult_target_protocol_paths(
                 diag_icd=case.get("icd"),
                 merged_icd=case.get("icd"),
+                clinical_rules=None,
                 specialty_slugs=[case["specialty_slug"]] if case.get("specialty_slug") else [],
                 consult_facts=_facts(case),
                 primary_specialty=case.get("specialty_slug"),
