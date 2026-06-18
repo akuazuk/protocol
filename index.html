@@ -1625,6 +1625,39 @@
       color: var(--green-800);
     }
 
+    .consult-proto-match-wrap {
+      margin: 0.55rem 0 0.75rem;
+    }
+
+    .consult-proto-match-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .consult-proto-match-table th,
+    .consult-proto-match-table td {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 0.35rem 0.45rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .consult-proto-match-table th {
+      background: rgba(148, 163, 184, 0.12);
+      font-weight: 650;
+    }
+
+    .consult-proto-match-flag {
+      display: inline-block;
+      margin: 0 0.2rem 0.2rem 0;
+      padding: 0.05rem 0.35rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      background: rgba(220, 38, 38, 0.12);
+      color: #b91c1c;
+    }
+
     .consult-proto-chip__badge--icd {
       background: rgba(13, 110, 88, 0.16);
       color: #0d6e58;
@@ -22354,6 +22387,79 @@
       return ulEl;
     }
 
+    function renderProtocolMatchTable(matches, rejected) {
+      if ((!matches || !matches.length) && (!rejected || !rejected.length)) return null;
+      var wrap = document.createElement("div");
+      wrap.className = "consult-proto-match-wrap";
+
+      var help = document.createElement("details");
+      help.className = "consult-hint-small";
+      help.style.marginBottom = "0.45rem";
+      var sum = document.createElement("summary");
+      sum.textContent = "Как читать таблицу подбора КП";
+      help.appendChild(sum);
+      var hp = document.createElement("p");
+      hp.style.margin = "0.35rem 0 0";
+      hp.textContent =
+        "Балл — соответствие жалобам, анамнезу, МКБ и специальности. МКБ-веса — приоритет кодов в протоколе. Флаги — риски (приказ, стационар, чужая нозология).";
+      help.appendChild(hp);
+      wrap.appendChild(help);
+
+      var tbl = document.createElement("table");
+      tbl.className = "consult-proto-match-table";
+      var thead = document.createElement("thead");
+      thead.innerHTML =
+        "<tr><th>КП</th><th>Балл</th><th>МКБ</th><th>Причина / флаги</th></tr>";
+      tbl.appendChild(thead);
+      var tbody = document.createElement("tbody");
+
+      function addRow(m, isRejected) {
+        var tr = document.createElement("tr");
+        var titleTd = document.createElement("td");
+        titleTd.textContent = formatProtocolDisplayTitle(
+          m.source_path || "",
+          m.title || ""
+        );
+        var scoreTd = document.createElement("td");
+        scoreTd.textContent =
+          m.match_score != null ? String(Math.round(Number(m.match_score))) : "—";
+        var icdTd = document.createElement("td");
+        icdTd.textContent = m.icd_fit_label || "—";
+        var flagTd = document.createElement("td");
+        var reason = (m.pick_reason_ru || "").trim();
+        if (reason) {
+          var rp = document.createElement("div");
+          rp.textContent = reason;
+          flagTd.appendChild(rp);
+        }
+        var flags = m.pick_risk_flags || [];
+        var why = m.why_rejected_ru || [];
+        (isRejected ? why : flags).forEach(function (f) {
+          var sp = document.createElement("span");
+          sp.className = "consult-proto-match-flag";
+          sp.textContent = f;
+          flagTd.appendChild(sp);
+        });
+        tr.appendChild(titleTd);
+        tr.appendChild(scoreTd);
+        tr.appendChild(icdTd);
+        tr.appendChild(flagTd);
+        tbody.appendChild(tr);
+      }
+
+      (matches || []).slice(0, 8).forEach(function (m) {
+        addRow(m, false);
+      });
+      if (rejected && rejected.length) {
+        rejected.slice(0, 5).forEach(function (m) {
+          addRow(m, true);
+        });
+      }
+      tbl.appendChild(tbody);
+      wrap.appendChild(tbl);
+      return wrap;
+    }
+
     var unified = buildUnifiedProtocolMap(data, rev);
     var rows = Object.keys(unified).map(function (k) {
       return unified[k];
@@ -22409,6 +22515,16 @@
       pn.textContent = preciseNote;
       pw.appendChild(pn);
     }
+
+    var pickMeta =
+      (data &&
+        data.consult_retrieval &&
+        data.consult_retrieval.path_pick_meta) ||
+      {};
+    var protoMatches = pickMeta.protocol_matches || [];
+    var protoRejected = pickMeta.rejected_protocols || [];
+    var matchTbl = renderProtocolMatchTable(protoMatches, protoRejected);
+    if (matchTbl) pw.appendChild(matchTbl);
 
     pw.appendChild(renderProtocolChipList(rows, oncByPath));
 

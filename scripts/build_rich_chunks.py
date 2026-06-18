@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from icd_mkb import extract_icd_codes_raw, normalize_icd_code
 
+from clinical_knowledge.chunk_tags import build_chunk_tags, build_protocol_tags
 from clinical_knowledge.protocol_catalog import normalize_protocol_title
 
 # ---------------------------------------------------------------------------
@@ -1187,6 +1188,29 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
         chunk_type_counts=chunk_type_counts,
     )
     chunks_out.insert(0, overview)
+
+    protocol_tags = build_protocol_tags(
+        title=str(meta.get("display_title_normalized") or meta.get("protocol_title") or ""),
+        source_path=rel_path,
+        protocol_kind=str(meta.get("protocol_kind") or ""),
+        icd_codes=list(meta.get("icd10_protocol") or meta.get("icd10_primary") or []),
+        chunk_type_counts=chunk_type_counts,
+        catalog_row=catalog_row,
+    )
+    meta["protocol_tags"] = protocol_tags
+    meta["tags"] = protocol_tags
+
+    for ch in chunks_out:
+        ch["tags"] = build_chunk_tags(
+            text=str(ch.get("text") or ""),
+            chunk_type=str(ch.get("chunk_type") or "body"),
+            icd_codes=list(ch.get("icd10_codes") or []),
+            care_setting=list(ch.get("care_setting") or []),
+            protocol_weights=protocol_icd_weights,
+            drugs=list(ch.get("drugs") or []),
+            imaging=list(ch.get("imaging") or []),
+            lab_tests=list(ch.get("lab_tests") or []),
+        )
 
     return {"chunks": chunks_out, "meta": meta, "errors": errors}
 

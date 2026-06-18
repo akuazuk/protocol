@@ -66,6 +66,7 @@ def consult_target_protocol_paths(
     """Список source_path PDF, по которым разрешён RAG для КЗ."""
     from .loader import load_protocol_cards_registry
     from .protocol_match import compute_match_score, match_protocol_cards
+    from .protocol_match_detail import compute_match_detail
     from .protocol_pick_filters import (
         clinical_relevance_multiplier,
         icd_fit_for_card,
@@ -83,6 +84,40 @@ def consult_target_protocol_paths(
     sources: dict[str, str] = {}
     scored_entries: list[tuple[float, str, str]] = []
     protocol_matches: list[dict[str, Any]] = []
+    rejected_protocols: list[dict[str, Any]] = []
+
+    _WHY_REJECTED_RU = {
+        "admin_order": "Приказ об утверждении — не клинический эталон",
+        "low_score": "Низкий балл соответствия жалобам, анамнезу и МКБ",
+        "population_mismatch": "Не подходит по возрасту/популяции",
+        "wrong_nosology_spine": "Чужая нозология (не позвоночник/ишиас)",
+        "wrong_nosology_venous": "Чужая нозология (не венозная)",
+        "inpatient_only": "Только стационарный уход",
+        "low_icd_fit": "Слабое соответствие коду МКБ",
+    }
+
+    def _match_row_from_detail(detail: dict[str, Any], card: dict[str, Any], src: str) -> dict[str, Any]:
+        flags = list(detail.get("pick_risk_flags") or [])
+        why = [
+            _WHY_REJECTED_RU[f]
+            for f in flags
+            if f in _WHY_REJECTED_RU
+        ]
+        if detail.get("rejected") and not why:
+            why.append(_WHY_REJECTED_RU["low_score"])
+        return {
+            "title": card.get("title"),
+            "source_path": card.get("source_path"),
+            "match_score": detail.get("match_score"),
+            "match_breakdown": detail.get("match_breakdown") or {},
+            "specialty_slug": card.get("specialty_slug"),
+            "icd_fit": detail.get("icd_fit") or [],
+            "icd_fit_label": detail.get("icd_fit_label") or "",
+            "pick_reason_ru": detail.get("pick_reason_ru") or "",
+            "pick_risk_flags": flags,
+            "why_rejected_ru": why,
+            "pick_source": src,
+        }
 
     def add(sp: str, src: str, score: float = 0.0) -> None:
         n = _path_norm(sp)
@@ -100,17 +135,26 @@ def consult_target_protocol_paths(
     def _append_match(mp: dict[str, Any], src: str) -> None:
         sp = str(mp.get("source_path") or "")
         sc = float(mp.get("match_score") or 0)
-        if not sp or sc < min_match_score:
+        if not sp:
             return
-        add(sp, src, sc)
-        protocol_matches.append({
+        row = {
             "title": mp.get("title"),
             "source_path": sp,
             "match_score": sc,
+            "match_breakdown": mp.get("match_breakdown") or {},
             "specialty_slug": mp.get("specialty_slug"),
             "icd_fit": mp.get("icd_fit") or [],
             "icd_fit_label": mp.get("icd_fit_label") or "",
-        })
+            "pick_reason_ru": mp.get("pick_reason_ru") or "",
+            "pick_risk_flags": mp.get("pick_risk_flags") or [],
+            "why_rejected_ru": mp.get("why_rejected_ru") or [],
+            "pick_source": src,
+        }
+        if sc < min_match_score:
+            rejected_protocols.append(row)
+            return
+        add(sp, src, sc)
+        protocol_matches.append(row)
 
     if isinstance(clinical_rules, dict):
         for mp in clinical_rules.get("matched_protocols") or []:
@@ -159,11 +203,7 @@ def consult_target_protocol_paths(
             if not sp or sp in seen:
                 continue
             if is_administrative_protocol(card):
-                continue
-            if slugs and card.get("specialty_slug") not in slugs:
-                continue
-            if facts:
-                sc = compute_match_score(
+                detail = compute_match_detail(
                     card,
                     icd_list=icd_list,
                     audience=patient.get("adult_or_child"),
@@ -173,29 +213,41 @@ def consult_target_protocol_paths(
                     complaints=list(cons.get("complaints") or []),
                     performed_exams=list(cons.get("performed_exams") or []),
                 )
-                sc = round(
-                    min(
-                        100.0,
-                        sc
-                        * clinical_relevance_multiplier(
-                            card,
-                            icd_codes=icd_list,
-                            complaints=cons.get("complaints"),
-                            ambulatory=True,
-                        ),
-                    ),
-                    2,
+                rejected_protocols.append(_match_row_from_detail(detail, card, "icd_registry_scan"))
+                continue
+            if slugs and card.get("specialty_slug") not in slugs:
+                continue
+            if facts:
+                detail = compute_match_detail(
+                    card,
+                    icd_list=icd_list,
+                    audience=patient.get("adult_or_child"),
+                    hints=set(cons.get("conditions_hint") or []),
+                    specialty_slug=spec_for_score,
+                    diag_text=str(cons.get("diagnosis_text") or ""),
+                    complaints=list(cons.get("complaints") or []),
+                    performed_exams=list(cons.get("performed_exams") or []),
                 )
+                sc = float(detail.get("match_score") or 0)
             else:
                 sc = _icd_overlap_score(card, icd_roots, icd_full)
+                detail = None
             if sc <= 0:
                 continue
             if _path_spine_domain_mismatch(sp, icd_roots):
+                if detail:
+                    row = _match_row_from_detail(detail, card, "icd_registry_scan")
+                    row["why_rejected_ru"] = list(row.get("why_rejected_ru") or []) + [
+                        "Несоответствие нозологии (позвоночник)"
+                    ]
+                    rejected_protocols.append(row)
                 continue
             if slugs and card.get("specialty_slug") in slugs:
                 sc += 8.0
             if sc >= min_match_score and sc > best_by_path.get(sp, 0.0):
                 best_by_path[sp] = sc
+            elif detail and detail.get("rejected"):
+                rejected_protocols.append(_match_row_from_detail(detail, card, "icd_registry_scan"))
 
         for sp, sc in sorted(best_by_path.items(), key=lambda x: (-x[1], x[0])):
             add(sp, "icd_registry_match", sc)
@@ -208,17 +260,19 @@ def consult_target_protocol_paths(
                     {},
                 )
                 if card:
-                    fit = icd_fit_for_card(card, icd_list)
-                    protocol_matches.append({
-                        "title": card.get("title"),
-                        "source_path": sp,
-                        "match_score": sc,
-                        "specialty_slug": card.get("specialty_slug"),
-                        "icd_fit": fit,
-                        "icd_fit_label": ", ".join(
-                            f"{x['code']} ({x['weight']:.2f})" for x in fit[:4]
-                        ),
-                    })
+                    detail = compute_match_detail(
+                        card,
+                        icd_list=icd_list,
+                        audience=patient.get("adult_or_child"),
+                        hints=set(cons.get("conditions_hint") or []),
+                        specialty_slug=spec_for_score,
+                        diag_text=str(cons.get("diagnosis_text") or ""),
+                        complaints=list(cons.get("complaints") or []),
+                        performed_exams=list(cons.get("performed_exams") or []),
+                    )
+                    row = _match_row_from_detail(detail, card, "icd_registry_match")
+                    row["match_score"] = sc
+                    protocol_matches.append(row)
             if len(paths) >= limit:
                 break
 
@@ -253,6 +307,7 @@ def consult_target_protocol_paths(
         "specialty_slugs": sorted(slugs),
         "path_sources": sources,
         "protocol_matches": deduped_matches[:limit],
+        "rejected_protocols": rejected_protocols[:20],
         "strict": bool(paths),
         "min_match_score": min_match_score,
     }
@@ -346,6 +401,12 @@ def supplement_retrieval_from_rich_chunks(
         chunks = get_chunks(path) or []
         if not chunks:
             continue
+        try:
+            from clinical_knowledge.chunk_tags import chunk_usable_for_retrieval
+
+            chunks = [c for c in chunks if chunk_usable_for_retrieval(c, ambulatory=True)]
+        except Exception:
+            pass
         for label, ctypes, lim in type_passes:
             picked = _pick_chunks(chunks, q, icd_codes, limit=lim, chunk_types=ctypes)
             for ch in picked:

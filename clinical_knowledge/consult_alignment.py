@@ -88,25 +88,31 @@ def _coverage_pct(
 ) -> tuple[int, list[str], list[str]]:
     if not required:
         return 0, [], []
+    from clinical_knowledge.kz_chunk_match import match_kp_item_to_kz
+
     found: list[str] = []
     missing: list[str] = []
-    meta_by_text: dict[str, str] = {}
+    meta_by_text: dict[str, dict[str, Any]] = {}
     for m in meta or []:
         if isinstance(m, dict):
             t = str(m.get("text") or "")
-            meta_by_text[t[:80].lower()] = str(m.get("obligation") or "recommended")
+            meta_by_text[t[:80].lower()] = m
 
     req_slice = required[:12]
     total_weight = 0.0
     got_weight = 0.0
     for item in req_slice:
         key = item[:80].lower()
-        obligation = meta_by_text.get(key, "recommended")
+        mrow = meta_by_text.get(key, {})
+        obligation = str(mrow.get("obligation") or "recommended")
         weight = 1.5 if obligation == "required" else 1.0
         total_weight += weight
-        if _item_mentioned(kz_blob, item):
+        entities = (mrow.get("entities") or {}) if isinstance(mrow.get("entities"), dict) else {}
+        km = match_kp_item_to_kz(item, kz_blob, entities=entities)
+        mentioned = km["kz_match"] in ("found", "partial") or _item_mentioned(kz_blob, item)
+        if mentioned:
             found.append(item)
-            got_weight += weight
+            got_weight += weight * (1.0 if km["kz_match"] == "found" else 0.85)
         else:
             missing.append(item)
 
@@ -376,6 +382,29 @@ def _exams_card(
         (c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("diagnostics", "criteria_block", "table")),
         (profile.get("cites") or [{}])[0] if profile.get("cites") else {},
     )
+    if not cite.get("chunk_id") and profile.get("paths"):
+        try:
+            from clinical_knowledge.kz_chunk_match import best_chunk_for_items
+
+            all_chunks: list[dict[str, Any]] = []
+            for pth in (profile.get("paths") or [])[:3]:
+                all_chunks.extend(profile.get("chunks_by_path", {}).get(pth) or [])
+            best = best_chunk_for_items(
+                all_chunks,
+                chunk_types=("diagnostics", "criteria_block", "table"),
+                icd_codes=list(ctx.get("icd_codes") or []),
+            )
+            if best:
+                cite = {
+                    "path": best.get("source_path"),
+                    "chunk_id": best.get("chunk_id"),
+                    "chunk_type": best.get("chunk_type"),
+                    "page_from": best.get("page_from"),
+                    "text": best.get("text"),
+                    "section_title": best.get("section_title"),
+                }
+        except Exception:
+            pass
     proto_text, proto_section, proto_header = _format_kp_cite(cite, required)
     kp_title = _kp_title(protocol_matches, profile)
     pick_note = protocol_pick_comment(ctx, protocol_matches)
@@ -640,6 +669,9 @@ def build_consult_alignment(
     profile = merge_profiles_with_index(
         protocol_paths, icd_codes, get_chunks, query=clinical_query
     )
+    profile["chunks_by_path"] = {
+        p: get_chunks(p) or [] for p in (profile.get("paths") or protocol_paths or [])[:4]
+    }
     cards: list[dict[str, Any]] = []
 
     cards.append(_diagnosis_card(doc, icd_codes))
@@ -673,6 +705,13 @@ def build_consult_alignment(
         "criteria": [_card_to_criterion(c) for c in ordered if c["block_id"] != "limitations"],
         "alignment_mean_score": mean_score,
         "limitations_ru": limitations,
+        "audit_trail": {
+            "protocol_matches": (protocol_matches or [])[:8],
+            "icd_codes": list(icd_codes or [])[:8],
+            "protocol_paths": list(protocol_paths or [])[:8],
+            "profile_diagnostics": len(profile.get("diagnostics") or []),
+            "profile_treatment": len(profile.get("treatment") or []) + len(profile.get("medications") or []),
+        },
         "protocol_profile": {
             "paths": profile.get("paths") or [],
             "diagnostics_count": len(profile.get("diagnostics") or []),
@@ -736,6 +775,9 @@ def sync_structured_with_alignment(
             "source_label": card.get("source_label"),
         }
     comp["alignment_by_block"] = by_block
+    audit = alignment.get("audit_trail")
+    if audit:
+        structured_analysis["audit_trail"] = audit
     structured_analysis["compliance"] = comp
 
 

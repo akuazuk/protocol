@@ -101,6 +101,13 @@ def _filter_lines_for_field(lines: list[str], field: str) -> list[str]:
 
 
 def _score_chunk(ch: dict[str, Any], query: str, icd_codes: list[str] | None) -> float:
+    try:
+        from clinical_knowledge.chunk_tags import chunk_usable_for_retrieval
+
+        if not chunk_usable_for_retrieval(ch, ambulatory=True):
+            return -1.0
+    except Exception:
+        pass
     mult = chunk_type_multiplier(query, ch, icd_codes=icd_codes)
     text = (ch.get("text") or "").lower()
     ql = (query or "").lower()
@@ -124,7 +131,22 @@ def _score_chunk(ch: dict[str, Any], query: str, icd_codes: list[str] | None) ->
         type_boost = 1.2
     elif ctype == "protocol_overview":
         type_boost = 0.4
-    return mult + overlap * 0.4 + icd_boost + type_boost
+    tags = ch.get("tags") or {}
+    obligation_boost = 0.0
+    if tags.get("obligation") == "required":
+        obligation_boost = 1.1
+    elif tags.get("obligation") == "optional":
+        obligation_boost = -0.2
+    signal_boost = 0.4 if tags.get("signal") == "high" else 0.0
+    tag_weights = tags.get("icd10_weights") or {}
+    if tag_weights and icd_codes:
+        icd_set = {c.upper() for c in icd_codes if c}
+        for code in icd_set:
+            try:
+                signal_boost += float(tag_weights.get(code) or 0) * 0.5
+            except (TypeError, ValueError):
+                pass
+    return mult + overlap * 0.4 + icd_boost + type_boost + obligation_boost + signal_boost
 
 
 def _pick_chunks(

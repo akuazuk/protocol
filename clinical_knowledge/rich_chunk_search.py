@@ -49,6 +49,13 @@ def should_skip_rich_chunk_row(row: dict[str, Any]) -> bool:
     """Не индексировать служебный мусор из rich_chunks."""
     if not is_rich_chunk_row(row):
         return False
+    try:
+        from clinical_knowledge.chunk_tags import chunk_usable_for_retrieval
+
+        if not chunk_usable_for_retrieval(row, ambulatory=True):
+            return True
+    except Exception:
+        pass
     if row.get("chunk_is_empty"):
         return True
     text = (row.get("text") or "").strip()

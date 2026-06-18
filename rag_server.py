@@ -7345,7 +7345,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r188-kz-anamnesis-split-icd-protocol-fit"
+BUILD_VERSION = "2026-06-01-r189-chunk-tags-match-breakdown-kz-probe"
 
 
 def _app_version() -> str:
