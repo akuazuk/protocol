@@ -49,3 +49,28 @@ def test_filter_retrieval_by_category_slugs():
     )
     assert len(out) == 1
     assert out[0]["category"] == "nevrologiya-neyrokhirurgiya"
+
+
+def test_m54_always_has_protocol_pick():
+    facts = {
+        "consultation": {
+            "complaints": ["боль в пояснице с иррадиацией в ногу"],
+            "diagnosis_text": "M54.3 ишиас",
+            "conditions_hint": ["боль в пояснице"],
+            "performed_exams": [],
+        },
+        "patient_context": {"adult_or_child": "adult"},
+    }
+    paths, meta = consult_target_protocol_paths(
+        merged_icd=["M54.3"],
+        diag_icd=["M54.3"],
+        clinical_rules=None,
+        specialty_slugs=["nevrologiya"],
+        consult_facts=facts,
+        primary_specialty="nevrologiya",
+        min_match_score=22.0,
+    )
+    assert paths, meta
+    top = (meta.get("protocol_matches") or [{}])[0]
+    assert float(top.get("match_score") or 0) >= 12.0
+    assert "nevrologiya-neyrokhirurgiya" in str(paths[0]) or meta.get("icd_coverage_fallback")

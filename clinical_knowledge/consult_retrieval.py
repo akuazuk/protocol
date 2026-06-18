@@ -39,6 +39,41 @@ def _icd_overlap_score(card: dict[str, Any], icd_roots: set[str], icd_full: set[
 
 _SPINE_ICD_ROOTS = frozenset({"M51", "M53", "M54"})
 
+_SPECIALTY_SLUG_ALIASES: dict[str, str] = {
+    "nevrologiya": "nevrologiya-neyrokhirurgiya",
+    "neyrokhirurgiya": "nevrologiya-neyrokhirurgiya",
+    "ortopediya": "travmatologiya-ortopediya",
+    "ortopediya-travmatologiya": "travmatologiya-ortopediya",
+    "travmatologiya": "travmatologiya-ortopediya",
+    "ftiziatriya": "pulmonologiya-ftiziatriya",
+    "pulmonologiya": "pulmonologiya-ftiziatriya",
+    "ginekologiya": "akusherstvo-ginekologiya",
+    "akusherstvo": "akusherstvo-ginekologiya",
+}
+
+
+def _normalize_specialty_slugs(slugs: set[str] | list[str] | None) -> set[str]:
+    """Короткие slug («nevrologiya») → канон каталога."""
+    out: set[str] = set()
+    try:
+        from clinical_knowledge.rubric_extractors import normalize_rubric_slug
+    except Exception:
+        normalize_rubric_slug = None  # type: ignore[assignment,misc]
+    for raw in slugs or []:
+        s = str(raw or "").strip()
+        if not s:
+            continue
+        canon = _SPECIALTY_SLUG_ALIASES.get(s) or _SPECIALTY_SLUG_ALIASES.get(s.lower())
+        if not canon and normalize_rubric_slug:
+            canon = normalize_rubric_slug(s)
+        if not canon and "-" not in s:
+            for alias, target in _SPECIALTY_SLUG_ALIASES.items():
+                if alias.startswith(s) or s in alias:
+                    canon = target
+                    break
+        out.add(canon or s)
+    return out
+
 
 def _path_spine_domain_mismatch(sp: str, icd_roots: set[str]) -> bool:
     """M54* + путь КП мочевого пузыря или опухолей без позвоночника - чужой протокол."""
@@ -166,13 +201,21 @@ def consult_target_protocol_paths(
     primary_icd = diag or merged
     icd_roots = {_icd_root(c) for c in primary_icd}
     icd_full = set(primary_icd)
-    slugs = expand_specialty_slugs_for_icd(set(specialty_slugs or []), primary_icd)
+    slugs = _normalize_specialty_slugs(set(specialty_slugs or []))
+    if primary_specialty:
+        slugs |= _normalize_specialty_slugs([primary_specialty])
+    slugs = expand_specialty_slugs_for_icd(slugs, primary_icd)
     slugs = expand_specialty_slugs_for_clinical_text(slugs, consult_text or "")
 
     if facts and len(paths) < limit:
         spec_try: list[str | None] = []
         if primary_specialty:
-            spec_try.append(primary_specialty)
+            spec_try.append(
+                next(
+                    iter(_normalize_specialty_slugs([primary_specialty])),
+                    primary_specialty,
+                )
+            )
         if slugs:
             for s in sorted(slugs):
                 if s not in spec_try:
@@ -195,6 +238,11 @@ def consult_target_protocol_paths(
         patient = (facts or {}).get("patient_context") or {}
         icd_list = primary_icd
         spec_for_score = primary_specialty
+        if spec_for_score:
+            spec_for_score = next(
+                iter(_normalize_specialty_slugs([spec_for_score])),
+                spec_for_score,
+            )
         if not spec_for_score and len(slugs) == 1:
             spec_for_score = next(iter(slugs))
 
@@ -276,6 +324,150 @@ def consult_target_protocol_paths(
             if len(paths) >= limit:
                 break
 
+    def _ensure_icd_protocol_pick() -> None:
+        """Гарантировать ≥1 КП для любого МКБ (с процентом соответствия)."""
+        if paths or not primary_icd:
+            return
+        cons = (facts or {}).get("consultation") or {}
+        patient = (facts or {}).get("patient_context") or {}
+        icd_list = primary_icd
+        q_parts = [
+            consult_text or "",
+            " ".join(cons.get("complaints") or []),
+            str(cons.get("diagnosis_text") or ""),
+            " ".join(icd_list),
+        ]
+        query = " ".join(p for p in q_parts if p).strip()
+        spec_for_score = primary_specialty
+        if spec_for_score:
+            norm_spec = next(iter(_normalize_specialty_slugs([spec_for_score])), spec_for_score)
+            spec_for_score = norm_spec
+
+        try:
+            from clinical_knowledge.protocol_icd_index import lookup_protocols_by_icd
+
+            lk = lookup_protocols_by_icd(
+                icd_codes=icd_list,
+                query=query,
+                population=patient.get("adult_or_child"),
+                rubric_slugs=sorted(slugs) if slugs else None,
+                limit=max(limit, 2),
+            )
+            for prot in lk.get("protocols") or []:
+                if len(paths) >= limit:
+                    break
+                sp = _path_norm(str(prot.get("path") or ""))
+                if not sp or sp in seen:
+                    continue
+                rel_pct = float(prot.get("icd_relevance_pct") or 0)
+                match_sc = max(12.0, min(100.0, rel_pct))
+                card = next(
+                    (
+                        c for c in load_protocol_cards_registry()
+                        if _path_norm(str(c.get("source_path") or "")) == sp
+                    ),
+                    {"title": prot.get("title"), "source_path": sp},
+                )
+                detail = compute_match_detail(
+                    card,
+                    icd_list=icd_list,
+                    audience=patient.get("adult_or_child"),
+                    hints=set(cons.get("conditions_hint") or []),
+                    specialty_slug=spec_for_score,
+                    diag_text=str(cons.get("diagnosis_text") or ""),
+                    complaints=list(cons.get("complaints") or []),
+                    performed_exams=list(cons.get("performed_exams") or []),
+                ) if facts else None
+                row = _match_row_from_detail(detail, card, "icd_lookup_fallback") if detail else {
+                    "title": prot.get("title"),
+                    "source_path": sp,
+                    "match_score": match_sc,
+                    "match_breakdown": {"icd": round(rel_pct / 100.0, 2)},
+                    "icd_fit": [{"code": c, "weight": round(rel_pct / 100.0, 2)} for c in icd_list[:2]],
+                    "icd_fit_label": ", ".join(f"{c} ({rel_pct:.0f}%)" for c in icd_list[:2]),
+                    "pick_reason_ru": f"Подбор по МКБ {', '.join(icd_list[:2])} — {rel_pct:.0f}%",
+                    "pick_risk_flags": ["icd_lookup_fallback"],
+                    "why_rejected_ru": [],
+                    "pick_source": "icd_lookup_fallback",
+                }
+                row["match_score"] = max(float(row.get("match_score") or 0), match_sc)
+                flags = list(row.get("pick_risk_flags") or [])
+                if match_sc < min_match_score and "weak_icd_match" not in flags:
+                    flags.append("weak_icd_match")
+                row["pick_risk_flags"] = flags
+                add(sp, "icd_lookup_fallback", float(row["match_score"]))
+                protocol_matches.append(row)
+        except Exception:
+            pass
+
+        if paths:
+            return
+
+        best: list[tuple[float, dict[str, Any], dict[str, Any] | None]] = []
+        for card in load_protocol_cards_registry():
+            sp = _path_norm(str(card.get("source_path") or ""))
+            if not sp or sp in seen or is_administrative_protocol(card):
+                continue
+            if _path_spine_domain_mismatch(sp, icd_roots):
+                continue
+            overlap_sc = _icd_overlap_score(card, icd_roots, icd_full)
+            if facts:
+                detail = compute_match_detail(
+                    card,
+                    icd_list=icd_list,
+                    audience=patient.get("adult_or_child"),
+                    hints=set(cons.get("conditions_hint") or []),
+                    specialty_slug=spec_for_score,
+                    diag_text=str(cons.get("diagnosis_text") or ""),
+                    complaints=list(cons.get("complaints") or []),
+                    performed_exams=list(cons.get("performed_exams") or []),
+                )
+                sc = max(float(detail.get("match_score") or 0), overlap_sc)
+            else:
+                detail = None
+                sc = overlap_sc
+            if sc <= 0:
+                continue
+            best.append((sc, card, detail))
+
+        best.sort(key=lambda x: (-x[0], x[1].get("source_path") or ""))
+        for sc, card, detail in best[:limit]:
+            sp = _path_norm(str(card.get("source_path") or ""))
+            if sp in seen:
+                continue
+            row = (
+                _match_row_from_detail(detail, card, "icd_best_effort_fallback")
+                if detail
+                else _match_row_from_detail(
+                    {
+                        "match_score": sc,
+                        "match_breakdown": {"icd": round(min(1.0, sc / 100.0), 2)},
+                        "icd_fit": icd_fit_for_card(card, icd_list),
+                        "icd_fit_label": "",
+                        "pick_reason_ru": f"Резервный подбор по МКБ, балл {sc:.0f}",
+                        "pick_risk_flags": ["icd_best_effort_fallback"],
+                        "rejected": sc < min_match_score,
+                    },
+                    card,
+                    "icd_best_effort_fallback",
+                )
+            )
+            row["match_score"] = sc
+            flags = list(row.get("pick_risk_flags") or [])
+            for flag in ("icd_best_effort_fallback", "weak_icd_match"):
+                if sc < min_match_score and flag not in flags:
+                    flags.append(flag)
+            row["pick_risk_flags"] = flags
+            if sc < min_match_score:
+                row["pick_reason_ru"] = (
+                    f"Резервный подбор по МКБ {', '.join(icd_list[:2])}: "
+                    f"балл {sc:.0f} (ниже порога {min_match_score:.0f})"
+                )
+            add(sp, "icd_best_effort_fallback", sc)
+            protocol_matches.append(row)
+
+    _ensure_icd_protocol_pick()
+
     if not paths and primary_icd:
         icd_roots = {_icd_root(c) for c in primary_icd}
         if icd_roots & {"J06", "J00", "J02", "J03", "J04", "J05"} or any(
@@ -310,6 +502,10 @@ def consult_target_protocol_paths(
         "rejected_protocols": rejected_protocols[:20],
         "strict": bool(paths),
         "min_match_score": min_match_score,
+        "icd_coverage_fallback": any(
+            sources.get(p) in ("icd_lookup_fallback", "icd_best_effort_fallback")
+            for p in paths
+        ),
     }
     return paths[:limit], meta
 

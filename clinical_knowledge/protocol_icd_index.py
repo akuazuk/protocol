@@ -52,7 +52,7 @@ _ICD_RUBRIC: dict[str, list[str]] = {
     "F": ["psikhiatriya-narkologiya"],
     "L": ["dermatovenerologiya"],
     "H": ["oftalmologiya"],
-    "M": ["ortopediya-travmatologiya"],
+    "M": ["travmatologiya-ortopediya", "nevrologiya-neyrokhirurgiya"],
 }
 
 

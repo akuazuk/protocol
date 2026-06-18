@@ -66,6 +66,12 @@ def expand_specialty_slugs_for_icd(
             out.update({"khirurgiya", "anesteziologiya-reanimatologiya"})
         if root.startswith(("E03", "E04", "E05", "E06", "E55", "E58", "E59")):
             out.add("endokrinologiya-narusheniya-obmena-veshchestv")
+        if root in {"M51", "M53", "M54"} or (c.startswith("M5") and len(root) >= 3):
+            out.update({"nevrologiya-neyrokhirurgiya", "travmatologiya-ortopediya"})
+        if c.startswith("M"):
+            out.add("travmatologiya-ortopediya")
+        if root.startswith(("I80", "I81", "I82", "I83")):
+            out.update({"khirurgiya", "bolezni-sistemy-krovoobrashcheniya"})
     return out
 
 
