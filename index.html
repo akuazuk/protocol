@@ -9851,7 +9851,7 @@
                 </table>
               </div>
               <div class="consult-score-table-block">
-                <h4>Критерии модели (LLM)</h4>
+                <h4>Критерии согласования</h4>
                 <table class="consult-score-table" id="consult-llm-scores-table">
                   <thead>
                     <tr>
@@ -9908,7 +9908,7 @@
               </table>
             </div>
             <details id="methodist-llm-wrap" class="consult-hide-print" hidden>
-              <summary>Критерии LLM (L2, справочно)</summary>
+              <summary>Критерии согласования (справочно)</summary>
               <div style="overflow-x:auto">
                 <table class="methodist-llm-table" id="methodist-llm-table">
                   <thead>
@@ -21561,20 +21561,39 @@
     donutsEl.innerHTML =
       renderMainDonutSvg(headlinePct, "Итог (гибрид)") +
       (typeof structPct === "number" ? renderMainDonutSvg(structPct, "Структурный") : "") +
-      (llmAvg != null ? renderMainDonutSvg(llmAvg, "Среднее LLM") : "");
+      (llmAvg != null ? renderMainDonutSvg(llmAvg, "Критерии") : "");
+
+    var alignByBlock = saComp.alignment_by_block || {};
+    var ALIGN_ROW_BLOCK = {
+      diagnosis_score: "diagnosis",
+      required_exams_score: "exams",
+      treatment_score: "treatment",
+      follow_up_score: "follow_up"
+    };
 
     if (structTb) {
       structTb.innerHTML = "";
       var bd = saComp.score_breakdown || {};
       CONSULT_STRUCT_SCORE_ROWS.forEach(function (row) {
-        appendScoreTableRow(structTb, row.label, scoreFromBreakdown(bd, row.key, row.fallbacks));
+        var pct = scoreFromBreakdown(bd, row.key, row.fallbacks);
+        var blockId = ALIGN_ROW_BLOCK[row.key];
+        var ab = blockId && alignByBlock[blockId];
+        var label = row.label;
+        if (ab && ab.source_label) {
+          label = row.label + " (" + ab.source_label + ")";
+        }
+        appendScoreTableRow(structTb, label, pct);
       });
     }
 
     if (llmTb) {
       llmTb.innerHTML = "";
       criteria.forEach(function (c) {
-        appendScoreTableRow(llmTb, c.name_ru || c.name || "Критерий", c.score_pct);
+        var nm = c.name_ru || c.name || "Критерий";
+        if (c.source_label) {
+          nm = nm + " (" + c.source_label + ")";
+        }
+        appendScoreTableRow(llmTb, nm, c.score_pct);
       });
     }
 

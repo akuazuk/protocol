@@ -179,3 +179,83 @@ def filter_retrieval_by_category_slugs(
         return rows
     out = [r for r in rows if (r.get("category") or "").strip() in allow]
     return out if out else rows
+
+
+def unify_consult_protocol_paths(
+    *,
+    target_paths: list[str] | None,
+    rules_paths: list[str] | None,
+    rag_paths: list[str] | None,
+    max_paths: int | None = None,
+) -> list[str]:
+    """Единый список PDF: target (МКБ/cards) + rules + RAG без дублей."""
+    import os
+
+    limit = max_paths or max(2, min(10, int(os.environ.get("CONSULT_REVIEW_MAX_PROTOCOL_PATHS", "6"))))
+    out: list[str] = []
+    seen: set[str] = set()
+    for group in (target_paths or [], rules_paths or [], rag_paths or []):
+        for p in group:
+            n = _path_norm(str(p))
+            if n and n not in seen:
+                seen.add(n)
+                out.append(n)
+            if len(out) >= limit:
+                return out
+    return out
+
+
+def supplement_retrieval_from_rich_chunks(
+    retrieved: list[dict[str, Any]],
+    *,
+    paths: list[str],
+    icd_codes: list[str],
+    get_chunks: Any,
+    query: str = "",
+) -> list[dict[str, Any]]:
+    """Typed-дополнение RAG: diagnostics / treatment / dispensary из rich-чанков."""
+    if not paths or not get_chunks:
+        return retrieved
+    from clinical_knowledge.protocol_practical_lite import _chunk_type, _pick_chunks
+
+    seen_keys: set[str] = {
+        f"{r.get('path')}|{r.get('page_from')}|{(r.get('text') or '')[:60]}"
+        for r in retrieved
+    }
+    extra: list[dict[str, Any]] = []
+    q = query or " ".join(icd_codes or [])
+
+    type_passes: tuple[tuple[str, tuple[str, ...], int], ...] = (
+        ("diagnostics", ("diagnostics", "criteria_block", "table"), 4),
+        ("treatment", ("treatment", "pharmacotherapy", "drug_list"), 4),
+        ("monitoring", ("dispensary", "prevention"), 2),
+    )
+
+    for path in paths[:6]:
+        chunks = get_chunks(path) or []
+        if not chunks:
+            continue
+        for label, ctypes, lim in type_passes:
+            picked = _pick_chunks(chunks, q, icd_codes, limit=lim, chunk_types=ctypes)
+            for ch in picked:
+                text = (ch.get("text") or "").strip()
+                if len(text) < 40:
+                    continue
+                key = f"{path}|{ch.get('page_from')}|{text[:60]}"
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
+                extra.append({
+                    "path": path,
+                    "text": text[:1200],
+                    "score": 0.72,
+                    "chunk_type": _chunk_type(ch),
+                    "section_title": ch.get("section_title") or label,
+                    "page_from": ch.get("page_from"),
+                    "page_to": ch.get("page_to"),
+                    "typed_retrieve": True,
+                })
+
+    if not extra:
+        return retrieved
+    return list(retrieved) + extra

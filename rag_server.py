@@ -1899,8 +1899,31 @@ def clinical_query_for_rag(full_query: str) -> str:
 
 
 def gather_protocol_text(path: str, max_chars: int) -> str:
-    """Склеивает чанки одного PDF по порядку (до max_chars символов)."""
-    parts = _chunks_by_path.get(path) or []
+    """Склеивает чанки одного PDF по порядку (до max_chars), приоритет клинических типов."""
+    parts_raw = _chunks_by_path.get(path) or []
+    if not parts_raw:
+        return ""
+
+    _type_rank = {
+        "diagnostics": 0,
+        "criteria_block": 1,
+        "treatment": 2,
+        "pharmacotherapy": 3,
+        "drug_list": 4,
+        "dispensary": 5,
+        "prevention": 6,
+        "algorithm": 7,
+        "table": 8,
+        "protocol_overview": 9,
+        "body": 10,
+    }
+
+    def _rank(ch: dict) -> tuple[int, int]:
+        ct = (ch.get("chunk_type") or ch.get("kind") or "body").strip().lower()
+        pg = int(ch.get("page_from") or ch.get("page") or 0)
+        return (_type_rank.get(ct, 10), pg)
+
+    parts = sorted(parts_raw, key=_rank)
     out: list[str] = []
     n = 0
     for ch in parts:
@@ -7322,7 +7345,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r184-kz-diagnosis-merge"
+BUILD_VERSION = "2026-06-01-r185-kz-full-enhancements"
 
 
 def _app_version() -> str:
@@ -8801,7 +8824,21 @@ def _consult_clinical_rules_pipeline(
             for m in annotate_applicability(matched, patient)
             if m.get("applicability") != "not_applicable"
         ]
-        rules = run_rule_checker(facts, matched_protocols=matched)
+        try:
+            from clinical_knowledge.rich_rules_supplement import rich_table_rules_for_paths
+
+            rich_extra = rich_table_rules_for_paths(
+                [str(m.get("source_path") or "") for m in matched if m.get("source_path")]
+            )
+        except Exception:
+            rich_extra = []
+        rules = run_rule_checker(
+            facts,
+            matched_protocols=matched,
+            extra_rules=rich_extra or None,
+        )
+        if rich_extra:
+            rules["rich_table_rules_count"] = len(rich_extra)
     except Exception as exc:
         return {
             "consult_facts": facts,

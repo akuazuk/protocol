@@ -10,7 +10,12 @@ from .consult_schema import SourceRef
 from .rule_model import ProtocolRule
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_CHUNKS = ROOT / "output" / "chunks" / "chunks.jsonl"
+
+
+def resolve_table_chunks_path(path: Path | None = None) -> Path:
+    from .catalog_build import resolve_chunks_path
+
+    return path or resolve_chunks_path()
 
 _EXAM_HEADERS = re.compile(
     r"обязательн|рекомендован|диагност|лабор|инструмент",
@@ -83,8 +88,8 @@ def rule_from_table_chunk(chunk: dict[str, Any]) -> ProtocolRule | None:
 
 
 def extract_rules_from_chunks_path(path: Path | None = None, *, limit: int = 500) -> list[ProtocolRule]:
-    """Читает chunks.jsonl и извлекает правила из table_block."""
-    p = path or DEFAULT_CHUNKS
+    """Читает rich/legacy chunks JSONL и извлекает правила из table_block."""
+    p = resolve_table_chunks_path(path)
     if not p.is_file():
         return []
     rules: list[ProtocolRule] = []

@@ -259,6 +259,9 @@ def build_catalog_rules(
     reg = registry_jsonl or catalog_registry_path()
     index = build_chunks_index(cp)
     extracted, meta = extract_rules_all_catalog_pdfs(cp, reg, chunks_index=index)
+    from .rich_rules_supplement import merge_table_rules_into_catalog_extracted
+
+    extracted = merge_table_rules_into_catalog_extracted(extracted, cp)
     rule_counts = merge_rules_into_catalog(extracted)
     report = write_coverage_report(meta, extracted)
     return {

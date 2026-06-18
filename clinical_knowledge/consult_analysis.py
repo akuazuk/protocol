@@ -166,15 +166,17 @@ def analyze_consultation_text(
     match_limit: int = 8,
     with_markdown: bool = True,
     analysis_mode: str | None = None,
+    doc: ConsultationDocument | None = None,
 ) -> dict[str, Any]:
     """Полный структурный разбор + оценка соответствия для одного КЗ."""
-    doc = parse_consultation(
-        raw_text,
-        consultation_id=consultation_id,
-        source_file=source_file,
-        source_file_type=source_file_type,
-        demographics_meta=demographics_meta,
-    )
+    if doc is None:
+        doc = parse_consultation(
+            raw_text,
+            consultation_id=consultation_id,
+            source_file=source_file,
+            source_file_type=source_file_type,
+            demographics_meta=demographics_meta,
+        )
     facts = facts_from_document(doc)
 
     doctor_rubric = specialty_to_rubric(doc.doctor_specialty)
@@ -352,8 +354,21 @@ def analyze_consultation_text(
             legacy_comparison_comp = None
 
     try:
+        from .rich_rules_supplement import rich_table_rules_for_paths
+
+        rich_table_rules = rich_table_rules_for_paths(
+            [str(m.get("source_path") or "") for m in matches if m.get("source_path")]
+        )
+    except Exception:
+        rich_table_rules = []
+
+    try:
         if effective_mode == "legacy" or not merged_rules:
-            rules_check = run_rule_checker(facts, matched_protocols=matches)
+            rules_check = run_rule_checker(
+                facts,
+                matched_protocols=matches,
+                extra_rules=rich_table_rules or None,
+            )
         elif effective_mode == "summary" and plan and plan.use_summary:
             rules_check = run_rule_checker(
                 facts,
@@ -367,11 +382,14 @@ def analyze_consultation_text(
             rules_check = run_rule_checker(
                 facts,
                 matched_protocols=matches,
-                extra_rules=[r for r in merged_rules if r.get("rule_source") == "summary"],
+                extra_rules=[r for r in merged_rules if r.get("rule_source") == "summary"]
+                + rich_table_rules,
                 include_catalog=True,
                 skip_rule_ids=suppressed,
                 condition_ids=summary_condition_ids or None,
             )
+        if rich_table_rules:
+            rules_check["rich_table_rules_count"] = len(rich_table_rules)
         rules_check["analysis_mode"] = effective_mode
         rules_check["summary_rules_count"] = sum(
             1 for r in merged_rules if r.get("rule_source") == "summary"

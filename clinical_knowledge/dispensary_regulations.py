@@ -37,15 +37,23 @@ def lookup_follow_up_expectations(icd_codes: list[str]) -> dict[str, Any]:
     min_months: int | None = None
 
     for code in icd_codes or []:
-        ch = icd_chapter(code)
+        c = (code or "").strip().upper()
+        ch = icd_chapter(c)
         if ch and ch not in chapters:
             chapters.append(ch)
-        entry = by_chapter.get(ch) if ch else None
-        if isinstance(entry, dict):
-            hint = (entry.get("hint") or "").strip()
+        matched_entry = None
+        if c:
+            for key in (c, c[:3], ch):
+                if key and key in by_chapter:
+                    matched_entry = by_chapter.get(key)
+                    break
+        if matched_entry is None and ch:
+            matched_entry = by_chapter.get(ch)
+        if isinstance(matched_entry, dict):
+            hint = (matched_entry.get("hint") or "").strip()
             if hint and hint not in hints:
                 hints.append(hint)
-            m = entry.get("min_interval_months")
+            m = matched_entry.get("min_interval_months")
             if isinstance(m, int):
                 min_months = m if min_months is None else min(min_months, m)
 

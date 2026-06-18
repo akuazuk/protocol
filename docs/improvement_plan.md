@@ -17,7 +17,7 @@
 | Протоколы | `protocol_match.py`, `applicability.py` | Карточки + applicability |
 | Правила | `rule_checker.py`, `protocol_compliance_checker.py` | Deterministic rules |
 | Оценка | `compliance_engine.py`, `scoring.py`, `safety_checker.py` | ComplianceReport |
-| Гибрид UI | `consult_overall_score.py` | 75% structured + 25% rules; LLM не повышает % |
+| Гибрид UI | `consult_overall_score.py` | 80% structured + 20% rules; alignment-критерии детерминированы |
 | CLI | `scripts/check_kz.py`, `batch_runner.py` | Batch JSON/MD/CSV |
 | Отчёты | `consult_report.py` | JSON / Markdown / HTML |
 
@@ -29,19 +29,20 @@
 
 ---
 
-## 2. Пробелы vs ТЗ
+## 2. Пробелы vs ТЗ (обновлено 2026-06-01)
 
-| Требование | Было | План |
-|------------|------|------|
-| `confidence_score` отдельно от `overall_score` | Нет | `scoring.compute_confidence()` |
-| Статусы `insufficient_protocol_data`, `low_confidence` | Нет | `scoring.resolve_overall_status()` |
-| `EvidenceMapItem` | Нет | `evidence_map.py` |
-| Rule model 2.0 | Плоский dict в catalog | `rule_model.py` + адаптер в `rule_checker` |
-| Правила из таблиц | Нет | `table_rule_extractor.py` |
-| Per-diagnosis protocol match | Один список | `match_protocol_cards_for_diagnoses()` |
-| Safety cap в отчёте | Только в hybrid scorer | `SafetyCapInfo` в ComplianceReport |
-| Regression fixtures pl_*, mg_*, gastro_1 | 3 файла | Синтетические блоки в тестах + расширение fixtures |
-| Batch summary columns | Минимум | Расширение `batch_runner` |
+| Требование | Статус |
+|------------|--------|
+| Детерминированные критерии КЗ (МКБ / КП / НПА) | **Готово** — `consult_alignment.py`, L1+L2 |
+| Rich rules из table-чанков | **Готово** — `rich_rules_supplement.py`, runtime + catalog build |
+| Typed retrieve (diagnostics/treatment/monitoring) | **Готово** — `supplement_retrieval_from_rich_chunks` |
+| Offline индекс профилей КП | **Готово** — `protocol_icd_profile_index.py`, `scripts/build_protocol_icd_index.py` |
+| НПА наблюдение (№127) | **Базово** — `data/regulations/mz_2015_127.json` |
+| Связь 8 блоков ↔ alignment | **Готово** — `alignment_by_block` в compliance |
+| Evidence из alignment | **Готово** — `append_alignment_evidence` |
+| Пересборка `data/catalog/rules` на prod | **Нужен deploy** — `python -m scripts.build_catalog_rules` на Render |
+
+### Исторические пробелы (закрыты ранее)
 
 ---
 

@@ -403,6 +403,20 @@ def iter_consult_review_pipeline(
         except Exception:
             pass
 
+    if rs.env_bool("CONSULT_TYPED_RETRIEVE", True):
+        try:
+            from clinical_knowledge.consult_retrieval import supplement_retrieval_from_rich_chunks
+
+            retrieved = supplement_retrieval_from_rich_chunks(
+                retrieved,
+                paths=list(path_allow or matched_path_boost or []),
+                icd_codes=list(icd_for_retrieval or []),
+                get_chunks=rs.get_rich_chunks_for_path,
+                query=q_rag,
+            )
+        except Exception:
+            pass
+
     icd_frag_needles = rs._consult_needles_icd_fragments_consult_review(list(diag_codes_list), merged_icd)
     retrieved = rs._consult_sort_retrieval_by_icd_fragments_first(retrieved, icd_frag_needles)
     precise_links, precise_note_ru = rs._consult_precise_links_for_icd_in_fragments(
@@ -499,6 +513,19 @@ def iter_consult_review_pipeline(
             detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
         ) from exc
 
+    # --- Единый parse КЗ для structured + alignment ---
+    parsed_doc = None
+    try:
+        from clinical_knowledge.consult_parser import parse_consultation
+
+        parsed_doc = parse_consultation(
+            full_text,
+            consultation_id=(content_signature or "consult")[:16] or "consult",
+            demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
+        )
+    except Exception:
+        parsed_doc = None
+
     # --- Структурный детерминированный разбор КЗ (аддитивно, за флагом) ---
     structured_analysis = None
     report_markdown = None
@@ -514,6 +541,7 @@ def iter_consult_review_pipeline(
                 demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
                 specialty_slug=doctor_rubric,
                 with_markdown=True,
+                doc=parsed_doc,
                 analysis_mode=(
                     os.environ.get("PROTOCOL_SUMMARY_MODE")
                     if rs.env_bool("PROTOCOL_SUMMARY_ENABLED", False)
@@ -536,24 +564,41 @@ def iter_consult_review_pipeline(
     if rs.env_bool("CONSULT_ALIGNMENT_ENABLED", True):
         try:
             from clinical_knowledge.consult_alignment import (
+                append_alignment_evidence,
                 build_consult_alignment,
                 merge_alignment_into_review,
+                sync_structured_with_alignment,
             )
             from clinical_knowledge.consult_parser import parse_consultation
+            from clinical_knowledge.consult_retrieval import unify_consult_protocol_paths
 
-            align_doc = parse_consultation(
-                full_text,
-                consultation_id=(content_signature or "consult")[:16] or "consult",
+            if parsed_doc is None:
+                parsed_doc = parse_consultation(
+                    full_text,
+                    consultation_id=(content_signature or "consult")[:16] or "consult",
+                    demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
+                )
+            rules_paths = [
+                str((mp or {}).get("source_path") or "")
+                for mp in ((clinical_rules or {}).get("matched_protocols") or [])
+                if isinstance(mp, dict) and mp.get("source_path")
+            ]
+            alignment_paths = unify_consult_protocol_paths(
+                target_paths=list(matched_path_boost or []),
+                rules_paths=rules_paths,
+                rag_paths=list(paths_used or []),
             )
             alignment_result = build_consult_alignment(
-                align_doc,
-                protocol_paths=list(paths_used or []),
+                parsed_doc,
+                protocol_paths=alignment_paths,
                 icd_codes=list(merged_icd or diag_codes_list or []),
                 get_chunks=rs.get_rich_chunks_for_path,
                 query=q_rag or q,
             )
             if isinstance(review, dict):
                 merge_alignment_into_review(review, alignment_result)
+            sync_structured_with_alignment(structured_analysis, alignment_result)
+            append_alignment_evidence(structured_analysis, alignment_result)
         except Exception:
             alignment_result = None
 

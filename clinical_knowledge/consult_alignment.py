@@ -15,7 +15,7 @@ from clinical_knowledge.kz_block_sources import (
     ALIGNMENT_CARD_TITLES,
     SOURCE_KIND_LABELS,
 )
-from clinical_knowledge.protocol_icd_profile import merge_protocol_profiles
+from clinical_knowledge.protocol_icd_profile_index import merge_profiles_with_index
 from clinical_knowledge.semantic_rule_fallback import fuzzy_term_in_text
 
 import icd_mkb
@@ -73,17 +73,37 @@ def _item_mentioned(kz_blob: str, item: str) -> bool:
     return False
 
 
-def _coverage_pct(required: list[str], kz_blob: str) -> tuple[int, list[str], list[str]]:
+def _coverage_pct(
+    required: list[str],
+    kz_blob: str,
+    *,
+    meta: list[dict[str, Any]] | None = None,
+) -> tuple[int, list[str], list[str]]:
     if not required:
         return 0, [], []
     found: list[str] = []
     missing: list[str] = []
-    for item in required[:12]:
+    meta_by_text: dict[str, str] = {}
+    for m in meta or []:
+        if isinstance(m, dict):
+            t = str(m.get("text") or "")
+            meta_by_text[t[:80].lower()] = str(m.get("obligation") or "recommended")
+
+    req_slice = required[:12]
+    total_weight = 0.0
+    got_weight = 0.0
+    for item in req_slice:
+        key = item[:80].lower()
+        obligation = meta_by_text.get(key, "recommended")
+        weight = 1.5 if obligation == "required" else 1.0
+        total_weight += weight
         if _item_mentioned(kz_blob, item):
             found.append(item)
+            got_weight += weight
         else:
             missing.append(item)
-    pct = round(100 * len(found) / len(required[:12]))
+
+    pct = round(100 * got_weight / total_weight) if total_weight else 0
     return pct, found, missing
 
 
@@ -272,7 +292,11 @@ def _exams_card(doc: ConsultationDocument, profile: dict[str, Any]) -> dict[str,
             chunk_id=cite.get("chunk_id"),
         )
 
-    pct, found, missing = _coverage_pct(required, kz_blob)
+    pct, found, missing = _coverage_pct(
+        required,
+        kz_blob,
+        meta=list(profile.get("diagnostics_meta") or []),
+    )
     cite = next((c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("diagnostics", "criteria_block", "table")), {})
     if not cite and profile.get("cites"):
         cite = profile["cites"][0]
@@ -315,7 +339,11 @@ def _treatment_card(doc: ConsultationDocument, profile: dict[str, Any]) -> dict[
             chunk_id=cite.get("chunk_id"),
         )
 
-    pct, found, missing = _coverage_pct(required, kz_blob)
+    pct, found, missing = _coverage_pct(
+        required,
+        kz_blob,
+        meta=list(profile.get("medications_meta") or []),
+    )
     cite = next((c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("pharmacotherapy", "treatment", "drug_list")), {})
     if not cite and profile.get("cites"):
         cite = profile["cites"][0]
@@ -427,7 +455,7 @@ def build_consult_alignment(
     query: str = "",
 ) -> dict[str, Any]:
     """Построить детерминированные карточки и criteria для UI."""
-    profile = merge_protocol_profiles(protocol_paths, icd_codes, get_chunks, query=query)
+    profile = merge_profiles_with_index(protocol_paths, icd_codes, get_chunks, query=query)
     cards: list[dict[str, Any]] = []
 
     cards.append(_diagnosis_card(doc, icd_codes))
@@ -498,3 +526,72 @@ def merge_alignment_into_review(review: dict[str, Any], alignment: dict[str, Any
         review["limitations_ru"] = alignment["limitations_ru"]
     review["alignment_cards"] = alignment.get("alignment_cards") or []
     review["alignment_mean_score"] = alignment.get("alignment_mean_score")
+
+
+BLOCK_TO_SCORE_KEY: dict[str, str] = {
+    "diagnosis": "diagnosis_score",
+    "exams": "required_exams_score",
+    "treatment": "treatment_score",
+    "follow_up": "follow_up_score",
+}
+
+
+def sync_structured_with_alignment(
+    structured_analysis: dict[str, Any] | None,
+    alignment: dict[str, Any] | None,
+) -> None:
+    """Связать 8 блоков structured с alignment_cards (in-place)."""
+    if not structured_analysis or not alignment:
+        return
+    comp = structured_analysis.get("compliance")
+    if not isinstance(comp, dict):
+        return
+    sb = comp.get("score_breakdown") or {}
+    by_block: dict[str, Any] = {}
+    for card in alignment.get("alignment_cards") or []:
+        bid = str(card.get("block_id") or "")
+        sk = BLOCK_TO_SCORE_KEY.get(bid)
+        by_block[bid] = {
+            "name_ru": card.get("name_ru"),
+            "alignment_score": card.get("score_pct"),
+            "structured_score": sb.get(sk) if sk else None,
+            "source_kind": card.get("source_kind"),
+            "source_label": card.get("source_label"),
+        }
+    comp["alignment_by_block"] = by_block
+    structured_analysis["compliance"] = comp
+
+
+def alignment_to_evidence_items(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """EvidenceMapItem-подобные записи из alignment для structured отчёта."""
+    out: list[dict[str, Any]] = []
+    for card in cards:
+        if card.get("block_id") in ("limitations",):
+            continue
+        out.append({
+            "block_id": card.get("block_id"),
+            "rule_title_ru": card.get("name_ru"),
+            "decision_ru": f"{card.get('score_pct')}%",
+            "source_kind": card.get("source_kind"),
+            "protocol_excerpt": (card.get("protocol_excerpt") or "")[:400],
+            "consultation_excerpt": (card.get("conclusion_excerpt") or "")[:400],
+            "protocol_section": card.get("protocol_section"),
+            "protocol_page": card.get("protocol_page"),
+            "rule_source": "alignment",
+        })
+    return out
+
+
+def append_alignment_evidence(
+    structured_analysis: dict[str, Any] | None,
+    alignment: dict[str, Any] | None,
+) -> None:
+    if not structured_analysis or not alignment:
+        return
+    comp = structured_analysis.get("compliance")
+    if not isinstance(comp, dict):
+        return
+    existing = list(comp.get("evidence_map") or [])
+    extra = alignment_to_evidence_items(alignment.get("alignment_cards") or [])
+    comp["evidence_map"] = existing + extra
+    structured_analysis["compliance"] = comp
