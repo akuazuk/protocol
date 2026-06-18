@@ -26,6 +26,11 @@ services:
         value: "0"
       # - key: RAG_CHUNKS_DIR
       #   value: /var/data
+      # ~65k rich chunks на 512Mi без saver часто дают OOM при старте. Явно или авто (если RAG_CHUNKS_DIR):
+      # - key: RAG_MEMORY_SAVER
+      #   value: "1"
+      # Дополнительно при повторных OOM: RAG_LEXICAL_MAX_CHARS=4096, RAG_LEX_BM25_ALPHA=1.0
+      # (отключить BM25-индекс), либо апгрейд инстанса до 2 GiB.
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback
       # - key: ML_FEEDBACK_DIR
       #   value: /var/data/ml/feedback

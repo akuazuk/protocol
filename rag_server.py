@@ -731,13 +731,18 @@ def _load_summary_rag_chunks() -> list[dict]:
 
 
 def _memory_saver_enabled() -> bool:
-    """По умолчанию - полный lex (embedding_ready_text при отличии от text).
+    """Полный lex (embedding_ready_text при отличии от text) только если явно выключен saver.
 
-    На слабом инстансе (например 512Mi) задайте RAG_MEMORY_SAVER=1 - без дубля
-    embedding_ready_text, чтобы избежать OOM при старте.
+    RAG_MEMORY_SAVER=1 — без дубля embedding_ready_text (экономия ~100–200 MiB на rich corpus).
+    На Render с Persistent Disk (RAG_CHUNKS_DIR) saver включается по умолчанию, если не задано
+    RAG_MEMORY_SAVER=0.
     """
     v = (os.environ.get("RAG_MEMORY_SAVER") or "").strip().lower()
-    return v in ("1", "true", "yes")
+    if v in ("0", "false", "no"):
+        return False
+    if v in ("1", "true", "yes"):
+        return True
+    return bool((os.environ.get("RAG_CHUNKS_DIR") or "").strip())
 
 
 def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
@@ -7368,7 +7373,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r192-gemini-warn-suppress"
+BUILD_VERSION = "2026-06-01-r193-memory-saver-render"
 
 
 def _app_version() -> str:
