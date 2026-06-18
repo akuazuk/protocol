@@ -46,12 +46,10 @@ def _missing_for_protocol_pick(
     *,
     specialty_label: str | None,
 ) -> list[str]:
+    """Чего не хватает для уверенного подбора КП (не полнота секций КЗ)."""
     missing: list[str] = []
     if not (doc.sections.complaints or "").strip():
         missing.append("жалобы")
-    anam = split_anamnesis_parts(doc)
-    if not anam["disease"]:
-        missing.append("анамнез заболевания")
     if not icd_codes:
         missing.append("код МКБ-10")
     if doc.patient.age_years is None and doc.patient.adult_or_child == "unknown":
@@ -128,9 +126,16 @@ def format_evaluation_basis(
         parts.append("жалобы: " + ctx["complaints"][:60])
     for m in protocol_matches or []:
         title = (m.get("title") or "").strip()
+        fit = (m.get("icd_fit_label") or "").strip()
         if title:
-            parts.append(f"КП «{title[:70]}»")
-            break
+            score = m.get("match_score")
+            label = f"КП «{title[:60]}»"
+            if score is not None:
+                label += f" ({float(score):.0f}%)"
+            parts.append(label)
+        if fit:
+            parts.append(f"соответствие МКБ: {fit}")
+        break
     return " · ".join(parts)
 
 

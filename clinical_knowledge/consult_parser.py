@@ -101,6 +101,60 @@ RE_FIO_NAME = re.compile(
 )
 
 
+def _join_section_text(a: str | None, b: str | None) -> str | None:
+    parts = [p.strip() for p in (a, b) if p and p.strip()]
+    return "\n".join(parts) if parts else None
+
+
+_INLINE_ANAM_SPLIT = re.compile(
+    r"(?i)(?:^|[\s.;])(?:анамнез|aнамнез)\s*[:\-]\s*",
+)
+_LIFE_ANAM_MARKERS = re.compile(
+    r"(?i)аллергоанамнез|онкоанамнез|гемотрансфуз|оперативн\w*\s+вмешательств|"
+    r"перен[её]с\w*\s+заболеван|хроническ\w*\s+заболеван|не\s+отягощен|"
+    r"отрицает|курит|алкогол|вредн\w*\s+привычк",
+)
+
+
+def _refine_complaints_anamnesis_sections(sections: ConsultationSections) -> None:
+    """Отделить жалобы от встроенного анамнеза (частый формат КЗ в одной строке)."""
+    for extra_field in ("allergy_history", "surgical_history", "medication_history"):
+        extra = getattr(sections, extra_field, None)
+        if extra and str(extra).strip():
+            sections.life_history = _join_section_text(sections.life_history, str(extra).strip())
+            setattr(sections, extra_field, None)
+
+    complaints = (sections.complaints or "").strip()
+    if not complaints:
+        return
+
+    m = _INLINE_ANAM_SPLIT.search(complaints)
+    if m:
+        head = complaints[: m.start()].strip(" \n:;.-")
+        tail = complaints[m.end() :].strip()
+        sections.complaints = head or None
+        if tail:
+            if _LIFE_ANAM_MARKERS.search(tail) and not re.search(
+                r"(?i)болеет|с\s+\d+\s+(?:дн|нед|мес|лет)|давност|развивал",
+                tail,
+            ):
+                sections.life_history = _join_section_text(sections.life_history, tail)
+            else:
+                sections.anamnesis = _join_section_text(sections.anamnesis, tail)
+        return
+
+    if _LIFE_ANAM_MARKERS.search(complaints):
+        cm = re.match(
+            r"(?i)^(?:жалоб\w*\s*[:\-]\s*)?(.{5,120}?)(?:\s*(?:анамнез|аллерго|онко))",
+            complaints,
+        )
+        if cm:
+            sections.complaints = cm.group(1).strip(" .;:-") or None
+            rest = complaints[cm.end() :].strip() or complaints[cm.start(1) + len(cm.group(1)) :].strip()
+            if rest:
+                sections.life_history = _join_section_text(sections.life_history, rest)
+
+
 def _split_sections(text: str) -> dict[str, str]:
     """Разбивает текст на секции по распознанным заголовкам."""
     sections: dict[str, str] = {}
@@ -199,6 +253,7 @@ def parse_consultation(
         k: v for k, v in sections_map.items()
         if k in ConsultationSections.model_fields
     })
+    _refine_complaints_anamnesis_sections(sections)
 
     # --- метаданные врача/клиники/даты ---
     demo = demographics_meta or {}

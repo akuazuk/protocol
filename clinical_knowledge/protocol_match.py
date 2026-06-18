@@ -8,6 +8,11 @@ from .applicability import assess_card_applicability, infer_card_population
 from .condition_registry import score_card_for_hint
 from .diagnosis_icd import is_symptom_code, prioritize_codes
 from .loader import load_protocol_cards_registry
+from .protocol_pick_filters import (
+    clinical_relevance_multiplier,
+    icd_fit_for_card,
+    is_administrative_protocol,
+)
 
 # Веса match_score (ТЗ improve_kz §8.1), нормализуются к ~100
 _WEIGHT_ICD = 0.40
@@ -219,6 +224,8 @@ def match_protocol_cards(
 
     scored: list[tuple[float, dict[str, Any]]] = []
     for card in cards:
+        if is_administrative_protocol(card):
+            continue
         score = compute_match_score(
             card,
             icd_list=icd_list,
@@ -228,6 +235,21 @@ def match_protocol_cards(
             diag_text=diag_text,
             complaints=complaints,
             performed_exams=performed,
+        )
+        if score <= 0:
+            continue
+        score = round(
+            min(
+                100.0,
+                score
+                * clinical_relevance_multiplier(
+                    card,
+                    icd_codes=icd_list,
+                    complaints=complaints,
+                    ambulatory=True,
+                ),
+            ),
+            2,
         )
         if score > 0:
             scored.append((score, card))
@@ -245,6 +267,7 @@ def match_protocol_cards(
         if appl == "not_applicable":
             continue
         seen_keys.add(key)
+        icd_fit = icd_fit_for_card(card, icd_list)
         out.append(
             {
                 "protocol_id": card.get("protocol_id"),
@@ -253,6 +276,10 @@ def match_protocol_cards(
                 "population": card.get("population"),
                 "icd10_primary": card.get("icd10_primary"),
                 "match_score": round(sc, 2),
+                "icd_fit": icd_fit,
+                "icd_fit_label": ", ".join(
+                    f"{x['code']} ({x['weight']:.2f})" for x in icd_fit[:4]
+                ),
                 "approval": card.get("approval"),
                 "matched_condition": card.get("condition_label") or card.get("title"),
                 "specialty_slug": card.get("specialty_slug"),

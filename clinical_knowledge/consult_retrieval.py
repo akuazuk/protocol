@@ -66,6 +66,11 @@ def consult_target_protocol_paths(
     """Список source_path PDF, по которым разрешён RAG для КЗ."""
     from .loader import load_protocol_cards_registry
     from .protocol_match import compute_match_score, match_protocol_cards
+    from .protocol_pick_filters import (
+        clinical_relevance_multiplier,
+        icd_fit_for_card,
+        is_administrative_protocol,
+    )
 
     limit = max_paths
     if limit is None:
@@ -92,20 +97,25 @@ def consult_target_protocol_paths(
     if not facts and isinstance(clinical_rules, dict):
         facts = clinical_rules.get("consult_facts")
 
+    def _append_match(mp: dict[str, Any], src: str) -> None:
+        sp = str(mp.get("source_path") or "")
+        sc = float(mp.get("match_score") or 0)
+        if not sp or sc < min_match_score:
+            return
+        add(sp, src, sc)
+        protocol_matches.append({
+            "title": mp.get("title"),
+            "source_path": sp,
+            "match_score": sc,
+            "specialty_slug": mp.get("specialty_slug"),
+            "icd_fit": mp.get("icd_fit") or [],
+            "icd_fit_label": mp.get("icd_fit_label") or "",
+        })
+
     if isinstance(clinical_rules, dict):
         for mp in clinical_rules.get("matched_protocols") or []:
-            if not isinstance(mp, dict):
-                continue
-            sp = mp.get("source_path")
-            sc = float(mp.get("match_score") or 0)
-            if sp and sc >= min_match_score:
-                add(str(sp), "matched_protocol_card", sc + 3.0)
-                protocol_matches.append({
-                    "title": mp.get("title"),
-                    "source_path": sp,
-                    "match_score": sc,
-                    "specialty_slug": mp.get("specialty_slug"),
-                })
+            if isinstance(mp, dict):
+                _append_match(mp, "matched_protocol_card")
 
     diag = [str(x).upper() for x in (diag_icd or []) if x]
     merged = [str(x).upper() for x in (merged_icd or []) if x]
@@ -124,21 +134,12 @@ def consult_target_protocol_paths(
                 if s not in spec_try:
                     spec_try.append(s)
         spec_try.append(None)
-        seen_match_paths = set(paths)
         for spec in spec_try:
             for m in match_protocol_cards(facts, specialty_slug=spec, limit=limit * 2):
                 sp = str(m.get("source_path") or "")
-                sc = float(m.get("match_score") or 0)
-                if not sp or sc < min_match_score or sp in seen_match_paths:
+                if sp in seen:
                     continue
-                add(sp, "facts_match", sc)
-                seen_match_paths.add(sp)
-                protocol_matches.append({
-                    "title": m.get("title"),
-                    "source_path": sp,
-                    "match_score": sc,
-                    "specialty_slug": m.get("specialty_slug"),
-                })
+                _append_match(m, "facts_match")
                 if len(paths) >= limit:
                     break
             if len(paths) >= limit:
@@ -157,6 +158,8 @@ def consult_target_protocol_paths(
             sp = _path_norm(str(card.get("source_path") or ""))
             if not sp or sp in seen:
                 continue
+            if is_administrative_protocol(card):
+                continue
             if slugs and card.get("specialty_slug") not in slugs:
                 continue
             if facts:
@@ -169,6 +172,19 @@ def consult_target_protocol_paths(
                     diag_text=str(cons.get("diagnosis_text") or ""),
                     complaints=list(cons.get("complaints") or []),
                     performed_exams=list(cons.get("performed_exams") or []),
+                )
+                sc = round(
+                    min(
+                        100.0,
+                        sc
+                        * clinical_relevance_multiplier(
+                            card,
+                            icd_codes=icd_list,
+                            complaints=cons.get("complaints"),
+                            ambulatory=True,
+                        ),
+                    ),
+                    2,
                 )
             else:
                 sc = _icd_overlap_score(card, icd_roots, icd_full)
@@ -183,6 +199,26 @@ def consult_target_protocol_paths(
 
         for sp, sc in sorted(best_by_path.items(), key=lambda x: (-x[1], x[0])):
             add(sp, "icd_registry_match", sc)
+            if sp not in {m.get("source_path") for m in protocol_matches}:
+                card = next(
+                    (
+                        c for c in load_protocol_cards_registry()
+                        if _path_norm(str(c.get("source_path") or "")) == sp
+                    ),
+                    {},
+                )
+                if card:
+                    fit = icd_fit_for_card(card, icd_list)
+                    protocol_matches.append({
+                        "title": card.get("title"),
+                        "source_path": sp,
+                        "match_score": sc,
+                        "specialty_slug": card.get("specialty_slug"),
+                        "icd_fit": fit,
+                        "icd_fit_label": ", ".join(
+                            f"{x['code']} ({x['weight']:.2f})" for x in fit[:4]
+                        ),
+                    })
             if len(paths) >= limit:
                 break
 
