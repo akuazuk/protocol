@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import ssl
 import sys
 import time
 import urllib.error
@@ -24,6 +25,17 @@ except ImportError:
 
 DEFAULT_CASES = ("report_n_1", "report_n_2", "kard_1", "gastro_1", "F_1_p")
 CLIENTS = ROOT / "clients_consult"
+
+
+def _ssl_ctx() -> ssl.SSLContext:
+    ctx = ssl.create_default_context()
+    try:
+        import certifi
+
+        ctx.load_verify_locations(certifi.where())
+    except ImportError:
+        pass
+    return ctx
 
 
 def _request(
@@ -47,7 +59,7 @@ def _request(
         headers["Content-Type"] = "application/json; charset=utf-8"
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with urllib.request.urlopen(req, timeout=timeout, context=_ssl_ctx()) as resp:
             raw = resp.read().decode("utf-8")
     except urllib.error.HTTPError as e:
         err = e.read().decode("utf-8", errors="replace")
@@ -251,7 +263,13 @@ def submit_one(base: str, token: str, case_id: str, *, dry_run: bool = False) ->
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--base", default=os.environ.get("RENDER_URL", "https://protocol-bimy.onrender.com"))
-    ap.add_argument("--cases", nargs="*", default=list(DEFAULT_CASES))
+    ap.add_argument("--cases", nargs="*", default=None)
+    ap.add_argument(
+        "--from-report",
+        type=Path,
+        default=None,
+        help="Все case_id из report.json batch",
+    )
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--out", type=Path, default=ROOT / "ml" / "experiments" / "batch_clients_consult_2026-06-01" / "render_reviews.json")
     args = ap.parse_args()
@@ -261,9 +279,20 @@ def main() -> int:
         print("Задайте METHODIST_TOKEN в .env", file=sys.stderr)
         return 1
 
+    if args.from_report:
+        if not args.from_report.is_file():
+            print(f"Report not found: {args.from_report}", file=sys.stderr)
+            return 1
+        data = json.loads(args.from_report.read_text(encoding="utf-8"))
+        case_ids = [str(r["case_id"]) for r in (data.get("reports") or []) if r.get("case_id")]
+    elif args.cases:
+        case_ids = list(args.cases)
+    else:
+        case_ids = list(DEFAULT_CASES)
+
     results: list[dict] = []
     errors: list[dict] = []
-    for case_id in args.cases:
+    for case_id in case_ids:
         try:
             row = submit_one(args.base, token, case_id, dry_run=args.dry_run)
             results.append(row)

@@ -35,7 +35,12 @@ def main() -> int:
         type=Path,
         default=ROOT / "ml" / "experiments" / "batch_clients_consult_2026-06-01" / "report.json",
     )
-    ap.add_argument("--cases", nargs="*", default=list(DEFAULT_PRIORITY))
+    ap.add_argument("--cases", nargs="*", default=None, help="case_id из report; по умолчанию — приоритетный список")
+    ap.add_argument(
+        "--all",
+        action="store_true",
+        help="AI-review для всех кейсов из report.json",
+    )
     ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
@@ -45,6 +50,12 @@ def main() -> int:
 
     data = json.loads(args.report.read_text(encoding="utf-8"))
     by_case = {r["case_id"]: r for r in (data.get("reports") or []) if r.get("case_id")}
+    if args.all:
+        case_ids = sorted(by_case.keys())
+    elif args.cases:
+        case_ids = list(args.cases)
+    else:
+        case_ids = list(DEFAULT_PRIORITY)
     out_dir = args.out or args.report.parent
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -67,7 +78,7 @@ def main() -> int:
         "|---------|-------------|-----------|----------|",
     ]
 
-    for case_id in args.cases:
+    for case_id in case_ids:
         rep = by_case.get(case_id)
         if not rep:
             print(f"SKIP missing case: {case_id}", file=sys.stderr)

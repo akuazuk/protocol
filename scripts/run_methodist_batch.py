@@ -42,7 +42,8 @@ def _discover(folder: Path, glob_pat: str | None) -> list[Path]:
     if glob_pat:
         return sorted(p for p in folder.glob(glob_pat) if p.is_file() and p.suffix.lower() in SUPPORTED)
     return sorted(
-        p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in SUPPORTED
+        p for p in folder.iterdir()
+        if p.is_file() and p.suffix.lower() in SUPPORTED and p.name.lower() != "readme.md"
     )
 
 
