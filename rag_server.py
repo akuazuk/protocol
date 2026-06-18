@@ -20,6 +20,7 @@ import os
 import re
 import threading
 import time
+import warnings
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
@@ -33,6 +34,12 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parent
 
+# google.generativeai deprecated (→ google.genai); подавляем шум в логах до миграции SDK.
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    message=r".*google\.generativeai.*",
+)
 from env_load import load_project_env
 
 from icd_mkb import (
@@ -1010,7 +1017,11 @@ def _run_load_data_background() -> None:
         _chunks_load_done.set()
 
 
-def _require_rag_loaded() -> None:
+def _require_rag_loaded(*, wait: bool = True) -> None:
+    """Дождаться фоновой загрузки корпуса (Render health check vs тяжёлый JSONL)."""
+    if wait and not _chunks_load_done.is_set():
+        timeout = max(5.0, env_float("RAG_LOAD_WAIT_SEC", 180.0))
+        _chunks_load_done.wait(timeout=timeout)
     if not _chunks_load_done.is_set():
         raise HTTPException(
             status_code=503,
@@ -7345,7 +7356,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r190-icd-always-protocol-pick"
+BUILD_VERSION = "2026-06-01-r191-rag-wait-gemini-warn"
 
 
 def _app_version() -> str:

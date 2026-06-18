@@ -22963,6 +22963,31 @@
     }
   }
 
+  function waitForRagReady(base, maxWaitMs) {
+    maxWaitMs = maxWaitMs || 180000;
+    var started = Date.now();
+    function poll() {
+      return fetch(base + "/health")
+        .then(function (h) {
+          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+          return h.json();
+        })
+        .then(function (health) {
+          if (health.rag_ready) return health;
+          if (Date.now() - started >= maxWaitMs) {
+            throw new Error(
+              "Индекс протоколов на сервере ещё загружается. Подождите 1-2 минуты и обновите страницу."
+            );
+          }
+          updateConsultProgressUI(8, "загрузка индекса протоколов…", "ожидание сервера");
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, 2500);
+          }).then(poll);
+        });
+    }
+    return poll();
+  }
+
   function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef) {
     var tierEl = document.getElementById("methodist-tier-select");
     var tier = tierEl && tierEl.value ? tierEl.value : "L1";
@@ -23007,11 +23032,7 @@
 
   function fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef) {
     timeoutRef = timeoutRef || { ms: 600000 };
-    return fetch(base + "/health")
-      .then(function (h) {
-        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-        return h.json();
-      })
+    return waitForRagReady(base)
       .then(function (health) {
         var sec = Number(health.consult_review_timeout_sec);
         if (!isNaN(sec) && sec >= 120) {
@@ -23023,11 +23044,6 @@
         timeoutRef.abortTid = window.setTimeout(function () {
           consultCtrl.abort();
         }, timeoutRef.ms);
-        if (!health.rag_ready) {
-          throw new Error(
-            "Индекс протоколов на сервере ещё загружается. Подождите 1-2 минуты и обновите страницу."
-          );
-        }
         if (!health.gemini_configured) {
           throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
         }
@@ -23127,7 +23143,10 @@
       msg.indexOf("terminated") >= 0 ||
       msg.indexOf("сервис недоступен") >= 0 ||
       msg.indexOf("connection") >= 0 ||
-      msg.indexOf("the network connection was lost") >= 0
+      msg.indexOf("the network connection was lost") >= 0 ||
+      msg.indexOf("загружается") >= 0 ||
+      msg.indexOf("503") >= 0 ||
+      msg.indexOf("service unavailable") >= 0
     );
   }
 
