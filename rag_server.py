@@ -35,11 +35,23 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parent
 
 # google.generativeai deprecated (→ google.genai); подавляем шум в логах до миграции SDK.
-warnings.filterwarnings(
-    "ignore",
-    category=FutureWarning,
-    message=r".*google\.generativeai.*",
-)
+warnings.filterwarnings("ignore", category=FutureWarning, message=r".*[Gg]enerativeai.*")
+
+
+def _legacy_genai_module():
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        import google.generativeai as genai
+
+    return genai
+
+
+def _legacy_genai_types():
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        from google.generativeai.types import HarmBlockThreshold, HarmCategory
+
+    return HarmBlockThreshold, HarmCategory
 from env_load import load_project_env
 
 from icd_mkb import (
@@ -1175,7 +1187,7 @@ def _gemini_embed_one(
     text: str,
     task_type: str | None,
 ) -> list[float]:
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     embed_fn = getattr(genai, "embed_content", None)
     if embed_fn is None:
@@ -1256,7 +1268,7 @@ def _gemini_embed_rerank_pool(
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not key or not pool_rows:
         return pool_rows
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     genai.configure(api_key=key)
 
@@ -3275,8 +3287,8 @@ def get_gemini():
             detail="На сервере не настроен ключ API для обработки текста.",
         )
     try:
-        import google.generativeai as genai
-        from google.generativeai.types import HarmBlockThreshold, HarmCategory
+        genai = _legacy_genai_module()
+        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
     except ImportError as e:
         raise HTTPException(
             status_code=503,
@@ -3309,8 +3321,8 @@ def get_methodist_gemini():
             detail="На сервере не настроен ключ API для обработки текста.",
         )
     try:
-        import google.generativeai as genai
-        from google.generativeai.types import HarmBlockThreshold, HarmCategory
+        genai = _legacy_genai_module()
+        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
     except ImportError as e:
         raise HTTPException(
             status_code=503,
@@ -3430,7 +3442,7 @@ def _make_generation_config(genai, *, max_output_tokens: int, json_mode: bool):
 
 
 def _generate_blocking(model, full_prompt: str):
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     max_out = int(os.environ.get("GEMINI_MAX_OUTPUT_TOKENS", "16384"))
     use_json = os.environ.get("GEMINI_JSON_MODE", "1").strip().lower() in (
@@ -3451,7 +3463,7 @@ def generate_gemini(model, full_prompt: str):
 
 def _generate_blocking_plain(model, full_prompt: str):
     """Текст без JSON mode - шаблоны заключений и т.п."""
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     max_out = int(os.environ.get("GEMINI_TEMPLATE_MAX_TOKENS", "8192"))
     return model.generate_content(
@@ -3466,7 +3478,7 @@ def generate_gemini_plain(model, full_prompt: str):
 
 def _generate_blocking_spellfix(model, full_prompt: str):
     """Короткий JSON-ответ: исправление опечаток в запросе."""
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     return model.generate_content(
         full_prompt,
@@ -3485,7 +3497,7 @@ def generate_gemini_spellfix(model, full_prompt: str):
 
 def _generate_blocking_query_refine(model, full_prompt: str):
     """JSON: нормализация жалобы под МКБ/протоколы."""
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     return model.generate_content(
         full_prompt,
@@ -3504,7 +3516,7 @@ def generate_gemini_query_refine(model, full_prompt: str):
 
 def _generate_blocking_consult_pdf_digest(model, full_prompt: str):
     """JSON: извлечение клинического ядра из текста PDF КЗ под RAG."""
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     return model.generate_content(
         full_prompt,
@@ -3523,7 +3535,7 @@ def generate_gemini_consult_pdf_digest(model, full_prompt: str):
 
 def _generate_blocking_consult_rag_second_pass(model, full_prompt: str):
     """JSON: уточнение строки запроса RAG между проходами на проверке КЗ."""
-    import google.generativeai as genai
+    genai = _legacy_genai_module()
 
     return model.generate_content(
         full_prompt,
@@ -3546,7 +3558,7 @@ def _consult_review_synth_max_tokens() -> int:
 
 def _make_blocking_consult_review_synth(max_out: int):
     def _fn(model, full_prompt: str):
-        import google.generativeai as genai
+        genai = _legacy_genai_module()
 
         return model.generate_content(
             full_prompt,
@@ -7356,7 +7368,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r191-rag-wait-gemini-warn"
+BUILD_VERSION = "2026-06-01-r192-gemini-warn-suppress"
 
 
 def _app_version() -> str:
