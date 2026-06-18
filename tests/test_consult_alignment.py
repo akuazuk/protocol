@@ -88,7 +88,40 @@ def test_complaints_not_compared_to_kp():
     out = build_consult_alignment(doc, protocol_paths=[], icd_codes=["J06.8"], get_chunks=lambda _p: [])
     complaints = next(c for c in out["alignment_cards"] if c["block_id"] == "complaints")
     assert complaints["source_kind"] == "completeness"
-    assert "без сравнения" in complaints["comment_ru"].lower() or "полнот" in complaints["comment_ru"].lower()
+    assert "жалоб" in complaints["comment_ru"].lower()
+    assert "амбулатор" in (complaints.get("context_ru") or "").lower()
+
+
+def test_anamnesis_separate_from_complaints():
+    text = """\
+Жалобы: кашель 3 дня.
+Анамнез заболевания: ОРВИ переносил в детстве, текущее 3 дня.
+Анамнез жизни: аллергия на пенициллин.
+Диагноз: J06.8
+"""
+    doc = parse_consultation(text, consultation_id="an1")
+    out = build_consult_alignment(doc, protocol_paths=[], icd_codes=["J06.8"], get_chunks=lambda _p: [])
+    anam = next(c for c in out["alignment_cards"] if c["block_id"] == "anamnesis")
+    assert "Заболевание:" in (anam.get("conclusion_excerpt") or "")
+    assert "Жизни:" in (anam.get("conclusion_excerpt") or "")
+    assert "отделён" in anam["comment_ru"].lower() or "отделён" in anam["comment_ru"]
+
+
+def test_exams_context_findings_gaps():
+    doc = parse_consultation(PL_1, consultation_id="pl1")
+    path = "minzdrav_protocols/flebo/тромбоз.pdf"
+    out = build_consult_alignment(
+        doc,
+        protocol_paths=[path],
+        icd_codes=["I80.1"],
+        get_chunks=_fake_chunks,
+    )
+    exams = next(c for c in out["alignment_cards"] if c["block_id"] == "exams")
+    assert exams["source_label"] == "КП · амбулаторно"
+    assert "амбулатор" in exams["comment_ru"].lower()
+    crit = next(c for c in out["criteria"] if "обслед" in (c.get("name_ru") or "").lower())
+    assert crit.get("context_ru")
+    assert crit.get("findings_ru") or crit.get("gaps_ru") is not None
 
 
 def test_exams_treatment_from_kp_chunks():

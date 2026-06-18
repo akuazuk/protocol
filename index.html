@@ -1311,6 +1311,52 @@
       font-weight: 800;
     }
 
+    .consult-crit-context {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #4a6b62;
+      line-height: 1.35;
+    }
+
+    .consult-crit-detail {
+      margin: 0.35rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .consult-crit-detail li {
+      margin: 0.18rem 0;
+      padding-left: 0.85rem;
+      position: relative;
+      line-height: 1.35;
+    }
+
+    .consult-crit-detail--ok li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #1a8a72;
+      font-weight: 800;
+    }
+
+    .consult-crit-detail--gap li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: #9a6b45;
+      font-weight: 800;
+    }
+
+    .consult-crit-proto-head {
+      display: block;
+      margin-bottom: 0.28rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #2d5a4e;
+    }
+
     .consult-score-overview {
       margin: 0.65rem 0;
       padding: 0.75rem 0.8rem;
@@ -22432,6 +22478,35 @@
     return "src-completeness";
   }
 
+  function renderConsultCriteriaComment(c) {
+    var parts = [];
+    var ctx = c.context_ru || "";
+    if (ctx) {
+      parts.push('<span class="consult-crit-context">' + escapeHtml(ctx) + "</span>");
+    }
+    var main = c.comment_ru || c.comment || "";
+    if (main) {
+      parts.push("<div>" + escapeHtml(main) + "</div>");
+    }
+    var findings = c.findings_ru || [];
+    var gaps = c.gaps_ru || [];
+    if (findings.length) {
+      parts.push('<ul class="consult-crit-detail consult-crit-detail--ok">');
+      findings.forEach(function (line) {
+        parts.push("<li>" + escapeHtml(String(line).replace(/^✓\s*/, "")) + "</li>");
+      });
+      parts.push("</ul>");
+    }
+    if (gaps.length) {
+      parts.push('<ul class="consult-crit-detail consult-crit-detail--gap">');
+      gaps.forEach(function (line) {
+        parts.push("<li>" + escapeHtml(String(line).replace(/^[—\-]\s*/, "")) + "</li>");
+      });
+      parts.push("</ul>");
+    }
+    return parts.join("");
+  }
+
   function renderConsultSourceBadge(c) {
     var label = c.source_label || c.source_kind || "";
     if (!label || c.source_kind === "mkb") return "";
@@ -22617,17 +22692,20 @@
             '<span class="consult-verdict ' + ver.cls + '">' + escapeHtml(ver.label) + "</span>";
         }
         var tdComment = document.createElement("td");
-        tdComment.textContent = c.comment_ru || c.comment || "";
+        tdComment.innerHTML = renderConsultCriteriaComment(c);
         var tdKz = document.createElement("td");
         tdKz.className = "consult-crit-excerpt";
         tdKz.textContent = c.conclusion_excerpt || "";
         var tdProto = document.createElement("td");
         tdProto.className = "consult-crit-excerpt";
+        var protoHead = c.protocol_section || "";
         var protoText = c.protocol_excerpt || "";
         if (c.protocol_page) {
           protoText = (protoText ? protoText + " " : "") + "(стр. " + c.protocol_page + ")";
         }
-        tdProto.textContent = protoText;
+        tdProto.innerHTML =
+          (protoHead ? '<span class="consult-crit-proto-head">' + escapeHtml(protoHead) + "</span>" : "") +
+          escapeHtml(protoText);
         tr.appendChild(tdName);
         tr.appendChild(tdPct);
         tr.appendChild(tdVer);

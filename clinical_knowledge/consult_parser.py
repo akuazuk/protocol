@@ -53,7 +53,9 @@ _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"общие\s+рекомендац\w*", "general_recommendations"),
     (r"дата\s+повторн\w*\s+явк\w*|повторн\w*\s+явк\w*|повторн\w*\s+консультац\w*|контрольн\w*\s+явк\w*", "follow_up_text"),
     (r"жалоб\w*", "complaints"),
-    (r"анамнез(?:\s+заболеван\w*|\s+жизни)?", "anamnesis"),
+    (r"анамнез\s+жизни", "life_history"),
+    (r"анамнез\s+заболеван\w*", "anamnesis"),
+    (r"анамнез", "anamnesis"),
     (r"диагноз(?:\s+клиническ\w*|\s+заключительн\w*|\s+основн\w*)?", "diagnosis_text"),
     (r"рекомендац\w*", "general_recommendations"),
 ]
