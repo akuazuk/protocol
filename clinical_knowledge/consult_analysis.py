@@ -30,6 +30,18 @@ def facts_from_document(doc: ConsultationDocument) -> dict[str, Any]:
     complaints = []
     if doc.sections.complaints:
         complaints = [c.strip() for c in doc.sections.complaints.split("\n") if c.strip()][:5]
+    anam_blob = " ".join(
+        p.strip()
+        for p in (doc.sections.anamnesis, doc.sections.life_history)
+        if p and p.strip()
+    ).strip()
+    if anam_blob:
+        diag_text = f"{diag_text} {anam_blob}".strip() if diag_text else anam_blob
+    performed = [
+        (ex.exam_name or getattr(ex, "raw_text", None) or "").strip()
+        for ex in (doc.performed_exams or [])
+        if (ex.exam_name or getattr(ex, "raw_text", None))
+    ][:8]
     low = (doc.raw_text or "").lower()
     hints = infer_conditions_hints(low, icd)
     return {
@@ -44,6 +56,7 @@ def facts_from_document(doc: ConsultationDocument) -> dict[str, Any]:
             "diagnosis_text": diag_text,
             "icd10": icd,
             "conditions_hint": hints,
+            "performed_exams": performed,
             "text_sample": (doc.raw_text or "")[:2000],
             "clinical_text": (doc.raw_text or "")[:12000],
         },

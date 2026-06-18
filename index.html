@@ -22481,7 +22481,7 @@
   function renderConsultCriteriaComment(c) {
     var parts = [];
     var ctx = c.context_ru || "";
-    if (ctx) {
+    if (ctx && (c.source_kind === "kp" || c.source_kind === "regulation")) {
       parts.push('<span class="consult-crit-context">' + escapeHtml(ctx) + "</span>");
     }
     var main = c.comment_ru || c.comment || "";

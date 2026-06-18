@@ -18,6 +18,8 @@ from clinical_knowledge.kz_block_sources import (
 from clinical_knowledge.kz_clinical_context import (
     build_clinical_context,
     format_anamnesis_excerpt,
+    format_evaluation_basis,
+    protocol_pick_comment,
     rank_kp_items_by_context,
 )
 from clinical_knowledge.protocol_icd_profile_index import merge_profiles_with_index
@@ -270,30 +272,37 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
     )
 
 
+def _kp_title(protocol_matches: list[dict[str, Any]] | None, profile: dict[str, Any]) -> str:
+    for m in protocol_matches or []:
+        title = (m.get("title") or "").strip()
+        if title:
+            return title[:100]
+    paths = profile.get("paths") or []
+    if paths:
+        return _basename(str(paths[0]))
+    return ""
+
+
 def _complaints_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str, Any]:
     text = (doc.sections.complaints or "").strip()
     present = bool(text)
     score = _completeness_score(present, text=text, min_chars=12)
-    syms = ctx.get("symptom_tokens") or []
-    comment = "Жалобы — отдельный блок; по ним уточняется релевантность обследований и лечения в КП."
     if not present:
-        comment += " Секция жалоб не выделена или пуста."
+        comment = "Жалобы не описаны."
     elif len(text) < 25:
-        comment += " Описание краткое."
+        comment = f"Жалобы указаны кратко: {_excerpt(text, 140)}"
+        score = min(score, 60)
     else:
-        comment += f" Выделено симптомов/тем: {len(syms)}."
+        comment = f"Жалобы: {_excerpt(text, 200)}"
     if doc.extraction_quality.has_undefined and "undefined" in text.lower():
         score = min(score, 45)
-        comment += " Есть placeholder undefined."
+        comment += " В тексте есть незаполненные поля."
     return _card(
         "complaints",
         score_pct=score,
         comment_ru=comment,
         conclusion_excerpt=_excerpt(text, 360),
-        protocol_excerpt="Жалобы не сравниваются с КП напрямую; используются для подбора амбулаторных рекомендаций КП.",
-        protocol_section="Клинический контекст",
         source_kind="completeness",
-        context_ru=ctx.get("setting_label") or "",
     )
 
 
@@ -301,29 +310,25 @@ def _anamnesis_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str,
     disease = (ctx.get("anamnesis_disease") or "").strip()
     life = (ctx.get("anamnesis_life") or "").strip()
     present = bool(disease or life)
-    combined_len = len(disease) + len(life)
     score = _completeness_score(present, text=disease or life, min_chars=20)
-    parts: list[str] = [
-        "Анамнез отделён от жалоб: заболевание и жизни — разные подблоки.",
-    ]
-    if not disease:
-        parts.append("Анамнез заболевания не выделен.")
+    parts: list[str] = []
+    if disease:
+        parts.append(f"Анамнез заболевания: {_excerpt(disease, 160)}")
+    else:
+        parts.append("Анамнез заболевания не описан.")
         score = min(score, 50)
-    if not life:
-        parts.append("Анамнез жизни не указан (для амбулаторного КЗ желателен).")
-        if score > 70:
-            score -= 8
-    elif combined_len > 40:
-        parts.append("Достаточно данных для контекста обследования/лечения.")
+    if life:
+        parts.append(f"Анамнез жизни: {_excerpt(life, 120)}")
+    else:
+        parts.append("Анамнез жизни не указан.")
+        if score > 72:
+            score -= 10
     return _card(
         "anamnesis",
         score_pct=score,
         comment_ru=" ".join(parts),
         conclusion_excerpt=_excerpt(format_anamnesis_excerpt(ctx), 400),
-        protocol_excerpt="Анамнез не сравнивается с КП; учитывается вместе с жалобами и МКБ при оценке тактики.",
-        protocol_section="Клинический контекст",
         source_kind="completeness",
-        context_ru=ctx.get("setting_label") or "",
     )
 
 
@@ -335,25 +340,20 @@ def _completeness_section_card(
     present: bool,
 ) -> dict[str, Any]:
     score = _completeness_score(present, text=text)
-    hint = {
-        "complaints": "Оценка полноты описания жалоб (без сравнения с КП).",
-        "anamnesis": "Оценка полноты анамнеза (без сравнения с КП).",
-        "objective_status": "Оценка полноты объективного статуса (без сравнения с КП).",
-    }.get(block_id, "")
-    missing = "Секция отсутствует или слишком краткая." if score < 50 else ""
-    comment = hint
-    if missing:
-        comment = f"{hint} {missing}".strip()
-    elif doc.extraction_quality.has_undefined and block_id == "objective_status":
-        comment += " Обнаружены placeholder-значения (undefined)."
+    if not present or score < 50:
+        comment = "Объективный статус не описан или слишком краткий."
+    elif len((text or "").strip()) < 30:
+        comment = f"Объективный статус краткий: {_excerpt(text, 120)}"
+    else:
+        comment = f"Объективный статус: {_excerpt(text, 160)}"
+    if doc.extraction_quality.has_undefined and block_id == "objective_status":
+        comment += " Есть незаполненные поля."
         score = min(score, 50)
     return _card(
         block_id,
         score_pct=score,
         comment_ru=comment,
         conclusion_excerpt=_excerpt(text),
-        protocol_excerpt="Эталон: полнота структуры КЗ (НПА № 127, п. 8.1–8.2).",
-        protocol_section="Полнота описания",
         source_kind="completeness",
     )
 
@@ -362,6 +362,7 @@ def _exams_card(
     doc: ConsultationDocument,
     profile: dict[str, Any],
     ctx: dict[str, Any],
+    protocol_matches: list[dict[str, Any]] | None,
 ) -> dict[str, Any]:
     ranked = rank_kp_items_by_context(
         list(profile.get("diagnostics") or []),
@@ -376,39 +377,53 @@ def _exams_card(
         (profile.get("cites") or [{}])[0] if profile.get("cites") else {},
     )
     proto_text, proto_section, proto_header = _format_kp_cite(cite, required)
+    kp_title = _kp_title(protocol_matches, profile)
+    pick_note = protocol_pick_comment(ctx, protocol_matches)
+    basis = format_evaluation_basis(ctx, protocol_matches)
 
-    if not required:
+    if pick_note and not required:
         return _card(
             "exams",
-            score_pct=55 if kz_blob else 35,
-            comment_ru=(
-                f"{ctx.get('setting_label')}. По жалобам и МКБ {', '.join(ctx.get('icd_codes') or [])[:40]} "
-                "в подобранных КП не извлечены амбулаторные обследования."
-            ),
+            score_pct=40 if kz_blob else 25,
+            comment_ru=pick_note,
             conclusion_excerpt=_excerpt(kz_blob, 360),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             protocol_page=str(cite.get("page_from") or ""),
             source_kind="kp",
-            source_label="КП · амбулаторно",
             protocol_path=cite.get("path") or "",
             chunk_id=cite.get("chunk_id"),
-            context_ru=_excerpt(ctx.get("clinical_query"), 200),
+            context_ru=basis,
+        )
+
+    if not required:
+        comment = f"КП «{kp_title}»: обследования для сопоставления не извлечены." if kp_title else pick_note or "Обследования КП не извлечены."
+        return _card(
+            "exams",
+            score_pct=55 if kz_blob else 35,
+            comment_ru=comment,
+            conclusion_excerpt=_excerpt(kz_blob, 360),
+            protocol_excerpt=proto_text,
+            protocol_section=proto_section,
+            protocol_page=str(cite.get("page_from") or ""),
+            source_kind="kp",
+            protocol_path=cite.get("path") or "",
+            chunk_id=cite.get("chunk_id"),
+            context_ru=basis,
         )
 
     pct, found, missing = _coverage_pct(required, kz_blob, meta=ranked)
     findings = [f"✓ {x}" for x in found[:6]]
     gaps = [f"— {x}" for x in missing[:6]]
-    icd_s = ", ".join((ctx.get("icd_codes") or [])[:3])
-    comment = (
-        f"{ctx.get('setting_label')}. Обследования по КП с учётом жалоб, анамнеза и МКБ ({icd_s or '—'}). "
-        f"Совпало {len(found)} из {len(required)} амбулаторных позиций."
-    )
-    if ctx.get("complaints"):
-        comment += f" Жалобы: {ctx['complaints'][:90]}."
+    if kp_title:
+        comment = f"КП «{kp_title}»: в КЗ отражено {len(found)} из {len(required)} рекомендуемых обследований."
+    else:
+        comment = f"В КЗ отражено {len(found)} из {len(required)} обследований по КП."
+    if pick_note:
+        comment = f"{pick_note} {comment}"
     if not kz_blob:
         pct = min(pct, 35)
-        comment += " В КЗ не распознаны назначения/результаты обследований."
+        comment += " Назначения и результаты обследований в КЗ не распознаны."
 
     return _card(
         "exams",
@@ -416,15 +431,14 @@ def _exams_card(
         comment_ru=comment,
         conclusion_excerpt=_excerpt(kz_blob, 360),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
-        protocol_section=proto_section or "Обследование (амбулаторно)",
+        protocol_section=proto_section or "Обследование",
         protocol_page=str(cite.get("page_from") or ""),
         source_kind="kp",
-        source_label="КП · амбулаторно",
         protocol_path=cite.get("path") or "",
         chunk_id=cite.get("chunk_id"),
         findings_ru=findings,
         gaps_ru=gaps,
-        context_ru=_excerpt(ctx.get("clinical_query"), 220),
+        context_ru=basis,
     )
 
 
@@ -432,6 +446,7 @@ def _treatment_card(
     doc: ConsultationDocument,
     profile: dict[str, Any],
     ctx: dict[str, Any],
+    protocol_matches: list[dict[str, Any]] | None,
 ) -> dict[str, Any]:
     pool = list(profile.get("medications") or []) + list(profile.get("treatment") or [])
     ranked = rank_kp_items_by_context(
@@ -447,35 +462,49 @@ def _treatment_card(
         (profile.get("cites") or [{}])[0] if profile.get("cites") else {},
     )
     proto_text, proto_section, proto_header = _format_kp_cite(cite, required)
+    kp_title = _kp_title(protocol_matches, profile)
+    pick_note = protocol_pick_comment(ctx, protocol_matches)
+    basis = format_evaluation_basis(ctx, protocol_matches)
 
-    if not required:
+    if pick_note and not required:
         return _card(
             "treatment",
-            score_pct=60 if kz_blob else 35,
-            comment_ru=(
-                f"{ctx.get('setting_label')}. По жалобам/анамнезу и МКБ не извлечена "
-                "амбулаторная тактика лечения из КП."
-            ),
+            score_pct=45 if kz_blob else 25,
+            comment_ru=pick_note,
             conclusion_excerpt=_excerpt(kz_blob, 360),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             source_kind="kp",
-            source_label="КП · амбулаторно",
             protocol_path=cite.get("path") or "",
             chunk_id=cite.get("chunk_id"),
-            context_ru=_excerpt(ctx.get("clinical_query"), 200),
+            context_ru=basis,
+        )
+
+    if not required:
+        comment = f"КП «{kp_title}»: рекомендации по лечению не извлечены." if kp_title else pick_note or "Лечение по КП не извлечено."
+        return _card(
+            "treatment",
+            score_pct=60 if kz_blob else 35,
+            comment_ru=comment,
+            conclusion_excerpt=_excerpt(kz_blob, 360),
+            protocol_excerpt=proto_text,
+            protocol_section=proto_section,
+            protocol_page=str(cite.get("page_from") or ""),
+            source_kind="kp",
+            protocol_path=cite.get("path") or "",
+            chunk_id=cite.get("chunk_id"),
+            context_ru=basis,
         )
 
     pct, found, missing = _coverage_pct(required, kz_blob, meta=ranked)
     findings = [f"✓ {x}" for x in found[:6]]
     gaps = [f"— {x}" for x in missing[:6]]
-    icd_s = ", ".join((ctx.get("icd_codes") or [])[:3])
-    comment = (
-        f"{ctx.get('setting_label')}. Лечение по КП с учётом жалоб, анамнеза и МКБ ({icd_s or '—'}). "
-        f"Совпало {len(found)} из {len(required)}."
-    )
-    if ctx.get("anamnesis_disease"):
-        comment += f" Анамнез: {ctx['anamnesis_disease'][:80]}."
+    if kp_title:
+        comment = f"КП «{kp_title}»: в КЗ отражено {len(found)} из {len(required)} рекомендаций по лечению."
+    else:
+        comment = f"В КЗ отражено {len(found)} из {len(required)} назначений по КП."
+    if pick_note:
+        comment = f"{pick_note} {comment}"
     if not kz_blob:
         pct = min(pct, 35)
         comment += " Назначения в КЗ не распознаны."
@@ -486,15 +515,14 @@ def _treatment_card(
         comment_ru=comment,
         conclusion_excerpt=_excerpt(kz_blob, 360),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
-        protocol_section=proto_section or "Лечение (амбулаторно)",
+        protocol_section=proto_section or "Лечение",
         protocol_page=str(cite.get("page_from") or ""),
         source_kind="kp",
-        source_label="КП · амбулаторно",
         protocol_path=cite.get("path") or "",
         chunk_id=cite.get("chunk_id"),
         findings_ru=findings,
         gaps_ru=gaps,
-        context_ru=_excerpt(ctx.get("clinical_query"), 220),
+        context_ru=basis,
     )
 
 
@@ -558,24 +586,35 @@ def _follow_up_card(
     )
 
 
-def _limitations_card(profile: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
-    parts = [
-        f"{ctx.get('setting_label') or 'Амбулаторное консультативное заключение'}.",
-        "Жалобы и анамнез (заболевания / жизни) оцениваются отдельно по полноте, не по КП.",
-        "Обследование и лечение сопоставляются с амбулаторными рекомендациями КП по жалобам, анамнезу и МКБ.",
-        "Диагноз сверяется со справочником МКБ-10; контрольное наблюдение — по НПА и КП.",
-    ]
-    if not profile.get("paths"):
-        parts.append("Клинические протоколы по МКБ не подобраны — оценка обследования и лечения ограничена.")
-    if not (ctx.get("icd_codes") or []):
-        parts.append("Коды МКБ не извлечены — привязка к КП ослаблена.")
+def _limitations_card(
+    profile: dict[str, Any],
+    ctx: dict[str, Any],
+    protocol_matches: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    parts: list[str] = []
+    missing = list(ctx.get("missing_for_protocol_pick") or [])
+    if missing:
+        parts.append(f"Для подбора КП не указаны: {', '.join(missing)}.")
+    pick_note = protocol_pick_comment(ctx, protocol_matches)
+    if pick_note:
+        parts.append(pick_note)
+    elif protocol_matches:
+        title = _kp_title(protocol_matches, profile)
+        sc = float((protocol_matches[0] or {}).get("match_score") or 0)
+        if title:
+            parts.append(f"Подобран КП «{title}» (соответствие {sc:.0f}%).")
+    elif not (ctx.get("icd_codes") or []):
+        parts.append("Код МКБ-10 не указан — сравнение с КП невозможно.")
+    elif not profile.get("paths"):
+        parts.append("Клинический протокол по данным КЗ не найден.")
+    if not parts:
+        parts.append("Достаточно данных для сопоставления с КП.")
     return _card(
         "limitations",
         score_pct=100,
         comment_ru=" ".join(parts),
         source_kind="limitations",
         source_label="Ограничения",
-        context_ru=_excerpt(ctx.get("clinical_query"), 200),
     )
 
 
@@ -586,9 +625,17 @@ def build_consult_alignment(
     icd_codes: list[str],
     get_chunks: GetChunksFn,
     query: str = "",
+    protocol_matches: list[dict[str, Any]] | None = None,
+    specialty_slug: str | None = None,
+    specialty_label: str | None = None,
 ) -> dict[str, Any]:
     """Построить детерминированные карточки и criteria для UI."""
-    ctx = build_clinical_context(doc, icd_codes)
+    ctx = build_clinical_context(
+        doc,
+        icd_codes,
+        specialty_slug=specialty_slug,
+        specialty_label=specialty_label,
+    )
     clinical_query = (query or "").strip() or str(ctx.get("clinical_query") or "")
     profile = merge_profiles_with_index(
         protocol_paths, icd_codes, get_chunks, query=clinical_query
@@ -606,10 +653,10 @@ def build_consult_alignment(
             present=bool(doc.sections.objective_status),
         )
     )
-    cards.append(_exams_card(doc, profile, ctx))
-    cards.append(_treatment_card(doc, profile, ctx))
+    cards.append(_exams_card(doc, profile, ctx, protocol_matches))
+    cards.append(_treatment_card(doc, profile, ctx, protocol_matches))
     cards.append(_follow_up_card(doc, icd_codes, profile))
-    cards.append(_limitations_card(profile, ctx))
+    cards.append(_limitations_card(profile, ctx, protocol_matches))
 
     by_id = {c["block_id"]: c for c in cards}
     ordered = [by_id[bid] for bid in ALIGNMENT_CARD_ORDER if bid in by_id]

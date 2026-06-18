@@ -106,12 +106,23 @@ def run_l1_structured_review(
                 rules_paths=match_paths,
                 rag_paths=[],
             )
+            protocol_matches = [
+                {
+                    "title": m.get("title"),
+                    "source_path": m.get("source_path"),
+                    "match_score": m.get("match_score"),
+                }
+                for m in matches
+                if isinstance(m, dict)
+            ]
             alignment_result = build_consult_alignment(
                 doc,
                 protocol_paths=alignment_paths,
                 icd_codes=icd_codes,
                 get_chunks=_l1_get_chunks,
                 query=" ".join(icd_codes[:4]),
+                protocol_matches=protocol_matches,
+                specialty_label=doc.doctor_specialty,
             )
             merge_alignment_into_review(review, alignment_result)
             sync_structured_with_alignment(structured_analysis, alignment_result)

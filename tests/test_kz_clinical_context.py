@@ -5,11 +5,15 @@ from clinical_knowledge.consult_parser import parse_consultation
 from clinical_knowledge.kz_clinical_context import (
     build_clinical_context,
     filter_ambulatory_kp_items,
+    protocol_pick_comment,
     rank_kp_items_by_context,
     split_anamnesis_parts,
 )
 
 SAMPLE = """\
+Врач: флеболог
+Дата консультации: 12.04.2024
+Пол: женский, 45 лет
 Жалобы: отёк левой ноги.
 Анамнез заболевания: 5 дней назад появился отёк.
 Анамнез жизни: варикоз, курение.
@@ -24,13 +28,21 @@ def test_split_anamnesis_parts():
     assert "варикоз" in parts["life"].lower()
 
 
-def test_build_clinical_context_ambulatory():
+def test_build_clinical_context_fields():
     doc = parse_consultation(SAMPLE, consultation_id="ctx2")
-    ctx = build_clinical_context(doc, ["I80.1"])
+    ctx = build_clinical_context(doc, ["I80.1"], specialty_label="флеболог")
     assert ctx["setting"] == "ambulatory"
     assert "I80.1" in ctx["icd_codes"]
     assert ctx["complaints"]
-    assert "амбулатор" in ctx["clinical_query"].lower()
+    assert ctx["specialty_label"] == "флеболог"
+    assert "setting_label" not in ctx
+
+
+def test_protocol_pick_comment_missing_icd():
+    doc = parse_consultation("Жалобы: кашель.", consultation_id="ctx3")
+    ctx = build_clinical_context(doc, [])
+    msg = protocol_pick_comment(ctx, [])
+    assert "МКБ" in msg
 
 
 def test_filter_ambulatory_kp_items():
@@ -45,7 +57,7 @@ def test_filter_ambulatory_kp_items():
 
 
 def test_rank_kp_by_complaints_and_icd():
-    doc = parse_consultation(SAMPLE, consultation_id="ctx3")
+    doc = parse_consultation(SAMPLE, consultation_id="ctx4")
     ctx = build_clinical_context(doc, ["I80.1"])
     ranked = rank_kp_items_by_context(
         [

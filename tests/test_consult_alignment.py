@@ -89,7 +89,8 @@ def test_complaints_not_compared_to_kp():
     complaints = next(c for c in out["alignment_cards"] if c["block_id"] == "complaints")
     assert complaints["source_kind"] == "completeness"
     assert "жалоб" in complaints["comment_ru"].lower()
-    assert "амбулатор" in (complaints.get("context_ru") or "").lower()
+    assert "отдельн" not in complaints["comment_ru"].lower()
+    assert not complaints.get("protocol_excerpt")
 
 
 def test_anamnesis_separate_from_complaints():
@@ -104,21 +105,25 @@ def test_anamnesis_separate_from_complaints():
     anam = next(c for c in out["alignment_cards"] if c["block_id"] == "anamnesis")
     assert "Заболевание:" in (anam.get("conclusion_excerpt") or "")
     assert "Жизни:" in (anam.get("conclusion_excerpt") or "")
-    assert "отделён" in anam["comment_ru"].lower() or "отделён" in anam["comment_ru"]
+    assert "отделён" not in anam["comment_ru"].lower()
+    assert "анамнез заболевания" in anam["comment_ru"].lower()
 
 
 def test_exams_context_findings_gaps():
     doc = parse_consultation(PL_1, consultation_id="pl1")
     path = "minzdrav_protocols/flebo/тромбоз.pdf"
+    matches = [{"title": "Флеботромбоз", "source_path": path, "match_score": 78.0}]
     out = build_consult_alignment(
         doc,
         protocol_paths=[path],
         icd_codes=["I80.1"],
         get_chunks=_fake_chunks,
+        protocol_matches=matches,
+        specialty_label="флеболог",
     )
     exams = next(c for c in out["alignment_cards"] if c["block_id"] == "exams")
-    assert exams["source_label"] == "КП · амбулаторно"
-    assert "амбулатор" in exams["comment_ru"].lower()
+    assert exams["source_kind"] == "kp"
+    assert "Флеботромбоз" in exams["comment_ru"] or "КП" in exams["comment_ru"]
     crit = next(c for c in out["criteria"] if "обслед" in (c.get("name_ru") or "").lower())
     assert crit.get("context_ru")
     assert crit.get("findings_ru") or crit.get("gaps_ru") is not None

@@ -58,10 +58,14 @@ def consult_target_protocol_paths(
     clinical_rules: dict[str, Any] | None,
     specialty_slugs: list[str] | None,
     consult_text: str | None = None,
+    consult_facts: dict[str, Any] | None = None,
+    primary_specialty: str | None = None,
     max_paths: int | None = None,
+    min_match_score: float = 22.0,
 ) -> tuple[list[str], dict[str, Any]]:
     """Список source_path PDF, по которым разрешён RAG для КЗ."""
     from .loader import load_protocol_cards_registry
+    from .protocol_match import compute_match_score, match_protocol_cards
 
     limit = max_paths
     if limit is None:
@@ -72,22 +76,36 @@ def consult_target_protocol_paths(
     paths: list[str] = []
     seen: set[str] = set()
     sources: dict[str, str] = {}
+    scored_entries: list[tuple[float, str, str]] = []
+    protocol_matches: list[dict[str, Any]] = []
 
-    def add(sp: str, src: str) -> None:
+    def add(sp: str, src: str, score: float = 0.0) -> None:
         n = _path_norm(sp)
         if not n or n in seen:
             return
         seen.add(n)
         paths.append(n)
         sources[n] = src
+        scored_entries.append((score, n, src))
+
+    facts = consult_facts
+    if not facts and isinstance(clinical_rules, dict):
+        facts = clinical_rules.get("consult_facts")
 
     if isinstance(clinical_rules, dict):
         for mp in clinical_rules.get("matched_protocols") or []:
             if not isinstance(mp, dict):
                 continue
             sp = mp.get("source_path")
-            if sp:
-                add(str(sp), "matched_protocol_card")
+            sc = float(mp.get("match_score") or 0)
+            if sp and sc >= min_match_score:
+                add(str(sp), "matched_protocol_card", sc + 3.0)
+                protocol_matches.append({
+                    "title": mp.get("title"),
+                    "source_path": sp,
+                    "match_score": sc,
+                    "specialty_slug": mp.get("specialty_slug"),
+                })
 
     diag = [str(x).upper() for x in (diag_icd or []) if x]
     merged = [str(x).upper() for x in (merged_icd or []) if x]
@@ -97,29 +115,74 @@ def consult_target_protocol_paths(
     slugs = expand_specialty_slugs_for_icd(set(specialty_slugs or []), primary_icd)
     slugs = expand_specialty_slugs_for_clinical_text(slugs, consult_text or "")
 
-    if primary_icd:
-        # Лучший балл на КАЖДЫЙ PDF (а не на каждую секцию), иначе PDF с многими
-        # секциями вытесняет другие релевантные протоколы из топа.
+    if facts and len(paths) < limit:
+        spec_try: list[str | None] = []
+        if primary_specialty:
+            spec_try.append(primary_specialty)
+        if slugs:
+            for s in sorted(slugs):
+                if s not in spec_try:
+                    spec_try.append(s)
+        spec_try.append(None)
+        seen_match_paths = set(paths)
+        for spec in spec_try:
+            for m in match_protocol_cards(facts, specialty_slug=spec, limit=limit * 2):
+                sp = str(m.get("source_path") or "")
+                sc = float(m.get("match_score") or 0)
+                if not sp or sc < min_match_score or sp in seen_match_paths:
+                    continue
+                add(sp, "facts_match", sc)
+                seen_match_paths.add(sp)
+                protocol_matches.append({
+                    "title": m.get("title"),
+                    "source_path": sp,
+                    "match_score": sc,
+                    "specialty_slug": m.get("specialty_slug"),
+                })
+                if len(paths) >= limit:
+                    break
+            if len(paths) >= limit:
+                break
+
+    if primary_icd and len(paths) < limit:
         best_by_path: dict[str, float] = {}
+        cons = (facts or {}).get("consultation") or {}
+        patient = (facts or {}).get("patient_context") or {}
+        icd_list = primary_icd
+        spec_for_score = primary_specialty
+        if not spec_for_score and len(slugs) == 1:
+            spec_for_score = next(iter(slugs))
+
         for card in load_protocol_cards_registry():
             sp = _path_norm(str(card.get("source_path") or ""))
-            if not sp:
+            if not sp or sp in seen:
                 continue
             if slugs and card.get("specialty_slug") not in slugs:
                 continue
-            sc = _icd_overlap_score(card, icd_roots, icd_full)
+            if facts:
+                sc = compute_match_score(
+                    card,
+                    icd_list=icd_list,
+                    audience=patient.get("adult_or_child"),
+                    hints=set(cons.get("conditions_hint") or []),
+                    specialty_slug=spec_for_score,
+                    diag_text=str(cons.get("diagnosis_text") or ""),
+                    complaints=list(cons.get("complaints") or []),
+                    performed_exams=list(cons.get("performed_exams") or []),
+                )
+            else:
+                sc = _icd_overlap_score(card, icd_roots, icd_full)
             if sc <= 0:
                 continue
             if _path_spine_domain_mismatch(sp, icd_roots):
                 continue
             if slugs and card.get("specialty_slug") in slugs:
-                sc += 12.0
-            if sc > best_by_path.get(sp, 0.0):
+                sc += 8.0
+            if sc >= min_match_score and sc > best_by_path.get(sp, 0.0):
                 best_by_path[sp] = sc
-        scored = sorted(best_by_path.items(), key=lambda x: (-x[1], x[0]))
-        for sp, sc in scored:
-            if sc >= 18.0:
-                add(sp, "icd_registry_match")
+
+        for sp, sc in sorted(best_by_path.items(), key=lambda x: (-x[1], x[0])):
+            add(sp, "icd_registry_match", sc)
             if len(paths) >= limit:
                 break
 
@@ -137,13 +200,25 @@ def consult_target_protocol_paths(
                     continue
                 blob = f"{card.get('title') or ''} {sp}".lower()
                 if any(m in blob for m in urti_markers):
-                    add(sp, "icd_title_urti_fallback")
+                    add(sp, "icd_title_urti_fallback", 20.0)
+
+    protocol_matches.sort(key=lambda m: -(float(m.get("match_score") or 0)))
+    seen_titles: set[str] = set()
+    deduped_matches: list[dict[str, Any]] = []
+    for m in protocol_matches:
+        key = str(m.get("source_path") or m.get("title") or "")
+        if key in seen_titles:
+            continue
+        seen_titles.add(key)
+        deduped_matches.append(m)
 
     meta: dict[str, Any] = {
         "primary_icd": primary_icd[:12],
         "specialty_slugs": sorted(slugs),
         "path_sources": sources,
+        "protocol_matches": deduped_matches[:limit],
         "strict": bool(paths),
+        "min_match_score": min_match_score,
     }
     return paths[:limit], meta
 

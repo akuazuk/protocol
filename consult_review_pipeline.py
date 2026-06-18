@@ -203,6 +203,12 @@ def iter_consult_review_pipeline(
         clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
         specialty_slugs=target_slugs or None,
         consult_text=full_text,
+        consult_facts=(
+            clinical_rules.get("consult_facts")
+            if isinstance(clinical_rules, dict)
+            else None
+        ),
+        primary_specialty=doctor_rubric or None,
     )
     matched_path_boost = list(allowed_paths)
     if not matched_path_boost and isinstance(clinical_rules, dict):
@@ -594,6 +600,13 @@ def iter_consult_review_pipeline(
                 icd_codes=list(merged_icd or diag_codes_list or []),
                 get_chunks=rs.get_rich_chunks_for_path,
                 query=q_rag or q,
+                protocol_matches=(
+                    path_pick_meta.get("protocol_matches")
+                    if isinstance(path_pick_meta, dict)
+                    else None
+                ),
+                specialty_slug=doctor_rubric or None,
+                specialty_label=parsed_doc.doctor_specialty if parsed_doc else None,
             )
             if isinstance(review, dict):
                 merge_alignment_into_review(review, alignment_result)
