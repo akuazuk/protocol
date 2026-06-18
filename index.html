@@ -6494,6 +6494,25 @@
       padding-left: 1.1rem;
     }
 
+    .methodist-batch-guide {
+      margin: 0.65rem 0 0.85rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(27, 94, 63, 0.22);
+      background: rgba(232, 245, 241, 0.55);
+      font-size: 0.88rem;
+    }
+
+    .methodist-batch-guide summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--green-900);
+    }
+
+    body.methodist-mode .methodist-batch-guide {
+      display: block;
+    }
+
     .methodist-guide {
       margin-top: 0.45rem;
       font-size: 0.76rem;
@@ -9181,7 +9200,7 @@
         <div>
           <span class="methodist-mode-banner__title">Кабинет методиста</span>
           <span class="methodist-mode-banner__sub" id="methodist-mode-banner-sub">
-            Загрузите КZ → этап 1 (оценка системы) → этап 2 (ИИ) → сохранить разметку для движка
+            Загрузите КЗ → этап 1 (оценка системы) → этап 2 (ИИ) → сохранить разметку для движка
           </span>
         </div>
       </div>
@@ -9660,7 +9679,7 @@
             </div>
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Прогоны КЗ по рубрикам</h4>
-              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-rubrics" aria-label="KZ rubrics"></canvas></div>
+              <div class="analytics-chart-wrap"><canvas id="chart-an-kz-rubrics" aria-label="Прогоны КЗ по рубрикам"></canvas></div>
               <p class="analytics-chart-desc"><strong>Что измеряет:</strong> число прогонов КЗ по рубрикам каталога. <strong>Интерпретация:</strong> где накоплен опыт пилота; рубрики с малым N - метрики ещё шумные.</p>
             </div>
             <div class="analytics-chart-card">
@@ -9752,9 +9771,33 @@
 
         <div class="consult-upload-card consult-hide-print">
           <p class="methodist-upload-lead" id="methodist-upload-lead">
-            <strong>Режим методиста.</strong> Система оценит КZ (этап 1), затем ИИ проверит,
-            <em>насколько верна эта оценка</em>, и предложит правки для движка анализа - не список правок для врача.
+            <strong>Режим методиста.</strong> Система оценит КЗ (этап 1), затем ИИ проверит,
+            <em>насколько верна эта оценка</em>, и предложит правки для движка анализа — не список правок для врача.
           </p>
+          <details class="methodist-batch-guide consult-hide-print" id="methodist-batch-guide">
+            <summary>Пакет из многих КЗ (сравнение L0/L1/L2 и разметка для движка)</summary>
+            <ol style="margin: 0.5rem 0 0.75rem 1.1rem; font-size: 0.88rem; color: var(--green-900); line-height: 1.45">
+              <li>
+                <strong>В UI</strong> — по одному КЗ за раз (до 3 PDF одного случая). Уровень: L0 → L1 → L2 в селекторе;
+                повторите тот же файл для сравнения этапов.
+              </li>
+              <li>
+                <strong>Пакетом (рекомендуется)</strong> — положите PDF/TXT в папку и на машине с ключом Gemini:
+                <code>python3 scripts/run_methodist_batch.py --folder ./мои_кз --tier L1 --ai-review auto</code>.
+                Для сравнения уровней — три прогона с <code>--tier L0</code>, <code>L1</code>, <code>L2</code>.
+                Сводка: <code>ml/experiments/methodist_batch_*/batch_summary.csv</code>.
+              </li>
+              <li>
+                <strong>Разметка</strong> — вкладка «Очередь» → «Открыть» (без повторного прогона) или загрузите файл снова.
+                Проверьте overrides правил → «Одобрить — сохранить для обучения движка» (<code>analysis_review</code>).
+              </li>
+              <li>
+                <strong>На Render пакетом</strong> — <code>scripts/submit_priority_reviews_render.py</code> (L1 + AI + approve
+                как в UI). Экспорт для правок движка: <code>scripts/export_training_feedback.py</code> →
+                <code>ml/datasets/priority_cases.jsonl</code>.
+              </li>
+            </ol>
+          </details>
           <div class="consult-file-row">
             <span class="consult-label" id="consult-pdf-label">Файлы заключения</span>
             <div class="consult-file-controls">
@@ -9971,7 +10014,7 @@
               <span class="methodist-eval-tier-line" id="methodist-eval-tier-line"></span>
             </div>
             <details class="methodist-kz-text-wrap consult-hide-print" id="methodist-kz-text-wrap">
-              <summary>Текст КZ (ФИО скрыты)</summary>
+              <summary>Текст КЗ (ФИО скрыты)</summary>
               <pre id="methodist-kz-text" class="methodist-kz-text"></pre>
             </details>
             <div class="methodist-eval-grid" id="methodist-eval-metrics"></div>
@@ -10005,16 +10048,16 @@
           </section>
 
           <section id="methodist-ai-review-panel" class="methodist-ai-review-panel consult-hide-print" hidden aria-label="AI-оценка для методиста">
-            <h3>Этап 2 - насколько верно система оценила КZ?</h3>
-            <p class="methodist-ai-review-panel__meta" id="methodist-ai-review-meta">ИИ сравнивает вывод программы (этап 1) с текстом КZ и протоколами; предлагает правки для движка анализа.</p>
+            <h3>Этап 2 - насколько верно система оценила КЗ?</h3>
+            <p class="methodist-ai-review-panel__meta" id="methodist-ai-review-meta">ИИ сравнивает вывод программы (этап 1) с текстом КЗ и протоколами; предлагает правки для движка анализа.</p>
             <div id="methodist-ai-review-body" hidden>
               <div class="methodist-ai-review-metrics" id="methodist-ai-review-metrics"></div>
               <p class="methodist-ai-review-panel__summary" id="methodist-ai-review-summary"></p>
-              <p class="consult-hint-small" style="margin:0.2rem 0 0.15rem;font-weight:650">Что улучшить в анализе КZ (движок Protocol):</p>
+              <p class="consult-hint-small" style="margin:0.2rem 0 0.15rem;font-weight:650">Что улучшить в анализе КЗ (движок Protocol):</p>
               <ul class="methodist-ai-review-improvements" id="methodist-ai-review-improvements"></ul>
               <p class="consult-hint-small" id="methodist-ai-review-system-notes" style="margin:0.25rem 0 0;font-size:0.72rem;color:#5a6f6a"></p>
               <details class="consult-hide-print" id="methodist-ai-kz-ref-wrap" hidden style="margin:0.35rem 0;font-size:0.74rem">
-                <summary>Справочно: эталон КZ (не главный вывод)</summary>
+                <summary>Справочно: эталон КЗ (не главный вывод)</summary>
                 <p id="methodist-ai-kz-ref" style="margin:0.35rem 0"></p>
                 <ul id="methodist-ai-kz-notes" style="margin:0;padding-left:1.1rem"></ul>
               </details>
@@ -10036,7 +10079,7 @@
             </div>
             <div class="methodist-review-grid">
               <div>
-                <label for="methodist-kz-gold-select">Справочно: эталон КZ по протоколам</label>
+                <label for="methodist-kz-gold-select">Справочно: эталон КЗ по протоколам</label>
                 <select id="methodist-kz-gold-select">
                   <option value="">Выберите…</option>
                   <option value="compliant">Соответствует протоколам</option>
@@ -10109,7 +10152,7 @@
             <details class="methodist-ml-record consult-hide-print" id="methodist-ml-record-details">
               <summary>Что сохраняется для обучения ML</summary>
               <div class="methodist-ml-record__body">
-                <p class="methodist-ml-record__lead">Собираем пары «оценка системы → мета-оценка методиста/ИИ» для улучшения движка анализа КZ. Полный текст хранится on-prem по hash (без ФИО в UI).</p>
+                <p class="methodist-ml-record__lead">Собираем пары «оценка системы → мета-оценка методиста/ИИ» для улучшения движка анализа КЗ. Полный текст хранится on-prem по hash (без ФИО в UI).</p>
                 <h4 class="methodist-ml-record__subtitle">Уже записано при анализе</h4>
                 <ul class="methodist-ml-record__list" id="methodist-autolog-list"></ul>
                 <h4 class="methodist-ml-record__subtitle">Добавится при «Сохранить оценку»</h4>
@@ -17549,7 +17592,7 @@
         (c.pending || 0) +
         " · Suspicious: " +
         (c.suspicious || 0) +
-        " · Всего KZ: " +
+        " · Всего КЗ: " +
         (c.total_kz || 0);
     }
     var rows = []
@@ -18132,7 +18175,7 @@
         "/5</strong> · " +
         escapeHtml(methodistVerdictRu(ai.system_accuracy_verdict)) +
         "</span>" +
-        "<span>Справ. эталон КZ: " +
+        "<span>Справ. эталон КЗ: " +
         escapeHtml(methodistGoldStatusRu(ai.kz_compliance_gold)) +
         "</span>";
     }
@@ -18893,7 +18936,7 @@
       ? ai.kz_compliance_gold
       : (document.getElementById("methodist-kz-gold-select") || {}).value || "";
     if (rating == null || rating === "" || !verdict || !gold) {
-      var msg = "Укажите справочный эталон КZ, точность системы (1-5) и вердикт.";
+      var msg = "Укажите справочный эталон КЗ, точность системы (1-5) и вердикт.";
       if (opts.from_ai_approve) {
         msg = "Не удалось собрать оценку ИИ для сохранения. Нажмите «Редактировать вручную» или повторите анализ.";
       }

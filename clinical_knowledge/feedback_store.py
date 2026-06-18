@@ -1,4 +1,4 @@
-"""Append-only ML feedback store for Methodist Workbench (on-prem JSONL + secure KZ text)."""
+"""Append-only ML feedback store for Methodist Workbench (on-prem JSONL + secure КЗ text)."""
 from __future__ import annotations
 
 import hashlib

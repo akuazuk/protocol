@@ -60,7 +60,7 @@ def run_probe(cases_path: Path, *, min_score: float = 22.0) -> list[dict]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="KZ protocol pick probe")
+    parser = argparse.ArgumentParser(description="Пробный подбор КП для кейсов КЗ")
     parser.add_argument(
         "--cases",
         type=Path,
