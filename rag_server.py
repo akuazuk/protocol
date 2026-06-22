@@ -7452,7 +7452,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r202-consult-render-l2-lite"
+BUILD_VERSION = "2026-06-22-r203-consult-tier-cards-ui"
 
 
 def _app_version() -> str:
@@ -9648,7 +9648,7 @@ async def api_consult_review(
     ),
     tier: str = Form(
         "",
-        description="L0/L1/L2 (только с X-Methodist-Token; иначе L2)",
+        description="L0/L1/L2 - уровень проверки (по умолчанию L1)",
     ),
 ) -> dict:
     """Загрузка одного или нескольких файлов заключений → отбор фрагментов протоколов → JSON-оценка.
@@ -9660,11 +9660,11 @@ async def api_consult_review(
             status_code=400,
             detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
         )
-    selected_tier = (tier or "L2").strip().upper()
+    selected_tier = (tier or "L1").strip().upper()
     full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
         await _parse_consult_review_uploads_async(files)
     )
-    if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
+    if selected_tier in ("L0", "L1"):
         t0 = time.perf_counter()
         result = _consult_review_from_tier_or_pipeline(
             tier=selected_tier,
@@ -9743,13 +9743,11 @@ async def api_consult_review_stream(
 
         return StreamingResponse(err_gen(), media_type="text/event-stream")
 
-    _require_rag_loaded()
-
     content_signature = "\n||\n".join(doc_texts_for_cache)
-    selected_tier = (tier or "L2").strip().upper()
+    selected_tier = (tier or "L1").strip().upper()
     stream_t0 = time.perf_counter()
 
-    if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
+    if selected_tier in ("L0", "L1"):
 
         def tier_gen():
             try:
@@ -9794,6 +9792,8 @@ async def api_consult_review_stream(
             media_type="text/event-stream",
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
+
+    _require_rag_loaded()
 
     def event_gen():
         sent_done = False
