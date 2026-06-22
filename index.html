@@ -9891,9 +9891,8 @@
             </div>
           </div>
           <p class="consult-hint-small">
-            Выберите <strong>сразу до трёх</strong> файлов заключения в одном окне (PDF, TXT, DOCX, RTF, ODT, HTML и др.;
-            несколько приёмов: удерживайте <strong>Ctrl</strong> или <strong>⌘</strong>).
-            Для PDF нужен текстовый слой, не только скан. Сервис объединит тексты, отберёт фрагменты протоколов и даст
+            Выберите <strong>один</strong> файл заключения (PDF, TXT, DOCX, RTF, ODT, HTML и др.).
+            Для PDF нужен текстовый слой, не только скан. Сервис отберёт фрагменты протоколов и даст
             <strong>ориентировочную</strong> оценку (не МЭЭ и не юридическая экспертиза).
           </p>
           <p class="consult-hint-small" style="margin-top: 0.55rem">
@@ -9913,14 +9912,13 @@
             <em>насколько верна эта оценка</em>, и предложит правки для движка анализа — не список правок для врача.
           </p>
           <div class="consult-file-row">
-            <span class="consult-label" id="consult-pdf-label">Файлы заключения</span>
+            <span class="consult-label" id="consult-pdf-label">Файл заключения</span>
             <div class="consult-file-controls">
               <input
                 type="file"
                 id="consult-pdf-file"
                 class="consult-file-native"
                 accept=".pdf,.txt,.text,.md,.markdown,.docx,.rtf,.odt,.html,.htm,.csv,.json,.xml,.log,application/pdf,text/plain,text/html,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                multiple
                 aria-labelledby="consult-pdf-label"
               />
               <button
@@ -9931,11 +9929,11 @@
               >
                 Выбрать…
               </button>
-              <span id="consult-file-name" class="consult-file-name consult-file-name--empty">Файлы не выбраны</span>
+              <span id="consult-file-name" class="consult-file-name consult-file-name--empty">Файл не выбран</span>
             </div>
           </div>
           <p class="consult-hint-small" style="margin-top: 0.5rem; margin-bottom: 0">
-            <strong>Три КЗ за раз:</strong> в диалоге «Выбрать» отметьте до трёх файлов (Ctrl/⌘ + щелчок). Форматы: PDF, TXT, DOCX, RTF, ODT, HTML.
+            Форматы: PDF, TXT, DOCX, RTF, ODT, HTML. При выборе другого файла текущий анализ останавливается.
           </p>
 
           <details class="specialty-panel consult-slugs-panel" id="consult-rubrics-details">
@@ -22224,11 +22222,11 @@
 
   /** Подсказки во время ожидания проверки КЗ - постепенно сменяются по мере роста секунд. */
   var CONSULT_WAIT_TIPS = [
-    "Можно выбрать до трёх PDF заключений в одном окне (Ctrl/⌘ + щёлчки) - сервер соберёт их в правильном порядке.",
-    "Из каждого PDF извлекается текст и по нему подбираются протоколы.",
+    "За один раз анализируется один файл заключения - при смене файла предыдущий разбор отменяется.",
+    "Из PDF или DOCX извлекается текст и по нему подбираются протоколы.",
     "Отобранные фрагменты текстов протоколов сопоставляются с вашим текстом через поиск по смыслу - полный охват протоколов не гарантирован.",
     "Проверьте нужные рубрики каталога в блоке ниже - отмеченные разделы усиливают прицельность отбора протоколов.",
-    "Если есть несколько PDF, сервер добавляет блоки вида «ЗАКЛЮЧЕНИЕ N» в порядке выбора файлов.",
+    "Для длинного заключения отметьте профильные рубрики каталога - отбор протоколов станет точнее.",
     "Редакции протоколов на сайте могут меняться; при разночтениях ориентируйтесь на актуальный файл в каталоге Минздрава.",
     "Не выдёргайте текст из столбца критериев судебного значения без проверки с исходником протокола.",
     "Раз в минуту «отведите стопу» со стула или пройдите к окну без телефона - микродвижения уменьшают заторможенность после сидения.",
@@ -23481,7 +23479,7 @@
         "Подождите 1-2 минуты и нажмите «Проанализировать» снова. " +
         (getConsultSelectedTier() === "L2"
           ? "Для быстрой проверки выберите уровень L1."
-          : "Если ошибка повторяется, попробуйте один PDF за раз или меньший файл.")
+          : "Если ошибка повторяется, попробуйте меньший файл или уровень L0.")
       );
     }
     return "Ошибка: " + (msg || "неизвестная ошибка");
@@ -23529,7 +23527,54 @@
     });
   }
 
+  function consultReviewSession() {
+    if (!window.__consultReviewSession) {
+      window.__consultReviewSession = {
+        runId: 0,
+        ctrl: null,
+        elapsedTid: null,
+        timeoutRef: null,
+        abortReason: null,
+      };
+    }
+    return window.__consultReviewSession;
+  }
+
+  function abortConsultReviewInFlight(reason) {
+    var sess = consultReviewSession();
+    sess.abortReason = reason || "superseded";
+    if (sess.ctrl) {
+      try {
+        sess.ctrl.abort();
+      } catch (eAbort) {}
+    }
+    if (sess.timeoutRef && sess.timeoutRef.abortTid) {
+      window.clearTimeout(sess.timeoutRef.abortTid);
+      sess.timeoutRef.abortTid = null;
+    }
+    if (sess.elapsedTid) {
+      window.clearInterval(sess.elapsedTid);
+      sess.elapsedTid = null;
+    }
+    var analyzeBan = document.getElementById("consult-analyze-banner");
+    if (analyzeBan) analyzeBan.hidden = true;
+    var waitTip = document.getElementById("consult-wait-tip");
+    if (waitTip) waitTip.textContent = "";
+    var analyzeNum = document.getElementById("consult-analyze-secs-num");
+    if (analyzeNum) analyzeNum.textContent = "0";
+    var btnRun = document.getElementById("consult-btn-run");
+    if (btnRun) btnRun.disabled = false;
+    sess.ctrl = null;
+    sess.timeoutRef = null;
+  }
+
+  function isConsultSupersededRun(runId) {
+    return runId !== consultReviewSession().runId;
+  }
+
   function resetConsultReviewSection() {
+    consultReviewSession().runId += 1;
+    abortConsultReviewInFlight("reset");
     renderConsultOncologyBanner({ any: false });
     var analyzeBan = document.getElementById("consult-analyze-banner");
     if (analyzeBan) analyzeBan.hidden = true;
@@ -23542,7 +23587,7 @@
     if (inp) inp.value = "";
     var fn = document.getElementById("consult-file-name");
     if (fn) {
-      fn.textContent = "Файлы не выбраны";
+      fn.textContent = "Файл не выбран";
       fn.classList.add("consult-file-name--empty");
     }
     var cbx = document.querySelectorAll(
@@ -23714,30 +23759,31 @@
       if (!fnLbl || !pdfInPick) return;
       var nf = pdfInPick.files ? pdfInPick.files.length : 0;
       if (!nf) {
-        fnLbl.textContent = "Файлы не выбраны";
+        fnLbl.textContent = "Файл не выбран";
         fnLbl.classList.add("consult-file-name--empty");
         return;
       }
       fnLbl.classList.remove("consult-file-name--empty");
-      if (nf === 1) {
-        fnLbl.textContent = pdfInPick.files[0].name + " (1 файл)";
-        return;
-      }
-      var names = [];
-      var k;
-      var maxList = 4;
-      var u = Math.min(nf, maxList);
-      for (k = 0; k < u; k++) {
-        names.push(pdfInPick.files[k].name);
-      }
-      var tail = nf > maxList ? " и ещё " + (nf - maxList) : "";
-      fnLbl.textContent = nf + " файла: " + names.join(", ") + tail;
+      fnLbl.textContent = pdfInPick.files[0].name;
     }
     if (pickBtn && pdfInPick) {
       pickBtn.addEventListener("click", function () {
         pdfInPick.click();
       });
-      pdfInPick.addEventListener("change", refreshConsultFileName);
+      pdfInPick.addEventListener("change", function () {
+        var sess = consultReviewSession();
+        if (sess.ctrl && sess.ctrl.signal && !sess.ctrl.signal.aborted) {
+          sess.runId += 1;
+          abortConsultReviewInFlight("superseded");
+          var errOnPick = document.getElementById("consult-out-error");
+          if (errOnPick) {
+            errOnPick.hidden = true;
+            errOnPick.textContent = "";
+          }
+          updateConsultProgressUI(0, "подготовка…", "");
+        }
+        refreshConsultFileName();
+      });
     }
 
     var btnRun = document.getElementById("consult-btn-run");
@@ -23839,26 +23885,28 @@
       var list = inpF && inpF.files ? inpF.files : null;
       var nPdf = list ? list.length : 0;
       if (!nPdf) {
-        errEl.textContent = "Выберите один или несколько файлов заключения (до трёх за раз).";
+        errEl.textContent = "Выберите файл заключения.";
         errEl.hidden = false;
         return;
       }
-      if (nPdf > 3) {
-        errEl.textContent = "За один раз можно не более трёх файлов. Уберите лишние или запустите анализ несколько раз.";
+      if (nPdf > 1) {
+        errEl.textContent = "За один раз можно загрузить только один файл заключения.";
         errEl.hidden = false;
         return;
       }
-      var qi;
-      for (qi = 0; qi < nPdf; qi++) {
-        if (!consultFileAllowed(list[qi].name)) {
-          errEl.textContent =
-            "Формат не поддерживается - проверьте файл «" +
-            (list[qi].name || "") +
-            "». Допустимо: PDF, TXT, DOCX, RTF, ODT, HTML и др.";
-          errEl.hidden = false;
-          return;
-        }
+      if (!consultFileAllowed(list[0].name)) {
+        errEl.textContent =
+          "Формат не поддерживается - проверьте файл «" +
+          (list[0].name || "") +
+          "». Допустимо: PDF, TXT, DOCX, RTF, ODT, HTML и др.";
+        errEl.hidden = false;
+        return;
       }
+
+      var sess = consultReviewSession();
+      sess.runId += 1;
+      var runId = sess.runId;
+      abortConsultReviewInFlight("superseded");
 
       var baseEl = document.getElementById("rag-base");
       var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
@@ -23872,26 +23920,22 @@
       updateConsultProgressUI(0, "извлечение текста…", "");
       if (st) st.textContent = "";
       elapsedTid = window.setInterval(function () {
+        if (isConsultSupersededRun(runId)) return;
         var sec = Math.floor((Date.now() - t0Analyze) / 1000);
         if (analyzeNum) analyzeNum.textContent = String(sec);
         if (waitTip) waitTip.textContent = consultWaitingTip(sec);
       }, 700);
+      sess.elapsedTid = elapsedTid;
       btnRun.disabled = true;
 
       var fd = new FormData();
-      var fi;
-      for (fi = 0; fi < nPdf; fi++) {
-        fd.append("files", list[fi], list[fi].name);
-      }
+      fd.append("files", list[0], list[0].name);
       fd.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
       fd.append("tier", getConsultSelectedTier());
 
       function rebuildConsultFormData() {
         var next = new FormData();
-        var fj;
-        for (fj = 0; fj < nPdf; fj++) {
-          next.append("files", list[fj], list[fj].name);
-        }
+        next.append("files", list[0], list[0].name);
         next.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
         next.append("tier", getConsultSelectedTier());
         return next;
@@ -23899,17 +23943,23 @@
 
       var consultTimeoutRef = { ms: 600000, abortTid: null };
       var consultCtrl = new AbortController();
+      sess.ctrl = consultCtrl;
+      sess.timeoutRef = consultTimeoutRef;
+      sess.abortReason = null;
       var reviewFetch = fetchConsultReviewUnified;
 
       reviewFetch(base, fd, consultCtrl, consultTimeoutRef, rebuildConsultFormData)
         .then(function (r) {
+          if (isConsultSupersededRun(runId)) return null;
           if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           return r;
         })
         .then(function (data) {
+          if (isConsultSupersededRun(runId) || data == null) return;
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
+            sess.elapsedTid = null;
           }
           updateConsultProgressUI(100, "готово", "");
           var analyzeBan2 = document.getElementById("consult-analyze-banner");
@@ -23917,10 +23967,12 @@
           renderConsultReviewResult(data, res, st);
         })
         .catch(function (e) {
+          if (isConsultSupersededRun(runId)) return;
           if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
+            sess.elapsedTid = null;
           }
           var analyzeBan3 = document.getElementById("consult-analyze-banner");
           if (analyzeBan3) analyzeBan3.hidden = true;
@@ -23930,16 +23982,22 @@
           errEl.hidden = false;
         })
         .finally(function () {
+          if (isConsultSupersededRun(runId)) return;
           if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           if (elapsedTid) {
             window.clearInterval(elapsedTid);
             elapsedTid = null;
+            sess.elapsedTid = null;
           }
           var analyzeBan4 = document.getElementById("consult-analyze-banner");
           if (analyzeBan4) analyzeBan4.hidden = true;
           var wtip = document.getElementById("consult-wait-tip");
           if (wtip) wtip.textContent = "";
           btnRun.disabled = false;
+          if (sess.ctrl === consultCtrl) {
+            sess.ctrl = null;
+            sess.timeoutRef = null;
+          }
         });
     });
   }

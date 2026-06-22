@@ -7647,7 +7647,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r208-render-standard-2gib"
+BUILD_VERSION = "2026-06-22-r209-consult-single-file"
 
 
 def _app_version() -> str:
@@ -9195,7 +9195,7 @@ def _parse_consult_review_uploads_from_items(
     items: list[tuple[str, bytes]],
 ) -> tuple[str, list[dict], list[str], list[str]]:
     """Извлечь текст из уже прочитанных байтов файлов КЗ."""
-    max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 3)))
+    max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 1)))
     if len(items) > max_n:
         raise HTTPException(
             status_code=400,
@@ -9857,7 +9857,7 @@ async def api_consult_review(
     request: "Request",
     files: Annotated[
         list[UploadFile],
-        File(description="1-3 файла консультативных заключений (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
+        File(description="Один файл консультативного заключения (PDF, TXT, DOCX, RTF, ODT, HTML и др.)"),
     ],
     category_slugs: str = Form(
         "",
@@ -9961,7 +9961,7 @@ async def api_consult_review_stream(
     request: "Request",
     files: Annotated[
         list[UploadFile],
-        File(description="1-3 файла консультативных заключений"),
+        File(description="Один файл консультативного заключения"),
     ],
     category_slugs: str = Form(""),
     tier: str = Form(""),
