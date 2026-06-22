@@ -26,3 +26,12 @@ def test_cap_lex_prefers_path_allowlist(monkeypatch):
     monkeypatch.setenv("RAG_LEX_MAX_CANDIDATES", "100")
     out = rs._cap_lex_candidate_indices(huge, path_allowlist_set=allow)
     assert out == {0}
+
+
+def test_cap_lex_trims_without_full_sort(monkeypatch):
+    huge = set(range(50000))
+    monkeypatch.setenv("RAG_LEX_MAX_CANDIDATES", "100")
+    monkeypatch.setattr(rs, "_lex_inverted_index", {})
+    out = rs._cap_lex_candidate_indices(huge, path_allowlist_set=frozenset())
+    assert out is not None
+    assert len(out) == 100

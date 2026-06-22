@@ -176,13 +176,20 @@ def _apply_low_memory_defaults() -> None:
         ("CONSULT_TYPED_RETRIEVE", "0"),
         ("CONSULT_REVIEW_CACHE", "0"),
         ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
-        ("RAG_LEX_MAX_CANDIDATES", "8000"),
+        ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+        ("RAG_LEX_MAX_CANDIDATES", "4000"),
+        ("RAG_LEX_MAX_UNION", "12000"),
+        ("RAG_RETRIEVE_CONCURRENCY", "1"),
     ):
         if not (os.environ.get(key) or "").strip():
             os.environ[key] = val
 
 
 _apply_low_memory_defaults()
+
+_retrieve_sem = threading.Semaphore(
+    max(1, env_int("RAG_RETRIEVE_CONCURRENCY", 1 if env_bool("RENDER", False) else 4))
+)
 
 
 def _consult_response_include_html() -> bool:
@@ -1160,16 +1167,38 @@ def _cap_lex_candidate_indices(
     candidate_indices: set[int] | None,
     *,
     path_allowlist_set: frozenset[str],
+    qtok: set[str] | None = None,
 ) -> set[int] | None:
     """Ограничить пул кандидатов retrieve (OOM при union 30k+ чанков на consult)."""
     if path_allowlist_set:
         path_only = _chunk_indices_for_path_allowlist(path_allowlist_set)
         if path_only:
             return path_only
-    max_cand = env_int("RAG_LEX_MAX_CANDIDATES", 8000 if env_bool("RENDER", False) else 0)
+    max_cand = env_int("RAG_LEX_MAX_CANDIDATES", 4000 if env_bool("RENDER", False) else 0)
     if max_cand <= 0 or not candidate_indices or len(candidate_indices) <= max_cand:
         return candidate_indices
-    return set(sorted(candidate_indices)[:max_cand])
+    if qtok and _lex_inverted_index:
+        rare_first = sorted(
+            [t for t in qtok if t in _lex_inverted_index and t not in RAG_GENERIC_LEX],
+            key=lambda t: len(_lex_inverted_index[t]),
+        )
+        narrowed: set[int] = set()
+        for t in rare_first[:12]:
+            for idx in _lex_inverted_index.get(t, ()):
+                if idx in candidate_indices:
+                    narrowed.add(idx)
+                    if len(narrowed) >= max_cand:
+                        return narrowed
+        if len(narrowed) >= max(32, max_cand // 8):
+            candidate_indices = narrowed
+            if len(candidate_indices) <= max_cand:
+                return candidate_indices
+    trimmed: set[int] = set()
+    for idx in candidate_indices:
+        trimmed.add(idx)
+        if len(trimmed) >= max_cand:
+            break
+    return trimmed
 
 
 # Слабые модификаторы без смысла диагноза: совпадение только по ним не должно тянуть чужие протоколы.
@@ -2934,6 +2963,38 @@ def retrieve(
     embed_rerank: bool | None = None,
     audience_hint: str | None = None,
 ) -> list[dict]:
+    """Сериализация retrieve на Render (512Mi) - один активный lexical-pass."""
+    with _retrieve_sem:
+        return _retrieve_core(
+            query,
+            max_chunks=max_chunks,
+            max_per_path=max_per_path,
+            routing_query=routing_query,
+            category_boost=category_boost,
+            user_category_slugs=user_category_slugs,
+            icd_codes_for_lex=icd_codes_for_lex,
+            path_boost=path_boost,
+            path_allowlist=path_allowlist,
+            catalog_path_extra=catalog_path_extra,
+            embed_rerank=embed_rerank,
+            audience_hint=audience_hint,
+        )
+
+
+def _retrieve_core(
+    query: str,
+    max_chunks: int | None = None,
+    max_per_path: int = 2,
+    routing_query: str | None = None,
+    category_boost: list[str] | None = None,
+    user_category_slugs: list[str] | None = None,
+    icd_codes_for_lex: list[str] | None = None,
+    path_boost: list[str] | None = None,
+    path_allowlist: list[str] | None = None,
+    catalog_path_extra: list[str] | None = None,
+    embed_rerank: bool | None = None,
+    audience_hint: str | None = None,
+) -> list[dict]:
     """Лексический отбор + множители из symptom_routing.json (если RAG_ROUTING=1).
 
     query - короткий текст для подсчёта совпадений с чанками (обычно только жалобы).
@@ -3029,9 +3090,18 @@ def retrieve(
         if path_cand:
             candidate_indices = path_cand
     elif use_inverted and _lex_inverted_index:
+        max_union = env_int("RAG_LEX_MAX_UNION", 12000 if env_bool("RENDER", False) else 0)
+        tokens_ordered = sorted(
+            qtok,
+            key=lambda t: len(_lex_inverted_index.get(t, ())),
+        )
         cand: set[int] = set()
-        for t in qtok:
-            cand |= set(_lex_inverted_index.get(t, ()))
+        for t in tokens_ordered:
+            posts = _lex_inverted_index.get(t)
+            if posts:
+                cand |= set(posts)
+            if max_union > 0 and len(cand) >= max_union:
+                break
         if cand:
             candidate_indices = cand
     try:
@@ -3058,7 +3128,7 @@ def retrieve(
     except Exception:
         pass
     candidate_indices = _cap_lex_candidate_indices(
-        candidate_indices, path_allowlist_set=path_allowlist_set
+        candidate_indices, path_allowlist_set=path_allowlist_set, qtok=qtok
     )
     chunk_source = (
         (_chunks[i] for i in sorted(candidate_indices))
@@ -5730,23 +5800,27 @@ def build_hybrid_search_payload(
 
     table_rows: list[dict] = []
     if query_wants_tables(query) and retrieved:
-        top_paths = [str(r.get("path") or "") for r in retrieved[:6] if r.get("path")]
-        for ch in _chunks:
-            p = str(ch.get("path") or "").replace("\\", "/")
-            if p not in {tp.replace("\\", "/") for tp in top_paths}:
-                continue
-            kind = (ch.get("kind") or "").strip().lower()
-            if kind != "table":
-                continue
-            table_rows.append(
-                {
-                    "path": p,
-                    "kind": "table",
-                    "text": (ch.get("text") or "")[:900],
-                    "page_from": ch.get("page_from"),
-                    "section_title": ch.get("section_title"),
-                }
-            )
+        top_paths_norm = {
+            str(tp or "").replace("\\", "/")
+            for tp in (str(r.get("path") or "") for r in retrieved[:6])
+            if tp
+        }
+        for tp in top_paths_norm:
+            for ch in _chunks_by_path.get(tp) or []:
+                kind = (ch.get("kind") or "").strip().lower()
+                if kind != "table":
+                    continue
+                table_rows.append(
+                    {
+                        "path": tp,
+                        "kind": "table",
+                        "text": (ch.get("text") or "")[:900],
+                        "page_from": ch.get("page_from"),
+                        "section_title": ch.get("section_title"),
+                    }
+                )
+                if len(table_rows) >= 4:
+                    break
             if len(table_rows) >= 4:
                 break
 
@@ -7480,7 +7554,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r205-render-l2-no-oom"
+BUILD_VERSION = "2026-06-22-r206-search-memory-safe"
 
 
 def _app_version() -> str:
@@ -7525,6 +7599,10 @@ def health() -> dict:
             120,
             int(os.environ.get("CONSULT_REVIEW_CLIENT_TIMEOUT_SEC", "600") or "600"),
         ),
+        "protocol_summary_rag_merge": os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE", "1"),
+        "rag_lex_max_candidates": env_int("RAG_LEX_MAX_CANDIDATES", 0),
+        "rag_lex_max_union": env_int("RAG_LEX_MAX_UNION", 0),
+        "rag_retrieve_concurrency": env_int("RAG_RETRIEVE_CONCURRENCY", 4),
     }
 
 
