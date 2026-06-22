@@ -7439,7 +7439,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r199-pdf-pymupdf-fallback"
+BUILD_VERSION = "2026-06-22-r200-remove-batch-guide-ui"
 
 
 def _app_version() -> str:

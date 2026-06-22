@@ -6494,25 +6494,6 @@
       padding-left: 1.1rem;
     }
 
-    .methodist-batch-guide {
-      margin: 0.65rem 0 0.85rem;
-      padding: 0.55rem 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(27, 94, 63, 0.22);
-      background: rgba(232, 245, 241, 0.55);
-      font-size: 0.88rem;
-    }
-
-    .methodist-batch-guide summary {
-      cursor: pointer;
-      font-weight: 650;
-      color: var(--green-900);
-    }
-
-    body.methodist-mode .methodist-batch-guide {
-      display: block;
-    }
-
     .methodist-guide {
       margin-top: 0.45rem;
       font-size: 0.76rem;
@@ -9774,29 +9755,6 @@
             <strong>Режим методиста.</strong> Система оценит КЗ (этап 1), затем ИИ проверит,
             <em>насколько верна эта оценка</em>, и предложит правки для движка анализа — не список правок для врача.
           </p>
-          <details class="methodist-batch-guide consult-hide-print" id="methodist-batch-guide">
-            <summary>Пакет из многих КЗ (сравнение L0/L1/L2 и разметка для движка)</summary>
-            <ol style="margin: 0.5rem 0 0.75rem 1.1rem; font-size: 0.88rem; color: var(--green-900); line-height: 1.45">
-              <li>
-                <strong>В UI</strong> — по одному КЗ за раз (до 3 PDF одного случая). Уровень: L0 → L1 → L2 в селекторе;
-                повторите тот же файл для сравнения этапов.
-              </li>
-              <li>
-                <strong>Пакетом (рекомендуется)</strong> — положите PDF в <code>clients_consult/</code> или импорт:
-                <code>python3 scripts/run_kz_pilot_batch.py --import-from ~/Downloads/КЗ</code>.
-                Сводка: <code>ml/experiments/kz_pilot_*/PILOT_REPORT.md</code>.
-              </li>
-              <li>
-                <strong>Разметка</strong> — вкладка «Очередь» → «Открыть» (без повторного прогона) или загрузите файл снова.
-                Проверьте overrides правил → «Одобрить — сохранить для обучения движка» (<code>analysis_review</code>).
-              </li>
-              <li>
-                <strong>На Render пакетом</strong> — <code>scripts/submit_priority_reviews_render.py</code> (L1 + AI + approve
-                как в UI). Экспорт для правок движка: <code>scripts/export_training_feedback.py</code> →
-                <code>ml/datasets/priority_cases.jsonl</code>.
-              </li>
-            </ol>
-          </details>
           <div class="consult-file-row">
             <span class="consult-label" id="consult-pdf-label">Файлы заключения</span>
             <div class="consult-file-controls">
