@@ -171,6 +171,8 @@ def _apply_low_memory_defaults() -> None:
         ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
         ("CONSULT_REVIEW_CACHE_MAX", "24"),
         ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
+        ("CONSULT_RENDER_L2_LITE", "1"),
+        ("CONSULT_TYPED_RETRIEVE", "0"),
         ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
         ("RAG_LEX_MAX_CANDIDATES", "8000"),
     ):
@@ -210,6 +212,14 @@ def _consult_review_fast_mode() -> bool:
     if env_bool("RENDER", False):
         return True
     return False
+
+
+def _consult_render_l2_lite_enabled() -> bool:
+    """На Render (512Mi) полный retrieve() по корпусу часто даёт OOM; L1+chunks+LLM без RAG."""
+    raw = os.environ.get("CONSULT_RENDER_L2_LITE")
+    if raw is not None and str(raw).strip():
+        return env_bool("CONSULT_RENDER_L2_LITE", True)
+    return _consult_review_fast_mode() and env_bool("RENDER", False)
 
 
 def _consult_retrieve_embed_rerank() -> bool:
@@ -7442,7 +7452,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r201-consult-render-oom-fix"
+BUILD_VERSION = "2026-06-22-r202-consult-render-l2-lite"
 
 
 def _app_version() -> str:
@@ -7476,6 +7486,7 @@ def health() -> dict:
         ),
         "consult_rag_second_pass": _consult_rag_second_pass_enabled(),
         "consult_review_fast": _consult_review_fast_mode(),
+        "consult_render_l2_lite": _consult_render_l2_lite_enabled(),
         "consult_review_profile": (
             "fast"
             if _consult_review_fast_mode()

@@ -21,6 +21,277 @@ def _progress_tuple(stage: str, pct: int, label_ru: str, partial: dict | None = 
     )
 
 
+def _protocol_rows_from_rich_paths(
+    paths: list[str],
+    *,
+    query: str,
+    icd_codes: list[str],
+    get_chunks: Any,
+    limit_per_path: int = 2,
+    max_paths: int = 4,
+) -> list[dict[str, Any]]:
+    """Компактные фрагменты протоколов без retrieve() по всему корпусу."""
+    from clinical_knowledge.protocol_practical_lite import _pick_chunks
+
+    rows: list[dict[str, Any]] = []
+    for path in paths[:max_paths]:
+        p = str(path or "").strip()
+        if not p:
+            continue
+        chunks = get_chunks(p) or []
+        if not chunks:
+            continue
+        try:
+            from clinical_knowledge.chunk_tags import chunk_usable_for_retrieval
+
+            chunks = [c for c in chunks if chunk_usable_for_retrieval(c, ambulatory=True)]
+        except Exception:
+            pass
+        picked = _pick_chunks(chunks, query, icd_codes, limit=limit_per_path)
+        for ch in picked:
+            txt = (ch.get("text") or ch.get("lex_text") or "").strip()
+            if len(txt) < 40:
+                continue
+            rows.append(
+                {
+                    "path": p,
+                    "text": txt,
+                    "excerpt": txt[:2000],
+                    "kind": ch.get("kind") or "",
+                    "section_title": ch.get("section_title") or "",
+                    "page_from": ch.get("page_from"),
+                    "page_to": ch.get("page_to"),
+                }
+            )
+    return rows
+
+
+def _iter_consult_review_render_l2_lite(
+    *,
+    full_text: str,
+    n_files: int,
+    consult_docs_meta: list[dict],
+    pdf_warnings: list[str],
+    content_signature: str,
+    category_slugs: str,
+    fhir_bundle: dict[str, Any] | None,
+    cache_key: str,
+    emit: Any,
+) -> Iterator[tuple[str, Any]]:
+    """Render-safe L2: L1 structured + rich-чанки по matched paths + LLM (без retrieve по 65k)."""
+    import rag_server as rs
+    from clinical_knowledge.consult_parser import _detect_specialty
+    from clinical_knowledge.consult_tiering import run_l1_structured_review
+    from clinical_knowledge.rubric_extractors import specialty_to_rubric
+
+    yield emit("focus", 18, "Структурный разбор заключения…")
+    doctor_rubric = specialty_to_rubric(_detect_specialty(full_text[:1500]) or _detect_specialty(full_text))
+    user_slugs = [
+        s.strip()
+        for s in (category_slugs or "").split(",")
+        if s.strip() in rs.ALLOWED_SPECIALTY_SLUGS
+    ]
+    specialty_slug = (
+        doctor_rubric
+        if doctor_rubric in rs.ALLOWED_SPECIALTY_SLUGS
+        else (user_slugs[0] if len(user_slugs) == 1 else None)
+    )
+    demographics_banner, demographics_meta = rs.consult_demographics_banner_from_kz(full_text)
+    consult_id = (content_signature or "consult")[:16] or "consult"
+
+    l1 = run_l1_structured_review(
+        text=full_text,
+        consultation_id=consult_id,
+        demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
+        specialty_slug=specialty_slug,
+    )
+    structured_analysis = l1.get("structured_analysis")
+    alignment_result = l1.get("alignment")
+    doc = None
+    if isinstance(structured_analysis, dict):
+        doc = structured_analysis.get("document")
+
+    icd_codes: list[str] = []
+    if doc is not None and getattr(doc, "diagnoses", None):
+        icd_codes = [
+            str(d.icd10_code).upper()
+            for d in doc.diagnoses
+            if getattr(d, "icd10_code", None)
+        ]
+    if not icd_codes:
+        icd_codes = rs.extract_icd_codes_diagnosis_focused(full_text) or []
+
+    matches = (structured_analysis or {}).get("matches") if isinstance(structured_analysis, dict) else []
+    match_paths = [
+        str(m.get("source_path") or "")
+        for m in (matches or [])
+        if isinstance(m, dict) and m.get("source_path")
+    ]
+    if alignment_result and isinstance(alignment_result.get("protocol_paths"), list):
+        for p in alignment_result["protocol_paths"]:
+            ps = str(p or "").strip()
+            if ps and ps not in match_paths:
+                match_paths.append(ps)
+
+    yield emit(
+        "protocols",
+        52,
+        f"Фрагменты протоколов ({len(match_paths[:4])})…",
+        {"protocol_paths_target": match_paths[:6]},
+    )
+    q_rag = " ".join(icd_codes[:6]) or full_text[:1200]
+    retrieved = _protocol_rows_from_rich_paths(
+        match_paths,
+        query=q_rag,
+        icd_codes=icd_codes,
+        get_chunks=rs.get_rich_chunks_for_path,
+        limit_per_path=2,
+        max_paths=4,
+    )
+    proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=8000)
+    protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
+    paths_hint = rs._consult_review_paths_hint(paths_used, retrieved=retrieved, icd_needles=icd_codes[:6])
+    ui_frags = rs._consult_ui_protocol_fragments(retrieved, paths_used)
+    oncology = rs._consult_oncology_flags(ui_frags, full_text)
+
+    clinical_rules = rs._consult_clinical_rules_pipeline(
+        full_text,
+        demographics_meta if isinstance(demographics_meta, dict) else {},
+        icd_codes,
+        user_slugs,
+    )
+    rules_ctx = ""
+    if clinical_rules:
+        try:
+            from clinical_knowledge.llm_context import format_clinical_rules_for_llm
+
+            rules_ctx = format_clinical_rules_for_llm(clinical_rules)
+        except ImportError:
+            rules_ctx = ""
+
+    consult_max = rs._consult_env_int("CONSULT_REVIEW_CONSULT_CHARS", 20000, default_fast=12000)
+    multi_intro = (
+        ""
+        if n_files <= 1
+        else (
+            "Несколько документов: блоки ниже - в порядке загрузки; при оценке учитывай "
+            "согласованность между приёмами.\n\n"
+        )
+    )
+    consult_excerpt = multi_intro + full_text[:consult_max]
+    if demographics_banner.strip():
+        consult_excerpt = demographics_banner.strip() + "\n\n" + consult_excerpt
+
+    yield emit("synthesize", 78, "Формирование оценки (модель)…")
+    model = rs.get_gemini()
+    try:
+        review = rs._consult_review_synthesize(
+            model,
+            consult_excerpt,
+            protocol_ctx,
+            paths_hint,
+            clinical_rules_context=rules_ctx,
+        )
+    except Exception as exc:
+        from fastapi import HTTPException
+
+        if isinstance(exc, HTTPException):
+            raise
+        raise HTTPException(
+            status_code=502,
+            detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
+        ) from exc
+
+    if isinstance(alignment_result, dict):
+        try:
+            from clinical_knowledge.consult_alignment import merge_alignment_into_review
+
+            merge_alignment_into_review(review, alignment_result)
+        except Exception:
+            pass
+
+    if isinstance(review, dict):
+        try:
+            from clinical_knowledge.consult_overall_score import apply_hybrid_overall_compliance
+
+            apply_hybrid_overall_compliance(
+                review,
+                structured_analysis=structured_analysis if isinstance(structured_analysis, dict) else None,
+                clinical_rules=clinical_rules if isinstance(clinical_rules, dict) else None,
+            )
+        except Exception:
+            pass
+
+    result: dict[str, Any] = {
+        "ok": True,
+        "server_version": rs._app_version(),
+        "review_tier": "L2",
+        "review": review,
+        "pdf_warnings": pdf_warnings,
+        "consult_documents": consult_docs_meta,
+        "documents_count": len(consult_docs_meta),
+        "extraction_chars": len(full_text),
+        "retrieval_paths": paths_used,
+        "consult_protocol_fragments": ui_frags,
+        "consult_oncology_flags": oncology,
+        "consult_icd_precise_links": [],
+        "consult_icd_precise_note_ru": "",
+        "audience_filter": None,
+        "audience_fallback": False,
+        "consult_retrieval": {
+            "render_l2_lite": True,
+            "strict_protocol_paths": match_paths[:6],
+            "path_pick_meta": {"source": "l1_matches"},
+        },
+        "icd": {"codes": icd_codes[:12]},
+        "demographics_meta": demographics_meta,
+        "consult_performance": {
+            "fast_mode": True,
+            "render_l2_lite": True,
+            "embed_rerank": False,
+            "rag_retrieve_skipped": True,
+        },
+    }
+    if clinical_rules is not None:
+        result["clinical_rules"] = clinical_rules
+    if alignment_result is not None:
+        result["alignment"] = alignment_result
+    if structured_analysis is not None:
+        result["structured_analysis"] = structured_analysis
+
+    if isinstance(structured_analysis, dict):
+        comp = structured_analysis.get("compliance")
+        if isinstance(comp, dict):
+            try:
+                from clinical_knowledge.compliance_gate import evaluate_send_gate_from_compliance
+
+                headline = review.get("overall_compliance_pct") if isinstance(review, dict) else None
+                hs = float(headline) if isinstance(headline, (int, float)) else None
+                sg = evaluate_send_gate_from_compliance(comp, headline_score=hs)
+                comp["send_gate"] = sg
+                result["send_gate"] = sg
+            except Exception:
+                pass
+
+    try:
+        from clinical_knowledge.cisz_readiness import attach_cisz_readiness
+
+        attach_cisz_readiness(
+            result,
+            bundle=fhir_bundle,
+            text=full_text if not fhir_bundle else None,
+        )
+    except Exception:
+        pass
+
+    result["cached_result"] = False
+    rs._consult_cache_put(cache_key, result)
+    import gc
+
+    gc.collect()
+    yield ("done", result)
+
+
 def iter_consult_review_pipeline(
     *,
     full_text: str,
@@ -57,6 +328,20 @@ def iter_consult_review_pipeline(
         except Exception:
             pass
         yield ("done", cached)
+        return
+
+    if rs._consult_render_l2_lite_enabled():
+        yield from _iter_consult_review_render_l2_lite(
+            full_text=full_text,
+            n_files=n_files,
+            consult_docs_meta=consult_docs_meta,
+            pdf_warnings=pdf_warnings,
+            content_signature=content_signature,
+            category_slugs=category_slugs,
+            fhir_bundle=fhir_bundle,
+            cache_key=cache_key,
+            emit=emit,
+        )
         return
 
     yield emit("focus", 15, "Анализ текста заключения (фокус запроса)…")
