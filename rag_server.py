@@ -113,7 +113,9 @@ _model = None
 # Метаданные embed-rerank - per-thread, чтобы параллельные запросы не перетирали значения друг друга.
 _retrieval_meta_tls = threading.local()
 _bm25_index = None
-_lex_inverted_index: dict[str, frozenset[int]] = {}
+_lex_inverted_index: dict[str, frozenset[int]] | None = None
+_lex_index_lock = threading.Lock()
+_chunk_global_indices_by_path: dict[str, list[int]] = {}
 
 
 def _set_retrieval_embed_meta(value: dict | None) -> None:
@@ -180,6 +182,9 @@ def _apply_low_memory_defaults() -> None:
         ("RAG_LEX_MAX_CANDIDATES", "4000"),
         ("RAG_LEX_MAX_UNION", "12000"),
         ("RAG_RETRIEVE_CONCURRENCY", "1"),
+        ("CONSULT_ALIGNMENT_ENABLED", "0"),
+        ("RAG_LEX_INDEX_DEFER", "1"),
+        ("CONSULT_CONCURRENCY", "1"),
     ):
         if not (os.environ.get(key) or "").strip():
             os.environ[key] = val
@@ -189,6 +194,9 @@ _apply_low_memory_defaults()
 
 _retrieve_sem = threading.Semaphore(
     max(1, env_int("RAG_RETRIEVE_CONCURRENCY", 1 if env_bool("RENDER", False) else 4))
+)
+_consult_sem = threading.Semaphore(
+    max(1, env_int("CONSULT_CONCURRENCY", 1 if env_bool("RENDER", False) else 3))
 )
 
 
@@ -1045,11 +1053,14 @@ def load_data() -> None:
     if summary_rows:
         _chunks.extend(summary_rows)
     _chunks_by_path = {}
-    for ch in _chunks:
-        p = ch.get("path") or ""
+    global _chunk_global_indices_by_path
+    _chunk_global_indices_by_path = {}
+    for i, ch in enumerate(_chunks):
+        p = str(ch.get("path") or "").replace("\\", "/")
         if not p:
             continue
         _chunks_by_path.setdefault(p, []).append(ch)
+        _chunk_global_indices_by_path.setdefault(p, []).append(i)
     for plist in _chunks_by_path.values():
         plist.sort(key=lambda x: int(x.get("chunk_index", 0)))
     gc.collect()
@@ -1067,7 +1078,11 @@ def load_data() -> None:
         _bm25_index = None
 
     global _lex_inverted_index
-    _lex_inverted_index = _build_lex_inverted_index(_chunks)
+    if env_bool("RAG_LEX_INDEX_DEFER", env_bool("RENDER", False)):
+        _lex_inverted_index = None
+    else:
+        _lex_inverted_index = _build_lex_inverted_index(_chunks)
+        gc.collect()
 
     try:
         from clinical_knowledge.vector_index import load_index_from_env
@@ -1135,18 +1150,36 @@ def tokenize_ru(s: str) -> list[str]:
     return [t for t in re.findall(r"[а-яa-z]{2,}", s) if len(t) >= 2]
 
 
+def _ensure_lex_inverted_index() -> dict[str, frozenset[int]]:
+    """Ленивое построение инвертированного индекса (меньше пик RAM при старте на Render)."""
+    global _lex_inverted_index
+    if _lex_inverted_index is not None:
+        return _lex_inverted_index
+    with _lex_index_lock:
+        if _lex_inverted_index is not None:
+            return _lex_inverted_index
+        _lex_inverted_index = _build_lex_inverted_index(_chunks)
+        import gc as _gc
+
+        _gc.collect()
+        return _lex_inverted_index
+
+
 def _build_lex_inverted_index(chunks: list[dict]) -> dict[str, frozenset[int]]:
     """Токен → индексы чанков (фаза 6: ускорение retrieve без полного прохода)."""
+    min_tok = max(2, env_int("RAG_MIN_INDEX_TOKEN_LEN", 2))
     raw: dict[str, set[int]] = {}
     for i, ch in enumerate(chunks):
-        lex_src = (ch.get("lex_text") or ch.get("text") or "") + " " + (ch.get("title") or "")
+        lex_src = (ch.get("_lex_search") or ch.get("lex_text") or ch.get("text") or "") + " " + (
+            ch.get("title") or ""
+        )
         if not lex_src.strip():
             continue
         tokens = set(tokenize_ru(lex_src))
         for code in extract_icd_codes_raw(lex_src):
             tokens.update(icd_tokens_for_lex([code]))
         for t in tokens:
-            if len(t) < 2:
+            if len(t) < min_tok:
                 continue
             raw.setdefault(t, set()).add(i)
     return {k: frozenset(v) for k, v in raw.items()}
@@ -1157,9 +1190,17 @@ def _chunk_indices_for_path_allowlist(path_set: frozenset[str]) -> set[int]:
     if not path_set:
         return set()
     out: set[int] = set()
-    for i, ch in enumerate(_chunks):
-        if _path_matches_allowlist(ch, path_set):
-            out.add(i)
+    for p in path_set:
+        norm = p.replace("\\", "/").strip()
+        if not norm:
+            continue
+        for idx in _chunk_global_indices_by_path.get(norm, ()):
+            out.add(idx)
+        if out:
+            continue
+        for cp, indices in _chunk_global_indices_by_path.items():
+            if cp.endswith(norm.split("/")[-1]) or norm.endswith(cp.split("/")[-1]):
+                out.update(indices)
     return out
 
 
@@ -1177,22 +1218,29 @@ def _cap_lex_candidate_indices(
     max_cand = env_int("RAG_LEX_MAX_CANDIDATES", 4000 if env_bool("RENDER", False) else 0)
     if max_cand <= 0 or not candidate_indices or len(candidate_indices) <= max_cand:
         return candidate_indices
-    if qtok and _lex_inverted_index:
-        rare_first = sorted(
-            [t for t in qtok if t in _lex_inverted_index and t not in RAG_GENERIC_LEX],
-            key=lambda t: len(_lex_inverted_index[t]),
-        )
-        narrowed: set[int] = set()
-        for t in rare_first[:12]:
-            for idx in _lex_inverted_index.get(t, ()):
-                if idx in candidate_indices:
-                    narrowed.add(idx)
-                    if len(narrowed) >= max_cand:
-                        return narrowed
-        if len(narrowed) >= max(32, max_cand // 8):
-            candidate_indices = narrowed
-            if len(candidate_indices) <= max_cand:
-                return candidate_indices
+    if qtok and candidate_indices:
+        lex_idx = _lex_inverted_index
+        if lex_idx is None:
+            try:
+                lex_idx = _ensure_lex_inverted_index()
+            except Exception:
+                lex_idx = None
+        if lex_idx:
+            rare_first = sorted(
+                [t for t in qtok if t in lex_idx and t not in RAG_GENERIC_LEX],
+                key=lambda t: len(lex_idx[t]),
+            )
+            narrowed: set[int] = set()
+            for t in rare_first[:12]:
+                for idx in lex_idx.get(t, ()):
+                    if idx in candidate_indices:
+                        narrowed.add(idx)
+                        if len(narrowed) >= max_cand:
+                            return narrowed
+            if len(narrowed) >= max(32, max_cand // 8):
+                candidate_indices = narrowed
+                if len(candidate_indices) <= max_cand:
+                    return candidate_indices
     trimmed: set[int] = set()
     for idx in candidate_indices:
         trimmed.add(idx)
@@ -3089,15 +3137,16 @@ def _retrieve_core(
         path_cand = _chunk_indices_for_path_allowlist(path_allowlist_set)
         if path_cand:
             candidate_indices = path_cand
-    elif use_inverted and _lex_inverted_index:
+    elif use_inverted:
+        lex_idx = _ensure_lex_inverted_index()
         max_union = env_int("RAG_LEX_MAX_UNION", 12000 if env_bool("RENDER", False) else 0)
         tokens_ordered = sorted(
             qtok,
-            key=lambda t: len(_lex_inverted_index.get(t, ())),
+            key=lambda t: len(lex_idx.get(t, ())),
         )
         cand: set[int] = set()
         for t in tokens_ordered:
-            posts = _lex_inverted_index.get(t)
+            posts = lex_idx.get(t)
             if posts:
                 cand |= set(posts)
             if max_union > 0 and len(cand) >= max_union:
@@ -3425,6 +3474,10 @@ def _retrieve_core(
         out.append(row_out)
         if len(out) >= max_chunks:
             break
+    if env_bool("RENDER", False):
+        import gc as _gc
+
+        _gc.collect()
     return out
 
 
@@ -7554,7 +7607,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r206-search-memory-safe"
+BUILD_VERSION = "2026-06-22-r207-phases-stability"
 
 
 def _app_version() -> str:
@@ -7603,6 +7656,9 @@ def health() -> dict:
         "rag_lex_max_candidates": env_int("RAG_LEX_MAX_CANDIDATES", 0),
         "rag_lex_max_union": env_int("RAG_LEX_MAX_UNION", 0),
         "rag_retrieve_concurrency": env_int("RAG_RETRIEVE_CONCURRENCY", 4),
+        "lex_index_ready": _lex_inverted_index is not None,
+        "consult_alignment_enabled": os.environ.get("CONSULT_ALIGNMENT_ENABLED", "1"),
+        "consult_concurrency": env_int("CONSULT_CONCURRENCY", 3),
     }
 
 
@@ -9786,75 +9842,76 @@ async def api_consult_review(
     full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
         await _parse_consult_review_uploads_async(files)
     )
-    if selected_tier in ("L0", "L1"):
+    with _consult_sem:
+        if selected_tier in ("L0", "L1"):
+            t0 = time.perf_counter()
+            result = _consult_review_from_tier_or_pipeline(
+                tier=selected_tier,
+                text=full_text,
+                bundle=None,
+                consultation_id="upload",
+                category_slugs=category_slugs,
+                require_rag_for_l2=False,
+            )
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            if pdf_warnings:
+                result["pdf_warnings"] = pdf_warnings
+            if consult_docs_meta:
+                result["consult_documents"] = consult_docs_meta
+            return _maybe_methodist_autolog(
+                request,
+                result,
+                tier=selected_tier,
+                full_text=full_text,
+                consultation_id="upload",
+                latency_ms=latency_ms,
+                category_slugs=category_slugs,
+            )
+        if _consult_render_l2_skip_llm():
+            t0 = time.perf_counter()
+            result = _consult_review_from_tier_or_pipeline(
+                tier="L2",
+                text=full_text,
+                bundle=None,
+                consultation_id="upload",
+                category_slugs=category_slugs,
+                require_rag_for_l2=False,
+            )
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            if pdf_warnings:
+                result["pdf_warnings"] = pdf_warnings
+            if consult_docs_meta:
+                result["consult_documents"] = consult_docs_meta
+            return _maybe_methodist_autolog(
+                request,
+                result,
+                tier="L2",
+                full_text=full_text,
+                consultation_id="upload",
+                latency_ms=latency_ms,
+                category_slugs=category_slugs,
+            )
+        if not _consult_render_l2_lite_enabled():
+            _require_rag_loaded()
         t0 = time.perf_counter()
-        result = _consult_review_from_tier_or_pipeline(
-            tier=selected_tier,
-            text=full_text,
-            bundle=None,
-            consultation_id="upload",
+        result = _consult_review_from_parsed_uploads(
+            full_text=full_text,
+            n_files=len(files),
+            consult_docs_meta=consult_docs_meta,
+            pdf_warnings=pdf_warnings,
+            doc_texts_for_cache=doc_texts_for_cache,
             category_slugs=category_slugs,
-            require_rag_for_l2=False,
         )
         latency_ms = int((time.perf_counter() - t0) * 1000)
-        if pdf_warnings:
-            result["pdf_warnings"] = pdf_warnings
-        if consult_docs_meta:
-            result["consult_documents"] = consult_docs_meta
         return _maybe_methodist_autolog(
             request,
             result,
-            tier=selected_tier,
+            tier="L2",
             full_text=full_text,
             consultation_id="upload",
             latency_ms=latency_ms,
             category_slugs=category_slugs,
         )
-    if _consult_render_l2_skip_llm():
-        t0 = time.perf_counter()
-        result = _consult_review_from_tier_or_pipeline(
-            tier="L2",
-            text=full_text,
-            bundle=None,
-            consultation_id="upload",
-            category_slugs=category_slugs,
-            require_rag_for_l2=False,
-        )
-        latency_ms = int((time.perf_counter() - t0) * 1000)
-        if pdf_warnings:
-            result["pdf_warnings"] = pdf_warnings
-        if consult_docs_meta:
-            result["consult_documents"] = consult_docs_meta
-        return _maybe_methodist_autolog(
-            request,
-            result,
-            tier="L2",
-            full_text=full_text,
-            consultation_id="upload",
-            latency_ms=latency_ms,
-            category_slugs=category_slugs,
-        )
-    if not _consult_render_l2_lite_enabled():
-        _require_rag_loaded()
-    t0 = time.perf_counter()
-    result = _consult_review_from_parsed_uploads(
-        full_text=full_text,
-        n_files=len(files),
-        consult_docs_meta=consult_docs_meta,
-        pdf_warnings=pdf_warnings,
-        doc_texts_for_cache=doc_texts_for_cache,
-        category_slugs=category_slugs,
-    )
-    latency_ms = int((time.perf_counter() - t0) * 1000)
-    return _maybe_methodist_autolog(
-        request,
-        result,
-        tier="L2",
-        full_text=full_text,
-        consultation_id="upload",
-        latency_ms=latency_ms,
-        category_slugs=category_slugs,
-    )
 
 
 @app.post("/api/consult-review/stream")

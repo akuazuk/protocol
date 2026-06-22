@@ -17,7 +17,9 @@ def test_apply_low_memory_defaults_sets_env(monkeypatch):
         "PROTOCOL_SUMMARY_RAG_MERGE",
         "RAG_LEX_MAX_CANDIDATES",
         "RAG_LEX_MAX_UNION",
-        "RAG_RETRIEVE_CONCURRENCY",
+        "CONSULT_ALIGNMENT_ENABLED",
+        "RAG_LEX_INDEX_DEFER",
+        "CONSULT_CONCURRENCY",
     ):
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setenv("RENDER", "true")
@@ -28,6 +30,8 @@ def test_apply_low_memory_defaults_sets_env(monkeypatch):
     assert os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE") == "0"
     assert os.environ.get("RAG_LEX_MAX_CANDIDATES") == "4000"
     assert os.environ.get("RAG_RETRIEVE_CONCURRENCY") == "1"
+    assert os.environ.get("CONSULT_ALIGNMENT_ENABLED") == "0"
+    assert os.environ.get("RAG_LEX_INDEX_DEFER") == "1"
 
 
 def test_memory_saver_on_render(monkeypatch):

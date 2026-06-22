@@ -14,6 +14,14 @@ def test_chunk_indices_for_path_allowlist(monkeypatch):
             {"path": "minzdrav_protocols/b/КП_2.pdf", "text": "c"},
         ],
     )
+    monkeypatch.setattr(
+        rs,
+        "_chunk_global_indices_by_path",
+        {
+            "minzdrav_protocols/a/КП_1.pdf": [0, 1],
+            "minzdrav_protocols/b/КП_2.pdf": [2],
+        },
+    )
     allow = frozenset({"minzdrav_protocols/a/КП_1.pdf"})
     idx = rs._chunk_indices_for_path_allowlist(allow)
     assert idx == {0, 1}

@@ -11149,6 +11149,11 @@
               "Индекс протоколов загружается - первые секунды поиск может быть менее точным.";
             banner.hidden = false;
             banner.classList.add("is-visible");
+          } else if (h.lex_index_ready === false) {
+            banner.textContent =
+              "Поисковый индекс строится - первый запрос может занять до минуты.";
+            banner.hidden = false;
+            banner.classList.add("is-visible");
           } else {
             banner.hidden = true;
             banner.classList.remove("is-visible");
@@ -23140,6 +23145,42 @@
     }
   }
 
+  function waitForServerWarm(base, maxWaitMs) {
+    maxWaitMs = maxWaitMs || 120000;
+    var started = Date.now();
+    var tier = getConsultSelectedTier();
+    function poll() {
+      return fetch(base + "/health", { cache: "no-store" })
+        .then(function (h) {
+          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+          return h.json();
+        })
+        .then(function (health) {
+          if (health.rag_load_error) {
+            throw new Error(String(health.rag_load_error));
+          }
+          if (tier === "L0" || tier === "L1" || window.__consultRenderL2SkipLlm) {
+            return health;
+          }
+          if (health.rag_ready && health.lex_index_ready !== false) {
+            return health;
+          }
+          if (Date.now() - started >= maxWaitMs) {
+            return health;
+          }
+          updateConsultProgressUI(
+            6,
+            health.rag_ready ? "построение поискового индекса…" : "загрузка протоколов…",
+            "сервер прогревается"
+          );
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, 2500);
+          }).then(poll);
+        });
+    }
+    return poll();
+  }
+
   function waitForRagReady(base, maxWaitMs) {
     maxWaitMs = maxWaitMs || 180000;
     var started = Date.now();
@@ -23254,14 +23295,13 @@
     updateConsultProgressUI(15, tier + " - подключение…", "");
     var readyPromise;
     if (tier === "L0" || tier === "L1" || skipLlm) {
-      readyPromise = fetch(base + "/health").then(function (h) {
-        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-        return h.json();
-      });
+      readyPromise = waitForServerWarm(base, 90000);
     } else {
-      readyPromise = waitForRagReady(base);
+      readyPromise = waitForServerWarm(base, 120000).then(function () {
+        return waitForRagReady(base);
+      });
     }
-    var syncAttempts = tier === "L2" ? 0 : 4;
+    var syncAttempts = tier === "L2" ? 0 : 3;
     return readyPromise
       .then(function () {
         updateConsultProgressUI(32, tier + " - анализ на сервере…", "один запрос");
@@ -23277,7 +23317,9 @@
             l1Input.setAttribute("data-user-tier", "1");
             updateConsultTierHint("L1");
           }
-          return fetchConsultReviewSyncRetry(base, rebuildFd(), consultCtrl, 3, rebuildFd);
+          return waitForServerWarm(base, 60000).then(function () {
+            return fetchConsultReviewSyncRetry(base, rebuildFd(), consultCtrl, 2, rebuildFd);
+          });
         }
         throw err;
       })
@@ -23475,8 +23517,8 @@
     return fetchConsultReviewSync(base, bodyFd, consultCtrl).catch(function (err) {
       if (isConsultAbort(err, consultCtrl)) throw err;
       if (attemptsLeft > 0 && isConsultRetriable(err)) {
-        updateConsultProgressUI(85, "сервер занят, повтор…", "надёжный режим");
-        var delayMs = attemptsLeft >= 3 ? 3500 : 8000;
+        updateConsultProgressUI(85, "сервер перезапускается, повтор…", "подождите 15 с");
+        var delayMs = attemptsLeft >= 2 ? 15000 : 10000;
         return new Promise(function (resolve) {
           setTimeout(resolve, delayMs);
         }).then(function () {

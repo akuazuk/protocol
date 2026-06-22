@@ -77,6 +77,9 @@ def should_skip_rich_chunk_row(row: dict[str, Any]) -> bool:
 
 def enrich_lex_source(ch: dict[str, Any]) -> str:
     """Расширенный текст для лексического скоринга."""
+    cached = (ch.get("_lex_search") or "").strip()
+    if cached:
+        return cached
     parts: list[str] = [
         (ch.get("lex_text") or ch.get("text") or "").strip(),
         (ch.get("title") or "").strip(),
@@ -93,7 +96,18 @@ def enrich_lex_source(ch: dict[str, Any]) -> str:
     sec = (ch.get("section_title") or "").strip()
     if sec:
         parts.append(sec)
-    return " ".join(p for p in parts if p)
+    out = " ".join(p for p in parts if p)
+    try:
+        import os
+
+        cap = int(os.environ.get("RAG_LEXICAL_MAX_CHARS", "0") or "0")
+        if cap > 0 and len(out) > cap:
+            out = out[:cap]
+    except (TypeError, ValueError):
+        pass
+    if out:
+        ch["_lex_search"] = out
+    return out
 
 
 def detect_query_intent(query: str, icd_codes: list[str] | None = None) -> set[str]:
