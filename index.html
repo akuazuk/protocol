@@ -23171,7 +23171,31 @@
     return false;
   }
 
-  // Сетевые/деплой-разрывы, на которых имеет смысл повторить без SSE-потока.
+  function consultReviewErrorMessage(err, timeoutMs) {
+    var msg = err && err.message ? String(err.message) : String(err || "");
+    if (err && (err.name === "AbortError" || err.code === 20)) {
+      return (
+        "Превышено время ожидания разбора (" +
+        Math.round((timeoutMs || 600000) / 1000) +
+        " с). Попробуйте меньший PDF или уровень L1 в режиме методиста."
+      );
+    }
+    var low = msg.toLowerCase();
+    if (
+      low.indexOf("load failed") >= 0 ||
+      low.indexOf("failed to fetch") >= 0 ||
+      low.indexOf("networkerror") >= 0 ||
+      low.indexOf("the network connection was lost") >= 0
+    ) {
+      return (
+        "Соединение с сервером оборвалось (часто нехватка памяти или перезапуск после деплоя). " +
+        "Подождите 1–2 минуты и нажмите «Проанализировать» снова. " +
+        "В кабинете методиста для пакетной проверки используйте L1."
+      );
+    }
+    return "Ошибка: " + (msg || "неизвестная ошибка");
+  }
+
   function isConsultRetriable(err) {
     var msg = (err && err.message ? String(err.message) : "").toLowerCase();
     if (!msg) return true;
@@ -23199,7 +23223,7 @@
       if (attemptsLeft > 0 && isConsultRetriable(err)) {
         updateConsultProgressUI(90, "сервер перезапускается, повтор…", "надёжный режим");
         return new Promise(function (resolve) {
-          setTimeout(resolve, 4000);
+          setTimeout(resolve, 8000);
         }).then(function () {
           return fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft - 1);
         });
@@ -23598,9 +23622,7 @@
           var analyzeBan3 = document.getElementById("consult-analyze-banner");
           if (analyzeBan3) analyzeBan3.hidden = true;
           if (st) st.textContent = "";
-          var msg = e && e.name === "AbortError"
-            ? "Превышено время ожидания разбора (" + Math.round(consultTimeoutRef.ms / 1000) + " с). Попробуйте меньший PDF или повторите позже."
-            : "Ошибка: " + (e.message || e);
+          var msg = consultReviewErrorMessage(e, consultTimeoutRef.ms);
           errEl.textContent = msg;
           errEl.hidden = false;
         })

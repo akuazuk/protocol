@@ -154,6 +154,28 @@ def env_bool(name: str, default: bool) -> bool:
     return str(raw).strip().lower() in ("1", "true", "yes", "on", "y")
 
 
+def _apply_low_memory_defaults() -> None:
+    """На Render (512Mi) rich corpus + BM25 + prewarm часто дают OOM при consult-review.
+
+    Значения ниже применяются только если переменная не задана явно в Environment.
+    """
+    if not env_bool("RENDER", False):
+        return
+    for key, val in (
+        ("RAG_MEMORY_SAVER", "1"),
+        ("RAG_LEX_BM25_ALPHA", "1.0"),  # без BM25-индекса (~50–150 MiB)
+        ("RAG_LEXICAL_MAX_CHARS", "4096"),
+        ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
+        ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
+        ("CONSULT_REVIEW_CACHE_MAX", "24"),
+    ):
+        if not (os.environ.get(key) or "").strip():
+            os.environ[key] = val
+
+
+_apply_low_memory_defaults()
+
+
 def _consult_rag_second_pass_enabled() -> bool:
     """Второй RAG-pass: по умолчанию выкл на Render (лимит прокси ~100 с), вкл локально."""
     if _consult_review_fast_mode():
@@ -742,6 +764,8 @@ def _memory_saver_enabled() -> bool:
         return False
     if v in ("1", "true", "yes"):
         return True
+    if env_bool("RENDER", False):
+        return True
     return bool((os.environ.get("RAG_CHUNKS_DIR") or "").strip())
 
 
@@ -823,14 +847,15 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                         slim["lex_text"] = ert
                 elif lex_cap > 0 and len(text) > lex_cap:
                     slim["lex_text"] = text[:lex_cap]
-                emb = row.get("embedding")
-                if isinstance(emb, list) and len(emb) >= 8 and isinstance(emb[0], (int, float)):
-                    slim["embedding"] = [float(x) for x in emb]
-                    em = (row.get("embedding_model") or "").strip()
-                    if em:
-                        slim["embedding_model"] = em
-                    if row.get("embedding_dim"):
-                        slim["embedding_dim"] = int(row["embedding_dim"])
+                if not memory_saver:
+                    emb = row.get("embedding")
+                    if isinstance(emb, list) and len(emb) >= 8 and isinstance(emb[0], (int, float)):
+                        slim["embedding"] = [float(x) for x in emb]
+                        em = (row.get("embedding_model") or "").strip()
+                        if em:
+                            slim["embedding_model"] = em
+                        if row.get("embedding_dim"):
+                            slim["embedding_dim"] = int(row["embedding_dim"])
                 by_path.setdefault(p, []).append(slim)
     out: list[dict] = []
     for p in sorted(by_path.keys()):
@@ -7373,7 +7398,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r195-kz-pilot-batch"
+BUILD_VERSION = "2026-06-22-r196-render-low-memory"
 
 
 def _app_version() -> str:
@@ -7398,6 +7423,9 @@ def health() -> dict:
         "gemini_configured": has_key,
         "specialties_count": len(SPECIALTY_LABELS_RU),
         "memory_saver": _memory_saver_enabled(),
+        "lex_bm25_alpha": float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55") or "0.55"),
+        "lexical_max_chars": env_int("RAG_LEXICAL_MAX_CHARS", 0),
+        "bm25_index": _bm25_index is not None,
         "embedding_rerank": os.environ.get("RAG_GEMINI_EMBED_RERANK", "1"),
         "embedding_model": os.environ.get(
             "GEMINI_EMBEDDING_MODEL", "models/gemini-embedding-2-preview"
@@ -8789,7 +8817,7 @@ def _consult_cache_get(key: str) -> dict | None:
 def _consult_cache_put(key: str, value: dict) -> None:
     if not _consult_cache_enabled():
         return
-    cap = max(8, env_int("CONSULT_REVIEW_CACHE_MAX", 256))
+    cap = max(8, env_int("CONSULT_REVIEW_CACHE_MAX", 32 if env_bool("RENDER", False) else 256))
     with _consult_cache_lock:
         if key not in _consult_review_cache:
             _consult_cache_order.append(key)
