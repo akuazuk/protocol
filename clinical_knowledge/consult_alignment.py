@@ -369,6 +369,9 @@ def _exams_card(
     profile: dict[str, Any],
     ctx: dict[str, Any],
     protocol_matches: list[dict[str, Any]] | None,
+    *,
+    get_chunks: GetChunksFn | None = None,
+    protocol_paths: list[str] | None = None,
 ) -> dict[str, Any]:
     ranked = rank_kp_items_by_context(
         list(profile.get("diagnostics") or []),
@@ -387,8 +390,10 @@ def _exams_card(
             from clinical_knowledge.kz_chunk_match import best_chunk_for_items
 
             all_chunks: list[dict[str, Any]] = []
-            for pth in (profile.get("paths") or [])[:3]:
-                all_chunks.extend(profile.get("chunks_by_path", {}).get(pth) or [])
+            paths_for_chunks = (protocol_paths or profile.get("paths") or [])[:3]
+            for pth in paths_for_chunks:
+                if get_chunks:
+                    all_chunks.extend(get_chunks(pth) or [])
             best = best_chunk_for_items(
                 all_chunks,
                 chunk_types=("diagnostics", "criteria_block", "table"),
@@ -669,9 +674,7 @@ def build_consult_alignment(
     profile = merge_profiles_with_index(
         protocol_paths, icd_codes, get_chunks, query=clinical_query
     )
-    profile["chunks_by_path"] = {
-        p: get_chunks(p) or [] for p in (profile.get("paths") or protocol_paths or [])[:4]
-    }
+    paths_for_cards = list((profile.get("paths") or protocol_paths or [])[:4])
     cards: list[dict[str, Any]] = []
 
     cards.append(_diagnosis_card(doc, icd_codes))
@@ -685,7 +688,7 @@ def build_consult_alignment(
             present=bool(doc.sections.objective_status),
         )
     )
-    cards.append(_exams_card(doc, profile, ctx, protocol_matches))
+    cards.append(_exams_card(doc, profile, ctx, protocol_matches, get_chunks=get_chunks, protocol_paths=paths_for_cards))
     cards.append(_treatment_card(doc, profile, ctx, protocol_matches))
     cards.append(_follow_up_card(doc, icd_codes, profile))
     cards.append(_limitations_card(profile, ctx, protocol_matches))

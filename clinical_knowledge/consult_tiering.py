@@ -57,7 +57,7 @@ def run_l1_structured_review(
         consultation_id=consultation_id,
         demographics_meta=demographics_meta,
         specialty_slug=specialty_slug,
-        with_markdown=True,
+        with_markdown=False,
         analysis_mode=mode,
         doc=doc,
     )

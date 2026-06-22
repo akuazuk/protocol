@@ -168,12 +168,18 @@ def _apply_low_memory_defaults() -> None:
         ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
         ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
         ("CONSULT_REVIEW_CACHE_MAX", "24"),
+        ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
+        ("RAG_LEX_MAX_CANDIDATES", "8000"),
     ):
         if not (os.environ.get(key) or "").strip():
             os.environ[key] = val
 
 
 _apply_low_memory_defaults()
+
+
+def _consult_response_include_html() -> bool:
+    return env_bool("CONSULT_RESPONSE_INCLUDE_HTML", not env_bool("RENDER", False))
 
 
 def _consult_rag_second_pass_enabled() -> bool:
@@ -893,7 +899,7 @@ def _load_chunks_from_jsonl(part_paths: list[Path]) -> list[dict]:
                     rec["category"] = row["specialty_slug"]
                 if row.get("chunk_population"):
                     rec["chunk_population"] = row["chunk_population"]
-            if isinstance(row.get("embedding"), list):
+            if isinstance(row.get("embedding"), list) and not memory_saver:
                 rec["embedding"] = row["embedding"]
                 if row.get("embedding_model"):
                     rec["embedding_model"] = row["embedding_model"]
@@ -1096,6 +1102,33 @@ def _build_lex_inverted_index(chunks: list[dict]) -> dict[str, frozenset[int]]:
                 continue
             raw.setdefault(t, set()).add(i)
     return {k: frozenset(v) for k, v in raw.items()}
+
+
+def _chunk_indices_for_path_allowlist(path_set: frozenset[str]) -> set[int]:
+    """Индексы чанков только из allowlist — для consult-review, не весь корпус 65k."""
+    if not path_set:
+        return set()
+    out: set[int] = set()
+    for i, ch in enumerate(_chunks):
+        if _path_matches_allowlist(ch, path_set):
+            out.add(i)
+    return out
+
+
+def _cap_lex_candidate_indices(
+    candidate_indices: set[int] | None,
+    *,
+    path_allowlist_set: frozenset[str],
+) -> set[int] | None:
+    """Ограничить пул кандидатов retrieve (OOM при union 30k+ чанков на consult)."""
+    if path_allowlist_set:
+        path_only = _chunk_indices_for_path_allowlist(path_allowlist_set)
+        if path_only:
+            return path_only
+    max_cand = env_int("RAG_LEX_MAX_CANDIDATES", 8000 if env_bool("RENDER", False) else 0)
+    if max_cand <= 0 or not candidate_indices or len(candidate_indices) <= max_cand:
+        return candidate_indices
+    return set(sorted(candidate_indices)[:max_cand])
 
 
 # Слабые модификаторы без смысла диагноза: совпадение только по ним не должно тянуть чужие протоколы.
@@ -2950,7 +2983,11 @@ def retrieve(
         "yes",
     )
     candidate_indices: set[int] | None = None
-    if use_inverted and _lex_inverted_index:
+    if path_allowlist_set:
+        path_cand = _chunk_indices_for_path_allowlist(path_allowlist_set)
+        if path_cand:
+            candidate_indices = path_cand
+    elif use_inverted and _lex_inverted_index:
         cand: set[int] = set()
         for t in qtok:
             cand |= set(_lex_inverted_index.get(t, ()))
@@ -2979,6 +3016,9 @@ def retrieve(
                         candidate_indices = set(vector_hits)
     except Exception:
         pass
+    candidate_indices = _cap_lex_candidate_indices(
+        candidate_indices, path_allowlist_set=path_allowlist_set
+    )
     chunk_source = (
         (_chunks[i] for i in sorted(candidate_indices))
         if candidate_indices is not None
@@ -7398,7 +7438,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r196-render-low-memory"
+BUILD_VERSION = "2026-06-22-r197-consult-memory-fix"
 
 
 def _app_version() -> str:
@@ -8818,10 +8858,14 @@ def _consult_cache_put(key: str, value: dict) -> None:
     if not _consult_cache_enabled():
         return
     cap = max(8, env_int("CONSULT_REVIEW_CACHE_MAX", 32 if env_bool("RENDER", False) else 256))
+    stored = copy.deepcopy(value)
+    if not _consult_response_include_html():
+        stored.pop("report_html", None)
+        stored.pop("report_markdown", None)
     with _consult_cache_lock:
         if key not in _consult_review_cache:
             _consult_cache_order.append(key)
-        _consult_review_cache[key] = copy.deepcopy(value)
+        _consult_review_cache[key] = stored
         while len(_consult_cache_order) > cap:
             old = _consult_cache_order.pop(0)
             _consult_review_cache.pop(old, None)

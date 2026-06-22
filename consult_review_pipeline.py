@@ -546,7 +546,7 @@ def iter_consult_review_pipeline(
                 consultation_id=(content_signature or "consult")[:16] or "consult",
                 demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
                 specialty_slug=doctor_rubric,
-                with_markdown=True,
+                with_markdown=rs._consult_response_include_html(),
                 doc=parsed_doc,
                 analysis_mode=(
                     os.environ.get("PROTOCOL_SUMMARY_MODE")
@@ -726,7 +726,13 @@ def iter_consult_review_pipeline(
         pass
 
     result["cached_result"] = False
+    if not rs._consult_response_include_html():
+        result.pop("report_html", None)
+        result.pop("report_markdown", None)
     rs._consult_cache_put(cache_key, result)
+    import gc
+
+    gc.collect()
     yield ("done", result)
 
 
