@@ -154,20 +154,22 @@ def _iter_consult_review_render_l2_lite(
     ui_frags = rs._consult_ui_protocol_fragments(retrieved, paths_used)
     oncology = rs._consult_oncology_flags(ui_frags, full_text)
 
-    clinical_rules = rs._consult_clinical_rules_pipeline(
-        full_text,
-        demographics_meta if isinstance(demographics_meta, dict) else {},
-        icd_codes,
-        user_slugs,
-    )
+    clinical_rules = None
     rules_ctx = ""
-    if clinical_rules:
-        try:
-            from clinical_knowledge.llm_context import format_clinical_rules_for_llm
+    if not rs._consult_render_l2_lite_enabled():
+        clinical_rules = rs._consult_clinical_rules_pipeline(
+            full_text,
+            demographics_meta if isinstance(demographics_meta, dict) else {},
+            icd_codes,
+            user_slugs,
+        )
+        if clinical_rules:
+            try:
+                from clinical_knowledge.llm_context import format_clinical_rules_for_llm
 
-            rules_ctx = format_clinical_rules_for_llm(clinical_rules)
-        except ImportError:
-            rules_ctx = ""
+                rules_ctx = format_clinical_rules_for_llm(clinical_rules)
+            except ImportError:
+                rules_ctx = ""
 
     consult_max = rs._consult_env_int("CONSULT_REVIEW_CONSULT_CHARS", 20000, default_fast=12000)
     multi_intro = (
@@ -313,7 +315,7 @@ def iter_consult_review_pipeline(
         return ev
 
     yield emit("cache", 8, "Проверка кэша…", {"consult_documents": consult_docs_meta})
-    cache_key = rs._consult_cache_key(content_signature, category_slugs)
+    cache_key = rs._consult_cache_key(content_signature, category_slugs, tier="L2")
     cached = rs._consult_cache_get(cache_key)
     if cached is not None:
         yield emit("cache_hit", 100, "Результат из кэша", {"cached_result": True})

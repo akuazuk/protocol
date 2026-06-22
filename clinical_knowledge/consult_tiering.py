@@ -17,7 +17,7 @@ VALID_TIERS = frozenset({"L0", "L1", "L2"})
 
 def resolve_tier(tier: str | None = None) -> str:
     """L0 - скрининг; L1 - полный structured без RAG/LLM; L2 - полный pipeline."""
-    raw = (tier or os.environ.get("CONSULT_REVIEW_TIER", "L2")).strip().upper()
+    raw = (tier or os.environ.get("CONSULT_REVIEW_TIER", "L1")).strip().upper()
     if raw not in VALID_TIERS:
         return "L2"
     return raw

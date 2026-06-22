@@ -173,6 +173,7 @@ def _apply_low_memory_defaults() -> None:
         ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
         ("CONSULT_RENDER_L2_LITE", "1"),
         ("CONSULT_TYPED_RETRIEVE", "0"),
+        ("CONSULT_REVIEW_CACHE", "0"),
         ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
         ("RAG_LEX_MAX_CANDIDATES", "8000"),
     ):
@@ -7452,7 +7453,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r203-consult-tier-cards-ui"
+BUILD_VERSION = "2026-06-22-r204-consult-stable-l1"
 
 
 def _app_version() -> str:
@@ -8822,7 +8823,7 @@ def api_consultation_template(body: ConsultationTemplateIn) -> dict:
 
 # Кэш результата проверки КЗ по контент-хэшу файлов: один и тот же PDF -> один и тот же результат.
 # Это даёт строгую воспроизводимость даже при остаточной недетерминированности модели.
-_CONSULT_CACHE_VERSION = "2026-05-31.1-hybrid-overall"
+_CONSULT_CACHE_VERSION = "2026-06-22.1-tier-key"
 _consult_review_cache: dict[str, dict] = {}
 _consult_cache_order: list[str] = []
 _consult_cache_lock = threading.Lock()
@@ -8838,14 +8839,17 @@ def _normalize_for_cache(text: str) -> str:
     return re.sub(r"\s+", " ", (text or "")).strip().lower()
 
 
-def _consult_cache_key(content_signature: str, category_slugs: str) -> str:
-    """Ключ по нормализованному содержанию (а не по байтам) + рубрики + модель + настройки."""
+def _consult_cache_key(content_signature: str, category_slugs: str, *, tier: str = "L2") -> str:
+    """Ключ по нормализованному содержанию (а не по байтам) + рубрики + tier + модель + настройки."""
     slugs_norm = ",".join(sorted(s.strip() for s in (category_slugs or "").split(",") if s.strip()))
     content_hash = hashlib.sha256(content_signature.encode("utf-8")).hexdigest()
+    tier_norm = (tier or "L2").strip().upper()
     parts = [
         _CONSULT_CACHE_VERSION,
         content_hash,
         slugs_norm,
+        tier_norm,
+        "lite" if _consult_render_l2_lite_enabled() else "full",
         os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
         str(env_float("GEMINI_TEMPERATURE", 0.0)),
         os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower(),
@@ -9688,7 +9692,8 @@ async def api_consult_review(
             latency_ms=latency_ms,
             category_slugs=category_slugs,
         )
-    _require_rag_loaded()
+    if not _consult_render_l2_lite_enabled():
+        _require_rag_loaded()
     t0 = time.perf_counter()
     result = _consult_review_from_parsed_uploads(
         full_text=full_text,
@@ -9793,7 +9798,8 @@ async def api_consult_review_stream(
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
 
-    _require_rag_loaded()
+    if not _consult_render_l2_lite_enabled():
+        _require_rag_loaded()
 
     def event_gen():
         sent_done = False

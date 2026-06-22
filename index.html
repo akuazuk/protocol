@@ -23195,12 +23195,16 @@
     } catch (e) {
       saved = "";
     }
-    if (saved === "L0" || saved === "L1" || saved === "L2") {
+    if (saved === "L0" || saved === "L1") {
       var savedInput = panel.querySelector('input[name="consult-tier"][value="' + saved + '"]');
       if (savedInput) {
         savedInput.checked = true;
         savedInput.setAttribute("data-user-tier", "1");
       }
+    } else if (saved === "L2") {
+      try {
+        localStorage.removeItem("consult_review_tier");
+      } catch (e) {}
     }
     updateConsultTierHint();
     panel.querySelectorAll('input[name="consult-tier"]').forEach(function (inp) {
@@ -23215,31 +23219,49 @@
     });
   }
 
-  function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef, rebuildFd) {
+  function fetchConsultReviewUnified(base, fd, consultCtrl, timeoutRef, rebuildFd) {
     var tier = getConsultSelectedTier();
+    updateConsultProgressUI(15, tier + " - подключение…", "");
+    var readyPromise;
     if (tier === "L0" || tier === "L1") {
-      updateConsultProgressUI(20, tier + " - детерминированный разбор…", "без LLM и RAG");
-      return fetch(base + "/health")
-        .then(function (h) {
-          if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 3, rebuildFd);
-        })
-        .then(function (data) {
-          updateConsultProgressUI(100, "готово (" + tier + ")", "");
-          return data;
-        });
+      readyPromise = fetch(base + "/health").then(function (h) {
+        if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
+        return h.json();
+      });
+    } else {
+      readyPromise = waitForRagReady(base);
     }
-    return fetchConsultReviewAdaptive(base, fd, consultCtrl, timeoutRef, rebuildFd);
+    return readyPromise
+      .then(function () {
+        updateConsultProgressUI(32, tier + " - анализ на сервере…", "один запрос");
+        return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 4, rebuildFd);
+      })
+      .catch(function (err) {
+        if (isConsultAbort(err, consultCtrl)) throw err;
+        if (tier === "L2" && isConsultRetriable(err)) {
+          updateConsultProgressUI(48, "L2 недоступен - повтор на L1…", "надёжный режим");
+          var l1Input = document.querySelector('input[name="consult-tier"][value="L1"]');
+          if (l1Input) {
+            l1Input.checked = true;
+            l1Input.setAttribute("data-user-tier", "1");
+            updateConsultTierHint("L1");
+          }
+          return fetchConsultReviewSyncRetry(base, rebuildFd(), consultCtrl, 3, rebuildFd);
+        }
+        throw err;
+      })
+      .then(function (data) {
+        updateConsultProgressUI(100, "готово (" + getConsultSelectedTier() + ")", "");
+        return data;
+      });
+  }
+
+  function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef, rebuildFd) {
+    return fetchConsultReviewUnified(base, fd, consultCtrl, timeoutRef, rebuildFd);
   }
 
   function fetchConsultReviewAdaptive(base, fd, consultCtrl, timeoutRef, rebuildFd) {
-    return waitForRagReady(base).then(function (health) {
-      if (health.consult_review_fast) {
-        updateConsultProgressUI(12, "быстрый режим сервера…", "один запрос без потока");
-        return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 4, rebuildFd);
-      }
-      return fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef, rebuildFd);
-    });
+    return fetchConsultReviewUnified(base, fd, consultCtrl, timeoutRef, rebuildFd);
   }
 
   function fetchConsultReviewSync(base, fd, consultCtrl) {
@@ -23408,6 +23430,8 @@
       msg.indexOf("the network connection was lost") >= 0 ||
       msg.indexOf("загружается") >= 0 ||
       msg.indexOf("503") >= 0 ||
+      msg.indexOf("502") >= 0 ||
+      msg.indexOf("bad gateway") >= 0 ||
       msg.indexOf("service unavailable") >= 0
     );
   }
@@ -23418,9 +23442,10 @@
     return fetchConsultReviewSync(base, bodyFd, consultCtrl).catch(function (err) {
       if (isConsultAbort(err, consultCtrl)) throw err;
       if (attemptsLeft > 0 && isConsultRetriable(err)) {
-        updateConsultProgressUI(90, "сервер перезапускается, повтор…", "надёжный режим");
+        updateConsultProgressUI(85, "сервер занят, повтор…", "надёжный режим");
+        var delayMs = attemptsLeft >= 3 ? 3500 : 8000;
         return new Promise(function (resolve) {
-          setTimeout(resolve, 8000);
+          setTimeout(resolve, delayMs);
         }).then(function () {
           return fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft - 1, rebuildFd);
         });
@@ -23799,7 +23824,7 @@
 
       var consultTimeoutRef = { ms: 600000, abortTid: null };
       var consultCtrl = new AbortController();
-      var reviewFetch = fetchConsultReviewMethodist;
+      var reviewFetch = fetchConsultReviewUnified;
 
       reviewFetch(base, fd, consultCtrl, consultTimeoutRef, rebuildConsultFormData)
         .then(function (r) {

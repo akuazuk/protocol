@@ -25,6 +25,7 @@ def test_cache_key_stable_and_sensitive() -> None:
     k3 = rs._consult_cache_key(rs._normalize_for_cache("другой текст"), "pulmonologiya")
     assert k1 == k2
     assert k1 != k3
+    assert rs._consult_cache_key("sig", "pulm", tier="L1") != rs._consult_cache_key("sig", "pulm", tier="L2")
 
 
 def test_cache_put_get_roundtrip() -> None:
