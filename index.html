@@ -1449,23 +1449,121 @@
 
     table.consult-crit-table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0 0.45rem;
       font-size: 0.82rem;
       margin-top: 0.75rem;
     }
 
+    table.consult-crit-table col.col-crit-name { width: 13%; }
+    table.consult-crit-table col.col-crit-pct { width: 5.5rem; }
+    table.consult-crit-table col.col-crit-verdict { width: 6.5rem; }
+    table.consult-crit-table col.col-crit-comment { width: 28%; }
+    table.consult-crit-table col.col-crit-kz { width: 24%; }
+    table.consult-crit-table col.col-crit-ref { width: 24%; }
+
+    table.consult-crit-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      box-shadow: 0 1px 0 rgba(26, 138, 114, 0.2);
+    }
+
+    table.consult-crit-table tbody tr.consult-crit-row {
+      background: #fff;
+      box-shadow: 0 1px 0 rgba(26, 138, 114, 0.08);
+    }
+
+    table.consult-crit-table tbody tr.consult-crit-row--good td {
+      background: linear-gradient(90deg, rgba(228, 240, 234, 0.35) 0%, #fff 0.65rem);
+    }
+    table.consult-crit-table tbody tr.consult-crit-row--mid td {
+      background: linear-gradient(90deg, rgba(245, 240, 230, 0.45) 0%, #fff 0.65rem);
+    }
+    table.consult-crit-table tbody tr.consult-crit-row--low td {
+      background: linear-gradient(90deg, rgba(245, 235, 235, 0.5) 0%, #fff 0.65rem);
+    }
+
     table.consult-crit-table th,
     table.consult-crit-table td {
-      border: 1px solid rgba(26, 138, 114, 0.2);
-      padding: 0.5rem 0.58rem;
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      padding: 0.62rem 0.68rem;
       vertical-align: top;
       text-align: left;
     }
 
+    table.consult-crit-table tbody td:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+    table.consult-crit-table tbody td:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+
     table.consult-crit-table th {
-      background: rgba(232, 245, 241, 0.92);
-      font-size: 0.76rem;
+      background: rgba(232, 245, 241, 0.96);
+      font-size: 0.74rem;
       font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #2d5248;
+    }
+
+    .consult-crit-quote {
+      margin: 0;
+      padding: 0.45rem 0.55rem;
+      border-left: 3px solid rgba(26, 138, 114, 0.35);
+      background: rgba(248, 251, 250, 0.95);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #3d524c;
+      font-style: normal;
+    }
+
+    .consult-crit-quote--ref {
+      border-left-color: rgba(61, 80, 128, 0.35);
+      background: rgba(248, 249, 252, 0.95);
+      color: #3a4658;
+    }
+
+    .consult-crit-empty {
+      display: inline-block;
+      font-size: 0.74rem;
+      color: #8a9a94;
+      font-style: italic;
+    }
+
+    .consult-crit-ref-head {
+      display: block;
+      margin-bottom: 0.22rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #2d5a4e;
+    }
+
+    .consult-crit-ref-file {
+      display: block;
+      margin-bottom: 0.28rem;
+      font-size: 0.7rem;
+      color: #5a6f68;
+      word-break: break-word;
+    }
+
+    .consult-crit-ref-page {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.68rem;
+      color: #7a8a84;
+    }
+
+    .consult-crit-pct-cell {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .consult-crit-verdict-cell {
+      text-align: center;
+      vertical-align: middle;
     }
 
     .consult-crit-context {
@@ -10327,6 +10425,14 @@
             <summary id="consult-criteria-summary">Подробные комментарии и цитаты</summary>
             <div style="overflow-x: auto; padding: 0 0.5rem 0.55rem">
               <table class="consult-crit-table" id="consult-out-table">
+                <colgroup>
+                  <col class="col-crit-name" />
+                  <col class="col-crit-pct" />
+                  <col class="col-crit-verdict" />
+                  <col class="col-crit-comment" />
+                  <col class="col-crit-kz" />
+                  <col class="col-crit-ref" />
+                </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">Критерий</th>
@@ -22774,6 +22880,52 @@
     return "src-completeness";
   }
 
+  function renderConsultCriteriaQuote(text, emptyLabel) {
+    var t = (text || "").trim();
+    if (!t) {
+      return (
+        '<span class="consult-crit-empty">' +
+        escapeHtml(emptyLabel || "Не указано в КЗ") +
+        "</span>"
+      );
+    }
+    return '<blockquote class="consult-crit-quote">' + escapeHtml(t) + "</blockquote>";
+  }
+
+  function renderConsultReferenceCell(c) {
+    var parts = [];
+    var ref = (c.reference_ru || "").trim();
+    var proto = (c.protocol_excerpt || "").trim();
+    var section = (c.protocol_section || "").trim();
+    var page = c.protocol_page;
+    var pathRaw = c.protocol_path ? String(c.protocol_path) : "";
+    var path = pathRaw ? pathRaw.split("/").pop() : "";
+
+    if (section) {
+      parts.push('<span class="consult-crit-ref-head">' + escapeHtml(section) + "</span>");
+    }
+    if (path) {
+      parts.push('<span class="consult-crit-ref-file">' + escapeHtml(path) + "</span>");
+    }
+    var body = proto || ref;
+    if (body && body !== section) {
+      parts.push(
+        '<blockquote class="consult-crit-quote consult-crit-quote--ref">' +
+          escapeHtml(body) +
+          "</blockquote>"
+      );
+    }
+    if (page) {
+      parts.push(
+        '<span class="consult-crit-ref-page">стр. ' + escapeHtml(String(page)) + "</span>"
+      );
+    }
+    if (!parts.length) {
+      return renderConsultCriteriaQuote("", "Эталон не определён");
+    }
+    return parts.join("");
+  }
+
   function renderConsultCriteriaComment(c) {
     var parts = [];
     var ctx = c.context_ru || "";
@@ -22970,6 +23122,10 @@
       critList.forEach(function (c) {
         var score = c.score_pct != null ? Number(c.score_pct) : null;
         var tr = document.createElement("tr");
+        tr.className = "consult-crit-row";
+        if (score != null && !isNaN(score)) {
+          tr.className += " consult-crit-row--" + consultScoreTier(score);
+        }
         var tdName = document.createElement("td");
         tdName.className = "consult-crit-name-cell";
         tdName.innerHTML =
@@ -22978,10 +23134,12 @@
           "</span>" +
           renderConsultSourceBadge(c);
         var tdPct = document.createElement("td");
+        tdPct.className = "consult-crit-pct-cell";
         if (score != null && !isNaN(score)) {
           tdPct.innerHTML = renderMiniDonutSvg(score, 44);
         }
         var tdVer = document.createElement("td");
+        tdVer.className = "consult-crit-verdict-cell";
         if (score != null && !isNaN(score)) {
           var ver = consultScoreVerdict(score);
           tdVer.innerHTML =
@@ -22990,18 +23148,12 @@
         var tdComment = document.createElement("td");
         tdComment.innerHTML = renderConsultCriteriaComment(c);
         var tdKz = document.createElement("td");
-        tdKz.className = "consult-crit-excerpt";
-        tdKz.textContent = c.conclusion_excerpt || "";
+        tdKz.innerHTML = renderConsultCriteriaQuote(
+          c.conclusion_excerpt || "",
+          "В КЗ нет цитаты по этому блоку"
+        );
         var tdProto = document.createElement("td");
-        tdProto.className = "consult-crit-excerpt";
-        var protoHead = c.protocol_section || "";
-        var protoText = c.protocol_excerpt || "";
-        if (c.protocol_page) {
-          protoText = (protoText ? protoText + " " : "") + "(стр. " + c.protocol_page + ")";
-        }
-        tdProto.innerHTML =
-          (protoHead ? '<span class="consult-crit-proto-head">' + escapeHtml(protoHead) + "</span>" : "") +
-          escapeHtml(protoText);
+        tdProto.innerHTML = renderConsultReferenceCell(c);
         tr.appendChild(tdName);
         tr.appendChild(tdPct);
         tr.appendChild(tdVer);

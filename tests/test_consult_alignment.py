@@ -90,7 +90,8 @@ def test_complaints_not_compared_to_kp():
     assert complaints["source_kind"] == "completeness"
     assert "жалоб" in complaints["comment_ru"].lower()
     assert "отдельн" not in complaints["comment_ru"].lower()
-    assert not complaints.get("protocol_excerpt")
+    assert complaints.get("reference_ru") or complaints.get("protocol_excerpt")
+    assert "СОП" in (complaints.get("protocol_excerpt") or complaints.get("reference_ru") or "")
 
 
 def test_anamnesis_separate_from_complaints():

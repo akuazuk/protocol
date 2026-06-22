@@ -23,6 +23,8 @@ from clinical_knowledge.kz_clinical_context import (
     rank_kp_items_by_context,
 )
 from clinical_knowledge.protocol_icd_profile_index import merge_profiles_with_index
+from clinical_knowledge.kravira_sop_rules import evaluate_sop_block, merge_sop_into_card
+from clinical_knowledge.meaningful_excerpt import excerpt_or_empty, meaningful_excerpt
 from clinical_knowledge.semantic_rule_fallback import fuzzy_term_in_text
 
 import icd_mkb
@@ -53,8 +55,7 @@ def _title_match_score(diagnosis_text: str, ru_title: str | None) -> float:
 
 
 def _excerpt(text: str | None, limit: int = 280) -> str:
-    t = re.sub(r"\s+", " ", (text or "").strip())
-    return t[:limit] if t else ""
+    return meaningful_excerpt(text, limit=limit) or excerpt_or_empty(text, limit=limit)
 
 
 _MED_SHORT = re.compile(
@@ -164,6 +165,7 @@ def _card(
     findings_ru: list[str] | None = None,
     gaps_ru: list[str] | None = None,
     context_ru: str = "",
+    reference_ru: str = "",
 ) -> dict[str, Any]:
     return {
         "block_id": block_id,
@@ -181,6 +183,7 @@ def _card(
         "findings_ru": list(findings_ru or []),
         "gaps_ru": list(gaps_ru or []),
         "context_ru": context_ru,
+        "reference_ru": reference_ru,
         "deterministic": True,
     }
 
@@ -198,7 +201,7 @@ def _format_kp_cite(cite: dict[str, Any], fallback_lines: list[str]) -> tuple[st
     page = str(cite.get("page_from") or "")
     path = _basename(cite.get("path") or "")
     header = " · ".join(x for x in [path, f"стр. {page}" if page else ""] if x)
-    return text[:360], section, header
+    return meaningful_excerpt(text, limit=360), section, header
 
 
 def _mkb_reference_line(code: str, title: str | None) -> str:
@@ -294,12 +297,12 @@ def _complaints_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str
     present = bool(text)
     score = _completeness_score(present, text=text, min_chars=12)
     if not present:
-        comment = "Жалобы не описаны."
+        comment = "Жалобы не описаны - по СОП Кравira раздел обязателен."
     elif len(text) < 25:
-        comment = f"Жалобы указаны кратко: {_excerpt(text, 140)}"
+        comment = "Жалобы указаны кратко; по СОП нужна детализация (давность, характер, динамика)."
         score = min(score, 60)
     else:
-        comment = f"Жалобы: {_excerpt(text, 200)}"
+        comment = "Жалобы заполнены; проверьте детализацию по СОП (характер, давность, динамика)."
     if doc.extraction_quality.has_undefined and "undefined" in text.lower():
         score = min(score, 45)
         comment += " В тексте есть незаполненные поля."
@@ -319,12 +322,12 @@ def _anamnesis_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str,
     score = _completeness_score(present, text=disease or life, min_chars=20)
     parts: list[str] = []
     if disease:
-        parts.append(f"Анамнез заболевания: {_excerpt(disease, 160)}")
+        parts.append("Анамнез заболевания заполнен.")
     else:
         parts.append("Анамнез заболевания не описан.")
         score = min(score, 50)
     if life:
-        parts.append(f"Анамнез жизни: {_excerpt(life, 120)}")
+        parts.append("Анамнез жизни заполнен.")
     else:
         parts.append("Анамнез жизни не указан.")
         if score > 72:
@@ -347,11 +350,11 @@ def _completeness_section_card(
 ) -> dict[str, Any]:
     score = _completeness_score(present, text=text)
     if not present or score < 50:
-        comment = "Объективный статус не описан или слишком краткий."
+        comment = "Объективный статус не описан или слишком краткий - по СОП обязательны осмотр и витальные параметры."
     elif len((text or "").strip()) < 30:
-        comment = f"Объективный статус краткий: {_excerpt(text, 120)}"
+        comment = "Объективный статус краткий; добавьте витальные параметры и локальный статус."
     else:
-        comment = f"Объективный статус: {_excerpt(text, 160)}"
+        comment = "Объективный статус заполнен; по СОП проверьте АД, пульс, температуру и локальный статус."
     if doc.extraction_quality.has_undefined and block_id == "objective_status":
         comment += " Есть незаполненные поля."
         score = min(score, 50)
@@ -693,6 +696,11 @@ def build_consult_alignment(
     cards.append(_follow_up_card(doc, icd_codes, profile))
     cards.append(_limitations_card(profile, ctx, protocol_matches))
 
+    for card in cards:
+        bid = str(card.get("block_id") or "")
+        if bid and bid != "limitations":
+            merge_sop_into_card(card, evaluate_sop_block(doc, bid))
+
     by_id = {c["block_id"]: c for c in cards}
     ordered = [by_id[bid] for bid in ALIGNMENT_CARD_ORDER if bid in by_id]
 
@@ -728,7 +736,7 @@ def _card_to_criterion(card: dict[str, Any]) -> dict[str, Any]:
         "name_ru", "score_pct", "comment_ru", "conclusion_excerpt",
         "protocol_excerpt", "protocol_section", "protocol_page",
         "source_kind", "source_label", "protocol_path", "chunk_id", "deterministic",
-        "findings_ru", "gaps_ru", "context_ru",
+        "findings_ru", "gaps_ru", "context_ru", "reference_ru", "block_id",
     )}
     return out
 
