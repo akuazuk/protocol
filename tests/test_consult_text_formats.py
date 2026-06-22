@@ -65,6 +65,42 @@ def test_rejects_unknown_extension() -> None:
     assert exc.value.status_code == 400
 
 
+def test_pdf_with_bom_prefix() -> None:
+    import rag_server as rs
+
+    pdf = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\n"
+    # minimal pdf won't extract text but should not reject signature
+    try:
+        from pypdf import PdfWriter
+
+        buf = io.BytesIO()
+        w = PdfWriter()
+        w.add_blank_page(width=72, height=72)
+        w.write(buf)
+        pdf = buf.getvalue()
+    except ImportError:
+        pytest.skip("pypdf required")
+
+    txt, warns = rs.extract_consult_text_from_bytes(b"\xef\xbb\xbf" + pdf, "pl_new.pdf")
+    assert isinstance(txt, str)
+    assert not any("сигнатур" in w.lower() for w in warns)
+
+
+def test_pdf_mislabeled_docx_fallback() -> None:
+    import rag_server as rs
+
+    doc_xml = (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        b'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        b"<w:body><w:p><w:r><w:t>Diag J20.9</w:t></w:r></w:p></w:body></w:document>"
+    )
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("word/document.xml", doc_xml)
+    txt, _ = rs.extract_consult_text_from_bytes(buf.getvalue(), "pl_new.pdf")
+    assert "J20.9" in txt
+
+
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     import rag_server as rs

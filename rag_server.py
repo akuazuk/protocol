@@ -4680,8 +4680,14 @@ def _extract_odt_text(data: bytes) -> tuple[str, list[str]]:
     return full, warnings
 
 
+def _normalize_pdf_bytes(data: bytes, *, max_scan: int = 8192) -> bytes | None:
+    from clinical_knowledge.text_extract import normalize_pdf_bytes
+
+    return normalize_pdf_bytes(data, max_scan=max_scan)
+
+
 def _sniff_consult_format(data: bytes, ext: str) -> str:
-    if ext in _CONSULT_PDF_EXTENSIONS or data[:5].startswith(b"%PDF-"):
+    if _normalize_pdf_bytes(data) is not None:
         return "pdf"
     head = data[:8]
     if head[:2] == b"PK":
@@ -4724,12 +4730,22 @@ def extract_consult_text_from_bytes(data: bytes, filename: str = "") -> tuple[st
 
     fmt = _sniff_consult_format(data, ext)
     if fmt == "pdf":
-        if not data[:5].startswith(b"%PDF-"):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Файл «{filename}»: не похож на PDF (неверная сигнатура).",
+        pdf_data = _normalize_pdf_bytes(data)
+        extra_warns: list[str] = []
+        if pdf_data is None:
+            pdf_data = data
+            extra_warns.append(
+                "PDF: маркер %PDF- не найден в начале файла — попытка чтения как есть."
             )
-        return extract_pdf_text_from_bytes(data)
+        elif pdf_data is not data and not data.lstrip().startswith(b"%PDF-"):
+            extra_warns.append("PDF: пропущен служебный префикс до маркера %PDF-.")
+        try:
+            txt, warns = extract_pdf_text_from_bytes(pdf_data)
+            return txt, extra_warns + warns
+        except HTTPException:
+            if ext in _CONSULT_PDF_EXTENSIONS and data[:2] == b"PK":
+                return _extract_docx_text(data)
+            raise
     if fmt == "docx":
         return _extract_docx_text(data)
     if fmt == "odt":
@@ -7438,7 +7454,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r197-consult-memory-fix"
+BUILD_VERSION = "2026-06-22-r198-pdf-signature-tolerant"
 
 
 def _app_version() -> str:

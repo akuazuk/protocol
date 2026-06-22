@@ -10,6 +10,19 @@ from pathlib import Path
 SUPPORTED_SUFFIXES = frozenset({".pdf", ".docx", ".txt", ".md", ".json"})
 
 
+def normalize_pdf_bytes(data: bytes, *, max_scan: int = 8192) -> bytes | None:
+    """Найти маркер %PDF- (BOM, пробелы, служебный префикс перед PDF)."""
+    if not data:
+        return None
+    stripped = data.lstrip(b"\x00 \t\r\n\xef\xbb\xbf\xfe\xff")
+    if stripped[:5].startswith(b"%PDF-"):
+        return stripped
+    idx = data.find(b"%PDF-", 0, max_scan)
+    if idx >= 0:
+        return data[idx:]
+    return None
+
+
 def extract_text_from_bytes(data: bytes, *, suffix: str = "") -> str:
     ext = suffix.lower()
     if ext == ".json":
@@ -22,17 +35,20 @@ def extract_text_from_bytes(data: bytes, *, suffix: str = "") -> str:
             return json.dumps(obj, ensure_ascii=False)
         except json.JSONDecodeError:
             return data.decode("utf-8", errors="replace")
-    if ext == ".pdf" or data[:5].startswith(b"%PDF-"):
+    if ext == ".pdf" or normalize_pdf_bytes(data) is not None:
+        pdf_data = normalize_pdf_bytes(data) or data
         try:
             from pypdf import PdfReader
         except ImportError:
             return ""
         try:
-            reader = PdfReader(io.BytesIO(data))
+            reader = PdfReader(io.BytesIO(pdf_data))
             return "\n".join((page.extract_text() or "") for page in reader.pages)
         except Exception:
+            if data[:2] == b"PK":
+                return extract_docx_text(data)
             return ""
-    if ext == ".docx" or (data[:2] == b"PK" and ext != ".pdf"):
+    if ext == ".docx" or (data[:2] == b"PK"):
         return extract_docx_text(data)
     return data.decode("utf-8", errors="replace")
 
