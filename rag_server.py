@@ -172,6 +172,7 @@ def _apply_low_memory_defaults() -> None:
         ("CONSULT_REVIEW_CACHE_MAX", "24"),
         ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
         ("CONSULT_RENDER_L2_LITE", "1"),
+        ("CONSULT_RENDER_L2_SKIP_LLM", "1"),
         ("CONSULT_TYPED_RETRIEVE", "0"),
         ("CONSULT_REVIEW_CACHE", "0"),
         ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
@@ -221,6 +222,32 @@ def _consult_render_l2_lite_enabled() -> bool:
     if raw is not None and str(raw).strip():
         return env_bool("CONSULT_RENDER_L2_LITE", True)
     return _consult_review_fast_mode() and env_bool("RENDER", False)
+
+
+def _consult_render_l2_skip_llm() -> bool:
+    """На Render (512Mi) L2 с LLM и загрузкой чанков часто даёт OOM - только L1-разбор."""
+    raw = os.environ.get("CONSULT_RENDER_L2_SKIP_LLM")
+    if raw is not None and str(raw).strip():
+        return env_bool("CONSULT_RENDER_L2_SKIP_LLM", True)
+    return env_bool("RENDER", False) and _consult_render_l2_lite_enabled()
+
+
+def _annotate_render_l2_limited(result: dict) -> None:
+    """Пометка ответа: облачный L2 без языковой модели (экономия RAM)."""
+    result["render_l2_limited"] = True
+    note = (
+        "Облачный L2 на Render: структурный разбор как L1, без оценки языковой модели "
+        "(лимит памяти 512 MiB). Для полного L2 с цитатами модели - локальный сервер."
+    )
+    rev = result.get("review")
+    if isinstance(rev, dict):
+        prev = (rev.get("limitations_ru") or "").strip()
+        rev["limitations_ru"] = (prev + " " + note).strip() if prev else note
+    perf = result.get("consult_performance")
+    if not isinstance(perf, dict):
+        perf = {}
+        result["consult_performance"] = perf
+    perf["render_l2_skip_llm"] = True
 
 
 def _consult_retrieve_embed_rerank() -> bool:
@@ -7453,7 +7480,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r204-consult-stable-l1"
+BUILD_VERSION = "2026-06-22-r205-render-l2-no-oom"
 
 
 def _app_version() -> str:
@@ -7488,6 +7515,7 @@ def health() -> dict:
         "consult_rag_second_pass": _consult_rag_second_pass_enabled(),
         "consult_review_fast": _consult_review_fast_mode(),
         "consult_render_l2_lite": _consult_render_l2_lite_enabled(),
+        "consult_render_l2_skip_llm": _consult_render_l2_skip_llm(),
         "consult_review_profile": (
             "fast"
             if _consult_review_fast_mode()
@@ -9515,9 +9543,21 @@ def _consult_review_from_tier_or_pipeline(
     category_slugs: str,
     require_rag_for_l2: bool = True,
 ) -> dict:
-    from clinical_knowledge.consult_tiering import run_consult_by_tier
+    from clinical_knowledge.consult_tiering import resolve_tier, run_consult_by_tier
     from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
     from consult_review_pipeline import run_consult_review_pipeline
+
+    if resolve_tier(tier) == "L2" and _consult_render_l2_skip_llm():
+        routed = run_consult_by_tier(
+            tier="L1",
+            text=text,
+            bundle=bundle,
+            consultation_id=consultation_id,
+            category_slugs=category_slugs,
+        )
+        routed["review_tier"] = "L2"
+        _annotate_render_l2_limited(routed)
+        return routed
 
     routed = run_consult_by_tier(
         tier=tier,
@@ -9528,7 +9568,7 @@ def _consult_review_from_tier_or_pipeline(
     )
     if not routed.get("delegate_full_pipeline"):
         return routed
-    if require_rag_for_l2:
+    if require_rag_for_l2 and not _consult_render_l2_lite_enabled():
         _require_rag_loaded()
     full_text = routed.get("text") or ""
     if not full_text and bundle:
@@ -9687,6 +9727,30 @@ async def api_consult_review(
             request,
             result,
             tier=selected_tier,
+            full_text=full_text,
+            consultation_id="upload",
+            latency_ms=latency_ms,
+            category_slugs=category_slugs,
+        )
+    if _consult_render_l2_skip_llm():
+        t0 = time.perf_counter()
+        result = _consult_review_from_tier_or_pipeline(
+            tier="L2",
+            text=full_text,
+            bundle=None,
+            consultation_id="upload",
+            category_slugs=category_slugs,
+            require_rag_for_l2=False,
+        )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        if pdf_warnings:
+            result["pdf_warnings"] = pdf_warnings
+        if consult_docs_meta:
+            result["consult_documents"] = consult_docs_meta
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier="L2",
             full_text=full_text,
             consultation_id="upload",
             latency_ms=latency_ms,

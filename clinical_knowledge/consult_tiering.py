@@ -39,6 +39,7 @@ def run_l1_structured_review(
     demographics_meta: dict[str, Any] | None = None,
     specialty_slug: str | None = None,
     analysis_mode: str | None = None,
+    skip_alignment: bool = False,
 ) -> dict[str, Any]:
     """L1: structured + alignment, без RAG и без LLM-критериев."""
     mode = analysis_mode or (
@@ -80,7 +81,10 @@ def run_l1_structured_review(
     }
     alignment_result = None
 
-    if os.environ.get("CONSULT_ALIGNMENT_ENABLED", "1").strip().lower() in ("1", "true", "yes", "on"):
+    if (
+        not skip_alignment
+        and os.environ.get("CONSULT_ALIGNMENT_ENABLED", "1").strip().lower() in ("1", "true", "yes", "on")
+    ):
         try:
             from .consult_alignment import (
                 append_alignment_evidence,

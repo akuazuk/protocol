@@ -23169,7 +23169,32 @@
     L0: "L0: быстрая проверка готовности к подписи - без подбора протоколов и без оценки модели.",
     L1: "L1: структурный разбор, правила и карточки согласования - оптимально для повседневной работы.",
     L2: "L2: полный RAG и оценка модели с цитатами протоколов - дольше, может занять несколько минут.",
+    L2_RENDER: "L2 на Render: структурный разбор как L1 (без языковой модели). Для полного L2 запустите сервер локально.",
   };
+
+  function initConsultTierCaps() {
+    fetch(apiBaseUrl() + "/health", { cache: "no-store" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (h) {
+        if (!h) return;
+        window.__consultRenderL2SkipLlm = !!h.consult_render_l2_skip_llm;
+        var l2input = document.querySelector('input[name="consult-tier"][value="L2"]');
+        if (l2input && h.consult_render_l2_skip_llm) {
+          var card = l2input.closest(".consult-tier-card");
+          var desc = card && card.querySelector(".consult-tier-card__desc");
+          var timeEl = card && card.querySelector(".consult-tier-card__time");
+          if (desc) {
+            desc.textContent =
+              "На Render: как L1, без LLM (лимит памяти). Полный L2 с моделью - локальный сервер.";
+          }
+          if (timeEl) timeEl.textContent = "≈ 15-45 с";
+        }
+        updateConsultTierHint();
+      })
+      .catch(function () {});
+  }
 
   function getConsultSelectedTier() {
     var picked = document.querySelector('input[name="consult-tier"]:checked');
@@ -23182,6 +23207,10 @@
     var hint = document.getElementById("consult-tier-hint");
     if (!hint) return;
     var t = tier || getConsultSelectedTier();
+    if (t === "L2" && window.__consultRenderL2SkipLlm) {
+      hint.textContent = CONSULT_TIER_HINTS.L2_RENDER;
+      return;
+    }
     hint.textContent = CONSULT_TIER_HINTS[t] || CONSULT_TIER_HINTS.L1;
   }
 
@@ -23221,9 +23250,10 @@
 
   function fetchConsultReviewUnified(base, fd, consultCtrl, timeoutRef, rebuildFd) {
     var tier = getConsultSelectedTier();
+    var skipLlm = tier === "L2" && !!window.__consultRenderL2SkipLlm;
     updateConsultProgressUI(15, tier + " - подключение…", "");
     var readyPromise;
-    if (tier === "L0" || tier === "L1") {
+    if (tier === "L0" || tier === "L1" || skipLlm) {
       readyPromise = fetch(base + "/health").then(function (h) {
         if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
         return h.json();
@@ -23231,10 +23261,11 @@
     } else {
       readyPromise = waitForRagReady(base);
     }
+    var syncAttempts = tier === "L2" ? 0 : 4;
     return readyPromise
       .then(function () {
         updateConsultProgressUI(32, tier + " - анализ на сервере…", "один запрос");
-        return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 4, rebuildFd);
+        return fetchConsultReviewSyncRetry(base, fd, consultCtrl, syncAttempts, rebuildFd);
       })
       .catch(function (err) {
         if (isConsultAbort(err, consultCtrl)) throw err;
@@ -23432,6 +23463,8 @@
       msg.indexOf("503") >= 0 ||
       msg.indexOf("502") >= 0 ||
       msg.indexOf("bad gateway") >= 0 ||
+      msg.indexOf("memory limit") >= 0 ||
+      msg.indexOf("memory") >= 0 && msg.indexOf("exceeded") >= 0 ||
       msg.indexOf("service unavailable") >= 0
     );
   }
@@ -24419,6 +24452,7 @@
   bindSpecialtyPanel();
   bindConsultSpecialtyToolbar();
   bindConsultTierSelector();
+  initConsultTierCaps();
   bindVoiceInput();
   bindPageNav();
 

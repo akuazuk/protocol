@@ -104,6 +104,7 @@ def _iter_consult_review_render_l2_lite(
         consultation_id=consult_id,
         demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
         specialty_slug=specialty_slug,
+        skip_alignment=True,
     )
     structured_analysis = l1.get("structured_analysis")
     alignment_result = l1.get("alignment")
@@ -145,10 +146,10 @@ def _iter_consult_review_render_l2_lite(
         query=q_rag,
         icd_codes=icd_codes,
         get_chunks=rs.get_rich_chunks_for_path,
-        limit_per_path=2,
-        max_paths=4,
+        limit_per_path=1,
+        max_paths=2,
     )
-    proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=8000)
+    proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=4000)
     protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
     paths_hint = rs._consult_review_paths_hint(paths_used, retrieved=retrieved, icd_needles=icd_codes[:6])
     ui_frags = rs._consult_ui_protocol_fragments(retrieved, paths_used)
