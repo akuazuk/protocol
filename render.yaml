@@ -5,11 +5,15 @@
 # Тяжёлые corpus_chunks_parts/*.jsonl лучше не коммитить в git: подключите Persistent Disk,
 # один раз залейте туда каталог corpus_chunks_parts (SSH / scp / скрипт), задайте RAG_CHUNKS_DIR.
 # https://render.com/docs/disks
+#
+# plan: standard = 2 GiB RAM / 1 CPU (~$25/мес). Синхронизируйте Blueprint в Dashboard
+# или вручную: Settings → Instance Type → Standard.
 
 services:
   - type: web
     name: protocol-rag
     runtime: python
+    plan: standard
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn rag_server:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
@@ -21,12 +25,13 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.8"
+      - key: RENDER_PLAN
+        value: standard
       # Второй RAG-pass + несколько вызовов Gemini часто превышают таймаут прокси Render (~100 с).
       - key: CONSULT_REVIEW_RAG_SECOND_PASS
         value: "0"
       # - key: RAG_CHUNKS_DIR
       #   value: /var/data
-      # ~65k rich chunks на 512Mi без saver часто дают OOM при старте. Явно или авто (RENDER=true):
       - key: RAG_MEMORY_SAVER
         value: "1"
       - key: RAG_LEX_BM25_ALPHA
@@ -36,25 +41,25 @@ services:
       - key: RAG_GEMINI_EMBED_RERANK
         value: "0"
       - key: CONSULT_REVIEW_MAX_CHUNKS
-        value: "6"
+        value: "8"
       - key: CONSULT_RENDER_L2_LITE
         value: "1"
       - key: CONSULT_RENDER_L2_SKIP_LLM
-        value: "1"
+        value: "0"
       - key: PROTOCOL_SUMMARY_RAG_MERGE
         value: "0"
       - key: RAG_LEX_MAX_CANDIDATES
-        value: "4000"
+        value: "8000"
       - key: RAG_LEX_MAX_UNION
-        value: "12000"
+        value: "20000"
       - key: RAG_RETRIEVE_CONCURRENCY
-        value: "1"
+        value: "2"
       - key: CONSULT_ALIGNMENT_ENABLED
-        value: "0"
+        value: "1"
       - key: RAG_LEX_INDEX_DEFER
-        value: "1"
+        value: "0"
       - key: CONSULT_CONCURRENCY
-        value: "1"
+        value: "2"
       - key: CONSULT_TYPED_RETRIEVE
         value: "0"
       - key: RAG_LEXICAL_MAX_CHARS
@@ -63,7 +68,6 @@ services:
         value: "0"
       - key: CONSULT_PREWARM_SUMMARY_ICD_INDEX
         value: "0"
-      # Дополнительно при повторных OOM: апгрейд инстанса до 2 GiB.
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback
       # - key: ML_FEEDBACK_DIR
       #   value: /var/data/ml/feedback

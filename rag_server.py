@@ -156,36 +156,76 @@ def env_bool(name: str, default: bool) -> bool:
     return str(raw).strip().lower() in ("1", "true", "yes", "on", "y")
 
 
-def _apply_low_memory_defaults() -> None:
-    """На Render (512Mi) rich corpus + BM25 + prewarm часто дают OOM при consult-review.
+def _render_extended_ram() -> bool:
+    """Render Standard+ (2 GiB RAM) - менее агрессивные лимиты, чем Free/Starter 512 MiB."""
+    plan = (os.environ.get("RENDER_PLAN") or os.environ.get("RENDER_INSTANCE_TYPE") or "").strip().lower()
+    if plan in (
+        "standard",
+        "pro",
+        "pro_plus",
+        "pro plus",
+        "pro_max",
+        "pro max",
+        "pro_ultra",
+        "pro ultra",
+    ):
+        return True
+    return env_int("RENDER_RAM_MB", 0) >= 1800
 
-    Значения ниже применяются только если переменная не задана явно в Environment.
-    """
+
+def _apply_low_memory_defaults() -> None:
+    """Render: дефолты RAM по plan (512 MiB vs Standard 2 GiB). Явные env не перезаписываются."""
     if not env_bool("RENDER", False):
         return
-    for key, val in (
-        ("RAG_MEMORY_SAVER", "1"),
-        ("RAG_LEX_BM25_ALPHA", "1.0"),  # без BM25-blend (~50-150 MiB)
-        ("RAG_EMBED_POOL_MERGE", "0"),  # иначе BM25-индекс строится даже при alpha=1.0
-        ("RAG_GEMINI_EMBED_RERANK", "0"),
-        ("RAG_LEXICAL_MAX_CHARS", "4096"),
-        ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
-        ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
-        ("CONSULT_REVIEW_CACHE_MAX", "24"),
-        ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
-        ("CONSULT_RENDER_L2_LITE", "1"),
-        ("CONSULT_RENDER_L2_SKIP_LLM", "1"),
-        ("CONSULT_TYPED_RETRIEVE", "0"),
-        ("CONSULT_REVIEW_CACHE", "0"),
-        ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
-        ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
-        ("RAG_LEX_MAX_CANDIDATES", "4000"),
-        ("RAG_LEX_MAX_UNION", "12000"),
-        ("RAG_RETRIEVE_CONCURRENCY", "1"),
-        ("CONSULT_ALIGNMENT_ENABLED", "0"),
-        ("RAG_LEX_INDEX_DEFER", "1"),
-        ("CONSULT_CONCURRENCY", "1"),
-    ):
+    if _render_extended_ram():
+        profile: tuple[tuple[str, str], ...] = (
+            ("RAG_MEMORY_SAVER", "1"),
+            ("RAG_LEX_BM25_ALPHA", "1.0"),
+            ("RAG_EMBED_POOL_MERGE", "0"),
+            ("RAG_GEMINI_EMBED_RERANK", "0"),
+            ("RAG_LEXICAL_MAX_CHARS", "4096"),
+            ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
+            ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
+            ("CONSULT_REVIEW_CACHE_MAX", "48"),
+            ("CONSULT_REVIEW_MAX_CHUNKS", "8"),
+            ("CONSULT_RENDER_L2_LITE", "1"),
+            ("CONSULT_RENDER_L2_SKIP_LLM", "0"),
+            ("CONSULT_TYPED_RETRIEVE", "0"),
+            ("CONSULT_REVIEW_CACHE", "0"),
+            ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
+            ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+            ("RAG_LEX_MAX_CANDIDATES", "8000"),
+            ("RAG_LEX_MAX_UNION", "20000"),
+            ("RAG_RETRIEVE_CONCURRENCY", "2"),
+            ("CONSULT_ALIGNMENT_ENABLED", "1"),
+            ("RAG_LEX_INDEX_DEFER", "0"),
+            ("CONSULT_CONCURRENCY", "2"),
+        )
+    else:
+        profile = (
+            ("RAG_MEMORY_SAVER", "1"),
+            ("RAG_LEX_BM25_ALPHA", "1.0"),  # без BM25-blend (~50-150 MiB)
+            ("RAG_EMBED_POOL_MERGE", "0"),  # иначе BM25-индекс строится даже при alpha=1.0
+            ("RAG_GEMINI_EMBED_RERANK", "0"),
+            ("RAG_LEXICAL_MAX_CHARS", "4096"),
+            ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
+            ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
+            ("CONSULT_REVIEW_CACHE_MAX", "24"),
+            ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
+            ("CONSULT_RENDER_L2_LITE", "1"),
+            ("CONSULT_RENDER_L2_SKIP_LLM", "1"),
+            ("CONSULT_TYPED_RETRIEVE", "0"),
+            ("CONSULT_REVIEW_CACHE", "0"),
+            ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
+            ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+            ("RAG_LEX_MAX_CANDIDATES", "4000"),
+            ("RAG_LEX_MAX_UNION", "12000"),
+            ("RAG_RETRIEVE_CONCURRENCY", "1"),
+            ("CONSULT_ALIGNMENT_ENABLED", "0"),
+            ("RAG_LEX_INDEX_DEFER", "1"),
+            ("CONSULT_CONCURRENCY", "1"),
+        )
+    for key, val in profile:
         if not (os.environ.get(key) or "").strip():
             os.environ[key] = val
 
@@ -7607,7 +7647,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r207-phases-stability"
+BUILD_VERSION = "2026-06-22-r208-render-standard-2gib"
 
 
 def _app_version() -> str:
@@ -7659,6 +7699,8 @@ def health() -> dict:
         "lex_index_ready": _lex_inverted_index is not None,
         "consult_alignment_enabled": os.environ.get("CONSULT_ALIGNMENT_ENABLED", "1"),
         "consult_concurrency": env_int("CONSULT_CONCURRENCY", 3),
+        "render_plan": (os.environ.get("RENDER_PLAN") or "").strip() or None,
+        "render_extended_ram": _render_extended_ram(),
     }
 
 

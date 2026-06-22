@@ -22,6 +22,7 @@ def test_apply_low_memory_defaults_sets_env(monkeypatch):
         "CONSULT_CONCURRENCY",
     ):
         monkeypatch.delenv(key, raising=False)
+    monkeypatch.delenv("RENDER_PLAN", raising=False)
     monkeypatch.setenv("RENDER", "true")
     rag_server._apply_low_memory_defaults()
     assert os.environ.get("RAG_MEMORY_SAVER") == "1"
@@ -38,6 +39,29 @@ def test_memory_saver_on_render(monkeypatch):
     monkeypatch.setenv("RENDER", "true")
     monkeypatch.delenv("RAG_MEMORY_SAVER", raising=False)
     assert rag_server._memory_saver_enabled() is True
+
+
+def test_render_extended_ram_standard_plan(monkeypatch):
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_PLAN", "standard")
+    assert rag_server._render_extended_ram() is True
+
+
+def test_apply_standard_plan_defaults(monkeypatch):
+    for key in (
+        "RAG_LEX_MAX_CANDIDATES",
+        "CONSULT_ALIGNMENT_ENABLED",
+        "CONSULT_RENDER_L2_SKIP_LLM",
+        "RAG_LEX_INDEX_DEFER",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_PLAN", "standard")
+    rag_server._apply_low_memory_defaults()
+    assert os.environ.get("RAG_LEX_MAX_CANDIDATES") == "8000"
+    assert os.environ.get("CONSULT_ALIGNMENT_ENABLED") == "1"
+    assert os.environ.get("CONSULT_RENDER_L2_SKIP_LLM") == "0"
+    assert os.environ.get("RAG_LEX_INDEX_DEFER") == "0"
 
 
 def test_memory_saver_explicit_off(monkeypatch):
