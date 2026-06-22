@@ -227,6 +227,11 @@ def iter_consult_review_pipeline(
             rules_partial["rules_compliance_pct"] = rc.get("rules_compliance_pct")
     yield emit("rules_done", 52, "Правила и протоколы определены", rules_partial)
 
+    if rs.env_bool("RENDER", False):
+        import gc
+
+        gc.collect()
+
     max_chunks_r = rs._consult_env_int("CONSULT_REVIEW_MAX_CHUNKS", 12, default_fast=8)
     max_per_path_r = rs._consult_env_int("CONSULT_REVIEW_MAX_PER_PATH", 3, default_fast=2)
     embed_rerank = rs._consult_retrieve_embed_rerank()

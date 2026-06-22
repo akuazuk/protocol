@@ -163,11 +163,14 @@ def _apply_low_memory_defaults() -> None:
         return
     for key, val in (
         ("RAG_MEMORY_SAVER", "1"),
-        ("RAG_LEX_BM25_ALPHA", "1.0"),  # без BM25-индекса (~50–150 MiB)
+        ("RAG_LEX_BM25_ALPHA", "1.0"),  # без BM25-blend (~50-150 MiB)
+        ("RAG_EMBED_POOL_MERGE", "0"),  # иначе BM25-индекс строится даже при alpha=1.0
+        ("RAG_GEMINI_EMBED_RERANK", "0"),
         ("RAG_LEXICAL_MAX_CHARS", "4096"),
         ("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", "0"),
         ("CONSULT_PREWARM_SUMMARY_ICD_INDEX", "0"),
         ("CONSULT_REVIEW_CACHE_MAX", "24"),
+        ("CONSULT_REVIEW_MAX_CHUNKS", "6"),
         ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
         ("RAG_LEX_MAX_CANDIDATES", "8000"),
     ):
@@ -7439,7 +7442,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r200-remove-batch-guide-ui"
+BUILD_VERSION = "2026-06-22-r201-consult-render-oom-fix"
 
 
 def _app_version() -> str:
@@ -8956,12 +8959,25 @@ def _consult_clinical_rules_pipeline(
     }
 
 
-def _parse_consult_review_uploads(
-    files: list[UploadFile],
+async def _read_consult_upload_bytes(uf: UploadFile, index: int, default_ext: str = ".txt") -> tuple[str, bytes]:
+    """FastAPI 0.115+: await read(); sync uf.file.read() иногда пустой на Render."""
+    raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{index + 1}{default_ext}"
+    data = await uf.read()
+    if not data and uf.file is not None:
+        try:
+            uf.file.seek(0)
+            data = uf.file.read()
+        except Exception:
+            data = b""
+    return raw_fn, data or b""
+
+
+def _parse_consult_review_uploads_from_items(
+    items: list[tuple[str, bytes]],
 ) -> tuple[str, list[dict], list[str], list[str]]:
-    """Извлечь текст из загруженных файлов КЗ. Возвращает full_text, meta, warnings, doc_texts_for_cache, category placeholder."""
+    """Извлечь текст из уже прочитанных байтов файлов КЗ."""
     max_n = max(1, min(25, env_int("CONSULT_REVIEW_MAX_FILES", 3)))
-    if len(files) > max_n:
+    if len(items) > max_n:
         raise HTTPException(
             status_code=400,
             detail=f"Можно не более {max_n} файлов за один запрос.",
@@ -8972,11 +8988,8 @@ def _parse_consult_review_uploads(
     consult_docs_meta: list[dict] = []
     pdf_warnings: list[str] = []
     doc_texts_for_cache: list[str] = []
-    default_ext = ".txt"
 
-    for i, uf in enumerate(files):
-        raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}{default_ext}"
-        data = uf.file.read()
+    for i, (raw_fn, data) in enumerate(items):
         if len(data) > lim_b:
             raise HTTPException(
                 status_code=400,
@@ -9028,23 +9041,72 @@ def _parse_consult_review_uploads(
     return full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache
 
 
-def _consult_review_from_uploads(
+async def _parse_consult_review_uploads_async(
     files: list[UploadFile],
+) -> tuple[str, list[dict], list[str], list[str]]:
+    items: list[tuple[str, bytes]] = []
+    for i, uf in enumerate(files):
+        items.append(await _read_consult_upload_bytes(uf, i))
+    return _parse_consult_review_uploads_from_items(items)
+
+
+def _parse_consult_review_uploads(
+    files: list[UploadFile],
+) -> tuple[str, list[dict], list[str], list[str]]:
+    """Sync-обёртка для TestClient и локальных скриптов."""
+    default_ext = ".txt"
+    items: list[tuple[str, bytes]] = []
+    for i, uf in enumerate(files):
+        raw_fn = ((uf.filename or "").strip()) or f"zaklyuchenie_{i + 1}{default_ext}"
+        data = b""
+        if uf.file is not None:
+            try:
+                uf.file.seek(0)
+                data = uf.file.read()
+            except Exception:
+                data = b""
+        items.append((raw_fn, data or b""))
+    return _parse_consult_review_uploads_from_items(items)
+
+
+def _consult_review_from_parsed_uploads(
+    *,
+    full_text: str,
+    n_files: int,
+    consult_docs_meta: list[dict],
+    pdf_warnings: list[str],
+    doc_texts_for_cache: list[str],
     category_slugs: str,
     on_progress=None,
 ) -> dict:
     from consult_review_pipeline import run_consult_review_pipeline
 
+    content_signature = "\n||\n".join(doc_texts_for_cache)
+    return run_consult_review_pipeline(
+        full_text=full_text,
+        n_files=n_files,
+        consult_docs_meta=consult_docs_meta,
+        pdf_warnings=pdf_warnings,
+        content_signature=content_signature,
+        category_slugs=category_slugs,
+        on_progress=on_progress,
+    )
+
+
+def _consult_review_from_uploads(
+    files: list[UploadFile],
+    category_slugs: str,
+    on_progress=None,
+) -> dict:
     full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = _parse_consult_review_uploads(
         files
     )
-    content_signature = "\n||\n".join(doc_texts_for_cache)
-    return run_consult_review_pipeline(
+    return _consult_review_from_parsed_uploads(
         full_text=full_text,
         n_files=len(files),
         consult_docs_meta=consult_docs_meta,
         pdf_warnings=pdf_warnings,
-        content_signature=content_signature,
+        doc_texts_for_cache=doc_texts_for_cache,
         category_slugs=category_slugs,
         on_progress=on_progress,
     )
@@ -9560,7 +9622,7 @@ def api_consult_validate_bundle(body: ConsultValidateBundleIn) -> dict:
 
 
 @app.post("/api/consult-review")
-def api_consult_review(
+async def api_consult_review(
     request: "Request",
     files: Annotated[
         list[UploadFile],
@@ -9588,7 +9650,9 @@ def api_consult_review(
             detail="Не переданы файлы: загрузите хотя бы один файл заключения.",
         )
     selected_tier = (tier or "L2").strip().upper()
-    full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = _parse_consult_review_uploads(files)
+    full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
+        await _parse_consult_review_uploads_async(files)
+    )
     if _methodist_request_active(request) and selected_tier in ("L0", "L1"):
         t0 = time.perf_counter()
         result = _consult_review_from_tier_or_pipeline(
@@ -9615,7 +9679,14 @@ def api_consult_review(
         )
     _require_rag_loaded()
     t0 = time.perf_counter()
-    result = _consult_review_from_uploads(files, category_slugs)
+    result = _consult_review_from_parsed_uploads(
+        full_text=full_text,
+        n_files=len(files),
+        consult_docs_meta=consult_docs_meta,
+        pdf_warnings=pdf_warnings,
+        doc_texts_for_cache=doc_texts_for_cache,
+        category_slugs=category_slugs,
+    )
     latency_ms = int((time.perf_counter() - t0) * 1000)
     return _maybe_methodist_autolog(
         request,
@@ -9629,7 +9700,7 @@ def api_consult_review(
 
 
 @app.post("/api/consult-review/stream")
-def api_consult_review_stream(
+async def api_consult_review_stream(
     request: "Request",
     files: Annotated[
         list[UploadFile],
@@ -9646,13 +9717,12 @@ def api_consult_review_stream(
         sse_encode_progress,
     )
 
-    _require_rag_loaded()
     if not files:
         raise HTTPException(status_code=400, detail="Не переданы файлы.")
 
     try:
         full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
-            _parse_consult_review_uploads(files)
+            await _parse_consult_review_uploads_async(files)
         )
     except HTTPException as e:
         detail = e.detail if isinstance(e.detail, str) else str(e.detail)
@@ -9661,6 +9731,8 @@ def api_consult_review_stream(
             yield sse_encode_error(detail, e.status_code)
 
         return StreamingResponse(err_gen(), media_type="text/event-stream")
+
+    _require_rag_loaded()
 
     content_signature = "\n||\n".join(doc_texts_for_cache)
     selected_tier = (tier or "L2").strip().upper()

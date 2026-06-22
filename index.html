@@ -22988,7 +22988,7 @@
     return poll();
   }
 
-  function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef) {
+  function fetchConsultReviewMethodist(base, fd, consultCtrl, timeoutRef, rebuildFd) {
     var tierEl = document.getElementById("methodist-tier-select");
     var tier = tierEl && tierEl.value ? tierEl.value : "L1";
     if (tier === "L0" || tier === "L1") {
@@ -22996,14 +22996,24 @@
       return fetch(base + "/health")
         .then(function (h) {
           if (!h.ok) throw new Error("Сервис недоступен (HTTP " + h.status + ")");
-          return fetchConsultReviewSync(base, fd, consultCtrl);
+          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 3, rebuildFd);
         })
         .then(function (data) {
           updateConsultProgressUI(100, "готово (" + tier + ")", "");
           return data;
         });
     }
-    return fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef);
+    return fetchConsultReviewAdaptive(base, fd, consultCtrl, timeoutRef, rebuildFd);
+  }
+
+  function fetchConsultReviewAdaptive(base, fd, consultCtrl, timeoutRef, rebuildFd) {
+    return waitForRagReady(base).then(function (health) {
+      if (health.consult_review_fast) {
+        updateConsultProgressUI(12, "быстрый режим сервера…", "один запрос без потока");
+        return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 4, rebuildFd);
+      }
+      return fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef, rebuildFd);
+    });
   }
 
   function fetchConsultReviewSync(base, fd, consultCtrl) {
@@ -23030,7 +23040,7 @@
     });
   }
 
-  function fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef) {
+  function fetchConsultReviewStream(base, fd, consultCtrl, timeoutRef, rebuildFd) {
     timeoutRef = timeoutRef || { ms: 600000 };
     return waitForRagReady(base)
       .then(function (health) {
@@ -23117,7 +23127,7 @@
         if (isConsultAbort(err, consultCtrl)) throw err;
         if (isConsultRetriable(err)) {
           updateConsultProgressUI(90, "повтор без потока…", "надёжный режим");
-          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 3);
+          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, 3, rebuildFd);
         }
         throw err;
       });
@@ -23146,9 +23156,11 @@
       low.indexOf("the network connection was lost") >= 0
     ) {
       return (
-        "Соединение с сервером оборвалось (часто нехватка памяти или перезапуск после деплоя). " +
-        "Подождите 1–2 минуты и нажмите «Проанализировать» снова. " +
-        "В кабинете методиста для пакетной проверки используйте L1."
+        "Соединение с сервером оборвалось (часто нехватка памяти на Render или перезапуск после деплоя). " +
+        "Подождите 1-2 минуты и нажмите «Проанализировать» снова. " +
+        (window.__methodistMode
+          ? "Для быстрой проверки выберите уровень L1 вместо L2."
+          : "Если ошибка повторяется, попробуйте один PDF за раз или меньший файл.")
       );
     }
     return "Ошибка: " + (msg || "неизвестная ошибка");
@@ -23175,15 +23187,16 @@
   }
 
   // Синхронный фолбэк с повторами: переживает окно перезапуска сервера при деплое.
-  function fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft) {
-    return fetchConsultReviewSync(base, fd, consultCtrl).catch(function (err) {
+  function fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft, rebuildFd) {
+    var bodyFd = typeof rebuildFd === "function" ? rebuildFd() : fd;
+    return fetchConsultReviewSync(base, bodyFd, consultCtrl).catch(function (err) {
       if (isConsultAbort(err, consultCtrl)) throw err;
       if (attemptsLeft > 0 && isConsultRetriable(err)) {
         updateConsultProgressUI(90, "сервер перезапускается, повтор…", "надёжный режим");
         return new Promise(function (resolve) {
           setTimeout(resolve, 8000);
         }).then(function () {
-          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft - 1);
+          return fetchConsultReviewSyncRetry(base, fd, consultCtrl, attemptsLeft - 1, rebuildFd);
         });
       }
       throw err;
@@ -23550,13 +23563,27 @@
         if (tierEl && tierEl.value) fd.append("tier", tierEl.value);
       }
 
+      function rebuildConsultFormData() {
+        var next = new FormData();
+        var fj;
+        for (fj = 0; fj < nPdf; fj++) {
+          next.append("files", list[fj], list[fj].name);
+        }
+        next.append("category_slugs", getConsultSelectedCategorySlugs().join(","));
+        if (window.__methodistMode) {
+          var tierEl2 = document.getElementById("methodist-tier-select");
+          if (tierEl2 && tierEl2.value) next.append("tier", tierEl2.value);
+        }
+        return next;
+      }
+
       var consultTimeoutRef = { ms: 600000, abortTid: null };
       var consultCtrl = new AbortController();
       var reviewFetch = window.__methodistMode
         ? fetchConsultReviewMethodist
-        : fetchConsultReviewStream;
+        : fetchConsultReviewAdaptive;
 
-      reviewFetch(base, fd, consultCtrl, consultTimeoutRef)
+      reviewFetch(base, fd, consultCtrl, consultTimeoutRef, rebuildConsultFormData)
         .then(function (r) {
           if (consultTimeoutRef.abortTid) window.clearTimeout(consultTimeoutRef.abortTid);
           return r;
