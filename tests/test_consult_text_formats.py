@@ -101,6 +101,39 @@ def test_pdf_mislabeled_docx_fallback() -> None:
     assert "J20.9" in txt
 
 
+def test_pdf_docx_with_bom_prefix() -> None:
+    import rag_server as rs
+
+    doc_xml = (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        b'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        b"<w:body><w:p><w:r><w:t>Diag M54.1</w:t></w:r></w:p></w:body></w:document>"
+    )
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("word/document.xml", doc_xml)
+    payload = b"\xef\xbb\xbf" + buf.getvalue()
+    txt, _ = rs.extract_consult_text_from_bytes(payload, "report_g_1.pdf")
+    assert "M54.1" in txt
+
+
+def test_pypdf_empty_pymupdf_fallback(monkeypatch) -> None:
+    import rag_server as rs
+    from clinical_knowledge import text_extract as te
+
+    def fake_pypdf(_data: bytes, *, max_pages: int = 200):
+        return "", [], None
+
+    def fake_mupdf(_data: bytes, *, max_pages: int = 200):
+        return "Текст заключения M54.1", []
+
+    monkeypatch.setattr(te, "extract_pdf_text_pypdf", fake_pypdf)
+    monkeypatch.setattr(te, "extract_pdf_text_pymupdf", fake_mupdf)
+    txt, warns = rs.extract_pdf_text_from_bytes(b"%PDF-1.4 fake")
+    assert "M54.1" in txt
+    assert any("PyMuPDF" in w for w in warns)
+
+
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     import rag_server as rs

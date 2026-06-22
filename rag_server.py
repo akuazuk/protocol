@@ -4485,50 +4485,22 @@ def _build_consult_review_pipeline_query(model, full_text: str) -> tuple[str, di
 
 
 def extract_pdf_text_from_bytes(data: bytes) -> tuple[str, list[str]]:
-    """Извлечение текстового слоя PDF (без OCR). Для сканов вернёт пустую строку."""
-    warnings: list[str] = []
-    try:
-        from pypdf import PdfReader  # type: ignore[import-untyped]
-    except ImportError as e:
-        raise HTTPException(
-            status_code=503,
-            detail="Установите пакет pypdf: pip install pypdf",
-        ) from e
-    bio = io.BytesIO(data)
-    try:
-        reader = PdfReader(bio)
-    except Exception as e:
+    """Извлечение текстового слоя PDF (без OCR). pypdf → PyMuPDF."""
+    from clinical_knowledge.text_extract import extract_pdf_text_bytes
+
+    max_pages = env_int("CONSULT_REVIEW_MAX_PAGES", 200)
+    txt, warnings, err = extract_pdf_text_bytes(data, max_pages=max_pages)
+    if err == "encrypted":
         raise HTTPException(
             status_code=400,
-            detail=f"Файл не читается как PDF: {e!s}",
-        ) from e
-    if getattr(reader, "is_encrypted", False):
-        try:
-            reader.decrypt("")
-        except Exception:
-            raise HTTPException(
-                status_code=400,
-                detail="PDF защищён паролем - загрузите незашифрованную копию",
-            )
-    parts: list[str] = []
-    max_pages = env_int("CONSULT_REVIEW_MAX_PAGES", 200)
-    pages = list(reader.pages or [])
-    if max_pages > 0 and len(pages) > max_pages:
-        warnings.append(
-            f"Обработаны только первые {max_pages} стр. из {len(pages)} (лимит CONSULT_REVIEW_MAX_PAGES)."
+            detail="PDF защищён паролем - загрузите незашифрованную копию",
         )
-        pages = pages[:max_pages]
-    for i, page in enumerate(pages):
-        try:
-            t = page.extract_text() or ""
-        except Exception as e:
-            warnings.append(f"Стр. {i + 1}: не извлечён текст ({e!s})")
-            t = ""
-        t = t.strip()
-        if t:
-            parts.append(t)
-    full = "\n\n".join(parts).strip()
-    return full, warnings
+    if err == "unreadable":
+        raise HTTPException(
+            status_code=400,
+            detail="Файл не читается как PDF",
+        )
+    return txt, warnings
 
 
 # Расширения файлов КЗ для consult-review (текстовые и PDF).
@@ -4624,9 +4596,12 @@ def _extract_rtf_text(data: bytes) -> tuple[str, list[str]]:
 
 def _extract_docx_text(data: bytes) -> tuple[str, list[str]]:
     warnings: list[str] = []
+    from clinical_knowledge.text_extract import strip_file_prefix
+
     w_ns = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+    payload = strip_file_prefix(data)
     try:
-        with zipfile.ZipFile(io.BytesIO(data)) as zf:
+        with zipfile.ZipFile(io.BytesIO(payload)) as zf:
             if "word/document.xml" not in zf.namelist():
                 raise ValueError("нет word/document.xml")
             xml = zf.read("word/document.xml")
@@ -4686,11 +4661,17 @@ def _normalize_pdf_bytes(data: bytes, *, max_scan: int = 8192) -> bytes | None:
     return normalize_pdf_bytes(data, max_scan=max_scan)
 
 
+def _is_zip_payload(data: bytes) -> bool:
+    from clinical_knowledge.text_extract import is_zip_payload
+
+    return is_zip_payload(data)
+
+
 def _sniff_consult_format(data: bytes, ext: str) -> str:
     if _normalize_pdf_bytes(data) is not None:
         return "pdf"
-    head = data[:8]
-    if head[:2] == b"PK":
+    stripped = data.lstrip(b"\x00 \t\r\n\xef\xbb\xbf\xfe\xff")
+    if stripped[:2] == b"PK":
         if ext in _CONSULT_ODT_EXTENSIONS:
             return "odt"
         return "docx"
@@ -4730,22 +4711,26 @@ def extract_consult_text_from_bytes(data: bytes, filename: str = "") -> tuple[st
 
     fmt = _sniff_consult_format(data, ext)
     if fmt == "pdf":
+        if _is_zip_payload(data) and _normalize_pdf_bytes(data) is None:
+            return _extract_docx_text(data)
         pdf_data = _normalize_pdf_bytes(data)
         extra_warns: list[str] = []
         if pdf_data is None:
             pdf_data = data
             extra_warns.append(
-                "PDF: маркер %PDF- не найден в начале файла — попытка чтения как есть."
+                "PDF: маркер %PDF- не найден - попытка чтения как есть."
             )
         elif pdf_data is not data and not data.lstrip().startswith(b"%PDF-"):
             extra_warns.append("PDF: пропущен служебный префикс до маркера %PDF-.")
         try:
             txt, warns = extract_pdf_text_from_bytes(pdf_data)
-            return txt, extra_warns + warns
         except HTTPException:
-            if ext in _CONSULT_PDF_EXTENSIONS and data[:2] == b"PK":
+            if _is_zip_payload(data):
                 return _extract_docx_text(data)
             raise
+        if not txt.strip() and _is_zip_payload(data):
+            return _extract_docx_text(data)
+        return txt, extra_warns + warns
     if fmt == "docx":
         return _extract_docx_text(data)
     if fmt == "odt":
@@ -7454,7 +7439,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r198-pdf-signature-tolerant"
+BUILD_VERSION = "2026-06-22-r199-pdf-pymupdf-fallback"
 
 
 def _app_version() -> str:
