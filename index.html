@@ -8588,6 +8588,73 @@
       font-weight: 650;
     }
 
+    .search-wizard-progress {
+      margin-top: 0.45rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(26, 138, 114, 0.28);
+    }
+
+    .search-wizard-progress[hidden] {
+      display: none !important;
+    }
+
+    .search-wizard-progress__row {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green-900);
+    }
+
+    .search-wizard-progress__row::before {
+      content: "";
+      width: 0.85rem;
+      height: 0.85rem;
+      border: 2px solid rgba(26, 138, 114, 0.25);
+      border-top-color: var(--green-600);
+      border-radius: 50%;
+      animation: assist-spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .search-wizard-progress__track {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(203, 213, 225, 0.55);
+      overflow: hidden;
+      margin-bottom: 0.3rem;
+    }
+
+    .search-wizard-progress__fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.85), rgba(56, 189, 248, 0.85));
+      transition: width 0.35s ease;
+    }
+
+    .search-wizard-progress__hint {
+      margin: 0;
+      font-size: 0.74rem;
+      line-height: 1.4;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .search-wizard-loading-hint {
+      margin: 0.55rem 0 0;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #475569;
+    }
+
+    .search-wizard-step-card--loading .process-progress {
+      margin: 0;
+    }
+
     .search-wizard-icd {
       margin: 0.5rem 0 0.75rem;
     }
@@ -8981,6 +9048,19 @@
     .proto-nav-card__actions .btn-proto-action.is-busy {
       opacity: 0.65;
       cursor: wait;
+    }
+
+    .proto-nav-card__actions .btn-proto-pick.is-busy::after {
+      content: "";
+      display: inline-block;
+      width: 0.85rem;
+      height: 0.85rem;
+      margin-left: 0.45rem;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: assist-spin 0.75s linear infinite;
+      vertical-align: -0.1em;
     }
 
     .proto-nav-card__actions .btn-proto-action--primary {
@@ -10159,6 +10239,7 @@
               </div>
               <p id="search-wizard-step-hint" class="search-wizard-step-hint"></p>
               <p id="search-wizard-context" class="search-wizard-context" hidden></p>
+              <div id="search-wizard-progress" class="search-wizard-progress" hidden aria-live="polite"></div>
             </div>
           </div>
         </div>
@@ -14410,6 +14491,139 @@
     }
   }
 
+  var WIZARD_NEXT_STEP = {
+    population: "icd",
+    icd: "protocols",
+    rubric: "protocols",
+    condition: "section",
+    section: "excerpt",
+    excerpt: "detail",
+  };
+
+  function searchWizardProgressHint(stepId) {
+    var hints = {
+      population: "Уточняем аудиторию пациента…",
+      icd: "Сопоставляем жалобы с кодами МКБ-10…",
+      rubric: "Сужаем раздел каталога протоколов…",
+      protocols: "Ранжируем протоколы по запросу…",
+      condition: "Читаем карточку Summary и список нозологий…",
+      section: "Подгружаем разделы выбранной нозологии…",
+      excerpt: "Извлекаем цитаты из раздела протокола…",
+      detail: "Открываем матрицу КЗ и выдержку из PDF…",
+    };
+    return hints[stepId] || "Следующий шаг…";
+  }
+
+  function getSearchWizardProgressSteps() {
+    return SEARCH_WIZARD_STEPS.map(function (s) {
+      return { id: s.id, label: s.label };
+    });
+  }
+
+  function renderSearchWizardBarProgressHtml(activeStep, hint) {
+    var stepNum = searchWizardStepIndex(activeStep) + 1;
+    var total = SEARCH_WIZARD_STEPS.length;
+    var pct = Math.min(100, Math.round((stepNum / total) * 100));
+    var meta = searchWizardStepMeta(activeStep);
+    var label = meta ? meta.label : "";
+    return (
+      '<div class="search-wizard-progress__inner">' +
+      '<div class="search-wizard-progress__row">Шаг ' +
+      String(stepNum) +
+      "/" +
+      String(total) +
+      (label ? " · " + escapeHtml(label) : "") +
+      "</div>" +
+      '<div class="search-wizard-progress__track" aria-hidden="true">' +
+      '<div class="search-wizard-progress__fill" style="width:' +
+      String(pct) +
+      '%"></div></div>' +
+      (hint
+        ? '<p class="search-wizard-progress__hint">' + escapeHtml(hint) + "</p>"
+        : "") +
+      "</div>"
+    );
+  }
+
+  function showSearchWizardBarProgress(activeStep, hint) {
+    var el = document.getElementById("search-wizard-progress");
+    if (!el) return;
+    el.hidden = false;
+    el.innerHTML = renderSearchWizardBarProgressHtml(
+      activeStep,
+      hint || searchWizardProgressHint(activeStep)
+    );
+  }
+
+  function hideSearchWizardBarProgress() {
+    var el = document.getElementById("search-wizard-progress");
+    if (el) {
+      el.hidden = true;
+      el.innerHTML = "";
+    }
+    clearAllProtoPickBusy();
+  }
+
+  function getSearchWizardLoadingCardHtml(activeStep, hint) {
+    var steps = getSearchWizardProgressSteps();
+    var meta = searchWizardStepMeta(activeStep);
+    var stepNum = searchWizardStepIndex(activeStep) + 1;
+    var title =
+      "Шаг " +
+      String(stepNum) +
+      " из " +
+      String(steps.length) +
+      (meta ? " · " + meta.label : "");
+    var html = buildProcessProgressHtml(title, steps, activeStep);
+    html +=
+      '<p class="search-wizard-loading-hint" aria-live="polite">' +
+      escapeHtml(hint || searchWizardProgressHint(activeStep)) +
+      "</p>";
+    return (
+      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner search-wizard-step-card search-wizard-step-card--loading">' +
+      html +
+      "</div></div>"
+    );
+  }
+
+  function showSearchWizardStepLoading(activeStep, hint) {
+    var out = document.getElementById("llm-out");
+    if (out) {
+      out.innerHTML = getSearchWizardLoadingCardHtml(activeStep, hint);
+    }
+    showSearchWizardBarProgress(activeStep, hint);
+    if (isSearchSteppedMode()) {
+      updateSearchWizardBar(activeStep);
+    }
+    scrollToSearchWizard();
+  }
+
+  function setProtoPickBusy(btn, busy, label) {
+    if (!btn || !btn.isConnected) return;
+    if (busy) {
+      if (!btn.dataset.origLabel) btn.dataset.origLabel = btn.textContent;
+      btn.textContent = label || "Загрузка…";
+      btn.disabled = true;
+      btn.classList.add("is-busy");
+      btn.setAttribute("aria-busy", "true");
+    } else {
+      if (btn.dataset.origLabel) {
+        btn.textContent = btn.dataset.origLabel;
+        delete btn.dataset.origLabel;
+      }
+      btn.disabled = false;
+      btn.classList.remove("is-busy");
+      btn.removeAttribute("aria-busy");
+    }
+  }
+
+  function clearAllProtoPickBusy() {
+    document.querySelectorAll(".btn-proto-pick.is-busy").forEach(function (btn) {
+      setProtoPickBusy(btn, false);
+    });
+    window.__activeProtoPickBtn = null;
+  }
+
   function renderProtocolNavGuideHtml(activeStep, opts) {
     opts = opts || {};
     if (opts.compact) {
@@ -17448,6 +17662,7 @@
       }
       out.innerHTML = html;
       enhanceCollapsibleBlocks(out);
+      hideSearchWizardBarProgress();
       bindLlmFollowupForm();
       bindDiffSearchButtons();
       bindProtocolFactsTabs();
@@ -20329,6 +20544,14 @@
         progressEl.textContent = "";
       }
     }
+    if (busy) {
+      var wiz = window.__searchWizard || {};
+      var nextStep = WIZARD_NEXT_STEP[wiz.step] || wiz.step;
+      showSearchWizardBarProgress(
+        nextStep,
+        progressText || searchWizardProgressHint(nextStep)
+      );
+    }
     cardEl.querySelectorAll(".btn-wizard-continue, .btn-wizard-skip").forEach(function (btn) {
       if (busy) {
         if (!btn.dataset.busyLabel) btn.dataset.busyLabel = btn.textContent;
@@ -20678,22 +20901,24 @@
       continueBtn.addEventListener("click", function () {
         var sel = selectedList();
         if (!sel.length) return;
-        setWizardStepBusy(
-          cardEl,
-          true,
-          options.busyLabel || "Выполняется следующий шаг…"
-        );
+        var wiz = window.__searchWizard || {};
+        var nextStep = options.nextStep || WIZARD_NEXT_STEP[wiz.step];
+        var hint =
+          options.busyLabel ||
+          (nextStep ? searchWizardProgressHint(nextStep) : "Выполняется следующий шаг…");
+        if (nextStep) {
+          showSearchWizardStepLoading(nextStep, hint);
+        }
+        setWizardStepBusy(cardEl, true, hint);
         options.onContinue(sel);
       });
     }
     var skipBtn = cardEl.querySelector(".btn-wizard-skip");
     if (skipBtn && options.onSkip) {
       skipBtn.addEventListener("click", function () {
-        setWizardStepBusy(
-          cardEl,
-          true,
-          options.busyLabel || "Выполняется следующий шаг…"
-        );
+        var hint = options.busyLabel || searchWizardProgressHint("detail");
+        showSearchWizardStepLoading("detail", hint);
+        setWizardStepBusy(cardEl, true, hint);
         options.onSkip();
       });
     }
@@ -20857,6 +21082,7 @@
       },
     });
     scrollToSearchWizard();
+    hideSearchWizardBarProgress();
   }
 
   function renderSearchWizardRubricStep(qRaw) {
@@ -20913,6 +21139,7 @@
       },
     });
     scrollToSearchWizard();
+    hideSearchWizardBarProgress();
   }
 
   function truncateExcerpt(text, maxLen) {
@@ -21112,6 +21339,7 @@
       },
     });
     scrollToSearchWizard();
+    hideSearchWizardBarProgress();
   }
 
   function runIcdPreflightForWizard() {
@@ -21228,6 +21456,7 @@
     if (conds.length === 1) {
       window.__funnelContext = window.__funnelContext || {};
       window.__funnelContext.condition_id = conds[0].condition_id;
+      showSearchWizardStepLoading("section", searchWizardProgressHint("section"));
       renderSearchWizardSectionStep(nav, conds[0].condition_id, path);
       return;
     }
@@ -21273,6 +21502,7 @@
         renderSearchWizardSectionStep(nav, pick.condition_id, path);
       },
     });
+    hideSearchWizardBarProgress();
   }
 
   function renderSearchWizardSectionStep(nav, conditionId, path) {
@@ -21338,6 +21568,7 @@
         if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
       },
     });
+    hideSearchWizardBarProgress();
   }
 
   function renderSearchWizardExcerptStep(path, conditionId, sectionId, sectionLabel) {
@@ -21345,10 +21576,7 @@
     if (!out) return;
     showResultsSection(true);
     window.__searchWizard = { step: "excerpt", selectedProto: path };
-    updateSearchWizardBar("excerpt");
-    out.innerHTML =
-      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
-      '<p class="search-wizard-icd-lead">Загрузка цитат…</p></div></div>';
+    showSearchWizardStepLoading("excerpt", searchWizardProgressHint("excerpt"));
     var url =
       apiBaseUrl() +
       "/api/protocol-summary-excerpt?path=" +
@@ -21456,14 +21684,18 @@
             }
           });
         }
+        hideSearchWizardBarProgress();
       })
       .catch(function () {
+        hideSearchWizardBarProgress();
         window.__searchWizard = { step: "detail", selectedProto: path };
         if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
       });
   }
 
-  function openProtocolWizardFlow(path, assistData) {
+  function openProtocolWizardFlow(path, assistData, opts) {
+    opts = opts || {};
+    var busyBtn = opts.busyBtn || window.__activeProtoPickBtn;
     var data = assistData || window.__lastAssistData;
     if (!path || !data) return;
     if (!isSearchSteppedMode()) {
@@ -21473,24 +21705,29 @@
     }
     var q = data.query || lastAssistFullQuery || "";
     var icd = icdCodesFromAssistData(data);
+    setProtoPickBusy(busyBtn, true, "Шаг 5 · загрузка…");
+    showSearchWizardStepLoading("condition", searchWizardProgressHint("condition"));
     fetchProtocolSummaryNavForWizard(path, q, icd)
       .then(function (nav) {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.protocol_path = path;
         window.__funnelContext.summary_nav = nav;
         if (!nav || !nav.available || !nav.conditions || !nav.conditions.length) {
+          showSearchWizardStepLoading("detail", searchWizardProgressHint("detail"));
           window.__searchWizard = { step: "detail", selectedProto: path };
           renderLlmOut(data);
           return;
         }
         if (nav.conditions.length === 1) {
           window.__funnelContext.condition_id = nav.conditions[0].condition_id;
+          showSearchWizardStepLoading("section", searchWizardProgressHint("section"));
           renderSearchWizardSectionStep(nav, nav.conditions[0].condition_id, path);
           return;
         }
         renderSearchWizardConditionStep(nav, path);
       })
       .catch(function () {
+        hideSearchWizardBarProgress();
         window.__searchWizard = { step: "detail", selectedProto: path };
         renderLlmOut(data);
       });
@@ -21507,21 +21744,15 @@
       var path = pick.getAttribute("data-proto-path") || "";
       var data = window.__lastAssistData;
       if (!path || !data) return;
-      pick.disabled = true;
-      pick.classList.add("is-busy");
-      openProtocolWizardFlow(path, data);
+      if (pick.classList.contains("is-busy")) return;
+      window.__activeProtoPickBtn = pick;
+      openProtocolWizardFlow(path, data, { busyBtn: pick });
       var sr = document.getElementById("section-results");
       if (sr) {
         try {
           sr.scrollIntoView({ behavior: "smooth", block: "start" });
         } catch (eScroll) {}
       }
-      window.setTimeout(function () {
-        if (pick.isConnected) {
-          pick.disabled = false;
-          pick.classList.remove("is-busy");
-        }
-      }, 1200);
     });
   }
 
@@ -25541,6 +25772,7 @@
         .finally(function () {
           clearAssistTick();
           setSearchBusy(false);
+          hideSearchWizardBarProgress();
           var wizCard = document.querySelector(".search-wizard-step-card");
           if (wizCard) setWizardStepBusy(wizCard, false);
         });
