@@ -14784,7 +14784,23 @@
   }
 
   function isDoctorSearchUi() {
-    return !window.__methodistMode && !isCitationsOnlyMode();
+    return !window.__methodistMode;
+  }
+
+  function useSearchDetailMatrixStep() {
+    return !!window.__methodistMode;
+  }
+
+  function doctorOpenProtocolSections(path, data) {
+    if (!path) return;
+    data = data || window.__lastAssistData;
+    if (!data) return;
+    if (useSearchDetailMatrixStep()) {
+      window.__searchWizard = { step: "detail", selectedProto: path };
+      renderLlmOut(data);
+      return;
+    }
+    openProtocolWizardFlow(path, data);
   }
 
   function renderProtocolNavRoadmapHtml(activeStep) {
@@ -15064,12 +15080,16 @@
       return;
     }
     if (stepId === "detail" && path && window.__lastAssistData) {
-      wiz.step = "detail";
-      wiz.selectedProto = path;
-      window.__searchWizard = wiz;
-      var prDetail = document.getElementById("practical-review-panel");
-      if (prDetail) prDetail.removeAttribute("data-detail-loaded");
-      renderLlmOut(window.__lastAssistData);
+      if (useSearchDetailMatrixStep()) {
+        wiz.step = "detail";
+        wiz.selectedProto = path;
+        window.__searchWizard = wiz;
+        var prDetail = document.getElementById("practical-review-panel");
+        if (prDetail) prDetail.removeAttribute("data-detail-loaded");
+        renderLlmOut(window.__lastAssistData);
+      } else {
+        openProtocolWizardFlow(path, window.__lastAssistData);
+      }
       return;
     }
   }
@@ -15079,10 +15099,10 @@
     icd: "protocols",
     rubric: "protocols",
     protocols: "brief",
-    brief: "detail",
+    brief: "brief",
     condition: "brief",
     section: "brief",
-    excerpt: "detail",
+    excerpt: "brief",
   };
 
   function searchWizardProgressHint(stepId) {
@@ -15093,7 +15113,7 @@
       rubric: "Сужаем раздел каталога протоколов…",
       protocols: "Ранжируем протоколы по запросу…",
       brief: "Собираем краткую сводку по протоколу…",
-      detail: "Открываем матрицу КЗ и выдержку из PDF…",
+      detail: "Открываем выдержку из PDF…",
     };
     return hints[stepId] || "Следующий шаг…";
   }
@@ -15825,8 +15845,14 @@
       if (btn.getAttribute("data-wired")) return;
       btn.setAttribute("data-wired", "1");
       btn.addEventListener("click", function () {
+        var path = btn.getAttribute("data-proto-path") || "";
+        if (!path) return;
+        if (isDoctorSearchUi()) {
+          doctorOpenProtocolSections(path, window.__lastAssistData);
+          return;
+        }
         var offer = {
-          path: btn.getAttribute("data-proto-path") || "",
+          path: path,
           title: btn.getAttribute("data-proto-title") || "",
           confidence_score: parseFloat(btn.getAttribute("data-proto-confidence") || ""),
         };
@@ -18154,6 +18180,10 @@
       var doctorLite = data.assist_lite === true || data.retrieve_only === true;
       var stepped = isSearchSteppedMode();
       var wiz = window.__searchWizard || { step: "protocols" };
+      if (stepped && wiz.step === "detail" && !useSearchDetailMatrixStep()) {
+        wiz.step = "protocols";
+        wiz.selectedProto = null;
+      }
       if (stepped) {
         var keepWizardSteps = [
           "population",
@@ -18423,10 +18453,8 @@
         html += renderClinicalAttentionBlock(data);
       }
 
-      var detailStepLoading = false;
-      if (!isDoctorSearchUi()) {
-        detailStepLoading = stepped && wiz.step === "detail" && wiz.selectedProto;
-      }
+      var detailStepLoading =
+        useSearchDetailMatrixStep() && stepped && wiz.step === "detail" && wiz.selectedProto;
       html +=
         '<div id="practical-review-panel" class="practical-review-panel' +
         (detailStepLoading ? " practical-review-panel--loading" : "") +
@@ -21891,8 +21919,9 @@
     var skipBtn = cardEl.querySelector(".btn-wizard-skip");
     if (skipBtn && options.onSkip) {
       skipBtn.addEventListener("click", function () {
-        var hint = options.busyLabel || searchWizardProgressHint("detail");
-        showSearchWizardStepLoading("detail", hint);
+        var skipStep = options.skipStep || "protocols";
+        var hint = options.busyLabel || searchWizardProgressHint(skipStep);
+        showSearchWizardStepLoading(skipStep, hint);
         setWizardStepBusy(cardEl, true, hint);
         options.onSkip();
       });
@@ -21991,7 +22020,7 @@
       switchMainAppTab(MAIN_TAB_CONSULT);
     }
     var pre = window.__searchKzPrefill;
-    if (pre && pre.path) {
+    if (pre && pre.path && useSearchDetailMatrixStep()) {
       loadProtocolPractical(
         { path: pre.path, title: "", confidence_score: null },
         pre.query,
@@ -22213,10 +22242,8 @@
     if (wiz.step === "excerpt") {
       if (nav && nav.available && path) {
         renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
-      } else if (window.__lastAssistData) {
-        wiz.step = "detail";
-        window.__searchWizard = wiz;
-        renderLlmOut(window.__lastAssistData);
+      } else if (window.__lastAssistData && path) {
+        renderProtocolBriefFallback(path, window.__lastAssistData);
       }
       return;
     }
@@ -22963,37 +22990,62 @@
   }
 
   function renderProtocolBriefFallback(path, data) {
-    window.__searchWizard = { step: "detail", selectedProto: path };
+    window.__searchWizard = { step: "brief", selectedProto: path };
+    updateSearchWizardBar("brief");
     var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
-    var fakeNav = {
-      available: false,
-      path: path,
-      title: formatProtocolDisplayTitle(path, ""),
-      conditions: [],
-    };
+    showResultsSection(true);
+    var out = document.getElementById("llm-out");
+    if (!out) return;
     if (excerptMap[path]) {
-      showResultsSection(true);
-      var out = document.getElementById("llm-out");
-      if (out) {
-        out.innerHTML =
-          '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
-          '<p class="assist-sec-label">Выдержка из PDF (карточка Summary недоступна)</p>' +
-          '<p class="assist-proto-excerpt">' +
-          escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
-          "</p>" +
-          '<div class="protocol-brief-actions">' +
-          '<a class="btn-proto-action btn-proto-action--primary" href="' +
-          escapeHtmlAttr(safeResourceHref(path)) +
-          '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
-          '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>' +
-          "</div>" +
-          '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div></div></div>';
-        bindProtocolNavHub(data);
+      out.innerHTML =
+        '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
+        '<p class="assist-sec-label">Выдержка из PDF</p>' +
+        '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Карточка Summary недоступна - показан фрагмент из поиска. Сверьте с полным PDF.</p>' +
+        '<p class="assist-proto-excerpt">' +
+        escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
+        "</p>" +
+        '<div class="protocol-brief-actions">' +
+        '<a class="btn-proto-action btn-proto-action--primary" href="' +
+        escapeHtmlAttr(safeResourceHref(path)) +
+        '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
+        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>' +
+        "</div>" +
+        '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div></div></div>';
+      bindProtocolNavHub(data);
+      var draftBtn = out.querySelector(".btn-search-draft-kz-brief");
+      if (draftBtn) {
+        draftBtn.addEventListener("click", function () {
+          openSearchDraftKzFromFunnel(
+            path,
+            (data && data.query) || lastAssistFullQuery || "",
+            icdCodesFromAssistData(data || {}),
+            excerptMap[path] || ""
+          );
+        });
       }
       hideSearchWizardBarProgress();
+      scrollToSearchWizard();
       return;
     }
-    renderLlmOut(data);
+    out.innerHTML =
+      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
+      '<p class="assist-sec-label">Раздел PDF</p>' +
+      '<p class="assist-note">Для этого протокола нет готовой сводки. Откройте PDF на сайте Минздрава.</p>' +
+      '<div class="protocol-brief-actions">' +
+      '<a class="btn-proto-action btn-proto-action--primary" href="' +
+      escapeHtmlAttr(safeResourceHref(path)) +
+      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
+      '<button type="button" class="btn-link-nav" id="btn-fallback-to-protocols">← К списку протоколов</button>' +
+      "</div></div></div>";
+    var backProtos = out.querySelector("#btn-fallback-to-protocols");
+    if (backProtos) {
+      backProtos.addEventListener("click", function () {
+        window.__searchWizard = { step: "protocols", selectedProto: null };
+        if (data) renderLlmOut(data);
+      });
+    }
+    hideSearchWizardBarProgress();
+    scrollToSearchWizard();
   }
 
   function fetchProtocolSummaryNavForWizard(path, queryText, icdList, opts) {
@@ -23119,8 +23171,7 @@
     }
     var sections = (cond && cond.sections) || [];
     if (!sections.length) {
-      window.__searchWizard = { step: "detail", selectedProto: path };
-      if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+      renderProtocolBriefFallback(path, window.__lastAssistData || {});
       return;
     }
     var secChoices = [];
@@ -23162,8 +23213,7 @@
         renderSearchWizardExcerptStep(path, conditionId, pick.section_id, pick.section_label);
       },
       onSkip: function () {
-        window.__searchWizard = { step: "detail", selectedProto: path };
-        if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+        renderProtocolBriefFallback(path, window.__lastAssistData || {});
       },
     });
     hideSearchWizardBarProgress();
@@ -23288,8 +23338,7 @@
       })
       .catch(function () {
         hideSearchWizardBarProgress();
-        window.__searchWizard = { step: "detail", selectedProto: path };
-        if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
+        renderProtocolBriefFallback(path, window.__lastAssistData || data || {});
       });
   }
 
@@ -23299,8 +23348,7 @@
     var data = assistData || window.__lastAssistData;
     if (!path || !data) return;
     if (!isSearchSteppedMode()) {
-      window.__searchWizard = { step: "detail", selectedProto: path };
-      renderLlmOut(data);
+      doctorOpenProtocolSections(path, data);
       return;
     }
     var q = data.query || lastAssistFullQuery || "";
