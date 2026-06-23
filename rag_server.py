@@ -7717,7 +7717,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r217-search-wizard-progress"
+BUILD_VERSION = "2026-06-16-r218-protocol-brief-nav"
 
 
 def _app_version() -> str:
@@ -8271,6 +8271,17 @@ def _api_assist_impl(body: AssistIn) -> dict:
                 total_ms=fast["search_timing"].get("total_ms"),
                 retrieve_candidates=0,
             )
+            try:
+                from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
+
+                attach_protocol_nav_map(
+                    fast,
+                    query=q,
+                    icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+                    limit=3,
+                )
+            except Exception:
+                pass
             return fast
         if search_tier == "S0" or tier_flags.get("require_icd_fast"):
             raise HTTPException(
@@ -8765,7 +8776,7 @@ def _api_assist_impl(body: AssistIn) -> dict:
         retrieve_candidates=len(retrieved),
     )
 
-    return {
+    out = {
         "query": q,
         "search_tier": search_tier,
         "retrieval": retrieved,
@@ -8797,6 +8808,18 @@ def _api_assist_impl(body: AssistIn) -> dict:
         "retrieve_only": retrieve_only,
         "search_timing": search_timing,
     }
+    try:
+        from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
+
+        attach_protocol_nav_map(
+            out,
+            query=q,
+            icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+            limit=3,
+        )
+    except Exception:
+        pass
+    return out
 
 
 @app.post("/api/protocol-detail")
@@ -9645,13 +9668,19 @@ def api_protocol_summary_nav(
     path: str = Query(..., min_length=3, max_length=512),
     query: str = Query("", max_length=12000),
     icd: str = Query("", max_length=256),
+    rich_fallback: bool = Query(True, description="Fallback на rich-чанки если нет Summary"),
 ) -> dict:
     """Оглавление Protocol Summary или rich-чанков для навигации по протоколу."""
-    from clinical_knowledge.search_funnel import _resolve_protocol_nav
+    from clinical_knowledge.protocol_nav_cache import resolve_protocol_nav_cached
 
     icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
     _require_rag_loaded()
-    return _resolve_protocol_nav(path.strip(), query=query, icd_codes=icd_codes)
+    return resolve_protocol_nav_cached(
+        path.strip(),
+        query=query,
+        icd_codes=icd_codes,
+        allow_rich_fallback=bool(rich_fallback),
+    )
 
 
 @app.get("/api/protocol-summary-excerpt")

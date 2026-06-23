@@ -8655,6 +8655,207 @@
       margin: 0;
     }
 
+    .protocol-brief-skeleton {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin: 0.65rem 0;
+    }
+
+    .protocol-brief-skeleton span {
+      display: block;
+      height: 0.55rem;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(203, 213, 225, 0.35), rgba(226, 232, 240, 0.65), rgba(203, 213, 225, 0.35));
+      background-size: 200% 100%;
+      animation: protocol-brief-shimmer 1.2s ease-in-out infinite;
+    }
+
+  .protocol-brief-skeleton span:nth-child(1) { width: 92%; }
+  .protocol-brief-skeleton span:nth-child(2) { width: 78%; }
+  .protocol-brief-skeleton span:nth-child(3) { width: 64%; }
+
+    @keyframes protocol-brief-shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    .search-wizard-loading-title {
+      margin: 0 0 0.35rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--green-900);
+    }
+
+    .protocol-brief-skeleton-excerpt {
+      margin: 0 0 0.45rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #64748b;
+    }
+
+    .assist-card--brief {
+      border-color: rgba(26, 138, 114, 0.35);
+    }
+
+    .protocol-brief-header {
+      margin-bottom: 0.75rem;
+    }
+
+    .protocol-brief-title {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--green-950);
+    }
+
+    .protocol-brief-match {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+
+    .protocol-brief-meta {
+      margin: 0.25rem 0 0;
+      font-size: 0.74rem;
+      color: #64748b;
+    }
+
+    .protocol-brief-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid rgba(203, 213, 225, 0.55);
+    }
+
+    .protocol-brief-tab {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 650;
+      padding: 0.35rem 0.72rem;
+      border-radius: 999px;
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      background: #fff;
+      color: #475569;
+      cursor: pointer;
+    }
+
+    .protocol-brief-tab.is-active {
+      border-color: var(--green-700);
+      background: rgba(232, 245, 241, 0.95);
+      color: var(--green-900);
+    }
+
+    .protocol-brief-panel[hidden] {
+      display: none !important;
+    }
+
+    .protocol-brief-blocks {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .protocol-brief-block {
+      padding: 0.65rem 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.55);
+      background: #fff;
+    }
+
+    .protocol-brief-block--alert {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(254, 242, 242, 0.65);
+    }
+
+    .protocol-brief-block__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .protocol-brief-block__label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .protocol-brief-block__count {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .protocol-brief-block__preview {
+      margin: 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #475569;
+    }
+
+    .protocol-brief-block__btn {
+      margin-top: 0.4rem;
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.28rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: rgba(232, 245, 241, 0.8);
+      color: var(--green-800);
+      cursor: pointer;
+    }
+
+    .protocol-brief-conditions {
+      margin: 0 0 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .protocol-brief-conditions summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: var(--green-800);
+    }
+
+    .protocol-brief-cond-pick {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 0.35rem 0 0;
+      padding: 0.45rem 0.6rem;
+      border-radius: 10px;
+      border: 1px solid rgba(203, 213, 225, 0.65);
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+
+    .protocol-brief-cond-pick.is-selected {
+      border-color: var(--green-700);
+      background: rgba(232, 245, 241, 0.95);
+    }
+
+    .protocol-brief-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(203, 213, 225, 0.45);
+    }
+
+    .protocol-brief-actions .btn-proto-action--primary {
+      font-weight: 700;
+    }
+
     .search-wizard-icd {
       margin: 0.5rem 0 0.75rem;
     }
@@ -14278,17 +14479,50 @@
   }
 
   var SEARCH_WIZARD_STEPS = [
-    { id: "population", label: "Аудитория", hint: "Уточните, для кого подбираем протокол" },
-    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза для сужения списка" },
-    { id: "rubric", label: "Рубрики", hint: "Отметьте раздел каталога или ищите по всем" },
-    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка ниже" },
-    { id: "condition", label: "Нозология", hint: "Строка в карточке Summary протокола" },
-    { id: "section", label: "Раздел", hint: "Блок протокола с цитатами из PDF" },
-    { id: "excerpt", label: "Цитаты", hint: "Выдержки из выбранного раздела" },
-    { id: "detail", label: "Матрица КЗ", hint: "Чек-лист пунктов консультативного заключения" },
+    { id: "population", label: "Аудитория", hint: "Уточните, для кого подбираем протокол", uiPhase: "funnel" },
+    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза для сужения списка", uiPhase: "funnel" },
+    { id: "rubric", label: "Рубрики", hint: "Отметьте раздел каталога или ищите по всем", uiPhase: "funnel" },
+    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка ниже", uiPhase: "protocols" },
+    { id: "brief", label: "Сводка по КП", hint: "Диагностика, лечение и наблюдение - краткий обзор", uiPhase: "brief" },
+    { id: "detail", label: "Матрица КЗ", hint: "Чек-лист пунктов консультативного заключения", uiPhase: "detail" },
   ];
 
+  var SEARCH_WIZARD_UI_PHASES = [
+    { id: "funnel", label: "Уточнение", stepIds: ["population", "icd", "rubric"] },
+    { id: "protocols", label: "Протоколы", stepIds: ["protocols"] },
+    { id: "brief", label: "Сводка", stepIds: ["brief", "condition", "section", "excerpt"] },
+    { id: "detail", label: "Матрица КЗ", stepIds: ["detail"] },
+  ];
+
+  function wizardUiPhaseForStep(stepId) {
+    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") return "brief";
+    var pi;
+    for (pi = 0; pi < SEARCH_WIZARD_STEPS.length; pi++) {
+      if (SEARCH_WIZARD_STEPS[pi].id === stepId) {
+        return SEARCH_WIZARD_STEPS[pi].uiPhase || stepId;
+      }
+    }
+    var ph;
+    for (ph = 0; ph < SEARCH_WIZARD_UI_PHASES.length; ph++) {
+      if (SEARCH_WIZARD_UI_PHASES[ph].stepIds.indexOf(stepId) >= 0) {
+        return SEARCH_WIZARD_UI_PHASES[ph].id;
+      }
+    }
+    return "funnel";
+  }
+
+  function wizardUiPhaseIndex(phaseId) {
+    var i;
+    for (i = 0; i < SEARCH_WIZARD_UI_PHASES.length; i++) {
+      if (SEARCH_WIZARD_UI_PHASES[i].id === phaseId) return i;
+    }
+    return 0;
+  }
+
   function searchWizardStepIndex(stepId) {
+    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") {
+      stepId = "brief";
+    }
     var i;
     for (i = 0; i < SEARCH_WIZARD_STEPS.length; i++) {
       if (SEARCH_WIZARD_STEPS[i].id === stepId) return i;
@@ -14306,45 +14540,47 @@
   }
 
   function renderSearchWizardTrailHtml(activeStep) {
-    var activeIdx = searchWizardStepIndex(activeStep);
-    if (activeIdx < 0) activeIdx = 0;
-    var showProto = searchWizardShowProtoPhase(activeStep);
+    if (activeStep === "condition" || activeStep === "section" || activeStep === "excerpt") {
+      activeStep = "brief";
+    }
+    var activePhase = wizardUiPhaseForStep(activeStep);
+    var activePhaseIdx = wizardUiPhaseIndex(activePhase);
+    var showProto = searchWizardStepIndex(activeStep) >= searchWizardStepIndex("protocols");
     var html = "";
-    var si;
-    for (si = 0; si < SEARCH_WIZARD_STEPS.length; si++) {
-      var st = SEARCH_WIZARD_STEPS[si];
-      if (!showProto && si > searchWizardStepIndex("protocols")) break;
-      if (si === searchWizardStepIndex("condition") && showProto) {
-        html +=
-          '<span class="search-wizard-trail__sep" aria-hidden="true">|</span>' +
-          '<span class="search-wizard-trail__phase-label" title="После выбора протокола">в протоколе</span>';
-      }
-      if (si > 0) html += '<span class="search-wizard-trail__sep" aria-hidden="true">→</span>';
+    var pi;
+    for (pi = 0; pi < SEARCH_WIZARD_UI_PHASES.length; pi++) {
+      var ph = SEARCH_WIZARD_UI_PHASES[pi];
+      if (!showProto && (ph.id === "brief" || ph.id === "detail")) break;
+      if (pi > 0) html += '<span class="search-wizard-trail__sep" aria-hidden="true">→</span>';
       var cls = "search-wizard-trail__chip";
-      if (si < activeIdx) cls += " is-done";
-      else if (si === activeIdx) cls += " is-active";
+      if (pi < activePhaseIdx) cls += " is-done";
+      else if (pi === activePhaseIdx) cls += " is-active";
       else cls += " is-future";
-      var tag = si < activeIdx ? "button" : "span";
-      var attrs =
-        ' class="' +
-        cls +
-        '" role="listitem"';
+      var tag = pi < activePhaseIdx ? "button" : "span";
+      var jumpStep = ph.stepIds[0];
+      if (ph.id === "funnel") {
+        jumpStep =
+          activeStep === "rubric" ? "rubric" : activeStep === "icd" ? "icd" : "population";
+      } else if (ph.id === "brief") {
+        jumpStep = "brief";
+      }
+      var attrs = ' class="' + cls + '" role="listitem"';
       if (tag === "button") {
         attrs +=
           ' type="button" data-search-wizard-jump="' +
-          escapeHtmlAttr(st.id) +
+          escapeHtmlAttr(jumpStep) +
           '" title="Вернуться: ' +
-          escapeHtmlAttr(st.label) +
+          escapeHtmlAttr(ph.label) +
           '"';
       }
       html +=
-        '<' +
+        "<" +
         tag +
         attrs +
         '><span class="search-wizard-trail__num">' +
-        String(si + 1) +
+        String(pi + 1) +
         "</span>" +
-        escapeHtml(st.label) +
+        escapeHtml(ph.label) +
         "</" +
         tag +
         ">";
@@ -14396,6 +14632,7 @@
       el.textContent = "";
       return;
     }
+    if (step === "condition" || step === "section" || step === "excerpt") step = "brief";
     var meta = searchWizardStepMeta(step);
     if (!meta) {
       el.hidden = true;
@@ -14404,9 +14641,9 @@
     el.hidden = false;
     el.textContent =
       "Шаг " +
-      String(searchWizardStepIndex(step) + 1) +
+      String(wizardUiPhaseIndex(wizardUiPhaseForStep(step)) + 1) +
       " из " +
-      String(SEARCH_WIZARD_STEPS.length) +
+      String(SEARCH_WIZARD_UI_PHASES.length) +
       " · " +
       meta.hint;
   }
@@ -14455,8 +14692,12 @@
     }
     var path = ctx.protocol_path || wiz.selectedProto;
     var nav = ctx.summary_nav;
+    if (stepId === "brief" && path && nav) {
+      renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
+      return;
+    }
     if (stepId === "condition" && nav && path) {
-      renderSearchWizardConditionStep(nav, path);
+      renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
       return;
     }
     if (stepId === "section" && nav && path && ctx.condition_id) {
@@ -14495,20 +14736,21 @@
     population: "icd",
     icd: "protocols",
     rubric: "protocols",
-    condition: "section",
-    section: "excerpt",
+    protocols: "brief",
+    brief: "detail",
+    condition: "brief",
+    section: "brief",
     excerpt: "detail",
   };
 
   function searchWizardProgressHint(stepId) {
+    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") stepId = "brief";
     var hints = {
       population: "Уточняем аудиторию пациента…",
       icd: "Сопоставляем жалобы с кодами МКБ-10…",
       rubric: "Сужаем раздел каталога протоколов…",
       protocols: "Ранжируем протоколы по запросу…",
-      condition: "Читаем карточку Summary и список нозологий…",
-      section: "Подгружаем разделы выбранной нозологии…",
-      excerpt: "Извлекаем цитаты из раздела протокола…",
+      brief: "Собираем краткую сводку по протоколу…",
       detail: "Открываем матрицу КЗ и выдержку из PDF…",
     };
     return hints[stepId] || "Следующий шаг…";
@@ -14521,11 +14763,15 @@
   }
 
   function renderSearchWizardBarProgressHtml(activeStep, hint) {
-    var stepNum = searchWizardStepIndex(activeStep) + 1;
-    var total = SEARCH_WIZARD_STEPS.length;
+    if (activeStep === "condition" || activeStep === "section" || activeStep === "excerpt") {
+      activeStep = "brief";
+    }
+    var phaseId = wizardUiPhaseForStep(activeStep);
+    var stepNum = wizardUiPhaseIndex(phaseId) + 1;
+    var total = SEARCH_WIZARD_UI_PHASES.length;
     var pct = Math.min(100, Math.round((stepNum / total) * 100));
     var meta = searchWizardStepMeta(activeStep);
-    var label = meta ? meta.label : "";
+    var label = meta ? meta.label : SEARCH_WIZARD_UI_PHASES[stepNum - 1].label;
     return (
       '<div class="search-wizard-progress__inner">' +
       '<div class="search-wizard-progress__row">Шаг ' +
@@ -14564,32 +14810,36 @@
     clearAllProtoPickBusy();
   }
 
-  function getSearchWizardLoadingCardHtml(activeStep, hint) {
-    var steps = getSearchWizardProgressSteps();
-    var meta = searchWizardStepMeta(activeStep);
-    var stepNum = searchWizardStepIndex(activeStep) + 1;
-    var title =
-      "Шаг " +
-      String(stepNum) +
-      " из " +
-      String(steps.length) +
-      (meta ? " · " + meta.label : "");
-    var html = buildProcessProgressHtml(title, steps, activeStep);
+  function getSearchWizardLoadingSkeletonHtml(activeStep, hint, opts) {
+    opts = opts || {};
+    var html =
+      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner search-wizard-step-card search-wizard-step-card--loading">';
+    if (opts.protoTitle) {
+      html +=
+        '<p class="search-wizard-loading-title">' + escapeHtml(opts.protoTitle) + "</p>";
+    }
+    if (opts.excerpt) {
+      html +=
+        '<p class="protocol-brief-skeleton-excerpt">' +
+        escapeHtml(truncateExcerpt(opts.excerpt, 220)) +
+        "</p>";
+    }
+    html += '<div class="protocol-brief-skeleton" aria-hidden="true"><span></span><span></span><span></span></div>';
     html +=
       '<p class="search-wizard-loading-hint" aria-live="polite">' +
       escapeHtml(hint || searchWizardProgressHint(activeStep)) +
-      "</p>";
-    return (
-      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner search-wizard-step-card search-wizard-step-card--loading">' +
-      html +
-      "</div></div>"
-    );
+      "</p></div></div>";
+    return html;
   }
 
-  function showSearchWizardStepLoading(activeStep, hint) {
+  function showSearchWizardStepLoading(activeStep, hint, opts) {
+    opts = opts || {};
+    if (activeStep === "condition" || activeStep === "section" || activeStep === "excerpt") {
+      activeStep = "brief";
+    }
     var out = document.getElementById("llm-out");
     if (out) {
-      out.innerHTML = getSearchWizardLoadingCardHtml(activeStep, hint);
+      out.innerHTML = getSearchWizardLoadingSkeletonHtml(activeStep, hint, opts);
     }
     showSearchWizardBarProgress(activeStep, hint);
     if (isSearchSteppedMode()) {
@@ -14628,10 +14878,11 @@
     opts = opts || {};
     if (opts.compact) {
       var hints = {
-        pick: "Выберите протокол - дальше нозология, раздел, цитаты и матрица КЗ.",
+        pick: "Выберите протокол - дальше сводка по КП и матрица КЗ.",
+        brief: "Сводка по диагностике, лечению и наблюдению - или сразу матрица КЗ.",
         condition: "Выберите нозологию в карточке Summary.",
         section: "Отметьте раздел протокола для цитат.",
-        excerpt: "Проверьте цитаты или откройте матрицу КЗ.",
+        excerpt: "Проверьте цитаты или вернитесь к сводке.",
         matrix: "Отметьте пункты чек-листа и сформируйте шаблон КЗ.",
       };
       return (
@@ -14745,7 +14996,7 @@
     var html = '<div class="proto-nav-hub" role="region" aria-label="Навигация по протоколам">';
     html +=
       '<div class="proto-nav-top-cta" role="note">' +
-      '<p class="proto-nav-top-cta__lead">Сверху - лучшие совпадения. Нажмите <strong>«Продолжить с этим протоколом»</strong> для шагов нозология → раздел → цитаты, или <strong>«Матрица КЗ»</strong> для чек-листа сразу.</p>' +
+      '<p class="proto-nav-top-cta__lead">Выберите протокол и откройте <strong>сводку по КП</strong> (диагностика, лечение, наблюдение) или сразу <strong>Матрицу КЗ</strong>.</p>' +
       "</div>";
     html += '<div class="proto-nav-cards">';
     for (pi = 0; pi < high.length; pi++) {
@@ -14776,8 +15027,34 @@
     return html;
   }
 
+  function applyProtocolNavBadge(protoPath, nav) {
+    var cards = document.querySelectorAll(".proto-nav-card[data-proto-path]");
+    var badge = null;
+    var ci;
+    for (ci = 0; ci < cards.length; ci++) {
+      if (cards[ci].getAttribute("data-proto-path") === protoPath) {
+        badge = cards[ci].querySelector("[data-nav-badge-for]");
+        break;
+      }
+    }
+    if (!badge) return;
+    if (nav && nav.available && nav.conditions && nav.conditions.length) {
+      if (nav.source === "rich_chunks") {
+        badge.textContent = "разделы из протокола";
+        badge.title = "Навигация по rich-чанкам: раздел → цитата";
+      } else {
+        badge.textContent = "есть оглавление Summary";
+        badge.title = "Доступна сводка по КП с разделами и цитатами";
+      }
+    } else {
+      badge.textContent = "PDF + матрица КЗ";
+      badge.title = "Карточка Summary не найдена - выдержка из поиска и матрица КЗ";
+    }
+  }
+
   function bindProtocolNavHub(data) {
     bindProtoPickButtons(data);
+    ingestProtocolNavFromAssist(data);
     document.querySelectorAll(".btn-proto-matrix").forEach(function (btn) {
       if (btn.getAttribute("data-wired-matrix")) return;
       btn.setAttribute("data-wired-matrix", "1");
@@ -14806,43 +15083,32 @@
     var protos = dedupeProtocolsByPath(((data && data.llm_json) || {}).protocols || []);
     var q = (data && data.query) || lastAssistFullQuery || "";
     var icd = icdCodesFromAssistData(data || {});
+    if (protos.length && protos[0].path) {
+      var topPath = protos[0].path;
+      if (!getProtocolNavFromCache(topPath)) {
+        fetchProtocolSummaryNavForWizard(topPath, q, icd, {
+          richFallback: false,
+          timeoutMs: 6000,
+        }).catch(function () {});
+      }
+    }
     protos.slice(0, 4).forEach(function (pr) {
       if (!pr.path) return;
-      fetchProtocolSummaryNavForWizard(pr.path, q, icd).then(function (nav) {
-        var cards = document.querySelectorAll(".proto-nav-card[data-proto-path]");
-        var badge = null;
-        var ci;
-        for (ci = 0; ci < cards.length; ci++) {
-          if (cards[ci].getAttribute("data-proto-path") === pr.path) {
-            badge = cards[ci].querySelector("[data-nav-badge-for]");
-            break;
-          }
-        }
-        if (!badge) return;
-        if (nav && nav.available && nav.conditions && nav.conditions.length) {
-          if (nav.source === "rich_chunks") {
-            badge.textContent = "разделы из протокола";
-            badge.title = "Навигация по rich-чанкам: раздел → цитата";
-          } else {
-            badge.textContent = "есть оглавление Summary";
-            badge.title = "Доступны шаги: нозология → раздел → цитаты";
-          }
-        } else {
-          badge.textContent = "PDF + матрица КЗ";
-          badge.title = "Карточка Summary не найдена - выдержка из поиска и матрица КЗ";
-        }
-      }).catch(function () {
-        var cards = document.querySelectorAll(".proto-nav-card[data-proto-path]");
-        var badge = null;
-        var ci;
-        for (ci = 0; ci < cards.length; ci++) {
-          if (cards[ci].getAttribute("data-proto-path") === pr.path) {
-            badge = cards[ci].querySelector("[data-nav-badge-for]");
-            break;
-          }
-        }
-        if (badge) badge.textContent = "PDF + матрица КЗ";
-      });
+      var nav = getProtocolNavFromCache(pr.path);
+      if (nav) {
+        applyProtocolNavBadge(pr.path, nav);
+        return;
+      }
+      fetchProtocolSummaryNavForWizard(pr.path, q, icd, {
+        richFallback: false,
+        timeoutMs: 6000,
+      })
+        .then(function (fetched) {
+          applyProtocolNavBadge(pr.path, fetched);
+        })
+        .catch(function () {
+          applyProtocolNavBadge(pr.path, null);
+        });
     });
   }
 
@@ -17283,6 +17549,7 @@
       loadAnalyticsTab();
     }
     window.__lastAssistData = data;
+    ingestProtocolNavFromAssist(data);
     lastAssistFullQuery = data.query || "";
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
@@ -17677,8 +17944,13 @@
       if (stepped) {
         if (wiz.step === "detail") {
           updateSearchWizardBar("detail");
-        } else if (wiz.step === "excerpt") {
-          updateSearchWizardBar("excerpt");
+        } else if (
+          wiz.step === "brief" ||
+          wiz.step === "excerpt" ||
+          wiz.step === "section" ||
+          wiz.step === "condition"
+        ) {
+          updateSearchWizardBar("brief");
         } else {
           updateSearchWizardBar("protocols");
         }
@@ -21202,8 +21474,9 @@
       return;
     }
     if (bar) bar.hidden = false;
+    if (step === "condition" || step === "section" || step === "excerpt") step = "brief";
     var meta = searchWizardStepMeta(step);
-    var stepNum = searchWizardStepIndex(step) + 1;
+    var stepNum = wizardUiPhaseIndex(wizardUiPhaseForStep(step)) + 1;
     if (lbl) {
       lbl.textContent = meta
         ? "Шаг " + String(stepNum) + " · " + meta.label
@@ -21232,9 +21505,10 @@
     var wiz = window.__searchWizard || { step: "query" };
     var ctx = window.__funnelContext || {};
     var nav = ctx.summary_nav;
+    var path = ctx.protocol_path || wiz.selectedProto;
     if (wiz.step === "excerpt") {
-      if (ctx.condition_id && nav && nav.available) {
-        renderSearchWizardSectionStep(nav, ctx.condition_id, ctx.protocol_path || wiz.selectedProto);
+      if (nav && nav.available && path) {
+        renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
       } else if (window.__lastAssistData) {
         wiz.step = "detail";
         window.__searchWizard = wiz;
@@ -21242,9 +21516,9 @@
       }
       return;
     }
-    if (wiz.step === "section") {
-      if (nav && nav.conditions && nav.conditions.length > 1) {
-        renderSearchWizardConditionStep(nav, ctx.protocol_path || wiz.selectedProto);
+    if (wiz.step === "section" || wiz.step === "condition") {
+      if (nav && path) {
+        renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
       } else if (window.__lastAssistData) {
         wiz.step = "protocols";
         wiz.selectedProto = null;
@@ -21253,20 +21527,26 @@
       }
       return;
     }
-    if (wiz.step === "condition") {
+    if (wiz.step === "brief") {
       wiz.step = "protocols";
       wiz.selectedProto = null;
       delete ctx.condition_id;
+      delete ctx.section_id;
       window.__searchWizard = wiz;
       window.__funnelContext = ctx;
+      var prBrief = document.getElementById("practical-review-panel");
+      if (prBrief) {
+        prBrief.hidden = true;
+        prBrief.innerHTML = "";
+      }
       if (window.__lastAssistData) {
         renderLlmOut(window.__lastAssistData);
       }
       return;
     }
     if (wiz.step === "detail") {
-      if (ctx.summary_nav && ctx.summary_nav.available && ctx.condition_id && nav) {
-        renderSearchWizardSectionStep(nav, ctx.condition_id, ctx.protocol_path || wiz.selectedProto);
+      if (ctx.summary_nav && ctx.summary_nav.available && path) {
+        renderProtocolBriefStep(ctx.summary_nav, path, window.__lastAssistData || {});
         return;
       }
       wiz.step = "protocols";
@@ -21434,7 +21714,333 @@
       });
   }
 
-  function fetchProtocolSummaryNavForWizard(path, queryText, icdList) {
+  function storeProtocolNavInCache(path, nav) {
+    if (!path || !nav) return;
+    window.__protocolNavCache = window.__protocolNavCache || {};
+    window.__protocolNavCache[path] = nav;
+  }
+
+  function getProtocolNavFromCache(path) {
+    var c = window.__protocolNavCache || {};
+    return c[path] || null;
+  }
+
+  function ingestProtocolNavFromAssist(data) {
+    if (!data || !data.protocol_nav) return;
+    var paths = Object.keys(data.protocol_nav);
+    var i;
+    for (i = 0; i < paths.length; i++) {
+      storeProtocolNavInCache(paths[i], data.protocol_nav[paths[i]]);
+    }
+  }
+
+  function briefConditionFromNav(nav, ctx) {
+    ctx = ctx || window.__funnelContext || {};
+    var conds = (nav && nav.conditions) || [];
+    if (!conds.length) return null;
+    var cid = ctx.condition_id;
+    if (cid) {
+      var ci;
+      for (ci = 0; ci < conds.length; ci++) {
+        if (conds[ci].condition_id === cid) return conds[ci];
+      }
+    }
+    return conds[0];
+  }
+
+  function renderProtocolBriefHtml(nav, data, path) {
+    var ctx = window.__funnelContext || {};
+    var cond = briefConditionFromNav(nav, ctx);
+    var title = (nav && nav.title) || formatProtocolDisplayTitle(path, "");
+    var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
+    var pdfExcerpt = excerptMap[path] || "";
+    var href = safeResourceHref(path);
+    var meta = ((data && data.protocol_ui_meta) || {})[path] || {};
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner" data-brief-path="' +
+      escapeHtmlAttr(path) +
+      '">';
+    html += '<div class="protocol-brief-header">';
+    html += '<h3 class="protocol-brief-title">' + escapeHtml(title) + "</h3>";
+    if (cond && cond.match_reason) {
+      html += '<p class="protocol-brief-match">' + escapeHtml(String(cond.match_reason)) + "</p>";
+    }
+    var metaParts = [];
+    if (meta.post_mz) metaParts.push("пост МЗ");
+    if (meta.year) metaParts.push(String(meta.year));
+    if (nav && nav.cache_hit) metaParts.push("кэш");
+    if (nav && nav.nav_ms != null) metaParts.push(String(nav.nav_ms) + " ms");
+    if (metaParts.length) {
+      html += '<p class="protocol-brief-meta">' + escapeHtml(metaParts.join(" · ")) + "</p>";
+    }
+    html += "</div>";
+
+    html += '<div class="protocol-brief-tabs" role="tablist">';
+    html +=
+      '<button type="button" class="protocol-brief-tab is-active" data-brief-tab="summary" role="tab">Сводка</button>';
+    html +=
+      '<button type="button" class="protocol-brief-tab" data-brief-tab="sections" role="tab">Разделы</button>';
+    if (pdfExcerpt) {
+      html +=
+        '<button type="button" class="protocol-brief-tab" data-brief-tab="pdf" role="tab">PDF-фрагмент</button>';
+    }
+    html += "</div>";
+
+    html += '<div class="protocol-brief-panel" data-brief-panel="summary" role="tabpanel">';
+    if (nav && nav.conditions && nav.conditions.length > 1) {
+      html += '<details class="protocol-brief-conditions"><summary>Другая нозология (' + String(nav.conditions.length) + ")</summary>";
+      var ni;
+      for (ni = 0; ni < nav.conditions.length; ni++) {
+        var nc = nav.conditions[ni];
+        var nlabel = nc.display_label || nc.name || "Нозология";
+        var selCls =
+          cond && nc.condition_id === cond.condition_id
+            ? " protocol-brief-cond-pick is-selected"
+            : " protocol-brief-cond-pick";
+        html +=
+          '<button type="button" class="' +
+          selCls.trim() +
+          '" data-brief-condition="' +
+          escapeHtmlAttr(nc.condition_id || "") +
+          '">' +
+          escapeHtml(nlabel) +
+          (nc.match_reason ? " - " + escapeHtml(String(nc.match_reason)) : "") +
+          "</button>";
+      }
+      html += "</details>";
+    }
+    html += '<div class="protocol-brief-blocks">';
+    var sections = (cond && cond.sections) || [];
+    var bi;
+    for (bi = 0; bi < sections.length; bi++) {
+      var sec = sections[bi];
+      var blockCls = "protocol-brief-block";
+      if (sec.id === "red_flags") blockCls += " protocol-brief-block--alert";
+      html += '<article class="' + blockCls + '">';
+      html += '<div class="protocol-brief-block__head">';
+      html +=
+        '<span class="protocol-brief-block__label">' + escapeHtml(sec.label || sec.id || "Раздел") + "</span>";
+      if (sec.count != null) {
+        html +=
+          '<span class="protocol-brief-block__count">' + String(sec.count) + " пункт(ов)</span>";
+      }
+      html += "</div>";
+      if (sec.preview) {
+        html +=
+          '<p class="protocol-brief-block__preview">' + escapeHtml(String(sec.preview)) + "</p>";
+      }
+      html +=
+        '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
+        escapeHtmlAttr(sec.id || "") +
+        '" data-brief-section-label="' +
+        escapeHtmlAttr(sec.label || "") +
+        '">Цитаты из раздела</button>';
+      html += "</article>";
+    }
+    if (!sections.length) {
+      html +=
+        '<p class="assist-ai-eval-lead">Карточка Summary без разделов - используйте PDF-фрагмент и матрицу КЗ.</p>';
+      if (pdfExcerpt) {
+        html +=
+          '<p class="protocol-brief-block__preview">' + escapeHtml(truncateExcerpt(pdfExcerpt, 280)) + "</p>";
+      }
+    }
+    html += "</div></div>";
+
+    html += '<div class="protocol-brief-panel" data-brief-panel="sections" hidden role="tabpanel">';
+    if (sections.length) {
+      html += '<ul class="assist-proto-excerpt-list">';
+      for (bi = 0; bi < sections.length; bi++) {
+        var s2 = sections[bi];
+        html += "<li><strong>" + escapeHtml(s2.label || s2.id || "") + "</strong>";
+        if (s2.preview) html += " - " + escapeHtml(String(s2.preview));
+        html +=
+          ' <button type="button" class="protocol-brief-block__btn" data-brief-section="' +
+          escapeHtmlAttr(s2.id || "") +
+          '" data-brief-section-label="' +
+          escapeHtmlAttr(s2.label || "") +
+          '">Цитаты</button></li>';
+      }
+      html += "</ul>";
+    } else {
+      html += '<p class="assist-ai-eval-lead">Разделы не найдены в карточке.</p>';
+    }
+    html += "</div>";
+
+    if (pdfExcerpt) {
+      html += '<div class="protocol-brief-panel" data-brief-panel="pdf" hidden role="tabpanel">';
+      html +=
+        '<p class="assist-proto-excerpt">' + escapeHtml(truncateExcerpt(pdfExcerpt, 520)) + "</p>";
+      html += "</div>";
+    }
+
+    html += '<div class="protocol-brief-actions">';
+    html +=
+      '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-matrix" data-proto-path="' +
+      escapeHtmlAttr(path) +
+      '">Матрица КЗ</button>';
+    html +=
+      '<a class="btn-proto-action btn-proto-action--secondary" href="' +
+      href +
+      '" target="_blank" rel="noopener noreferrer">PDF</a>';
+    html +=
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Черновик КЗ</button>';
+    html += "</div>";
+    html +=
+      '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
+    html += "</div></div>";
+    return html;
+  }
+
+  function wireProtocolBrief(nav, path, data) {
+    var root = document.querySelector(".assist-card--brief .assist-card-inner");
+    if (!root) return;
+    root.querySelectorAll(".protocol-brief-tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var id = tab.getAttribute("data-brief-tab") || "summary";
+        root.querySelectorAll(".protocol-brief-tab").forEach(function (t) {
+          t.classList.toggle("is-active", t === tab);
+        });
+        root.querySelectorAll(".protocol-brief-panel").forEach(function (panel) {
+          panel.hidden = panel.getAttribute("data-brief-panel") !== id;
+        });
+      });
+    });
+    root.querySelectorAll("[data-brief-section]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var cond = briefConditionFromNav(nav, window.__funnelContext);
+        if (!cond) return;
+        var sid = btn.getAttribute("data-brief-section") || "";
+        var slabel = btn.getAttribute("data-brief-section-label") || "";
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.condition_id = cond.condition_id;
+        window.__funnelContext.section_id = sid;
+        renderSearchWizardExcerptStep(path, cond.condition_id, sid, slabel);
+      });
+    });
+    root.querySelectorAll("[data-brief-condition]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var cid = btn.getAttribute("data-brief-condition") || "";
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.condition_id = cid;
+        renderProtocolBriefStep(nav, path, data);
+      });
+    });
+    var matrixBtn = root.querySelector(".btn-proto-matrix");
+    if (matrixBtn) {
+      matrixBtn.addEventListener("click", function () {
+        var protos = ((data && data.llm_json) || {}).protocols || [];
+        var offer = { path: path, title: (nav && nav.title) || "", confidence_score: "" };
+        var pi;
+        for (pi = 0; pi < protos.length; pi++) {
+          if (protos[pi].path === path) {
+            offer.title = protos[pi].title || offer.title;
+            offer.confidence_score = protos[pi].confidence_score;
+            break;
+          }
+        }
+        window.__searchWizard = { step: "detail", selectedProto: path };
+        var panel = document.getElementById("practical-review-panel");
+        if (panel) panel.hidden = false;
+        loadProtocolPractical(offer, (data && data.query) || lastAssistFullQuery || "", icdCodesFromAssistData(data || {}), {
+          mode: "lite",
+          lazyKzMatrix: true,
+          autoKzHint: true,
+        });
+        try {
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (eScroll) {}
+      });
+    }
+    var draftBtn = root.querySelector(".btn-search-draft-kz-brief");
+    if (draftBtn) {
+      draftBtn.addEventListener("click", function () {
+        var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
+        openSearchDraftKzFromFunnel(
+          path,
+          (data && data.query) || lastAssistFullQuery || "",
+          icdCodesFromAssistData(data || {}),
+          excerptMap[path] || ""
+        );
+      });
+    }
+    bindProtocolNavHub(data);
+  }
+
+  function renderProtocolBriefStep(nav, path, data) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__funnelContext = window.__funnelContext || {};
+    window.__funnelContext.protocol_path = path;
+    window.__funnelContext.summary_nav = nav;
+    var conds = (nav && nav.conditions) || [];
+    if (conds.length >= 1 && !window.__funnelContext.condition_id) {
+      window.__funnelContext.condition_id = conds[0].condition_id;
+    }
+    window.__searchWizard = { step: "brief", selectedProto: path };
+    updateSearchWizardBar("brief");
+    if (nav && nav.nav_ms != null) {
+      setSearchQueryStatus(
+        "Сводка по КП" +
+          (nav.cache_hit ? " (кэш)" : "") +
+          " · " +
+          String(nav.nav_ms) +
+          " ms",
+        false
+      );
+    }
+    out.innerHTML = renderProtocolBriefHtml(nav, data, path);
+    wireProtocolBrief(nav, path, data);
+    hideSearchWizardBarProgress();
+    scrollToSearchWizard();
+  }
+
+  function renderProtocolBriefFallback(path, data) {
+    window.__searchWizard = { step: "detail", selectedProto: path };
+    var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
+    var fakeNav = {
+      available: false,
+      path: path,
+      title: formatProtocolDisplayTitle(path, ""),
+      conditions: [],
+    };
+    if (excerptMap[path]) {
+      showResultsSection(true);
+      var out = document.getElementById("llm-out");
+      if (out) {
+        out.innerHTML =
+          '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
+          '<p class="assist-sec-label">Выдержка из PDF (карточка Summary недоступна)</p>' +
+          '<p class="assist-proto-excerpt">' +
+          escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
+          "</p>" +
+          '<div class="protocol-brief-actions">' +
+          '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-matrix" data-proto-path="' +
+          escapeHtmlAttr(path) +
+          '">Матрица КЗ</button></div>' +
+          '<div id="practical-review-panel" class="practical-review-panel" hidden></div></div></div>';
+        bindProtocolNavHub(data);
+      }
+      hideSearchWizardBarProgress();
+      return;
+    }
+    renderLlmOut(data);
+  }
+
+  function fetchProtocolSummaryNavForWizard(path, queryText, icdList, opts) {
+    opts = opts || {};
+    var cached = getProtocolNavFromCache(path);
+    if (cached && !opts.forceNetwork) {
+      return Promise.resolve(cached);
+    }
+    if (window.__protocolNavAbort) {
+      try {
+        window.__protocolNavAbort.abort();
+      } catch (eAbort) {}
+    }
+    window.__protocolNavAbort = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var signal = window.__protocolNavAbort ? window.__protocolNavAbort.signal : undefined;
     var url =
       apiBaseUrl() +
       "/api/protocol-summary-nav?path=" +
@@ -21444,8 +22050,32 @@
     if (icdList && icdList.length) {
       url += "&icd=" + encodeURIComponent(icdList.join(","));
     }
-    return fetch(url, { cache: "no-store" }).then(function (r) {
-      return r.ok ? r.json() : null;
+    if (opts.richFallback === false) {
+      url += "&rich_fallback=false";
+    }
+    var timeoutMs = opts.timeoutMs != null ? opts.timeoutMs : 8000;
+    return new Promise(function (resolve, reject) {
+      var tid = window.setTimeout(function () {
+        if (window.__protocolNavAbort) {
+          try {
+            window.__protocolNavAbort.abort();
+          } catch (eT) {}
+        }
+        reject(new Error("nav_timeout"));
+      }, timeoutMs);
+      fetch(url, { cache: "no-store", signal: signal })
+        .then(function (r) {
+          return r.ok ? r.json() : null;
+        })
+        .then(function (nav) {
+          window.clearTimeout(tid);
+          if (nav) storeProtocolNavInCache(path, nav);
+          resolve(nav);
+        })
+        .catch(function (err) {
+          window.clearTimeout(tid);
+          reject(err);
+        });
     });
   }
 
@@ -21685,6 +22315,7 @@
           });
         }
         hideSearchWizardBarProgress();
+        updateSearchWizardBar("brief");
       })
       .catch(function () {
         hideSearchWizardBarProgress();
@@ -21705,31 +22336,36 @@
     }
     var q = data.query || lastAssistFullQuery || "";
     var icd = icdCodesFromAssistData(data);
-    setProtoPickBusy(busyBtn, true, "Шаг 5 · загрузка…");
-    showSearchWizardStepLoading("condition", searchWizardProgressHint("condition"));
-    fetchProtocolSummaryNavForWizard(path, q, icd)
+    var excerptMap = ragExcerptByPath(data.retrieval || []);
+    var protoTitle = formatProtocolDisplayTitle(path, "");
+    setProtoPickBusy(busyBtn, true, "Сводка…");
+    showSearchWizardStepLoading("brief", searchWizardProgressHint("brief"), {
+      protoTitle: protoTitle,
+      excerpt: excerptMap[path] || "",
+    });
+    var cached = getProtocolNavFromCache(path);
+    var navPromise = cached
+      ? Promise.resolve(cached)
+      : fetchProtocolSummaryNavForWizard(path, q, icd, { richFallback: true });
+    navPromise
       .then(function (nav) {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.protocol_path = path;
         window.__funnelContext.summary_nav = nav;
         if (!nav || !nav.available || !nav.conditions || !nav.conditions.length) {
-          showSearchWizardStepLoading("detail", searchWizardProgressHint("detail"));
-          window.__searchWizard = { step: "detail", selectedProto: path };
-          renderLlmOut(data);
+          renderProtocolBriefFallback(path, data);
           return;
         }
-        if (nav.conditions.length === 1) {
-          window.__funnelContext.condition_id = nav.conditions[0].condition_id;
-          showSearchWizardStepLoading("section", searchWizardProgressHint("section"));
-          renderSearchWizardSectionStep(nav, nav.conditions[0].condition_id, path);
-          return;
-        }
-        renderSearchWizardConditionStep(nav, path);
+        window.__funnelContext.condition_id = nav.conditions[0].condition_id;
+        renderProtocolBriefStep(nav, path, data);
       })
       .catch(function () {
         hideSearchWizardBarProgress();
-        window.__searchWizard = { step: "detail", selectedProto: path };
-        renderLlmOut(data);
+        renderProtocolBriefFallback(path, data);
+      })
+      .finally(function () {
+        setProtoPickBusy(busyBtn, false);
+        if (window.__activeProtoPickBtn === busyBtn) window.__activeProtoPickBtn = null;
       });
   }
 

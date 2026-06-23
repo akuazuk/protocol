@@ -87,17 +87,22 @@ def _infer_rubric_choices(q: str, icd_codes: list[str]) -> list[dict[str, str]]:
     return [{"id": s, "label": s.replace("-", " ")} for s in slugs[:6]]
 
 
-def _resolve_protocol_nav(
+def resolve_protocol_nav(
     path: str,
     *,
     query: str,
     icd_codes: list[str] | None,
+    allow_rich_fallback: bool = True,
 ) -> dict[str, Any]:
-    """Summary YAML nav или fallback на rich-чанки."""
+    """Summary YAML nav; rich-чанки только при allow_rich_fallback=True."""
     from clinical_knowledge.protocol_summary.nav import build_protocol_summary_nav
 
     nav = build_protocol_summary_nav(path, query=query, icd_codes=icd_codes or None)
     if nav.get("available"):
+        nav = dict(nav)
+        nav.setdefault("source", "summary")
+        return nav
+    if not allow_rich_fallback:
         return nav
     import rag_server as rs
 
@@ -107,7 +112,19 @@ def _resolve_protocol_nav(
         return nav
     from clinical_knowledge.rich_chunk_search import build_rich_protocol_nav
 
-    return build_rich_protocol_nav(chunks, path=path, query=query, icd_codes=icd_codes)
+    out = build_rich_protocol_nav(chunks, path=path, query=query, icd_codes=icd_codes)
+    out = dict(out)
+    out.setdefault("source", "rich_chunks")
+    return out
+
+
+def _resolve_protocol_nav(
+    path: str,
+    *,
+    query: str,
+    icd_codes: list[str] | None,
+) -> dict[str, Any]:
+    return resolve_protocol_nav(path, query=query, icd_codes=icd_codes, allow_rich_fallback=True)
 
 
 def handle_search_funnel(

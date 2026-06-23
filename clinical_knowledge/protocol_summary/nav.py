@@ -2,10 +2,11 @@
 from __future__ import annotations
 
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from .loader import load_protocol_summaries
+from .loader import clear_protocol_summary_cache, load_protocol_summaries
 from .schema import ConditionSummary, ProtocolSummary
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -219,15 +220,54 @@ def _path_match(catalog_path: str, summary_path: str | None) -> bool:
     return Path(na).name == Path(nb).name
 
 
+def _index_keys_for_path(catalog_path: str, local_path: str) -> list[str]:
+    keys: list[str] = []
+    for raw in (catalog_path, local_path):
+        p = (raw or "").strip()
+        if not p:
+            continue
+        keys.append(p)
+        keys.append(Path(p).name)
+        if not p.startswith("minzdrav"):
+            keys.append(f"minzdrav_protocols/{p.lstrip('/')}")
+    out: list[str] = []
+    seen: set[str] = set()
+    for k in keys:
+        if k not in seen:
+            seen.add(k)
+            out.append(k)
+    return out
+
+
+@lru_cache(maxsize=1)
+def _catalog_path_index() -> dict[str, ProtocolSummary]:
+    """Индекс path/basename → Summary (пересборка при clear_protocol_summary_cache)."""
+    index: dict[str, ProtocolSummary] = {}
+    for summary in load_protocol_summaries(usable_only=False):
+        lp = summary.source.local_path or ""
+        for key in _index_keys_for_path(lp, lp):
+            index.setdefault(key, summary)
+    return index
+
+
+def rebuild_catalog_path_index() -> None:
+    clear_protocol_summary_cache()
+    _catalog_path_index.cache_clear()
+
+
 def find_summary_by_catalog_path(catalog_path: str) -> ProtocolSummary | None:
     """Сопоставление пути PDF в выдаче assist с Protocol Summary."""
     if not (catalog_path or "").strip():
         return None
+    idx = _catalog_path_index()
+    for key in _index_keys_for_path(catalog_path, catalog_path):
+        hit = idx.get(key)
+        if hit is not None:
+            return hit
     for summary in load_protocol_summaries(usable_only=False):
         lp = summary.source.local_path or ""
         if _path_match(catalog_path, lp):
             return summary
-        # иногда local_path без префикса minzdrav_protocols/
         if lp and not lp.startswith("minzdrav") and _path_match(
             f"minzdrav_protocols/{lp.lstrip('/')}", catalog_path
         ):
