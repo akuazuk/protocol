@@ -53,6 +53,9 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     monkeypatch.setenv("CONSULT_REVIEW_CACHE", "1")
     monkeypatch.setenv("CONSULT_REVIEW_RAG_SECOND_PASS", "0")
     monkeypatch.setenv("CONSULT_REVIEW_STRICT_PROTOCOLS", "0")
+    monkeypatch.setenv("RENDER", "0")
+    monkeypatch.setenv("CONSULT_REVIEW_FAST", "0")
+    monkeypatch.setenv("CONSULT_RENDER_L2_LITE", "0")
 
     icd_analysis = {"codes_for_retrieval": [], "detected": [], "suggested": []}
     fake_rows = [
@@ -69,7 +72,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     monkeypatch.setattr(rs, "extract_consult_text_from_bytes", lambda data, filename="": ("текст заключения пациента", []))
     monkeypatch.setattr(rs, "get_gemini", lambda: object())
     monkeypatch.setattr(rs, "_build_consult_review_pipeline_query", lambda model, t: ("=== Жалобы ===\n\nтекст", {"focus_source": "test"}))
-    monkeypatch.setattr(rs, "_infer_icd_pipeline_from_full_query", lambda q, model: (icd_analysis, "q", "q_rag", None, None))
+    monkeypatch.setattr(rs, "_infer_icd_pipeline_from_full_query", lambda q, model, **kwargs: (icd_analysis, "q", "q_rag", None, None))
     monkeypatch.setattr(rs, "_merge_icd_codes_for_consult_retrieval", lambda a, t: ([], {"diag_block_icd_codes": []}))
     monkeypatch.setattr(rs, "infer_specialties_gemini", lambda q, model: [])
     monkeypatch.setattr(rs, "consult_demographics_banner_from_kz", lambda t: ("", {}))
@@ -95,14 +98,21 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     monkeypatch.setattr(rs, "_consult_review_synthesize", fake_synth)
 
     pdf_bytes = b"%PDF-1.4 fake consult content"
-    files = {"files": ("pl_2_d_s.pdf", pdf_bytes, "application/pdf")}
+    form = {"tier": "L2"}
 
-    r1 = client.post("/api/consult-review", files=files)
+    r1 = client.post(
+        "/api/consult-review",
+        files={"files": ("pl_2_d_s.pdf", pdf_bytes, "application/pdf")},
+        data=form,
+    )
     assert r1.status_code == 200, r1.text
     d1 = r1.json()
 
-    files2 = {"files": ("pl_2_d_s.pdf", pdf_bytes, "application/pdf")}
-    r2 = client.post("/api/consult-review", files=files2)
+    r2 = client.post(
+        "/api/consult-review",
+        files={"files": ("pl_2_d_s.pdf", pdf_bytes, "application/pdf")},
+        data=form,
+    )
     assert r2.status_code == 200, r2.text
     d2 = r2.json()
 

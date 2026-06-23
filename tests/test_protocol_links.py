@@ -77,13 +77,19 @@ def test_protocol_link_payload():
     assert row["matched_icd_codes"] == ["K29"]
 
 
-def test_protocol_pdf_api_cyrillic_file():
+def test_protocol_pdf_api_cyrillic_file(tmp_path, monkeypatch):
     from fastapi.testclient import TestClient
 
-    from rag_server import app
+    import rag_server as rs
 
-    p = "minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf"
-    c = TestClient(app)
-    r = c.get("/api/protocol-pdf", params={"path": p})
+    rel = "minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf"
+    pdf_dir = tmp_path / "minzdrav_protocols" / "stomatologiya"
+    pdf_dir.mkdir(parents=True)
+    pdf_path = pdf_dir / "КП1_ДНО_слюнных_желез.pdf"
+    pdf_path.write_bytes(b"%PDF-1.4 test fixture\n")
+    monkeypatch.setattr(rs, "ROOT", tmp_path)
+
+    c = TestClient(rs.app)
+    r = c.get("/api/protocol-pdf", params={"path": rel})
     assert r.status_code == 200
     assert "application/pdf" in (r.headers.get("content-type") or "")

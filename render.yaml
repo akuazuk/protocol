@@ -17,11 +17,12 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn rag_server:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
-    # Раскомментируйте после создания диска в UI и заливки чанков на mountPath:
-    # disk:
-    #   name: rag-chunks
-    #   mountPath: /var/data
-    #   sizeGB: 10
+    # Persistent Disk: создайте диск в Dashboard, залейте corpus_chunks_parts → /var/data
+    # (см. docs/deploy/persistent_disk.md), затем синхронизируйте Blueprint.
+    disk:
+      name: rag-chunks
+      mountPath: /var/data
+      sizeGB: 10
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.8"
@@ -30,8 +31,12 @@ services:
       # Второй RAG-pass + несколько вызовов Gemini часто превышают таймаут прокси Render (~100 с).
       - key: CONSULT_REVIEW_RAG_SECOND_PASS
         value: "0"
-      # - key: RAG_CHUNKS_DIR
-      #   value: /var/data
+      - key: RAG_CHUNKS_DIR
+        value: /var/data
+      - key: RAG_PRECOMPUTED_CHUNK_EMBED
+        value: "1"
+      - key: RATE_LIMIT_CONSULT_PER_MIN
+        value: "2"
       - key: RAG_MEMORY_SAVER
         value: "1"
       - key: RAG_LEX_BM25_ALPHA

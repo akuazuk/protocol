@@ -44,11 +44,12 @@ def _assist_mocks(monkeypatch: pytest.MonkeyPatch, *, answer_json: str) -> list[
     ]
 
     monkeypatch.setenv("RAG_ASSIST_LITE", "1")
+    monkeypatch.setenv("RAG_ICD_FAST_AUTO", "0")
     monkeypatch.setattr(rs, "get_gemini", lambda: object())
     monkeypatch.setattr(
         rs,
         "_infer_icd_pipeline_from_full_query",
-        lambda query, model: (icd_analysis, query, query, None, None),
+        lambda query, model, **kwargs: (icd_analysis, query, query, None, None),
     )
 
     def _no_specialty(q, model):
@@ -62,6 +63,7 @@ def _assist_mocks(monkeypatch: pytest.MonkeyPatch, *, answer_json: str) -> list[
     monkeypatch.setattr(
         rs, "maybe_refine_icd_with_gemini_after_retrieve", lambda *a, **k: None
     )
+    monkeypatch.setattr(rs, "_try_icd_fast_assist", lambda *a, **k: None)
 
     def _capture_prompt(model, prompt):
         prompts.append(prompt)

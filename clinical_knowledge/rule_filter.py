@@ -26,6 +26,9 @@ def filter_rules_for_matched_protocols(
 
     filtered: list[dict[str, Any]] = []
     for rule in rules:
+        if rule.get("rule_source") == "summary" or rule.get("generated_from_summary"):
+            filtered.append(rule)
+            continue
         if not rule.get("auto_extracted"):
             filtered.append(rule)
             continue

@@ -246,11 +246,11 @@ def _consult_response_include_html() -> bool:
 
 def _consult_rag_second_pass_enabled() -> bool:
     """Второй RAG-pass: по умолчанию выкл на Render (лимит прокси ~100 с), вкл локально."""
-    if _consult_review_fast_mode():
-        return False
     raw = os.environ.get("CONSULT_REVIEW_RAG_SECOND_PASS")
     if raw is not None and str(raw).strip():
         return env_bool("CONSULT_REVIEW_RAG_SECOND_PASS", True)
+    if _consult_review_fast_mode():
+        return False
     if env_bool("RENDER", False):
         return False
     return True
@@ -1241,6 +1241,13 @@ def _chunk_indices_for_path_allowlist(path_set: frozenset[str]) -> set[int]:
         for cp, indices in _chunk_global_indices_by_path.items():
             if cp.endswith(norm.split("/")[-1]) or norm.endswith(cp.split("/")[-1]):
                 out.update(indices)
+    if not out and _chunks:
+        for idx, ch in enumerate(_chunks):
+            cp = str(ch.get("path") or ch.get("source_path") or "").replace("\\", "/").strip()
+            if not cp:
+                continue
+            if cp in path_set or cp.endswith(norm.split("/")[-1]) or norm.endswith(cp.split("/")[-1]):
+                out.add(idx)
     return out
 
 
@@ -7045,7 +7052,7 @@ _RATE_LIMIT_ENABLED = env_bool("RATE_LIMIT_ENABLED", True)
 _RATE_WINDOW_SEC = 60.0
 _RATE_LIMITS: dict[str, int] = {
     "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 20),
-    "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 6),
+    "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 2),
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 15),
@@ -7647,7 +7654,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-22-r210-kravira-sop-criteria-table"
+BUILD_VERSION = "2026-06-23-r211-plan-speed-stability"
 
 
 def _app_version() -> str:

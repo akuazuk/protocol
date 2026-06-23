@@ -31,6 +31,11 @@ def test_cap_lex_prefers_path_allowlist(monkeypatch):
     huge = set(range(20000))
     allow = frozenset({"minzdrav_protocols/x/КП.pdf"})
     monkeypatch.setattr(rs, "_chunks", [{"path": "minzdrav_protocols/x/КП.pdf", "text": "x"}])
+    monkeypatch.setattr(
+        rs,
+        "_chunk_global_indices_by_path",
+        {"minzdrav_protocols/x/КП.pdf": [0]},
+    )
     monkeypatch.setenv("RAG_LEX_MAX_CANDIDATES", "100")
     out = rs._cap_lex_candidate_indices(huge, path_allowlist_set=allow)
     assert out == {0}

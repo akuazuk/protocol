@@ -10071,7 +10071,7 @@
                 <span class="consult-tier-card__rec">рекомендуется</span>
                 <span class="consult-tier-card__top">
                   <span class="consult-tier-card__badge">L1</span>
-                  <span class="consult-tier-card__time">≈ 15-45 с</span>
+                  <span class="consult-tier-card__time">≈ 5-15 с</span>
                 </span>
                 <span class="consult-tier-card__name">Структурный разбор</span>
                 <span class="consult-tier-card__desc">Правила, карточки согласования и compliance без тяжёлого RAG</span>
@@ -10098,7 +10098,8 @@
             <p class="consult-tier-hint" id="consult-tier-hint" aria-live="polite"></p>
           </div>
           <div class="consult-actions">
-            <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать</button>
+            <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать (L1)</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="Полный RAG и оценка модели — дольше, ~1-3 мин">Глубокий разбор L2</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -23716,6 +23717,8 @@
     if (analyzeNum) analyzeNum.textContent = "0";
     var btnRun = document.getElementById("consult-btn-run");
     if (btnRun) btnRun.disabled = false;
+    var btnRunL2Abort = document.getElementById("consult-btn-run-l2");
+    if (btnRunL2Abort) btnRunL2Abort.disabled = false;
     sess.ctrl = null;
     sess.timeoutRef = null;
   }
@@ -23939,6 +23942,7 @@
     }
 
     var btnRun = document.getElementById("consult-btn-run");
+    var btnRunL2 = document.getElementById("consult-btn-run-l2");
     var btnReset = document.getElementById("consult-btn-reset");
     var btnPrint = document.getElementById("consult-btn-print");
     var btnSave = document.getElementById("consult-btn-save");
@@ -24020,6 +24024,20 @@
 
     if (!btnRun) return;
 
+    if (btnRunL2) {
+      btnRunL2.addEventListener("click", function () {
+        var l2 = document.querySelector('input[name="consult-tier"][value="L2"]');
+        if (l2) {
+          l2.checked = true;
+          try {
+            localStorage.setItem("consult_review_tier", "L2");
+          } catch (e1) {}
+          updateConsultTierHint("L2");
+        }
+        btnRun.click();
+      });
+    }
+
     btnRun.addEventListener("click", function () {
       var inpF = document.getElementById("consult-pdf-file");
       var st = document.getElementById("consult-out-status");
@@ -24079,6 +24097,7 @@
       }, 700);
       sess.elapsedTid = elapsedTid;
       btnRun.disabled = true;
+      if (btnRunL2) btnRunL2.disabled = true;
 
       var fd = new FormData();
       fd.append("files", list[0], list[0].name);
@@ -24146,6 +24165,7 @@
           var wtip = document.getElementById("consult-wait-tip");
           if (wtip) wtip.textContent = "";
           btnRun.disabled = false;
+          if (btnRunL2) btnRunL2.disabled = false;
           if (sess.ctrl === consultCtrl) {
             sess.ctrl = null;
             sess.timeoutRef = null;

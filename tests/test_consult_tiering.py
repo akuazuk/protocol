@@ -13,8 +13,8 @@ KZ = """\
 """
 
 
-def test_resolve_tier_defaults_l2():
-    assert resolve_tier(None) == "L2"
+def test_resolve_tier_defaults_l1():
+    assert resolve_tier(None) == "L1"
     assert resolve_tier("l0") == "L0"
 
 

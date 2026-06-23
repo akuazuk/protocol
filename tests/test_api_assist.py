@@ -56,7 +56,7 @@ def test_assist_success_mocked(client, monkeypatch) -> None:
     monkeypatch.setattr(
         rs,
         "_infer_icd_pipeline_from_full_query",
-        lambda query, model: (icd_analysis, query, query, None, None),
+        lambda query, model, **kwargs: (icd_analysis, query, query, None, None),
     )
     monkeypatch.setattr(rs, "infer_specialties_gemini", lambda q, model: [])
     fake_rows = [

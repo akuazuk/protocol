@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from clinical_knowledge.batch_runner import analyze_file, run_batch
+from clinical_knowledge.batch_runner import SUPPORTED_SUFFIXES, analyze_file, run_batch
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "consultations"
 
@@ -18,8 +18,15 @@ def test_analyze_file_returns_compliance(tmp_path: Path):
 
 
 def test_run_batch_writes_summary(tmp_path: Path):
+    expected = len(
+        [
+            p
+            for p in FIXTURES.iterdir()
+            if p.is_file() and p.suffix.lower() in SUPPORTED_SUFFIXES
+        ]
+    )
     summary = run_batch(FIXTURES, out_dir=tmp_path)
-    assert summary["analyzed"] == 3
+    assert summary["analyzed"] == expected
     assert (tmp_path / "batch_summary.csv").exists()
     assert (tmp_path / "batch_summary.md").exists()
     rows = summary["results"]

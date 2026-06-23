@@ -287,7 +287,7 @@ def _check_diagnosis_components(
             "толстокиш", "долев", "сегмент", "бедрен", "подколен", "берцов", "голен", "нижн",
             "конечност", "права", "лева", "вены", "вен ",
         ),
-        "стадия": ("стади", "tnm", "стад ", "iia", "iiia", "iv ", "реканализа", "острая", "подостра", "хроническ"),
+        "стадия": ("стади", "tnm", "стад ", "iia", "iiia", "iv ", "реканализа", "острая", "подостра", "хроническ", "оклюзион", "неоклюзион"),
         "h.pylori": ("нр", "hp", "helicobacter", "хеликобактер"),
         "этиологический фактор": ("этиолог", "нр", "нпвп", "стресс"),
         "активность": ("активност", "hp 3", "воспален", "обострен", "ремисс"),
@@ -634,11 +634,20 @@ def _resolve_target_conditions(
         if cid not in base:
             base.append(cid)
 
-    filtered = [
-        cid
-        for cid in dict.fromkeys(base)
-        if _condition_applies_to_consult(cid, conditions, consult_facts)
-    ]
+    filtered = []
+    for cid in dict.fromkeys(base):
+        if _condition_applies_to_consult(cid, conditions, consult_facts):
+            filtered.append(cid)
+            continue
+        if any(r.get("rule_source") == "summary" for r in (rules_map.get(cid) or [])):
+            filtered.append(cid)
+            continue
+        if condition_ids and cid in condition_ids:
+            meta = conditions.get(cid) or _condition_meta(cid, conditions) or {}
+            pop = str(meta.get("population") or "any").lower()
+            aud = str((consult_facts.get("patient_context") or {}).get("adult_or_child") or "").lower()
+            if pop not in ("any", "", "unknown") and aud and pop != aud:
+                filtered.append(cid)
     return filtered
 
 
@@ -713,16 +722,14 @@ def run_rule_checker(
                     {
                         "rule_id": f"{cid}_population_guard",
                         "rule_type": "population_mismatch",
-                        "severity": "info",
-                        "passed": True,
-                        "skipped": True,
-                        "not_applicable": True,
+                        "severity": "critical",
+                        "passed": False,
                         "message_ru": localize_message_ru(
-                            f"Нозология «{cond.get('condition')}» - протокол для "
-                            f"{population_ru(str(pop))}, в КЗ аудитория "
-                            f"{population_ru(str(ctx.get('adult_or_child') or ''))}; проверка пропущена."
+                            f"Протокол рассчитан на пациентов ({population_ru(str(pop))}), "
+                            f"в КЗ указана аудитория: {population_ru(str(ctx.get('adult_or_child') or ''))}."
                         ),
                         "source": cond.get("protocol_reference"),
+                        "condition_id": cid,
                     }
                 )
                 continue

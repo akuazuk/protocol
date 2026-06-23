@@ -29,6 +29,17 @@ MALIGNANCY_MARKERS = (
     "опухолев", "c-r", "сr ", "новообразование",
 )
 
+# После «;» без кода МКБ — отдельный диагноз, если строка начинается с новой нозологии.
+_NEW_DX_ENTITY_STARTERS = (
+    "флеботромб", "флебит", "тромбофлеб", "тромбоз", "гэрб", "гастрит", "язв",
+    "пневмон", "орви", "гипертон", "диабет", "артрит",
+)
+
+
+def _looks_like_new_dx_entity(line: str) -> bool:
+    low = (line or "").strip().lower()
+    return any(low.startswith(s) for s in _NEW_DX_ENTITY_STARTERS)
+
 
 def _certainty(raw_low: str) -> str:
     if any(mk in raw_low for mk in EXCLUDED_MARKERS):
@@ -115,7 +126,12 @@ def _merge_clinical_continuations(parts: list[str]) -> list[str]:
         is_secondary = any(mk in low for mk in SECONDARY_MARKERS)
         is_primary_labeled = any(mk in low for mk in PRIMARY_MARKERS)
         if prev_has_icd and not cur_has_icd and not is_secondary and not is_primary_labeled:
-            out[-1] = (prev + "; " + line).strip()
+            head = line[:1]
+            is_continuation = head.islower() or head.isdigit() or not _looks_like_new_dx_entity(line)
+            if is_continuation:
+                out[-1] = (prev + "; " + line).strip()
+            else:
+                out.append(line)
         else:
             out.append(line)
     return out
