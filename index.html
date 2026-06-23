@@ -8081,6 +8081,150 @@
       background: rgba(232, 245, 241, 0.9);
     }
 
+    /* Doctor search UX: hide methodist / technical noise */
+    body:not(.methodist-mode) #panel-main-search #search-tier-panel,
+    body:not(.methodist-mode) #panel-main-search .search-mode-toolbar,
+    body:not(.methodist-mode) #panel-main-search #section-help,
+    body:not(.methodist-mode) #panel-main-search .search-tier-upgrade-bar,
+    body:not(.methodist-mode) #panel-main-search .assist-embed-note,
+    body:not(.methodist-mode) #panel-main-search .assist-sec--differential,
+    body:not(.methodist-mode) #panel-main-search .assist-search-meta--tech {
+      display: none !important;
+    }
+
+    .search-doctor-disclaimer {
+      margin: 0 0 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .search-onboarding {
+      margin: 0 0 1rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.25);
+      background: rgba(232, 245, 241, 0.45);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .search-onboarding__title {
+      font-weight: 650;
+      margin: 0 0 0.35rem;
+      color: var(--green-900);
+    }
+
+    .search-onboarding ol {
+      margin: 0.35rem 0 0.5rem 1.1rem;
+      padding: 0;
+    }
+
+    .search-onboarding__dismiss {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      cursor: pointer;
+      color: var(--green-900);
+    }
+
+    .match-tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .match-tier-badge--icd_primary {
+      background: rgba(26, 138, 114, 0.14);
+      color: #0d5c4a;
+      border: 1px solid rgba(26, 138, 114, 0.35);
+    }
+
+    .match-tier-badge--icd_secondary,
+    .match-tier-badge--text_only {
+      background: rgba(230, 168, 40, 0.14);
+      color: #7a5a10;
+      border: 1px solid rgba(230, 168, 40, 0.35);
+    }
+
+    .match-tier-badge--manual_check {
+      background: rgba(120, 120, 130, 0.12);
+      color: #555;
+      border: 1px solid rgba(120, 120, 130, 0.28);
+    }
+
+    .match-tier-dots {
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      opacity: 0.85;
+    }
+
+    .proto-nav-card__why {
+      margin: 0.35rem 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .proto-nav-card__why strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .proto-nav-card__rec-label {
+      margin: 0 0 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      color: var(--green-900);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .proto-nav-top-cta__lead {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .search-mobile-actions {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 120;
+      padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+      background: rgba(255, 255, 255, 0.96);
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+      gap: 0.5rem;
+      justify-content: stretch;
+    }
+
+    .search-mobile-actions.is-visible {
+      display: flex;
+    }
+
+    .search-mobile-actions .btn {
+      flex: 1;
+      text-align: center;
+      font-size: 0.88rem;
+      padding: 0.65rem 0.5rem;
+    }
+
+    @media (min-width: 641px) {
+      .search-mobile-actions {
+        display: none !important;
+      }
+    }
+
     .analytics-tab-page {
       max-width: 1280px;
       margin: 0 auto;
@@ -10294,7 +10438,18 @@
     <section class="hero" aria-labelledby="search-title">
       <div class="hero-intro">
         <p class="hero-eyebrow">Поиск протоколов · основной режим</p>
-        <h2 id="search-title">Диагноз или код МКБ-10 - затем «Найти протоколы»</h2>
+        <h2 id="search-title">Жалоба, диагноз или код МКБ-10</h2>
+        <p class="search-doctor-disclaimer">Подбор по официальным клиническим протоколам МЗ РБ. Не заменяет очный приём и не устанавливает диагноз.</p>
+      </div>
+
+      <div class="search-onboarding" id="search-onboarding" hidden role="region" aria-label="Подсказки по поиску">
+        <p class="search-onboarding__title">Как найти нужный протокол</p>
+        <ol>
+          <li>Введите жалобу или код МКБ-10 и нажмите «Найти протоколы».</li>
+          <li>При необходимости выберите код диагноза - по нему ищем в каталоге МЗ.</li>
+          <li>Откройте PDF или раздел протокола; оформление КЗ - на вкладке «Проверка КЗ».</li>
+        </ol>
+        <button type="button" class="search-onboarding__dismiss" id="search-onboarding-dismiss">Понятно, скрыть</button>
       </div>
 
       <div class="search-quick-start" id="search-quick-start">
@@ -10306,12 +10461,6 @@
       </div>
 
       <div class="search-icd-detect" id="search-icd-detect" hidden></div>
-
-      <p class="search-stats-promo">
-        <button type="button" class="btn-go-analytics-tab" id="btn-go-analytics-tab">
-          Статистика и качество поиска →
-        </button>
-      </p>
 
       <div id="section-filters" class="section-anchor section-block--filters">
         <details class="ctx-panel" id="ctx-panel">
@@ -10430,7 +10579,7 @@
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
-            Введите диагноз, код МКБ-10 или жалобы и нажмите <strong>«Найти протоколы»</strong> - система предложит уточнить аудиторию и коды МКБ, затем покажет протоколы и рекомендации для заключения.
+            Введите жалобу, диагноз или МКБ-10 и нажмите <strong>«Найти протоколы»</strong> - система предложит код при необходимости и покажет 1-3 подходящих КП.
           </p>
         </div>
         <div id="section-query" class="section-anchor section-block--query">
@@ -10571,6 +10720,10 @@
           </div>
         </div>
         <div id="llm-out" class="llm-out"></div>
+        <div id="search-mobile-actions" class="search-mobile-actions" hidden aria-label="Быстрые действия">
+          <button type="button" class="btn btn-consult-outline" id="search-mobile-back">← Назад</button>
+          <button type="button" class="btn btn-submit-row" id="search-mobile-primary">Открыть PDF</button>
+        </div>
 
         </section>
     </div>
@@ -14569,15 +14722,79 @@
     return { tier: "low", label: "слабее" };
   }
 
+  function protocolMatchTierFromProtocol(pr) {
+    if (pr && pr.match_tier) return String(pr.match_tier);
+    var strength = pr && pr.icd_match_strength != null ? Number(pr.icd_match_strength) : NaN;
+    var matched = (pr && pr.matched_icd_codes) || [];
+    if (!isNaN(strength) && strength >= 70) return "icd_primary";
+    if (matched.length || (!isNaN(strength) && strength >= 40)) return "icd_secondary";
+    var conf = confidenceFromProtocol(pr || {});
+    if (conf >= 0.55) return "text_only";
+    return "manual_check";
+  }
+
+  function protocolMatchTierMeta(tier) {
+    switch (tier) {
+      case "icd_primary":
+        return { label: "По коду МКБ", css: "icd_primary", dots: "●●●○○" };
+      case "icd_secondary":
+        return { label: "По коду МКБ", css: "icd_secondary", dots: "●●○○○" };
+      case "text_only":
+        return { label: "По жалобе", css: "text_only", dots: "●●○○○" };
+      default:
+        return { label: "Проверьте вручную", css: "manual_check", dots: "●○○○○" };
+    }
+  }
+
+  function protocolMatchExplainRu(pr) {
+    if (pr && pr.match_explain_ru) return String(pr.match_explain_ru);
+    if (pr && pr.match_reason) return String(pr.match_reason);
+    var codes = (pr && pr.matched_icd_codes) || [];
+    if (codes.length) return "Код " + String(codes[0]) + " в протоколе";
+    return "";
+  }
+
+  function renderMatchTierBadgeHtml(pr, opts) {
+    opts = opts || {};
+    if (opts.methodist) {
+      var conf = confidenceFromProtocol(pr);
+      var fit = protocolFitFromConfidence(conf);
+      return (
+        '<span class="wizard-fit-badge wizard-fit-badge--' +
+        escapeHtml(fit.tier) +
+        '">' +
+        escapeHtml(fit.label) +
+        " · " +
+        String(Math.round(pct01(conf))) +
+        "%</span>"
+      );
+    }
+    var tier = protocolMatchTierFromProtocol(pr);
+    var meta = protocolMatchTierMeta(tier);
+    return (
+      '<span class="match-tier-badge match-tier-badge--' +
+      escapeHtml(meta.css) +
+      '" title="Уверенность подбора, не вероятность диагноза">' +
+      '<span class="match-tier-dots" aria-hidden="true">' +
+      meta.dots +
+      "</span> " +
+      escapeHtml(meta.label) +
+      "</span>"
+    );
+  }
+
+  function isDoctorSearchUi() {
+    return !window.__methodistMode && !isCitationsOnlyMode();
+  }
+
   function renderProtocolNavRoadmapHtml(activeStep) {
     var steps = [
       { id: "pick", label: "Выбор КП" },
       { id: "condition", label: "Нозология" },
-      { id: "section", label: "Раздел" },
-      { id: "excerpt", label: "Цитаты" },
-      { id: "matrix", label: "Матрица КЗ" },
+      { id: "section", label: "Раздел PDF" },
+      { id: "excerpt", label: "Цитата" },
     ];
-    var order = ["pick", "condition", "section", "excerpt", "matrix"];
+    var order = ["pick", "condition", "section", "excerpt"];
     var activeIdx = order.indexOf(activeStep);
     if (activeIdx < 0) activeIdx = 0;
     var html = '<ol class="proto-nav-roadmap" aria-label="Этапы работы с протоколом">';
@@ -14601,22 +14818,21 @@
 
   var SEARCH_WIZARD_STEPS = [
     { id: "population", label: "Аудитория", hint: "Уточните, для кого подбираем протокол", uiPhase: "funnel" },
-    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза для сужения списка", uiPhase: "funnel" },
+    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза - по нему ищем протокол в каталоге МЗ", uiPhase: "funnel" },
     { id: "rubric", label: "Рубрики", hint: "Отметьте раздел каталога или ищите по всем", uiPhase: "funnel" },
-    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка ниже", uiPhase: "protocols" },
-    { id: "brief", label: "Сводка по КП", hint: "Диагностика, лечение и наблюдение - краткий обзор", uiPhase: "brief" },
-    { id: "detail", label: "Матрица КЗ", hint: "Чек-лист пунктов консультативного заключения", uiPhase: "detail" },
+    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка", uiPhase: "protocols" },
+    { id: "brief", label: "Раздел PDF", hint: "Диагностика, лечение, госпитализация - выдержки из протокола", uiPhase: "sections" },
   ];
 
   var SEARCH_WIZARD_UI_PHASES = [
-    { id: "funnel", label: "Уточнение", stepIds: ["population", "icd", "rubric"] },
+    { id: "funnel", label: "Запрос", stepIds: ["population", "icd", "rubric"] },
     { id: "protocols", label: "Протоколы", stepIds: ["protocols"] },
-    { id: "brief", label: "Сводка", stepIds: ["brief", "condition", "section", "excerpt"] },
-    { id: "detail", label: "Матрица КЗ", stepIds: ["detail"] },
+    { id: "sections", label: "Раздел PDF", stepIds: ["brief", "condition", "section", "excerpt"] },
   ];
 
   function wizardUiPhaseForStep(stepId) {
-    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") return "brief";
+    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") return "sections";
+    if (stepId === "detail") return "sections";
     var pi;
     for (pi = 0; pi < SEARCH_WIZARD_STEPS.length; pi++) {
       if (SEARCH_WIZARD_STEPS[pi].id === stepId) {
@@ -14671,7 +14887,7 @@
     var pi;
     for (pi = 0; pi < SEARCH_WIZARD_UI_PHASES.length; pi++) {
       var ph = SEARCH_WIZARD_UI_PHASES[pi];
-      if (!showProto && (ph.id === "brief" || ph.id === "detail")) break;
+      if (!showProto && ph.id === "sections") break;
       if (pi > 0) html += '<span class="search-wizard-trail__sep" aria-hidden="true">→</span>';
       var cls = "search-wizard-trail__chip";
       if (pi < activePhaseIdx) cls += " is-done";
@@ -14682,7 +14898,7 @@
       if (ph.id === "funnel") {
         jumpStep =
           activeStep === "rubric" ? "rubric" : activeStep === "icd" ? "icd" : "population";
-      } else if (ph.id === "brief") {
+      } else if (ph.id === "sections") {
         jumpStep = "brief";
       }
       var attrs = ' class="' + cls + '" role="listitem"';
@@ -15004,12 +15220,11 @@
     opts = opts || {};
     if (opts.compact) {
       var hints = {
-        pick: "Выберите протокол - дальше сводка по КП и матрица КЗ.",
-        brief: "Сводка по диагностике, лечению и наблюдению - или сразу матрица КЗ.",
+        pick: "Выберите протокол - дальше разделы PDF (диагностика, лечение).",
+        brief: "Навигация по разделам протокола - выдержки из PDF.",
         condition: "Выберите нозологию в карточке Summary.",
         section: "Отметьте раздел протокола для цитат.",
-        excerpt: "Проверьте цитаты или вернитесь к сводке.",
-        matrix: "Отметьте пункты чек-листа и сформируйте шаблон КЗ.",
+        excerpt: "Проверьте цитаты или вернитесь к списку протоколов.",
       };
       return (
         '<p class="proto-nav-guide-text proto-nav-guide-text--compact">' +
@@ -15022,8 +15237,8 @@
       "<h4>Как пользоваться протоколом</h4>" +
       renderProtocolNavRoadmapHtml(activeStep) +
       '<p class="proto-nav-guide-text">' +
-      "<strong>Матрица КЗ</strong> - чек-лист обязательных пунктов консультативного заключения. " +
-      "Если у протокола есть карточка Summary - пройдите нозологию и раздел для точных цитат." +
+      "Разделы PDF - диагностика, лечение, госпитализация. " +
+      "Оформление консультативного заключения - на вкладке «Проверка КЗ»." +
       "</p></div>"
     );
   }
@@ -15036,17 +15251,19 @@
     var rank = opts.rank != null ? Number(opts.rank) : 0;
     var href = safeResourceHref(pr.path || "");
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
-    var conf = confidenceFromProtocol(pr);
-    var fit = protocolFitFromConfidence(conf);
-    var cit = excerptForProtocol(pr, excerptByPath);
+    var methodist = !!window.__methodistMode;
+    var explain = protocolMatchExplainRu(pr);
     var html =
       '<article class="proto-nav-card' +
       (isTop ? " proto-nav-card--recommended" : "") +
       '" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '">';
+    if (isTop) {
+      html += '<p class="proto-nav-card__rec-label">Рекомендуем проверить первым</p>';
+    }
     html += '<div class="proto-nav-card__head-row">';
-    if (rank > 0) {
+    if (rank > 0 && !isTop) {
       html += '<span class="proto-nav-card__rank" aria-hidden="true">' + String(rank) + "</span>";
     }
     html += '<div class="proto-nav-card__head">';
@@ -15058,72 +15275,34 @@
       "</a></h5>";
     html += '<div class="proto-nav-card__badges">';
     html += catalogBadgesHtml(pr.path, protocolUiMeta);
-    html +=
-      '<span class="wizard-fit-badge wizard-fit-badge--' +
-      escapeHtml(fit.tier) +
-      '">' +
-      escapeHtml(fit.label) +
-      " · " +
-      String(Math.round(pct01(conf))) +
-      "%</span>";
-    html +=
-      '<span class="proto-nav-nav-hint" data-nav-badge-for="' +
-      escapeHtmlAttr(pr.path || "") +
-      '">проверка оглавления…</span>';
+    html += renderMatchTierBadgeHtml(pr, { methodist: methodist });
     html += "</div></div></div>";
-    if (cit) {
-      var structEx = ((data && data.protocol_excerpts) || {})[pr.path || ""];
-      if (structEx && structEx.snippets) {
-        var snKeys = ["diagnostics", "pharmacotherapy", "criteria", "treatment"];
-        html += '<ul class="proto-nav-card__snippet-lines">';
-        var ski;
-        for (ski = 0; ski < snKeys.length; ski++) {
-          var sn = structEx.snippets[snKeys[ski]];
-          if (!sn) continue;
-          var snLabel =
-            snKeys[ski] === "diagnostics"
-              ? "Обследование"
-              : snKeys[ski] === "pharmacotherapy" || snKeys[ski] === "treatment"
-                ? "Лечение"
-                : "Диагностика";
-          html +=
-            "<li><strong>" +
-            escapeHtml(snLabel) +
-            ":</strong> " +
-            escapeHtml(truncateExcerpt(sn, 160)) +
-            "</li>";
-        }
-        html += "</ul>";
-      } else {
-        html +=
-          '<p class="proto-nav-card__excerpt">' +
-          escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
-          "</p>";
-      }
-    }
-    if (pr.match_reason) {
+    if (explain) {
       html +=
-        '<p class="proto-nav-card__match-reason"><span class="proto-nav-match-label">Совпадение:</span> ' +
-        escapeHtml(String(pr.match_reason)) +
+        '<p class="proto-nav-card__why"><strong>Почему в списке:</strong> ' +
+        escapeHtml(explain) +
+        "</p>";
+    }
+    var cit = excerptForProtocol(pr, excerptByPath);
+    if (cit && methodist) {
+      html +=
+        '<p class="proto-nav-card__excerpt">' +
+        escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
         "</p>";
     }
     html += '<div class="proto-nav-card__actions">';
     html +=
       '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
-      '" title="' +
-      (isTop ? "Перейти к нозологии и разделам протокола" : "Навигация по протоколу") +
-      '">' +
-      (isTop ? "Продолжить с этим протоколом" : "Открыть навигацию") +
+      '" title="Разделы протокола: диагностика, лечение">' +
+      (isTop ? "Разделы протокола" : "Разделы протокола") +
       "</button>";
     html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-matrix" data-proto-path="' +
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-go-consult-kz" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '" data-proto-title="' +
       escapeHtmlAttr(pr.title || "") +
-      '" data-proto-confidence="' +
-      escapeHtmlAttr(String(conf)) +
-      '">Матрица КЗ</button>';
+      '">Оформить заключение</button>';
     html +=
       '<a class="btn-proto-action btn-proto-action--link" href="' +
       href +
@@ -15143,10 +15322,14 @@
       else low.push(protos[pi]);
     }
     if (!high.length) high = protos.slice(0, 3);
-    var html = '<div class="proto-nav-hub" role="region" aria-label="Навигация по протоколам">';
+    high = high.slice(0, 3);
+    low = low.slice(0, 2);
+    var totalMore = data && data.protocols_total != null ? Number(data.protocols_total) : protos.length;
+    var hiddenMore = Math.max(0, totalMore - high.length - (low.length ? Math.min(low.length, 2) : 0));
+    var html = '<div class="proto-nav-hub" role="region" aria-label="Клинические протоколы">';
     html +=
       '<div class="proto-nav-top-cta" role="note">' +
-      '<p class="proto-nav-top-cta__lead">Выберите протокол и откройте <strong>сводку по КП</strong> (диагностика, лечение, наблюдение) или сразу <strong>Матрицу КЗ</strong>.</p>' +
+      '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. Оформление КЗ - на вкладке «Проверка КЗ».</p>' +
       "</div>";
     html += '<div class="proto-nav-cards">';
     for (pi = 0; pi < high.length; pi++) {
@@ -15162,7 +15345,7 @@
       html +=
         '<details class="proto-nav-weak-toggle"><summary>Другие протоколы (' +
         String(low.length) +
-        ", слабее)</summary><div class=\"proto-nav-cards\">";
+        ")</summary><div class=\"proto-nav-cards\">";
       for (pi = 0; pi < low.length; pi++) {
         html += renderProtocolNavCard(low[pi], data, {
           excerptByPath: opts.excerptByPath,
@@ -15172,6 +15355,12 @@
         });
       }
       html += "</div></details>";
+    }
+    if (hiddenMore > 0) {
+      html +=
+        '<p class="assist-note" style="margin:0.5rem 0 0;font-size:0.82rem">Ещё ' +
+        String(hiddenMore) +
+        " протокол(ов) не показаны - уточните код МКБ или запрос.</p>";
     }
     html += "</div>";
     return html;
@@ -15205,31 +15394,49 @@
   function bindProtocolNavHub(data) {
     bindProtoPickButtons(data);
     ingestProtocolNavFromAssist(data);
-    document.querySelectorAll(".btn-proto-matrix").forEach(function (btn) {
-      if (btn.getAttribute("data-wired-matrix")) return;
-      btn.setAttribute("data-wired-matrix", "1");
+    document.querySelectorAll(".btn-go-consult-kz").forEach(function (btn) {
+      if (btn.getAttribute("data-wired-consult-kz")) return;
+      btn.setAttribute("data-wired-consult-kz", "1");
       btn.addEventListener("click", function () {
         var path = btn.getAttribute("data-proto-path") || "";
+        var title = btn.getAttribute("data-proto-title") || "";
         if (!path) return;
-        var offer = {
-          path: path,
-          title: btn.getAttribute("data-proto-title") || "",
-          confidence_score: btn.getAttribute("data-proto-confidence") || "",
-        };
-        window.__searchWizard = { step: "detail", selectedProto: path };
-        var panel = document.getElementById("practical-review-panel");
-        if (panel) panel.hidden = false;
-        loadProtocolPractical(offer, (data && data.query) || lastAssistFullQuery || "", icdCodesFromAssistData(data || {}), {
-          mode: "lite",
-          lazyKzMatrix: false,
-          autoKzHint: true,
-        });
-        try {
-          var loaded = document.getElementById("practical-review-panel");
-          if (loaded) loaded.scrollIntoView({ behavior: "smooth", block: "start" });
-        } catch (eScroll) {}
+        var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
+        openSearchDraftKzFromFunnel(
+          path,
+          (data && data.query) || lastAssistFullQuery || "",
+          icdCodesFromAssistData(data || {}),
+          excerptMap[path] || ""
+        );
       });
     });
+    if (window.__methodistMode) {
+      document.querySelectorAll(".btn-proto-matrix").forEach(function (btn) {
+        if (btn.getAttribute("data-wired-matrix")) return;
+        btn.setAttribute("data-wired-matrix", "1");
+        btn.addEventListener("click", function () {
+          var path = btn.getAttribute("data-proto-path") || "";
+          if (!path) return;
+          var offer = {
+            path: path,
+            title: btn.getAttribute("data-proto-title") || "",
+            confidence_score: btn.getAttribute("data-proto-confidence") || "",
+          };
+          window.__searchWizard = { step: "detail", selectedProto: path };
+          var panel = document.getElementById("practical-review-panel");
+          if (panel) panel.hidden = false;
+          loadProtocolPractical(offer, (data && data.query) || lastAssistFullQuery || "", icdCodesFromAssistData(data || {}), {
+            mode: "lite",
+            lazyKzMatrix: false,
+            autoKzHint: true,
+          });
+          try {
+            var loaded = document.getElementById("practical-review-panel");
+            if (loaded) loaded.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (eScroll) {}
+        });
+      });
+    }
     var protos = dedupeProtocolsByPath(((data && data.llm_json) || {}).protocols || []);
     var q = (data && data.query) || lastAssistFullQuery || "";
     var icd = icdCodesFromAssistData(data || {});
@@ -15289,13 +15496,17 @@
         escapeHtml(pr.scope_label_ru) +
         "</span>";
     }
-    html +=
-      '<span class="llm-pct-badge ' +
-      confidenceBadgeClass(mScore) +
-      '" title="Соответствие запросу (модель, согласовано с отбором фрагментов)">' +
-      '<span class="llm-pct-dot" aria-hidden="true"></span>' +
-      pct01(mScore) +
-      "%</span>";
+    if (opts.steppedList || (opts.doctorLite && !window.__methodistMode)) {
+      html += renderMatchTierBadgeHtml(pr, { methodist: !!window.__methodistMode });
+    } else {
+      html +=
+        '<span class="llm-pct-badge ' +
+        confidenceBadgeClass(mScore) +
+        '" title="Соответствие запросу (модель, согласовано с отбором фрагментов)">' +
+        '<span class="llm-pct-dot" aria-hidden="true"></span>' +
+        pct01(mScore) +
+        "%</span>";
+    }
     var sub = formatProtocolMetaSubtitle(title);
     if (sub) {
       html +=
@@ -15311,9 +15522,14 @@
       html +=
         '<span class="assist-pct assist-pct--warn" title="Слабая опора в отобранных фрагментах"> · слабая опора в отборе</span>';
     }
-    if (pr.match_reason && !opts.citationsOnly && (!opts.doctorLite || opts.isTopProtocol) && !opts.steppedList) {
+    if (pr.match_reason && !opts.citationsOnly && (!opts.doctorLite || opts.isTopProtocol) && !opts.steppedList && window.__methodistMode) {
       html +=
         '<p class="assist-reason"><strong>Оценка ИИ:</strong> ' + escapeHtml(pr.match_reason) + "</p>";
+    }
+    var explainRu = protocolMatchExplainRu(pr);
+    if (explainRu && (opts.steppedList || opts.doctorLite) && !window.__methodistMode) {
+      html +=
+        '<p class="assist-reason"><strong>Почему в списке:</strong> ' + escapeHtml(explainRu) + "</p>";
     }
     var dupN = (pr.duplicate_catalog_paths && pr.duplicate_catalog_paths.length) || 0;
     if (dupN > 0) {
@@ -15397,7 +15613,7 @@
         '<p class="assist-proto-actions">' +
         '<button type="button" class="btn-assist btn-proto-pick" data-proto-path="' +
         escapeHtmlAttr(pr.path || "") +
-        '">Открыть выдержку</button>' +
+        '">Разделы протокола</button>' +
         "</p>";
     } else if (
       opts.steppedDetail ||
@@ -17195,7 +17411,10 @@
   }
 
   function maybeAutoLoadPracticalForSearch(data) {
-    autoLoadDetailStepForSearch(data);
+    /* KZ matrix autoload disabled in doctor search - use «Проверка КЗ» tab */
+    if (window.__methodistMode) {
+      autoLoadDetailStepForSearch(data);
+    }
   }
 
   function loadKzMatrixOnly(offer, queryText, icdCodes, clinicalDetail) {
@@ -17780,6 +17999,36 @@
 
   function buildAssistSearchMetaHtml(data, rawProtos, compact) {
     var parts = [];
+    var doctor = isDoctorSearchUi();
+    if (compact && doctor) {
+      var icd = data.icd || {};
+      var icdCodes = icd.codes_for_retrieval || [];
+      if (!icdCodes.length && icd.detected && icd.detected.length) {
+        icdCodes = icd.detected.map(function (x) {
+          return x.code;
+        });
+      }
+      if (icdCodes.length) {
+        parts.push(
+          "МКБ: " +
+            icdCodes
+              .slice(0, 3)
+              .map(function (c) {
+                return String(c);
+              })
+              .join(", ")
+        );
+      }
+      if (rawProtos && rawProtos.length) {
+        parts.push(rawProtos.length + " протокол(ов)");
+      }
+      if (!parts.length) return "";
+      return (
+        '<p class="assist-search-meta assist-search-meta--compact">' +
+        escapeHtml(parts.join(" · ")) +
+        "</p>"
+      );
+    }
     if (compact) {
       if (rawProtos && rawProtos.length) {
         var top = confidenceFromProtocol(rawProtos[0]);
@@ -17842,18 +18091,26 @@
       );
     }
     if (!parts.length) return "";
-    return '<p class="assist-search-meta">' + escapeHtml(parts.join(" · ")) + "</p>";
+    var cls = "assist-search-meta";
+    if (!window.__methodistMode) cls += " assist-search-meta--tech";
+    return '<p class="' + cls + '">' + escapeHtml(parts.join(" · ")) + "</p>";
   }
 
   function renderClinicalAttentionBlock(data) {
     var items = (data && data.clinical_attention) || [];
     if (!items.length) return "";
+    if (isDoctorSearchUi()) {
+      items = items.filter(function (it) {
+        return (it.severity || "") === "high";
+      });
+      if (!items.length) return "";
+    }
     var html =
       '<div class="assist-sec assist-sec--attention" role="region" aria-label="На что обратить внимание">';
     html +=
       '<span class="assist-sec-label assist-sec-label--alert">На что обратить внимание при оформлении заключения</span>';
     html +=
-      '<p class="assist-attention-lead" style="margin:0.25rem 0 0.5rem;font-size:0.84rem;color:var(--muted)">Ориентиры по выбранным протоколам. Для оформления КЗ используйте «Матрица КЗ» на карточке протокола или кнопку «Продолжить с этим протоколом».</p>';
+      '<p class="assist-attention-lead" style="margin:0.25rem 0 0.5rem;font-size:0.84rem;color:var(--muted)">Клинически значимые ориентиры по выбранным протоколам.</p>';
     html += '<ul class="assist-attention-list">';
     var ai;
     for (ai = 0; ai < items.length; ai++) {
@@ -17897,9 +18154,25 @@
       var doctorLite = data.assist_lite === true || data.retrieve_only === true;
       var stepped = isSearchSteppedMode();
       var wiz = window.__searchWizard || { step: "protocols" };
-      if (stepped && wiz.step !== "detail") {
-        wiz.step = "protocols";
-        wiz.selectedProto = null;
+      if (stepped) {
+        var keepWizardSteps = [
+          "population",
+          "icd",
+          "rubric",
+          "protocols",
+          "brief",
+          "condition",
+          "section",
+          "excerpt",
+          "detail",
+          "sections",
+        ];
+        if (keepWizardSteps.indexOf(wiz.step) < 0) {
+          wiz.step = "protocols";
+        }
+        if (wiz.step === "protocols") {
+          wiz.selectedProto = null;
+        }
       }
       window.__searchWizard = wiz;
       var compactResults = citationsOnly || methodistSearch || stepped;
@@ -17942,7 +18215,10 @@
         }
       }
       if (stepped && wiz.step === "protocols") {
-        high = high.slice(0, 4);
+        high = high.slice(0, 3);
+        low = low.slice(0, 2);
+      } else if (stepped && (wiz.step === "detail" || wiz.step === "sections")) {
+        high = high.slice(0, 5);
         low = low.slice(0, 2);
       } else if (citationsOnly && !stepped) {
         high = high.slice(0, 5);
@@ -18064,10 +18340,12 @@
       if (rawProtos.length) {
         html += '<hr class="assist-hr" /><div class="assist-sec">';
         var secLabel;
-        if (stepped && wiz.step === "detail") {
-          secLabel = "Выдержка и матрица КЗ";
+        if (stepped && wiz.step === "protocols") {
+          secLabel = "Клинические протоколы по вашему запросу";
+        } else if (stepped && (wiz.step === "detail" || wiz.step === "sections" || wiz.step === "brief")) {
+          secLabel = "Что говорит протокол по вашему случаю";
         } else if (citationsOnly || stepped) {
-          secLabel = "Навигация по протоколам";
+          secLabel = "Протоколы";
         } else if (methodistSearch) {
           secLabel = "Протоколы · оценка для разметки";
         } else if (doctorLite) {
@@ -18076,29 +18354,22 @@
           secLabel = "Протоколы · оценка релевантности ИИ";
         }
         html += '<span class="assist-sec-label">' + secLabel + "</span>";
-        if (stepped && wiz.step === "detail") {
-          html += renderProtocolNavGuideHtml("matrix", { compact: true });
+        if (stepped && wiz.step === "protocols") {
           html +=
-            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Чек-лист по структуре консультативного заключения: жалобы, диагноз, обследование, лечение, наблюдение. Пункты с пометкой «обязательно» - сверьте с осмотром и PDF протокола.</p>';
-        }
-        if (!citationsOnly && !methodistSearch && !doctorLite && !stepped) {
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол. Уверенность - по коду МКБ или по жалобе, не вероятность диагноза.</p>';
+        } else if (stepped && (wiz.step === "brief" || wiz.step === "detail")) {
+          html += renderProtocolNavGuideHtml("brief", { compact: true });
           html +=
-            '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. <strong>Соответствие %</strong> - насколько протокол подходит к запросу (не вероятность диагноза). Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>';
-        } else if (stepped && wiz.step === "protocols") {
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выдержки из PDF. Сверьте с клинической картиной.</p>';
+        } else if (!citationsOnly && !methodistSearch && !doctorLite && !stepped) {
           html +=
-            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Список отсортирован по близости к запросу. Этапы навигации - в полоске сверху; на карточке нажмите «Продолжить с этим протоколом».</p>';
-          if (data.icd_fast_lookup) {
-            html +=
-              '<p class="assist-note" style="margin:0.35rem 0">Подбор по коду МКБ' +
-              (data.lookup_ms != null ? " · " + data.lookup_ms + " ms" : "") +
-              " - без полного RAG.</p>";
-          }
+            '<p class="assist-ai-eval-lead">Уникальные PDF каталога после дедупликации. Для развёрнутой выдержки нажмите «Разобрать протокол» у нужного пункта.</p>';
         } else if (methodistSearch && !citationsOnly) {
           html +=
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>';
-        } else if (doctorLite && !citationsOnly) {
+        } else if (doctorLite && !citationsOnly && !stepped) {
           html +=
-            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол по выдержке из PDF. Для черновика КЗ нажмите «Разобрать протокол» у нужного пункта.</p>';
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол. Для оформления КЗ - вкладка «Проверка КЗ».</p>';
         }
         var protoRank = 0;
         var listCls = stepped ? " assist-proto-list--compact" : "";
@@ -18148,11 +18419,14 @@
         }
       }
 
-      if (rawProtos.length && !methodistSearch && wiz.step !== "detail") {
+      if (rawProtos.length && !methodistSearch && wiz.step === "protocols") {
         html += renderClinicalAttentionBlock(data);
       }
 
-      var detailStepLoading = stepped && wiz.step === "detail" && wiz.selectedProto;
+      var detailStepLoading = false;
+      if (!isDoctorSearchUi()) {
+        detailStepLoading = stepped && wiz.step === "detail" && wiz.selectedProto;
+      }
       html +=
         '<div id="practical-review-panel" class="practical-review-panel' +
         (detailStepLoading ? " practical-review-panel--loading" : "") +
@@ -18160,12 +18434,12 @@
         (detailStepLoading ? "" : " hidden") +
         ' aria-live="polite">' +
         (detailStepLoading
-          ? '<p class="assist-detail-meta practical-loading-title">Загрузка матрицы КЗ и выдержки из протокола…</p>' +
+          ? '<p class="assist-detail-meta practical-loading-title">Загрузка выдержки из протокола…</p>' +
             getDetailLoadingHtml()
           : "") +
         "</div>";
 
-      if ((!uiCompact || showRefinement) && j.differential && j.differential.length) {
+      if ((!uiCompact || showRefinement) && j.differential && j.differential.length && !isDoctorSearchUi()) {
         html +=
           '<hr class="assist-hr" /><div class="assist-sec assist-sec--differential assist-sec--differential-open">';
         html +=
@@ -21928,6 +22202,7 @@
       }
     }
     if (backBtn) backBtn.hidden = step === "population";
+    updateSearchMobileActions(step);
   }
 
   function searchWizardBack() {
@@ -22015,7 +22290,7 @@
     var icd = normalizeFunnelIcdPreflightResponse(data || {}).icd || (data && data.icd) || {};
     var choices = buildIcdWizardChoices(icd).slice(0, 12);
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "Отметьте коды МКБ-10 по степени совпадения: зелёный - лучшее, жёлтый - возможно, красный - слабое. Можно выбрать несколько.",
+      lead: "Какой диагноз ближе к жалобе? Выберите 1-2 кода - по ним ищем протокол в каталоге МЗ.",
       hint: data && data.hint ? data.hint : "",
       choices: choices,
       multi: true,
@@ -22495,15 +22770,17 @@
 
     html += '<div class="protocol-brief-actions">';
     html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-matrix" data-proto-path="' +
-      escapeHtmlAttr(path) +
-      '">Матрица КЗ</button>';
-    html +=
-      '<a class="btn-proto-action btn-proto-action--secondary" href="' +
+      '<a class="btn-proto-action btn-proto-action--primary" href="' +
       href +
-      '" target="_blank" rel="noopener noreferrer">PDF</a>';
+      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>';
     html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Черновик КЗ</button>';
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>';
+    if (window.__methodistMode) {
+      html +=
+        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-matrix" data-proto-path="' +
+        escapeHtmlAttr(path) +
+        '">Матрица КЗ</button>';
+    }
     html += "</div>";
 
     html += '<div class="protocol-brief-feedback" data-brief-feedback-root>';
@@ -22516,7 +22793,13 @@
       '<button type="button" class="btn-brief-feedback" data-brief-rating="wrong">Неверно</button>';
     html += "</div>";
 
-    if (bundle && bundle.kz_matrix && bundle.kz_matrix.sections && bundle.kz_matrix.sections.length) {
+    if (
+      window.__methodistMode &&
+      bundle &&
+      bundle.kz_matrix &&
+      bundle.kz_matrix.sections &&
+      bundle.kz_matrix.sections.length
+    ) {
       html += '<div class="protocol-brief-matrix-slot" id="brief-kz-matrix-slot">';
       html += renderKzMatrixColumn(bundle.kz_matrix);
       html +=
@@ -22583,7 +22866,7 @@
       });
     });
     var matrixBtn = root.querySelector(".btn-proto-matrix");
-    if (matrixBtn) {
+    if (matrixBtn && window.__methodistMode) {
       matrixBtn.addEventListener("click", function () {
         var slot = document.getElementById("brief-kz-matrix-slot");
         if (slot) {
@@ -22699,15 +22982,13 @@
           escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
           "</p>" +
           '<div class="protocol-brief-actions">' +
-          '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-matrix" data-proto-path="' +
-          escapeHtmlAttr(path) +
-          '">Матрица КЗ</button></div>' +
-          '<div id="practical-review-panel" class="practical-review-panel practical-review-panel--loading" aria-live="polite">' +
-          '<p class="assist-detail-meta">Загрузка матрицы КЗ…</p>' +
-          getDetailLoadingHtml() +
-          "</div></div></div>";
+          '<a class="btn-proto-action btn-proto-action--primary" href="' +
+          escapeHtmlAttr(safeResourceHref(path)) +
+          '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
+          '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>' +
+          "</div>" +
+          '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div></div></div>';
         bindProtocolNavHub(data);
-        autoLoadDetailStepForSearch(data);
       }
       hideSearchWizardBarProgress();
       return;
@@ -22945,16 +23226,17 @@
         }
         html +=
           '<p class="assist-proto-actions">' +
-          '<button type="button" class="btn-assist btn-proto-matrix" data-proto-path="' +
-          escapeHtmlAttr(path) +
-          '">Матрица КЗ</button> · ' +
           '<a class="proto-link" href="' +
           escapeHtmlAttr(safeResourceHref(path)) +
           '" target="_blank" rel="noopener">Открыть PDF</a> · ' +
-          '<button type="button" class="btn-assist btn-search-draft-kz">Оформировать черновик КЗ</button> · ' +
-          '<button type="button" class="btn-assist btn-proto-explore-excerpt" data-proto-path="' +
-          escapeHtmlAttr(path) +
-          '">Разобрать протокол (LLM)</button>' +
+          '<button type="button" class="btn-assist btn-search-draft-kz">Оформить заключение</button>' +
+          (window.__methodistMode
+            ? ' · <button type="button" class="btn-assist btn-proto-matrix" data-proto-path="' +
+              escapeHtmlAttr(path) +
+              '">Матрица КЗ</button> · <button type="button" class="btn-assist btn-proto-explore-excerpt" data-proto-path="' +
+              escapeHtmlAttr(path) +
+              '">Разобрать протокол (LLM)</button>'
+            : "") +
           "</p>";
         html +=
           '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
@@ -23718,6 +24000,63 @@
       .catch(function () {
         if (updated) updated.textContent = "Статистика недоступна";
       });
+  }
+
+  function initSearchOnboarding() {
+    var box = document.getElementById("search-onboarding");
+    var btn = document.getElementById("search-onboarding-dismiss");
+    if (!box) return;
+    try {
+      if (localStorage.getItem("protocol-search-onboarding-v1") === "1") return;
+    } catch (e) {}
+    box.hidden = false;
+    if (btn && !btn.getAttribute("data-wired")) {
+      btn.setAttribute("data-wired", "1");
+      btn.addEventListener("click", function () {
+        box.hidden = true;
+        try {
+          localStorage.setItem("protocol-search-onboarding-v1", "1");
+        } catch (e2) {}
+      });
+    }
+  }
+
+  function updateSearchMobileActions(step) {
+    var bar = document.getElementById("search-mobile-actions");
+    var back = document.getElementById("search-mobile-back");
+    var primary = document.getElementById("search-mobile-primary");
+    if (!bar || !primary) return;
+    if (!isDoctorSearchUi() || !isSearchSteppedMode() || !step || step === "query" || step === "population" || step === "icd" || step === "rubric") {
+      bar.classList.remove("is-visible");
+      bar.hidden = true;
+      return;
+    }
+    bar.hidden = false;
+    bar.classList.add("is-visible");
+    var ctx = window.__funnelContext || {};
+    var path = ctx.protocol_path || (window.__searchWizard && window.__searchWizard.selectedProto) || "";
+    var href = path ? safeResourceHref(path) : "";
+    if (step === "protocols") {
+      primary.textContent = "Далее";
+      primary.onclick = function () {
+        var card = document.querySelector(".proto-nav-card--recommended .btn-proto-pick");
+        if (card) card.click();
+      };
+    } else if (href) {
+      primary.textContent = "Открыть PDF";
+      primary.onclick = function () {
+        window.open(href, "_blank", "noopener,noreferrer");
+      };
+    } else {
+      primary.textContent = "Далее";
+      primary.onclick = null;
+    }
+    if (back && !back.getAttribute("data-wired")) {
+      back.setAttribute("data-wired", "1");
+      back.addEventListener("click", function () {
+        searchWizardBack();
+      });
+    }
   }
 
   function initAnalyticsTab() {
@@ -27118,6 +27457,7 @@
   initSearchQuickStart();
   initDeployStatusBanner();
   initAnalyticsTab();
+  initSearchOnboarding();
   initCitationsOnlyToggle();
   initSearchSteppedToggle();
   loadBuildVersionBadge();

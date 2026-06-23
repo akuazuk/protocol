@@ -259,7 +259,7 @@ def _embed_protocol_nav_limit() -> int:
 
 
 async def _run_consult_review_blocking(fn, /, *args, **kwargs):
-    """Тяжёлый pipeline КЗ в worker-потоке — event loop свободен для /health."""
+    """Тяжёлый pipeline КЗ в worker-потоке - event loop свободен для /health."""
     def _job():
         with _consult_sem:
             return fn(*args, **kwargs)
@@ -886,7 +886,7 @@ def _load_summary_rag_chunks() -> list[dict]:
 def _memory_saver_enabled() -> bool:
     """Полный lex (embedding_ready_text при отличии от text) только если явно выключен saver.
 
-    RAG_MEMORY_SAVER=1 — без дубля embedding_ready_text (экономия ~100–200 MiB на rich corpus).
+    RAG_MEMORY_SAVER=1 - без дубля embedding_ready_text (экономия ~100-200 MiB на rich corpus).
     На Render с Persistent Disk (RAG_CHUNKS_DIR) saver включается по умолчанию, если не задано
     RAG_MEMORY_SAVER=0.
     """
@@ -1258,7 +1258,7 @@ def _build_lex_inverted_index(chunks: list[dict]) -> dict[str, frozenset[int]]:
 
 
 def _chunk_indices_for_path_allowlist(path_set: frozenset[str]) -> set[int]:
-    """Индексы чанков только из allowlist — для consult-review, не весь корпус 65k."""
+    """Индексы чанков только из allowlist - для consult-review, не весь корпус 65k."""
     if not path_set:
         return set()
     out: set[int] = set()
@@ -5997,6 +5997,14 @@ def build_hybrid_search_payload(
         merged = _rerank_protocols_symptom_only(merged, query, icd_analysis)
         merged = _filter_protocols_by_funnel_audience(merged, query)
 
+    from clinical_knowledge.protocol_match_ui import enrich_protocol_match_ui
+
+    icd_for_ui = list(icd_codes or []) or icd_codes_for_lex
+    merged_enriched = enrich_protocol_match_ui(merged, icd_for_ui or None)
+    protocols_total = len(merged_enriched)
+    protocols_top = merged_enriched[:3]
+    table_payload = table_rows if query_wants_tables(query) else []
+
     return {
         "query": query,
         "retrieve_only": True,
@@ -6006,10 +6014,11 @@ def build_hybrid_search_payload(
         "lookup_ms": lookup.get("lookup_ms", 0),
         "icd_lookup_ambiguous": lookup.get("ambiguous", False),
         "match_reasons": match_reasons,
+        "protocols_total": protocols_total,
         "llm_json": {
-            "protocols": merged[:8],
+            "protocols": protocols_top,
             "icd_codes": (icd_analysis or {}).get("detected") or [],
-            "table_excerpts": table_rows,
+            "table_excerpts": table_payload,
         },
         "icd": icd_analysis,
         "expanded_icd_codes": lookup.get("expanded_icd") or icd_codes_for_lex,
@@ -7188,7 +7197,7 @@ _SLOW_REQUEST_MS = env_int("SLOW_REQUEST_MS", 8000)
 
 
 def _health_live_response(request: "Request") -> Response | None:
-    """Liveness до роутинга и StaticFiles — Render health check не получает 404."""
+    """Liveness до роутинга и StaticFiles - Render health check не получает 404."""
     path = (request.url.path or "").rstrip("/") or "/"
     if path != "/health/live":
         return None
@@ -7757,7 +7766,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r227-catalog-icd-classification"
+BUILD_VERSION = "2026-06-16-r228-doctor-search-ux"
 
 
 def _app_version() -> str:
@@ -8438,7 +8447,7 @@ def _api_assist_impl(body: AssistIn) -> dict:
             raise HTTPException(
                 status_code=400,
                 detail=(
-                    "Уточните код МКБ-10 или выберите рубрику каталога — "
+                    "Уточните код МКБ-10 или выберите рубрику каталога - "
                     "полный поиск по корпусу отключён для стабильности сервера."
                 ),
             )
