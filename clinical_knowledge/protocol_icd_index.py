@@ -39,6 +39,17 @@ _SYMPTOM_ICD_EXPAND: dict[str, list[str]] = {
     "R51": ["J06.9", "G43.9"],
 }
 
+# Близкие коды для индекса, если в каталоге нет точного J02.9 и т.п.
+_DISEASE_ICD_LOOKUP_EXPAND: dict[str, list[str]] = {
+    "J02.9": ["J02.9", "J02", "J04.0", "J03.9", "J06.9", "J31.0", "J30.1"],
+    "J02": ["J02", "J02.9", "J04.0", "J03.9"],
+    "J03.9": ["J03.9", "J03", "J02.9", "J04.0", "J06.9"],
+    "J03": ["J03", "J03.9", "J02.9", "J04.0"],
+    "J06.9": ["J06.9", "J06", "J00", "J02.9", "J20.9"],
+    "J06": ["J06", "J06.9", "J00", "J02.9"],
+    "J00": ["J00", "J06.9", "J02.9"],
+}
+
 _ICD_RUBRIC: dict[str, list[str]] = {
     "I": ["bolezni-sistemy-krovoobrashcheniya"],
     "J": ["pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya"],
@@ -92,13 +103,62 @@ def _title_tokens(text: str) -> set[str]:
 
 def _primary_covers_code(primary: set[str], code: str) -> bool:
     root = _icd_root(code)
-    letter = code[:1].upper()
     for p in primary:
         if p == code or _icd_root(p) == root:
             return True
-        if len(p) >= 1 and p[0].upper() == letter:
-            return True
     return False
+
+
+def _row_matched_icd_codes(row: dict[str, Any], query_icd: set[str]) -> tuple[list[str], float]:
+    """Реально совпавшие коды запроса с метками протокола и сила совпадения 0-100."""
+    primary = {_norm_icd(x) for x in (row.get("icd10_primary") or [])}
+    all_icd = {_norm_icd(x) for x in (row.get("icd10_all") or [])}
+    matched: list[str] = []
+    strength = 0.0
+    for code in sorted(query_icd):
+        if code in primary:
+            matched.append(code)
+            strength = max(strength, 100.0)
+            continue
+        if code in all_icd:
+            matched.append(code)
+            strength = max(strength, 28.0)
+            continue
+        root = _icd_root(code)
+        pref = False
+        for ic in primary:
+            if ic.startswith(root) or code.startswith(_icd_root(ic)):
+                matched.append(code)
+                strength = max(strength, 72.0)
+                pref = True
+                break
+        if pref:
+            continue
+        for ic in all_icd:
+            if ic.startswith(root) or code.startswith(_icd_root(ic)):
+                matched.append(code)
+                strength = max(strength, 22.0)
+                break
+    return matched, strength
+
+
+def _confidence_from_lookup_score(
+    sc: float,
+    *,
+    max_sc: float,
+    icd_strength: float,
+    has_icd_reason: bool,
+) -> float:
+    rel = sc / max(max_sc, 1.0)
+    if icd_strength >= 90.0:
+        return min(0.97, max(0.72, 0.42 + 0.5 * rel))
+    if icd_strength >= 55.0:
+        return min(0.82, max(0.52, 0.36 + 0.4 * rel))
+    if icd_strength > 0.0:
+        return min(0.68, max(0.4, 0.3 + 0.32 * rel))
+    if has_icd_reason:
+        return min(0.58, max(0.35, 0.28 + 0.25 * rel))
+    return min(0.48, max(0.28, 0.22 + 0.18 * rel))
 
 
 def _acute_respiratory_query(query: str) -> bool:
@@ -187,7 +247,7 @@ def _symptom_title_boost(query: str, title: str) -> tuple[float, list[str]]:
         if "дистресс" in tl and "дистресс" not in ql:
             score -= 45.0
             reasons.append("symptom↔title ards penalty")
-        if any(t in tl for t in ("вич", "hiv", "иммунодефицит", "сифилис", "туберкул")):
+        if any(t in tl for t in ("вич", "hiv", "иммунодефицит", "сифил", "туберкул")):
             score -= 70.0
             reasons.append("symptom↔title topic mismatch")
     if any(s in ql for s in ("температ", "лихорад", "жар")):
@@ -388,10 +448,15 @@ def _expand_icd_for_lookup(
         out: list[str] = []
         seen: set[str] = set()
         for c in normalized:
-            if c not in seen:
-                seen.add(c)
-                out.append(c)
-        return out
+            extras = _DISEASE_ICD_LOOKUP_EXPAND.get(c) or _DISEASE_ICD_LOOKUP_EXPAND.get(
+                _icd_root(c), []
+            )
+            for code in [c, *extras]:
+                nc = normalize_code(code)
+                if nc and nc not in seen:
+                    seen.add(nc)
+                    out.append(nc)
+        return prioritize_codes(out)
     for m in re.finditer(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b", query or "", re.I):
         raw.append(m.group(1).upper())
     ordered, _ = enrich_diagnosis_codes(query, raw)
@@ -503,21 +568,35 @@ def lookup_protocols_by_icd(
     for sc, row, reasons in top[:limit]:
         path = str(row.get("path") or "")
         title = str(row.get("display_title") or Path(path).name)
-        conf = min(0.97, max(0.42, 0.38 + 0.55 * (sc / max(max_sc, 1.0))))
+        matched_codes, icd_strength = _row_matched_icd_codes(row, query_icd)
+        has_icd_reason = any(
+            str(r).startswith(("exact ", "prefix ", "secondary ", "same root "))
+            for r in reasons
+        )
+        conf = _confidence_from_lookup_score(
+            sc,
+            max_sc=max_sc,
+            icd_strength=icd_strength,
+            has_icd_reason=has_icd_reason,
+        )
         weights = row.get("icd10_weights") or {}
         matched_pcts: list[float] = []
-        for code in query_icd:
+        primary_set = {_norm_icd(x) for x in (row.get("icd10_primary") or [])}
+        all_set = {_norm_icd(x) for x in (row.get("icd10_all") or [])}
+        for code in matched_codes:
             w = weights.get(code)
             if w is not None:
                 matched_pcts.append(float(w))
-            elif code in {_norm_icd(x) for x in (row.get("icd10_primary") or [])}:
+            elif code in primary_set:
                 matched_pcts.append(90.0)
-            elif code in {_norm_icd(x) for x in (row.get("icd10_all") or [])}:
-                matched_pcts.append(float(weights.get(code, 35)))
-        rel_pct = round(
-            max(matched_pcts) if matched_pcts else min(97.0, 100.0 * sc / max(max_sc, 1.0)),
-            1,
-        )
+            elif code in all_set:
+                matched_pcts.append(float(weights.get(code, 32.0)))
+            else:
+                matched_pcts.append(55.0)
+        if matched_pcts:
+            rel_pct = round(max(matched_pcts), 1)
+        else:
+            rel_pct = round(min(55.0, 100.0 * conf), 1)
         protocols.append(
             {
                 "path": path,
@@ -530,15 +609,20 @@ def lookup_protocols_by_icd(
                 "protocol_kind": row.get("protocol_kind"),
                 "scope_label_ru": row.get("scope_label_ru"),
                 "general_scope": bool(row.get("general_scope")),
-                "matched_icd_codes": list(query_icd)[:6],
+                "matched_icd_codes": matched_codes[:6],
+                "icd_match_strength": round(icd_strength, 1),
             }
         )
         match_reasons[path] = reasons[:4]
 
     ambiguous = False
+    if top:
+        top_strength = _row_matched_icd_codes(top[0][1], query_icd)[1]
+        if top_strength < 45.0:
+            ambiguous = True
     if len(top) >= 2:
         gap = top[0][0] - top[1][0]
-        ambiguous = gap < 12.0 or top[0][0] < 60.0
+        ambiguous = ambiguous or gap < 12.0 or top[0][0] < 60.0
     elif not top:
         ambiguous = True
 

@@ -5871,7 +5871,7 @@ def build_hybrid_search_payload(
         s for s in (category_slugs or []) if isinstance(s, str) and s in ALLOWED_SPECIALTY_SLUGS
     ]
     icd_codes_for_lex = list(icd_codes or [])
-    if icd_analysis:
+    if icd_analysis and not icd_codes:
         icd_codes_for_lex = list(
             dict.fromkeys(
                 icd_codes_for_lex
@@ -7757,7 +7757,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r225-icd-wizard-choices"
+BUILD_VERSION = "2026-06-16-r226-icd-match-calibration"
 
 
 def _app_version() -> str:

@@ -109,6 +109,32 @@ def test_icd_fast_lookup_trusted_rejects_palliative_on_cough():
     ) is False
 
 
+def test_lookup_j029_sore_throat_prefers_ent_not_sti():
+    """J02.9 из воронки: без точной метки в каталоге - соседние J04/J31 и ЛОР, не ИППП."""
+    pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
+    pii._inverted_index.cache_clear()
+    q = "боль в горле и температура\nКонтекст подбора: взрослое население"
+    result = pii.lookup_protocols_by_icd(
+        icd_codes=["J02.9"],
+        query=q,
+        population="adult",
+        limit=6,
+        explicit_icd_only=True,
+    )
+    protos = result.get("protocols") or []
+    assert protos, "expected protocols for J02.9 sore throat"
+    top = protos[0]
+    title = (top.get("title") or "").lower()
+    assert any(
+        k in title for k in ("оториноларинг", "отоларинг", "орви", "респиратор", "фаринг", "ангин")
+    ), title
+    assert "сифил" not in title and "половым путем" not in title
+    assert (top.get("confidence_score") or 0) <= 0.95
+    matched = top.get("matched_icd_codes") or []
+    assert matched, "matched_icd_codes must list real hits only"
+    assert "J02.9" in matched or any(c.startswith("J0") for c in matched)
+
+
 def test_lookup_sore_throat_r07_excludes_hiv_and_pediatric():
     """R07.0 + горло: разворот в J02; ВИЧ и детские КП не должны быть top."""
     pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
