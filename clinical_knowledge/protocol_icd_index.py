@@ -566,6 +566,7 @@ def icd_fast_lookup_trusted(
     top = protos[0] if isinstance(protos[0], dict) else {}
     path = str(top.get("path") or "")
     title = str(top.get("title") or "")
+    qlow = (query or "").lower()
     if _acute_respiratory_query(query) and _is_palliative_protocol(path, title):
         if not _palliative_context_in_query(query):
             return False
@@ -593,6 +594,47 @@ def icd_fast_lookup_trusted(
             )
         ):
             return False
+    if codes:
+        from icd_mkb import (
+            _has_drug_adverse_context,
+            _has_uri_nasal_complaint,
+            _has_uri_throat_complaint,
+            is_drug_external_cause_code,
+        )
+
+        y_codes = [c for c in codes if is_drug_external_cause_code(c)]
+        if y_codes and not _has_drug_adverse_context(qlow):
+            blob = f"{path} {title}".lower()
+            ent_resp = any(
+                k in blob
+                for k in (
+                    "орви",
+                    "респиратор",
+                    "бронхит",
+                    "пневмон",
+                    "оториноларинг",
+                    "отоларинг",
+                    "лор",
+                    "фаринг",
+                    "ангин",
+                    "гортан",
+                    "насморк",
+                    "ринит",
+                )
+            )
+            uri_complaint = (
+                _has_uri_throat_complaint(qlow)
+                or _has_uri_nasal_complaint(qlow)
+                or _acute_respiratory_query(query)
+            )
+            gi_proto = any(
+                k in blob
+                for k in ("gastro", "желуд", "кишеч", "кишк", "пищевар", "гастр", "диспепс")
+            )
+            if uri_complaint and gi_proto and not ent_resp:
+                return False
+            if uri_complaint and not ent_resp:
+                return False
     return True
 
 

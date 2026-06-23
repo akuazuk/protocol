@@ -198,6 +198,13 @@ _CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
         ("J03.9", 21.0),
         ("J06.9", 20.0),
     ],
+    "uri_throat": [
+        ("J06.9", 22.0),
+        ("J00", 21.5),
+        ("J02.9", 21.0),
+        ("J03.9", 20.5),
+        ("R07.0", 20.0),
+    ],
     "chest_pain": [
         ("R07.4", 22.0),
         ("I20.9", 21.5),
@@ -605,14 +612,97 @@ def _complaint_blob(text: str) -> str:
 
 
 def strip_funnel_context_lines(text: str) -> str:
-    """Убирает служебные строки воронки («Контекст подбора: …») из текста для лексикона МКБ."""
+    """Убирает служебные строки воронки («Контекст подбора: …», МКБ из шага воронки) из текста для лексикона МКБ."""
     lines: list[str] = []
     for line in (text or "").splitlines():
         low = line.strip().lower()
         if low.startswith(_FUNNEL_CONTEXT_PREFIX):
             continue
+        if low.startswith("мкб-10 для поиска протокола"):
+            continue
         lines.append(line)
     return "\n".join(lines).strip()
+
+
+def is_drug_external_cause_code(code: str) -> bool:
+    """Глава XIX Y - лекарства/побочные эффекты; не диагноз при обычных жалобах."""
+    c = _norm_icd_code(code)
+    return bool(c) and c[0] == "Y"
+
+
+def is_external_cause_code(code: str) -> bool:
+    """T/X/Y/W/V - внешние причины; для подбора протокола по жалобам обычно не ведут."""
+    c = _norm_icd_code(code)
+    return bool(c) and c[0] in "TXYWV"
+
+
+def _has_drug_adverse_context(qlow: str) -> bool:
+    return any(
+        x in qlow
+        for x in (
+            "побочн",
+            "отравлен",
+            "передоз",
+            "передозиров",
+            "лекарств",
+            "препарат",
+            "токсич",
+            "непереносим",
+            "аллерг",
+        )
+    )
+
+
+def _has_uri_nasal_complaint(qlow: str) -> bool:
+    return any(x in qlow for x in ("насморк", "ринор", "заложен нос", "чих", "орви", "орз", "простуд"))
+
+
+def _has_uri_throat_complaint(qlow: str) -> bool:
+    nasal = _has_uri_nasal_complaint(qlow)
+    throat = _has_sore_throat_complaint(qlow) or any(
+        x in qlow for x in ("горл", "глот", "фаринг", "перш")
+    )
+    return nasal and throat
+
+
+def filter_drug_external_codes_for_complaint(codes: list[str], text: str) -> list[str]:
+    """Убирает Y-коды из списка, если в жалобе нет контекста лекарств/отравления."""
+    qlow = _complaint_blob(strip_funnel_context_lines(text or ""))
+    if _has_drug_adverse_context(qlow):
+        return list(codes)
+    return [c for c in codes if not is_drug_external_cause_code(c)]
+
+
+def finalize_icd_analysis_codes(icd_analysis: dict, complaint_text: str) -> None:
+    """In-place: приоритет кодов болезни; Y* не ведут подбор без контекста лекарств."""
+    from clinical_knowledge.diagnosis_icd import prioritize_codes
+
+    qlow = _complaint_blob(strip_funnel_context_lines(complaint_text or ""))
+    raw_codes = list(icd_analysis.get("codes_for_retrieval") or [])
+    if icd_analysis.get("explicit_icd_in_query"):
+        icd_analysis["codes_for_retrieval"] = prioritize_codes(raw_codes)[:10]
+        return
+    filtered = filter_drug_external_codes_for_complaint(raw_codes, complaint_text)
+    suggested_rows = [
+        s for s in (icd_analysis.get("suggested") or []) if isinstance(s, dict) and s.get("code")
+    ]
+    if not _has_drug_adverse_context(qlow):
+        suggested_rows = [
+            s for s in suggested_rows if not is_drug_external_cause_code(str(s.get("code") or ""))
+        ]
+        icd_analysis["suggested"] = suggested_rows
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for row in suggested_rows:
+        c = _norm_icd_code(str(row.get("code") or ""))
+        if c and c in filtered and c not in seen:
+            seen.add(c)
+            ordered.append(c)
+    for c in prioritize_codes(filtered):
+        if c not in seen:
+            seen.add(c)
+            ordered.append(c)
+    icd_analysis["codes_for_retrieval"] = ordered[:10]
 
 
 def _has_cough_in_complaint(qlow: str) -> bool:
@@ -1001,6 +1091,8 @@ def _clinical_hint_profile(qlow: str) -> str | None:
         return "adenoids"
     if _has_pediatric_uri_complaint(qlow):
         return "uri_pediatric"
+    if _has_uri_throat_complaint(qlow):
+        return "uri_throat"
     if _has_asthma_complaint(qlow):
         return "asthma"
     if _has_cough_fever_complaint(qlow):
@@ -1101,6 +1193,8 @@ def filter_icd_pool_for_complaint(scored: list[dict], text: str) -> list[dict]:
                 continue
         if _is_insect_bite_complaint(qlow) and code.upper().startswith("A") and "крыс" in tlow:
             continue
+        if not _has_drug_adverse_context(qlow) and is_drug_external_cause_code(code):
+            continue
         out.append(row)
     return out if out else list(scored)
 
@@ -1118,6 +1212,17 @@ def _penalize_external_cause_for_clinical(qlow: str, code: str, score: float) ->
     cu = code.upper()
     if not cu or cu[0] not in "TXYZ":
         return score
+    clinical_acute = (
+        _has_rectal_bleeding_complaint(qlow)
+        or _has_cough_fever_complaint(qlow)
+        or _has_sore_throat_complaint(qlow)
+        or _has_uri_throat_complaint(qlow)
+        or _has_uri_nasal_complaint(qlow)
+        or _has_cough_in_complaint(qlow)
+        or _has_fever_in_complaint(qlow)
+    )
+    if clinical_acute and not _has_drug_adverse_context(qlow):
+        return score * 0.05
     if _has_rectal_bleeding_complaint(qlow) or _has_cough_fever_complaint(qlow):
         return score * 0.08
     return score
@@ -1440,10 +1545,12 @@ def analyze_query_for_icd(
             )
         )[:10]
 
-    return {
+    out = {
         "detected": detected_valid,
         "detected_unknown": detected_unknown,
         "suggested": suggested,
         "codes_for_retrieval": codes_for_retrieval,
         "explicit_icd_in_query": explicit_codes_in_query,
     }
+    finalize_icd_analysis_codes(out, lq)
+    return out

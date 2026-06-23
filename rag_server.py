@@ -671,11 +671,13 @@ SYSTEM_ICD_POOL_SELECT = """Ты помощник врача. По клинич�
 Дублируй поле code ТОЧНО как в списке (латиница и цифры).
 Правила отбора:
 - При острой жалобе пациента НЕ выбирай коды «Последствия…», «отдалённые последствия», Z-коды семейного анамнеза.
+- Глава Y (лекарства, побочные эффекты) - НЕ выбирай при обычных жалобах (насморк, горло, кашель). Y55 «насморк» - это лекарство, не диагноз; при ОРВИ выбирай J00/J06/J02/R07.
 - «Давление 140/90» и гипертония - I10/I11/R03, не «сдавление» органов.
 - Инфекция мочевых путей у взрослой женщины без беременности - N39/N30, не O86/P39.
 - Алкогольная зависимость/абстиненция - F10, не Z81 (семейный анамнез).
 - Ожог кипятком/термический - T20-T32, не L55 (солнечный).
 - Анафилаксия/укус пчелы - T78/W57, не A25 (крысы).
+- Боль в горле и насморк - J06.9 или J00, не Y и не K (желудок).
 Верни ОДИН JSON-объект (без markdown):
 {"codes":[{"code":"J20.9","rationale":"одно короткое предложение"}]}
 Если ни один код из списка не подходит - {"codes":[]}."""
@@ -1795,6 +1797,9 @@ def _refine_icd_analysis_with_gemini(
     )
     merged_codes = [c for c in merged_codes if c][:10]
     icd_analysis["codes_for_retrieval"] = merged_codes
+    from icd_mkb import finalize_icd_analysis_codes
+
+    finalize_icd_analysis_codes(icd_analysis, rag_query)
 
 
 def _top_retrieval_score_for_icd_gate(retrieved: list[dict]) -> tuple[float, bool]:
@@ -2176,6 +2181,7 @@ def clinical_query_for_rag(full_query: str) -> str:
     mark = " - Ответы на уточняющие вопросы:"
     if mark in part:
         part = part.split(mark, 1)[0].strip()
+    part = strip_funnel_context_lines(part)
     return part if part else full_query.strip()
 
 
@@ -7751,7 +7757,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r223-detail-matrix-first"
+BUILD_VERSION = "2026-06-16-r224-icd-preflight-gate"
 
 
 def _app_version() -> str:
@@ -8015,6 +8021,7 @@ def _infer_icd_pipeline_from_full_query(
     *,
     skip_query_refine: bool = False,
     skip_icd_gemini: bool = False,
+    force_icd_gemini: bool = False,
 ) -> tuple[dict | None, str, str, dict | None, str | None]:
     """Та же цепочка МКБ, что в начале api_assist (до retrieve).
 
@@ -8055,16 +8062,19 @@ def _infer_icd_pipeline_from_full_query(
         "true",
         "yes",
     )
-    if (
+    should_gemini = (
         not skip_icd_gemini
-        and not hints_confident
         and pre_icd_infer_on
         and not icd_analysis.get("explicit_icd_in_query")
-        and not (icd_analysis.get("detected") or [])
-    ):
+        and (force_icd_gemini or not (icd_analysis.get("detected") or []))
+    )
+    if should_gemini:
         _refine_icd_analysis_with_gemini(
             q_rag, icd_analysis, model, lexicon_query=q_rag_lexicon
         )
+    from icd_mkb import finalize_icd_analysis_codes
+
+    finalize_icd_analysis_codes(icd_analysis, lq_lex)
     return icd_analysis, q, q_rag, query_clinical_refinement, None
 
 
@@ -9056,7 +9066,7 @@ def api_icd_suggest(body: IcdSuggestIn) -> dict:
     """Та же логика МКБ, что в начале /api/assist, без RAG и без ответа LLM по протоколам."""
     model = get_gemini()
     icd_analysis, q, q_rag, _, err = _infer_icd_pipeline_from_full_query(
-        body.query.strip(), model
+        body.query.strip(), model, force_icd_gemini=True
     )
     if err:
         raise HTTPException(status_code=400, detail=err)

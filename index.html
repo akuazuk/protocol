@@ -13519,12 +13519,6 @@
         window.__funnelContext.icd_codes = [code];
         delete window.__funnelContext._icdLookupCacheKey;
         delete window.__funnelContext._icdLookupPayload;
-        var qInput = document.getElementById("q");
-        if (qInput) {
-          qInput.value = appendIcdChoicesToQuery(qInput.value || "", [
-            { code: code, title_ru: "" },
-          ]);
-        }
         window.__searchWizard = { step: "protocols", selectedProto: null };
         window.__autoPracticalLoadKey = null;
         var prPanel = document.getElementById("practical-review-panel");
@@ -21266,6 +21260,10 @@
     );
   }
 
+  function isDrugExternalIcdCode(code) {
+    return /^Y/i.test(String(code || "").trim());
+  }
+
   function buildIcdWizardChoices(icd) {
     var choices = [];
     var seen = {};
@@ -21275,17 +21273,28 @@
       if (!c || seen[c]) return;
       seen[c] = true;
       var score = null;
-      if (bucket === "detected") {
-        score = 98 - idx;
+      if (bucket === "suggested") {
+        if (row.role === "suggested_gemini" || row.match_method === "gemini_pool") {
+          score = Math.max(72, 92 - idx * 3);
+        } else if (row.score != null && !isNaN(Number(row.score))) {
+          var n = Number(row.score);
+          score = n <= 1 ? Math.round(n * 100) : n <= 100 ? Math.round(n) : 78 - idx * 3;
+        } else {
+          score = Math.max(58, 84 - idx * 4);
+        }
+      } else if (bucket === "detected") {
+        score = isDrugExternalIcdCode(c) ? 18 : 72 - idx * 4;
       } else if (row.score != null && !isNaN(Number(row.score))) {
-        var n = Number(row.score);
-        score = n <= 1 ? Math.round(n * 100) : n <= 100 ? Math.round(n) : 68 - idx * 3;
-      } else if (row.role === "suggested_gemini") {
-        score = Math.max(52, 86 - idx * 4);
+        var n2 = Number(row.score);
+        score = n2 <= 1 ? Math.round(n2 * 100) : n2 <= 100 ? Math.round(n2) : 68 - idx * 3;
       } else {
         score = Math.max(42, 74 - idx * 5);
       }
       var title = (row.title_ru || "").trim();
+      var subtitle = "";
+      if (isDrugExternalIcdCode(c)) {
+        subtitle = "Код лекарства или побочного эффекта - обычно не подходит к жалобе";
+      }
       choices.push({
         id: c,
         code: c,
@@ -21294,13 +21303,14 @@
         score: clampWizardScore(score),
         bucket: bucket,
         label: title ? title : c,
+        subtitle: subtitle,
       });
     }
-    var detected = (icd && icd.detected) || [];
     var suggested = (icd && icd.suggested) || [];
+    var detected = (icd && icd.detected) || [];
     var di;
-    for (di = 0; di < detected.length; di++) addRow(detected[di], "detected", di);
     for (di = 0; di < suggested.length; di++) addRow(suggested[di], "suggested", di);
+    for (di = 0; di < detected.length; di++) addRow(detected[di], "detected", di);
     var codes = (icd && icd.codes_for_retrieval) || [];
     for (di = 0; di < codes.length; di++) {
       var c2 = String(codes[di]).trim();
@@ -21344,6 +21354,10 @@
         return !/^МКБ-10 для поиска протокола:/i.test(String(line || "").trim());
       });
     return lines.join("\n").trim();
+  }
+
+  function clinicalQueryForSearch(qRaw) {
+    return stripIcdAppendLinesFromQuery(stripToClinicalOnly(qRaw || ""));
   }
 
   function appendIcdChoicesToQuery(qRaw, selectedChoices) {
@@ -21953,10 +21967,6 @@
         window.__funnelContext.icd_codes = sel.map(function (c) {
           return c.code;
         });
-        var qInput = document.getElementById("q");
-        if (qInput) {
-          qInput.value = appendIcdChoicesToQuery(qInput.value || "", sel);
-        }
         runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
           console.error(err);
         });
@@ -21980,11 +21990,11 @@
       return Promise.reject(new Error("invalid_query"));
     }
     raw = prep.query;
-    if (qInput) qInput.value = raw;
+    if (qInput) qInput.value = clinicalQueryForSearch(raw);
     var qSend =
       raw.indexOf("=== Контекст пациента ===") === 0
-        ? raw
-        : buildFullQuery(raw);
+        ? stripIcdAppendLinesFromQuery(raw)
+        : buildFullQuery(clinicalQueryForSearch(raw));
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -26735,12 +26745,13 @@
       window.__searchWizard = { step: "protocols", selectedProto: null };
       var qInputNormalize = document.getElementById("q");
       if (qInputNormalize && queryOverride == null) {
-        qInputNormalize.value = qRaw;
+        qInputNormalize.value = clinicalQueryForSearch(qRaw);
       }
+      var qClinical = clinicalQueryForSearch(qRaw);
       var qSend =
         qRaw.indexOf("=== Контекст пациента ===") === 0
-          ? qRaw
-          : buildFullQuery(qRaw);
+          ? stripIcdAppendLinesFromQuery(qRaw)
+          : buildFullQuery(qClinical);
       var retrieveOnly = searchTier === "S0" || searchTier === "S1";
       if (opts.retrieveOnly === true) retrieveOnly = true;
       if (searchTier === "S2" || opts.forceAssistApi) retrieveOnly = false;

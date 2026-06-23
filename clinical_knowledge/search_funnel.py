@@ -176,7 +176,9 @@ def handle_search_funnel(
 
         rs._require_rag_loaded()
         model = rs.get_gemini()
-        icd_analysis, _, _, _, icd_err = rs._infer_icd_pipeline_from_full_query(q, model)
+        icd_analysis, _, _, _, icd_err = rs._infer_icd_pipeline_from_full_query(
+            q, model, force_icd_gemini=True
+        )
         if icd_err:
             out["error"] = icd_err
             out["choices"] = []
@@ -184,7 +186,7 @@ def handle_search_funnel(
         choices: list[dict[str, Any]] = []
         seen: set[str] = set()
         icd_payload = icd_analysis or {}
-        for bucket in ("detected", "suggested"):
+        for bucket in ("suggested", "detected"):
             for row in icd_payload.get(bucket) or []:
                 if not isinstance(row, dict):
                     continue

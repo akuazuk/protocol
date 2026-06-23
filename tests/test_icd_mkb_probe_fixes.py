@@ -85,6 +85,20 @@ def test_co_poisoning_not_headache_only() -> None:
     assert codes[0].startswith(("T58", "X47", "T59"))
 
 
+def test_sore_throat_runny_nose_not_y55() -> None:
+    q = "болит горло и насморк"
+    codes = _top([s["code"] for s in suggest_icd_from_russian(q)])
+    assert not any(c.startswith("Y") for c in codes)
+    assert codes[0].startswith("J")
+
+    from icd_mkb import analyze_query_for_icd
+
+    analysis = analyze_query_for_icd(q, q)
+    retrieval = analysis.get("codes_for_retrieval") or []
+    assert not any(str(c).startswith("Y") for c in retrieval)
+    assert any(str(c).startswith("J") for c in retrieval)
+
+
 def test_foreign_body_airway() -> None:
     q = "инородное тело в дыхательных путях"
     codes = _top([s["code"] for s in suggest_icd_from_russian(q)])
