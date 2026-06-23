@@ -20,6 +20,21 @@ ICD_REF_PATH = ROOT / "data" / "icd_reference" / "icd10_who_2016_terminal_codes.
 PRIMARY_ICD_LIMIT = 12
 BODY_TEXT_LIMIT = 80_000
 
+_CLASSIFICATION_CHUNK_TYPES = frozenset(
+    {"classification", "diagnostics", "criteria_block"}
+)
+_DRUG_NOISE_CHUNK_TYPES = frozenset(
+    {"drug_list", "pharmacotherapy", "appendix", "table_block"}
+)
+_EXTERNAL_ICD_LETTERS = frozenset("YWVT")
+
+_SECTION_HEADER_RE = re.compile(
+    r"(?m)^(?:ГЛАВА\s+\d+|(?:\d+\.)+\s*[А-ЯЁA-Z]|"
+    r"(?:ДИАГНОСТИКА|ЛЕЧЕНИЕ|ПРОФИЛАКТИКА|РЕАБИЛИТАЦИЯ|ДИСПАНСЕРНОЕ|"
+    r"МАРШРУТИЗАЦИЯ|ФАРМАКОТЕРАПИЯ|КЛАССИФИКАЦИЯ|ПРИЛОЖЕНИЕ|АЛГОРИТМ"
+    r"|ТЕРМИНЫ|ОБЩИЕ\s+ПОЛОЖЕНИЯ|ПОКАЗАНИЯ|КРИТЕРИИ))",
+)
+
 _PED_SLUGS = frozenset({"pediatriya"})
 _PED_MARKERS = (
     "д-нас", "дет-нас", "дет нас", "дет_нас", "детс", "дет. нас", "детск",
@@ -255,13 +270,112 @@ def _cards_by_path() -> dict[str, dict[str, Any]]:
     return merged
 
 
-def _chunk_data_by_path() -> tuple[dict[str, list[str]], dict[str, Counter[str]], dict[str, list[str]]]:
-    """path -> text parts, icd freq, icd lists from chunk fields."""
+def _is_external_cause_icd(code: str) -> bool:
+    c = _norm_icd(code)
+    return bool(c) and c[0] in _EXTERNAL_ICD_LETTERS
+
+
+def _section_title_is_classification(title: str) -> bool:
+    t = _norm_blob(title)
+    return any(
+        k in t
+        for k in (
+            "классификац",
+            "шифр мкб",
+            "код мкб",
+            "мкб-10",
+            "диагноз",
+            "диагностическ критери",
+            "номенклатур",
+        )
+    )
+
+
+def _section_title_is_drug_noise(title: str) -> bool:
+    t = _norm_blob(title)
+    return any(
+        k in t
+        for k in (
+            "фармакотерап",
+            "лекарствен",
+            "перечень лекарств",
+            "побочн",
+            "приложение",
+        )
+    )
+
+
+def _split_body_sections(body: str) -> list[tuple[str, str]]:
+    """Разбивка текста PDF по заголовкам разделов: (заголовок, текст)."""
+    text = (body or "").strip()
+    if not text:
+        return []
+    matches = list(_SECTION_HEADER_RE.finditer(text))
+    if not matches:
+        return [("", text)]
+    out: list[tuple[str, str]] = []
+    if matches[0].start() > 0:
+        out.append(("", text[: matches[0].start()]))
+    for i, m in enumerate(matches):
+        title = re.sub(r"\s+", " ", m.group(0)).strip()
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        chunk = text[start:end].strip()
+        if chunk:
+            out.append((title, chunk))
+    return out
+
+
+def _icd_from_classification_sections(
+    body: str,
+    *,
+    extract_icd10,
+    lookup_disease_icd,
+    prioritize_codes,
+    is_symptom_code,
+) -> tuple[list[str], list[str]]:
+    """МКБ только из блоков «Классификация / диагноз / критерии» в тексте PDF."""
+    icd_set: set[str] = set()
+    sources: list[str] = []
+    for title, blob in _split_body_sections(body):
+        if _section_title_is_drug_noise(title):
+            continue
+        is_class = _section_title_is_classification(title) or _norm_blob(title).startswith(
+            "диагностик"
+        )
+        if not is_class and title:
+            continue
+        part = blob[:16_000]
+        for code in lookup_disease_icd(part):
+            c = _norm_icd(code)
+            if c and not _is_external_cause_icd(c):
+                icd_set.add(c)
+                sources.append("body_classification_lex")
+        for code in extract_icd10(part):
+            c = _norm_icd(code)
+            if c and not _is_external_cause_icd(c) and not is_symptom_code(c):
+                icd_set.add(c)
+                sources.append("body_classification_extract")
+    return prioritize_codes(sorted(icd_set)), sorted(set(sources))
+
+
+def _chunk_data_by_path() -> tuple[
+    dict[str, list[str]],
+    dict[str, Counter[str]],
+    dict[str, list[str]],
+    dict[str, Counter[str]],
+    dict[str, list[str]],
+    dict[str, set[str]],
+]:
+    """path -> texts, icd freq (без drug), icd lists, class freq, class icd, drug-only icd."""
     texts: dict[str, list[str]] = defaultdict(list)
     freq: dict[str, Counter[str]] = defaultdict(Counter)
     field_icd: dict[str, list[str]] = defaultdict(list)
+    class_freq: dict[str, Counter[str]] = defaultdict(Counter)
+    class_field: dict[str, list[str]] = defaultdict(list)
+    drug_icd: dict[str, set[str]] = defaultdict(set)
     if not CHUNKS_PATH.is_file():
-        return texts, freq, field_icd
+        return texts, freq, field_icd, class_freq, class_field, drug_icd
     for line in CHUNKS_PATH.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -269,7 +383,7 @@ def _chunk_data_by_path() -> tuple[dict[str, list[str]], dict[str, Counter[str]]
             c = json.loads(line)
         except json.JSONDecodeError:
             continue
-        sp = _norm_path(str(c.get("source_path") or ""))
+        sp = _norm_path(str(c.get("source_path") or c.get("path") or ""))
         if not sp:
             continue
         for key in ("text", "excerpt", "content", "normalized"):
@@ -277,12 +391,27 @@ def _chunk_data_by_path() -> tuple[dict[str, list[str]], dict[str, Counter[str]]
             if isinstance(val, str) and val.strip():
                 texts[sp].append(val.strip())
                 break
+        chunk_type = str(c.get("chunk_type") or "").lower()
+        section_title = str(c.get("section_title") or "")
+        is_class = chunk_type in _CLASSIFICATION_CHUNK_TYPES or _section_title_is_classification(
+            section_title
+        )
+        is_drug = chunk_type in _DRUG_NOISE_CHUNK_TYPES or _section_title_is_drug_noise(
+            section_title
+        )
         for code in c.get("icd10_codes") or []:
             cc = _norm_icd(str(code))
-            if len(cc) >= 3:
-                freq[sp][cc] += 1
-                field_icd[sp].append(cc)
-    return texts, freq, field_icd
+            if len(cc) < 3:
+                continue
+            if is_drug and not is_class:
+                drug_icd[sp].add(cc)
+                continue
+            freq[sp][cc] += 1
+            field_icd[sp].append(cc)
+            if is_class:
+                class_freq[sp][cc] += 1
+                class_field[sp].append(cc)
+    return texts, freq, field_icd, class_freq, class_field, drug_icd
 
 
 def _icd_from_summaries() -> dict[str, list[str]]:
@@ -470,7 +599,9 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
         raise FileNotFoundError(f"Missing {INDEX_CSV}")
 
     cards = _cards_by_path()
-    chunk_texts, chunk_freq, chunk_field_icd = _chunk_data_by_path()
+    chunk_texts, chunk_freq, chunk_field_icd, chunk_class_freq, chunk_class_field, chunk_drug_icd = (
+        _chunk_data_by_path()
+    )
     summary_icd = _icd_from_summaries()
     overrides = _load_overrides()
 
@@ -509,18 +640,52 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
                 prioritize_codes=prioritize_codes,
                 is_symptom_code=is_symptom_code,
             )
+            class_body_icd, class_body_src = _icd_from_classification_sections(
+                body,
+                extract_icd10=extract_icd10,
+                lookup_disease_icd=lookup_disease_icd,
+                prioritize_codes=prioritize_codes,
+                is_symptom_code=is_symptom_code,
+            )
             for c in body_icd:
                 icd_set.add(c)
             sources.update(body_src)
+            for c in class_body_icd:
+                icd_set.add(c)
+            sources.update(class_body_src)
 
-            icd_all = _filter_valid_icd(prioritize_codes(sorted(icd_set)))
+            class_codes_ordered = list(
+                dict.fromkeys(
+                    [_norm_icd(x) for x in chunk_class_field.get(path, []) if x]
+                    + [c for c, _ in chunk_class_freq.get(path, Counter()).most_common(24)]
+                    + class_body_icd
+                )
+            )
+            drug_only = chunk_drug_icd.get(path, set())
+            class_code_set = set(class_codes_ordered)
+
+            icd_all_raw = _filter_valid_icd(prioritize_codes(sorted(icd_set)))
+            icd_all = [
+                c
+                for c in icd_all_raw
+                if not (
+                    _is_external_cause_icd(c)
+                    and c in drug_only
+                    and c not in class_code_set
+                )
+            ]
+
             primary_src = (
-                [_norm_icd(x) for x in (card.get("icd10_primary") or []) if x]
-                or [c for c, _ in chunk_freq.get(path, Counter()).most_common(PRIMARY_ICD_LIMIT)]
+                class_codes_ordered[:PRIMARY_ICD_LIMIT]
+                or [_norm_icd(x) for x in (card.get("icd10_primary") or []) if x]
+                or summary_icd.get(path, [])[:PRIMARY_ICD_LIMIT]
                 or body_icd[:PRIMARY_ICD_LIMIT]
+                or [c for c, _ in chunk_freq.get(path, Counter()).most_common(PRIMARY_ICD_LIMIT)]
                 or icd_all[:PRIMARY_ICD_LIMIT]
             )
-            icd_primary = _filter_valid_icd(list(dict.fromkeys(primary_src)))[:PRIMARY_ICD_LIMIT]
+            icd_primary = _filter_valid_icd(
+                [c for c in dict.fromkeys(primary_src) if c and not _is_external_cause_icd(c)]
+            )[:PRIMARY_ICD_LIMIT]
 
             aud_csv = (row.get("audience") or "").strip()
             override = overrides.get(path)
@@ -540,6 +705,11 @@ def build_protocol_catalog(*, write: bool = True) -> list[dict[str, Any]]:
             )
             if icd_all:
                 kind, scope_label, general_scope = "clinical", "Клинический КП (есть коды МКБ)", False
+
+            if class_codes_ordered:
+                sources.add("chunks_classification")
+            if class_body_icd:
+                sources.add("body_classification")
 
             confidence = "high" if icd_primary else ("medium" if icd_all else "low")
             title_norm = normalize_protocol_title(title, filename)
