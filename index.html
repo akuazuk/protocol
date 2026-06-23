@@ -1616,7 +1616,7 @@
     }
 
     .consult-crit-detail--gap li::before {
-      content: "—";
+      content: " - ";
       position: absolute;
       left: 0;
       color: #9a6b45;
@@ -10397,7 +10397,7 @@
               <span class="consult-tier-card__rec">рекомендуется</span>
               <span class="consult-tier-card__top">
                 <span class="consult-tier-card__badge">S1</span>
-                <span class="consult-tier-card__time">≈ 1–5 с</span>
+                <span class="consult-tier-card__time">≈ 1-5 с</span>
               </span>
               <span class="consult-tier-card__name">Индекс + PDF</span>
               <span class="consult-tier-card__desc">Подбор фрагментов по МКБ и тексту без оценки модели</span>
@@ -10406,7 +10406,7 @@
               <input type="radio" name="search-tier" value="S0" />
               <span class="consult-tier-card__top">
                 <span class="consult-tier-card__badge">S0</span>
-                <span class="consult-tier-card__time">≈ 0.3–1 с</span>
+                <span class="consult-tier-card__time">≈ 0.3-1 с</span>
               </span>
               <span class="consult-tier-card__name">Только МКБ → PDF</span>
               <span class="consult-tier-card__desc">Мгновенный список по коду МКБ-10 (нужен код в запросе)</span>
@@ -10415,7 +10415,7 @@
               <input type="radio" name="search-tier" value="S2" />
               <span class="consult-tier-card__top">
                 <span class="consult-tier-card__badge">S2</span>
-                <span class="consult-tier-card__time">≈ 5–20 с</span>
+                <span class="consult-tier-card__time">≈ 5-20 с</span>
               </span>
               <span class="consult-tier-card__name">С оценкой ИИ</span>
               <span class="consult-tier-card__desc">Полный ответ модели с match_reason и дифференциалом</span>
@@ -10770,7 +10770,7 @@
         <div class="consult-upload-card consult-hide-print">
           <p class="methodist-upload-lead" id="methodist-upload-lead">
             <strong>Режим методиста.</strong> Система оценит КЗ (этап 1), затем ИИ проверит,
-            <em>насколько верна эта оценка</em>, и предложит правки для движка анализа — не список правок для врача.
+            <em>насколько верна эта оценка</em>, и предложит правки для движка анализа - не список правок для врача.
           </p>
           <div class="consult-file-row">
             <span class="consult-label" id="consult-pdf-label">Файл заключения</span>
@@ -10862,7 +10862,7 @@
           </div>
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать (L1)</button>
-            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="Полный RAG и оценка модели — дольше, ~1-3 мин">Глубокий разбор L2</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="Полный RAG и оценка модели - дольше, ~1-3 мин">Глубокий разбор L2</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -14812,6 +14812,7 @@
       if (prPanel) {
         prPanel.hidden = true;
         prPanel.innerHTML = "";
+        prPanel.removeAttribute("data-detail-loaded");
       }
       if (window.__lastAssistData) renderLlmOut(window.__lastAssistData);
       return;
@@ -14854,7 +14855,10 @@
       wiz.step = "detail";
       wiz.selectedProto = path;
       window.__searchWizard = wiz;
+      var prDetail = document.getElementById("practical-review-panel");
+      if (prDetail) prDetail.removeAttribute("data-detail-loaded");
       renderLlmOut(window.__lastAssistData);
+      return;
     }
   }
 
@@ -15221,7 +15225,7 @@
         if (panel) panel.hidden = false;
         loadProtocolPractical(offer, (data && data.query) || lastAssistFullQuery || "", icdCodesFromAssistData(data || {}), {
           mode: "lite",
-          lazyKzMatrix: true,
+          lazyKzMatrix: false,
           autoKzHint: true,
         });
         try {
@@ -16678,7 +16682,7 @@
       "</h4>";
     html += renderPracticalClinicalList(
       diagItems,
-      "Нет выделенных обследований — откройте PDF или уточните запрос (симптомы, МКБ)."
+      "Нет выделенных обследований - откройте PDF или уточните запрос (симптомы, МКБ)."
     );
     if (diagCites.length) {
       html += renderPracticalClinicalCite(diagCites[0]);
@@ -16703,7 +16707,7 @@
     if (!treatItems.length && !medItems.length) {
       html += renderPracticalClinicalList(
         [],
-        "Нет выделенного лечения или препаратов — проверьте раздел «Лечение» в PDF."
+        "Нет выделенного лечения или препаратов - проверьте раздел «Лечение» в PDF."
       );
     }
     if (treatCites.length) {
@@ -16972,9 +16976,18 @@
         });
       })
       .then(function (payload) {
+        var matrix = payload.kz_matrix;
+        if (
+          (!matrix || !matrix.sections || !matrix.sections.length) &&
+          opts.prefetchedMatrix &&
+          opts.prefetchedMatrix.sections &&
+          opts.prefetchedMatrix.sections.length
+        ) {
+          matrix = opts.prefetchedMatrix;
+        }
         mountPracticalReviewPanel(
           payload.clinical_detail,
-          payload.kz_matrix,
+          matrix,
           queryText,
           payload.protocol_ui_meta,
           {
@@ -16992,6 +17005,7 @@
       })
       .catch(function (err) {
         var panel = document.getElementById("practical-review-panel");
+        if (panel) panel.removeAttribute("data-detail-loaded");
         var msg = String(err.message || err);
         if (err && err.name === "AbortError") {
           msg = "Превышено время ожидания. Попробуйте «Загрузить развёрнутую выдержку».";
@@ -17012,9 +17026,77 @@
       });
   }
 
+  function findProtocolOfferFromAssist(data, path) {
+    if (!path) return null;
+    var protos = dedupeProtocolsByPath(((data && data.llm_json) || {}).protocols || []);
+    var pi;
+    for (pi = 0; pi < protos.length; pi++) {
+      if (protos[pi].path === path) {
+        return {
+          path: path,
+          title: protos[pi].title || "",
+          confidence_score: protos[pi].confidence_score,
+          rag_support: protos[pi].rag_support,
+        };
+      }
+    }
+    return {
+      path: path,
+      title: formatProtocolDisplayTitle(path, ""),
+      confidence_score: "",
+    };
+  }
+
+  function autoLoadDetailStepForSearch(data) {
+    if (!isSearchSteppedMode() || !data) return;
+    var wiz = window.__searchWizard || {};
+    if (wiz.step !== "detail" || !wiz.selectedProto) return;
+    var path = wiz.selectedProto;
+    var panel = document.getElementById("practical-review-panel");
+    if (panel && panel.getAttribute("data-detail-loaded") === path) return;
+    var offer = findProtocolOfferFromAssist(data, path);
+    if (!offer) return;
+    var q = data.query || lastAssistFullQuery || "";
+    var icd = icdCodesFromAssistData(data);
+    var ctx = window.__funnelContext || {};
+    var cid = ctx.condition_id || "";
+    var nav = ctx.summary_nav;
+    if (!cid && nav && nav.conditions && nav.conditions.length) {
+      cid = nav.conditions[0].condition_id || "";
+    }
+    var startLoad = function (prefetchedMatrix) {
+      if (panel) panel.setAttribute("data-detail-loaded", path);
+      loadProtocolPractical(offer, q, icd, {
+        mode: "lite",
+        lazyKzMatrix: false,
+        autoKzHint: true,
+        prefetchedMatrix: prefetchedMatrix || null,
+      });
+    };
+    var cachedBrief = cid ? getProtocolBriefFromCache(path, cid) : null;
+    if (cachedBrief && cachedBrief.kz_matrix && cachedBrief.kz_matrix.sections && cachedBrief.kz_matrix.sections.length) {
+      startLoad(cachedBrief.kz_matrix);
+      return;
+    }
+    if (cid) {
+      fetchProtocolBriefBundle(path, cid, q, icd)
+        .then(function (bundle) {
+          var mx =
+            bundle && bundle.kz_matrix && bundle.kz_matrix.sections && bundle.kz_matrix.sections.length
+              ? bundle.kz_matrix
+              : null;
+          startLoad(mx);
+        })
+        .catch(function () {
+          startLoad(null);
+        });
+      return;
+    }
+    startLoad(null);
+  }
+
   function maybeAutoLoadPracticalForSearch(data) {
-    /* Матрица КЗ / практический разбор - только по явному клику пользователя. */
-    return;
+    autoLoadDetailStepForSearch(data);
   }
 
   function loadKzMatrixOnly(offer, queryText, icdCodes, clinicalDetail) {
@@ -17789,7 +17871,7 @@
         html +=
           '<div class="search-tier-upgrade-bar" role="region" aria-label="Углублённый поиск">' +
           '<button type="button" class="btn btn-consult-outline" id="btn-search-upgrade-s2">Углублённый поиск с ИИ (S2)</button>' +
-          '<p class="hint">Оценка модели: match_reason, дифференциал — обычно 5–20 с.</p>' +
+          '<p class="hint">Оценка модели: match_reason, дифференциал - обычно 5-20 с.</p>' +
           "</div>";
       }
       if (window.__assistUndoSnapshot) {
@@ -17897,6 +17979,8 @@
         html += '<span class="assist-sec-label">' + secLabel + "</span>";
         if (stepped && wiz.step === "detail") {
           html += renderProtocolNavGuideHtml("matrix", { compact: true });
+          html +=
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Чек-лист по структуре консультативного заключения: жалобы, диагноз, обследование, лечение, наблюдение. Пункты с пометкой «обязательно» - сверьте с осмотром и PDF протокола.</p>';
         }
         if (!citationsOnly && !methodistSearch && !doctorLite && !stepped) {
           html +=
@@ -17969,8 +18053,18 @@
         html += renderClinicalAttentionBlock(data);
       }
 
+      var detailStepLoading = stepped && wiz.step === "detail" && wiz.selectedProto;
       html +=
-        '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
+        '<div id="practical-review-panel" class="practical-review-panel' +
+        (detailStepLoading ? " practical-review-panel--loading" : "") +
+        '"' +
+        (detailStepLoading ? "" : " hidden") +
+        ' aria-live="polite">' +
+        (detailStepLoading
+          ? '<p class="assist-detail-meta practical-loading-title">Загрузка матрицы КЗ и выдержки из протокола…</p>' +
+            getDetailLoadingHtml()
+          : "") +
+        "</div>";
 
       if ((!uiCompact || showRefinement) && j.differential && j.differential.length) {
         html +=
@@ -22342,7 +22436,7 @@
         if (panel) panel.hidden = false;
         loadProtocolPractical(offer, (data && data.query) || lastAssistFullQuery || "", icdCodesFromAssistData(data || {}), {
           mode: "lite",
-          lazyKzMatrix: true,
+          lazyKzMatrix: false,
           autoKzHint: true,
         });
         try {
@@ -22437,8 +22531,12 @@
           '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-matrix" data-proto-path="' +
           escapeHtmlAttr(path) +
           '">Матрица КЗ</button></div>' +
-          '<div id="practical-review-panel" class="practical-review-panel" hidden></div></div></div>';
+          '<div id="practical-review-panel" class="practical-review-panel practical-review-panel--loading" aria-live="polite">' +
+          '<p class="assist-detail-meta">Загрузка матрицы КЗ…</p>' +
+          getDetailLoadingHtml() +
+          "</div></div></div>";
         bindProtocolNavHub(data);
+        autoLoadDetailStepForSearch(data);
       }
       hideSearchWizardBarProgress();
       return;
@@ -24703,7 +24801,7 @@
       var hp = document.createElement("p");
       hp.style.margin = "0.35rem 0 0";
       hp.textContent =
-        "Балл — соответствие жалобам, анамнезу, МКБ и специальности. МКБ-веса — приоритет кодов в протоколе. Флаги — риски (приказ, стационар, чужая нозология).";
+        "Балл - соответствие жалобам, анамнезу, МКБ и специальности. МКБ-веса - приоритет кодов в протоколе. Флаги - риски (приказ, стационар, чужая нозология).";
       help.appendChild(hp);
       wrap.appendChild(help);
 
@@ -24724,9 +24822,9 @@
         );
         var scoreTd = document.createElement("td");
         scoreTd.textContent =
-          m.match_score != null ? String(Math.round(Number(m.match_score))) : "—";
+          m.match_score != null ? String(Math.round(Number(m.match_score))) : " - ";
         var icdTd = document.createElement("td");
-        icdTd.textContent = m.icd_fit_label || "—";
+        icdTd.textContent = m.icd_fit_label || " - ";
         var flagTd = document.createElement("td");
         var reason = (m.pick_reason_ru || "").trim();
         if (reason) {
@@ -24964,7 +25062,7 @@
     if (gaps.length) {
       parts.push('<ul class="consult-crit-detail consult-crit-detail--gap">');
       gaps.forEach(function (line) {
-        parts.push("<li>" + escapeHtml(String(line).replace(/^[—\-]\s*/, "")) + "</li>");
+        parts.push("<li>" + escapeHtml(String(line).replace(/^[ - \-]\s*/, "")) + "</li>");
       });
       parts.push("</ul>");
     }
@@ -25456,9 +25554,9 @@
   }
 
   var SEARCH_TIER_HINTS = {
-    S0: "S0: мгновенный список PDF по коду МКБ-10 — укажите код в запросе или на шаге воронки.",
-    S1: "S1: подбор фрагментов по индексу МКБ и тексту без оценки модели — рекомендуется для повседневной работы.",
-    S2: "S2: полный ответ модели с match_reason и дифференциалом — дольше, выше нагрузка на сервер.",
+    S0: "S0: мгновенный список PDF по коду МКБ-10 - укажите код в запросе или на шаге воронки.",
+    S1: "S1: подбор фрагментов по индексу МКБ и тексту без оценки модели - рекомендуется для повседневной работы.",
+    S2: "S2: полный ответ модели с match_reason и дифференциалом - дольше, выше нагрузка на сервер.",
   };
 
   function getSearchSelectedTier() {

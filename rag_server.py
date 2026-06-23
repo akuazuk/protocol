@@ -7748,7 +7748,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r221-health-live-middleware"
+BUILD_VERSION = "2026-06-16-r222-detail-kz-autoload"
 
 
 def _app_version() -> str:
