@@ -200,6 +200,9 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_ALIGNMENT_ENABLED", "1"),
             ("RAG_LEX_INDEX_DEFER", "0"),
             ("CONSULT_CONCURRENCY", "2"),
+            ("RAG_CHUNK_VOTE_RERETRIEVE", "0"),
+            ("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER", "1"),
+            ("SEARCH_CONCURRENCY", "2"),
         )
     else:
         profile = (
@@ -224,6 +227,9 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_ALIGNMENT_ENABLED", "0"),
             ("RAG_LEX_INDEX_DEFER", "1"),
             ("CONSULT_CONCURRENCY", "1"),
+            ("RAG_CHUNK_VOTE_RERETRIEVE", "0"),
+            ("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER", "1"),
+            ("SEARCH_CONCURRENCY", "1"),
         )
     for key, val in profile:
         if not (os.environ.get(key) or "").strip():
@@ -238,6 +244,11 @@ _retrieve_sem = threading.Semaphore(
 _consult_sem = threading.Semaphore(
     max(1, env_int("CONSULT_CONCURRENCY", 1 if env_bool("RENDER", False) else 3))
 )
+_search_sem = threading.Semaphore(
+    max(1, env_int("SEARCH_CONCURRENCY", 2 if env_bool("RENDER", False) else 4))
+)
+_search_metrics_lock = threading.Lock()
+_search_last_metrics: dict[str, Any] = {}
 
 
 def _consult_response_include_html() -> bool:
@@ -7051,11 +7062,12 @@ if _CORS_ORIGINS:
 _RATE_LIMIT_ENABLED = env_bool("RATE_LIMIT_ENABLED", True)
 _RATE_WINDOW_SEC = 60.0
 _RATE_LIMITS: dict[str, int] = {
-    "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 20),
+    "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 10),
     "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 2),
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
-    "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 15),
+    "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 5),
+    "/api/search/run": env_int("RATE_LIMIT_SEARCH_RUN_PER_MIN", 15),
     "/api/protocol-detail": env_int("RATE_LIMIT_DETAIL_PER_MIN", 30),
     "/api/consultation-template": env_int("RATE_LIMIT_TEMPLATE_PER_MIN", 20),
     "/api/icd-suggest": env_int("RATE_LIMIT_ICD_PER_MIN", 40),
@@ -7195,6 +7207,29 @@ class AssistIn(BaseModel):
         default=False,
         description="true - сначала детерминированный lookup по индексу МКБ",
     )
+    search_tier: str | None = Field(
+        default=None,
+        max_length=4,
+        description="S0|S1|S2 - уровень поиска (S0=МКБ index, S1=retrieve, S2=LLM)",
+    )
+
+
+class SearchRunIn(BaseModel):
+    """Единая точка: воронка (step>=0) или прямой поиск по tier S0/S1/S2."""
+
+    query: str = Field(..., min_length=2, max_length=12000)
+    tier: str = Field(default="S1", max_length=4)
+    step: int = Field(
+        default=-1,
+        ge=-1,
+        le=7,
+        description="-1 = прямой поиск по tier; 0-7 = шаг воронки",
+    )
+    context: dict[str, Any] = Field(default_factory=dict)
+    category_slugs: list[str] = Field(default_factory=list)
+    icd_codes: list[str] = Field(default_factory=list, max_length=24)
+    funnel_population: str | None = Field(default=None, max_length=32)
+    session_id: str | None = Field(default=None, max_length=64)
 
 
 class ProtocolsByIcdIn(BaseModel):
@@ -7654,7 +7689,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-23-r211-plan-speed-stability"
+BUILD_VERSION = "2026-06-01-r213-search-tiers-all-phases"
 
 
 def _app_version() -> str:
@@ -7706,6 +7741,9 @@ def health() -> dict:
         "lex_index_ready": _lex_inverted_index is not None,
         "consult_alignment_enabled": os.environ.get("CONSULT_ALIGNMENT_ENABLED", "1"),
         "consult_concurrency": env_int("CONSULT_CONCURRENCY", 3),
+        "search_concurrency": env_int("SEARCH_CONCURRENCY", 4),
+        "search_require_allowlist": os.environ.get("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER", ""),
+        "search_last": dict(_search_last_metrics),
         "render_plan": (os.environ.get("RENDER_PLAN") or "").strip() or None,
         "render_extended_ram": _render_extended_ram(),
     }
@@ -8107,16 +8145,58 @@ def _try_icd_fast_assist(
     )
 
 
+def _record_search_metrics(**fields: object) -> None:
+    global _search_last_metrics
+    snap = {k: v for k, v in fields.items() if v is not None}
+    with _search_metrics_lock:
+        _search_last_metrics = snap
+
+
 @app.post("/api/assist")
 def api_assist(body: AssistIn) -> dict:
+    with _search_sem:
+        return _api_assist_impl(body)
+
+
+def _api_assist_impl(body: AssistIn) -> dict:
+    from clinical_knowledge.search_tiering import (
+        apply_search_tier_flags,
+        build_search_path_allowlist,
+        resolve_search_tier,
+        search_require_allowlist,
+    )
+
     t_start = time.perf_counter()
     _require_rag_loaded()
     model = get_gemini()
-    retrieve_only = bool(body.retrieve_only)
+
+    tier_raw = (body.search_tier or "").strip() or None
+    if not tier_raw and body.retrieve_only and not body.assist_full:
+        tier_raw = "S1"
+    elif not tier_raw and not body.retrieve_only:
+        tier_raw = "S2"
+    tier_flags = apply_search_tier_flags(
+        resolve_search_tier(tier_raw),
+        explicit_icd_codes=body.icd_codes or None,
+        query=body.query,
+    )
+    if tier_flags.get("error"):
+        raise HTTPException(status_code=400, detail=str(tier_flags["error"]))
+    search_tier = str(tier_flags.get("tier") or "S1")
+
+    if search_tier == "S2":
+        retrieve_only = False
+    elif search_tier in ("S0", "S1"):
+        retrieve_only = True
+    else:
+        retrieve_only = bool(body.retrieve_only)
     assist_lite = _assist_lite_enabled(assist_full=body.assist_full)
+    if search_tier != "S2":
+        assist_lite = True
     skip_llm_search = retrieve_only and _search_skip_llm_on_retrieve_only()
-    skip_refine = skip_llm_search or bool(body.icd_fast_path or body.icd_codes)
-    skip_icd_gemini = skip_llm_search or bool(body.icd_fast_path or body.icd_codes)
+    icd_fast = bool(body.icd_fast_path) or bool(tier_flags.get("icd_fast_path"))
+    skip_refine = skip_llm_search or icd_fast or bool(body.icd_codes)
+    skip_icd_gemini = skip_llm_search or icd_fast or bool(body.icd_codes)
     icd_analysis, q, q_rag, query_clinical_refinement, icd_err = (
         _infer_icd_pipeline_from_full_query(
             body.query,
@@ -8136,7 +8216,9 @@ def api_assist(body: AssistIn) -> dict:
         body_codes=body.icd_codes or None,
         icd_analysis=icd_analysis,
     )
-    use_icd_fast = bool(body.icd_fast_path) or (_icd_fast_auto_enabled() and bool(fast_icd_codes))
+    use_icd_fast = icd_fast or (_icd_fast_auto_enabled() and bool(fast_icd_codes))
+    if search_tier == "S0":
+        use_icd_fast = True
 
     if use_icd_fast and fast_icd_codes:
         fast = _try_icd_fast_assist(
@@ -8154,7 +8236,19 @@ def api_assist(body: AssistIn) -> dict:
                 icd_pipeline_ms=(t_icd_done - t_start) * 1000,
                 lookup_ms=fast.get("lookup_ms"),
             )
+            fast["search_tier"] = search_tier
+            _record_search_metrics(
+                search_path="icd_fast_lookup",
+                search_tier=search_tier,
+                total_ms=fast["search_timing"].get("total_ms"),
+                retrieve_candidates=0,
+            )
             return fast
+        if search_tier == "S0" or tier_flags.get("require_icd_fast"):
+            raise HTTPException(
+                status_code=400,
+                detail="S0: не найдены протоколы по указанным кодам МКБ. Уточните код или выберите S1/S2.",
+            )
 
     icd_lookup_allowlist: list[str] | None = None
     if use_icd_fast and fast_icd_codes:
@@ -8232,11 +8326,28 @@ def api_assist(body: AssistIn) -> dict:
             dict.fromkeys((icd_path_boost or []) + list(search_ctx["path_boost"]))
         ) or None
 
+    require_allow = search_require_allowlist()
+    merged_allowlist = build_search_path_allowlist(
+        path_allowlist=path_allowlist,
+        icd_lookup_allowlist=icd_lookup_allowlist,
+        icd_codes=icd_codes_for_lex,
+        path_boost=icd_path_boost,
+        search_ctx=search_ctx,
+    )
+
     def _assist_retrieve(rag_q: str, *, routing_q: str | None = None, strict_paths: bool = True) -> list[dict]:
         aud_hint = infer_audience_from_funnel_context(q)
         if aud_hint is None:
             aud_hint = infer_audience_from_query(q, _routing)
-        allow = path_allowlist if strict_paths else None
+        allow = merged_allowlist if strict_paths else None
+        if require_allow and strict_paths and not allow:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Уточните код МКБ-10 или выберите рубрику каталога — "
+                    "полный поиск по корпусу отключён для стабильности сервера."
+                ),
+            )
         skip_embed = bool(
             allow
             and len(allow) <= 15
@@ -8254,7 +8365,7 @@ def api_assist(body: AssistIn) -> dict:
             audience_hint=aud_hint,
             embed_rerank=False if skip_embed else None,
         )
-        if not rows and allow:
+        if not rows and allow and not require_allow:
             rows = retrieve(
                 rag_q,
                 routing_query=routing_q if routing_q is not None else q,
@@ -8275,6 +8386,7 @@ def api_assist(body: AssistIn) -> dict:
     if (
         not retrieved
         and not skip_llm_search
+        and not require_allow
         and os.environ.get("RAG_SPELLFIX_ON_EMPTY", "1").strip().lower() in (
             "1",
             "true",
@@ -8301,7 +8413,7 @@ def api_assist(body: AssistIn) -> dict:
     )
     if not retrieved and search_ctx and (
         infer_audience_from_funnel_context(q) or infer_audience_from_query(q, _routing)
-    ):
+    ) and not require_allow:
         retrieved = _assist_retrieve(q_rag, strict_paths=False)
         retrieved, audience_inferred, audience_fallback = filter_retrieval_by_audience(
             retrieved, q, _routing
@@ -8314,7 +8426,7 @@ def api_assist(body: AssistIn) -> dict:
         "1",
         "true",
         "yes",
-    ):
+    ) and not require_allow:
         maj = _majority_category_from_retrieval(retrieved)
         chunk_vote_majority = maj
         if maj and (not boost_merged or maj not in boost_merged):
@@ -8610,15 +8722,24 @@ def api_assist(body: AssistIn) -> dict:
 
     t_total = time.perf_counter()
     search_path = "retrieve_only" if retrieve_only else ("assist_lite" if assist_lite else "assist_llm")
+    if search_tier == "S0":
+        search_path = "icd_fast_lookup"
     search_timing = _build_search_timing(
         path=search_path,
         total_ms=(t_total - t_start) * 1000,
         icd_pipeline_ms=(t_icd_done - t_start) * 1000,
         retrieve_ms=(t_total - t_retrieve_start) * 1000,
     )
+    _record_search_metrics(
+        search_path=search_path,
+        search_tier=search_tier,
+        total_ms=search_timing.get("total_ms"),
+        retrieve_candidates=len(retrieved),
+    )
 
     return {
         "query": q,
+        "search_tier": search_tier,
         "retrieval": retrieved,
         "protocol_ui_meta": protocol_ui_meta_bundle(meta_paths),
         "audience_inferred": audience_inferred,
@@ -8890,13 +9011,69 @@ def api_search_funnel(body: SearchFunnelIn) -> dict:
     """Единый контракт шагов воронки 0-7 (C5)."""
     from clinical_knowledge.search_funnel import handle_search_funnel
 
-    return handle_search_funnel(
-        query=body.query.strip(),
-        step=int(body.step),
-        context=body.context,
-        category_slugs=list(body.category_slugs or []),
-        session_id=body.session_id,
-    )
+    with _search_sem:
+        return handle_search_funnel(
+            query=body.query.strip(),
+            step=int(body.step),
+            context=body.context,
+            category_slugs=list(body.category_slugs or []),
+            session_id=body.session_id,
+        )
+
+
+@app.post("/api/search/run")
+def api_search_run(body: SearchRunIn) -> dict:
+    """Единая точка: воронка (step>=0) или tier S0/S1/S2."""
+    from clinical_knowledge.search_run import run_search_request
+
+    with _search_sem:
+
+        def _assist_from_dict(payload: dict) -> dict:
+            ain = AssistIn(
+                query=str(payload.get("query") or ""),
+                category_slugs=list(payload.get("category_slugs") or []),
+                icd_codes=list(payload.get("icd_codes") or []),
+                funnel_population=payload.get("funnel_population"),
+                retrieve_only=bool(payload.get("retrieve_only")),
+                icd_fast_path=bool(payload.get("icd_fast_path")),
+                assist_full=bool(payload.get("assist_full")),
+                search_tier=str(payload.get("search_tier") or "S1"),
+            )
+            return _api_assist_impl(ain)
+
+        def _funnel(**kwargs: object) -> dict:
+            from clinical_knowledge.search_funnel import handle_search_funnel
+
+            return handle_search_funnel(
+                query=str(kwargs.get("query") or ""),
+                step=int(kwargs.get("step") or 0),
+                context=dict(kwargs.get("context") or {}),
+                category_slugs=list(kwargs.get("category_slugs") or []),
+                session_id=kwargs.get("session_id"),  # type: ignore[arg-type]
+            )
+
+        def _by_icd(**kwargs: object) -> dict:
+            pin = ProtocolsByIcdIn(
+                query=str(kwargs.get("query") or ""),
+                icd_codes=list(kwargs.get("icd_codes") or []),
+                population=kwargs.get("population"),  # type: ignore[arg-type]
+                category_slugs=list(kwargs.get("category_slugs") or []),
+            )
+            return api_search_protocols_by_icd(pin)
+
+        return run_search_request(
+            query=body.query,
+            tier=body.tier,
+            step=int(body.step),
+            context=body.context,
+            category_slugs=body.category_slugs,
+            icd_codes=body.icd_codes,
+            funnel_population=body.funnel_population,
+            session_id=body.session_id,
+            assist_fn=_assist_from_dict,
+            funnel_fn=_funnel,
+            protocols_by_icd_fn=_by_icd,
+        )
 
 
 @app.post("/api/consultation-template")

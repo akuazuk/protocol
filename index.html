@@ -2970,6 +2970,28 @@
       color: var(--green-800);
     }
 
+    .search-query-status {
+      margin: 0.35rem 0 0;
+      font-size: 0.85rem;
+    }
+
+    .search-query-status.error {
+      color: #b42318;
+    }
+
+    .search-tier-upgrade-bar {
+      margin: 0.75rem 0 1rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 10px;
+      background: rgba(15, 118, 110, 0.04);
+    }
+
+    .search-tier-upgrade-bar .hint {
+      margin-top: 0.35rem;
+      margin-bottom: 0;
+    }
+
     #section-help {
       scroll-margin-top: 5.5rem;
     }
@@ -9676,6 +9698,47 @@
           </label>
           <span class="info-panel-note" style="margin: 0">Пошаговый подбор включён: после «Найти» - уточнение аудитории и кодов МКБ при необходимости.</span>
         </div>
+        <div class="consult-tier-panel consult-hide-print search-tier-panel" id="search-tier-panel" role="group" aria-labelledby="search-tier-title">
+          <div class="consult-tier-panel__head">
+            <h3 class="consult-tier-panel__title" id="search-tier-title">Уровень поиска</h3>
+            <p class="consult-tier-panel__lead">Как глубоко подбирать протоколы</p>
+          </div>
+          <div class="consult-tier-cards" id="search-tier-cards">
+            <label class="consult-tier-card">
+              <input type="radio" name="search-tier" value="S1" checked data-user-tier="1" />
+              <span class="consult-tier-card__rec">рекомендуется</span>
+              <span class="consult-tier-card__top">
+                <span class="consult-tier-card__badge">S1</span>
+                <span class="consult-tier-card__time">≈ 1–5 с</span>
+              </span>
+              <span class="consult-tier-card__name">Индекс + PDF</span>
+              <span class="consult-tier-card__desc">Подбор фрагментов по МКБ и тексту без оценки модели</span>
+            </label>
+            <label class="consult-tier-card">
+              <input type="radio" name="search-tier" value="S0" />
+              <span class="consult-tier-card__top">
+                <span class="consult-tier-card__badge">S0</span>
+                <span class="consult-tier-card__time">≈ 0.3–1 с</span>
+              </span>
+              <span class="consult-tier-card__name">Только МКБ → PDF</span>
+              <span class="consult-tier-card__desc">Мгновенный список по коду МКБ-10 (нужен код в запросе)</span>
+            </label>
+            <label class="consult-tier-card">
+              <input type="radio" name="search-tier" value="S2" />
+              <span class="consult-tier-card__top">
+                <span class="consult-tier-card__badge">S2</span>
+                <span class="consult-tier-card__time">≈ 5–20 с</span>
+              </span>
+              <span class="consult-tier-card__name">С оценкой ИИ</span>
+              <span class="consult-tier-card__desc">Полный ответ модели с match_reason и дифференциалом</span>
+            </label>
+          </div>
+          <p class="consult-tier-hint" id="search-tier-hint" aria-live="polite"></p>
+          <label class="search-skip-population" style="display:block;margin-top:0.5rem;font-size:0.85rem">
+            <input type="checkbox" id="search-skip-population-gate" />
+            Не спрашивать аудиторию при каждом поиске (если не указана в тексте)
+          </label>
+        </div>
         <div class="search-panel__head">
           <span class="search-panel__badge">Поиск протоколов</span>
           <p class="search-panel__hint">
@@ -9739,6 +9802,7 @@
               Найти протоколы
             </button>
           </form>
+          <p class="hint search-query-status" id="search-query-status" aria-live="polite" hidden></p>
         </div>
       </div>
 
@@ -16550,6 +16614,20 @@
         high.concat(low),
         stepped || citationsOnly
       );
+      if (
+        !methodistSearch &&
+        !citationsOnly &&
+        stepped &&
+        wiz.step === "protocols" &&
+        (doctorLite || data.retrieve_only || data.search_tier === "S0" || data.search_tier === "S1") &&
+        data.search_tier !== "S2"
+      ) {
+        html +=
+          '<div class="search-tier-upgrade-bar" role="region" aria-label="Углублённый поиск">' +
+          '<button type="button" class="btn btn-consult-outline" id="btn-search-upgrade-s2">Углублённый поиск с ИИ (S2)</button>' +
+          '<p class="hint">Оценка модели: match_reason, дифференциал — обычно 5–20 с.</p>' +
+          "</div>";
+      }
       if (window.__assistUndoSnapshot) {
         html +=
           '<div class="assist-undo-bar" role="region" aria-label="Откат подбора">' +
@@ -16843,6 +16921,7 @@
       bindDiffSearchButtons();
       bindProtocolFactsTabs();
       bindAssistUndoButton();
+      bindSearchUpgradeS2Button();
       bindProtocolDetailLoader(data.query || "");
       bindProtoExploreButtons(data.query || "", icdForPractical);
       bindProtoPickButtons(data);
@@ -19683,7 +19762,36 @@
     if (!isSearchSteppedMode()) return false;
     if (window.__funnelContext && window.__funnelContext.populationConfirmed) return false;
     if (/^Контекст подбора:/im.test(String(qRaw || ""))) return false;
+    if (queryHasIcdInText(qRaw)) return false;
+    if (queryHasPopulationHint(qRaw)) return false;
+    var skipEl = document.getElementById("search-skip-population-gate");
+    if (skipEl && skipEl.checked) return false;
+    try {
+      if (localStorage.getItem("search_skip_population_gate") === "1") return false;
+    } catch (eSkip) {}
     return true;
+  }
+
+  function setSearchQueryStatus(msg, isError) {
+    var el = document.getElementById("search-query-status");
+    if (!el) return;
+    if (!msg) {
+      el.hidden = true;
+      el.textContent = "";
+      el.classList.remove("error");
+      return;
+    }
+    el.hidden = false;
+    el.textContent = String(msg);
+    el.classList.toggle("error", !!isError);
+  }
+
+  function setWizardStepBusy(cardEl, busy) {
+    if (!cardEl) return;
+    cardEl.querySelectorAll(".btn-wizard-continue, .btn-wizard-skip").forEach(function (btn) {
+      btn.disabled = !!busy;
+      btn.classList.toggle("is-busy", !!busy);
+    });
   }
 
   function stripPopulationContextFromQuery(qRaw) {
@@ -20004,12 +20112,14 @@
       continueBtn.addEventListener("click", function () {
         var sel = selectedList();
         if (!sel.length) return;
+        setWizardStepBusy(cardEl, true);
         options.onContinue(sel);
       });
     }
     var skipBtn = cardEl.querySelector(".btn-wizard-skip");
     if (skipBtn && options.onSkip) {
       skipBtn.addEventListener("click", function () {
+        setWizardStepBusy(cardEl, true);
         options.onSkip();
       });
     }
@@ -23440,6 +23550,100 @@
     });
   }
 
+  var SEARCH_TIER_HINTS = {
+    S0: "S0: мгновенный список PDF по коду МКБ-10 — укажите код в запросе или на шаге воронки.",
+    S1: "S1: подбор фрагментов по индексу МКБ и тексту без оценки модели — рекомендуется для повседневной работы.",
+    S2: "S2: полный ответ модели с match_reason и дифференциалом — дольше, выше нагрузка на сервер.",
+  };
+
+  function getSearchSelectedTier() {
+    var picked = document.querySelector('input[name="search-tier"]:checked');
+    var tier = picked && picked.value ? String(picked.value).toUpperCase() : "S1";
+    if (tier !== "S0" && tier !== "S1" && tier !== "S2") tier = "S1";
+    return tier;
+  }
+
+  function updateSearchTierHint(tier) {
+    var hint = document.getElementById("search-tier-hint");
+    if (!hint) return;
+    var t = tier || getSearchSelectedTier();
+    hint.textContent = SEARCH_TIER_HINTS[t] || SEARCH_TIER_HINTS.S1;
+  }
+
+  function bindSearchTierSelector() {
+    var panel = document.getElementById("search-tier-panel");
+    if (!panel || panel.getAttribute("data-bound") === "1") return;
+    panel.setAttribute("data-bound", "1");
+    var saved = "";
+    try {
+      saved = String(localStorage.getItem("protocol_search_tier") || "").toUpperCase();
+    } catch (e) {
+      saved = "";
+    }
+    if (saved === "S0" || saved === "S1" || saved === "S2") {
+      var savedInput = panel.querySelector('input[name="search-tier"][value="' + saved + '"]');
+      if (savedInput) {
+        savedInput.checked = true;
+        savedInput.setAttribute("data-user-tier", "1");
+      }
+    }
+    updateSearchTierHint();
+    panel.querySelectorAll('input[name="search-tier"]').forEach(function (inp) {
+      inp.addEventListener("change", function () {
+        inp.setAttribute("data-user-tier", "1");
+        var tier = getSearchSelectedTier();
+        try {
+          localStorage.setItem("protocol_search_tier", tier);
+        } catch (e) {}
+        updateSearchTierHint(tier);
+      });
+    });
+    var skipPop = document.getElementById("search-skip-population-gate");
+    if (skipPop) {
+      try {
+        skipPop.checked = localStorage.getItem("search_skip_population_gate") === "1";
+      } catch (e) {}
+      skipPop.addEventListener("change", function () {
+        try {
+          if (skipPop.checked) localStorage.setItem("search_skip_population_gate", "1");
+          else localStorage.removeItem("search_skip_population_gate");
+        } catch (e) {}
+      });
+    }
+  }
+
+  function bindSearchUpgradeS2Button() {
+    var btn = document.getElementById("btn-search-upgrade-s2");
+    if (!btn || btn.getAttribute("data-wired")) return;
+    btn.setAttribute("data-wired", "1");
+    btn.addEventListener("click", function () {
+      var s2 = document.querySelector('input[name="search-tier"][value="S2"]');
+      if (s2) {
+        s2.checked = true;
+        s2.setAttribute("data-user-tier", "1");
+        try {
+          localStorage.setItem("protocol_search_tier", "S2");
+        } catch (e) {}
+        updateSearchTierHint("S2");
+      }
+      if (!window.__assistUndoSnapshot && window.__lastAssistData) {
+        window.__assistUndoSnapshot = {
+          query: (document.getElementById("q") || {}).value || lastAssistClinical || "",
+          data: window.__lastAssistData,
+        };
+      }
+      runAssist(undefined, {
+        skipPopulationGate: true,
+        skipIcdGate: true,
+        forceAssistApi: true,
+        search_tier: "S2",
+        preserveUndo: true,
+      }).catch(function (err) {
+        console.error(err);
+      });
+    });
+  }
+
   function fetchConsultReviewUnified(base, fd, consultCtrl, timeoutRef, rebuildFd) {
     var tier = getConsultSelectedTier();
     var skipLlm = tier === "L2" && !!window.__consultRenderL2SkipLlm;
@@ -24369,7 +24573,27 @@
       qRaw = prep.query;
       syncPopulationGateForQuery(qRaw, opts);
       syncFunnelIcdFromQuery(qRaw);
+      var searchTier = opts.search_tier || getSearchSelectedTier();
+      if (opts.forceAssistApi) searchTier = opts.search_tier || "S2";
+      if (searchTier === "S0") {
+        var icdEarly = funnelIcdCodesForSearch(qRaw);
+        if (!icdEarly.length && !queryHasIcdInText(qRaw)) {
+          setSearchQueryStatus(
+            "S0: укажите код МКБ-10 в запросе или выберите уровень S1/S2.",
+            true
+          );
+          if (out) {
+            showResultsSection(true);
+            out.innerHTML =
+              '<p class="error">S0: укажите код МКБ-10 в запросе или выберите уровень S1/S2.</p>';
+          }
+          if (st) st.textContent = "";
+          reject(new Error("s0_requires_icd"));
+          return;
+        }
+      }
       if (needsPopulationStep(qRaw, opts)) {
+        setSearchQueryStatus("Шаг 1: уточните аудиторию пациента ниже");
         renderSearchWizardPopulationStep(qRaw);
         resolve();
         return;
@@ -24402,11 +24626,10 @@
         qRaw.indexOf("=== Контекст пациента ===") === 0
           ? qRaw
           : buildFullQuery(qRaw);
-      var retrieveOnly =
-        opts.retrieveOnly === true ||
-        isCitationsOnlyMode() ||
-        isSearchSteppedMode() ||
-        !!window.__methodistMode;
+      var retrieveOnly = searchTier === "S0" || searchTier === "S1";
+      if (opts.retrieveOnly === true) retrieveOnly = true;
+      if (searchTier === "S2" || opts.forceAssistApi) retrieveOnly = false;
+      if (isCitationsOnlyMode()) retrieveOnly = true;
       var assistStart = Date.now();
       var assistTick = null;
       var abortTid = null;
@@ -24458,6 +24681,13 @@
       }
 
       setSearchBusy(true);
+      setSearchQueryStatus(
+        searchTier === "S0"
+          ? "S0: поиск PDF по МКБ…"
+          : searchTier === "S2"
+            ? "S2: подбор с оценкой ИИ…"
+            : "S1: поиск фрагментов в PDF…"
+      );
       showResultsSection(true);
       var mPanelBusy = document.getElementById("search-methodist-panel");
       if (mPanelBusy) mPanelBusy.hidden = true;
@@ -24466,28 +24696,21 @@
         prPanel.hidden = true;
         prPanel.innerHTML = "";
       }
-      var useMobileTimerOverlay =
-        typeof window.matchMedia === "function" &&
-        window.matchMedia("(max-width: 640px)").matches;
       if (out) {
-        if (useMobileTimerOverlay) {
-          out.innerHTML =
-            '<p class="assist-mobile-placeholder" role="status">Результат появится здесь после подбора.</p>';
-          showAssistTimerOverlay(
-            retrieveOnly ? "Отбор протоколов" : undefined,
-            retrieveOnly
-              ? "Поиск фрагментов в PDF без краткого ответа модели."
-              : undefined
-          );
-        } else if (retrieveOnly) {
-          out.innerHTML = renderSearchLoadingHtml({
-            retrieveOnly: true,
-            progressStep: "context",
-            hint: "Проверка запроса и контекста…",
-          });
-        } else {
-          out.innerHTML = getAssistLoadingHtml();
-        }
+        out.innerHTML =
+          '<p class="assist-mobile-placeholder" role="status">Результат появится здесь после подбора.</p>';
+        showAssistTimerOverlay(
+          retrieveOnly
+            ? searchTier === "S0"
+              ? "Поиск по МКБ"
+              : "Отбор протоколов"
+            : "Углублённый поиск с ИИ",
+          retrieveOnly
+            ? searchTier === "S0"
+              ? "Мгновенный список PDF по коду МКБ-10."
+              : "Поиск фрагментов в PDF без краткого ответа модели."
+            : "Оценка модели: match_reason и дифференциал."
+        );
       }
       if (!retrieveOnly) {
         startAssistHintRotation();
@@ -24541,7 +24764,7 @@
           assistMergeProgressTid = setTimeout(function () {
             setAssistSearchProgress("merge", "Сведение индекса МКБ и результатов поиска…");
           }, 2800);
-          if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi) {
+          if (retrieveOnly && isSearchSteppedMode() && !opts.forceAssistApi && searchTier !== "S2") {
             var ctxIcd = window.__funnelContext || {};
             var icdCodes = funnelIcdCodesForSearch(qSend);
             if (icdCodes.length && !normalizeFunnelIcdCodes(ctxIcd.icd_codes || []).length) {
@@ -24579,7 +24802,7 @@
                     );
                   }
                   var fastProtos = ((j.llm_json || {}).protocols || []).length;
-                  if (!fastProtos) {
+                  if (!fastProtos && searchTier !== "S0") {
                     delete window.__funnelContext._icdLookupCacheKey;
                     delete window.__funnelContext._icdLookupPayload;
                     return callSearchFunnel(4, qSend, { icd_codes: icdCodes }).then(
@@ -24591,9 +24814,13 @@
                   }
                   window.__funnelContext._icdLookupCacheKey = cacheKey;
                   window.__funnelContext._icdLookupPayload = j;
+                  if (searchTier === "S0") j.search_tier = "S0";
                   return j;
                 });
               });
+            }
+            if (searchTier === "S0") {
+              throw new Error("S0: не найдены протоколы по указанным кодам МКБ.");
             }
             return callSearchFunnel(4, qSend).then(function (funnel) {
               if (funnel.error) throw new Error(funnel.error);
@@ -24611,7 +24838,8 @@
               icd_codes: funnelIcdCodesForSearch(qSend),
               funnel_population:
                 (window.__funnelContext && window.__funnelContext.population) || null,
-              icd_fast_path: !!funnelIcdCodesForSearch(qSend).length,
+              icd_fast_path: !!funnelIcdCodesForSearch(qSend).length || searchTier === "S0",
+              search_tier: searchTier,
             }),
             signal: ctrl.signal,
           }).then(function (r) {
@@ -24649,6 +24877,7 @@
           renderLlmOut(data);
           clearSpecialtySelectionAndCollapse();
           if (st) st.textContent = "Готово.";
+          setSearchQueryStatus("");
           var qInput = document.getElementById("q");
           if (qInput) qInput.value = stripToClinicalOnly(qSend);
           var elOut = document.getElementById("section-results");
@@ -24682,11 +24911,14 @@
               "</p>";
           }
           if (st) st.textContent = "";
+          setSearchQueryStatus(msg, true);
           reject(err);
         })
         .finally(function () {
           clearAssistTick();
           setSearchBusy(false);
+          var wizCard = document.querySelector(".search-wizard-step-card");
+          if (wizCard) setWizardStepBusy(wizCard, false);
         });
     });
   }
@@ -24724,6 +24956,7 @@
   bindSpecialtyPanel();
   bindConsultSpecialtyToolbar();
   bindConsultTierSelector();
+  bindSearchTierSelector();
   initConsultTierCaps();
   bindVoiceInput();
   bindPageNav();
