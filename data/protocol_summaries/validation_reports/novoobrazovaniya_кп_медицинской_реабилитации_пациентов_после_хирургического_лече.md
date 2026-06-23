@@ -1,9 +1,6 @@
 # Validation: novoobrazovaniya_кп_медицинской_реабилитации_пациентов_после_хирургического_лече
 
-- **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:09.064896+00:00
-- **review_status:** not_reviewed
+- **status:** valid
+- **validated_at:** 2026-06-23T19:16:26.640936+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
-
-## Warnings
-- `missing_icd10` conditions[кп_медицинской_реабилитации_пациентов_после_хирургического_лечения_новоо]: Нет icd10_codes у condition

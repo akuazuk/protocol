@@ -1,7 +1,7 @@
 # Validation: oftalmologiya_кп_диагностика_лечение_пациентов_детс_население_с_болезнями_глаза_
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:11.112037+00:00
+- **validated_at:** 2026-06-23T19:16:26.642430+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

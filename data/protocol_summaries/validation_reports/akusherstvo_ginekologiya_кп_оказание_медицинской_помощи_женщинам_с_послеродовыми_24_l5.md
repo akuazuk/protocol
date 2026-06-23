@@ -1,7 +1,7 @@
 # Validation: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_с_послеродовыми_24_l5
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:26:02.293254+00:00
+- **validated_at:** 2026-06-23T19:16:26.666106+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

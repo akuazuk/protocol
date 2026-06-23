@@ -1,7 +1,7 @@
 # Validation: akusherstvo_ginekologiya_кп_профилактика_геморрагической_болезни_у_новорожденных_child_28_l3
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:26:02.295077+00:00
+- **validated_at:** 2026-06-23T19:16:26.666506+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

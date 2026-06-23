@@ -1,6 +1,6 @@
 # Validation: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
 
 - **status:** valid
-- **validated_at:** 2026-05-31T18:30:03.235921+00:00
-- **review_status:** not_reviewed
+- **validated_at:** 2026-06-23T19:16:26.616288+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted

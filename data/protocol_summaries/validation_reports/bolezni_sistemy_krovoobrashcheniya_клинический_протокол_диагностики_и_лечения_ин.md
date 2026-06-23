@@ -1,6 +1,6 @@
 # Validation: bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин
 
 - **status:** valid
-- **validated_at:** 2026-05-31T18:30:01.545166+00:00
-- **review_status:** not_reviewed
+- **validated_at:** 2026-06-23T19:16:26.612287+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted

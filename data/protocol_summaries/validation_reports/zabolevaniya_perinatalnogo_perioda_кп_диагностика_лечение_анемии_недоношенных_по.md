@@ -1,9 +1,6 @@
 # Validation: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_анемии_недоношенных_по
 
-- **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:15.348196+00:00
-- **review_status:** not_reviewed
+- **status:** valid
+- **validated_at:** 2026-06-23T19:16:26.663976+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
-
-## Warnings
-- `missing_icd10` conditions[кп_диагностика_лечение_анемии_недоношенных_пост_мз_04_06_2024_97]: Нет icd10_codes у condition

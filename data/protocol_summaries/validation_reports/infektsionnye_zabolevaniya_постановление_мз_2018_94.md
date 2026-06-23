@@ -1,7 +1,7 @@
 # Validation: infektsionnye_zabolevaniya_постановление_мз_2018_94
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:05.590729+00:00
+- **validated_at:** 2026-06-23T19:16:26.626529+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

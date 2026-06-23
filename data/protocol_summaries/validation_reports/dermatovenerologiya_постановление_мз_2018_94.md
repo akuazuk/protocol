@@ -1,7 +1,7 @@
 # Validation: dermatovenerologiya_постановление_мз_2018_94
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:03.098574+00:00
+- **validated_at:** 2026-06-23T19:16:26.616082+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

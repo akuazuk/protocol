@@ -189,11 +189,42 @@ def validate_protocol_summary(
     summary: ProtocolSummary,
     *,
     strict: bool | None = None,
+    source_blob: str | None = None,
 ) -> SummaryValidationResult:
     """Проверяет карточку; не изменяет summary."""
     strict = _cfg_mod.protocol_summary_config.strict_validation if strict is None else strict
     errors: list[ValidationIssue] = []
     warnings: list[ValidationIssue] = []
+
+    if source_blob:
+        try:
+            from .quote_validator import quote_found_in_source
+
+            for cond in summary.conditions:
+                base = f"conditions[{cond.condition_id}]"
+                for i, ex in enumerate(cond.required_exams):
+                    q = (ex.source_ref.quote or "") if ex.source_ref else ""
+                    if q and not quote_found_in_source(q, source_blob):
+                        warnings.append(
+                            ValidationIssue(
+                                code="quote_not_in_source",
+                                message="Цитата не найдена в исходном тексте",
+                                path=f"{base}.required_exams[{i}]",
+                            ),
+                        )
+                if cond.treatment:
+                    for i, d in enumerate(cond.treatment.drugs):
+                        q = (d.source_ref.quote or "") if d.source_ref else ""
+                        if q and not quote_found_in_source(q, source_blob):
+                            warnings.append(
+                                ValidationIssue(
+                                    code="quote_not_in_source",
+                                    message="Цитата препарата не найдена в исходном тексте",
+                                    path=f"{base}.treatment.drugs[{i}]",
+                                ),
+                            )
+        except Exception:
+            pass
 
     if not summary.protocol_id.strip():
         errors.append(ValidationIssue(code="missing_protocol_id", message="protocol_id пуст"))
@@ -247,7 +278,7 @@ def review_status_acceptable(summary: ProtocolSummary, min_status: str | None = 
     """Карточка достаточного review_status для использования в summary/hybrid."""
     min_status = min_status or _cfg_mod.protocol_summary_config.min_review_status
     min_rank = _MIN_REVIEW_RANK.get(min_status, 0)
-    ext_rank = {"draft": 0, "auto_extracted": 0, "needs_human_review": 0, "reviewed": 2, "deprecated": -1}
+    ext_rank = {"draft": 0, "auto_extracted": 0, "llm_extracted": 1, "needs_human_review": 0, "reviewed": 2, "deprecated": -1}
     if summary.extraction_status == "deprecated":
         return False
     if summary.review_status == "rejected":

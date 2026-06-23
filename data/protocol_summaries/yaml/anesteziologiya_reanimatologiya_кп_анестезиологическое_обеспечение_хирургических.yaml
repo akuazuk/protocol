@@ -1,196 +1,199 @@
 protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
-summary_version: '1.0'
+summary_version: '2.0'
 extraction_status: auto_extracted
-review_status: not_reviewed
+review_status: needs_review
 source:
-  title: КП Анестезиологическое обеспечение хирургических вмешательств пост МЗ 19.04.2023
-    57
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+  title: Анестезиологическое обеспечение хирургических вмешательств
+  url: null
   local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-  document_sha256: 4fb2bfc4e9402c5f64628e5266fb1278ecdea0fd25df7c8d4bd16b2f399b2999
-  approval_date: '2023-04-19'
-  approval_number: '57'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2023
+  document_year: null
   pages_total: null
 rubric:
-  name: Анестезиология и реаниматология
+  name: Anesteziologiya-Reanimatologiya
   slug: anesteziologiya-reanimatologiya
-  specialty_slugs:
-  - anesteziologiya-reanimatologiya
+  specialty_slugs: []
 applicability:
   population:
-  - adult
-  - child
+  - unknown
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: n02_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
+- condition_id: анестезиологическое_обеспечение_хирургических_вм
+  name: Анестезиологическое обеспечение хирургических вмешательств
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - N02
+  - B24
+  - E66.9
+  - I21.9
+  - I64
+  - J44.9
+  - K04.7
+  - O26.9
+  - O72
+  - O88.2
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ N02)
+    - text: выявление наличия СД у пациента, определение степени поражения органов-
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
+        quote: выявление наличия СД у пациента, определение степени поражения органов-
+    - text: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'лабораторные исследования: определение уровня глюкозы в крови, электролитов,'
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: ЭКГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'с СД установлен согласно приложению 12;
+
+        ЭКГ.
+
+
+        [diagnostics] 15. Предоперационное обследование пациентов с заболеваниями
+        щит'
   conditional_exams: []
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: '[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)'
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: '[treatment] ПОСТАНОВЛЯЕТ: (стр. 1)'
+    - text: 1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 1.  Утвердить  клинический  протокол  «Анестезиологическое  обеспечение
+    - text: хирургических  вмешательств»  (прилагается).
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: хирургических  вмешательств»  (прилагается).
+    - text: '[treatment] 19.04.2023 № 57 (стр. 3)'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '[treatment] 19.04.2023 № 57 (стр. 3)'
+    - text: «Анестезиологическое обеспечение хирургических вмешательств»
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: «Анестезиологическое обеспечение хирургических вмешательств»
+    - text: '[treatment] 1. Настоящий клинический протокол устанавливает общие требования
+        к объему (стр. 3)'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '[treatment] 1. Настоящий клинический протокол устанавливает общие
+          требования к объему (стр. 3)'
     drug_groups: []
     drugs:
-    - drug_name: таблетки
+    - drug_name: менее
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
-      frequency_text: 'Раствор для внутривенного
-
-        и внутримышечн'
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: 'таблетки 10 мг
-
-          Раствор для внутривенного
-
-          и внутримышечн'
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: '/мл | 2,5–5 мг (50–100 мкг/кг) за
-
-        30 мин'
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: 'введения 5 мг/мл | 2,5–5 мг (50–100 мкг/кг) за
-
-          30 мин'
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: '/мл | подкожно или внутримышечно,
-
-        до 10'
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: 'инъекций 10 мг/мл | подкожно или внутримышечно,
-
-          до 10'
-    - drug_name: Капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 300 мг
-      frequency_text: '| 300–600 мг (первая доза на ночь,
-
-        втора'
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 68
-        page_end: 68
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: 'Капсулы 300 мг | 300–600 мг (первая доза на ночь,
-
-          втора'
-    - drug_name: ов для премедикации
-      active_substance: null
-      drug_group: null
-      dose_text: null
+      dose_text: 60 мл
       frequency_text: null
       duration_text: null
       route: null
@@ -202,24 +205,18 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 67
-        page_end: 68
-        section_title: Приложение 13
-        section_type: appendix
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: ов для премедикации
-    - drug_name: средства
+        quote: менее 60 мл/мин
+    - drug_name: апреля
       active_substance: null
       drug_group: null
-      dose_text: '6
-
-        Г'
-      frequency_text: 'абапентин
-
-        Капсулы 300 мг
-
-        300–600 мг (пер'
+      dose_text: 2023 г
+      frequency_text: null
       duration_text: null
       route: null
       indication: null
@@ -230,44 +227,230 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
-        page_start: 67
-        page_end: 68
-        section_title: Приложение 13
-        section_type: appendix
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: 'средства
+        quote: апреля 2023 г
+    - drug_name: ноября
+      active_substance: null
+      drug_group: null
+      dose_text: 2023  г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ноября  2023  г
+    - drug_name: июня
+      active_substance: null
+      drug_group: null
+      dose_text: 1993 г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: июня 1993 г
+    - drug_name: октября
+      active_substance: null
+      drug_group: null
+      dose_text: 2011  г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'октября
 
-          6
-
-          Габапентин
-
-          Капсулы 300 мг
-
-          300–600 мг (пер'
+          2011  г'
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
+
+      патологией, полиорганная дисфункция);
+
+      класс VI – умерший донор.
+
+
+      [classification] 11'
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
+
+        патологией, полиорганная дисфункция);
+
+        класс VI – умерший донор.
+
+
+        [classification] 11'
+  - text: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
+
+      патологией, полиорганная дисфункция);
+
+      класс VI – умерший донор.
+
+
+      [classification] 11'
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'масс-эффектом, мезотромбоз в сочетании с выраженной сердечной
+
+        патологией, полиорганная дисфункция);
+
+        класс VI – умерший донор.
+
+
+        [classification] 11'
+  - text: 'инсульта  и  тромбоэмболических  осложнений
+
+      при  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной
+
+      тромбоэмболии  у  паци'
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'инсульта  и  тромбоэмболических  осложнений
+
+        при  фибрилляции  предсердий  по  шкале  оценки  риска  инсульта  и  системной
+
+        тромбоэмболии  у  паци'
+  - text: 'и  системной
+
+      тромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно
+
+      приложению 8;
+
+      определение функциональных резервов с'
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'и  системной
+
+        тромбоэмболии  у  пациентов  с  фибрилляцией  предсердий  CHA2DS2-VASc  согласно
+
+        приложению 8;
+
+        определение функциональных резервов с'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs: []
+  source_refs:
+  - protocol_id: anesteziologiya_reanimatologiya_кп_анестезиологическое_обеспечение_хирургических
+    document_url: null
+    local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Анестезиологическое_обеспечение_хирургических_вмешательств_пост_МЗ_19.04.2023_57.pdf
+    page_start: null
+    page_end: null
+    section_title: null
+    section_type: null
+    table_index: null
+    row_index: null
+    quote: Анестезиологическое обеспечение хирургических вмешательств
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:01.103921+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: 4fb2bfc4e9402c5f64628e5266fb1278ecdea0fd25df7c8d4bd16b2f399b2999
+  extracted_at: '2026-06-23T19:15:04.895371+00:00'
+  extractor: structured_fallback
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 5 protocol_cards, 346 chunks
+  - source_text_sections
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-05-31T18:30:01.103952+00:00'
+  validated_at: '2026-06-23T19:15:04.901097+00:00'

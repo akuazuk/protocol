@@ -1,7 +1,7 @@
 # Validation: oftalmologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_болезнями_глаза
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:10.882991+00:00
+- **validated_at:** 2026-06-23T19:16:26.641886+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

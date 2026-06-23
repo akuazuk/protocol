@@ -1,9 +1,6 @@
 # Validation: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зуб
 
-- **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:13.958363+00:00
-- **review_status:** not_reviewed
+- **status:** valid
+- **validated_at:** 2026-06-23T19:16:26.658368+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
-
-## Warnings
-- `missing_icd10` conditions[кп_диагностика_и_лечение_пациентов_детс_население_с_крапчатыми_зубами_по]: Нет icd10_codes у condition

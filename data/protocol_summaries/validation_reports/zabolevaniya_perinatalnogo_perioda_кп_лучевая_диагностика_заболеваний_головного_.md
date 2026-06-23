@@ -1,7 +1,7 @@
 # Validation: zabolevaniya_perinatalnogo_perioda_кп_лучевая_диагностика_заболеваний_головного_
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:15.307400+00:00
+- **validated_at:** 2026-06-23T19:16:26.664575+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

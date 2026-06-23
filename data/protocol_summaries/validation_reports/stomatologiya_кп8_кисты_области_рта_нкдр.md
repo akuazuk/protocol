@@ -1,7 +1,7 @@
 # Validation: stomatologiya_кп8_кисты_области_рта_нкдр
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:13.776497+00:00
+- **validated_at:** 2026-06-23T19:16:26.654263+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

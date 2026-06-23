@@ -1,6 +1,6 @@
 # Validation: nevrologiya_neyrokhirurgiya_кп_хирургическое_лечение_эпилепсии_14_07_2017_75
 
 - **status:** valid
-- **validated_at:** 2026-05-31T18:30:07.764169+00:00
-- **review_status:** not_reviewed
+- **validated_at:** 2026-06-23T19:16:26.638281+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted

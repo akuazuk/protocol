@@ -1,7 +1,7 @@
 # Validation: allergologiya_immunologiya_кп_диагностика_лечение_пациентов_дет_нас_иммуновоспал
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:00.680415+00:00
+- **validated_at:** 2026-06-23T19:16:26.608964+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

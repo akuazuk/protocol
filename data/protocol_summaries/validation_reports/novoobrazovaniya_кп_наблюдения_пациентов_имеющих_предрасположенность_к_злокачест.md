@@ -1,7 +1,7 @@
 # Validation: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:09.087699+00:00
+- **validated_at:** 2026-06-23T19:16:26.641110+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

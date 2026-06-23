@@ -1,119 +1,588 @@
 protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
-summary_version: '1.0'
+summary_version: '2.0'
 extraction_status: auto_extracted
-review_status: not_reviewed
+review_status: needs_review
 source:
-  title: КП Диагностика и лечение пациентов с хронической болезнью почек 5 стадии
-    методом программного гемодиализа 02.08.2021 № 93
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП Диагностика и лечение
-    пациентов с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
-    93.pdf
+  title: Диагностика и лечение пациентов с хронической болезнью почек 5 стадии методом
+    программного гемодиализа
+  url: null
   local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов с
     хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
     93.pdf
-  document_sha256: dbbe0f35dd1de1a104aeddde6a995060ec5b860b8a5bd0b85aaf3bc8d51326e1
-  approval_date: '2021-08-02'
-  approval_number: '93'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2021
+  document_year: null
   pages_total: null
 rubric:
-  name: Нефрология
+  name: Nefrologiya
   slug: nefrologiya
-  specialty_slugs:
-  - nefrologiya
+  specialty_slugs: []
 applicability:
   population:
   - adult
-  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: n18_5_клинический_протокол_определяет_порядок_оказания_м
-  name: клинический протокол определяет порядок оказания медицинской
+- condition_id: диагностика_и_лечение_пациентов_с_хронической_бо
+  name: Диагностика и лечение пациентов с хронической болезнью почек 5 стадии методом
+    программного гемодиализа
   synonyms: []
   abbreviations: []
   icd10_codes:
   - N18.5
+  - J06.9
+  - L50.9
+  - N97.9
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: отражение нозологии клинический протокол определяет порядок оказания медицинской
-        (МКБ N18.5)
+    - text: '[classification] 4. Диагноз или обоснованное предположение о наличии
+        ХБП С5 служат основанием (стр. 4)'
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
           с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
           93.pdf
-        page_start: 3
-        page_end: 3
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: клинический протокол определяет порядок оказания медицинской
+        quote: '[classification] 4. Диагноз или обоснованное предположение о наличии
+          ХБП С5 служат основанием (стр. 4)'
     optional: []
     exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: ОАК
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "-инструментальные методы обследования: \nОАК; \nэлектрокардиограмма\
+        \ (далее – ЭКГ); \nрентгенограмма органов грудной клетки; \nэ"
+  - name: ЭКГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "ия: \nОАК; \nэлектрокардиограмма (далее – ЭКГ); \nрентгенограмма органов\
+        \ грудной клетки; \nэхокардиография (далее – ЭхоКГ); \nул"
+  - name: УЗИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "; \nультразвуковое обследование (далее – УЗИ) брюшной полости и забрюшинного\
+        \ \nпространства; \nфиброгастродуоноскопию (далее –"
+  - name: ФГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "нства; \nфиброгастродуоноскопию (далее – ФГДС); \nбиохимический анализ\
+        \ крови (мочевина, креатинин, общий белок, альбумин, \nбил"
   conditional_exams: []
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: сосудистого доступа для подключения аппарата «искусственная почка».
       source_ref:
         protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
         document_url: null
         local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
           с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
           93.pdf
-        page_start: 3
-        page_end: 3
-        section_title: статистической классификации болезней и проблем, связанных
-          со здоровьем, десятого
-        section_type: classification
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: сосудистого доступа для подключения аппарата «искусственная почка».
+    - text: не позднее, чем за один месяц до предполагаемого начала гемодиализа в
+        отделениях
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: не позднее, чем за один месяц до предполагаемого начала гемодиализа
+          в отделениях
+    - text: гемодиализа, оборудованных операционной, или хирургических отделениях.
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: гемодиализа, оборудованных операционной, или хирургических отделениях.
+    - text: Перед формированием сосудистого доступа проводится клиническая оценка
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перед формированием сосудистого доступа проводится клиническая оценка
+    - text: состояния артерий и вен конечности, на которой планируется оперативное
+        вмешательство.
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: состояния артерий и вен конечности, на которой планируется оперативное
+          вмешательство.
+    - text: Дополнительно выполняется ультрасонографическое исследование вен и артерий
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дополнительно выполняется ультрасонографическое исследование вен и
+          артерий
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: более
+      active_substance: null
+      drug_group: null
+      dose_text: 3 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: "более 3 мл/мин, междиализной прибавкой \nв весе \nме"
+    - drug_name: выше
+      active_substance: null
+      drug_group: null
+      dose_text: 80 г
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: выше 80 г/л), а также адекватным нутриционным ста
+    - drug_name: Альтеплаза
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+        document_url: null
+        local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+          с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+          93.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: "Альтеплаза 1 мг/мл \nвводится в объеме 2 мл в каждый про"
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Контроль
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль
+  - text: контроль
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: контроль
+  - text: Контроль
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль
+  - text: Контроль
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль
+  - text: Контроль
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: "cs] 33. Диагностика тромбоза АВФ основана на визуальном осмотре и пальпаторной\
+      \ (стр. 11)\nоценке \nсостояния \nсосудов \nАВФ, \nпо показаниям \nпроводитс"
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "cs] 33. Диагностика тромбоза АВФ основана на визуальном осмотре и пальпаторной\
+        \ (стр. 11)\nоценке \nсостояния \nсосудов \nАВФ, \nпо показаниям \nпроводитс"
+  - text: "ри раннем выявлении тромбоза АВФ (до 24 часов) осуществляется попытка \n\
+      эндоваскулярной или открытой экстракции тромба или лизиса тромботических мас"
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "ри раннем выявлении тромбоза АВФ (до 24 часов) осуществляется попытка\
+        \ \nэндоваскулярной или открытой экстракции тромба или лизиса тромботических\
+        \ мас"
+  - text: "и позднем выявлении тромбоза АВФ (более 24 часов) выполняется формирование\
+      \ \nнового анастомоза на неповрежденных участках сосудов или на другой коне"
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "и позднем выявлении тромбоза АВФ (более 24 часов) выполняется формирование\
+        \ \nнового анастомоза на неповрежденных участках сосудов или на другой коне"
+  - text: '[treatment] 32. При тромбозе постоянного центрального венозного катетера,
+      произошедшем (стр. 10)
+
+      в короткие сроки (до 6 часов), проходимость канало'
+    aliases: []
+    red_flag_type: thrombosis
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '[treatment] 32. При тромбозе постоянного центрального венозного катетера,
+        произошедшем (стр. 10)
+
+        в короткие сроки (до 6 часов), проходимость канало'
+  - text: "дополнительная \n1 Анафилактический тип реакции \nна диализатор \nКлинические\
+      \ проявления \nбурной, тяжелой \nаллергической реакции \nНемедленно останови"
+    aliases: []
+    red_flag_type: severe_infection
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "дополнительная \n1 Анафилактический тип реакции \nна диализатор \nКлинические\
+        \ проявления \nбурной, тяжелой \nаллергической реакции \nНемедленно останови"
+  - text: "помощь пациентам с анафилаксией», \nутвержденному постановлением Министерства\
+      \ \nздравоохранения Республики Беларусь от 1 июня \n2017 г. № 50.\n\n[diagno"
+    aliases: []
+    red_flag_type: severe_infection
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+      document_url: null
+      local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+        с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+        93.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: "помощь пациентам с анафилаксией», \nутвержденному постановлением Министерства\
+        \ \nздравоохранения Республики Беларусь от 1 июня \n2017 г. № 50.\n\n[diagno"
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs: []
+  source_refs:
+  - protocol_id: nefrologiya_кп_диагностика_и_лечение_пациентов_с_хронической_болезнью_почек_5_ст
+    document_url: null
+    local_path: minzdrav_protocols/nefrologiya/КП Диагностика и лечение пациентов
+      с хронической болезнью почек 5 стадии методом программного гемодиализа_02.08.2021_№
+      93.pdf
+    page_start: null
+    page_end: null
+    section_title: null
+    section_type: null
+    table_index: null
+    row_index: null
+    quote: Диагностика и лечение пациентов с хронической болезнью почек 5 стадии методом
+      программного гемодиализа
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:07.357351+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: dbbe0f35dd1de1a104aeddde6a995060ec5b860b8a5bd0b85aaf3bc8d51326e1
+  extracted_at: '2026-06-23T19:15:42.005722+00:00'
+  extractor: structured_fallback
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 8 protocol_cards, 181 chunks
+  - source_text_sections
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-05-31T18:30:07.357362+00:00'
+  validated_at: '2026-06-23T19:15:42.014585+00:00'

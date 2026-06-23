@@ -1,7 +1,7 @@
 # Validation: gematologiya_кп_диагностика_и_лечение_детей_с_онкологическими_и_гематологическим
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:04.077306+00:00
+- **validated_at:** 2026-06-23T19:16:26.620748+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

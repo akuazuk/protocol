@@ -1,7 +1,7 @@
 # Validation: otorinolaringologiya_кп_диагностика_лечение_оториноларингологическими_заболевани
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:11.374705+00:00
+- **validated_at:** 2026-06-23T19:16:26.643275+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

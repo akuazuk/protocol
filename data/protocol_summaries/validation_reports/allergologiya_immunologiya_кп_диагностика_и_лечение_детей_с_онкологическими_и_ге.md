@@ -1,7 +1,7 @@
 # Validation: allergologiya_immunologiya_кп_диагностика_и_лечение_детей_с_онкологическими_и_ге
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:00.201694+00:00
+- **validated_at:** 2026-06-23T19:16:26.607316+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

@@ -3341,6 +3341,9 @@ def _retrieve_core(
         post *= chunk_population_penalty(aud_filter, ch)
         if ch.get("generated_from_summary") or ch.get("chunk_source") == "summary_chunks":
             ps_mode = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "legacy").strip().lower()
+            summary_first = env_bool("SEARCH_RAG_SUMMARY_FIRST", True)
+            if summary_first and icd_norms and ps_mode == "legacy":
+                ps_mode = "hybrid"
             summary_boost = 1.0
             if ps_mode == "hybrid":
                 summary_boost = float(os.environ.get("RAG_SUMMARY_CHUNK_BOOST", "1.55"))
@@ -5879,6 +5882,30 @@ def build_hybrid_search_payload(
             )
         )
 
+    summary_first = env_bool("SEARCH_RAG_SUMMARY_FIRST", True)
+    summary_paths: list[str] = []
+    if summary_first and icd_codes_for_lex:
+        try:
+            from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
+
+            summary_paths = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=10) or []
+            existing_paths = {str(p.get("path") or "").replace("\\", "/") for p in icd_protos}
+            for sp in summary_paths:
+                norm = sp.replace("\\", "/")
+                if norm in existing_paths:
+                    continue
+                icd_protos.insert(
+                    0,
+                    {
+                        "path": norm,
+                        "match_reason": "По структурированной карточке протокола (МКБ)",
+                        "from_summary_index": True,
+                    },
+                )
+                existing_paths.add(norm)
+        except Exception:
+            summary_paths = []
+
     path_allowlist = lookup.get("path_allowlist") or None
     if not path_allowlist and icd_protos:
         path_allowlist = [str(p.get("path") or "") for p in icd_protos if p.get("path")][:15]
@@ -5906,6 +5933,8 @@ def build_hybrid_search_payload(
             from clinical_knowledge.protocol_summary.icd_index import find_catalog_paths_by_icd_codes
 
             extra = find_catalog_paths_by_icd_codes(icd_codes_for_lex, limit=8) or []
+            if summary_first and summary_paths:
+                extra = list(dict.fromkeys(summary_paths + extra))
             path_boost = list(dict.fromkeys((path_boost or []) + extra)) or None
         except Exception:
             pass
@@ -7766,7 +7795,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r229-fix-detail-loading-hang"
+BUILD_VERSION = "2026-06-16-r230-llm-summary-pipeline"
 
 
 def _app_version() -> str:

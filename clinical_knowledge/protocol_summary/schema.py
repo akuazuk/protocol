@@ -18,7 +18,7 @@ CareSetting = Literal[
     "rehabilitation", "palliative", "unknown",
 ]
 ExtractionStatus = Literal[
-    "draft", "auto_extracted", "needs_human_review", "reviewed", "deprecated",
+    "draft", "auto_extracted", "llm_extracted", "needs_human_review", "reviewed", "deprecated",
 ]
 ReviewStatus = Literal["not_reviewed", "needs_review", "reviewed", "approved", "rejected"]
 ValidationStatus = Literal["valid", "valid_with_warnings", "invalid", "needs_human_review"]

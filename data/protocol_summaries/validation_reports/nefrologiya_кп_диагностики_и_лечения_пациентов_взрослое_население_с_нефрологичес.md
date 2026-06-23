@@ -1,7 +1,7 @@
 # Validation: nefrologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_нефрологичес
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:07.521207+00:00
+- **validated_at:** 2026-06-23T19:16:26.634362+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

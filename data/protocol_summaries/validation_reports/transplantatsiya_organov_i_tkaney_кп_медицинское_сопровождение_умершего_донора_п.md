@@ -1,9 +1,6 @@
 # Validation: transplantatsiya_organov_i_tkaney_кп_медицинское_сопровождение_умершего_донора_п
 
-- **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:14.040652+00:00
-- **review_status:** not_reviewed
+- **status:** valid
+- **validated_at:** 2026-06-23T19:16:26.660762+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
-
-## Warnings
-- `missing_icd10` conditions[кп_медицинское_сопровождение_умершего_донора_пост_мз_15_02_2022_11]: Нет icd10_codes у condition

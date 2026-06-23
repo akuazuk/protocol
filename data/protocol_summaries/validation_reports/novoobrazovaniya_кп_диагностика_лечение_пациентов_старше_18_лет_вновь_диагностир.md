@@ -1,7 +1,7 @@
 # Validation: novoobrazovaniya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностир
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:10.341219+00:00
+- **validated_at:** 2026-06-23T19:16:26.640236+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

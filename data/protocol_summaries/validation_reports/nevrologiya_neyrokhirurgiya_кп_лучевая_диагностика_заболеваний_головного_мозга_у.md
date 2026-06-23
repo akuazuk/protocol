@@ -1,7 +1,7 @@
 # Validation: nevrologiya_neyrokhirurgiya_кп_лучевая_диагностика_заболеваний_головного_мозга_у
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:07.727960+00:00
+- **validated_at:** 2026-06-23T19:16:26.637337+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 

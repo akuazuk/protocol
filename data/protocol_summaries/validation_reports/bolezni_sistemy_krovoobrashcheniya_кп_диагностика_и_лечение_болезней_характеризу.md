@@ -1,51 +1,6 @@
 # Validation: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_болезней_характеризу
 
-- **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:30:01.370045+00:00
-- **review_status:** not_reviewed
+- **status:** valid
+- **validated_at:** 2026-06-23T19:16:26.612499+00:00
+- **review_status:** needs_review
 - **extraction_status:** auto_extracted
-
-## Warnings
-- `required_exam_level` conditions[i10_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[i11_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[i11_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i11_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[i11_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[2]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[i12_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[2]: Дублирующийся препарат
-- `required_exam_level` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[3]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[4]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[5]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[6]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[7]: Дублирующийся препарат
-- `required_exam_level` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: Дублирующееся обследование
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[1]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[2]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[3]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[4]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[5]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[6]: Дублирующийся препарат
-- `duplicate_drug` conditions[i13_2_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[7]: Дублирующийся препарат
-- `required_exam_level` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].required_exams[2]: Дублирующееся обследование
-- `duplicate_drug` conditions[i15_0_клинический_протокол_определяет_лечебно_диагностич].treatment.drugs[0]: Дублирующийся препарат

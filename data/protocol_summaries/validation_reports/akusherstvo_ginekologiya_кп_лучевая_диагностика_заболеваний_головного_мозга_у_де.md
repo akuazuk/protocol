@@ -1,7 +1,7 @@
 # Validation: akusherstvo_ginekologiya_кп_лучевая_диагностика_заболеваний_головного_мозга_у_де
 
 - **status:** needs_human_review
-- **validated_at:** 2026-05-31T18:29:59.593404+00:00
+- **validated_at:** 2026-06-23T19:16:26.605367+00:00
 - **review_status:** not_reviewed
 - **extraction_status:** auto_extracted
 
