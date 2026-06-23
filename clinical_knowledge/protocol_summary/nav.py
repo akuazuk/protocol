@@ -264,14 +264,6 @@ def find_summary_by_catalog_path(catalog_path: str) -> ProtocolSummary | None:
         hit = idx.get(key)
         if hit is not None:
             return hit
-    for summary in load_protocol_summaries(usable_only=False):
-        lp = summary.source.local_path or ""
-        if _path_match(catalog_path, lp):
-            return summary
-        if lp and not lp.startswith("minzdrav") and _path_match(
-            f"minzdrav_protocols/{lp.lstrip('/')}", catalog_path
-        ):
-            return summary
     return None
 
 

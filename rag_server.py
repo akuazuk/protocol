@@ -9,6 +9,7 @@
 """
 from __future__ import annotations
 
+import asyncio
 import copy
 import gc
 import hashlib
@@ -250,6 +251,20 @@ _search_sem = threading.Semaphore(
 )
 _search_metrics_lock = threading.Lock()
 _search_last_metrics: dict[str, Any] = {}
+
+
+def _embed_protocol_nav_limit() -> int:
+    """Сколько protocol_nav встраивать в /api/assist (0 = отключить). На Render по умолчанию 1."""
+    return max(0, env_int("RAG_EMBED_PROTOCOL_NAV", 1 if env_bool("RENDER", False) else 3))
+
+
+async def _run_consult_review_blocking(fn, /, *args, **kwargs):
+    """Тяжёлый pipeline КЗ в worker-потоке — event loop свободен для /health."""
+    def _job():
+        with _consult_sem:
+            return fn(*args, **kwargs)
+
+    return await asyncio.to_thread(_job)
 
 
 def _consult_response_include_html() -> bool:
@@ -7717,12 +7732,18 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r219-kz-brief-expanded"
+BUILD_VERSION = "2026-06-16-r220-fix-consult-health"
 
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
     return (os.environ.get("APP_VERSION") or BUILD_VERSION).strip() or BUILD_VERSION
+
+
+@app.get("/health/live")
+def health_live() -> dict:
+    """Минимальный liveness для Render (без обхода индексов)."""
+    return {"ok": True, "version": _app_version()}
 
 
 @app.get("/health")
@@ -8273,21 +8294,16 @@ def _api_assist_impl(body: AssistIn) -> dict:
             )
             try:
                 from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
-                from clinical_knowledge.protocol_kz_brief import attach_protocol_brief_map
                 from clinical_knowledge.structured_retrieval_excerpt import attach_structured_excerpts
 
-                attach_protocol_nav_map(
-                    fast,
-                    query=q,
-                    icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
-                    limit=3,
-                )
-                attach_protocol_brief_map(
-                    fast,
-                    query=q,
-                    icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
-                    limit=3,
-                )
+                nav_limit = _embed_protocol_nav_limit()
+                if nav_limit > 0:
+                    attach_protocol_nav_map(
+                        fast,
+                        query=q,
+                        icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+                        limit=nav_limit,
+                    )
                 attach_structured_excerpts(fast, fast.get("retrieval") or [], limit=4)
             except Exception:
                 pass
@@ -8819,21 +8835,16 @@ def _api_assist_impl(body: AssistIn) -> dict:
     }
     try:
         from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
-        from clinical_knowledge.protocol_kz_brief import attach_protocol_brief_map
         from clinical_knowledge.structured_retrieval_excerpt import attach_structured_excerpts
 
-        attach_protocol_nav_map(
-            out,
-            query=q,
-            icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
-            limit=3,
-        )
-        attach_protocol_brief_map(
-            out,
-            query=q,
-            icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
-            limit=3,
-        )
+        nav_limit = _embed_protocol_nav_limit()
+        if nav_limit > 0:
+            attach_protocol_nav_map(
+                out,
+                query=q,
+                icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+                limit=nav_limit,
+            )
         attach_structured_excerpts(out, retrieved, limit=4)
     except Exception:
         pass
@@ -10191,67 +10202,47 @@ async def api_consult_review(
     full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
         await _parse_consult_review_uploads_async(files)
     )
-    with _consult_sem:
-        if selected_tier in ("L0", "L1"):
-            t0 = time.perf_counter()
-            result = _consult_review_from_tier_or_pipeline(
-                tier=selected_tier,
-                text=full_text,
-                bundle=None,
-                consultation_id="upload",
-                category_slugs=category_slugs,
-                require_rag_for_l2=False,
-            )
-            latency_ms = int((time.perf_counter() - t0) * 1000)
-            if pdf_warnings:
-                result["pdf_warnings"] = pdf_warnings
-            if consult_docs_meta:
-                result["consult_documents"] = consult_docs_meta
-            return _maybe_methodist_autolog(
-                request,
-                result,
-                tier=selected_tier,
-                full_text=full_text,
-                consultation_id="upload",
-                latency_ms=latency_ms,
-                category_slugs=category_slugs,
-            )
-        if _consult_render_l2_skip_llm():
-            t0 = time.perf_counter()
-            result = _consult_review_from_tier_or_pipeline(
-                tier="L2",
-                text=full_text,
-                bundle=None,
-                consultation_id="upload",
-                category_slugs=category_slugs,
-                require_rag_for_l2=False,
-            )
-            latency_ms = int((time.perf_counter() - t0) * 1000)
-            if pdf_warnings:
-                result["pdf_warnings"] = pdf_warnings
-            if consult_docs_meta:
-                result["consult_documents"] = consult_docs_meta
-            return _maybe_methodist_autolog(
-                request,
-                result,
-                tier="L2",
-                full_text=full_text,
-                consultation_id="upload",
-                latency_ms=latency_ms,
-                category_slugs=category_slugs,
-            )
-        if not _consult_render_l2_lite_enabled():
-            _require_rag_loaded()
+    if selected_tier in ("L0", "L1"):
         t0 = time.perf_counter()
-        result = _consult_review_from_parsed_uploads(
-            full_text=full_text,
-            n_files=len(files),
-            consult_docs_meta=consult_docs_meta,
-            pdf_warnings=pdf_warnings,
-            doc_texts_for_cache=doc_texts_for_cache,
+        result = await _run_consult_review_blocking(
+            _consult_review_from_tier_or_pipeline,
+            tier=selected_tier,
+            text=full_text,
+            bundle=None,
+            consultation_id="upload",
             category_slugs=category_slugs,
+            require_rag_for_l2=False,
         )
         latency_ms = int((time.perf_counter() - t0) * 1000)
+        if pdf_warnings:
+            result["pdf_warnings"] = pdf_warnings
+        if consult_docs_meta:
+            result["consult_documents"] = consult_docs_meta
+        return _maybe_methodist_autolog(
+            request,
+            result,
+            tier=selected_tier,
+            full_text=full_text,
+            consultation_id="upload",
+            latency_ms=latency_ms,
+            category_slugs=category_slugs,
+        )
+    if _consult_render_l2_skip_llm():
+        t0 = time.perf_counter()
+        result = await _run_consult_review_blocking(
+            _consult_review_from_tier_or_pipeline,
+            tier="L2",
+            text=full_text,
+            bundle=None,
+            consultation_id="upload",
+            category_slugs=category_slugs,
+            require_rag_for_l2=False,
+        )
+        latency_ms = int((time.perf_counter() - t0) * 1000)
+        if pdf_warnings:
+            result["pdf_warnings"] = pdf_warnings
+        if consult_docs_meta:
+            result["consult_documents"] = consult_docs_meta
         return _maybe_methodist_autolog(
             request,
             result,
@@ -10261,6 +10252,28 @@ async def api_consult_review(
             latency_ms=latency_ms,
             category_slugs=category_slugs,
         )
+    if not _consult_render_l2_lite_enabled():
+        _require_rag_loaded()
+    t0 = time.perf_counter()
+    result = await _run_consult_review_blocking(
+        _consult_review_from_parsed_uploads,
+        full_text=full_text,
+        n_files=len(files),
+        consult_docs_meta=consult_docs_meta,
+        pdf_warnings=pdf_warnings,
+        doc_texts_for_cache=doc_texts_for_cache,
+        category_slugs=category_slugs,
+    )
+    latency_ms = int((time.perf_counter() - t0) * 1000)
+    return _maybe_methodist_autolog(
+        request,
+        result,
+        tier="L2",
+        full_text=full_text,
+        consultation_id="upload",
+        latency_ms=latency_ms,
+        category_slugs=category_slugs,
+    )
 
 
 @app.post("/api/consult-review/stream")

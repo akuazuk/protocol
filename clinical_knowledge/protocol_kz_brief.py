@@ -41,6 +41,7 @@ _SOP_BLOCK_FOR_KZ: dict[str, str] = {
 
 _BRIEF_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 _BRIEF_CACHE_TTL_SEC = 3600
+_BRIEF_CACHE_MAX = 48
 
 _SECTION_LABELS: dict[str, str] = {
     "criteria": "Критерии и диагностика",
@@ -523,6 +524,9 @@ def resolve_protocol_brief_bundle_cached(
     )
     out = dict(out)
     out["cache_hit"] = False
+    if len(_BRIEF_CACHE) >= _BRIEF_CACHE_MAX:
+        oldest_key = min(_BRIEF_CACHE, key=lambda k: _BRIEF_CACHE[k][0])
+        _BRIEF_CACHE.pop(oldest_key, None)
     _BRIEF_CACHE[key] = (now, dict(out))
     return out
 
@@ -534,7 +538,7 @@ def attach_protocol_brief_map(
     icd_codes: list[str] | None = None,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Вложить protocol_brief для top-N протоколов (первичная нозология из nav)."""
+    """Вложить protocol_brief для top-N протоколов. Не вызывать из /api/assist на Render — только on-demand API."""
     from clinical_knowledge.protocol_nav_cache import resolve_protocol_nav_cached
 
     protos: list[dict[str, Any]] = []
