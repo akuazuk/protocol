@@ -7178,8 +7178,24 @@ _REQUEST_LOG = env_bool("REQUEST_LOG", True)
 _SLOW_REQUEST_MS = env_int("SLOW_REQUEST_MS", 8000)
 
 
+def _health_live_response(request: "Request") -> Response | None:
+    """Liveness до роутинга и StaticFiles — Render health check не получает 404."""
+    path = (request.url.path or "").rstrip("/") or "/"
+    if path != "/health/live":
+        return None
+    if request.method not in ("GET", "HEAD"):
+        return None
+    headers = {"X-App-Version": _app_version(), "Cache-Control": "no-store"}
+    if request.method == "HEAD":
+        return Response(status_code=200, headers=headers)
+    return JSONResponse({"ok": True, "version": _app_version()}, headers=headers)
+
+
 @app.middleware("http")
 async def _security_and_rate_limit(request: "Request", call_next):
+    live = _health_live_response(request)
+    if live is not None:
+        return live
     if _RATE_LIMIT_ENABLED:
         path = request.url.path
         explicit = path in _RATE_LIMITS
@@ -7732,7 +7748,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r220-fix-consult-health"
+BUILD_VERSION = "2026-06-16-r221-health-live-middleware"
 
 
 def _app_version() -> str:
@@ -7741,6 +7757,7 @@ def _app_version() -> str:
 
 
 @app.get("/health/live")
+@app.head("/health/live", include_in_schema=False)
 def health_live() -> dict:
     """Минимальный liveness для Render (без обхода индексов)."""
     return {"ok": True, "version": _app_version()}
