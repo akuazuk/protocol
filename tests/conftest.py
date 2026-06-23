@@ -25,9 +25,10 @@ import pytest
 
 @pytest.fixture(scope="session", autouse=True)
 def _wait_for_rag_chunks() -> None:
-    """Корпус грузится в фоне при импорте rag_server - ждём перед API-тестами."""
+    """Корпус грузится в фоне после lifespan uvicorn; в pytest стартуем явно."""
     import rag_server as rs
 
+    rs._start_rag_load_thread()
     if not rs._chunks_load_done.wait(timeout=120):
         pytest.fail("rag_server: таймаут загрузки корпуса для тестов", pytrace=False)
     if rs._chunks_load_error:

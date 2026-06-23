@@ -36,3 +36,5 @@ curl -s https://protocol-bimy.onrender.com/health | jq '{chunks, rag_ready, memo
 ```
 
 После заливки `chunks` должен совпадать с локальным корпусом (~55k+).
+
+**Деплой:** корпус грузится в фоне после bind порта (`lifespan` + `RAG_STARTUP_LOAD_DELAY_SEC`). Сразу после деплоя `rag_ready` может быть `false` 1–2 минуты — это нормально; `/health` отвечает сразу.

@@ -27,6 +27,7 @@ from concurrent.futures import TimeoutError as FuturesTimeout
 import csv
 import zipfile
 import xml.etree.ElementTree as ET
+from contextlib import asynccontextmanager
 from html.parser import HTMLParser
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -6984,12 +6985,39 @@ def _finish_hits_max(resp) -> bool:
     return "MAX" in fr or "LENGTH" in fr
 
 
-threading.Thread(
-    target=_run_load_data_background,
-    daemon=True,
-    name="rag-load-chunks",
-).start()
-app = FastAPI(title="Protocol RAG", version="1")
+_rag_load_thread_started = False
+_rag_load_thread_lock = threading.Lock()
+_log = logging.getLogger("protocol.rag")
+
+
+def _start_rag_load_thread() -> None:
+    """Загрузка корпуса после bind порта uvicorn (Render health check / port scan)."""
+    global _rag_load_thread_started
+    with _rag_load_thread_lock:
+        if _rag_load_thread_started:
+            return
+        _rag_load_thread_started = True
+
+    delay = env_float("RAG_STARTUP_LOAD_DELAY_SEC", 1.5 if env_bool("RENDER", False) else 0.0)
+
+    def _runner() -> None:
+        if delay > 0:
+            time.sleep(delay)
+        _run_load_data_background()
+
+    threading.Thread(target=_runner, daemon=True, name="rag-load-chunks").start()
+    _log.info("RAG corpus load scheduled (delay=%.1fs)", delay)
+
+
+@asynccontextmanager
+async def _app_lifespan(_application: FastAPI):
+    _log.info("Protocol RAG lifespan startup")
+    _start_rag_load_thread()
+    yield
+    _log.info("Protocol RAG lifespan shutdown")
+
+
+app = FastAPI(title="Protocol RAG", version="1", lifespan=_app_lifespan)
 
 
 # --- Безопасность: раздача статики только безопасных файлов ---
@@ -7689,7 +7717,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r213-search-tiers-all-phases"
+BUILD_VERSION = "2026-06-01-r214-render-startup-lifespan"
 
 
 def _app_version() -> str:

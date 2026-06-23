@@ -15,7 +15,7 @@ services:
     runtime: python
     plan: standard
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn rag_server:app --host 0.0.0.0 --port $PORT
+    startCommand: bash -c 'echo "Starting uvicorn on port ${PORT}" && exec uvicorn rag_server:app --host 0.0.0.0 --port "$PORT" --log-level info'
     healthCheckPath: /health
     # Persistent Disk: создайте диск в Dashboard, залейте corpus_chunks_parts → /var/data
     # (см. docs/deploy/persistent_disk.md), затем синхронизируйте Blueprint.
@@ -47,6 +47,8 @@ services:
         value: "2"
       - key: RAG_CHUNK_VOTE_RERETRIEVE
         value: "0"
+      - key: RAG_STARTUP_LOAD_DELAY_SEC
+        value: "2"
       - key: RAG_MEMORY_SAVER
         value: "1"
       - key: RAG_LEX_BM25_ALPHA
@@ -69,10 +71,6 @@ services:
         value: "20000"
       - key: RAG_RETRIEVE_CONCURRENCY
         value: "2"
-      - key: CONSULT_ALIGNMENT_ENABLED
-        value: "1"
-      - key: RAG_LEX_INDEX_DEFER
-        value: "0"
       - key: CONSULT_CONCURRENCY
         value: "2"
       - key: CONSULT_TYPED_RETRIEVE
@@ -83,6 +81,10 @@ services:
         value: "0"
       - key: CONSULT_PREWARM_SUMMARY_ICD_INDEX
         value: "0"
+      - key: RAG_LEX_INDEX_DEFER
+        value: "1"
+      - key: CONSULT_ALIGNMENT_ENABLED
+        value: "1"
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback
       # - key: ML_FEEDBACK_DIR
       #   value: /var/data/ml/feedback
