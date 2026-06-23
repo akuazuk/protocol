@@ -6805,7 +6805,7 @@ def _normalize_kz_matrix(parsed: dict, path: str, title: str, icd_codes: list[st
                     "text": text[:500],
                     "obligation": ob,
                     "protocol_ref": str(it.get("protocol_ref") or "").strip()[:120],
-                    "protocol_excerpt": str(it.get("protocol_excerpt") or "").strip()[:280],
+                    "protocol_excerpt": str(it.get("protocol_excerpt") or "").strip()[:600],
                     "icd_related": bool(it.get("icd_related")),
                 }
             )
@@ -7717,7 +7717,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r218-protocol-brief-nav"
+BUILD_VERSION = "2026-06-16-r219-kz-brief-expanded"
 
 
 def _app_version() -> str:
@@ -8273,6 +8273,8 @@ def _api_assist_impl(body: AssistIn) -> dict:
             )
             try:
                 from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
+                from clinical_knowledge.protocol_kz_brief import attach_protocol_brief_map
+                from clinical_knowledge.structured_retrieval_excerpt import attach_structured_excerpts
 
                 attach_protocol_nav_map(
                     fast,
@@ -8280,6 +8282,13 @@ def _api_assist_impl(body: AssistIn) -> dict:
                     icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
                     limit=3,
                 )
+                attach_protocol_brief_map(
+                    fast,
+                    query=q,
+                    icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+                    limit=3,
+                )
+                attach_structured_excerpts(fast, fast.get("retrieval") or [], limit=4)
             except Exception:
                 pass
             return fast
@@ -8810,6 +8819,8 @@ def _api_assist_impl(body: AssistIn) -> dict:
     }
     try:
         from clinical_knowledge.protocol_nav_cache import attach_protocol_nav_map
+        from clinical_knowledge.protocol_kz_brief import attach_protocol_brief_map
+        from clinical_knowledge.structured_retrieval_excerpt import attach_structured_excerpts
 
         attach_protocol_nav_map(
             out,
@@ -8817,6 +8828,13 @@ def _api_assist_impl(body: AssistIn) -> dict:
             icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
             limit=3,
         )
+        attach_protocol_brief_map(
+            out,
+            query=q,
+            icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+            limit=3,
+        )
+        attach_structured_excerpts(out, retrieved, limit=4)
     except Exception:
         pass
     return out
@@ -9707,6 +9725,54 @@ def api_protocol_summary_excerpt(
     if sid not in allowed:
         raise HTTPException(status_code=400, detail=f"section_id must be one of: {', '.join(sorted(allowed))}")
     return build_section_excerpt(path.strip(), condition_id=condition_id.strip(), section_id=sid)
+
+
+@app.get("/api/protocol-brief-bundle")
+def api_protocol_brief_bundle(
+    path: str = Query(..., min_length=3, max_length=512),
+    condition_id: str = Query(..., min_length=1, max_length=128),
+    query: str = Query("", max_length=12000),
+    icd: str = Query("", max_length=256),
+) -> dict:
+    """Развёрнутая сводка + KZ-brief + prefetch матрицы (без LLM)."""
+    from clinical_knowledge.protocol_kz_brief import resolve_protocol_brief_bundle_cached
+
+    icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
+    _require_rag_loaded()
+    return resolve_protocol_brief_bundle_cached(
+        path.strip(),
+        condition_id=condition_id.strip(),
+        query=query,
+        icd_codes=icd_codes,
+    )
+
+
+@app.post("/api/brief-feedback")
+def api_brief_feedback(body: dict) -> dict:
+    """Телеметрия полезности сводки (без авторизации методиста)."""
+    import json
+    from datetime import datetime, timezone
+
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Ожидается JSON-объект")
+    rating = str(body.get("rating") or "").strip().lower()
+    if rating not in ("useful", "insufficient", "wrong"):
+        raise HTTPException(status_code=400, detail="rating: useful | insufficient | wrong")
+    event = {
+        "event_type": "brief_feedback",
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "rating": rating,
+        "path": str(body.get("path") or "")[:512],
+        "condition_id": str(body.get("condition_id") or "")[:128],
+        "block_id": str(body.get("block_id") or "")[:64],
+        "build_version": BUILD_VERSION,
+    }
+    log_dir = ROOT / "data" / "ml" / "feedback"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "brief_feedback.jsonl"
+    with log_path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(event, ensure_ascii=False) + "\n")
+    return {"ok": True}
 
 
 @app.get("/api/methodist/analysis/{analysis_id}")

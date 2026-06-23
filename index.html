@@ -8856,6 +8856,132 @@
       font-weight: 700;
     }
 
+    .protocol-brief-red-flags {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(220, 38, 38, 0.35);
+      background: rgba(254, 242, 242, 0.85);
+    }
+
+    .protocol-brief-red-flags h4 {
+      margin: 0 0 8px;
+      font-size: 0.92rem;
+      color: #991b1b;
+    }
+
+    .protocol-brief-item {
+      display: block;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .protocol-brief-item:last-child {
+      border-bottom: none;
+    }
+
+    .protocol-brief-item__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 6px 8px;
+    }
+
+    .protocol-brief-item__text {
+      flex: 1 1 200px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .protocol-brief-item__meta {
+      font-size: 0.78rem;
+      color: var(--muted, #64748b);
+    }
+
+    .protocol-brief-kz-section {
+      margin-bottom: 16px;
+    }
+
+    .protocol-brief-kz-section h4 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+    }
+
+    .protocol-brief-sop-hint {
+      margin: 0 0 8px;
+      font-size: 0.82rem;
+      color: var(--muted, #64748b);
+      line-height: 1.4;
+    }
+
+    .protocol-brief-coverage {
+      margin: 0 0 12px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.08);
+      font-size: 0.84rem;
+    }
+
+    .protocol-brief-feedback {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .protocol-brief-feedback__label {
+      width: 100%;
+      font-size: 0.8rem;
+      color: var(--muted, #64748b);
+    }
+
+    .btn-brief-feedback {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .btn-brief-feedback:hover {
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .protocol-brief-matrix-slot {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .proto-nav-card__snippet-lines {
+      margin: 6px 0 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.82rem;
+      color: var(--muted, #475569);
+    }
+
+    .proto-nav-card__snippet-lines li {
+      margin: 2px 0;
+    }
+
+    .proto-nav-card__snippet-lines strong {
+      color: inherit;
+      font-weight: 600;
+    }
+
+    .protocol-brief-pdf-section {
+      margin-bottom: 12px;
+    }
+
+    .protocol-brief-pdf-section h5 {
+      margin: 0 0 4px;
+      font-size: 0.88rem;
+    }
+
     .search-wizard-icd {
       margin: 0.5rem 0 0.75rem;
     }
@@ -14946,10 +15072,34 @@
       '">проверка оглавления…</span>';
     html += "</div></div></div>";
     if (cit) {
-      html +=
-        '<p class="proto-nav-card__excerpt">' +
-        escapeHtml(truncateExcerpt(cit, isTop ? 280 : 200)) +
-        "</p>";
+      var structEx = ((data && data.protocol_excerpts) || {})[pr.path || ""];
+      if (structEx && structEx.snippets) {
+        var snKeys = ["diagnostics", "pharmacotherapy", "criteria", "treatment"];
+        html += '<ul class="proto-nav-card__snippet-lines">';
+        var ski;
+        for (ski = 0; ski < snKeys.length; ski++) {
+          var sn = structEx.snippets[snKeys[ski]];
+          if (!sn) continue;
+          var snLabel =
+            snKeys[ski] === "diagnostics"
+              ? "Обследование"
+              : snKeys[ski] === "pharmacotherapy" || snKeys[ski] === "treatment"
+                ? "Лечение"
+                : "Диагностика";
+          html +=
+            "<li><strong>" +
+            escapeHtml(snLabel) +
+            ":</strong> " +
+            escapeHtml(truncateExcerpt(sn, 160)) +
+            "</li>";
+        }
+        html += "</ul>";
+      } else {
+        html +=
+          '<p class="proto-nav-card__excerpt">' +
+          escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
+          "</p>";
+      }
     }
     if (pr.match_reason) {
       html +=
@@ -16909,7 +17059,8 @@
   function collectKzMatrixSelectedPayload() {
     var panel =
       document.getElementById("practical-review-panel") ||
-      document.getElementById("practical-kz-slot");
+      document.getElementById("practical-kz-slot") ||
+      document.getElementById("brief-kz-matrix-slot");
     if (!panel) return null;
     var cbs = panel.querySelectorAll(".kz-matrix-cb:checked");
     if (!cbs.length) return null;
@@ -17550,6 +17701,7 @@
     }
     window.__lastAssistData = data;
     ingestProtocolNavFromAssist(data);
+    ingestProtocolBriefFromAssist(data);
     lastAssistFullQuery = data.query || "";
     lastAssistClinical = stripToClinicalOnly(data.query || "");
     lastAssistQuestions = [];
@@ -21734,6 +21886,90 @@
     }
   }
 
+  function storeProtocolBriefInCache(path, conditionId, bundle) {
+    if (!path || !conditionId || !bundle) return;
+    window.__protocolBriefCache = window.__protocolBriefCache || {};
+    window.__protocolBriefCache[path + "|" + conditionId] = bundle;
+  }
+
+  function getProtocolBriefFromCache(path, conditionId) {
+    var c = window.__protocolBriefCache || {};
+    return c[path + "|" + conditionId] || null;
+  }
+
+  function ingestProtocolBriefFromAssist(data) {
+    if (!data || !data.protocol_brief) return;
+    var paths = Object.keys(data.protocol_brief);
+    var i;
+    for (i = 0; i < paths.length; i++) {
+      var b = data.protocol_brief[paths[i]];
+      var cid = (b && b.condition_id) || ((b && b.expanded && b.expanded.condition_id) || "");
+      if (cid) storeProtocolBriefInCache(paths[i], cid, b);
+    }
+  }
+
+  function fetchProtocolBriefBundle(path, conditionId, queryText, icdList) {
+    var cached = getProtocolBriefFromCache(path, conditionId);
+    if (cached) return Promise.resolve(cached);
+    var url =
+      apiBaseUrl() +
+      "/api/protocol-brief-bundle?path=" +
+      encodeURIComponent(path) +
+      "&condition_id=" +
+      encodeURIComponent(conditionId) +
+      "&query=" +
+      encodeURIComponent(queryText || "");
+    if (icdList && icdList.length) {
+      url += "&icd=" + encodeURIComponent(icdList.join(","));
+    }
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (bundle) {
+        if (bundle) storeProtocolBriefInCache(path, conditionId, bundle);
+        return bundle;
+      });
+  }
+
+  function sendBriefFeedback(path, conditionId, blockId, rating) {
+    fetch(apiBaseUrl() + "/api/brief-feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path: path,
+        condition_id: conditionId,
+        block_id: blockId || "brief",
+        rating: rating,
+      }),
+    }).catch(function () {});
+  }
+
+  function renderBriefItemHtml(it) {
+    if (!it || !it.text) return "";
+    var html = '<div class="protocol-brief-item">';
+    html += '<div class="protocol-brief-item__head">';
+    html += obligationBadgeHtml(it.obligation);
+    html +=
+      '<span class="protocol-brief-item__text">' + escapeHtml(String(it.text)) + "</span>";
+    html += "</div>";
+    var meta = [];
+    if (it.page_start) meta.push("стр. " + String(it.page_start));
+    if (it.section_title) meta.push(String(it.section_title));
+    if (meta.length) {
+      html +=
+        '<p class="protocol-brief-item__meta">' + escapeHtml(meta.join(" · ")) + "</p>";
+    }
+    if (it.quote && it.quote !== it.text) {
+      html +=
+        '<details class="protocol-brief-item-quote"><summary>Цитата из PDF</summary><p class="assist-proto-excerpt">' +
+        escapeHtml(String(it.quote)) +
+        "</p></details>";
+    }
+    html += "</div>";
+    return html;
+  }
+
   function briefConditionFromNav(nav, ctx) {
     ctx = ctx || window.__funnelContext || {};
     var conds = (nav && nav.conditions) || [];
@@ -21748,14 +21984,20 @@
     return conds[0];
   }
 
-  function renderProtocolBriefHtml(nav, data, path) {
+  function renderProtocolBriefHtml(nav, data, path, bundle) {
+    bundle = bundle || null;
     var ctx = window.__funnelContext || {};
     var cond = briefConditionFromNav(nav, ctx);
-    var title = (nav && nav.title) || formatProtocolDisplayTitle(path, "");
+    var expanded = (bundle && bundle.expanded) || {};
+    var kzBrief = (bundle && bundle.kz_brief) || {};
+    var title = (nav && nav.title) || expanded.title || formatProtocolDisplayTitle(path, "");
     var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
-    var pdfExcerpt = excerptMap[path] || "";
+    var structEx = ((data && data.protocol_excerpts) || {})[path] || null;
+    var pdfExcerpt = (structEx && structEx.text) || excerptMap[path] || "";
     var href = safeResourceHref(path);
     var meta = ((data && data.protocol_ui_meta) || {})[path] || {};
+    var hasKz = !!(kzBrief.available && kzBrief.sections && kzBrief.sections.length);
+    var defaultTab = hasKz ? "kz" : "summary";
     var html =
       '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner" data-brief-path="' +
       escapeHtmlAttr(path) +
@@ -21765,30 +22007,109 @@
     if (cond && cond.match_reason) {
       html += '<p class="protocol-brief-match">' + escapeHtml(String(cond.match_reason)) + "</p>";
     }
+    if (kzBrief.summary_ru) {
+      html +=
+        '<p class="protocol-brief-match">' + escapeHtml(String(kzBrief.summary_ru)) + "</p>";
+    }
     var metaParts = [];
     if (meta.post_mz) metaParts.push("пост МЗ");
     if (meta.year) metaParts.push(String(meta.year));
-    if (nav && nav.cache_hit) metaParts.push("кэш");
-    if (nav && nav.nav_ms != null) metaParts.push(String(nav.nav_ms) + " ms");
+    if (bundle && bundle.cache_hit) metaParts.push("кэш brief");
+    if (bundle && bundle.brief_ms != null) metaParts.push(String(bundle.brief_ms) + " ms");
+    if (nav && nav.cache_hit) metaParts.push("nav кэш");
     if (metaParts.length) {
       html += '<p class="protocol-brief-meta">' + escapeHtml(metaParts.join(" · ")) + "</p>";
     }
+    if (kzBrief.coverage) {
+      html +=
+        '<p class="protocol-brief-coverage">Для КЗ: ' +
+        String(kzBrief.coverage.blocks_filled || 0) +
+        " из " +
+        String(kzBrief.coverage.blocks_total || 7) +
+        " блоков · " +
+        String(kzBrief.coverage.matrix_items || 0) +
+        " пункт(ов) из протокола" +
+        (kzBrief.coverage.required_total
+          ? " · обязательных: " +
+            String(kzBrief.coverage.required_shown || 0) +
+            "/" +
+            String(kzBrief.coverage.required_total)
+          : "") +
+        "</p>";
+    }
     html += "</div>";
 
+    var redFlags = expanded.red_flags || [];
+    if (redFlags.length) {
+      html += '<div class="protocol-brief-red-flags"><h4>Красные флаги и срочные действия</h4>';
+      var ri;
+      for (ri = 0; ri < redFlags.length; ri++) {
+        html += renderBriefItemHtml(redFlags[ri]);
+      }
+      html += "</div>";
+    }
+
     html += '<div class="protocol-brief-tabs" role="tablist">';
+    if (hasKz) {
+      html +=
+        '<button type="button" class="protocol-brief-tab' +
+        (defaultTab === "kz" ? " is-active" : "") +
+        '" data-brief-tab="kz" role="tab">Для КЗ</button>';
+    }
     html +=
-      '<button type="button" class="protocol-brief-tab is-active" data-brief-tab="summary" role="tab">Сводка</button>';
-    html +=
-      '<button type="button" class="protocol-brief-tab" data-brief-tab="sections" role="tab">Разделы</button>';
-    if (pdfExcerpt) {
+      '<button type="button" class="protocol-brief-tab' +
+      (defaultTab === "summary" ? " is-active" : "") +
+      '" data-brief-tab="summary" role="tab">Сводка</button>';
+    if (pdfExcerpt || (structEx && structEx.sections && structEx.sections.length)) {
       html +=
         '<button type="button" class="protocol-brief-tab" data-brief-tab="pdf" role="tab">PDF-фрагмент</button>';
     }
     html += "</div>";
 
-    html += '<div class="protocol-brief-panel" data-brief-panel="summary" role="tabpanel">';
+    if (hasKz) {
+      html +=
+        '<div class="protocol-brief-panel" data-brief-panel="kz"' +
+        (defaultTab === "kz" ? "" : " hidden") +
+        ' role="tabpanel">';
+      var ksi;
+      for (ksi = 0; ksi < kzBrief.sections.length; ksi++) {
+        var ksec = kzBrief.sections[ksi];
+        var kitems = ksec.items || [];
+        html += '<section class="protocol-brief-kz-section">';
+        html += "<h4>" + escapeHtml(String(ksec.kz_section || "")) + "</h4>";
+        if (ksec.sop_hint) {
+          html +=
+            '<p class="protocol-brief-sop-hint">' + escapeHtml(String(ksec.sop_hint)) + "</p>";
+        }
+        if (kitems.length) {
+          var kii;
+          for (kii = 0; kii < kitems.length; kii++) {
+            html += renderBriefItemHtml(kitems[kii]);
+          }
+          if (ksec.total_count && ksec.total_count > kitems.length) {
+            html +=
+              '<p class="protocol-brief-sop-hint">Ещё ' +
+              String(ksec.total_count - kitems.length) +
+              " пункт(ов) - см. PDF или «Цитаты из раздела».</p>";
+          }
+        } else {
+          html +=
+            '<p class="protocol-brief-sop-hint">В карточке Summary нет готовых пунктов - заполните по СОП и осмотру.</p>';
+        }
+        html += "</section>";
+      }
+      html += "</div>";
+    }
+
+    html +=
+      '<div class="protocol-brief-panel" data-brief-panel="summary"' +
+      (defaultTab === "summary" ? "" : " hidden") +
+      ' role="tabpanel">';
     if (nav && nav.conditions && nav.conditions.length > 1) {
-      html += '<details class="protocol-brief-conditions"><summary>Другая нозология (' + String(nav.conditions.length) + ")</summary>";
+      html +=
+        '<details class="protocol-brief-conditions"><summary>Другая нозология (' +
+        String(nav.conditions.length) +
+        ")</summary>";
       var ni;
       for (ni = 0; ni < nav.conditions.length; ni++) {
         var nc = nav.conditions[ni];
@@ -21810,67 +22131,100 @@
       html += "</details>";
     }
     html += '<div class="protocol-brief-blocks">';
-    var sections = (cond && cond.sections) || [];
+    var expSections = expanded.sections || [];
     var bi;
-    for (bi = 0; bi < sections.length; bi++) {
-      var sec = sections[bi];
-      var blockCls = "protocol-brief-block";
-      if (sec.id === "red_flags") blockCls += " protocol-brief-block--alert";
-      html += '<article class="' + blockCls + '">';
-      html += '<div class="protocol-brief-block__head">';
-      html +=
-        '<span class="protocol-brief-block__label">' + escapeHtml(sec.label || sec.id || "Раздел") + "</span>";
-      if (sec.count != null) {
+    if (expSections.length) {
+      for (bi = 0; bi < expSections.length; bi++) {
+        var esec = expSections[bi];
+        var blockCls = "protocol-brief-block";
+        if (esec.id === "red_flags") blockCls += " protocol-brief-block--alert";
+        html += '<article class="' + blockCls + '">';
+        html += '<div class="protocol-brief-block__head">';
         html +=
-          '<span class="protocol-brief-block__count">' + String(sec.count) + " пункт(ов)</span>";
+          '<span class="protocol-brief-block__label">' +
+          escapeHtml(esec.label || esec.id || "Раздел") +
+          "</span>";
+        if (esec.total_count != null) {
+          html +=
+            '<span class="protocol-brief-block__count">' +
+            String(esec.total_count) +
+            " пункт(ов)</span>";
+        }
+        html += "</div>";
+        var eitems = esec.items || [];
+        var ei;
+        for (ei = 0; ei < eitems.length; ei++) {
+          html += renderBriefItemHtml(eitems[ei]);
+        }
+        if (esec.has_more) {
+          html +=
+            '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
+            escapeHtmlAttr(esec.id || "") +
+            '" data-brief-section-label="' +
+            escapeHtmlAttr(esec.label || "") +
+            '">Все цитаты раздела</button>';
+        }
+        html += "</article>";
       }
-      html += "</div>";
-      if (sec.preview) {
+    } else {
+      var sections = (cond && cond.sections) || [];
+      for (bi = 0; bi < sections.length; bi++) {
+        var sec = sections[bi];
+        var blockCls2 = "protocol-brief-block";
+        if (sec.id === "red_flags") blockCls2 += " protocol-brief-block--alert";
+        html += '<article class="' + blockCls2 + '">';
+        html += '<div class="protocol-brief-block__head">';
         html +=
-          '<p class="protocol-brief-block__preview">' + escapeHtml(String(sec.preview)) + "</p>";
+          '<span class="protocol-brief-block__label">' +
+          escapeHtml(sec.label || sec.id || "Раздел") +
+          "</span>";
+        if (sec.count != null) {
+          html +=
+            '<span class="protocol-brief-block__count">' +
+            String(sec.count) +
+            " пункт(ов)</span>";
+        }
+        html += "</div>";
+        if (sec.preview) {
+          html +=
+            '<p class="protocol-brief-block__preview">' +
+            escapeHtml(String(sec.preview)) +
+            "</p>";
+        }
+        html +=
+          '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
+          escapeHtmlAttr(sec.id || "") +
+          '" data-brief-section-label="' +
+          escapeHtmlAttr(sec.label || "") +
+          '">Цитаты из раздела</button>';
+        html += "</article>";
       }
-      html +=
-        '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
-        escapeHtmlAttr(sec.id || "") +
-        '" data-brief-section-label="' +
-        escapeHtmlAttr(sec.label || "") +
-        '">Цитаты из раздела</button>';
-      html += "</article>";
-    }
-    if (!sections.length) {
-      html +=
-        '<p class="assist-ai-eval-lead">Карточка Summary без разделов - используйте PDF-фрагмент и матрицу КЗ.</p>';
-      if (pdfExcerpt) {
+      if (!sections.length) {
         html +=
-          '<p class="protocol-brief-block__preview">' + escapeHtml(truncateExcerpt(pdfExcerpt, 280)) + "</p>";
+          '<p class="assist-ai-eval-lead">Карточка Summary без разделов - используйте PDF-фрагмент и матрицу КЗ.</p>';
       }
     }
     html += "</div></div>";
 
-    html += '<div class="protocol-brief-panel" data-brief-panel="sections" hidden role="tabpanel">';
-    if (sections.length) {
-      html += '<ul class="assist-proto-excerpt-list">';
-      for (bi = 0; bi < sections.length; bi++) {
-        var s2 = sections[bi];
-        html += "<li><strong>" + escapeHtml(s2.label || s2.id || "") + "</strong>";
-        if (s2.preview) html += " - " + escapeHtml(String(s2.preview));
-        html +=
-          ' <button type="button" class="protocol-brief-block__btn" data-brief-section="' +
-          escapeHtmlAttr(s2.id || "") +
-          '" data-brief-section-label="' +
-          escapeHtmlAttr(s2.label || "") +
-          '">Цитаты</button></li>';
-      }
-      html += "</ul>";
-    } else {
-      html += '<p class="assist-ai-eval-lead">Разделы не найдены в карточке.</p>';
-    }
-    html += "</div>";
-
-    if (pdfExcerpt) {
+    if (pdfExcerpt || (structEx && structEx.sections)) {
       html += '<div class="protocol-brief-panel" data-brief-panel="pdf" hidden role="tabpanel">';
-      html +=
-        '<p class="assist-proto-excerpt">' + escapeHtml(truncateExcerpt(pdfExcerpt, 520)) + "</p>";
+      if (structEx && structEx.sections && structEx.sections.length) {
+        var psi;
+        for (psi = 0; psi < structEx.sections.length; psi++) {
+          var psec = structEx.sections[psi];
+          html += '<div class="protocol-brief-pdf-section">';
+          html += "<h5>" + escapeHtml(String(psec.label || psec.section_title || "")) + "</h5>";
+          html +=
+            '<p class="assist-proto-excerpt">' + escapeHtml(String(psec.text || "")) + "</p>";
+          html += "</div>";
+        }
+      } else {
+        html += '<details open class="protocol-brief-pdf-full">';
+        html += "<summary>Выдержка из поиска (RAG)</summary>";
+        html +=
+          '<p class="assist-proto-excerpt">' + escapeHtml(String(pdfExcerpt)) + "</p>";
+        html += "</details>";
+      }
       html += "</div>";
     }
 
@@ -21886,6 +22240,25 @@
     html +=
       '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Черновик КЗ</button>';
     html += "</div>";
+
+    html += '<div class="protocol-brief-feedback" data-brief-feedback-root>';
+    html += '<span class="protocol-brief-feedback__label">Полезность сводки:</span>';
+    html +=
+      '<button type="button" class="btn-brief-feedback" data-brief-rating="useful">Достаточно</button>';
+    html +=
+      '<button type="button" class="btn-brief-feedback" data-brief-rating="insufficient">Мало данных</button>';
+    html +=
+      '<button type="button" class="btn-brief-feedback" data-brief-rating="wrong">Неверно</button>';
+    html += "</div>";
+
+    if (bundle && bundle.kz_matrix && bundle.kz_matrix.sections && bundle.kz_matrix.sections.length) {
+      html += '<div class="protocol-brief-matrix-slot" id="brief-kz-matrix-slot">';
+      html += renderKzMatrixColumn(bundle.kz_matrix);
+      html +=
+        '<p class="assist-detail-note">Чек-лист сформирован из карточки Summary. Отметьте пункты и нажмите «Черновик КЗ».</p>';
+      html += "</div>";
+    }
+
     html +=
       '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div>';
     html += "</div></div>";
@@ -21923,12 +22296,37 @@
         var cid = btn.getAttribute("data-brief-condition") || "";
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.condition_id = cid;
-        renderProtocolBriefStep(nav, path, data);
+        var q = (data && data.query) || lastAssistFullQuery || "";
+        var icd = icdCodesFromAssistData(data || {});
+        var cached = getProtocolBriefFromCache(path, cid);
+        if (cached) {
+          renderProtocolBriefStep(nav, path, data, cached);
+          return;
+        }
+        fetchProtocolBriefBundle(path, cid, q, icd).then(function (bundle) {
+          renderProtocolBriefStep(nav, path, data, bundle);
+        });
+      });
+    });
+    root.querySelectorAll("[data-brief-rating]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var rating = btn.getAttribute("data-brief-rating") || "";
+        var cid = (window.__funnelContext && window.__funnelContext.condition_id) || "";
+        sendBriefFeedback(path, cid, "brief", rating);
+        btn.textContent = rating === "useful" ? "Спасибо" : "Учтём";
+        btn.disabled = true;
       });
     });
     var matrixBtn = root.querySelector(".btn-proto-matrix");
     if (matrixBtn) {
       matrixBtn.addEventListener("click", function () {
+        var slot = document.getElementById("brief-kz-matrix-slot");
+        if (slot) {
+          try {
+            slot.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (eScroll) {}
+          return;
+        }
         var protos = ((data && data.llm_json) || {}).protocols || [];
         var offer = { path: path, title: (nav && nav.title) || "", confidence_score: "" };
         var pi;
@@ -21967,7 +22365,7 @@
     bindProtocolNavHub(data);
   }
 
-  function renderProtocolBriefStep(nav, path, data) {
+  function renderProtocolBriefStep(nav, path, data, bundle) {
     var out = document.getElementById("llm-out");
     if (!out) return;
     showResultsSection(true);
@@ -21978,19 +22376,39 @@
     if (conds.length >= 1 && !window.__funnelContext.condition_id) {
       window.__funnelContext.condition_id = conds[0].condition_id;
     }
+    var cid = window.__funnelContext.condition_id || "";
+    var q = (data && data.query) || lastAssistFullQuery || "";
+    var icd = icdCodesFromAssistData(data || {});
     window.__searchWizard = { step: "brief", selectedProto: path };
     updateSearchWizardBar("brief");
+    if (!bundle && cid) {
+      bundle = getProtocolBriefFromCache(path, cid);
+    }
+    if (!bundle && cid) {
+      out.innerHTML = getSearchWizardLoadingSkeletonHtml("brief", searchWizardProgressHint("brief"), {
+        protoTitle: (nav && nav.title) || formatProtocolDisplayTitle(path, ""),
+      });
+      fetchProtocolBriefBundle(path, cid, q, icd)
+        .then(function (fetched) {
+          renderProtocolBriefStep(nav, path, data, fetched);
+        })
+        .catch(function () {
+          out.innerHTML = renderProtocolBriefHtml(nav, data, path, null);
+          wireProtocolBrief(nav, path, data);
+          hideSearchWizardBarProgress();
+        });
+      return;
+    }
     if (nav && nav.nav_ms != null) {
       setSearchQueryStatus(
         "Сводка по КП" +
-          (nav.cache_hit ? " (кэш)" : "") +
-          " · " +
-          String(nav.nav_ms) +
-          " ms",
+          (nav.cache_hit ? " (кэш nav)" : "") +
+          (bundle && bundle.brief_ms != null ? " · brief " + String(bundle.brief_ms) + " ms" : "") +
+          (nav.nav_ms != null ? " · nav " + String(nav.nav_ms) + " ms" : ""),
         false
       );
     }
-    out.innerHTML = renderProtocolBriefHtml(nav, data, path);
+    out.innerHTML = renderProtocolBriefHtml(nav, data, path, bundle);
     wireProtocolBrief(nav, path, data);
     hideSearchWizardBarProgress();
     scrollToSearchWizard();
@@ -22357,7 +22775,12 @@
           return;
         }
         window.__funnelContext.condition_id = nav.conditions[0].condition_id;
-        renderProtocolBriefStep(nav, path, data);
+        var cid = nav.conditions[0].condition_id;
+        var brief =
+          getProtocolBriefFromCache(path, cid) ||
+          ((data.protocol_brief || {})[path] || null);
+        if (brief) storeProtocolBriefInCache(path, cid, brief);
+        renderProtocolBriefStep(nav, path, data, brief);
       })
       .catch(function () {
         hideSearchWizardBarProgress();
