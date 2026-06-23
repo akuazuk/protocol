@@ -13517,6 +13517,7 @@
         if (!code) return;
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.icd_codes = [code];
+        window.__funnelContext.icd_confirmed = true;
         delete window.__funnelContext._icdLookupCacheKey;
         delete window.__funnelContext._icdLookupPayload;
         window.__searchWizard = { step: "protocols", selectedProto: null };
@@ -14718,9 +14719,10 @@
       parts.push("<strong>Запрос:</strong> " + escapeHtml(qShort));
     }
     var ctx = window.__funnelContext || {};
-    if (ctx.icd_codes && ctx.icd_codes.length) {
+    var wizCtx = window.__searchWizard || {};
+    if (ctx.icd_codes && ctx.icd_codes.length && (ctx.icd_confirmed || wizCtx.step !== "icd")) {
       parts.push("<strong>МКБ:</strong> " + escapeHtml(ctx.icd_codes.slice(0, 4).join(", ")));
-    } else {
+    } else if (wizCtx.step !== "icd") {
       var data = window.__lastAssistData || {};
       var icd = data.icd || {};
       var codes = icd.codes_for_retrieval || [];
@@ -21100,6 +21102,7 @@
       delete window.__funnelContext.rubricSkipped;
       delete window.__funnelContext.rubric_slugs;
       delete window.__funnelContext.icd_codes;
+      delete window.__funnelContext.icd_confirmed;
     }
   }
 
@@ -21262,6 +21265,69 @@
 
   function isDrugExternalIcdCode(code) {
     return /^Y/i.test(String(code || "").trim());
+  }
+
+  function icdPayloadFromCodeList(codes) {
+    var list = normalizeFunnelIcdCodes(codes || []);
+    return {
+      detected: [],
+      suggested: list.map(function (c) {
+        return { code: c, title_ru: "", match_method: "context_prefill" };
+      }),
+      codes_for_retrieval: list.slice(),
+    };
+  }
+
+  function normalizeFunnelIcdPreflightResponse(j) {
+    if (j && j.context && typeof j.context === "object") {
+      window.__funnelContext = Object.assign(window.__funnelContext || {}, j.context);
+    }
+    if (
+      j &&
+      j.icd &&
+      ((j.icd.suggested && j.icd.suggested.length) ||
+        (j.icd.detected && j.icd.detected.length) ||
+        (j.icd.codes_for_retrieval && j.icd.codes_for_retrieval.length))
+    ) {
+      return {
+        icd: j.icd,
+        hint: j.hint || "",
+        auto_skip: j.auto_skip,
+        next_step: j.next_step,
+      };
+    }
+    if (j && j.choices && j.choices.length) {
+      return {
+        icd: {
+          detected: [],
+          suggested: j.choices.map(function (c) {
+            var label = String(c.label || c.id || "");
+            var code = String(c.id || "").trim();
+            var title = label.indexOf("·") >= 0 ? label.split("·").slice(1).join("·").trim() : "";
+            return {
+              code: code,
+              title_ru: title,
+              match_method: "funnel_choice",
+              score: c.score,
+            };
+          }),
+          codes_for_retrieval: j.choices.map(function (c) {
+            return String(c.id || "").trim();
+          }),
+        },
+        hint: j.hint || "",
+        auto_skip: j.auto_skip,
+        next_step: j.next_step,
+      };
+    }
+    var ctxCodes = normalizeFunnelIcdCodes((window.__funnelContext || {}).icd_codes || []);
+    if (ctxCodes.length) {
+      return { icd: icdPayloadFromCodeList(ctxCodes), hint: j && j.hint ? j.hint : "" };
+    }
+    var out = { icd: (j && j.icd) || {}, hint: (j && j.hint) || "" };
+    if (j && j.auto_skip) out.auto_skip = j.auto_skip;
+    if (j && j.next_step != null) out.next_step = j.next_step;
+    return out;
   }
 
   function buildIcdWizardChoices(icd) {
@@ -21946,7 +22012,7 @@
     showResultsSection(true);
     window.__searchWizard = { step: "icd" };
     updateSearchWizardBar("icd");
-    var icd = (data && data.icd) || {};
+    var icd = normalizeFunnelIcdPreflightResponse(data || {}).icd || (data && data.icd) || {};
     var choices = buildIcdWizardChoices(icd).slice(0, 12);
     out.innerHTML = buildWizardMultiSelectHtml({
       lead: "Отметьте коды МКБ-10 по степени совпадения: зелёный - лучшее, жёлтый - возможно, красный - слабое. Можно выбрать несколько.",
@@ -21967,6 +22033,7 @@
         window.__funnelContext.icd_codes = sel.map(function (c) {
           return c.code;
         });
+        window.__funnelContext.icd_confirmed = true;
         runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
           console.error(err);
         });
@@ -22047,25 +22114,16 @@
             }
             throw new Error(d || text || r.statusText);
           }
-          if (j.icd) return j;
-          if (j.choices && j.choices.length) {
-            return {
-              icd: {
-                detected: j.choices.map(function (c) {
-                  return { code: c.id, title_ru: c.label, confidence: c.confidence };
-                }),
-                suggested: [],
-                codes_for_retrieval: j.choices.map(function (c) {
-                  return c.id;
-                }),
-              },
-              query_effective: j.query || qSend,
-            };
-          }
-          return j;
+          return normalizeFunnelIcdPreflightResponse(j);
         });
       })
       .then(function (data) {
+        if (data && data.auto_skip && data.next_step === 3 && window.__funnelContext && window.__funnelContext.icd_confirmed) {
+          runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
+            console.error(err);
+          });
+          return;
+        }
         renderSearchWizardIcdStep(data);
       })
       .finally(function () {

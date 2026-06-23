@@ -64,6 +64,42 @@ def _extract_icd_codes(q: str) -> list[str]:
     return out
 
 
+def _icd_payload_from_codes(codes: list[str]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Минимальный icd+choices для UI, когда коды уже в контексте воронки."""
+    from icd_mkb import describe_code
+
+    icd_payload: dict[str, Any] = {
+        "detected": [],
+        "suggested": [],
+        "codes_for_retrieval": [],
+    }
+    choices: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for code in codes:
+        c = str(code or "").strip().upper()
+        if not c or c in seen:
+            continue
+        seen.add(c)
+        info = describe_code(c)
+        title = str(info.get("title_ru") or "").strip()
+        row = {
+            "code": c,
+            "title_ru": title,
+            "title_en": info.get("title_en"),
+            "match_method": "context_prefill",
+        }
+        icd_payload["suggested"].append(row)
+        icd_payload["codes_for_retrieval"].append(c)
+        choices.append(
+            {
+                "id": c,
+                "label": f"{c} · {title}" if title else c,
+                "confidence": 0.85,
+            }
+        )
+    return icd_payload, choices
+
+
 def _infer_rubric_choices(q: str, icd_codes: list[str]) -> list[dict[str, str]]:
     slugs: list[str] = []
     seen: set[str] = set()
@@ -168,9 +204,12 @@ def handle_search_funnel(
         icd_codes = list(ctx.get("icd_codes") or []) or _extract_icd_codes(q)
         ctx["icd_codes"] = icd_codes
         out["context"] = ctx
-        if icd_codes or _query_has_icd(q):
+        if icd_codes and ctx.get("icd_confirmed"):
+            icd_payload, choices = _icd_payload_from_codes(icd_codes)
             out["auto_skip"] = True
             out["next_step"] = 3
+            out["choices"] = choices[:12]
+            out["icd"] = icd_payload
             return out
         import rag_server as rs
 
