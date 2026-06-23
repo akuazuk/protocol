@@ -7717,7 +7717,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r214-render-startup-lifespan"
+BUILD_VERSION = "2026-06-16-r215-search-tier-wizard-ui"
 
 
 def _app_version() -> str:

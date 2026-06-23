@@ -265,7 +265,8 @@
       font-weight: 600;
     }
 
-    #panel-consult-review .consult-tier-panel {
+    #panel-consult-review .consult-tier-panel,
+    #panel-main-search .consult-tier-panel {
       margin: 1.15rem 0 0.35rem;
       padding: 0.85rem 0.95rem 0.95rem;
       border-radius: 18px;
@@ -274,7 +275,8 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
     }
 
-    #panel-consult-review .consult-tier-panel__head {
+    #panel-consult-review .consult-tier-panel__head,
+    #panel-main-search .consult-tier-panel__head {
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
@@ -283,7 +285,8 @@
       margin-bottom: 0.65rem;
     }
 
-    #panel-consult-review .consult-tier-panel__title {
+    #panel-consult-review .consult-tier-panel__title,
+    #panel-main-search .consult-tier-panel__title {
       margin: 0;
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
       font-size: 0.94rem;
@@ -292,7 +295,8 @@
       color: var(--green-950);
     }
 
-    #panel-consult-review .consult-tier-panel__lead {
+    #panel-consult-review .consult-tier-panel__lead,
+    #panel-main-search .consult-tier-panel__lead {
       margin: 0;
       font-size: 0.76rem;
       color: var(--muted);
@@ -300,19 +304,22 @@
       line-height: 1.35;
     }
 
-    #panel-consult-review .consult-tier-cards {
+    #panel-consult-review .consult-tier-cards,
+    #panel-main-search .consult-tier-cards {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.55rem;
     }
 
     @media (max-width: 820px) {
-      #panel-consult-review .consult-tier-cards {
+      #panel-consult-review .consult-tier-cards,
+    #panel-main-search .consult-tier-cards {
         grid-template-columns: 1fr;
       }
     }
 
-    #panel-consult-review .consult-tier-card {
+    #panel-consult-review .consult-tier-card,
+    #panel-main-search .consult-tier-card {
       position: relative;
       display: block;
       cursor: pointer;
@@ -325,18 +332,21 @@
       min-height: 100%;
     }
 
-    #panel-consult-review .consult-tier-card:hover {
+    #panel-consult-review .consult-tier-card:hover,
+    #panel-main-search .consult-tier-card:hover {
       border-color: rgba(26, 138, 114, 0.42);
       box-shadow: 0 8px 22px rgba(13, 92, 74, 0.08);
       transform: translateY(-1px);
     }
 
-    #panel-consult-review .consult-tier-card:has(input:focus-visible) {
+    #panel-consult-review .consult-tier-card:has(input:focus-visible),
+    #panel-main-search .consult-tier-card:has(input:focus-visible) {
       outline: 2px solid rgba(60, 184, 154, 0.55);
       outline-offset: 2px;
     }
 
-    #panel-consult-review .consult-tier-card:has(input:checked) {
+    #panel-consult-review .consult-tier-card:has(input:checked),
+    #panel-main-search .consult-tier-card:has(input:checked) {
       border-color: rgba(26, 138, 114, 0.62);
       background: linear-gradient(165deg, rgba(236, 253, 245, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
       box-shadow:
@@ -344,13 +354,15 @@
         0 10px 26px rgba(13, 92, 74, 0.1);
     }
 
-    #panel-consult-review .consult-tier-card input {
+    #panel-consult-review .consult-tier-card input,
+    #panel-main-search .consult-tier-card input {
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
 
-    #panel-consult-review .consult-tier-card__top {
+    #panel-consult-review .consult-tier-card__top,
+    #panel-main-search .consult-tier-card__top {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -358,7 +370,8 @@
       margin-bottom: 0.35rem;
     }
 
-    #panel-consult-review .consult-tier-card__badge {
+    #panel-consult-review .consult-tier-card__badge,
+    #panel-main-search .consult-tier-card__badge {
       display: inline-flex;
       align-items: center;
       padding: 0.14rem 0.48rem;
@@ -371,20 +384,23 @@
       border: 1px solid rgba(26, 138, 114, 0.28);
     }
 
-    #panel-consult-review .consult-tier-card:has(input:checked) .consult-tier-card__badge {
+    #panel-consult-review .consult-tier-card:has(input:checked) .consult-tier-card__badge,
+    #panel-main-search .consult-tier-card:has(input:checked) .consult-tier-card__badge {
       color: #fff;
       background: linear-gradient(135deg, var(--green-600), var(--green-700));
       border-color: transparent;
     }
 
-    #panel-consult-review .consult-tier-card__time {
+    #panel-consult-review .consult-tier-card__time,
+    #panel-main-search .consult-tier-card__time {
       font-size: 0.68rem;
       font-weight: 600;
       color: #64748b;
       white-space: nowrap;
     }
 
-    #panel-consult-review .consult-tier-card__name {
+    #panel-consult-review .consult-tier-card__name,
+    #panel-main-search .consult-tier-card__name {
       display: block;
       font-size: 0.86rem;
       font-weight: 650;
@@ -393,14 +409,16 @@
       margin-bottom: 0.28rem;
     }
 
-    #panel-consult-review .consult-tier-card__desc {
+    #panel-consult-review .consult-tier-card__desc,
+    #panel-main-search .consult-tier-card__desc {
       display: block;
       font-size: 0.72rem;
       line-height: 1.38;
       color: #5a6f6a;
     }
 
-    #panel-consult-review .consult-tier-card__rec {
+    #panel-consult-review .consult-tier-card__rec,
+    #panel-main-search .consult-tier-card__rec {
       position: absolute;
       top: -0.42rem;
       right: 0.55rem;
@@ -415,7 +433,8 @@
       box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
     }
 
-    #panel-consult-review .consult-tier-hint {
+    #panel-consult-review .consult-tier-hint,
+    #panel-main-search .consult-tier-hint {
       margin: 0.62rem 0 0;
       font-size: 0.76rem;
       line-height: 1.4;
@@ -4383,6 +4402,62 @@
 
     .btn-submit-row.is-busy {
       pointer-events: none;
+      cursor: wait;
+    }
+
+    .btn-submit-row.is-busy::after,
+    .btn-wizard-continue.is-busy::after {
+      content: "";
+      display: inline-block;
+      width: 0.95rem;
+      height: 0.95rem;
+      margin-left: 0.5rem;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: assist-spin 0.75s linear infinite;
+      vertical-align: -0.12em;
+    }
+
+    .btn-wizard-continue {
+      min-width: 11.5rem;
+    }
+
+    .btn-wizard-continue:not(:disabled) {
+      box-shadow: var(--glow-green), 0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+        0 6px 18px rgba(13, 92, 74, 0.22);
+    }
+
+    .btn-wizard-continue.is-busy,
+    .btn-wizard-skip.is-busy {
+      pointer-events: none;
+      cursor: wait;
+      opacity: 0.95;
+    }
+
+    .search-wizard-step-progress {
+      margin: 0.45rem 0 0;
+      font-size: 0.78rem;
+      color: var(--green-800);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .search-wizard-step-progress::before {
+      content: "";
+      width: 0.85rem;
+      height: 0.85rem;
+      border: 2px solid rgba(26, 138, 114, 0.25);
+      border-top-color: var(--green-600);
+      border-radius: 50%;
+      animation: assist-spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .search-wizard-step-progress[hidden] {
+      display: none !important;
     }
 
     .query-form-hint {
@@ -8502,6 +8577,10 @@
 
     .search-wizard-step-actions {
       margin: 0.55rem 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.55rem 0.75rem;
     }
 
     .search-wizard-select-hint {
@@ -19786,12 +19865,42 @@
     el.classList.toggle("error", !!isError);
   }
 
-  function setWizardStepBusy(cardEl, busy) {
+  function setWizardStepBusy(cardEl, busy, progressText) {
     if (!cardEl) return;
+    var progressEl = cardEl.querySelector(".search-wizard-step-progress");
+    if (progressEl) {
+      if (busy) {
+        progressEl.hidden = false;
+        progressEl.textContent = progressText || "Выполняется следующий шаг…";
+      } else {
+        progressEl.hidden = true;
+        progressEl.textContent = "";
+      }
+    }
     cardEl.querySelectorAll(".btn-wizard-continue, .btn-wizard-skip").forEach(function (btn) {
-      btn.disabled = !!busy;
-      btn.classList.toggle("is-busy", !!busy);
+      if (busy) {
+        if (!btn.dataset.busyLabel) btn.dataset.busyLabel = btn.textContent;
+        btn.textContent =
+          btn.classList.contains("btn-wizard-continue") ? "Обработка…" : "Подождите…";
+        btn.disabled = true;
+        btn.classList.add("is-busy");
+        btn.setAttribute("aria-busy", "true");
+      } else {
+        if (btn.dataset.busyLabel) {
+          btn.textContent = btn.dataset.busyLabel;
+          delete btn.dataset.busyLabel;
+        }
+        btn.classList.remove("is-busy");
+        btn.removeAttribute("aria-busy");
+      }
     });
+    if (!busy) {
+      var continueBtn = cardEl.querySelector(".btn-wizard-continue");
+      if (continueBtn) {
+        var n = cardEl.querySelectorAll(".search-wizard-chip--selected").length;
+        continueBtn.disabled = n === 0;
+      }
+    }
   }
 
   function stripPopulationContextFromQuery(qRaw) {
@@ -20023,6 +20132,8 @@
         ">" +
         escapeHtml(options.continueLabel || "Продолжить") +
         "</button>";
+      html +=
+        '<p class="search-wizard-step-progress" hidden aria-live="polite"></p>';
       html += "</div>";
     } else if (options.emptyText) {
       html +=
@@ -20080,7 +20191,10 @@
         btn.setAttribute("aria-pressed", on ? "true" : "false");
       });
       var n = Object.keys(selectedIds).length;
-      if (continueBtn) continueBtn.disabled = n === 0;
+      if (continueBtn) {
+        continueBtn.disabled = n === 0;
+        continueBtn.classList.toggle("btn-wizard-continue--ready", n > 0);
+      }
       if (countEl && multi) {
         countEl.textContent = n
           ? "Выбрано: " + n + " - можно добавить или снять отметку."
@@ -20112,14 +20226,22 @@
       continueBtn.addEventListener("click", function () {
         var sel = selectedList();
         if (!sel.length) return;
-        setWizardStepBusy(cardEl, true);
+        setWizardStepBusy(
+          cardEl,
+          true,
+          options.busyLabel || "Выполняется следующий шаг…"
+        );
         options.onContinue(sel);
       });
     }
     var skipBtn = cardEl.querySelector(".btn-wizard-skip");
     if (skipBtn && options.onSkip) {
       skipBtn.addEventListener("click", function () {
-        setWizardStepBusy(cardEl, true);
+        setWizardStepBusy(
+          cardEl,
+          true,
+          options.busyLabel || "Выполняется следующий шаг…"
+        );
         options.onSkip();
       });
     }
@@ -24381,8 +24503,17 @@
   function setSearchBusy(busy) {
     var btn = document.getElementById("btn-search-submit");
     if (btn) {
+      if (busy) {
+        if (!btn.dataset.busyLabel) btn.dataset.busyLabel = btn.textContent;
+        btn.textContent = "Поиск…";
+      } else if (btn.dataset.busyLabel) {
+        btn.textContent = btn.dataset.busyLabel;
+        delete btn.dataset.busyLabel;
+      }
       btn.disabled = !!busy;
       btn.classList.toggle("is-busy", !!busy);
+      if (busy) btn.setAttribute("aria-busy", "true");
+      else btn.removeAttribute("aria-busy");
     }
     var btnVoice = document.getElementById("btn-voice");
     if (btnVoice && !btnVoice.classList.contains("voice-unavailable")) {
