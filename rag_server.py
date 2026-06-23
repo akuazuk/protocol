@@ -1195,10 +1195,13 @@ def _run_load_data_background() -> None:
         _chunks_load_done.set()
 
 
-def _require_rag_loaded(*, wait: bool = True) -> None:
+def _require_rag_loaded(*, wait: bool = True, max_wait_sec: float | None = None) -> None:
     """Дождаться фоновой загрузки корпуса (Render health check vs тяжёлый JSONL)."""
     if wait and not _chunks_load_done.is_set():
-        timeout = max(5.0, env_float("RAG_LOAD_WAIT_SEC", 180.0))
+        if max_wait_sec is not None:
+            timeout = max(3.0, float(max_wait_sec))
+        else:
+            timeout = max(5.0, env_float("RAG_LOAD_WAIT_SEC", 180.0))
         _chunks_load_done.wait(timeout=timeout)
     if not _chunks_load_done.is_set():
         raise HTTPException(
@@ -7748,7 +7751,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r222-detail-kz-autoload"
+BUILD_VERSION = "2026-06-16-r223-detail-matrix-first"
 
 
 def _app_version() -> str:
@@ -8944,14 +8947,19 @@ def api_kz_matrix(body: KzMatrixIn) -> dict:
 @app.post("/api/protocol-practical")
 def api_protocol_practical(body: ProtocolPracticalIn) -> dict:
     """Практический разбор: выдержка из протокола + матрица для оформления КЗ."""
-    _require_rag_loaded()
     q = body.query.strip()
     pth = body.path.strip()
-    if not pth or pth not in _chunks_by_path:
-        raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
     mode = (body.mode or "lite").strip().lower()
     if mode not in ("lite", "full"):
         raise HTTPException(status_code=400, detail="mode должен быть lite или full")
+    if mode == "lite":
+        _require_rag_loaded(
+            max_wait_sec=max(5.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0)),
+        )
+    else:
+        _require_rag_loaded()
+    if not pth or pth not in _chunks_by_path:
+        raise HTTPException(status_code=404, detail="Протокол не найден в индексе")
     icd_norm = _icd_codes_from_query_and_analysis(q, body.icd_codes or None)
     meta = _protocol_meta.get(pth) or {}
     title_line = _protocol_display_title(pth, body.title.strip() or meta.get("title"))
@@ -9766,7 +9774,9 @@ def api_protocol_brief_bundle(
     from clinical_knowledge.protocol_kz_brief import resolve_protocol_brief_bundle_cached
 
     icd_codes = [c.strip() for c in icd.split(",") if c.strip()] if icd.strip() else None
-    _require_rag_loaded()
+    _require_rag_loaded(
+        max_wait_sec=max(5.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0)),
+    )
     return resolve_protocol_brief_bundle_cached(
         path.strip(),
         condition_id=condition_id.strip(),

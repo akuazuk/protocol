@@ -16792,6 +16792,9 @@
           formatSummaryHtml(String(cd.extraction.diagnosis)) +
           "</div>";
       }
+    } else if (panelOpts.matrixFirst && hasMatrix) {
+      html +=
+        '<p class="assist-ai-eval-lead" id="practical-clinical-pending">Чек-лист КЗ готов. Обследование и лечение из PDF подгружаются…</p>';
     } else if (cd && cd.error) {
       html += '<p class="error">' + escapeHtml(String(cd.error)) + "</p>";
     }
@@ -16909,16 +16912,21 @@
     var reqMode = opts.mode || "lite";
     var slot = ensurePracticalReviewPanel();
     if (!slot) return;
+    var silentUpgrade = opts.silentUpgrade === true;
     slot.hidden = false;
-    slot.className = "practical-review-panel practical-review-panel--loading";
-    var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
-    var stopPracticalAnim = animatePracticalLoadingProgress(slot);
-    slot.insertAdjacentHTML(
-      "beforeend",
-      '<p class="assist-detail-meta practical-loading-title">' +
-        escapeHtml(String(titleLine)) +
-        "</p>"
-    );
+    if (!silentUpgrade) {
+      slot.className = "practical-review-panel practical-review-panel--loading";
+      var titleLine = formatProtocolDisplayTitle(offer.path || "", offer.title || "");
+      var stopPracticalAnim = animatePracticalLoadingProgress(slot);
+      slot.insertAdjacentHTML(
+        "beforeend",
+        '<p class="assist-detail-meta practical-loading-title">' +
+          escapeHtml(String(titleLine)) +
+          "</p>"
+      );
+    } else {
+      var stopPracticalAnim = null;
+    }
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(
       baseEl && baseEl.value ? baseEl.value : ""
@@ -16930,6 +16938,7 @@
         reqMode === "full"
           ? "Формирование развёрнутой выдержки моделью."
           : "Подбор рекомендаций из протокола по разделам.",
+      useMobile: !silentUpgrade,
     });
     var ctrl = new AbortController();
     var abortMs = reqMode === "full" ? 300000 : 45000;
@@ -16961,7 +16970,7 @@
         return r.text().then(function (text) {
           var j = parseJsonSafe(text);
           if (!j || typeof j !== "object") {
-            throw new Error(text ? text.slice(0, 220) : "Пустой ответ");
+            throw new Error(formatFetchError(r.status, text));
           }
           if (!r.ok) {
             var d = j.detail;
@@ -16970,7 +16979,7 @@
                 return x.msg || JSON.stringify(x);
               }).join("; ");
             }
-            throw new Error(d || r.statusText);
+            throw new Error(d || formatFetchError(r.status, text));
           }
           return j;
         });
@@ -16998,6 +17007,7 @@
             initialSection: opts.initialSection || null,
             offer: offer,
             icdCodes: icdCodes || [],
+            matrixFirst: opts.matrixFirst === true && silentUpgrade,
           }
         );
         var block = document.getElementById("protocol-detail-block");
@@ -17009,6 +17019,33 @@
         var msg = String(err.message || err);
         if (err && err.name === "AbortError") {
           msg = "Превышено время ожидания. Попробуйте «Загрузить развёрнутую выдержку».";
+        }
+        if (
+          opts.prefetchedMatrix &&
+          opts.prefetchedMatrix.sections &&
+          opts.prefetchedMatrix.sections.length
+        ) {
+          if (!panel || !panel.querySelector(".kz-matrix-section")) {
+            mountDetailMatrixFromBrief(
+              opts.prefetchedMatrix,
+              offer,
+              queryText,
+              icdCodes || [],
+              {}
+            );
+            panel = document.getElementById("practical-review-panel");
+          }
+          if (panel) {
+            var pending = panel.querySelector("#practical-clinical-pending");
+            if (pending) {
+              pending.className = "assist-detail-note assist-detail-note--warn";
+              pending.textContent =
+                "Выдержка из PDF временно недоступна (" +
+                msg +
+                "). Используйте чек-лист КЗ выше или повторите через минуту.";
+            }
+          }
+          return;
         }
         if (panel) {
           panel.classList.remove("practical-review-panel--loading");
@@ -17047,6 +17084,29 @@
     };
   }
 
+  function mountDetailMatrixFromBrief(matrix, offer, queryText, icdCodes, meta) {
+    if (!matrix || !matrix.sections || !matrix.sections.length || !offer) return;
+    var minimalCd = {
+      path: offer.path,
+      title: offer.title || formatProtocolDisplayTitle(offer.path || "", ""),
+      llm_used: false,
+      lite_sections: [],
+      extraction: {},
+      source: "brief_bundle",
+    };
+    var metaMap = {};
+    if (offer.path && meta) metaMap[offer.path] = meta;
+    mountPracticalReviewPanel(minimalCd, matrix, queryText, metaMap, {
+      lazyKzMatrix: false,
+      mode: "lite",
+      autoKzHint: true,
+      offer: offer,
+      icdCodes: icdCodes || [],
+      matrixFirst: true,
+    });
+    window.__kzMatrixForTemplate = matrix;
+  }
+
   function autoLoadDetailStepForSearch(data) {
     if (!isSearchSteppedMode() || !data) return;
     var wiz = window.__searchWizard || {};
@@ -17064,35 +17124,78 @@
     if (!cid && nav && nav.conditions && nav.conditions.length) {
       cid = nav.conditions[0].condition_id || "";
     }
-    var startLoad = function (prefetchedMatrix) {
-      if (panel) panel.setAttribute("data-detail-loaded", path);
+    var resolveConditionId = function () {
+      if (cid) return Promise.resolve(cid);
+      var cachedNav = getProtocolNavFromCache(path);
+      if (cachedNav && cachedNav.conditions && cachedNav.conditions.length) {
+        ctx.summary_nav = cachedNav;
+        ctx.condition_id = cachedNav.conditions[0].condition_id;
+        window.__funnelContext = ctx;
+        return Promise.resolve(cachedNav.conditions[0].condition_id || "");
+      }
+      return fetchProtocolSummaryNavForWizard(path, q, icd, {
+        richFallback: true,
+        timeoutMs: 8000,
+      })
+        .then(function (fetchedNav) {
+          if (fetchedNav && fetchedNav.conditions && fetchedNav.conditions.length) {
+            ctx.summary_nav = fetchedNav;
+            ctx.condition_id = fetchedNav.conditions[0].condition_id;
+            window.__funnelContext = ctx;
+            return fetchedNav.conditions[0].condition_id || "";
+          }
+          return "";
+        })
+        .catch(function () {
+          return "";
+        });
+    };
+    var loadClinical = function (prefetchedMatrix) {
       loadProtocolPractical(offer, q, icd, {
         mode: "lite",
-        lazyKzMatrix: false,
+        lazyKzMatrix: true,
         autoKzHint: true,
         prefetchedMatrix: prefetchedMatrix || null,
+        silentUpgrade: !!(prefetchedMatrix && prefetchedMatrix.sections && prefetchedMatrix.sections.length),
+        matrixFirst: true,
       });
     };
-    var cachedBrief = cid ? getProtocolBriefFromCache(path, cid) : null;
-    if (cachedBrief && cachedBrief.kz_matrix && cachedBrief.kz_matrix.sections && cachedBrief.kz_matrix.sections.length) {
-      startLoad(cachedBrief.kz_matrix);
-      return;
-    }
-    if (cid) {
-      fetchProtocolBriefBundle(path, cid, q, icd)
+    resolveConditionId().then(function (resolvedCid) {
+      var cachedBrief = resolvedCid ? getProtocolBriefFromCache(path, resolvedCid) : null;
+      var briefPromise = cachedBrief
+        ? Promise.resolve(cachedBrief)
+        : resolvedCid
+          ? fetchProtocolBriefBundle(path, resolvedCid, q, icd)
+          : Promise.resolve(null);
+      briefPromise
         .then(function (bundle) {
           var mx =
             bundle && bundle.kz_matrix && bundle.kz_matrix.sections && bundle.kz_matrix.sections.length
               ? bundle.kz_matrix
               : null;
-          startLoad(mx);
+          if (mx) {
+            if (panel) panel.setAttribute("data-detail-loaded", path);
+            var pmeta = (data.protocol_ui_meta || {})[path] || {};
+            mountDetailMatrixFromBrief(mx, offer, q, icd, pmeta);
+            loadClinical(mx);
+          } else {
+            if (panel) panel.setAttribute("data-detail-loaded", path);
+            loadProtocolPractical(offer, q, icd, {
+              mode: "lite",
+              lazyKzMatrix: false,
+              autoKzHint: true,
+            });
+          }
         })
         .catch(function () {
-          startLoad(null);
+          if (panel) panel.setAttribute("data-detail-loaded", path);
+          loadProtocolPractical(offer, q, icd, {
+            mode: "lite",
+            lazyKzMatrix: false,
+            autoKzHint: true,
+          });
         });
-      return;
-    }
-    startLoad(null);
+    });
   }
 
   function maybeAutoLoadPracticalForSearch(data) {
