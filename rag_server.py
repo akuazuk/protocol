@@ -282,9 +282,28 @@ async def _run_consult_review_blocking(fn, /, *args, **kwargs):
     return await asyncio.to_thread(_job)
 
 
+def _consult_l2_skip_rag_warm() -> bool:
+    """L2 lite/fast на manifest не требует полного lex-индекса (~55k чанков в RAM)."""
+    from clinical_knowledge.lazy_rag_config import startup_mode
+
+    if _consult_render_l2_skip_llm():
+        return True
+    if _consult_l2_fast_enabled() and _consult_render_l2_lite_enabled():
+        return True
+    if _consult_render_l2_lite_enabled() and startup_mode() == "manifest":
+        return True
+    return False
+
+
 def _ensure_consult_rag_ready() -> None:
     """КЗ не стартует пока корпус грузится - иначе двойной пик RAM на Render."""
     if not env_bool("RENDER", False):
+        return
+    if _consult_l2_skip_rag_warm():
+        _require_rag_loaded(
+            wait=True,
+            max_wait_sec=env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0),
+        )
         return
     _require_rag_loaded(wait=True)
 
@@ -8053,7 +8072,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r1-l2-30s"
+BUILD_VERSION = "2026-06-24-r2-l2-ui-warm-fix"
 
 
 def _app_version() -> str:
@@ -8112,6 +8131,7 @@ def health() -> dict:
         "consult_l2_fast": _consult_l2_fast_enabled(),
         "consult_l2_narrative": os.environ.get("CONSULT_L2_NARRATIVE", "0"),
         "consult_l2_mode": _consult_l2_mode_label(),
+        "consult_l2_skip_rag_warm": _consult_l2_skip_rag_warm(),
         "consult_l2_latency": _consult_l2_feedback_latency(),
         "consult_review_profile": (
             "fast"

@@ -111,6 +111,15 @@ def test_make_chunk_cache_dedupes_reads() -> None:
     assert calls["n"] == 1
 
 
+def test_consult_l2_skip_rag_warm_manifest(monkeypatch) -> None:
+    import rag_server as rs
+
+    monkeypatch.setenv("CONSULT_L2_FAST", "1")
+    monkeypatch.setenv("CONSULT_RENDER_L2_LITE", "1")
+    monkeypatch.setenv("RAG_STARTUP_MODE", "manifest")
+    assert rs._consult_l2_skip_rag_warm() is True
+
+
 def test_l2_fast_skips_synthesize(monkeypatch) -> None:
     import consult_review_pipeline as crp
     import rag_server as rs
