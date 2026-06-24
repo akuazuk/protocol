@@ -258,3 +258,44 @@ def build_evidence_pack(
             "max_chars": max_chars,
         },
     }
+
+
+def evidence_pack_to_protocol_rows(
+    pack: dict[str, Any],
+    *,
+    limit_per_path: int = 4,
+    max_paths: int = 5,
+) -> list[dict[str, Any]]:
+    """Компактные строки для UI из evidence pack (без повторного чтения JSONL)."""
+    rows: list[dict[str, Any]] = []
+    per_path: dict[str, int] = {}
+    paths_seen: set[str] = set()
+    for _block_id, items in (pack.get("blocks") or {}).items():
+        for item in items or []:
+            if not isinstance(item, dict):
+                continue
+            p = str(item.get("protocol_path") or "").strip()
+            if not p:
+                continue
+            if p not in paths_seen:
+                if len(paths_seen) >= max_paths:
+                    continue
+                paths_seen.add(p)
+            if per_path.get(p, 0) >= limit_per_path:
+                continue
+            excerpt = str(item.get("excerpt") or "").strip()
+            if len(excerpt) < 40:
+                continue
+            page = item.get("page")
+            rows.append(
+                {
+                    "path": p,
+                    "text": excerpt,
+                    "excerpt": excerpt[:2000],
+                    "kind": str(item.get("block_id") or item.get("source") or "fragment"),
+                    "section_title": str(item.get("section") or ""),
+                    "page_from": int(page) if isinstance(page, (int, float)) else None,
+                }
+            )
+            per_path[p] = per_path.get(p, 0) + 1
+    return rows

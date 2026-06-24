@@ -81,10 +81,14 @@ def _iter_consult_review_render_l2_lite(
 ) -> Iterator[tuple[str, Any]]:
     """Render-safe L2: L1 structured + alignment + evidence pack + опциональный narrative."""
     import rag_server as rs
-    from clinical_knowledge.consult_evidence_pack import build_evidence_pack
+    from clinical_knowledge.consult_evidence_pack import (
+        build_evidence_pack,
+        evidence_pack_to_protocol_rows,
+    )
     from clinical_knowledge.consult_l2_config import (
         consult_l2_align_max_chunks_per_path,
         consult_l2_align_max_paths,
+        consult_l2_evidence_max_paths,
         consult_l2_fast_enabled,
         consult_l2_narrative_requested,
         resolve_l2_mode,
@@ -94,6 +98,7 @@ def _iter_consult_review_render_l2_lite(
         extract_block_gaps,
         protocol_paths_used,
     )
+    from clinical_knowledge.consult_memory import make_chunk_cache, preload_consult_paths
     from clinical_knowledge.consult_parser import _detect_specialty
     from clinical_knowledge.consult_tiering import run_l1_structured_review
     from clinical_knowledge.rubric_extractors import specialty_to_rubric
@@ -101,6 +106,7 @@ def _iter_consult_review_render_l2_lite(
     want_narrative = consult_l2_narrative_requested(request_flag=l2_narrative)
     l2_fast = consult_l2_fast_enabled() and not want_narrative
     l2_mode = resolve_l2_mode(narrative=want_narrative)
+    cached_get_chunks = make_chunk_cache(rs.get_rich_chunks_for_consult)
 
     yield emit("focus", 18, "Структурный разбор заключения…")
     doctor_rubric = specialty_to_rubric(_detect_specialty(full_text[:1500]) or _detect_specialty(full_text))
@@ -124,6 +130,7 @@ def _iter_consult_review_render_l2_lite(
         specialty_slug=specialty_slug,
         skip_alignment=False,
         max_alignment_paths=consult_l2_align_max_paths(),
+        get_chunks=cached_get_chunks,
     )
     structured_analysis = l1.get("structured_analysis")
     alignment_result = l1.get("alignment")
@@ -164,11 +171,16 @@ def _iter_consult_review_render_l2_lite(
         f"Выдержки протоколов ({len(match_paths[:6])})…",
         {"protocol_paths_target": match_paths[:8]},
     )
+    preload_consult_paths(
+        match_paths,
+        cached_get_chunks,
+        max_paths=consult_l2_evidence_max_paths(),
+    )
     q_rag = " ".join(icd_codes[:6]) or full_text[:1200]
     evidence_pack = build_evidence_pack(
         icd_codes=icd_codes,
         match_paths=match_paths,
-        get_chunks=rs.get_rich_chunks_for_consult,
+        get_chunks=cached_get_chunks,
         query=q_rag,
     )
     block_gaps = extract_block_gaps(alignment_result if isinstance(alignment_result, dict) else None)
@@ -176,14 +188,21 @@ def _iter_consult_review_render_l2_lite(
 
     align_paths = consult_l2_align_max_paths()
     align_chunks = consult_l2_align_max_chunks_per_path()
-    retrieved = _protocol_rows_from_rich_paths(
-        match_paths,
-        query=q_rag,
-        icd_codes=icd_codes,
-        get_chunks=rs.get_rich_chunks_for_consult,
-        limit_per_path=align_chunks if l2_fast else 2,
-        max_paths=align_paths if l2_fast else 4,
-    )
+    if l2_fast:
+        retrieved = evidence_pack_to_protocol_rows(
+            evidence_pack,
+            limit_per_path=align_chunks,
+            max_paths=align_paths,
+        )
+    else:
+        retrieved = _protocol_rows_from_rich_paths(
+            match_paths,
+            query=q_rag,
+            icd_codes=icd_codes,
+            get_chunks=cached_get_chunks,
+            limit_per_path=2,
+            max_paths=4,
+        )
     proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=4000)
     protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
     paths_hint = rs._consult_review_paths_hint(paths_used, retrieved=retrieved, icd_needles=icd_codes[:6])
@@ -315,6 +334,8 @@ def _iter_consult_review_render_l2_lite(
             "l2_mode": l2_mode,
             "embed_rerank": False,
             "rag_retrieve_skipped": True,
+            "chunk_cache": True,
+            "evidence_rows_from_pack": l2_fast,
         },
     }
     if clinical_rules is not None:

@@ -197,11 +197,16 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_RENDER_L2_SKIP_LLM", "0"),
             ("CONSULT_TYPED_RETRIEVE", "0"),
             ("CONSULT_REVIEW_FORBID_FULL_CORPUS", "1"),
-            ("CONSULT_RICH_CHUNKS_MAX_PER_PATH", "24"),
+            ("CONSULT_RICH_CHUNKS_MAX_PER_PATH", "12"),
             ("CONSULT_REVIEW_MAX_PROTOCOL_PATHS", "4"),
-            ("CONSULT_REVIEW_CACHE", "0"),
+            ("CONSULT_REVIEW_CACHE", "1"),
             ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
             ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+            ("CONSULT_L2_FAST", "1"),
+            ("CONSULT_L2_EVIDENCE_MAX_PATHS", "3"),
+            ("CONSULT_L2_EVIDENCE_MAX_CHARS", "8000"),
+            ("CONSULT_L2_EVIDENCE_MAX_CHUNKS_PER_PATH", "2"),
+            ("CONSULT_L2_ALIGN_MAX_CHUNKS_PER_PATH", "4"),
             ("RAG_LEX_MAX_CANDIDATES", "8000"),
             ("RAG_LEX_MAX_UNION", "20000"),
             ("RAG_RETRIEVE_CONCURRENCY", "2"),
@@ -8048,7 +8053,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r234-consult-l2-rebuild"
+BUILD_VERSION = "2026-06-24-r1-l2-30s"
 
 
 def _app_version() -> str:

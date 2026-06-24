@@ -75,6 +75,42 @@ def test_build_evidence_pack_empty_paths() -> None:
     assert isinstance(pack.get("fragment_count"), int)
 
 
+def test_evidence_pack_to_protocol_rows() -> None:
+    from clinical_knowledge.consult_evidence_pack import evidence_pack_to_protocol_rows
+
+    pack = {
+        "blocks": {
+            "exams": [
+                {
+                    "protocol_path": "minzdrav_protocols/a.pdf",
+                    "excerpt": "Рентгенография органов грудной клетки при подозрении на пневмонию.",
+                    "section": "Диагностика",
+                    "page": 12,
+                    "block_id": "exams",
+                }
+            ]
+        }
+    }
+    rows = evidence_pack_to_protocol_rows(pack)
+    assert len(rows) == 1
+    assert rows[0]["path"] == "minzdrav_protocols/a.pdf"
+
+
+def test_make_chunk_cache_dedupes_reads() -> None:
+    from clinical_knowledge.consult_memory import make_chunk_cache
+
+    calls = {"n": 0}
+
+    def _src(path: str) -> list[dict]:
+        calls["n"] += 1
+        return [{"text": f"chunk-{path}", "path": path}]
+
+    cached = make_chunk_cache(_src)
+    assert len(cached("p1.pdf")) == 1
+    assert len(cached("p1.pdf")) == 1
+    assert calls["n"] == 1
+
+
 def test_l2_fast_skips_synthesize(monkeypatch) -> None:
     import consult_review_pipeline as crp
     import rag_server as rs

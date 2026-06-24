@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import os
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Callable
 
 GetChunksFn = Callable[[str], list[dict[str, Any]]]
@@ -85,3 +87,65 @@ def cap_chunks_for_consult(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]
 
 def get_rich_chunks_for_consult(path: str, get_chunks: GetChunksFn) -> list[dict[str, Any]]:
     return cap_chunks_for_consult(list(get_chunks(path) or []))
+
+
+def _norm_chunk_path(path: str) -> str:
+    return str(path or "").strip().replace("\\", "/")
+
+
+def make_chunk_cache(get_chunks: GetChunksFn) -> GetChunksFn:
+    """Кэш чанков в рамках одного запроса L2 (alignment + evidence + UI)."""
+    cache: dict[str, list[dict[str, Any]]] = {}
+    lock = threading.Lock()
+
+    def cached(path: str) -> list[dict[str, Any]]:
+        key = _norm_chunk_path(path)
+        if not key:
+            return []
+        with lock:
+            hit = cache.get(key)
+        if hit is not None:
+            return hit
+        rows = cap_chunks_for_consult(list(get_chunks(path) or []))
+        with lock:
+            cache[key] = rows
+        return rows
+
+    return cached
+
+
+def preload_consult_paths(
+    paths: list[str],
+    get_chunks: GetChunksFn,
+    *,
+    max_paths: int | None = None,
+    max_workers: int | None = None,
+) -> None:
+    """Параллельная подгрузка чанков до evidence/UI (сокращает хвост L2 на диске)."""
+    uniq: list[str] = []
+    seen: set[str] = set()
+    cap = max_paths if max_paths is not None else consult_max_paths()
+    for raw in paths:
+        key = _norm_chunk_path(raw)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        uniq.append(key)
+        if len(uniq) >= cap:
+            break
+    if not uniq:
+        return
+    workers = max_workers
+    if workers is None:
+        workers = max(1, min(3, env_int("CONSULT_L2_PRELOAD_WORKERS", 2)))
+    if workers <= 1 or len(uniq) == 1:
+        for p in uniq:
+            get_chunks(p)
+        return
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = [pool.submit(get_chunks, p) for p in uniq]
+        for fut in as_completed(futures):
+            try:
+                fut.result()
+            except Exception:
+                pass

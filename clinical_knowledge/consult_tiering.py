@@ -41,6 +41,7 @@ def run_l1_structured_review(
     analysis_mode: str | None = None,
     skip_alignment: bool = False,
     max_alignment_paths: int | None = None,
+    get_chunks: Any | None = None,
 ) -> dict[str, Any]:
     """L1: structured + alignment, без RAG и без LLM-критериев."""
     mode = analysis_mode or (
@@ -81,6 +82,7 @@ def run_l1_structured_review(
         "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
     }
     alignment_result = None
+    chunk_fn = get_chunks if get_chunks is not None else _l1_get_chunks
 
     if (
         not skip_alignment
@@ -126,7 +128,7 @@ def run_l1_structured_review(
                 doc,
                 protocol_paths=alignment_paths,
                 icd_codes=icd_codes,
-                get_chunks=_l1_get_chunks,
+                get_chunks=chunk_fn,
                 query=" ".join(icd_codes[:4]),
                 protocol_matches=protocol_matches,
                 specialty_label=doc.doctor_specialty,

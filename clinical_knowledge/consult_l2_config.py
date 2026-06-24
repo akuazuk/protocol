@@ -54,19 +54,19 @@ def consult_l2_align_max_paths() -> int:
 
 
 def consult_l2_align_max_chunks_per_path() -> int:
-    return consult_l2_env_int("CONSULT_L2_ALIGN_MAX_CHUNKS_PER_PATH", 8)
+    return consult_l2_env_int("CONSULT_L2_ALIGN_MAX_CHUNKS_PER_PATH", 4)
 
 
 def consult_l2_evidence_max_paths() -> int:
-    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_PATHS", 5)
+    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_PATHS", 3)
 
 
 def consult_l2_evidence_chunks_per_path() -> int:
-    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_CHUNKS_PER_PATH", 3)
+    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_CHUNKS_PER_PATH", 2)
 
 
 def consult_l2_evidence_max_chars() -> int:
-    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_CHARS", 12000)
+    return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_CHARS", 8000)
 
 
 def resolve_l2_mode(*, narrative: bool = False) -> str:
