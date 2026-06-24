@@ -118,6 +118,9 @@ _bm25_index = None
 _lex_inverted_index: dict[str, frozenset[int]] | None = None
 _lex_index_lock = threading.Lock()
 _chunk_global_indices_by_path: dict[str, list[int]] = {}
+_lazy_chunk_store = None
+_path_manifest = None
+_path_lex_index = None
 
 
 def _set_retrieval_embed_meta(value: dict | None) -> None:
@@ -1090,8 +1093,8 @@ def _enrich_chunks_from_index() -> None:
                 }
 
 
-def load_data() -> None:
-    global _chunks, _chunks_by_path, _protocols_by_path, _protocol_meta, _structured_by_path, _routing
+def _load_metadata_common() -> None:
+    global _protocols_by_path, _protocol_meta, _structured_by_path, _routing
     _protocols_by_path = {}
     if PROTOCOLS_PATH.is_file():
         for row in json.loads(PROTOCOLS_PATH.read_text(encoding="utf-8")):
@@ -1113,6 +1116,71 @@ def load_data() -> None:
         _routing = json.loads(rp.read_text(encoding="utf-8"))
     else:
         _routing = {}
+
+
+def _ensure_lazy_chunk_store():
+    global _lazy_chunk_store, _path_manifest
+    if _lazy_chunk_store is not None:
+        return _lazy_chunk_store
+    from clinical_knowledge.chunk_store import LazyChunkStore
+    from clinical_knowledge.corpus_path_manifest import CorpusPathManifest
+    from clinical_knowledge.lazy_rag_config import manifest_path
+
+    if _path_manifest is None:
+        mp = manifest_path()
+        _path_manifest = CorpusPathManifest.load(mp) if mp.is_file() else CorpusPathManifest()
+    _lazy_chunk_store = LazyChunkStore.from_env(
+        protocols_by_path=_protocols_by_path,
+        protocol_meta=_protocol_meta,
+    )
+    if _lazy_chunk_store is None and _path_manifest.entries:
+        from clinical_knowledge.lazy_rag_config import chunks_data_root
+
+        corpus = chunks_data_root()
+        parts_dir = corpus / "corpus_chunks_parts"
+        corpus_dir = parts_dir if parts_dir.is_dir() else corpus
+        if corpus_dir.is_dir():
+            _lazy_chunk_store = LazyChunkStore(
+                manifest=_path_manifest,
+                corpus_dir=corpus_dir,
+                protocols_by_path=_protocols_by_path,
+                protocol_meta=_protocol_meta,
+            )
+    return _lazy_chunk_store
+
+
+def _ensure_path_lex_index():
+    global _path_lex_index
+    if _path_lex_index is not None:
+        return _path_lex_index
+    from clinical_knowledge.path_lex_index import PathLexIndex
+
+    _path_lex_index = PathLexIndex.from_env()
+    return _path_lex_index
+
+
+def load_data_manifest() -> None:
+    """Старт без полного корпуса в RAM: manifest + lazy chunk store."""
+    global _chunks, _chunks_by_path, _bm25_index, _lex_inverted_index, _path_manifest, _lazy_chunk_store
+    global _chunk_global_indices_by_path
+    _load_metadata_common()
+    _chunks = []
+    _chunks_by_path = {}
+    _chunk_global_indices_by_path = {}
+    _bm25_index = None
+    _lex_inverted_index = None
+    from clinical_knowledge.corpus_path_manifest import CorpusPathManifest
+    from clinical_knowledge.lazy_rag_config import manifest_path
+
+    mp = manifest_path()
+    _path_manifest = CorpusPathManifest.load(mp) if mp.is_file() else CorpusPathManifest()
+    _lazy_chunk_store = _ensure_lazy_chunk_store()
+    gc.collect()
+
+
+def load_data_full() -> None:
+    global _chunks, _chunks_by_path, _protocols_by_path, _protocol_meta, _structured_by_path, _routing
+    _load_metadata_common()
 
     if _use_jsonl_chunks():
         parts = _jsonl_chunk_files()
@@ -1173,6 +1241,15 @@ def load_data() -> None:
         load_index_from_env(_chunks)
     except Exception:
         pass
+
+
+def load_data() -> None:
+    from clinical_knowledge.lazy_rag_config import startup_mode
+
+    if startup_mode() == "manifest":
+        load_data_manifest()
+    else:
+        load_data_full()
 
 
 def _run_load_data_background() -> None:
@@ -3215,6 +3292,56 @@ def _retrieve_core(
         for p in (path_allowlist or [])
         if isinstance(p, str) and p.strip()
     )
+    from clinical_knowledge.lazy_rag_config import (
+        forbid_full_corpus_retrieve,
+        lazy_retrieve_enabled,
+        path_lex_shards_enabled,
+        startup_mode,
+    )
+
+    lazy_active = lazy_retrieve_enabled() or startup_mode() == "manifest"
+    lazy_chunks_pool: list[dict] | None = None
+    if lazy_active:
+        if not path_allowlist_set and forbid_full_corpus_retrieve():
+            return []
+        if path_allowlist_set:
+            store = _ensure_lazy_chunk_store()
+            if store:
+                per_path = max(4, int(max_per_path) * 4)
+                lazy_chunks_pool = store.get_chunks_for_paths(
+                    list(path_allowlist_set),
+                    max_chunks_per_path=per_path,
+                    max_total=max(256, int(max_chunks or 6) * 32),
+                )
+                if path_lex_shards_enabled() and lazy_chunks_pool:
+                    pli = _ensure_path_lex_index()
+                    if pli:
+                        chunk_ids = {
+                            str(c.get("chunk_id"))
+                            for c in lazy_chunks_pool
+                            if c.get("chunk_id")
+                        }
+                        rubrics: set[str] = set()
+                        if _path_manifest:
+                            for p in path_allowlist_set:
+                                ent = _path_manifest.get(p)
+                                if ent and ent.rubric:
+                                    rubrics.add(ent.rubric)
+                        matched = pli.query_chunk_ids(
+                            query,
+                            rubrics=sorted(rubrics),
+                            chunk_id_allowlist=chunk_ids,
+                        )
+                        if matched:
+                            filtered = [
+                                c
+                                for c in lazy_chunks_pool
+                                if str(c.get("chunk_id") or "") in matched
+                            ]
+                            if filtered:
+                                lazy_chunks_pool = filtered
+            if not lazy_chunks_pool and not _chunks:
+                return []
     path_boost_factor = float(os.environ.get("RAG_MATCHED_PROTOCOL_PATH_BOOST", "1.85"))
     bm25_alpha = float(os.environ.get("RAG_LEX_BM25_ALPHA", "0.55"))
     use_bm25_blend = _bm25_index is not None and bm25_alpha < 0.999
@@ -3230,7 +3357,9 @@ def _retrieve_core(
         "yes",
     )
     candidate_indices: set[int] | None = None
-    if path_allowlist_set:
+    if lazy_chunks_pool is not None:
+        candidate_indices = None
+    elif path_allowlist_set:
         path_cand = _chunk_indices_for_path_allowlist(path_allowlist_set)
         if path_cand:
             candidate_indices = path_cand
@@ -3276,11 +3405,12 @@ def _retrieve_core(
     candidate_indices = _cap_lex_candidate_indices(
         candidate_indices, path_allowlist_set=path_allowlist_set, qtok=qtok
     )
-    chunk_source = (
-        (_chunks[i] for i in sorted(candidate_indices))
-        if candidate_indices is not None
-        else iter(_chunks)
-    )
+    if lazy_chunks_pool is not None:
+        chunk_source = iter(lazy_chunks_pool)
+    elif candidate_indices is not None:
+        chunk_source = (_chunks[i] for i in sorted(candidate_indices))
+    else:
+        chunk_source = iter(_chunks)
     for ch in chunk_source:
         pth = ch.get("path") or ""
         if path_allowlist_set and not _path_matches_allowlist(ch, path_allowlist_set):
@@ -6071,10 +6201,18 @@ def build_hybrid_search_payload(
 
 
 def get_rich_chunks_for_path(path: str) -> list[dict]:
-    """Чанки одного PDF из загруженного RAG-индекса."""
+    """Чанки одного PDF из RAG-индекса или lazy chunk store."""
+    from clinical_knowledge.lazy_rag_config import lazy_chunk_store_enabled
+
     norm = path.replace("\\", "/").strip()
     if not norm:
         return []
+    if lazy_chunk_store_enabled():
+        store = _ensure_lazy_chunk_store()
+        if store:
+            rows = store.get_chunks_for_path(norm, max_chunks=256)
+            if rows:
+                return rows
     chunks = _chunks_by_path.get(norm) or []
     if chunks:
         return chunks
@@ -7816,7 +7954,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r231-consult-oom-permanent-fix"
+BUILD_VERSION = "2026-06-01-r232-lazy-chunk-store"
 
 
 def _app_version() -> str:
@@ -7835,9 +7973,22 @@ def health_live() -> dict:
 def health() -> dict:
     has_key = bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
     icd_ru_n = _icd_ru_entries_count()
+    manifest_stats = None
+    chunk_cache_stats = None
+    if _path_manifest is not None:
+        manifest_stats = _path_manifest.manifest_stats()
+    store = _lazy_chunk_store
+    if store is not None:
+        chunk_cache_stats = store.cache_stats()
+    from clinical_knowledge.lazy_rag_config import startup_mode
+
     return {
         "ok": True,
         "version": _app_version(),
+        "startup_mode": startup_mode(),
+        "manifest_paths": (manifest_stats or {}).get("paths"),
+        "manifest_sha256": (manifest_stats or {}).get("manifest_sha256"),
+        "chunk_store": chunk_cache_stats,
         "rag_ready": _chunks_load_done.is_set(),
         "rag_load_error": public_error_text(_chunks_load_error),
         "chunks": len(_chunks),

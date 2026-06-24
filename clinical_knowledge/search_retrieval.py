@@ -709,6 +709,31 @@ def build_protocol_search_context(
         ]
         if filtered_boost:
             path_boost = filtered_boost
+    try:
+        from clinical_knowledge.lazy_rag_config import (
+            forbid_full_corpus_retrieve,
+            lazy_retrieve_enabled,
+            manifest_path,
+            startup_mode,
+        )
+
+        if (
+            (lazy_retrieve_enabled() or startup_mode() == "manifest")
+            and expanded
+            and not path_allowlist
+        ):
+            mp = manifest_path()
+            if mp.is_file():
+                from clinical_knowledge.corpus_path_manifest import CorpusPathManifest
+
+                manifest = CorpusPathManifest.load(mp)
+                icd_paths = manifest.paths_by_icd(expanded, limit=15)
+                if icd_paths:
+                    path_allowlist = icd_paths
+        if forbid_full_corpus_retrieve() and not path_allowlist and path_boost:
+            path_allowlist = path_boost[:15]
+    except Exception:
+        pass
     return {
         "expanded_icd_codes": expanded,
         "path_boost": path_boost or None,

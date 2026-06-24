@@ -91,6 +91,20 @@ services:
         value: "0"
       - key: RAG_LEX_INDEX_DEFER
         value: "1"
+      - key: RAG_STARTUP_MODE
+        value: manifest
+      - key: RAG_LAZY_CHUNK_STORE
+        value: "1"
+      - key: RAG_LAZY_RETRIEVE
+        value: "1"
+      - key: RAG_FORBID_FULL_CORPUS_RETRIEVE
+        value: "1"
+      - key: RAG_MANIFEST_PATH
+        value: /var/data/corpus_path_manifest.jsonl
+      - key: RAG_PATH_LEX_SHARDS
+        value: "1"
+      - key: RAG_LEX_SHARDS_DIR
+        value: /var/data/lex_shards
       - key: CONSULT_ALIGNMENT_ENABLED
         value: "1"
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback

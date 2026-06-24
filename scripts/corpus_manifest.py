@@ -61,6 +61,7 @@ def build_manifest(corpus_dir: Path) -> dict:
         "chunks_with_embedding": with_embedding,
         "embedding_coverage_pct": round(100.0 * with_embedding / total_chunks, 2) if total_chunks else 0.0,
         "files": files_meta,
+        "path_manifest_note": "Для lazy load по PDF: scripts/build_corpus_path_manifest.py → corpus_path_manifest.jsonl",
     }
 
 
