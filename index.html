@@ -1400,6 +1400,56 @@
     .consult-crit-pill.tier-mid { background: #f5f0e6; color: #8a6f45; }
     .consult-crit-pill.tier-low { background: #f5ebeb; color: #8f5a5a; }
 
+    .consult-evidence-gaps-title {
+      margin: 0.5rem 0 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: #3d5c54;
+    }
+
+    #consult-block-gaps-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 0.75rem;
+    }
+
+    .consult-evidence-gap-item {
+      margin: 0 0 0.45rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      background: #f4f8f6;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+      line-height: 1.45;
+      font-size: 0.84rem;
+    }
+
+    .consult-evidence-gap-block {
+      display: block;
+      font-weight: 650;
+      color: #1a5c4a;
+      margin-bottom: 0.15rem;
+    }
+
+    .consult-evidence-gap-text {
+      color: #2d4a42;
+    }
+
+    #consult-evidence-table .consult-evidence-protocol {
+      font-size: 0.8rem;
+      line-height: 1.35;
+      max-width: 14rem;
+    }
+
+    #consult-evidence-table .consult-evidence-excerpt {
+      line-height: 1.45;
+      font-size: 0.84rem;
+    }
+
+    #consult-evidence-table .consult-evidence-page {
+      color: #5a6f6a;
+      font-size: 0.75rem;
+    }
+
     .consult-crit-name { font-weight: 650; color: #2d4a42; }
 
     .consult-crit-name-cell {
@@ -11151,7 +11201,8 @@
           <details class="consult-spoiler consult-hide-print" id="consult-evidence-spoiler" hidden>
             <summary>Сверка с протоколом</summary>
             <p class="consult-hint-small" id="consult-evidence-meta" style="margin: 0.35rem 0"></p>
-            <ul class="consult-hint-small" id="consult-block-gaps-list" style="margin: 0.35rem 0 0.6rem; padding-left: 1.1rem"></ul>
+            <p class="consult-evidence-gaps-title" id="consult-evidence-gaps-title" hidden>Замечания по блокам</p>
+            <ul class="consult-hint-small" id="consult-block-gaps-list" style="margin: 0.35rem 0 0.6rem; padding-left: 0"></ul>
             <div style="overflow-x: auto">
               <table class="consult-out-table" id="consult-evidence-table">
                 <thead>
@@ -25693,9 +25744,26 @@
     followup: "Наблюдение",
   };
 
+  function resolveEvidenceProtocolTitle(path, data, item) {
+    if (item && item.protocol_title) return String(item.protocol_title);
+    var p = String(path || "").trim();
+    if (!p) return "—";
+    var meta = (data && data.protocol_ui_meta && data.protocol_ui_meta[p]) || {};
+    var matches =
+      (data && data.structured_analysis && data.structured_analysis.matches) || [];
+    var i;
+    for (i = 0; i < matches.length; i++) {
+      if (matches[i].source_path === p && matches[i].title) {
+        return formatProtocolDisplayTitle(p, matches[i].title);
+      }
+    }
+    return formatProtocolDisplayTitle(p, meta.title || meta.display_title || "");
+  }
+
   function renderConsultEvidencePanel(data) {
     var spoiler = document.getElementById("consult-evidence-spoiler");
     var meta = document.getElementById("consult-evidence-meta");
+    var gapsTitle = document.getElementById("consult-evidence-gaps-title");
     var gapsList = document.getElementById("consult-block-gaps-list");
     var tb = document.querySelector("#consult-evidence-table tbody");
     var narBtn = document.getElementById("consult-btn-l2-narrative");
@@ -25704,25 +25772,46 @@
     var gaps = (data && data.block_gaps) || [];
     var l2mode = (data && data.l2_mode) || "";
     var rows = 0;
+    var seenRows = {};
     if (tb) {
       tb.innerHTML = "";
       var blocks = (pack && pack.blocks) || {};
-      Object.keys(blocks).forEach(function (bid) {
+      var blockOrder = ["diagnosis", "exams", "treatment", "followup"];
+      blockOrder.forEach(function (bid) {
         (blocks[bid] || []).forEach(function (it) {
+          var excerpt = String(it.excerpt || "").trim();
+          if (!excerpt) return;
+          var rowKey =
+            bid +
+            "|" +
+            String(it.protocol_path || "") +
+            "|" +
+            excerpt.slice(0, 96).toLowerCase();
+          if (seenRows[rowKey]) return;
+          seenRows[rowKey] = true;
           rows += 1;
           var tr = document.createElement("tr");
-          var pathShort = String(it.protocol_path || "").split("/").pop() || "—";
+          var protoTitle = resolveEvidenceProtocolTitle(it.protocol_path, data, it);
+          var section = String(it.section || "").replace(/\(summary card\)/gi, "").trim();
+          if (section === bid || section === (EVIDENCE_BLOCK_LABELS[bid] || bid)) {
+            section = "";
+          }
+          var pageBit =
+            it.page != null && it.page !== ""
+              ? ' <span class="consult-evidence-page">стр. ' + escapeHtml(String(it.page)) + "</span>"
+              : "";
           tr.innerHTML =
-            "<td>" +
+            "<td class=\"consult-evidence-block\">" +
             escapeHtml(EVIDENCE_BLOCK_LABELS[bid] || bid) +
-            "</td><td>" +
-            escapeHtml(it.section || "") +
-            "</td><td>" +
-            escapeHtml(String(it.excerpt || "").slice(0, 280)) +
-            "</td><td title=\"" +
+            "</td><td class=\"consult-evidence-section\">" +
+            escapeHtml(section) +
+            pageBit +
+            "</td><td class=\"consult-evidence-excerpt\">" +
+            escapeHtml(excerpt.length > 320 ? excerpt.slice(0, 317) + "…" : excerpt) +
+            "</td><td class=\"consult-evidence-protocol\" title=\"" +
             escapeHtml(it.protocol_path || "") +
             "\">" +
-            escapeHtml(pathShort) +
+            escapeHtml(protoTitle) +
             "</td>";
           tb.appendChild(tr);
         });
@@ -25730,7 +25819,7 @@
     }
     if (meta && pack) {
       var bits = [];
-      if (typeof pack.fragment_count === "number") bits.push("фрагментов: " + pack.fragment_count);
+      if (typeof pack.fragment_count === "number") bits.push("выдержек: " + pack.fragment_count);
       if (l2mode) bits.push("режим: " + l2mode);
       meta.textContent = bits.join(" · ");
     } else if (meta) {
@@ -25738,11 +25827,26 @@
     }
     if (gapsList) {
       gapsList.innerHTML = "";
-      gaps.forEach(function (g) {
-        var li = document.createElement("li");
-        li.textContent = (g.name_ru ? g.name_ru + ": " : "") + (g.gap_ru || "");
-        gapsList.appendChild(li);
-      });
+      if (gapsTitle) gapsTitle.hidden = gaps.length === 0;
+      if (gaps.length) {
+        gaps.forEach(function (g) {
+          var li = document.createElement("li");
+          li.className = "consult-evidence-gap-item";
+          var block = g.name_ru || EVIDENCE_BLOCK_LABELS[g.block_id] || g.block_id || "";
+          var txt = String(g.gap_ru || "").trim();
+          if (block && txt) {
+            li.innerHTML =
+              "<span class=\"consult-evidence-gap-block\">" +
+              escapeHtml(block) +
+              "</span><span class=\"consult-evidence-gap-text\">" +
+              escapeHtml(txt) +
+              "</span>";
+          } else {
+            li.textContent = txt || block;
+          }
+          gapsList.appendChild(li);
+        });
+      }
     }
     spoiler.hidden = rows === 0 && gaps.length === 0;
     if (narBtn) {

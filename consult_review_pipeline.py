@@ -370,6 +370,18 @@ def _iter_consult_review_render_l2_lite(
     except Exception:
         pass
 
+    meta_paths = list(
+        dict.fromkeys(
+            [str(p) for p in (match_paths or []) if p]
+            + [str(r.get("path") or "") for r in (retrieved or []) if r.get("path")]
+        )
+    )[:12]
+    if meta_paths:
+        try:
+            result["protocol_ui_meta"] = rs.protocol_ui_meta_bundle(meta_paths)
+        except Exception:
+            pass
+
     result["cached_result"] = False
     rs._consult_cache_put(cache_key, result)
     import gc

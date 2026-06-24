@@ -3,6 +3,10 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
+from clinical_knowledge.consult_evidence_quality import (
+    is_usable_evidence_excerpt,
+    protocol_title_for_path,
+)
 from clinical_knowledge.consult_l2_config import (
     consult_l2_evidence_chunks_per_path,
     consult_l2_evidence_max_chars,
@@ -100,6 +104,8 @@ def _summary_card_excerpts(
                 txt = ex.name
                 if ex.comment:
                     txt = f"{txt}. {ex.comment}"
+                if not is_usable_evidence_excerpt(txt):
+                    continue
                 out["exams"].append(
                     _excerpt_item(
                         block_id="exams",
@@ -117,7 +123,7 @@ def _summary_card_excerpts(
                     t_parts.append(d.drug_name or d.active_substance or d.drug_group or "")
                 for nd in (cond.treatment.non_drug or [])[:2]:
                     t_parts.append(nd.text)
-                t_parts = [p for p in t_parts if p]
+                t_parts = [p for p in t_parts if p and is_usable_evidence_excerpt(p)]
                 if t_parts:
                     out["treatment"].append(
                         _excerpt_item(
@@ -186,6 +192,8 @@ def _rich_chunk_excerpts(
             )
             for ch in picked:
                 txt = (ch.get("text") or ch.get("lex_text") or "").strip()
+                if not is_usable_evidence_excerpt(txt):
+                    continue
                 if len(txt) < 40:
                     continue
                 if total_chars + len(txt) > max_chars:
@@ -203,8 +211,6 @@ def _rich_chunk_excerpts(
                         source="rich_chunk",
                     )
                 )
-                if total_chars >= max_chars:
-                    break
     return out
 
 
@@ -244,6 +250,10 @@ def build_evidence_pack(
                 if key in seen_excerpt:
                     continue
                 seen_excerpt.add(key)
+                item = dict(item)
+                pth = str(item.get("protocol_path") or "").strip()
+                if pth and not item.get("protocol_title"):
+                    item["protocol_title"] = protocol_title_for_path(pth)
                 merged.append(item)
         blocks[block_id] = merged[:6]
         fragment_count += len(blocks[block_id])

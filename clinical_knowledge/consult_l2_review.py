@@ -1,6 +1,7 @@
 """Сборка review для L2-fast без LLM synthesize."""
 from __future__ import annotations
 
+import re
 from typing import Any
 
 
@@ -32,29 +33,62 @@ def template_summary_ru(structured_analysis: dict[str, Any] | None) -> str:
 def extract_block_gaps(alignment_result: dict[str, Any] | None) -> list[dict[str, Any]]:
     if not isinstance(alignment_result, dict):
         return []
+    from clinical_knowledge.consult_evidence_quality import (
+        is_kp_checklist_item,
+        normalize_gap_text,
+    )
+
     gaps: list[dict[str, Any]] = []
+    seen_text: set[str] = set()
+
+    def _add(block_id: str, name_ru: str | None, gap_ru: str, *, low_score: bool = False) -> None:
+        txt = normalize_gap_text(gap_ru)
+        if not txt:
+            return
+        key = re.sub(r"\s+", " ", txt.lower())[:120]
+        if key in seen_text:
+            return
+        seen_text.add(key)
+        gaps.append(
+            {
+                "block_id": block_id,
+                "gap_ru": txt,
+                "name_ru": name_ru,
+                "low_score": low_score,
+            }
+        )
+
     for card in alignment_result.get("alignment_cards") or []:
         if not isinstance(card, dict):
             continue
         block_id = str(card.get("block_id") or "")
         name_ru = card.get("name_ru")
-        for g in card.get("gaps_ru") or []:
-            txt = str(g).strip()
-            if txt:
-                gaps.append({"block_id": block_id, "gap_ru": txt, "name_ru": name_ru})
+        comment = str(card.get("comment_ru") or "").strip()
         score = card.get("score_pct")
-        if isinstance(score, (int, float)) and score < 50:
-            comment = str(card.get("comment_ru") or "").strip()
-            if comment and not any(x.get("gap_ru") == comment for x in gaps):
-                gaps.append(
-                    {
-                        "block_id": block_id,
-                        "gap_ru": comment,
-                        "name_ru": name_ru,
-                        "low_score": True,
-                    }
-                )
-    return gaps[:12]
+
+        bullet_gaps: list[str] = []
+        for g in card.get("gaps_ru") or []:
+            txt = normalize_gap_text(str(g))
+            if txt and is_kp_checklist_item(txt):
+                bullet_gaps.append(txt)
+
+        if block_id in ("exams", "treatment"):
+            if comment:
+                _add(block_id, name_ru, comment)
+            for txt in bullet_gaps[:4]:
+                if comment and txt.lower() in comment.lower():
+                    continue
+                _add(block_id, name_ru, txt)
+            continue
+
+        for txt in bullet_gaps[:4]:
+            _add(block_id, name_ru, txt)
+
+        if isinstance(score, (int, float)) and score < 50 and comment:
+            if not any(normalize_gap_text(comment) in normalize_gap_text(x.get("gap_ru", "")) for x in gaps if x.get("block_id") == block_id):
+                _add(block_id, name_ru, comment, low_score=True)
+
+    return gaps[:10]
 
 
 def protocol_paths_used(

@@ -5,6 +5,7 @@ import os
 import re
 from typing import Any, Callable
 
+from clinical_knowledge.consult_evidence_quality import is_kp_checklist_item
 from clinical_knowledge.consult_schema import ConsultationDocument
 from clinical_knowledge.dispensary_regulations import (
     follow_up_mentioned_in_text,
@@ -382,7 +383,7 @@ def _exams_card(
         meta=list(profile.get("diagnostics_meta") or []),
         limit=12,
     )
-    required = [r["text"] for r in ranked]
+    required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
     kz_blob = _kz_exam_blob(doc)
     cite = next(
         (c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("diagnostics", "criteria_block", "table")),
@@ -494,7 +495,7 @@ def _treatment_card(
         meta=list(profile.get("medications_meta") or []),
         limit=12,
     )
-    required = [r["text"] for r in ranked]
+    required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
     kz_blob = _kz_treatment_blob(doc)
     cite = next(
         (c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("pharmacotherapy", "treatment", "drug_list")),
