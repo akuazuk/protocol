@@ -8289,6 +8289,22 @@
       display: none !important;
     }
 
+    body.app-tab-consult #training-panel {
+      display: none !important;
+    }
+
+    body.app-tab-consult .site-bottom-zone__lead {
+      display: none;
+    }
+
+    body.app-tab-consult .site-bottom-zone__lead--search-only {
+      display: none;
+    }
+
+    body.app-tab-search .site-bottom-zone__lead--search-only {
+      display: block;
+    }
+
     body.app-tab-analytics .site-footer--compact {
       margin-top: 0;
       border-top: 1px solid rgba(26, 138, 114, 0.12);
@@ -9620,6 +9636,75 @@
 
     .proto-nav-card__actions .btn-proto-pick--primary {
       font-weight: 600;
+    }
+
+    .proto-kz-sop-hint {
+      margin-top: 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      background: linear-gradient(180deg, #f4faf8 0%, #fff 100%);
+    }
+
+    .proto-kz-sop-hint summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: #1a5c4a;
+      border-radius: 10px;
+    }
+
+    .proto-kz-sop-hint summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .proto-kz-sop-hint summary::before {
+      content: "▸ ";
+      display: inline-block;
+      transition: transform 0.15s ease;
+    }
+
+    .proto-kz-sop-hint[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .proto-kz-sop-hint__body {
+      padding: 0 0.75rem 0.7rem;
+      font-size: 0.82rem;
+      line-height: 1.48;
+      color: #2d4a42;
+    }
+
+    .proto-kz-sop-hint__lead {
+      margin: 0 0 0.45rem;
+      color: #5a6f6a;
+      font-size: 0.8rem;
+    }
+
+    .proto-kz-sop-hint__proto {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .proto-kz-sop-hint__list {
+      margin: 0;
+      padding-left: 1.1rem;
+    }
+
+    .proto-kz-sop-hint__list li {
+      margin-bottom: 0.35rem;
+    }
+
+    .proto-kz-sop-hint__list strong {
+      color: #1a5c4a;
+      font-weight: 650;
+    }
+
+    .proto-kz-sop-hint__source {
+      margin: 0.45rem 0 0;
+      font-size: 0.74rem;
+      color: #5a6f6a;
     }
 
     .proto-nav-weak-toggle {
@@ -11781,7 +11866,7 @@
 
     <section class="site-bottom-zone" id="site-bottom-zone" aria-labelledby="site-bottom-title">
       <h2 id="site-bottom-title" class="site-bottom-zone__title">Материалы проекта</h2>
-      <p class="site-bottom-zone__lead">
+      <p class="site-bottom-zone__lead site-bottom-zone__lead--search-only">
         Презентация, архитектура и учебные кейсы. Статистика - вкладка «Статистика поиска».
       </p>
 
@@ -15336,9 +15421,74 @@
       renderProtocolNavRoadmapHtml(activeStep) +
       '<p class="proto-nav-guide-text">' +
       "Разделы PDF - диагностика, лечение, госпитализация. " +
-      "Оформление консультативного заключения - на вкладке «Проверка КЗ»." +
+      "Чек-лист оформления КЗ - под рекомендованным протоколом (СОП Кравира)." +
       "</p></div>"
     );
+  }
+
+  var KRAVIRA_KZ_SOP_HINTS = [
+    {
+      title: "Жалобы",
+      text:
+        "Характер, давность, динамика. Не ограничивайтесь одной фразой без деталей.",
+    },
+    {
+      title: "Анамнез",
+      text:
+        "Анамнез заболевания и жизни, аллергоанамнез, наследственный анамнез, перенесённые заболевания.",
+    },
+    {
+      title: "Объективный статус",
+      text:
+        "Сознание, антропометрия, температура, АД, пульс, ЧД; локальный статус полностью и согласован с диагнозом.",
+    },
+    {
+      title: "Диагноз",
+      text:
+        "Формулировка с кодом МКБ-10. При отсутствии патологии - код профилактического осмотра (например Z01.4), не пишите просто «здоров».",
+    },
+    {
+      title: "Обследование и лечение",
+      text:
+        "Назначения и результаты - по выбранному клиническому протоколу Минздрава; режим, рекомендации, препараты с дозами при необходимости.",
+    },
+    {
+      title: "Наблюдение",
+      text: "Сроки контроля, динамика, повторный приём - особенно если назначено лечение.",
+    },
+  ];
+
+  function renderKzSopHintPanel(protoTitle) {
+    var html =
+      '<details class="proto-kz-sop-hint" data-kz-sop-hint="1">' +
+      '<summary>Как оформить консультативное заключение</summary>' +
+      '<div class="proto-kz-sop-hint__body">';
+    html +=
+      '<p class="proto-kz-sop-hint__lead">Обязательные разделы по СОП № 2 Кравира (папка doc_kravira). ' +
+      "Сверяйте обследование и лечение с выбранным КП Минздрава - не копируйте оглавление PDF.</p>";
+    if (protoTitle) {
+      html +=
+        '<p class="proto-kz-sop-hint__proto"><strong>Протокол по запросу:</strong> ' +
+        escapeHtml(protoTitle) +
+        "</p>";
+    }
+    html += '<ul class="proto-kz-sop-hint__list">';
+    var i;
+    for (i = 0; i < KRAVIRA_KZ_SOP_HINTS.length; i++) {
+      var row = KRAVIRA_KZ_SOP_HINTS[i];
+      html +=
+        "<li><strong>" +
+        escapeHtml(row.title) +
+        ":</strong> " +
+        escapeHtml(row.text) +
+        "</li>";
+    }
+    html += "</ul>";
+    html +=
+      '<p class="proto-kz-sop-hint__source">Источник: СОП № 2 Кравира, амбулаторная карта (doc_kravira). ' +
+      "Готовое заключение можно проверить на вкладке «Проверка КЗ».</p>";
+    html += "</div></details>";
+    return html;
   }
 
   function renderProtocolNavCard(pr, data, opts) {
@@ -15396,16 +15546,14 @@
       (isTop ? "Разделы протокола" : "Разделы протокола") +
       "</button>";
     html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-go-consult-kz" data-proto-path="' +
-      escapeHtmlAttr(pr.path || "") +
-      '" data-proto-title="' +
-      escapeHtmlAttr(pr.title || "") +
-      '">Оформить заключение</button>';
-    html +=
       '<a class="btn-proto-action btn-proto-action--link" href="' +
       href +
       '" target="_blank" rel="noopener noreferrer">PDF</a>';
-    html += "</div></article>";
+    html += "</div>";
+    if (isTop) {
+      html += renderKzSopHintPanel(title);
+    }
+    html += "</article>";
     return html;
   }
 
@@ -15427,7 +15575,8 @@
     var html = '<div class="proto-nav-hub" role="region" aria-label="Клинические протоколы">';
     html +=
       '<div class="proto-nav-top-cta" role="note">' +
-      '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. Оформление КЗ - на вкладке «Проверка КЗ».</p>' +
+      '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. ' +
+      "Под рекомендованным протоколом - чек-лист оформления КЗ по СОП Кравира.</p>" +
       "</div>";
     html += '<div class="proto-nav-cards">';
     for (pi = 0; pi < high.length; pi++) {
@@ -15492,22 +15641,6 @@
   function bindProtocolNavHub(data) {
     bindProtoPickButtons(data);
     ingestProtocolNavFromAssist(data);
-    document.querySelectorAll(".btn-go-consult-kz").forEach(function (btn) {
-      if (btn.getAttribute("data-wired-consult-kz")) return;
-      btn.setAttribute("data-wired-consult-kz", "1");
-      btn.addEventListener("click", function () {
-        var path = btn.getAttribute("data-proto-path") || "";
-        var title = btn.getAttribute("data-proto-title") || "";
-        if (!path) return;
-        var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
-        openSearchDraftKzFromFunnel(
-          path,
-          (data && data.query) || lastAssistFullQuery || "",
-          icdCodesFromAssistData(data || {}),
-          excerptMap[path] || ""
-        );
-      });
-    });
     if (window.__methodistMode) {
       document.querySelectorAll(".btn-proto-matrix").forEach(function (btn) {
         if (btn.getAttribute("data-wired-matrix")) return;
