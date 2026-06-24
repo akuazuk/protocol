@@ -89,6 +89,8 @@ def build_public_search_analytics(
             "protocols_post_mz": corpus.get("protocols_post_mz"),
             "rubrics_in_index": corpus.get("rubrics_in_index") or corpus.get("specialties_catalog"),
             "chunks_loaded": corpus.get("chunks_loaded"),
+            "manifest_paths": corpus.get("manifest_paths"),
+            "startup_mode": corpus.get("startup_mode"),
             "index_csv_updated_utc": corpus.get("index_csv_updated_utc"),
         },
         "quality_benchmark": {

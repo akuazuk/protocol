@@ -341,6 +341,22 @@ def handle_search_funnel(
             for p in protos
             if isinstance(p, dict) and p.get("path")
         ]
+        try:
+            from clinical_knowledge.search_telemetry import log_protocol_search_from_payload
+
+            aud = pop if pop in ("adult", "child", "pediatric", "pregnant") else None
+            if aud == "pediatric":
+                aud = "child"
+            log_protocol_search_from_payload(
+                query=work_q,
+                payload=payload,
+                icd_codes=icd_codes or None,
+                user_slugs=slugs or None,
+                audience_inferred=aud,
+                search_source="search_funnel",
+            )
+        except Exception:
+            pass
         return out
 
     if step == 5:

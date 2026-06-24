@@ -37,11 +37,13 @@ def _top_confidence_pct(proto_list: list[dict[str, Any]]) -> float | None:
 def log_protocol_search(
     *,
     query: str,
-    retrieved: list[dict[str, Any]],
-    proto_list: list[dict[str, Any]],
-    icd_codes: list[str] | None,
-    user_slugs: list[str] | None,
-    audience_inferred: str | None,
+    retrieved: list[dict[str, Any]] | None = None,
+    proto_list: list[dict[str, Any]] | None = None,
+    icd_codes: list[str] | None = None,
+    user_slugs: list[str] | None = None,
+    audience_inferred: str | None = None,
+    search_source: str | None = None,
+    n_retrieval: int | None = None,
 ) -> None:
     """Append-only событие без текста запроса (только длина и короткий hash)."""
     q = (query or "").strip()
@@ -50,21 +52,53 @@ def log_protocol_search(
     try:
         from clinical_knowledge.feedback_store import append_feedback_event
 
-        append_feedback_event(
-            {
-                "event_type": "protocol_search",
-                "query_len": len(q),
-                "query_hash": hashlib.sha256(q.encode("utf-8")).hexdigest()[:16],
-                "has_icd": bool(icd_codes),
-                "n_retrieval": len(retrieved or []),
-                "n_protocols": len(proto_list or []),
-                "top_confidence_pct": _top_confidence_pct(proto_list or []),
-                "audience": (audience_inferred or "").strip() or None,
-                "rubric_filters": len(user_slugs or []),
-            }
-        )
+        event: dict[str, Any] = {
+            "event_type": "protocol_search",
+            "query_len": len(q),
+            "query_hash": hashlib.sha256(q.encode("utf-8")).hexdigest()[:16],
+            "has_icd": bool(icd_codes),
+            "n_retrieval": n_retrieval if n_retrieval is not None else len(retrieved or []),
+            "n_protocols": len(proto_list or []),
+            "top_confidence_pct": _top_confidence_pct(proto_list or []),
+            "audience": (audience_inferred or "").strip() or None,
+            "rubric_filters": len(user_slugs or []),
+        }
+        if search_source:
+            event["search_source"] = search_source
+        append_feedback_event(event)
     except Exception as exc:
         _log.debug("protocol_search telemetry skipped: %s", exc)
+
+
+def log_protocol_search_from_payload(
+    *,
+    query: str,
+    payload: dict[str, Any],
+    icd_codes: list[str] | None = None,
+    user_slugs: list[str] | None = None,
+    audience_inferred: str | None = None,
+    search_source: str = "assist",
+) -> None:
+    """Телеметрия из ответа assist / hybrid / icd-fast (без дубля логики полей)."""
+    llm = payload.get("llm_json") if isinstance(payload.get("llm_json"), dict) else {}
+    proto_list = llm.get("protocols") if isinstance(llm.get("protocols"), list) else []
+    icd_src = icd_codes
+    if not icd_src:
+        icd_block = payload.get("icd")
+        if isinstance(icd_block, dict):
+            icd_src = list(icd_block.get("codes_for_retrieval") or icd_block.get("detected") or [])
+    n_retrieval = payload.get("retrieved_count")
+    if not isinstance(n_retrieval, int):
+        n_retrieval = len(proto_list)
+    log_protocol_search(
+        query=query,
+        proto_list=proto_list,
+        icd_codes=icd_src,
+        user_slugs=user_slugs,
+        audience_inferred=audience_inferred,
+        search_source=search_source,
+        n_retrieval=int(n_retrieval) if isinstance(n_retrieval, int) else len(proto_list),
+    )
 
 
 def iter_protocol_search_events(feedback_dir: Path | None = None) -> list[dict[str, Any]]:

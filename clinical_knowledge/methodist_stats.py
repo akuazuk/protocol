@@ -71,12 +71,12 @@ def _short_hash(h: str) -> str:
 
 
 def iter_feedback_events(feedback_dir: Path) -> list[dict[str, Any]]:
-    from clinical_knowledge.feedback_store import list_feedback_jsonl_files
-
     events: list[dict[str, Any]] = []
     if not feedback_dir.is_dir():
         return events
-    for path in list_feedback_jsonl_files():
+    paths = sorted(feedback_dir.glob("*.jsonl"))
+    paths = [p for p in paths if p.name != "events.jsonl"]
+    for path in paths:
         for line in path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):

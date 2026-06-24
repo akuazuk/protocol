@@ -105,6 +105,8 @@ services:
         value: "1"
       - key: RAG_LEX_SHARDS_DIR
         value: /var/data/lex_shards
+      - key: ML_FEEDBACK_DIR
+        value: /var/data/ml/feedback
       - key: CONSULT_ALIGNMENT_ENABLED
         value: "1"
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback

@@ -7902,11 +7902,17 @@ def _load_quality_benchmark_dict() -> dict:
 @app.get("/api/search-analytics")
 def api_search_analytics() -> dict:
     """Статистика поиска протоколов для вкладки «Поиск» (корпус, эталон, телеметрия)."""
+    from clinical_knowledge.lazy_rag_config import startup_mode
     from clinical_knowledge.search_analytics_public import build_public_search_analytics
 
     corpus = _corpus_stats_from_index_csv()
     corpus["chunks_loaded"] = len(_chunks) if _chunks_load_done.is_set() else None
     corpus["rag_ready"] = _chunks_load_done.is_set()
+    corpus["startup_mode"] = startup_mode()
+    if _path_manifest is not None:
+        corpus["manifest_paths"] = len(_path_manifest.entries)
+    elif _lazy_chunk_store is not None and getattr(_lazy_chunk_store, "manifest", None):
+        corpus["manifest_paths"] = len(_lazy_chunk_store.manifest.entries)
     return build_public_search_analytics(
         corpus=corpus,
         quality=_load_quality_benchmark_dict(),
@@ -7954,7 +7960,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r232-lazy-chunk-store"
+BUILD_VERSION = "2026-06-01-r233-search-analytics-fix"
 
 
 def _app_version() -> str:
@@ -9011,15 +9017,19 @@ def _api_assist_impl(body: AssistIn) -> dict:
                 meta_paths.add(p)
 
     try:
-        from clinical_knowledge.search_telemetry import log_protocol_search
+        from clinical_knowledge.search_telemetry import log_protocol_search_from_payload
 
-        log_protocol_search(
+        log_protocol_search_from_payload(
             query=q,
-            retrieved=retrieved,
-            proto_list=proto_list if isinstance(proto_list, list) else [],
+            payload={
+                "llm_json": {"protocols": proto_list if isinstance(proto_list, list) else []},
+                "icd": icd_analysis,
+                "retrieved_count": len(retrieved),
+            },
             icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
             user_slugs=user_slugs,
             audience_inferred=audience_inferred,
+            search_source="assist",
         )
     except Exception:
         pass
@@ -9328,6 +9338,22 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
         total_ms=(time.perf_counter() - t_start) * 1000,
         lookup_ms=lookup.get("lookup_ms"),
     )
+    try:
+        from clinical_knowledge.search_telemetry import log_protocol_search_from_payload
+
+        aud = body.population if body.population in ("adult", "child", "pediatric") else None
+        if aud == "pediatric":
+            aud = "child"
+        log_protocol_search_from_payload(
+            query=q,
+            payload=payload,
+            icd_codes=list(body.icd_codes or []),
+            user_slugs=list(body.category_slugs or []),
+            audience_inferred=aud,
+            search_source="icd_fast_lookup",
+        )
+    except Exception:
+        pass
     return payload
 
 

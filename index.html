@@ -23553,14 +23553,25 @@
     if (!el) return;
     var corpus = d.corpus || {};
     var postMz = corpus.protocols_post_mz;
+    var manifestMode =
+      corpus.startup_mode === "manifest" ||
+      (corpus.manifest_paths != null && corpus.chunks_loaded === 0);
+    var ragFragments = manifestMode
+      ? corpus.manifest_paths != null
+        ? corpus.manifest_paths
+        : " — "
+      : corpus.chunks_loaded != null
+        ? corpus.chunks_loaded
+        : " — ";
+    var ragFragmentsLabel = manifestMode ? "PDF в manifest (lazy)" : "фрагментов RAG";
     el.innerHTML =
-      analyticsKpiCell(corpus.protocols_in_index || " - ", "PDF в каталоге", true) +
-      analyticsKpiCell(postMz != null ? postMz : " - ", "постов МЗ") +
-      analyticsKpiCell(corpus.rubrics_in_index || " - ", "рубрик") +
-      analyticsKpiCell(corpus.chunks_loaded || " - ", "фрагментов RAG", true) +
+      analyticsKpiCell(corpus.protocols_in_index || " — ", "PDF в каталоге", true) +
+      analyticsKpiCell(postMz != null ? postMz : " — ", "постов МЗ") +
+      analyticsKpiCell(corpus.rubrics_in_index || " — ", "рубрик") +
+      analyticsKpiCell(ragFragments, ragFragmentsLabel, true) +
       analyticsKpiCell(d.rag_ready ? "да" : "нет", "RAG готов") +
       analyticsKpiCell(
-        corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : " - ",
+        corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : " — ",
         "обновление index.csv"
       );
   }
@@ -24124,7 +24135,11 @@
     __analyticsPollId = setInterval(function () {
       var p = document.getElementById("panel-analytics-stats");
       if (p && !p.hidden) loadAnalyticsTab();
-    }, 60000);
+    }, 30000);
+  }
+
+  function refreshAnalyticsAfterSearch() {
+    if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
   }
 
   function loadTrainingCasesChips() {
@@ -27449,6 +27464,7 @@
           clearSpecialtySelectionAndCollapse();
           if (st) st.textContent = "Готово.";
           setSearchQueryStatus("");
+          if (typeof refreshAnalyticsAfterSearch === "function") refreshAnalyticsAfterSearch();
           var qInput = document.getElementById("q");
           if (qInput) qInput.value = stripToClinicalOnly(qSend);
           var elOut = document.getElementById("section-results");
