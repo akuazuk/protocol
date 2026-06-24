@@ -11005,17 +11005,17 @@
                 <input type="radio" name="consult-tier" value="L2" />
                 <span class="consult-tier-card__top">
                   <span class="consult-tier-card__badge">L2</span>
-                  <span class="consult-tier-card__time">≈ 1-3 мин</span>
+                  <span class="consult-tier-card__time">≈ 10-25 с</span>
                 </span>
-                <span class="consult-tier-card__name">Полная проверка</span>
-                <span class="consult-tier-card__desc">Подбор протоколов RAG и оценка модели с цитатами</span>
+                <span class="consult-tier-card__name">Сверка с протоколом</span>
+                <span class="consult-tier-card__desc">Alignment, evidence pack и выдержки КП — без тяжёлой оценки модели</span>
               </label>
             </div>
             <p class="consult-tier-hint" id="consult-tier-hint" aria-live="polite"></p>
           </div>
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать (L1)</button>
-            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="Полный RAG и оценка модели - дольше, ~1-3 мин">Глубокий разбор L2</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack — быстрее полного RAG">Сверка L2</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -11148,6 +11148,33 @@
             <summary>Краткий вывод</summary>
             <p class="consult-spoiler__text" id="consult-out-summary"></p>
           </details>
+          <details class="consult-spoiler consult-hide-print" id="consult-evidence-spoiler" hidden>
+            <summary>Сверка с протоколом</summary>
+            <p class="consult-hint-small" id="consult-evidence-meta" style="margin: 0.35rem 0"></p>
+            <ul class="consult-hint-small" id="consult-block-gaps-list" style="margin: 0.35rem 0 0.6rem; padding-left: 1.1rem"></ul>
+            <div style="overflow-x: auto">
+              <table class="consult-out-table" id="consult-evidence-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Блок</th>
+                    <th scope="col">Секция</th>
+                    <th scope="col">Выдержка</th>
+                    <th scope="col">Протокол</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </details>
+          <button
+            type="button"
+            class="btn-consult-outline consult-hide-print"
+            id="consult-btn-l2-narrative"
+            hidden
+            title="Один абзац пояснения модели по выдержкам протокола"
+          >
+            Пояснение методиста (L2+)
+          </button>
           <details class="consult-spoiler consult-hide-print" id="consult-limit-spoiler" hidden open>
             <summary>Ограничения оценки</summary>
             <p class="consult-spoiler__text" id="consult-out-limit"></p>
@@ -25659,6 +25686,70 @@
     );
   }
 
+  var EVIDENCE_BLOCK_LABELS = {
+    diagnosis: "Диагноз",
+    exams: "Обследование",
+    treatment: "Лечение",
+    followup: "Наблюдение",
+  };
+
+  function renderConsultEvidencePanel(data) {
+    var spoiler = document.getElementById("consult-evidence-spoiler");
+    var meta = document.getElementById("consult-evidence-meta");
+    var gapsList = document.getElementById("consult-block-gaps-list");
+    var tb = document.querySelector("#consult-evidence-table tbody");
+    var narBtn = document.getElementById("consult-btn-l2-narrative");
+    if (!spoiler) return;
+    var pack = data && data.evidence_pack;
+    var gaps = (data && data.block_gaps) || [];
+    var l2mode = (data && data.l2_mode) || "";
+    var rows = 0;
+    if (tb) {
+      tb.innerHTML = "";
+      var blocks = (pack && pack.blocks) || {};
+      Object.keys(blocks).forEach(function (bid) {
+        (blocks[bid] || []).forEach(function (it) {
+          rows += 1;
+          var tr = document.createElement("tr");
+          var pathShort = String(it.protocol_path || "").split("/").pop() || "—";
+          tr.innerHTML =
+            "<td>" +
+            escapeHtml(EVIDENCE_BLOCK_LABELS[bid] || bid) +
+            "</td><td>" +
+            escapeHtml(it.section || "") +
+            "</td><td>" +
+            escapeHtml(String(it.excerpt || "").slice(0, 280)) +
+            "</td><td title=\"" +
+            escapeHtml(it.protocol_path || "") +
+            "\">" +
+            escapeHtml(pathShort) +
+            "</td>";
+          tb.appendChild(tr);
+        });
+      });
+    }
+    if (meta && pack) {
+      var bits = [];
+      if (typeof pack.fragment_count === "number") bits.push("фрагментов: " + pack.fragment_count);
+      if (l2mode) bits.push("режим: " + l2mode);
+      meta.textContent = bits.join(" · ");
+    } else if (meta) {
+      meta.textContent = "";
+    }
+    if (gapsList) {
+      gapsList.innerHTML = "";
+      gaps.forEach(function (g) {
+        var li = document.createElement("li");
+        li.textContent = (g.name_ru ? g.name_ru + ": " : "") + (g.gap_ru || "");
+        gapsList.appendChild(li);
+      });
+    }
+    spoiler.hidden = rows === 0 && gaps.length === 0;
+    if (narBtn) {
+      narBtn.hidden = !(pack && l2mode !== "narrative" && data && data.review_tier === "L2");
+    }
+  }
+
   function renderConsultReviewResult(data, res, st) {
     window.__consultReviewLastPayload = data;
     if (st) st.textContent = "Готово.";
@@ -25787,6 +25878,7 @@
     renderConsultOncologyBanner(data.consult_oncology_flags);
     renderConsultClinicalRulesPanel(data);
     renderConsultProtocolsSection(data, rev);
+    renderConsultEvidencePanel(data);
     renderConsultSendGate(data);
     renderMethodistEvalDashboard(data);
     renderMethodistReviewPanel(data);
@@ -26045,9 +26137,10 @@
 
   var CONSULT_TIER_HINTS = {
     L0: "L0: быстрая проверка готовности к подписи - без подбора протоколов и без оценки модели.",
-    L1: "L1: структурный разбор, правила и карточки согласования - оптимально для повседневной работы.",
-    L2: "L2: полный RAG и оценка модели с цитатами протоколов - дольше, может занять несколько минут.",
-    L2_RENDER: "L2 на Render: структурный разбор как L1 (без языковой модели). Для полного L2 запустите сервер локально.",
+    L1: "L1: структура, правила и карточки согласования — оптимально для повседневной работы.",
+    L2: "L2: сверка КЗ с протоколом, alignment и evidence pack — без тяжёлой оценки модели (~10-25 с).",
+    L2_PLUS: "L2+: к L2 добавлено пояснение модели для методиста (ещё ~5-10 с).",
+    L2_RENDER: "L2 на Render: сверка с протоколом и evidence pack. Пояснение модели — по кнопке L2+.",
   };
 
   function initConsultTierCaps() {
@@ -26058,16 +26151,27 @@
       .then(function (h) {
         if (!h) return;
         window.__consultRenderL2SkipLlm = !!h.consult_render_l2_skip_llm;
+        window.__consultL2Fast = h.consult_l2_fast !== false;
+        window.__consultL2NarrativeEnv = String(h.consult_l2_narrative || "0");
         var l2input = document.querySelector('input[name="consult-tier"][value="L2"]');
-        if (l2input && h.consult_render_l2_skip_llm) {
+        if (l2input && (h.consult_l2_fast || h.consult_render_l2_lite)) {
           var card = l2input.closest(".consult-tier-card");
           var desc = card && card.querySelector(".consult-tier-card__desc");
           var timeEl = card && card.querySelector(".consult-tier-card__time");
           if (desc) {
             desc.textContent =
+              "Сверка с протоколом, alignment и evidence pack. Пояснение модели — кнопка L2+.";
+          }
+          if (timeEl) timeEl.textContent = "≈ 10-25 с";
+        } else if (l2input && h.consult_render_l2_skip_llm) {
+          var card2 = l2input.closest(".consult-tier-card");
+          var desc2 = card2 && card2.querySelector(".consult-tier-card__desc");
+          var timeEl2 = card2 && card2.querySelector(".consult-tier-card__time");
+          if (desc2) {
+            desc2.textContent =
               "На Render: как L1, без LLM (лимит памяти). Полный L2 с моделью - локальный сервер.";
           }
-          if (timeEl) timeEl.textContent = "≈ 15-45 с";
+          if (timeEl2) timeEl2.textContent = "≈ 15-45 с";
         }
         updateConsultTierHint();
       })
@@ -26085,6 +26189,10 @@
     var hint = document.getElementById("consult-tier-hint");
     if (!hint) return;
     var t = tier || getConsultSelectedTier();
+    if (t === "L2" && window.__consultL2Fast) {
+      hint.textContent = CONSULT_TIER_HINTS.L2_RENDER;
+      return;
+    }
     if (t === "L2" && window.__consultRenderL2SkipLlm) {
       hint.textContent = CONSULT_TIER_HINTS.L2_RENDER;
       return;
@@ -26306,7 +26414,7 @@
         timeoutRef.abortTid = window.setTimeout(function () {
           consultCtrl.abort();
         }, timeoutRef.ms);
-        if (!health.gemini_configured) {
+        if (!health.gemini_configured && !health.consult_l2_fast) {
           throw new Error("На сервере не настроен ключ доступа к обработке запросов (Gemini).");
         }
         return fetch(base + "/api/consult-review/stream", {
@@ -26815,6 +26923,51 @@
           updateConsultTierHint("L2");
         }
         btnRun.click();
+      });
+    }
+
+    var btnL2Narrative = document.getElementById("consult-btn-l2-narrative");
+    if (btnL2Narrative) {
+      btnL2Narrative.addEventListener("click", function () {
+        var data = window.__consultReviewLastPayload;
+        if (!data || !data.evidence_pack) {
+          alert("Сначала выполните L2 — нужен evidence pack.");
+          return;
+        }
+        var baseEl = document.getElementById("rag-base");
+        var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+        btnL2Narrative.disabled = true;
+        btnL2Narrative.textContent = "Генерация L2+…";
+        fetch(base + "/api/consult-review/l2-narrative", {
+          method: "POST",
+          headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
+          body: JSON.stringify({
+            evidence_pack: data.evidence_pack,
+            block_gaps: data.block_gaps || [],
+            structured_summary: ((data.review || {}).summary_ru) || "",
+          }),
+        })
+          .then(function (r) {
+            return r.ok ? r.json() : r.text().then(function (t) { throw new Error(t); });
+          })
+          .then(function (out) {
+            if (out.summary_ru) {
+              data.l2_mode = "narrative";
+              if (!data.review) data.review = {};
+              data.review.summary_ru = out.summary_ru;
+              window.__consultReviewLastPayload = data;
+              var sumEl = document.getElementById("consult-out-summary");
+              if (sumEl) sumEl.textContent = out.summary_ru;
+              renderConsultEvidencePanel(data);
+            }
+          })
+          .catch(function (e) {
+            alert("L2+ не удалось: " + (e && e.message ? e.message : String(e)));
+          })
+          .finally(function () {
+            btnL2Narrative.disabled = false;
+            btnL2Narrative.textContent = "Пояснение методиста (L2+)";
+          });
       });
     }
 

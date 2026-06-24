@@ -77,12 +77,30 @@ def _iter_consult_review_render_l2_lite(
     fhir_bundle: dict[str, Any] | None,
     cache_key: str,
     emit: Any,
+    l2_narrative: bool = False,
 ) -> Iterator[tuple[str, Any]]:
-    """Render-safe L2: L1 structured + rich-чанки по matched paths + LLM (без retrieve по 65k)."""
+    """Render-safe L2: L1 structured + alignment + evidence pack + опциональный narrative."""
     import rag_server as rs
+    from clinical_knowledge.consult_evidence_pack import build_evidence_pack
+    from clinical_knowledge.consult_l2_config import (
+        consult_l2_align_max_chunks_per_path,
+        consult_l2_align_max_paths,
+        consult_l2_fast_enabled,
+        consult_l2_narrative_requested,
+        resolve_l2_mode,
+    )
+    from clinical_knowledge.consult_l2_review import (
+        build_l2_fast_review,
+        extract_block_gaps,
+        protocol_paths_used,
+    )
     from clinical_knowledge.consult_parser import _detect_specialty
     from clinical_knowledge.consult_tiering import run_l1_structured_review
     from clinical_knowledge.rubric_extractors import specialty_to_rubric
+
+    want_narrative = consult_l2_narrative_requested(request_flag=l2_narrative)
+    l2_fast = consult_l2_fast_enabled() and not want_narrative
+    l2_mode = resolve_l2_mode(narrative=want_narrative)
 
     yield emit("focus", 18, "Структурный разбор заключения…")
     doctor_rubric = specialty_to_rubric(_detect_specialty(full_text[:1500]) or _detect_specialty(full_text))
@@ -104,7 +122,8 @@ def _iter_consult_review_render_l2_lite(
         consultation_id=consult_id,
         demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
         specialty_slug=specialty_slug,
-        skip_alignment=True,
+        skip_alignment=False,
+        max_alignment_paths=consult_l2_align_max_paths(),
     )
     structured_analysis = l1.get("structured_analysis")
     alignment_result = l1.get("alignment")
@@ -133,21 +152,37 @@ def _iter_consult_review_render_l2_lite(
             ps = str(p or "").strip()
             if ps and ps not in match_paths:
                 match_paths.append(ps)
+    elif alignment_result and isinstance(alignment_result.get("audit_trail"), dict):
+        for p in alignment_result["audit_trail"].get("protocol_paths") or []:
+            ps = str(p or "").strip()
+            if ps and ps not in match_paths:
+                match_paths.append(ps)
 
     yield emit(
-        "protocols",
-        52,
-        f"Фрагменты протоколов ({len(match_paths[:4])})…",
-        {"protocol_paths_target": match_paths[:6]},
+        "evidence",
+        48,
+        f"Выдержки протоколов ({len(match_paths[:6])})…",
+        {"protocol_paths_target": match_paths[:8]},
     )
     q_rag = " ".join(icd_codes[:6]) or full_text[:1200]
+    evidence_pack = build_evidence_pack(
+        icd_codes=icd_codes,
+        match_paths=match_paths,
+        get_chunks=rs.get_rich_chunks_for_consult,
+        query=q_rag,
+    )
+    block_gaps = extract_block_gaps(alignment_result if isinstance(alignment_result, dict) else None)
+    paths_used_meta = protocol_paths_used(match_paths, alignment_result, evidence_pack)
+
+    align_paths = consult_l2_align_max_paths()
+    align_chunks = consult_l2_align_max_chunks_per_path()
     retrieved = _protocol_rows_from_rich_paths(
         match_paths,
         query=q_rag,
         icd_codes=icd_codes,
         get_chunks=rs.get_rich_chunks_for_consult,
-        limit_per_path=1,
-        max_paths=2,
+        limit_per_path=align_chunks if l2_fast else 2,
+        max_paths=align_paths if l2_fast else 4,
     )
     proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=4000)
     protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
@@ -185,31 +220,51 @@ def _iter_consult_review_render_l2_lite(
     if demographics_banner.strip():
         consult_excerpt = demographics_banner.strip() + "\n\n" + consult_excerpt
 
-    yield emit("synthesize", 78, "Формирование оценки (модель)…")
-    model = rs.get_gemini()
-    try:
-        review = rs._consult_review_synthesize(
-            model,
-            consult_excerpt,
-            protocol_ctx,
-            paths_hint,
-            clinical_rules_context=rules_ctx,
+    review: dict[str, Any]
+    if l2_fast:
+        yield emit("synthesize", 78, "Сверка с протоколом (без модели)…")
+        review = build_l2_fast_review(
+            structured_analysis=structured_analysis if isinstance(structured_analysis, dict) else None,
+            alignment_result=alignment_result if isinstance(alignment_result, dict) else None,
         )
-    except Exception as exc:
-        from fastapi import HTTPException
+    else:
+        yield emit("synthesize", 78, "Формирование оценки (модель)…")
+        model = rs.get_gemini()
+        try:
+            review = rs._consult_review_synthesize(
+                model,
+                consult_excerpt,
+                protocol_ctx,
+                paths_hint,
+                clinical_rules_context=rules_ctx,
+            )
+        except Exception as exc:
+            from fastapi import HTTPException
 
-        if isinstance(exc, HTTPException):
-            raise
-        raise HTTPException(
-            status_code=502,
-            detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
-        ) from exc
+            if isinstance(exc, HTTPException):
+                raise
+            raise HTTPException(
+                status_code=502,
+                detail=f"Ошибка финальной оценки модели: {str(exc)[:200]}",
+            ) from exc
 
     if isinstance(alignment_result, dict):
         try:
             from clinical_knowledge.consult_alignment import merge_alignment_into_review
 
             merge_alignment_into_review(review, alignment_result)
+        except Exception:
+            pass
+
+    if want_narrative:
+        yield emit("narrative", 88, "Пояснение для методиста (модель)…")
+        try:
+            review["summary_ru"] = rs._consult_l2_narrative_synthesize(
+                evidence_pack=evidence_pack,
+                block_gaps=block_gaps,
+                structured_summary=review.get("summary_ru") or "",
+            )
+            l2_mode = "narrative"
         except Exception:
             pass
 
@@ -229,6 +284,10 @@ def _iter_consult_review_render_l2_lite(
         "ok": True,
         "server_version": rs._app_version(),
         "review_tier": "L2",
+        "l2_mode": l2_mode,
+        "evidence_pack": evidence_pack,
+        "block_gaps": block_gaps,
+        "protocol_paths_used": paths_used_meta,
         "review": review,
         "pdf_warnings": pdf_warnings,
         "consult_documents": consult_docs_meta,
@@ -243,14 +302,17 @@ def _iter_consult_review_render_l2_lite(
         "audience_fallback": False,
         "consult_retrieval": {
             "render_l2_lite": True,
-            "strict_protocol_paths": match_paths[:6],
-            "path_pick_meta": {"source": "l1_matches"},
+            "strict_protocol_paths": match_paths[:8],
+            "path_pick_meta": {"source": "l1_matches_evidence"},
+            "evidence_fragment_count": evidence_pack.get("fragment_count"),
         },
         "icd": {"codes": icd_codes[:12]},
         "demographics_meta": demographics_meta,
         "consult_performance": {
             "fast_mode": True,
             "render_l2_lite": True,
+            "l2_fast": l2_fast,
+            "l2_mode": l2_mode,
             "embed_rerank": False,
             "rag_retrieve_skipped": True,
         },
@@ -305,6 +367,7 @@ def iter_consult_review_pipeline(
     category_slugs: str,
     fhir_bundle: dict[str, Any] | None = None,
     on_progress: ProgressFn | None = None,
+    l2_narrative: bool = False,
 ) -> Iterator[tuple[str, Any]]:
     """Генератор: ('progress', {stage,pct,label_ru,partial}) | ('done', result dict)."""
     import rag_server as rs
@@ -316,7 +379,8 @@ def iter_consult_review_pipeline(
         return ev
 
     yield emit("cache", 8, "Проверка кэша…", {"consult_documents": consult_docs_meta})
-    cache_key = rs._consult_cache_key(content_signature, category_slugs, tier="L2")
+    cache_suffix = "narr" if l2_narrative else "fast"
+    cache_key = rs._consult_cache_key(content_signature, category_slugs, tier="L2", l2_variant=cache_suffix)
     cached = rs._consult_cache_get(cache_key)
     if cached is not None:
         yield emit("cache_hit", 100, "Результат из кэша", {"cached_result": True})
@@ -344,6 +408,7 @@ def iter_consult_review_pipeline(
             fhir_bundle=fhir_bundle,
             cache_key=cache_key,
             emit=emit,
+            l2_narrative=l2_narrative,
         )
         return
 
@@ -1041,6 +1106,7 @@ def run_consult_review_pipeline(
     category_slugs: str,
     fhir_bundle: dict[str, Any] | None = None,
     on_progress: ProgressFn | None = None,
+    l2_narrative: bool = False,
 ) -> dict:
     result: dict | None = None
     for kind, payload in iter_consult_review_pipeline(
@@ -1052,6 +1118,7 @@ def run_consult_review_pipeline(
         category_slugs=category_slugs,
         fhir_bundle=fhir_bundle,
         on_progress=on_progress,
+        l2_narrative=l2_narrative,
     ):
         if kind == "done":
             result = payload

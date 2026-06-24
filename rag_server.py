@@ -325,10 +325,46 @@ def _consult_render_l2_lite_enabled() -> bool:
 
 def _consult_render_l2_skip_llm() -> bool:
     """На Render (512Mi) L2 с LLM и загрузкой чанков часто даёт OOM - только L1-разбор."""
+    if _consult_l2_fast_enabled():
+        return False
     raw = os.environ.get("CONSULT_RENDER_L2_SKIP_LLM")
     if raw is not None and str(raw).strip():
         return env_bool("CONSULT_RENDER_L2_SKIP_LLM", True)
     return env_bool("RENDER", False) and _consult_render_l2_lite_enabled()
+
+
+def _consult_l2_fast_enabled() -> bool:
+    from clinical_knowledge.consult_l2_config import consult_l2_fast_enabled
+
+    return consult_l2_fast_enabled()
+
+
+def _consult_l2_mode_label() -> str:
+    from clinical_knowledge.consult_l2_config import resolve_l2_mode
+
+    return resolve_l2_mode(narrative=False)
+
+
+def _consult_l2_feedback_latency() -> dict[str, Any]:
+    try:
+        from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
+        from clinical_knowledge.methodist_stats import iter_feedback_events
+
+        fb = resolve_feedback_dir()
+        latencies: list[int] = []
+        for e in iter_feedback_events(fb):
+            if e.get("event_type") != "kz_analysis":
+                continue
+            if str(e.get("tier") or "").upper() != "L2":
+                continue
+            lm = e.get("latency_ms")
+            if isinstance(lm, (int, float)) and lm > 0:
+                latencies.append(int(lm))
+        if not latencies:
+            return {"count": 0, "avg_ms": None}
+        return {"count": len(latencies), "avg_ms": int(sum(latencies) / len(latencies))}
+    except Exception:
+        return {"count": 0, "avg_ms": None}
 
 
 def _annotate_render_l2_limited(result: dict) -> None:
@@ -800,6 +836,12 @@ SYSTEM_CONSULT_REVIEW_JSON = """Ты методист-врач. Ниже - 1) т
  "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
  "protocol_paths_used": [<строки путей протоколов из выдержек, если удалось>]}
 Поле criteria оставь пустым массивом []."""
+
+SYSTEM_CONSULT_L2_NARRATIVE = """Ты методист-врач. Ниже — evidence pack (выдержки из клинических протоколов) и список пробелов сверки КЗ с протоколом.
+
+Задача: один абзац (3-5 предложений) для методиста — что проверить вручную, на что обратить внимание. Не дублируй проценты соответствия. Не выдумывай фактов вне выдержек.
+
+Верни ТОЛЬКО текст абзаца на русском, без markdown и без JSON."""
 
 SYSTEM_CONSULT_PDF_FOR_PROTOCOL_SEARCH = """Ты помощник врача. Ниже - текст, машинно извлечённый из PDF консультативного заключения (может содержать шапку организации, реквизиты, ФИО).
 
@@ -5250,6 +5292,39 @@ def _consult_review_synthesize(
     return parsed
 
 
+def _consult_l2_narrative_synthesize(
+    *,
+    evidence_pack: dict[str, Any],
+    block_gaps: list[dict[str, Any]] | None = None,
+    structured_summary: str = "",
+) -> str:
+    """Один Flash-вызов: пояснение методисту по evidence pack (без полного текста КЗ)."""
+    import json as _json
+
+    model = get_gemini()
+    gaps_txt = ""
+    for g in (block_gaps or [])[:6]:
+        if isinstance(g, dict):
+            line = str(g.get("gap_ru") or "").strip()
+            if line:
+                gaps_txt += f"- {line}\n"
+    ev_blob = _json.dumps(evidence_pack, ensure_ascii=False)[:5500]
+    summary_bit = (structured_summary or "").strip()[:800]
+    full_prompt = (
+        SYSTEM_CONSULT_L2_NARRATIVE
+        + "\n\n--- EVIDENCE PACK (JSON) ---\n"
+        + ev_blob
+        + "\n\n--- ПРОБЕЛЫ СВЕРКИ ---\n"
+        + (gaps_txt or "(нет явных пробелов)\n")
+        + ("\n--- КРАТКИЙ СТРУКТУРНЫЙ КОНТЕКСТ ---\n" + summary_bit + "\n" if summary_bit else "")
+    )
+    resp = generate_gemini_consult_review_synthesize(model, full_prompt, max_out=512)
+    txt = (_extract_gemini_text(resp) or "").strip()
+    if not txt:
+        raise HTTPException(status_code=502, detail="Модель не вернула пояснение L2+")
+    return txt[:2000]
+
+
 def _stabilize_overall_compliance(parsed: dict) -> None:
     """Итоговый процент - детерминированная функция баллов критериев, а не отдельное число модели.
 
@@ -7613,6 +7688,7 @@ class ConsultReviewJsonIn(BaseModel):
     )
     methodist_mode: bool = Field(default=False)
     sandbox: bool = Field(default=False)
+    l2_narrative: bool = Field(default=False, description="L2+: пояснение методиста")
 
 
 class ConsultReviewTierIn(BaseModel):
@@ -7625,6 +7701,18 @@ class ConsultReviewTierIn(BaseModel):
     category_slugs: str = Field(default="", max_length=400)
     methodist_mode: bool = Field(default=False)
     sandbox: bool = Field(default=False)
+    l2_narrative: bool = Field(
+        default=False,
+        description="L2+: пояснение методиста (один вызов Flash поверх evidence pack)",
+    )
+
+
+class ConsultL2NarrativeIn(BaseModel):
+    """Дополнительное пояснение L2+ по уже собранному evidence pack."""
+
+    evidence_pack: dict = Field(default_factory=dict)
+    block_gaps: list[dict] = Field(default_factory=list)
+    structured_summary: str = Field(default="", max_length=4000)
 
 
 class ConsultValidateBundleIn(BaseModel):
@@ -7960,7 +8048,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-01-r233-search-analytics-fix"
+BUILD_VERSION = "2026-06-01-r234-consult-l2-rebuild"
 
 
 def _app_version() -> str:
@@ -8016,6 +8104,10 @@ def health() -> dict:
         "consult_review_fast": _consult_review_fast_mode(),
         "consult_render_l2_lite": _consult_render_l2_lite_enabled(),
         "consult_render_l2_skip_llm": _consult_render_l2_skip_llm(),
+        "consult_l2_fast": _consult_l2_fast_enabled(),
+        "consult_l2_narrative": os.environ.get("CONSULT_L2_NARRATIVE", "0"),
+        "consult_l2_mode": _consult_l2_mode_label(),
+        "consult_l2_latency": _consult_l2_feedback_latency(),
         "consult_review_profile": (
             "fast"
             if _consult_review_fast_mode()
@@ -9578,7 +9670,13 @@ def _normalize_for_cache(text: str) -> str:
     return re.sub(r"\s+", " ", (text or "")).strip().lower()
 
 
-def _consult_cache_key(content_signature: str, category_slugs: str, *, tier: str = "L2") -> str:
+def _consult_cache_key(
+    content_signature: str,
+    category_slugs: str,
+    *,
+    tier: str = "L2",
+    l2_variant: str = "",
+) -> str:
     """Ключ по нормализованному содержанию (а не по байтам) + рубрики + tier + модель + настройки."""
     slugs_norm = ",".join(sorted(s.strip() for s in (category_slugs or "").split(",") if s.strip()))
     content_hash = hashlib.sha256(content_signature.encode("utf-8")).hexdigest()
@@ -9589,6 +9687,7 @@ def _consult_cache_key(content_signature: str, category_slugs: str, *, tier: str
         slugs_norm,
         tier_norm,
         "lite" if _consult_render_l2_lite_enabled() else "full",
+        (l2_variant or "").strip() or _consult_l2_mode_label(),
         os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
         str(env_float("GEMINI_TEMPERATURE", 0.0)),
         os.environ.get("RAG_GEMINI_EMBED_RERANK", "1").strip().lower(),
@@ -10309,6 +10408,7 @@ def _consult_review_from_tier_or_pipeline(
     consultation_id: str,
     category_slugs: str,
     require_rag_for_l2: bool = True,
+    l2_narrative: bool = False,
 ) -> dict:
     from clinical_knowledge.consult_tiering import resolve_tier, run_consult_by_tier
     from clinical_knowledge.fhir_bundle_adapter import bundle_to_consultation_text
@@ -10353,6 +10453,7 @@ def _consult_review_from_tier_or_pipeline(
         content_signature=full_text[:8000],
         category_slugs=category_slugs,
         fhir_bundle=bundle if bundle else None,
+        l2_narrative=l2_narrative,
     )
     result["review_tier"] = "L2"
     return result
@@ -10372,6 +10473,7 @@ def api_consult_review_tier(request: "Request", body: ConsultReviewTierIn) -> di
             consultation_id=body.consultation_id,
             category_slugs=body.category_slugs,
             require_rag_for_l2=True,
+            l2_narrative=bool(body.l2_narrative),
         )
         latency_ms = int((time.perf_counter() - t0) * 1000)
         raw_text = (body.text or "").strip()
@@ -10395,6 +10497,30 @@ def api_consult_review_tier(request: "Request", body: ConsultReviewTierIn) -> di
         raise HTTPException(status_code=400, detail=str(e)) from e
 
 
+@app.post("/api/consult-review/l2-narrative")
+def api_consult_review_l2_narrative(body: ConsultL2NarrativeIn) -> dict:
+    """L2+: пояснение методиста по evidence pack (без повторного полного L2)."""
+    if not body.evidence_pack:
+        raise HTTPException(status_code=400, detail="Укажите evidence_pack из результата L2.")
+    try:
+        t0 = time.perf_counter()
+        summary = _consult_l2_narrative_synthesize(
+            evidence_pack=body.evidence_pack,
+            block_gaps=body.block_gaps,
+            structured_summary=body.structured_summary,
+        )
+        return {
+            "ok": True,
+            "summary_ru": summary,
+            "l2_mode": "narrative",
+            "latency_ms": int((time.perf_counter() - t0) * 1000),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=str(e)[:200]) from e
+
+
 @app.post("/api/consult-review/json")
 def api_consult_review_json(request: "Request", body: ConsultReviewJsonIn) -> dict:
     """Полный конвейер проверки КЗ из текста или FHIR BY Bundle (интеграция «Айболит»)."""
@@ -10409,6 +10535,7 @@ def api_consult_review_json(request: "Request", body: ConsultReviewJsonIn) -> di
             consultation_id="json",
             category_slugs=body.category_slugs,
             require_rag_for_l2=True,
+            l2_narrative=bool(body.l2_narrative),
         )
         latency_ms = int((time.perf_counter() - t0) * 1000)
         raw_text = (body.text or "").strip()
@@ -10563,6 +10690,7 @@ async def api_consult_review_stream(
     ],
     category_slugs: str = Form(""),
     tier: str = Form(""),
+    l2_narrative: str = Form(""),
 ):
     """SSE-поток прогресса проверки КЗ: события progress (pct, partial) и done (result)."""
     from consult_review_pipeline import (
@@ -10660,6 +10788,7 @@ async def api_consult_review_stream(
                 pdf_warnings=pdf_warnings,
                 content_signature=content_signature,
                 category_slugs=category_slugs,
+                l2_narrative=str(l2_narrative or "").strip().lower() in ("1", "true", "yes", "on"),
             ):
                 if kind == "progress":
                     p = payload

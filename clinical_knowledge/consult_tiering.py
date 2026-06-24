@@ -40,6 +40,7 @@ def run_l1_structured_review(
     specialty_slug: str | None = None,
     analysis_mode: str | None = None,
     skip_alignment: bool = False,
+    max_alignment_paths: int | None = None,
 ) -> dict[str, Any]:
     """L1: structured + alignment, без RAG и без LLM-критериев."""
     mode = analysis_mode or (
@@ -110,6 +111,8 @@ def run_l1_structured_review(
                 rules_paths=match_paths,
                 rag_paths=[],
             )
+            if max_alignment_paths is not None and max_alignment_paths > 0:
+                alignment_paths = alignment_paths[:max_alignment_paths]
             protocol_matches = [
                 {
                     "title": m.get("title"),
