@@ -145,7 +145,7 @@ def _iter_consult_review_render_l2_lite(
         match_paths,
         query=q_rag,
         icd_codes=icd_codes,
-        get_chunks=rs.get_rich_chunks_for_path,
+        get_chunks=rs.get_rich_chunks_for_consult,
         limit_per_path=1,
         max_paths=2,
     )
@@ -544,7 +544,9 @@ def iter_consult_review_pipeline(
         max_per_path=max_per_path_r,
         embed_rerank=embed_rerank,
     )
-    if not retrieved and path_allow:
+    from clinical_knowledge.consult_memory import consult_forbid_full_corpus
+
+    if not retrieved and path_allow and not consult_forbid_full_corpus():
         retrieved = rs.retrieve(
             q_rag,
             routing_query=rq,

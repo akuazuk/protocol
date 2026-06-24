@@ -174,7 +174,9 @@ def merge_profiles_with_index(
             seen.add(key)
             merged.setdefault(bucket, []).append(it)
 
-    for path in paths:
+    from clinical_knowledge.consult_memory import consult_max_paths
+
+    for path in paths[: consult_max_paths()]:
         entry = idx.get(path.replace("\\", "/"))
         if entry:
             prof = _index_profile_to_merge_shape(entry)
@@ -188,6 +190,12 @@ def merge_profiles_with_index(
                     merged.setdefault("cites", []).append(cite)
             merged.setdefault("diagnostics_meta", []).extend(entry.get("diagnostics") or [])
         else:
+            from clinical_knowledge.consult_memory import consult_forbid_full_corpus
+
+            if consult_forbid_full_corpus():
+                if path not in merged["paths"]:
+                    merged["paths"].append(path)
+                continue
             live = merge_protocol_profiles([path], icd_codes, get_chunks, query=query)
             if path not in merged["paths"]:
                 merged["paths"].append(path)

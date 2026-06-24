@@ -61,7 +61,9 @@ def test_apply_standard_plan_defaults(monkeypatch):
     assert os.environ.get("RAG_LEX_MAX_CANDIDATES") == "8000"
     assert os.environ.get("CONSULT_ALIGNMENT_ENABLED") == "1"
     assert os.environ.get("CONSULT_RENDER_L2_SKIP_LLM") == "0"
-    assert os.environ.get("RAG_LEX_INDEX_DEFER") == "0"
+    assert os.environ.get("RAG_LEX_INDEX_DEFER") == "1"
+    assert os.environ.get("CONSULT_CONCURRENCY") == "1"
+    assert os.environ.get("CONSULT_REVIEW_FORBID_FULL_CORPUS") == "1"
 
 
 def test_memory_saver_explicit_off(monkeypatch):

@@ -112,6 +112,13 @@ def merge_protocol_profiles(
 
     for path in paths:
         chunks = get_chunks(path) or []
+        try:
+            from clinical_knowledge.consult_memory import cap_chunks_for_consult, consult_forbid_full_corpus
+
+            if consult_forbid_full_corpus():
+                chunks = cap_chunks_for_consult(chunks)
+        except Exception:
+            pass
         if not chunks:
             continue
         prof = build_protocol_icd_profile(chunks, icd_codes, path=path, query=query)

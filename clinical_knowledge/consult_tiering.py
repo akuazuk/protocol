@@ -27,7 +27,7 @@ def _l1_get_chunks(path: str) -> list[dict[str, Any]]:
     try:
         import rag_server as rs
 
-        return rs.get_rich_chunks_for_path(path) or []
+        return rs.get_rich_chunks_for_consult(path) or []
     except Exception:
         return []
 

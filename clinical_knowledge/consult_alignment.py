@@ -396,7 +396,9 @@ def _exams_card(
             paths_for_chunks = (protocol_paths or profile.get("paths") or [])[:3]
             for pth in paths_for_chunks:
                 if get_chunks:
-                    all_chunks.extend(get_chunks(pth) or [])
+                    from clinical_knowledge.consult_memory import cap_chunks_for_consult
+
+                    all_chunks.extend(cap_chunks_for_consult(get_chunks(pth) or []))
             best = best_chunk_for_items(
                 all_chunks,
                 chunk_types=("diagnostics", "criteria_block", "table"),

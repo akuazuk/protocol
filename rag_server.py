@@ -193,6 +193,9 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_RENDER_L2_LITE", "1"),
             ("CONSULT_RENDER_L2_SKIP_LLM", "0"),
             ("CONSULT_TYPED_RETRIEVE", "0"),
+            ("CONSULT_REVIEW_FORBID_FULL_CORPUS", "1"),
+            ("CONSULT_RICH_CHUNKS_MAX_PER_PATH", "24"),
+            ("CONSULT_REVIEW_MAX_PROTOCOL_PATHS", "4"),
             ("CONSULT_REVIEW_CACHE", "0"),
             ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
             ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
@@ -200,8 +203,8 @@ def _apply_low_memory_defaults() -> None:
             ("RAG_LEX_MAX_UNION", "20000"),
             ("RAG_RETRIEVE_CONCURRENCY", "2"),
             ("CONSULT_ALIGNMENT_ENABLED", "1"),
-            ("RAG_LEX_INDEX_DEFER", "0"),
-            ("CONSULT_CONCURRENCY", "2"),
+            ("RAG_LEX_INDEX_DEFER", "1"),
+            ("CONSULT_CONCURRENCY", "1"),
             ("RAG_CHUNK_VOTE_RERETRIEVE", "0"),
             ("RAG_SEARCH_REQUIRE_ALLOWLIST_ON_RENDER", "1"),
             ("SEARCH_CONCURRENCY", "2"),
@@ -262,9 +265,20 @@ async def _run_consult_review_blocking(fn, /, *args, **kwargs):
     """Тяжёлый pipeline КЗ в worker-потоке - event loop свободен для /health."""
     def _job():
         with _consult_sem:
-            return fn(*args, **kwargs)
+            try:
+                return fn(*args, **kwargs)
+            finally:
+                if env_bool("RENDER", False):
+                    gc.collect()
 
     return await asyncio.to_thread(_job)
+
+
+def _ensure_consult_rag_ready() -> None:
+    """КЗ не стартует пока корпус грузится - иначе двойной пик RAM на Render."""
+    if not env_bool("RENDER", False):
+        return
+    _require_rag_loaded(wait=True)
 
 
 def _consult_response_include_html() -> bool:
@@ -6070,6 +6084,13 @@ def get_rich_chunks_for_path(path: str) -> list[dict]:
     return []
 
 
+def get_rich_chunks_for_consult(path: str) -> list[dict]:
+    """Чанки одного PDF для КЗ: урезанный набор (OOM-safe на Render)."""
+    from clinical_knowledge.consult_memory import cap_chunks_for_consult
+
+    return cap_chunks_for_consult(get_rich_chunks_for_path(path))
+
+
 def _infer_funnel_audience(query: str, routing: dict | None = None) -> str | None:
     routing = routing or _routing or {}
     return infer_audience_from_funnel_context(query) or infer_audience_from_query(query, routing)
@@ -7795,7 +7816,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-16-r230-llm-summary-pipeline"
+BUILD_VERSION = "2026-06-16-r231-consult-oom-permanent-fix"
 
 
 def _app_version() -> str:
@@ -10277,6 +10298,7 @@ async def api_consult_review(
     full_text, consult_docs_meta, pdf_warnings, doc_texts_for_cache = (
         await _parse_consult_review_uploads_async(files)
     )
+    _ensure_consult_rag_ready()
     if selected_tier in ("L0", "L1"):
         t0 = time.perf_counter()
         result = await _run_consult_review_blocking(
@@ -10331,14 +10353,18 @@ async def api_consult_review(
         _require_rag_loaded()
     t0 = time.perf_counter()
     result = await _run_consult_review_blocking(
-        _consult_review_from_parsed_uploads,
-        full_text=full_text,
-        n_files=len(files),
-        consult_docs_meta=consult_docs_meta,
-        pdf_warnings=pdf_warnings,
-        doc_texts_for_cache=doc_texts_for_cache,
+        _consult_review_from_tier_or_pipeline,
+        tier="L2",
+        text=full_text,
+        bundle=None,
+        consultation_id="upload",
         category_slugs=category_slugs,
+        require_rag_for_l2=False,
     )
+    if pdf_warnings:
+        result["pdf_warnings"] = pdf_warnings
+    if consult_docs_meta:
+        result["consult_documents"] = consult_docs_meta
     latency_ms = int((time.perf_counter() - t0) * 1000)
     return _maybe_methodist_autolog(
         request,
