@@ -53,12 +53,12 @@ def test_detect_lab_panels() -> None:
 
 def test_crosscheck_missing_in_kz() -> None:
     kz = "Диагноз: ОРВИ. Рекомендовано наблюдение."
-    lab = "СРБ 24 мг/л, гемоглобин 140 г/л"
+    lab = "СРБ (CRP), мг/л 24 0 - 6 мг/л, гемоглобин (HGB), г/л 140 120 - 160 г/л"
     out = crosscheck_labs_with_kz(kz_text=kz, lab_text=lab)
     assert out["lab_count"] >= 1
-    assert out["missing_in_kz"]
-    assert out["notes_ru"]
-    assert out.get("marker_lines_ru")
+    assert out["missing_in_kz_lines"]
+    assert out["markers_table"]
+    assert out["summary_ru"]
 
 
 def test_real_pdf_a1_no_form_junk() -> None:

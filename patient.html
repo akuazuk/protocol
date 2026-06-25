@@ -602,7 +602,11 @@
     }
     .faq summary { cursor: pointer; font-weight: 600; color: var(--g800); }
 
-    .drop-zone__icon svg { width: 1.75rem; height: 1.75rem; stroke: var(--g600); fill: none; }
+    .lab-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 0.5rem 0; }
+    .lab-table th, .lab-table td { padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    .lab-table th { color: var(--muted); font-weight: 600; font-size: 0.72rem; }
+    .lab-miss-title { font-size: 0.78rem; font-weight: 700; color: var(--g800); margin: 0.65rem 0 0.35rem; }
+    .lab-summary { font-size: 0.82rem; line-height: 1.45; color: var(--text); margin: 0 0 0.5rem; }
 
     @media print {
       .onboard, .loader-overlay, .btn-row, .top-bar, .foot, .faq, #form-card { display: none !important; }
@@ -855,22 +859,33 @@
         if (!lc || !lc.lab_count) { box.classList.add("hidden"); box.innerHTML = ""; return; }
         box.classList.remove("hidden");
         var html = '<details class="cites-fold" open><summary>Сверка с анализами</summary><div class="lab-panel" style="margin-top:0.45rem">';
-        if (lc.notes_ru && lc.notes_ru.length) {
-          lc.notes_ru.forEach(function (n) { html += "<p style=\"margin:0.35rem 0\">" + escapeHtml(n) + "</p>"; });
+        if (lc.summary_ru) {
+          html += '<p class="lab-summary">' + escapeHtml(lc.summary_ru) + "</p>";
         }
-        if (lc.marker_lines_ru && lc.marker_lines_ru.length) {
-          html += '<ul style="margin:0.35rem 0 0.5rem;padding-left:1.1rem;font-size:0.78rem;line-height:1.45">';
-          lc.marker_lines_ru.forEach(function (line) {
-            html += "<li>" + escapeHtml(line) + "</li>";
+        if (lc.panels_ru && lc.panels_ru.length) {
+          html += '<p style="font-size:0.72rem;color:var(--muted);margin:0 0 0.45rem">Бланки: ' + escapeHtml(lc.panels_ru.join(", ")) + "</p>";
+        }
+        var rows = lc.markers_table || [];
+        if (rows.length) {
+          html += '<table class="lab-table"><thead><tr><th>Показатель</th><th>Результат</th><th>В заключении</th></tr></thead><tbody>';
+          rows.forEach(function (r) {
+            var val = r.value != null && r.value !== "" ? String(r.value) : "—";
+            if (r.unit) val += " " + r.unit;
+            if (r.flag === "high") val += " ↑";
+            html += "<tr><td>" + escapeHtml(r.marker || "—") + "</td><td>" + escapeHtml(val) + "</td><td>" +
+              (r.in_kz ? "да" : "нет") + "</td></tr>";
           });
+          html += "</tbody></table>";
+        } else if (lc.marker_lines_ru && lc.marker_lines_ru.length) {
+          html += '<ul style="margin:0.35rem 0;padding-left:1.1rem;font-size:0.78rem;line-height:1.45">';
+          lc.marker_lines_ru.forEach(function (line) { html += "<li>" + escapeHtml(line) + "</li>"; });
           html += "</ul>";
         }
-        if (lc.missing_in_kz && lc.missing_in_kz.length) {
-          html += '<div class="lab-tags">';
-          lc.missing_in_kz.forEach(function (m) {
-            html += '<span class="lab-tag lab-tag--miss">' + escapeHtml(m) + "</span>";
-          });
-          html += "</div>";
+        if (lc.missing_in_kz_lines && lc.missing_in_kz_lines.length) {
+          html += '<p class="lab-miss-title">Не названы в тексте заключения</p>';
+          html += '<ul style="margin:0;padding-left:1.1rem;font-size:0.78rem;line-height:1.45;color:var(--muted)">';
+          lc.missing_in_kz_lines.forEach(function (line) { html += "<li>" + escapeHtml(line) + "</li>"; });
+          html += "</ul>";
         }
         html += "</div></details>";
         box.innerHTML = html;

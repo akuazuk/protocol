@@ -164,6 +164,10 @@ def _is_junk_marker(name: str, value: str | None = None) -> bool:
         return True
     if re.match(r"^(отрицательн|не\s+обнаруж|отсутств|мл\s*-)", n, re.I):
         return True
+    if re.match(r"^(мл|ммоль|г/л|мкмоль|ед/л|мг/л|мкг/л|ме/мл)\b", n, re.I):
+        return True
+    if re.search(r"^\d+[.,]\d+\s+\d+\s*-", n):
+        return True
     if re.search(r"показател|референсный\s+интервал|результат\s+референс", n, re.I):
         return True
     if re.fullmatch(r"[\d\s.,\-/]+", n):
@@ -230,6 +234,8 @@ def extract_lab_markers(text: str) -> list[dict[str, Any]]:
     for m in _KRAVIRA_UNIT_ROW.finditer(blob):
         raw_name = m.group("name") or ""
         if _JUNK_NAME.search(raw_name):
+            continue
+        if re.match(r"^(мл|ммоль|г/л|мкмоль|ед/л|мг/л)\b", raw_name.strip(), re.I):
             continue
         _append_marker(
             found,

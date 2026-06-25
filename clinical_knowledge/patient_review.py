@@ -20,7 +20,7 @@ def run_patient_review(
     if not raw:
         raise ValueError("Пустой текст заключения")
 
-    from .patient_exams_enrich import enrich_lab_crosscheck_with_exams_block
+    from .patient_exams_enrich import exams_block_notes_for_report
     from .patient_lab_crosscheck import crosscheck_labs_with_kz
     from .patient_protocol_crosscheck import crosscheck_protocol_requirements
 
@@ -35,9 +35,11 @@ def run_patient_review(
     cards = list(align.get("alignment_cards") or [])
     exams_card = next((c for c in cards if isinstance(c, dict) and c.get("block_id") == "exams"), None)
 
-    lab_check = crosscheck_labs_with_kz(kz_text=raw, lab_text=lab_text or "")
+    lab_check = None
+    exams_kz_notes: list[str] = []
     if (lab_text or "").strip():
-        lab_check = enrich_lab_crosscheck_with_exams_block(lab_check, exams_card=exams_card)
+        lab_check = crosscheck_labs_with_kz(kz_text=raw, lab_text=lab_text or "")
+    exams_kz_notes = exams_block_notes_for_report(exams_card=exams_card)
 
     protocol_context = crosscheck_protocol_requirements(
         l1_result=l1,
@@ -46,8 +48,9 @@ def run_patient_review(
     )
     patient_report = build_patient_report(
         l1,
-        lab_crosscheck=lab_check if (lab_text or "").strip() else None,
+        lab_crosscheck=lab_check,
         protocol_context=protocol_context,
+        exams_kz_notes=exams_kz_notes,
     )
     payload: dict[str, Any] = {
         "ok": True,

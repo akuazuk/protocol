@@ -305,6 +305,7 @@ def build_patient_report(
     *,
     lab_crosscheck: dict[str, Any] | None = None,
     protocol_context: dict[str, Any] | None = None,
+    exams_kz_notes: list[str] | None = None,
 ) -> dict[str, Any]:
     """Преобразует результат L1 structured в отчёт для пациента."""
     align = l1_result.get("alignment") if isinstance(l1_result.get("alignment"), dict) else {}
@@ -321,12 +322,37 @@ def build_patient_report(
 
     structured_questions = _collect_structured_questions(cards)
     if lab_crosscheck:
-        for note in lab_crosscheck.get("notes_ru") or []:
-            if note and not any(q.get("text") == note for q in structured_questions):
-                structured_questions.insert(
-                    0,
-                    {"id": f"q{len(structured_questions)+1}", "title": _question_title(note), "text": note, "severity": "medium"},
-                )
+        miss_note = ""
+        miss = lab_crosscheck.get("missing_in_kz_lines") or []
+        if miss:
+            miss_note = (
+                "В загруженных анализах есть показатели, не названные в заключении: "
+                + "; ".join(miss[:4])
+                + ". Уточните у врача, учтены ли они."
+            )
+        elif lab_crosscheck.get("summary_ru"):
+            miss_note = str(lab_crosscheck.get("summary_ru") or "")
+        if miss_note and not any(q.get("text") == miss_note for q in structured_questions):
+            structured_questions.insert(
+                0,
+                {
+                    "id": f"q{len(structured_questions)+1}",
+                    "title": _question_title(miss_note),
+                    "text": miss_note,
+                    "severity": "medium",
+                },
+            )
+    for note in exams_kz_notes or []:
+        if note and not any(q.get("text") == note for q in structured_questions):
+            structured_questions.insert(
+                0,
+                {
+                    "id": f"q{len(structured_questions)+1}",
+                    "title": _question_title(note),
+                    "text": note,
+                    "severity": "medium",
+                },
+            )
     if protocol_context:
         for m in protocol_context.get("missing_recommended_exams") or []:
             if not isinstance(m, dict):
@@ -340,6 +366,13 @@ def build_patient_report(
     structured_questions = structured_questions[:8]
 
     blocks = _patient_blocks(cards)
+    if exams_kz_notes:
+        for b in blocks:
+            if b.get("id") == "exams":
+                extra = exams_kz_notes[0]
+                if extra and extra not in (b.get("summary_ru") or ""):
+                    b["summary_ru"] = ((b.get("summary_ru") or "").strip() + " " + extra).strip()
+                break
     action_checklist = [
         {"id": q["id"], "text": q["text"], "title": q["title"], "severity": q.get("severity", "medium"), "checked": False}
         for q in structured_questions
