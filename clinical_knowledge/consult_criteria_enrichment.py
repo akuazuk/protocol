@@ -9,6 +9,8 @@ from clinical_knowledge.consult_evidence_quality import (
     is_usable_evidence_excerpt,
 )
 from clinical_knowledge.consult_schema import ConsultationDocument
+from clinical_knowledge.kz_clinical_context import format_anamnesis_excerpt
+
 from clinical_knowledge.meaningful_excerpt import meaningful_excerpt
 from clinical_knowledge.semantic_rule_fallback import fuzzy_term_in_text
 
@@ -85,6 +87,164 @@ def expand_kz_blob(doc: ConsultationDocument, kind: str) -> str:
         parts.append(raw)
 
     return "\n".join(p for p in parts if (p or "").strip())
+
+
+def section_text_for_block(
+    doc: ConsultationDocument,
+    block_id: str,
+    ctx: dict[str, Any] | None = None,
+) -> str:
+    """Полный текст раздела КЗ для колонки «Фрагмент КЗ» (без обрезки)."""
+    s = doc.sections
+    ctx = ctx or {}
+    if block_id == "diagnosis":
+        diag = (s.diagnosis_text or "").strip()
+        if not diag and doc.diagnoses:
+            diag = "; ".join(
+                (d.diagnosis_name or d.raw_text or "").strip()
+                for d in doc.diagnoses
+                if (d.diagnosis_name or d.raw_text)
+            )
+        return diag
+    if block_id == "complaints":
+        return (s.complaints or "").strip()
+    if block_id == "anamnesis":
+        return format_anamnesis_excerpt(ctx, limit=4000).strip()
+    if block_id == "objective_status":
+        parts = [s.objective_status or "", s.local_status or ""]
+        return "\n".join(p.strip() for p in parts if p and p.strip())
+    if block_id == "exams":
+        parts = [
+            s.recommendations_exams or "",
+            s.exam_results or "",
+            s.general_recommendations or "",
+        ]
+        for ex in doc.performed_exams or []:
+            parts.append(getattr(ex, "raw_text", None) or ex.exam_name or "")
+        return "\n".join(p.strip() for p in parts if p and str(p).strip())
+    if block_id == "treatment":
+        parts = [s.recommendations_treatment or ""]
+        for m in doc.medications or []:
+            parts.append(m.raw_text or m.drug_name or "")
+        return "\n".join(p.strip() for p in parts if p and str(p).strip())
+    if block_id == "follow_up":
+        parts = [s.follow_up_text or "", s.general_recommendations or ""]
+        for f in doc.follow_up or []:
+            parts.append(f.raw_text or "")
+        return "\n".join(p.strip() for p in parts if p and str(p).strip())
+    return ""
+
+
+def kz_source_label(source_file: str) -> str:
+    from clinical_knowledge.protocol_links import beautify_protocol_title
+
+    label = beautify_protocol_title(source_file)
+    return label or "клиническое заключение"
+
+
+def _strip_list_prefix(line: str) -> str:
+    return re.sub(r"^[✓—\-–\s]+", "", (line or "").strip())
+
+
+def comment_from_findings_gaps(
+    block_id: str,
+    findings: list[str],
+    gaps: list[str],
+    *,
+    prefix: str = "",
+    suffix: str = "",
+) -> str:
+    """Краткий вывод методисту; детали — в списках ниже."""
+    clean_g = [_strip_list_prefix(x) for x in (gaps or []) if x]
+    clean_f = [_strip_list_prefix(x) for x in (findings or []) if x]
+    parts: list[str] = []
+    if prefix:
+        parts.append(prefix.strip().rstrip("."))
+
+    if clean_g:
+        main = clean_g[0]
+        if block_id == "complaints":
+            parts.append(f"Дополните жалобы: {main.lower().rstrip('.')}.")
+        elif block_id == "anamnesis":
+            parts.append(f"В анамнезе не хватает: {main.lower().rstrip('.')}.")
+        elif block_id == "objective_status":
+            parts.append(f"В объективном статусе: {main.lower().rstrip('.')}.")
+        elif block_id == "diagnosis":
+            parts.append(f"По диагнозу: {main.rstrip('.')}.")
+        elif block_id == "follow_up":
+            parts.append(f"По наблюдению: {main.lower().rstrip('.')}.")
+        else:
+            parts.append(f"Замечание: {main.rstrip('.')}.")
+        if len(clean_g) > 1:
+            parts.append(f"Также: {'; '.join(clean_g[1:3]).rstrip('.')}.")
+    elif clean_f:
+        verdict = {
+            "complaints": "Жалобы оформлены по требованиям СОП.",
+            "anamnesis": "Анамнез заполнен по требованиям СОП.",
+            "objective_status": "Объективный статус оформлен по требованиям СОП.",
+            "diagnosis": "Диагноз оформлен корректно.",
+            "follow_up": "Сроки наблюдения указаны.",
+        }
+        parts.append(verdict.get(block_id, "Замечаний по разделу нет."))
+    else:
+        parts.append("Недостаточно данных для вывода по разделу.")
+
+    if suffix:
+        parts.append(suffix.strip().rstrip("."))
+    return " ".join(parts)
+
+
+def kp_coverage_comment(
+    kp_title: str,
+    found: list[str],
+    missing: list[str],
+    details: list[dict[str, Any]],
+    *,
+    kind: str = "обследований",
+    pick_note: str = "",
+) -> str:
+    """Вердикт по сверке с КП — без дублирования списков пунктов."""
+    from clinical_knowledge.protocol_links import beautify_protocol_title
+
+    pretty_kp = beautify_protocol_title(kp_title) if kp_title else ""
+    req_missing = [d for d in details if not d.get("matched") and d.get("obligation") == "required"]
+    total = len(found) + len(missing)
+    parts: list[str] = []
+
+    if pick_note:
+        parts.append(pick_note.strip().rstrip("."))
+
+    if not total:
+        if pretty_kp:
+            parts.append(f"По протоколу «{pretty_kp}» пункты для сверки не извлечены.")
+        else:
+            parts.append("Пункты протокола для сверки не извлечены.")
+        return ". ".join(parts) + "."
+
+    if req_missing:
+        names = [str(d.get("text") or "")[:80] for d in req_missing[:3]]
+        head = f"«{pretty_kp}»" if pretty_kp else "Протокол"
+        parts.append(
+            f"{head}: в заключении не отражены обязательные {kind}: "
+            + "; ".join(names)
+            + "."
+        )
+    elif missing:
+        head = f"«{pretty_kp}»" if pretty_kp else "По протоколу"
+        parts.append(
+            f"{head}: отражено {len(found)} из {total} {kind}; "
+            f"рекомендуемые без отметки в КЗ — {len(missing)}."
+        )
+    else:
+        head = f"«{pretty_kp}»" if pretty_kp else "Назначения"
+        parts.append(f"{head}: отражены все проверенные пункты ({len(found)} из {total}).")
+
+    partial = [d for d in details if d.get("matched") and d.get("kz_match") == "partial"]
+    if partial:
+        parts.append(
+            f"Частичное совпадение по {len(partial)} пункту(ам) — уточните формулировки в КЗ."
+        )
+    return " ".join(parts)
 
 
 def filter_kp_items_by_demographics(
@@ -247,74 +407,6 @@ def score_from_sop_findings_gaps(
     if base is not None:
         raw = round(0.55 * raw + 0.45 * base)
     return max(0, min(100, raw))
-
-
-def comment_from_findings_gaps(
-    block_id: str,
-    findings: list[str],
-    gaps: list[str],
-    *,
-    prefix: str = "",
-    suffix: str = "",
-) -> str:
-    """Предметный комментарий из списков SOP / сверки с КП."""
-    parts: list[str] = []
-    if prefix:
-        parts.append(prefix.strip())
-    clean_f = [re.sub(r"^[✓\s]+", "", x).strip() for x in (findings or []) if x]
-    clean_g = [re.sub(r"^[—\-–\s]+", "", x).strip() for x in (gaps or []) if x]
-    if clean_f:
-        parts.append("Указано: " + "; ".join(clean_f[:4]) + ".")
-    if clean_g:
-        parts.append("Не указано: " + "; ".join(clean_g[:4]) + ".")
-    if not clean_f and not clean_g:
-        fallback = {
-            "complaints": "Жалобы не оценены.",
-            "anamnesis": "Анамнез не оценён.",
-            "objective_status": "Объективный статус не оценён.",
-        }
-        parts.append(fallback.get(block_id, "Данных для оценки недостаточно."))
-    if suffix:
-        parts.append(suffix.strip())
-    return " ".join(parts)
-
-
-def kp_coverage_comment(
-    kp_title: str,
-    found: list[str],
-    missing: list[str],
-    details: list[dict[str, Any]],
-    *,
-    kind: str = "обследований",
-    pick_note: str = "",
-) -> str:
-    """Комментарий для обследований/лечения с разделением обязательных пунктов."""
-    req_found = [d for d in details if d.get("matched") and d.get("obligation") == "required"]
-    req_missing = [d for d in details if not d.get("matched") and d.get("obligation") == "required"]
-    rec_found = [d for d in details if d.get("matched") and d.get("obligation") != "required"]
-    rec_missing = [d for d in details if not d.get("matched") and d.get("obligation") != "required"]
-
-    parts: list[str] = []
-    if pick_note:
-        parts.append(pick_note.strip())
-    head = f"КП «{kp_title}»" if kp_title else "По КП"
-    parts.append(
-        f"{head}: отражено {len(found)} из {len(found) + len(missing)} {kind}."
-    )
-    if req_found or req_missing:
-        parts.append(
-            f"Обязательные: {len(req_found)} отражено"
-            + (f", {len(req_missing)} не найдено" if req_missing else "") + "."
-        )
-    if rec_found or rec_missing:
-        parts.append(
-            f"Рекомендуемые: {len(rec_found)} отражено"
-            + (f", {len(rec_missing)} не найдено" if rec_missing else "") + "."
-        )
-    partial = [d for d in details if d.get("matched") and d.get("kz_match") == "partial"]
-    if partial:
-        parts.append(f"Частичные совпадения: {len(partial)}.")
-    return " ".join(parts)
 
 
 def findings_gaps_from_details(
@@ -556,7 +648,8 @@ def enrich_kp_card(
     card["findings_ru"] = findings
     card["gaps_ru"] = gaps
     card["item_details"] = details[:12]
-    card["conclusion_excerpt"] = best_kz_excerpt_from_details(details, kz_blob) or card.get("conclusion_excerpt") or ""
+    if not (card.get("conclusion_excerpt") or "").strip():
+        card["conclusion_excerpt"] = best_kz_excerpt_from_details(details, kz_blob) or ""
 
     proto = verify_protocol_excerpt(cite.get("text") or "", cite=cite)
     if proto:
@@ -565,6 +658,14 @@ def enrich_kp_card(
     card["protocol_page"] = str(cite.get("page_from") or card.get("protocol_page") or "")
     card["protocol_path"] = cite.get("path") or card.get("protocol_path") or ""
     card["chunk_id"] = cite.get("chunk_id") or card.get("chunk_id")
+    try:
+        from clinical_knowledge.protocol_links import protocol_display_name
+
+        ppath = str(cite.get("path") or card.get("protocol_path") or "")
+        if ppath:
+            card["protocol_title"] = protocol_display_name(ppath)
+    except Exception:
+        pass
 
     gap_items = [str(d.get("text") or "") for d in details if not d.get("matched")]
     card["gap_protocol_refs"] = gap_protocol_refs(

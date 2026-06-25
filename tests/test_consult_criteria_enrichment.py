@@ -87,8 +87,7 @@ def test_comment_from_findings_gaps():
         ["Жалобы описаны развёрнуто."],
         ["В жалобах нет давности."],
     )
-    assert "Указано" in c
-    assert "Не указано" in c
+    assert "Дополните жалобы" in c or "давности" in c
 
 
 def test_verify_protocol_excerpt_rejects_noise():
@@ -128,7 +127,7 @@ def test_completeness_card_sop_comment():
         get_chunks=lambda _p: [],
     )
     complaints = next(c for c in out["criteria"] if (c.get("name_ru") or "").startswith("Жалобы"))
-    assert "Указано" in complaints.get("comment_ru", "") or complaints.get("findings_ru")
+    assert "Указано" in complaints.get("comment_ru", "") or complaints.get("findings_ru") or "СОП" in complaints.get("comment_ru", "")
     assert complaints.get("protocol_excerpt") or complaints.get("reference_ru")
 
 

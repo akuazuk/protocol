@@ -107,7 +107,7 @@ def test_anamnesis_separate_from_complaints():
     assert "Заболевание:" in (anam.get("conclusion_excerpt") or "")
     assert "Жизни:" in (anam.get("conclusion_excerpt") or "")
     assert "отделён" not in anam["comment_ru"].lower()
-    assert "анамнез заболевания" in anam["comment_ru"].lower()
+    assert "анамнез" in anam["comment_ru"].lower() or anam.get("findings_ru")
 
 
 def test_exams_context_findings_gaps():

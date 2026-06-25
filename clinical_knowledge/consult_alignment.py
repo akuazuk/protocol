@@ -6,7 +6,6 @@ import re
 from typing import Any, Callable
 
 from clinical_knowledge.consult_criteria_enrichment import (
-    best_kz_excerpt_from_details,
     coverage_with_evidence,
     diagnosis_assessment_lines,
     expand_kz_blob,
@@ -14,7 +13,9 @@ from clinical_knowledge.consult_criteria_enrichment import (
     filter_kp_items_by_demographics,
     finalize_completeness_card,
     kp_coverage_comment,
+    kz_source_label,
     maybe_apply_criteria_narrative,
+    section_text_for_block,
     verify_protocol_excerpt,
 )
 from clinical_knowledge.consult_evidence_quality import is_kp_checklist_item
@@ -175,6 +176,7 @@ def _card(
     source_label: str | None = None,
     protocol_path: str = "",
     chunk_id: str | None = None,
+    protocol_title: str = "",
     findings_ru: list[str] | None = None,
     gaps_ru: list[str] | None = None,
     context_ru: str = "",
@@ -195,6 +197,7 @@ def _card(
         "source_label": source_label or SOURCE_KIND_LABELS.get(source_kind, source_kind),
         "protocol_path": protocol_path,
         "chunk_id": chunk_id,
+        "protocol_title": protocol_title,
         "findings_ru": list(findings_ru or []),
         "gaps_ru": list(gaps_ru or []),
         "context_ru": context_ru,
@@ -263,7 +266,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
         "diagnosis",
         score_pct=score,
         comment_ru=" · ".join(comments) or "Оценка по справочнику МКБ-10.",
-        conclusion_excerpt=_excerpt(diag_text),
+        conclusion_excerpt=section_text_for_block(doc, "diagnosis", ctx=None),
         protocol_excerpt="; ".join(mkb_excerpts)[:400],
         protocol_section="Справочник МКБ-10 (RU)",
         source_kind="mkb",
@@ -271,13 +274,18 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
 
 
 def _kp_title(protocol_matches: list[dict[str, Any]] | None, profile: dict[str, Any]) -> str:
+    from clinical_knowledge.protocol_links import protocol_display_name
+
     for m in protocol_matches or []:
-        title = (m.get("title") or "").strip()
-        if title:
-            return title[:100]
+        title = protocol_display_name(
+            str(m.get("source_path") or m.get("path") or ""),
+            registry_title=str(m.get("title") or ""),
+        )
+        if title and title != "Протокол":
+            return title[:120]
     paths = profile.get("paths") or []
     if paths:
-        return _basename(str(paths[0]))
+        return protocol_display_name(str(paths[0]))[:120]
     return ""
 
 
@@ -299,7 +307,7 @@ def _complaints_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str
         "complaints",
         score_pct=score,
         comment_ru=comment,
-        conclusion_excerpt=_excerpt(text, 360),
+        conclusion_excerpt=section_text_for_block(doc, "complaints", ctx),
         source_kind="completeness",
     )
 
@@ -325,7 +333,7 @@ def _anamnesis_card(doc: ConsultationDocument, ctx: dict[str, Any]) -> dict[str,
         "anamnesis",
         score_pct=score,
         comment_ru=" ".join(parts),
-        conclusion_excerpt=_excerpt(format_anamnesis_excerpt(ctx), 400),
+        conclusion_excerpt=section_text_for_block(doc, "anamnesis", ctx),
         source_kind="completeness",
     )
 
@@ -351,7 +359,7 @@ def _completeness_section_card(
         block_id,
         score_pct=score,
         comment_ru=comment,
-        conclusion_excerpt=_excerpt(text),
+        conclusion_excerpt=section_text_for_block(doc, block_id, None),
         source_kind="completeness",
     )
 
@@ -420,7 +428,7 @@ def _exams_card(
             "exams",
             score_pct=40 if kz_blob else 25,
             comment_ru=pick_note,
-            conclusion_excerpt=_excerpt(kz_blob, 360),
+            conclusion_excerpt=section_text_for_block(doc, "exams", ctx),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             protocol_page=str(cite.get("page_from") or ""),
@@ -436,7 +444,7 @@ def _exams_card(
             "exams",
             score_pct=55 if kz_blob else 35,
             comment_ru=comment,
-            conclusion_excerpt=_excerpt(kz_blob, 360),
+            conclusion_excerpt=section_text_for_block(doc, "exams", ctx),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             protocol_page=str(cite.get("page_from") or ""),
@@ -460,7 +468,7 @@ def _exams_card(
         "exams",
         score_pct=max(pct, 15) if kz_blob else min(pct, 40),
         comment_ru=comment,
-        conclusion_excerpt=best_kz_excerpt_from_details(details, kz_blob) or _excerpt(kz_blob, 360),
+        conclusion_excerpt=section_text_for_block(doc, "exams", ctx),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
         protocol_section=proto_section or "Обследование",
         protocol_page=str(cite.get("page_from") or ""),
@@ -521,7 +529,7 @@ def _treatment_card(
             "treatment",
             score_pct=45 if kz_blob else 25,
             comment_ru=pick_note,
-            conclusion_excerpt=_excerpt(kz_blob, 360),
+            conclusion_excerpt=section_text_for_block(doc, "exams", ctx),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             source_kind="kp",
@@ -536,7 +544,7 @@ def _treatment_card(
             "treatment",
             score_pct=60 if kz_blob else 35,
             comment_ru=comment,
-            conclusion_excerpt=_excerpt(kz_blob, 360),
+            conclusion_excerpt=section_text_for_block(doc, "exams", ctx),
             protocol_excerpt=proto_text,
             protocol_section=proto_section,
             protocol_page=str(cite.get("page_from") or ""),
@@ -560,7 +568,7 @@ def _treatment_card(
         "treatment",
         score_pct=max(pct, 20) if kz_blob else min(pct, 45),
         comment_ru=comment,
-        conclusion_excerpt=best_kz_excerpt_from_details(details, kz_blob) or _excerpt(kz_blob, 360),
+        conclusion_excerpt=section_text_for_block(doc, "treatment", ctx),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
         protocol_section=proto_section or "Лечение",
         protocol_page=str(cite.get("page_from") or ""),
@@ -626,7 +634,7 @@ def _follow_up_card(
         "follow_up",
         score_pct=score,
         comment_ru=comment,
-        conclusion_excerpt=_excerpt(blob),
+        conclusion_excerpt=section_text_for_block(doc, "follow_up", None),
         protocol_excerpt=proto_excerpt,
         protocol_section=section,
         source_kind=source_kind,
@@ -723,11 +731,19 @@ def build_consult_alignment(
     )
 
     criteria = [_card_to_criterion(c) for c in ordered if c["block_id"] != "limitations"]
+    kz_file = (doc.source_file or "").strip()
+    kz_label = kz_source_label(kz_file)
+    for row in criteria:
+        if kz_file:
+            row["kz_source_file"] = kz_file
+        row["kz_source_label"] = kz_label
     criteria = maybe_apply_criteria_narrative(criteria)
 
     return {
         "alignment_cards": ordered,
         "criteria": criteria,
+        "kz_source_file": kz_file,
+        "kz_source_label": kz_label,
         "alignment_mean_score": mean_score,
         "limitations_ru": limitations,
         "audit_trail": {
@@ -752,6 +768,7 @@ def _card_to_criterion(card: dict[str, Any]) -> dict[str, Any]:
         "source_kind", "source_label", "protocol_path", "chunk_id", "deterministic",
         "findings_ru", "gaps_ru", "context_ru", "reference_ru", "block_id",
         "item_details", "gap_protocol_refs", "comment_narrative_llm",
+        "kz_source_file", "kz_source_label", "protocol_title",
     )}
     return out
 

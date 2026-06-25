@@ -1086,7 +1086,12 @@
     .cr-report-wrap--full {
       max-height: none;
     }
-    #consult-structured-panel {
+    #consult-structured-panel.consult-structured-panel--flash {
+      box-shadow: 0 0 0 3px rgba(26, 138, 114, 0.28);
+      border-radius: 10px;
+      transition: box-shadow 0.4s ease;
+    }
+
       margin-top: 1rem;
       padding: 0;
       border: none;
@@ -1597,6 +1602,30 @@
       border-left-color: rgba(61, 80, 128, 0.35);
       background: rgba(248, 249, 252, 0.95);
       color: #3a4658;
+    }
+
+    .consult-crit-quote--kz-full {
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: none;
+    }
+
+    .consult-kz-source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 650;
+      color: #1a6b5c;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.35);
+      cursor: pointer;
+    }
+
+    .consult-kz-source-link:hover {
+      color: #0f5748;
+      border-bottom-color: rgba(26, 138, 114, 0.65);
     }
 
     .consult-crit-empty {
@@ -25838,6 +25867,57 @@
     return "src-completeness";
   }
 
+  function scrollToConsultKzDocument() {
+    var spoiler = document.getElementById("consult-structured-spoiler");
+    if (spoiler) {
+      spoiler.open = true;
+      spoiler.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    var panel = document.getElementById("consult-structured-panel");
+    if (panel) {
+      panel.classList.add("consult-structured-panel--flash");
+      setTimeout(function () {
+        panel.classList.remove("consult-structured-panel--flash");
+      }, 2200);
+    }
+  }
+
+  function resolveConsultKzLabel(c, data) {
+    if (c && c.kz_source_label) return String(c.kz_source_label);
+    var docs = (data && data.consult_documents) || [];
+    if (docs.length && docs[0].filename) {
+      return formatProtocolDisplayTitle("", String(docs[0].filename));
+    }
+    if (data && data.kz_source_label) return String(data.kz_source_label);
+    return "клиническое заключение";
+  }
+
+  function renderConsultKzSourceLink(c, data) {
+    var label = resolveConsultKzLabel(c, data);
+    return (
+      '<a class="consult-kz-source-link" href="#" onclick="scrollToConsultKzDocument(); return false;" title="Открыть полный разбор заключения">' +
+      "Полное заключение: " +
+      escapeHtml(label) +
+      "</a>"
+    );
+  }
+
+  function renderConsultCriteriaKzCell(c, data) {
+    var text = (c.conclusion_excerpt || "").trim();
+    var parts = [];
+    if (text) {
+      parts.push(
+        '<blockquote class="consult-crit-quote consult-crit-quote--kz-full">' +
+          escapeHtml(text) +
+          "</blockquote>"
+      );
+    } else {
+      parts.push(renderConsultCriteriaQuote("", "В КЗ нет текста по этому разделу"));
+    }
+    parts.push(renderConsultKzSourceLink(c, data));
+    return parts.join("");
+  }
+
   function scrollToConsultEvidenceChunk(chunkId) {
     if (!chunkId) return;
     var panel = document.getElementById("consult-evidence-spoiler");
@@ -25934,7 +26014,8 @@
     var section = (c.protocol_section || "").trim();
     var page = c.protocol_page;
     var pathRaw = c.protocol_path ? String(c.protocol_path) : "";
-    var path = pathRaw ? pathRaw.split("/").pop() : "";
+    var regTitle = (c.protocol_title || c.reference_ru || "").trim();
+    var path = pathRaw ? formatProtocolDisplayTitle(pathRaw, regTitle) : "";
     var gapRefs = c.gap_protocol_refs || [];
 
     if (section) {
@@ -26319,10 +26400,7 @@
         var tdComment = document.createElement("td");
         tdComment.innerHTML = renderConsultCriteriaComment(c);
         var tdKz = document.createElement("td");
-        tdKz.innerHTML = renderConsultCriteriaQuote(
-          c.conclusion_excerpt || "",
-          "В КЗ нет цитаты по этому блоку"
-        );
+        tdKz.innerHTML = renderConsultCriteriaKzCell(c, data);
         var tdProto = document.createElement("td");
         tdProto.innerHTML = renderConsultReferenceCell(c);
         tr.appendChild(tdName);

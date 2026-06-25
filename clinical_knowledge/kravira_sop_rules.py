@@ -195,7 +195,3 @@ def merge_sop_into_card(card: dict[str, Any], sop: dict[str, Any]) -> None:
     ):
         card["score_pct"] = max(0, int(card.get("score_pct") or 0) - pen)
 
-    if card.get("conclusion_excerpt"):
-        card["conclusion_excerpt"] = meaningful_excerpt(
-            card["conclusion_excerpt"], limit=380,
-        )
