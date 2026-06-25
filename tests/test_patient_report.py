@@ -67,7 +67,44 @@ def test_build_patient_report_from_alignment() -> None:
     assert len(rep["blocks"]) >= 2
     assert rep["questions_for_doctor"]
     assert rep["protocol_citations"]
+    assert rep["plain_summary_ru"]
+    assert rep["document_quality"]["level"] in ("good", "medium", "low")
+    assert rep["action_checklist"]
+    assert rep["next_steps_ru"]
     assert "не является диагнозом" in rep["disclaimer_ru"].lower()
+
+
+def test_build_patient_report_with_protocol_context() -> None:
+    l1 = {
+        "confidence_score": 70,
+        "matched_protocols_count": 1,
+        "alignment": {
+            "alignment_mean_score": 55,
+            "alignment_cards": [
+                {
+                    "block_id": "exams",
+                    "name_ru": "Обследования",
+                    "score_pct": 30,
+                    "comment_ru": "Мало деталей.",
+                    "gaps_ru": ["нет УЗИ"],
+                },
+            ],
+        },
+    }
+    protocol_context = {
+        "protocol_title": "КП ТГВ",
+        "missing_recommended_exams": [
+            {
+                "exam_name": "УЗИ вен",
+                "severity": "high",
+                "patient_note_ru": "По протоколу обычно назначают УЗИ вен.",
+            },
+        ],
+    }
+    rep = build_patient_report(l1, protocol_context=protocol_context)
+    assert rep["protocol_context"] == protocol_context
+    assert rep["priority_topics"]
+    assert any("УЗИ" in q for q in rep["questions_for_doctor"])
 
 
 def test_patient_demographics_from_form() -> None:

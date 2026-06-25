@@ -20,7 +20,9 @@ def run_patient_review(
     if not raw:
         raise ValueError("Пустой текст заключения")
 
+    from .patient_exams_enrich import enrich_lab_crosscheck_with_exams_block
     from .patient_lab_crosscheck import crosscheck_labs_with_kz
+    from .patient_protocol_crosscheck import crosscheck_protocol_requirements
 
     l1 = run_l1_structured_review(
         text=raw,
@@ -29,8 +31,24 @@ def run_patient_review(
         specialty_slug=specialty_slug,
         skip_alignment=False,
     )
+    align = l1.get("alignment") if isinstance(l1.get("alignment"), dict) else {}
+    cards = list(align.get("alignment_cards") or [])
+    exams_card = next((c for c in cards if isinstance(c, dict) and c.get("block_id") == "exams"), None)
+
     lab_check = crosscheck_labs_with_kz(kz_text=raw, lab_text=lab_text or "")
-    patient_report = build_patient_report(l1, lab_crosscheck=lab_check if (lab_text or "").strip() else None)
+    if (lab_text or "").strip():
+        lab_check = enrich_lab_crosscheck_with_exams_block(lab_check, exams_card=exams_card)
+
+    protocol_context = crosscheck_protocol_requirements(
+        l1_result=l1,
+        kz_text=raw,
+        lab_text=lab_text or "",
+    )
+    patient_report = build_patient_report(
+        l1,
+        lab_crosscheck=lab_check if (lab_text or "").strip() else None,
+        protocol_context=protocol_context,
+    )
     payload: dict[str, Any] = {
         "ok": True,
         "review_tier": "P1",
