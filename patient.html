@@ -530,6 +530,17 @@
     }
     .priority-list li.sev-high { border-left-color: var(--risk); background: #fef2f2; }
 
+    .block-cards-labels {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      padding: 0 0.75rem 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
     .block-cards { display: grid; gap: 0.45rem; margin-bottom: 0.85rem; }
     .block-card {
       padding: 0.65rem 0.75rem;
@@ -541,8 +552,22 @@
     .block-card--ok { background: rgba(26, 138, 114, 0.06); }
     .block-card--attention { background: rgba(217, 119, 6, 0.06); }
     .block-card--concern { background: rgba(220, 38, 38, 0.05); }
-    .block-card__head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+    .block-card__head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
     .block-card__title { font-weight: 700; color: var(--g800); font-size: 0.84rem; }
+    .block-card__score { justify-self: end; white-space: nowrap; }
+    .block-card__comment {
+      margin-top: 0.45rem;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
 
     .checklist { list-style: none; padding: 0; margin: 0; }
     .checklist li {
@@ -724,7 +749,8 @@
 
       <details class="cites-fold" open id="blocks-details">
         <summary>Замечания по разделам</summary>
-        <div class="block-cards" id="block-cards" style="margin-top:0.55rem"></div>
+        <div class="block-cards-labels" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
+        <div class="block-cards" id="block-cards" style="margin-top:0.15rem"></div>
       </details>
 
       <div class="section-head" style="margin-top:0.85rem"><span class="section-dot"></span><h2>Чек-лист для приёма</h2></div>
@@ -1013,9 +1039,11 @@
             gaps = "<ul class=\"gap-list\">" + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>";
           }
           div.innerHTML =
-            '<div class="block-card__head"><span class="block-card__title">' + escapeHtml(b.title) + '</span>' +
-            '<span class="' + pillClass(b.status) + '">' + (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></div>" +
-            escapeHtml(b.summary_ru || "—") + gaps;
+            '<div class="block-card__head">' +
+            '<span class="block-card__title">' + escapeHtml(b.title) + "</span>" +
+            '<span class="' + pillClass(b.status) + ' block-card__score">' +
+            (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></div>" +
+            '<div class="block-card__comment">' + escapeHtml(b.summary_ru || "—") + gaps + "</div>";
           cards.appendChild(div);
         });
 
