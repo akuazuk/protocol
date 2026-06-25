@@ -13,11 +13,14 @@ def run_patient_review(
     consultation_id: str = "patient",
     demographics_meta: dict[str, Any] | None = None,
     specialty_slug: str | None = None,
+    lab_text: str | None = None,
 ) -> dict[str, Any]:
     """P1: structured + alignment без ЦИСЗ и без LLM."""
     raw = (text or "").strip()
     if not raw:
         raise ValueError("Пустой текст заключения")
+
+    from .patient_lab_crosscheck import crosscheck_labs_with_kz
 
     l1 = run_l1_structured_review(
         text=raw,
@@ -26,7 +29,8 @@ def run_patient_review(
         specialty_slug=specialty_slug,
         skip_alignment=False,
     )
-    patient_report = build_patient_report(l1)
+    lab_check = crosscheck_labs_with_kz(kz_text=raw, lab_text=lab_text or "")
+    patient_report = build_patient_report(l1, lab_crosscheck=lab_check if (lab_text or "").strip() else None)
     payload: dict[str, Any] = {
         "ok": True,
         "review_tier": "P1",

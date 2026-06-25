@@ -175,7 +175,11 @@ def resolve_patient_overall_pct(l1_result: dict[str, Any]) -> int | None:
     return _clamp_pct(comp.get("overall_score") or l1_result.get("overall_score"))
 
 
-def build_patient_report(l1_result: dict[str, Any]) -> dict[str, Any]:
+def build_patient_report(
+    l1_result: dict[str, Any],
+    *,
+    lab_crosscheck: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Преобразует результат L1 structured в отчёт для пациента."""
     align = l1_result.get("alignment") if isinstance(l1_result.get("alignment"), dict) else {}
     cards = list(align.get("alignment_cards") or [])
@@ -190,11 +194,13 @@ def build_patient_report(l1_result: dict[str, Any]) -> dict[str, Any]:
     ).strip()
 
     questions = _collect_questions(cards)
-    if conf is not None and conf < 55 and limitations:
-        questions = [f"Качество распознавания документа низкое ({conf}%). {limitations}"] + questions
-        questions = questions[:6]
+    if lab_crosscheck and lab_crosscheck.get("missing_in_kz"):
+        for note in lab_crosscheck.get("notes_ru") or []:
+            if note and note not in questions:
+                questions.insert(0, note)
+        questions = questions[:8]
 
-    return {
+    report = {
         "overall_pct": overall,
         "overall_label_ru": overall_label,
         "traffic_light": light,
@@ -206,6 +212,16 @@ def build_patient_report(l1_result: dict[str, Any]) -> dict[str, Any]:
         "disclaimer_ru": PATIENT_DISCLAIMER_RU,
         "matched_protocols_count": int(l1_result.get("matched_protocols_count") or 0),
     }
+    if lab_crosscheck:
+        report["lab_crosscheck"] = lab_crosscheck
+    if conf is not None and conf < 55 and limitations:
+        questions = [
+            f"Качество распознавания документа низкое ({conf}%). {limitations}"
+        ] + questions
+        report["questions_for_doctor"] = questions[:8]
+    else:
+        report["questions_for_doctor"] = questions
+    return report
 
 
 def sanitize_patient_api_payload(payload: dict[str, Any]) -> dict[str, Any]:

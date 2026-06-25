@@ -8081,7 +8081,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r7-patient-b2c"
+BUILD_VERSION = "2026-06-24-r8-patient-ui-labs"
 
 
 def _app_version() -> str:
@@ -10876,6 +10876,7 @@ def _run_patient_review_core(
     text: str,
     consultation_id: str = "patient",
     demographics_meta: dict | None = None,
+    lab_text: str | None = None,
 ) -> dict:
     from clinical_knowledge.patient_review import run_patient_review
 
@@ -10884,7 +10885,38 @@ def _run_patient_review_core(
         text=text,
         consultation_id=consultation_id,
         demographics_meta=demographics_meta,
+        lab_text=lab_text,
     )
+
+
+async def _parse_patient_lab_uploads_async(
+    files: list,
+) -> tuple[str, list[str]]:
+    """Извлечь текст из бланков анализов (отдельно от КЗ)."""
+    if not files:
+        return "", []
+    max_n = env_int("PATIENT_LAB_MAX_FILES", 3)
+    items: list[tuple[str, bytes]] = []
+    for i, uf in enumerate(files[:max_n]):
+        items.append(await _read_consult_upload_bytes(uf, i, default_ext=".pdf"))
+    if not items:
+        return "", []
+    blocks: list[str] = []
+    warnings: list[str] = []
+    for raw_fn, data in items:
+        try:
+            txt, warns = extract_consult_text_from_bytes(data, raw_fn)
+        except HTTPException:
+            raise
+        except Exception as e:
+            warnings.append(f"{raw_fn}: {e!s}")
+            continue
+        txt = (txt or "").strip()
+        if txt:
+            blocks.append(f"=== АНАЛИЗ ({raw_fn}) ===\n{txt}")
+        for w in warns or []:
+            warnings.append(f"{raw_fn}: {w}")
+    return "\n\n".join(blocks).strip(), warnings
 
 
 @app.get("/api/patient/status")
@@ -10896,6 +10928,7 @@ def api_patient_status() -> dict:
         "review_tier": "P1",
         "build_version": BUILD_VERSION,
         "upload": "POST /api/patient/review",
+        "lab_upload": "optional lab_files in multipart",
         "disclaimer": (
             "Ориентировочная сверка с клиническими протоколами Минздрава РБ; "
             "не диагноз и не замена очного приёма."
@@ -10930,6 +10963,10 @@ async def api_patient_review(
         list[UploadFile],
         File(description="Фото или PDF консультативного заключения (1-5 файлов)"),
     ],
+    lab_files: Annotated[
+        list[UploadFile] | None,
+        File(description="Необязательно: фото/PDF бланков анализов"),
+    ] = None,
     age_years: str = Form("", description="Возраст пациента (необязательно)"),
     sex: str = Form("", description="Пол: male/female (необязательно)"),
     consent: str = Form("", description="1 - согласие на обработку документа"),
@@ -10956,6 +10993,10 @@ async def api_patient_review(
     full_text, consult_docs_meta, pdf_warnings, _doc_texts = (
         await _parse_consult_review_uploads_async(files)
     )
+    lab_text = ""
+    lab_warnings: list[str] = []
+    if lab_files:
+        lab_text, lab_warnings = await _parse_patient_lab_uploads_async(lab_files)
     demo = patient_demographics_from_form(age_years=age_years, sex=sex)
     t0 = time.perf_counter()
     result = await _run_consult_review_blocking(
@@ -10963,10 +11004,13 @@ async def api_patient_review(
         text=full_text,
         consultation_id="patient-upload",
         demographics_meta=demo,
+        lab_text=lab_text or None,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     if pdf_warnings:
         result["pdf_warnings"] = pdf_warnings
+    if lab_warnings:
+        result["lab_warnings"] = lab_warnings
     if consult_docs_meta:
         result["document_count"] = len(consult_docs_meta)
     result["build_version"] = BUILD_VERSION
@@ -11015,6 +11059,20 @@ if (ROOT / "index.html").is_file():
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache"},
         )
+
+    @app.get("/patient-manifest.webmanifest", include_in_schema=False)
+    def _serve_patient_manifest() -> FileResponse:
+        p = ROOT / "patient-manifest.webmanifest"
+        if not p.is_file():
+            raise HTTPException(status_code=404)
+        return FileResponse(path=str(p), media_type="application/manifest+json")
+
+    @app.get("/patient-sw.js", include_in_schema=False)
+    def _serve_patient_sw() -> FileResponse:
+        p = ROOT / "patient-sw.js"
+        if not p.is_file():
+            raise HTTPException(status_code=404)
+        return FileResponse(path=str(p), media_type="application/javascript")
 
     app.mount(
         "/",

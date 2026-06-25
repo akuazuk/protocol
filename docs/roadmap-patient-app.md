@@ -1,35 +1,35 @@
 # B2C: мобильное приложение «Проверь своё заключение»
 
-**Статус:** MVP backend + веб-витрина (`patient.html`) · июнь 2026  
+**Статус:** MVP backend + PWA-витрина · июнь 2026  
 **Tier API:** `P1` (L1 structured + alignment, без ЦИСЗ и send_gate)
 
-## Реализовано в репозитории
+## Реализовано
 
 | Компонент | Путь |
 |-----------|------|
 | Сборка отчёта для пациента | `clinical_knowledge/patient_report.py` |
 | Оркестрация P1 | `clinical_knowledge/patient_review.py` |
-| API | `POST /api/patient/review`, `POST /api/patient/review/json`, `GET /api/patient/status` |
-| Веб-витрина | `patient.html` → `/patient.html`, редирект `/patient` |
-| Тесты | `tests/test_patient_report.py` |
+| Сверка анализов (фаза 2a) | `lab_result_parser.py`, `patient_lab_crosscheck.py` |
+| API | `POST /api/patient/review` (+ `lab_files`), `/api/patient/review/json`, `/api/patient/status` |
+| PWA-витрина | `patient.html`, `patient-manifest.webmanifest`, `patient-sw.js` |
+| Ссылка из основного UI | `index.html` → блок «Материалы проекта» и футер |
+| Тесты | `tests/test_patient_report.py`, `tests/test_lab_result_parser.py` |
 
 ## Переменные окружения
 
-| Переменная | По умолчанию | Смысл |
-|------------|--------------|--------|
-| `PATIENT_REVIEW_ENABLED` | `1` | Включить B2C API |
-| `PATIENT_REVIEW_MAX_FILES` | `5` | Фото/PDF за запрос |
-| `RATE_LIMIT_PATIENT_PER_MIN` | `5` | Лимит на IP |
+| Переменная | По умолчанию |
+|------------|--------------|
+| `PATIENT_REVIEW_ENABLED` | `1` |
+| `PATIENT_REVIEW_MAX_FILES` | `5` |
+| `PATIENT_LAB_MAX_FILES` | `3` |
+| `RATE_LIMIT_PATIENT_PER_MIN` | `5` |
 
 ## Следующие этапы
 
-1. **React Native / Flutter** - камера, IAP, история проверок.
-2. **Анализы** - загрузка бланков, сверка с блоком «обследование».
-3. **Аккаунты** - Apple/Google Sign-In, абонемент.
-4. **Публикация** - App Store / Google Play, политика ПДн РБ.
+1. **React Native / Flutter** - нативная камера, IAP, push.
+2. **Аккаунты** - Apple/Google Sign-In, абонемент.
+3. **Публикация** - App Store / Google Play.
 
-## Дисклеймер (обязателен в UI)
+## Дисклеймер
 
 Ориентировочная сверка с клиническими протоколами Минздрава РБ. Не диагноз, не МЭЭ, не замена очного приёма.
-
-Полный продуктовый план - в обсуждении с командой (архитектура B2C vs B2B в `docs/architecture-kravira-fhir-mis-print.html`, раздел монетизации в `docs/konkurs/`).

@@ -4,192 +4,472 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a8a72" />
-  <title>Проверь своё заключение - Protocol</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Проверь КЗ" />
+  <link rel="manifest" href="/patient-manifest.webmanifest" />
+  <title>Проверь своё заключение</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green-950: #063d35;
-      --green-800: #0d5c4a;
-      --green-600: #1a8a72;
-      --green-soft: #e8f5f1;
+      --g950: #063d35;
+      --g800: #0d5c4a;
+      --g600: #1a8a72;
+      --g400: #3db896;
+      --gsoft: #e8f5f1;
+      --gsoft2: #f4faf8;
       --text: #1a2e2a;
       --muted: #5a6f6a;
-      --border: rgba(26, 138, 114, 0.22);
-      --risk: #b91c1c;
-      --warn: #b45309;
+      --border: rgba(26, 138, 114, 0.2);
+      --shadow: 0 8px 32px rgba(6, 61, 53, 0.08);
+      --warn: #d97706;
+      --risk: #dc2626;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "DM Sans", system-ui, sans-serif;
       color: var(--text);
-      background: linear-gradient(180deg, #f4f8f6 0%, #fff 40%);
+      background: var(--gsoft2);
       min-height: 100dvh;
-      padding: 0 0 2rem;
     }
-    .wrap { max-width: 28rem; margin: 0 auto; padding: 1rem 1rem 0; }
-    header {
-      padding: 1rem 0 0.75rem;
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26, 138, 114, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 20%, rgba(13, 92, 74, 0.08), transparent),
+        linear-gradient(180deg, #eef7f4 0%, #f8fbfa 45%, #fff 100%);
+    }
+    .wrap { max-width: 26rem; margin: 0 auto; padding: 0 1rem 2.5rem; }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0 0.25rem;
+    }
+    .brand {
+      font-family: Outfit, sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--g800);
+      letter-spacing: -0.02em;
+    }
+    .top-link {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--g600);
+      text-decoration: none;
+    }
+    .top-link:hover { text-decoration: underline; }
+
+    .hero {
       text-align: center;
+      padding: 0.5rem 0 1.1rem;
     }
+    .hero-icon {
+      width: 3.25rem;
+      height: 3.25rem;
+      margin: 0 auto 0.65rem;
+      border-radius: 18px;
+      background: linear-gradient(145deg, var(--g600), var(--g800));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(26, 138, 114, 0.35);
+    }
+    .hero-icon svg { width: 1.65rem; height: 1.65rem; stroke: #fff; fill: none; }
     h1 {
       font-family: Outfit, sans-serif;
-      font-size: 1.35rem;
-      margin: 0 0 0.35rem;
-      color: var(--green-950);
+      font-size: 1.55rem;
+      font-weight: 800;
+      margin: 0 0 0.4rem;
+      color: var(--g950);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
     }
-    .lead { font-size: 0.9rem; color: var(--muted); line-height: 1.45; margin: 0; }
+    .hero-lead {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--muted);
+      max-width: 22rem;
+      margin-inline: auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+    .step {
+      text-align: center;
+      padding: 0.55rem 0.35rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--border);
+      font-size: 0.68rem;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+    .step strong {
+      display: block;
+      font-family: Outfit, sans-serif;
+      font-size: 0.78rem;
+      color: var(--g800);
+      margin-bottom: 0.15rem;
+    }
+
     .card {
       background: #fff;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem;
-      margin: 0.75rem 0;
-      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.06);
+      border-radius: 18px;
+      padding: 1.1rem 1rem;
+      margin-bottom: 0.85rem;
+      box-shadow: var(--shadow);
     }
-    label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--green-800); margin-bottom: 0.35rem; }
-    input[type="file"], input[type="number"], select {
+    .card-title {
+      font-family: Outfit, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--g800);
+      margin: 0 0 0.65rem;
+    }
+
+    .drop-zone {
+      position: relative;
+      border: 2px dashed rgba(26, 138, 114, 0.35);
+      border-radius: 14px;
+      padding: 1.15rem 0.75rem;
+      text-align: center;
+      background: linear-gradient(180deg, #fafdfc, #fff);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .drop-zone:hover, .drop-zone:focus-within {
+      border-color: var(--g600);
+      background: var(--gsoft);
+    }
+    .drop-zone input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .drop-zone__icon { font-size: 1.75rem; line-height: 1; margin-bottom: 0.35rem; }
+    .drop-zone__title { font-weight: 700; font-size: 0.88rem; color: var(--g800); }
+    .drop-zone__hint { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; }
+    .file-chips { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
+    .file-chip {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: var(--gsoft);
+      color: var(--g800);
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .drop-zone--secondary {
+      border-style: solid;
+      border-color: rgba(26, 138, 114, 0.15);
+      padding: 0.85rem;
+      margin-top: 0.65rem;
+    }
+    .drop-zone--secondary .drop-zone__title { font-size: 0.82rem; }
+
+    label.field-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--g800);
+      margin-bottom: 0.3rem;
+    }
+    input[type="number"], select {
       width: 100%;
       font: inherit;
-      padding: 0.55rem 0.65rem;
+      padding: 0.5rem 0.6rem;
       border-radius: 10px;
       border: 1px solid #c5d9d3;
       background: #fff;
     }
-    .row { display: flex; gap: 0.65rem; }
+    .row { display: flex; gap: 0.6rem; margin-top: 0.65rem; }
     .row > * { flex: 1; }
+
     .consent {
       display: flex;
       gap: 0.55rem;
       align-items: flex-start;
-      font-size: 0.82rem;
-      line-height: 1.4;
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: 12px;
+      background: var(--gsoft2);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      line-height: 1.45;
       color: var(--muted);
     }
-    .consent input { margin-top: 0.2rem; flex-shrink: 0; }
-    .btn {
+    .consent input { margin-top: 0.15rem; accent-color: var(--g600); flex-shrink: 0; }
+
+    .btn-primary {
       display: block;
       width: 100%;
-      font-family: Outfit, sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
       border: none;
       border-radius: 999px;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--green-600), var(--green-800));
+      font-family: Outfit, sans-serif;
+      font-weight: 700;
+      font-size: 1.02rem;
       color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--g600) 0%, var(--g800) 100%);
+      box-shadow: 0 4px 16px rgba(26, 138, 114, 0.35);
+      transition: transform 0.12s, box-shadow 0.12s;
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26, 138, 114, 0.4); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+    .btn-ghost {
+      background: #fff;
+      color: var(--g800);
+      border: 2px solid var(--border);
+      box-shadow: none;
       margin-top: 0.75rem;
     }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .status { text-align: center; font-size: 0.88rem; color: var(--muted); min-height: 1.2rem; margin-top: 0.5rem; }
+
+    .status { text-align: center; font-size: 0.84rem; color: var(--muted); min-height: 1.25rem; margin-top: 0.55rem; }
     .hidden { display: none !important; }
 
-    .score-ring {
-      width: 7.5rem;
-      height: 7.5rem;
-      border-radius: 50%;
-      margin: 0.5rem auto 0.75rem;
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(244, 250, 248, 0.92);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: Outfit, sans-serif;
-      border: 5px solid var(--green-600);
-      background: #fff;
+      padding: 1.5rem;
     }
-    .score-ring--green { border-color: #1a8a72; background: linear-gradient(180deg, #f4faf8, #fff); }
-    .score-ring--yellow { border-color: #d97706; background: linear-gradient(180deg, #fffbeb, #fff); }
-    .score-ring--red { border-color: #dc2626; background: linear-gradient(180deg, #fef2f2, #fff); }
-    .score-pct { font-size: 2rem; font-weight: 800; line-height: 1; }
-    .score-label { font-size: 0.72rem; text-align: center; color: var(--muted); padding: 0 0.5rem; margin-top: 0.25rem; }
+    .loader-ring {
+      width: 3rem;
+      height: 3rem;
+      border: 4px solid var(--gsoft);
+      border-top-color: var(--g600);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { margin-top: 1rem; font-size: 0.9rem; color: var(--g800); font-weight: 600; }
+    .loader-sub { margin-top: 0.35rem; font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+    .score-card { text-align: center; padding: 0.5rem 0 0.25rem; }
+    .score-svg { width: 9rem; height: 9rem; margin: 0 auto; display: block; }
+    .score-svg text { font-family: Outfit, sans-serif; }
+    .score-caption {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--muted);
+      max-width: 20rem;
+      margin: 0.5rem auto 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0 0 0.55rem;
+    }
+    .section-head h2 {
+      font-family: Outfit, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--g800);
+      margin: 0;
+    }
+    .section-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--g600);
+    }
 
     .blocks-table {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-      margin-top: 0.5rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.8rem;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
     }
     .blocks-table th {
       text-align: left;
-      font-size: 0.72rem;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       color: var(--muted);
-      padding: 0.4rem 0.5rem;
+      background: var(--gsoft);
       border-bottom: 1px solid var(--border);
-      background: var(--green-soft);
     }
     .blocks-table td {
-      padding: 0.5rem;
+      padding: 0.5rem 0.55rem;
       vertical-align: top;
-      border-bottom: 1px solid rgba(26, 138, 114, 0.1);
+      border-bottom: 1px solid rgba(26, 138, 114, 0.08);
     }
-    tr.block-row--ok td { background: rgba(26, 138, 114, 0.06); }
-    tr.block-row--attention td { background: rgba(217, 119, 6, 0.08); }
-    tr.block-row--concern td { background: rgba(220, 38, 38, 0.07); }
+    .blocks-table tr:last-child td { border-bottom: none; }
+    tr.block-row--ok td { background: rgba(26, 138, 114, 0.05); }
+    tr.block-row--attention td { background: rgba(217, 119, 6, 0.06); }
+    tr.block-row--concern td { background: rgba(220, 38, 38, 0.05); }
+
     .pill {
       display: inline-block;
-      padding: 0.12rem 0.4rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 999px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      white-space: nowrap;
     }
     .pill--ok { background: #d1fae5; color: #166534; }
     .pill--attention { background: #fde68a; color: #92400e; }
     .pill--concern { background: #fecaca; color: #991b1b; }
-    .gap-list { margin: 0.25rem 0 0; padding-left: 1rem; color: #4a5f58; font-size: 0.78rem; }
+    .gap-list { margin: 0.3rem 0 0; padding-left: 1rem; font-size: 0.74rem; color: #4a625c; }
+
     .questions { list-style: none; padding: 0; margin: 0; }
     .questions li {
-      padding: 0.5rem 0.65rem;
+      padding: 0.55rem 0.7rem;
       margin-bottom: 0.4rem;
-      border-radius: 10px;
-      background: #fff8eb;
+      border-radius: 12px;
+      background: #fffbeb;
       border-left: 3px solid var(--warn);
-      font-size: 0.84rem;
-      line-height: 1.4;
+      font-size: 0.83rem;
+      line-height: 1.45;
     }
-    .cite {
-      padding: 0.55rem 0.65rem;
-      margin-bottom: 0.45rem;
-      border-radius: 10px;
-      background: var(--green-soft);
+    .questions li.ok-item {
+      background: var(--gsoft);
+      border-left-color: var(--g600);
+    }
+
+    .lab-panel {
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.06), rgba(26, 138, 114, 0.06));
+      border: 1px solid rgba(26, 138, 114, 0.15);
       font-size: 0.8rem;
-      line-height: 1.4;
+      line-height: 1.45;
     }
-    .cite strong { color: var(--green-800); font-size: 0.78rem; }
+    .lab-panel strong { color: var(--g800); }
+    .lab-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+    .lab-tag {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.4rem;
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+    .lab-tag--miss { border-color: rgba(217, 119, 6, 0.4); background: #fffbeb; }
+
+    .cite {
+      padding: 0.6rem 0.7rem;
+      margin-bottom: 0.45rem;
+      border-radius: 12px;
+      background: var(--gsoft);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      border: 1px solid rgba(26, 138, 114, 0.12);
+    }
+    .cite strong { color: var(--g800); font-size: 0.76rem; display: block; margin-bottom: 0.25rem; }
+
+    details.cites-fold summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.84rem;
+      color: var(--g800);
+      padding: 0.35rem 0;
+    }
+
     .disclaimer {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       color: var(--muted);
-      line-height: 1.4;
-      margin-top: 0.75rem;
-      padding-top: 0.65rem;
+      line-height: 1.45;
+      margin-top: 0.85rem;
+      padding-top: 0.7rem;
       border-top: 1px solid var(--border);
     }
-    .foot { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 1rem; }
-    .foot a { color: var(--green-800); }
+
+    .history { margin-top: 0.5rem; }
+    .history summary { font-size: 0.8rem; font-weight: 600; color: var(--g600); cursor: pointer; }
+    .history-item {
+      font-size: 0.76rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .foot {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 1.25rem;
+      line-height: 1.5;
+    }
+    .foot a { color: var(--g600); font-weight: 600; }
   </style>
 </head>
 <body>
+  <div class="page-bg" aria-hidden="true"></div>
   <div class="wrap">
-    <header>
+    <div class="top-bar">
+      <span class="brand">Protocol · для пациентов</span>
+      <a class="top-link" href="/">Врачам</a>
+    </div>
+
+    <header class="hero">
+      <div class="hero-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
       <h1>Проверь своё заключение</h1>
-      <p class="lead">Сверка с клиническими протоколами Минздрава РБ. Загрузите фото или PDF после приёма.</p>
+      <p class="hero-lead">Сверка с официальными клиническими протоколами Минздрава РБ. Поймите, всё ли врач учёл и заполнил.</p>
     </header>
 
-    <section class="card" id="form-card">
-      <label for="kz-files">Фото или PDF заключения</label>
-      <input type="file" id="kz-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+    <div class="steps" aria-hidden="true">
+      <div class="step"><strong>1</strong>Сфотографируйте КЗ</div>
+      <div class="step"><strong>2</strong>Сверка со стандартом</div>
+      <div class="step"><strong>3</strong>Вопросы врачу</div>
+    </div>
 
-      <div class="row" style="margin-top: 0.65rem">
+    <section class="card" id="form-card">
+      <p class="card-title">Документы</p>
+      <div class="drop-zone" id="kz-drop">
+        <input type="file" id="kz-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+        <div class="drop-zone__icon">📄</div>
+        <div class="drop-zone__title">Консультативное заключение</div>
+        <div class="drop-zone__hint">Фото или PDF, до 5 файлов</div>
+        <div class="file-chips" id="kz-chips"></div>
+      </div>
+
+      <div class="drop-zone drop-zone--secondary" id="lab-drop">
+        <input type="file" id="lab-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+        <div class="drop-zone__title">Анализы (необязательно)</div>
+        <div class="drop-zone__hint">Сверим показатели с текстом заключения</div>
+        <div class="file-chips" id="lab-chips"></div>
+      </div>
+
+      <div class="row">
         <div>
-          <label for="age-years">Возраст</label>
-          <input type="number" id="age-years" min="1" max="120" placeholder="необяз." />
+          <label class="field-label" for="age-years">Возраст</label>
+          <input type="number" id="age-years" min="1" max="120" placeholder="лет" />
         </div>
         <div>
-          <label for="sex">Пол</label>
+          <label class="field-label" for="sex">Пол</label>
           <select id="sex">
             <option value="">не указан</option>
             <option value="female">женский</option>
@@ -198,125 +478,200 @@
         </div>
       </div>
 
-      <label class="consent" style="margin-top: 0.75rem">
+      <label class="consent">
         <input type="checkbox" id="consent" />
-        <span>Согласен на обработку загруженного документа для автоматической сверки с протоколами. Данные не используются для обучения моделей.</span>
+        <span>Согласен на обработку документов для автоматической сверки. Данные не используются для обучения моделей и не передаются третьим лицам.</span>
       </label>
 
-      <button type="button" class="btn" id="btn-check" disabled>Проверить заключение</button>
+      <button type="button" class="btn-primary" id="btn-check" disabled>Проверить заключение</button>
       <p class="status" id="status" aria-live="polite"></p>
+
+      <details class="history hidden" id="history-wrap">
+        <summary>Недавние проверки на этом устройстве</summary>
+        <div id="history-list"></div>
+      </details>
     </section>
 
     <section class="card hidden" id="result-card">
-      <div id="score-ring" class="score-ring score-ring--yellow">
-        <span class="score-pct" id="score-pct">-</span>
-        <span class="score-label" id="score-label">-</span>
+      <div class="score-card">
+        <svg class="score-svg" id="score-svg" viewBox="0 0 120 120" aria-hidden="true"></svg>
+        <p class="score-caption" id="score-caption"></p>
       </div>
 
-      <h2 style="font-family: Outfit,sans-serif; font-size: 1rem; margin: 0 0 0.35rem; color: var(--green-800)">Замечания по блокам</h2>
+      <div class="section-head"><span class="section-dot"></span><h2>Замечания по блокам</h2></div>
       <div style="overflow-x: auto">
-        <table class="blocks-table" id="blocks-table">
-          <thead>
-            <tr>
-              <th>Блок</th>
-              <th>Оценка</th>
-              <th>Комментарий</th>
-            </tr>
-          </thead>
+        <table class="blocks-table">
+          <thead><tr><th>Блок</th><th>Оценка</th><th>Комментарий</th></tr></thead>
           <tbody id="blocks-tbody"></tbody>
         </table>
       </div>
 
-      <h2 style="font-family: Outfit,sans-serif; font-size: 1rem; margin: 1rem 0 0.35rem; color: var(--green-800)">Вопросы врачу</h2>
+      <div class="section-head" style="margin-top: 1rem"><span class="section-dot"></span><h2>Вопросы врачу</h2></div>
       <ul class="questions" id="questions-list"></ul>
 
-      <details style="margin-top: 0.75rem" id="cites-details">
-        <summary style="font-weight: 600; color: var(--green-800); cursor: pointer">Цитаты из протокола Минздрава</summary>
-        <div id="cites-wrap" style="margin-top: 0.5rem"></div>
+      <div id="lab-result" class="hidden"></div>
+
+      <details class="cites-fold" id="cites-details" style="margin-top: 0.85rem">
+        <summary>Цитаты из протокола Минздрава</summary>
+        <div id="cites-wrap" style="margin-top: 0.45rem"></div>
       </details>
 
       <p class="disclaimer" id="disclaimer"></p>
-      <button type="button" class="btn" id="btn-again" style="background: #fff; color: var(--green-800); border: 2px solid var(--border)">Проверить другой документ</button>
+      <button type="button" class="btn-primary btn-ghost" id="btn-again">Проверить другой документ</button>
     </section>
 
-    <p class="foot">Protocol · МЦ «Кравира» · <a href="/">Версия для врачей</a></p>
+    <p class="foot">МЦ «Кравира» · Не замена врача и не медицинское заключение<br /><a href="/">Protocol для специалистов</a></p>
+  </div>
+
+  <div class="loader-overlay hidden" id="loader" aria-live="polite">
+    <div class="loader-ring"></div>
+    <p class="loader-text">Анализируем документ</p>
+    <p class="loader-sub">Сверка с протоколами Минздрава, обычно до 20 секунд</p>
   </div>
 
   <script>
     (function () {
-      var filesEl = document.getElementById("kz-files");
+      var HISTORY_KEY = "protocol_patient_history_v1";
+      var kzInput = document.getElementById("kz-files");
+      var labInput = document.getElementById("lab-files");
       var consentEl = document.getElementById("consent");
       var btn = document.getElementById("btn-check");
       var statusEl = document.getElementById("status");
+      var loader = document.getElementById("loader");
       var formCard = document.getElementById("form-card");
       var resultCard = document.getElementById("result-card");
 
-      function apiBase() {
-        return window.location.origin;
+      function escapeHtml(s) {
+        return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      function renderChips(input, containerId) {
+        var el = document.getElementById(containerId);
+        if (!el) return;
+        el.innerHTML = "";
+        if (!input.files || !input.files.length) return;
+        for (var i = 0; i < input.files.length; i++) {
+          var span = document.createElement("span");
+          span.className = "file-chip";
+          span.textContent = input.files[i].name;
+          el.appendChild(span);
+        }
       }
 
       function updateBtn() {
-        btn.disabled = !(consentEl.checked && filesEl.files && filesEl.files.length);
+        btn.disabled = !(consentEl.checked && kzInput.files && kzInput.files.length);
       }
-      filesEl.addEventListener("change", updateBtn);
+      kzInput.addEventListener("change", function () { renderChips(kzInput, "kz-chips"); updateBtn(); });
+      labInput.addEventListener("change", function () { renderChips(labInput, "lab-chips"); });
       consentEl.addEventListener("change", updateBtn);
 
-      function pillClass(status) {
-        if (status === "ok") return "pill pill--ok";
-        if (status === "concern") return "pill pill--concern";
+      function pillClass(s) {
+        if (s === "ok") return "pill pill--ok";
+        if (s === "concern") return "pill pill--concern";
         return "pill pill--attention";
       }
-      function pillLabel(status) {
-        if (status === "ok") return "Хорошо";
-        if (status === "concern") return "Важно";
+      function pillLabel(s) {
+        if (s === "ok") return "Хорошо";
+        if (s === "concern") return "Важно";
         return "Уточнить";
       }
-      function rowClass(status) {
-        return "block-row--" + (status || "attention");
+
+      function renderScoreRing(pct, light, label) {
+        var svg = document.getElementById("score-svg");
+        var r = 52;
+        var c = 2 * Math.PI * r;
+        var off = c * (1 - (pct != null ? pct / 100 : 0));
+        var color = light === "green" ? "#1a8a72" : light === "red" ? "#dc2626" : "#d97706";
+        svg.innerHTML =
+          '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="#e8f5f1" stroke-width="10"/>' +
+          '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="10" ' +
+          'stroke-dasharray="' + c + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 60 60)"/>' +
+          '<text x="60" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#063d35">' +
+          (pct != null ? pct + "%" : "—") + "</text>";
+        document.getElementById("score-caption").textContent = label || "";
       }
 
-      function renderReport(pr) {
-        var ring = document.getElementById("score-ring");
-        var light = pr.traffic_light || "yellow";
-        ring.className = "score-ring score-ring--" + light;
-        document.getElementById("score-pct").textContent =
-          pr.overall_pct != null ? pr.overall_pct + "%" : "—";
-        document.getElementById("score-label").textContent = pr.overall_label_ru || "";
+      function renderLabPanel(lc) {
+        var box = document.getElementById("lab-result");
+        if (!lc || !lc.lab_count) { box.classList.add("hidden"); return; }
+        box.classList.remove("hidden");
+        var html = '<div class="lab-panel"><strong>Сверка с анализами</strong>';
+        if (lc.notes_ru && lc.notes_ru.length) html += "<p style=\"margin:0.35rem 0 0\">" + escapeHtml(lc.notes_ru[0]) + "</p>";
+        if (lc.missing_in_kz && lc.missing_in_kz.length) {
+          html += '<div class="lab-tags">';
+          lc.missing_in_kz.forEach(function (m) {
+            html += '<span class="lab-tag lab-tag--miss">' + escapeHtml(m) + "</span>";
+          });
+          html += "</div>";
+        }
+        html += "</div>";
+        box.innerHTML = html;
+      }
 
+      function saveHistory(pr) {
+        try {
+          var list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+          list.unshift({
+            ts: new Date().toISOString(),
+            pct: pr.overall_pct,
+            light: pr.traffic_light,
+            label: pr.overall_label_ru,
+          });
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 5)));
+          renderHistory();
+        } catch (e) {}
+      }
+
+      function renderHistory() {
+        var wrap = document.getElementById("history-wrap");
+        var listEl = document.getElementById("history-list");
+        try {
+          var list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+          if (!list.length) { wrap.classList.add("hidden"); return; }
+          wrap.classList.remove("hidden");
+          listEl.innerHTML = list.map(function (it) {
+            var d = new Date(it.ts);
+            return '<div class="history-item">' + d.toLocaleString("ru-RU") + " · " + (it.pct != null ? it.pct + "%" : "—") + " · " + escapeHtml(it.label || "") + "</div>";
+          }).join("");
+        } catch (e) { wrap.classList.add("hidden"); }
+      }
+      renderHistory();
+
+      function renderReport(pr) {
+        renderScoreRing(pr.overall_pct, pr.traffic_light, pr.overall_label_ru);
         var tbody = document.getElementById("blocks-tbody");
         tbody.innerHTML = "";
         (pr.blocks || []).forEach(function (b) {
           var tr = document.createElement("tr");
-          tr.className = rowClass(b.status);
-          var gapsHtml = "";
+          tr.className = "block-row--" + (b.status || "attention");
+          var gaps = "";
           if (b.gaps && b.gaps.length) {
-            gapsHtml = "<ul class=\"gap-list\">" + b.gaps.map(function (g) {
-              return "<li>" + escapeHtml(g) + "</li>";
-            }).join("") + "</ul>";
+            gaps = "<ul class=\"gap-list\">" + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>";
           }
           tr.innerHTML =
-            "<td><strong>" + escapeHtml(b.title || "") + "</strong></td>" +
-            "<td><span class=\"" + pillClass(b.status) + "\">" +
-            (b.score_pct != null ? b.score_pct + "% · " : "") +
-            pillLabel(b.status) + "</span></td>" +
-            "<td>" + escapeHtml(b.summary_ru || "—") + gapsHtml + "</td>";
+            "<td><strong>" + escapeHtml(b.title) + "</strong></td>" +
+            "<td><span class=\"" + pillClass(b.status) + "\">" + (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></td>" +
+            "<td>" + escapeHtml(b.summary_ru || "—") + gaps + "</td>";
           tbody.appendChild(tr);
         });
 
         var qList = document.getElementById("questions-list");
         qList.innerHTML = "";
-        (pr.questions_for_doctor || []).forEach(function (q) {
+        var qs = pr.questions_for_doctor || [];
+        if (!qs.length) {
           var li = document.createElement("li");
-          li.textContent = q;
-          qList.appendChild(li);
-        });
-        if (!pr.questions_for_doctor || !pr.questions_for_doctor.length) {
-          var li = document.createElement("li");
+          li.className = "ok-item";
           li.textContent = "Серьёзных вопросов к врачу по стандарту не выявлено.";
-          li.style.background = "#f4faf8";
-          li.style.borderColor = "#1a8a72";
           qList.appendChild(li);
+        } else {
+          qs.forEach(function (q) {
+            var li = document.createElement("li");
+            li.textContent = q;
+            qList.appendChild(li);
+          });
         }
+
+        renderLabPanel(pr.lab_crosscheck);
 
         var cites = document.getElementById("cites-wrap");
         var citesDetails = document.getElementById("cites-details");
@@ -326,10 +681,7 @@
           pr.protocol_citations.forEach(function (c) {
             var div = document.createElement("div");
             div.className = "cite";
-            div.innerHTML =
-              "<strong>" + escapeHtml(c.protocol_title || "Протокол") +
-              (c.section ? " · " + escapeHtml(c.section) : "") + "</strong><br>" +
-              escapeHtml(c.excerpt || "");
+            div.innerHTML = "<strong>" + escapeHtml(c.protocol_title || "Протокол") + (c.section ? " · " + escapeHtml(c.section) : "") + "</strong>" + escapeHtml(c.excerpt || "");
             cites.appendChild(div);
           });
         } else {
@@ -339,22 +691,16 @@
         var disc = pr.disclaimer_ru || "";
         if (pr.limitations_ru) disc += " " + pr.limitations_ru;
         document.getElementById("disclaimer").textContent = disc;
-      }
-
-      function escapeHtml(s) {
-        return String(s || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
+        saveHistory(pr);
       }
 
       btn.addEventListener("click", function () {
-        if (!filesEl.files || !filesEl.files.length) return;
+        if (!kzInput.files || !kzInput.files.length) return;
         var fd = new FormData();
         var i;
-        for (i = 0; i < filesEl.files.length; i++) {
-          fd.append("files", filesEl.files[i]);
+        for (i = 0; i < kzInput.files.length; i++) fd.append("files", kzInput.files[i]);
+        if (labInput.files) {
+          for (i = 0; i < labInput.files.length; i++) fd.append("lab_files", labInput.files[i]);
         }
         fd.append("consent", "1");
         var age = document.getElementById("age-years").value;
@@ -363,22 +709,20 @@
         if (sex) fd.append("sex", sex);
 
         btn.disabled = true;
-        statusEl.textContent = "Анализируем документ… обычно до 20 секунд.";
+        loader.classList.remove("hidden");
+        statusEl.textContent = "";
 
-        fetch(apiBase() + "/api/patient/review", { method: "POST", body: fd })
-          .then(function (r) {
-            return r.json().then(function (j) {
-              if (!r.ok) throw new Error(j.detail || "Ошибка сервера");
-              return j;
-            });
-          })
+        fetch(window.location.origin + "/api/patient/review", { method: "POST", body: fd })
+          .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.detail || "Ошибка"); return j; }); })
           .then(function (data) {
-            statusEl.textContent = "";
+            loader.classList.add("hidden");
             formCard.classList.add("hidden");
             resultCard.classList.remove("hidden");
             renderReport((data && data.patient_report) || {});
+            window.scrollTo({ top: 0, behavior: "smooth" });
           })
           .catch(function (err) {
+            loader.classList.add("hidden");
             statusEl.textContent = err.message || "Не удалось выполнить проверку.";
             updateBtn();
           });
@@ -387,10 +731,16 @@
       document.getElementById("btn-again").addEventListener("click", function () {
         resultCard.classList.add("hidden");
         formCard.classList.remove("hidden");
-        filesEl.value = "";
+        kzInput.value = "";
+        labInput.value = "";
+        renderChips(kzInput, "kz-chips");
+        renderChips(labInput, "lab-chips");
         updateBtn();
-        statusEl.textContent = "";
       });
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/patient-sw.js").catch(function () {});
+      }
     })();
   </script>
 </body>
