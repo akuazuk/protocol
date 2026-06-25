@@ -1450,6 +1450,10 @@
       font-size: 0.75rem;
     }
 
+    #consult-evidence-table tr.consult-evidence-row--highlight td {
+      background: rgba(26, 138, 114, 0.12);
+    }
+
     .consult-crit-name { font-weight: 650; color: #2d4a42; }
 
     .consult-crit-name-cell {
@@ -1679,6 +1683,62 @@
       font-size: 0.72rem;
       font-weight: 800;
       color: #2d5a4e;
+    }
+
+    .consult-crit-basis {
+      display: block;
+      margin-top: 0.28rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #5a7a72;
+      line-height: 1.35;
+    }
+
+    .consult-crit-gap-expand {
+      margin-top: 0.35rem;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+      border-radius: 8px;
+      background: #fafcfb;
+    }
+
+    .consult-crit-gap-expand summary {
+      cursor: pointer;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 650;
+      color: #3d6b58;
+      list-style: none;
+    }
+
+    .consult-crit-gap-expand summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .consult-crit-gap-item {
+      padding: 0.35rem 0.5rem 0.45rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.1);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .consult-crit-gap-item__label {
+      font-weight: 700;
+      color: #8a6f45;
+      margin-bottom: 0.2rem;
+    }
+
+    .consult-crit-evidence-link {
+      display: inline-block;
+      margin-top: 0.35rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #1a8a72;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .consult-crit-evidence-link:hover {
+      text-decoration: underline;
     }
 
     .consult-score-overview {
@@ -25778,6 +25838,83 @@
     return "src-completeness";
   }
 
+  function scrollToConsultEvidenceChunk(chunkId) {
+    if (!chunkId) return;
+    var panel = document.getElementById("consult-evidence-spoiler");
+    var table = document.getElementById("consult-evidence-table");
+    if (panel) {
+      panel.open = true;
+      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    if (!table) return;
+    var rows = table.querySelectorAll("tbody tr");
+    for (var i = 0; i < rows.length; i++) {
+      var cid = rows[i].getAttribute("data-chunk-id") || "";
+      if (cid && cid === String(chunkId)) {
+        rows[i].classList.add("consult-evidence-row--highlight");
+        rows[i].scrollIntoView({ behavior: "smooth", block: "nearest" });
+        setTimeout(function (row) {
+          return function () {
+            row.classList.remove("consult-evidence-row--highlight");
+          };
+        }(rows[i]), 2400);
+        break;
+      }
+    }
+  }
+
+  function renderConsultGapDetails(c) {
+    var refs = c.gap_protocol_refs || [];
+    var details = c.item_details || [];
+    if (!refs.length && !details.length) return "";
+    var missing = details.filter(function (d) {
+      return d && d.matched === false;
+    });
+    if (!missing.length && refs.length) {
+      missing = refs.map(function (r) {
+        return { text: r.gap_text, kz_snippet: "", protocol_excerpt: r.protocol_excerpt };
+      });
+    }
+    if (!missing.length) return "";
+    var html = ['<details class="consult-crit-gap-expand"><summary>Подробнее по пробелам (' + missing.length + ")</summary>"];
+    var limit = Math.min(missing.length, 4);
+    for (var i = 0; i < limit; i++) {
+      var d = missing[i];
+      var ref = refs[i] || {};
+      var label = escapeHtml(String(d.text || ref.gap_text || "").replace(/^[—\-–\s]+/, ""));
+      html.push('<div class="consult-crit-gap-item">');
+      html.push('<div class="consult-crit-gap-item__label">' + label + "</div>");
+      if (d.kz_snippet) {
+        html.push("<div><em>КЗ:</em> " + escapeHtml(d.kz_snippet) + "</div>");
+      }
+      var proto = ref.protocol_excerpt || d.protocol_excerpt || "";
+      if (proto) {
+        html.push("<div><em>Эталон:</em> " + escapeHtml(proto) + "</div>");
+      }
+      html.push("</div>");
+    }
+    html.push("</details>");
+    return html.join("");
+  }
+
+  function renderConsultCriteriaBasis(c) {
+    var ctx = (c.context_ru || "").trim();
+    if (!ctx) return "";
+    return '<span class="consult-crit-basis">' + escapeHtml(ctx) + "</span>";
+  }
+
+  function renderConsultEvidenceLink(c) {
+    var cid = c.chunk_id ? String(c.chunk_id) : "";
+    if (!cid) return "";
+    return (
+      '<a class="consult-crit-evidence-link" href="#" data-chunk-id="' +
+      escapeHtmlAttr(cid) +
+      '" onclick="scrollToConsultEvidenceChunk(\'' +
+      escapeHtmlAttr(cid) +
+      "'); return false;\">Выдержка в evidence pack</a>"
+    );
+  }
+
   function renderConsultCriteriaQuote(text, emptyLabel) {
     var t = (text || "").trim();
     if (!t) {
@@ -25798,6 +25935,7 @@
     var page = c.protocol_page;
     var pathRaw = c.protocol_path ? String(c.protocol_path) : "";
     var path = pathRaw ? pathRaw.split("/").pop() : "";
+    var gapRefs = c.gap_protocol_refs || [];
 
     if (section) {
       parts.push('<span class="consult-crit-ref-head">' + escapeHtml(section) + "</span>");
@@ -25813,12 +25951,25 @@
           "</blockquote>"
       );
     }
+    if (gapRefs.length && (c.source_kind === "kp" || c.source_kind === "regulation")) {
+      var gr = gapRefs[0];
+      if (gr && gr.protocol_excerpt && gr.protocol_excerpt !== body) {
+        parts.push(
+          '<div class="consult-crit-gap-item" style="margin-top:0.35rem"><em>По пробелу:</em> ' +
+            escapeHtml(gr.protocol_excerpt) +
+            "</div>"
+        );
+      }
+    }
     if (page) {
       parts.push(
         '<span class="consult-crit-ref-page">стр. ' + escapeHtml(String(page)) + "</span>"
       );
     }
-    if (!parts.length) {
+    parts.push(renderConsultEvidenceLink(c));
+    if (!parts.filter(function (p) {
+      return p;
+    }).length) {
       return renderConsultCriteriaQuote("", "Эталон не определён");
     }
     return parts.join("");
@@ -25826,10 +25977,6 @@
 
   function renderConsultCriteriaComment(c) {
     var parts = [];
-    var ctx = c.context_ru || "";
-    if (ctx && (c.source_kind === "kp" || c.source_kind === "regulation")) {
-      parts.push('<span class="consult-crit-context">' + escapeHtml(ctx) + "</span>");
-    }
     var main = c.comment_ru || c.comment || "";
     if (main) {
       parts.push("<div>" + escapeHtml(main) + "</div>");
@@ -25846,10 +25993,11 @@
     if (gaps.length) {
       parts.push('<ul class="consult-crit-detail consult-crit-detail--gap">');
       gaps.forEach(function (line) {
-        parts.push("<li>" + escapeHtml(String(line).replace(/^[ - \-]\s*/, "")) + "</li>");
+        parts.push("<li>" + escapeHtml(String(line).replace(/^[—\-–\s]+/, "")) + "</li>");
       });
       parts.push("</ul>");
     }
+    parts.push(renderConsultGapDetails(c));
     return parts.join("");
   }
 
@@ -25924,6 +26072,12 @@
           seenRows[rowKey] = true;
           rows += 1;
           var tr = document.createElement("tr");
+          if (it.chunk_id) {
+            tr.setAttribute("data-chunk-id", String(it.chunk_id));
+          }
+          if (it.protocol_path) {
+            tr.setAttribute("data-protocol-path", String(it.protocol_path));
+          }
           var protoTitle = resolveEvidenceProtocolTitle(it.protocol_path, data, it);
           var section = String(it.section || "").replace(/\(summary card\)/gi, "").trim();
           if (section === bid || section === (EVIDENCE_BLOCK_LABELS[bid] || bid)) {
@@ -26148,7 +26302,8 @@
           '<span class="consult-crit-name">' +
           escapeHtml(c.name_ru || c.name || "") +
           "</span>" +
-          renderConsultSourceBadge(c);
+          renderConsultSourceBadge(c) +
+          renderConsultCriteriaBasis(c);
         var tdPct = document.createElement("td");
         tdPct.className = "consult-crit-pct-cell";
         if (score != null && !isNaN(score)) {

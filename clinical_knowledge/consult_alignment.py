@@ -5,6 +5,18 @@ import os
 import re
 from typing import Any, Callable
 
+from clinical_knowledge.consult_criteria_enrichment import (
+    best_kz_excerpt_from_details,
+    coverage_with_evidence,
+    diagnosis_assessment_lines,
+    expand_kz_blob,
+    enrich_kp_card,
+    filter_kp_items_by_demographics,
+    finalize_completeness_card,
+    kp_coverage_comment,
+    maybe_apply_criteria_narrative,
+    verify_protocol_excerpt,
+)
 from clinical_knowledge.consult_evidence_quality import is_kp_checklist_item
 from clinical_knowledge.consult_schema import ConsultationDocument
 from clinical_knowledge.dispensary_regulations import (
@@ -167,6 +179,8 @@ def _card(
     gaps_ru: list[str] | None = None,
     context_ru: str = "",
     reference_ru: str = "",
+    item_details: list[dict[str, Any]] | None = None,
+    gap_protocol_refs: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     return {
         "block_id": block_id,
@@ -185,6 +199,8 @@ def _card(
         "gaps_ru": list(gaps_ru or []),
         "context_ru": context_ru,
         "reference_ru": reference_ru,
+        "item_details": list(item_details or []),
+        "gap_protocol_refs": list(gap_protocol_refs or []),
         "deterministic": True,
     }
 
@@ -197,12 +213,15 @@ def _basename(path: str) -> str:
 def _format_kp_cite(cite: dict[str, Any], fallback_lines: list[str]) -> tuple[str, str, str]:
     text = (cite.get("text") or "").strip()
     if not text and fallback_lines:
-        text = "; ".join(fallback_lines[:3])
+        text = ""
+    verified = verify_protocol_excerpt(text, cite=cite) if text else ""
+    if not verified and fallback_lines:
+        verified = verify_protocol_excerpt("; ".join(fallback_lines[:2]))
     section = (cite.get("section_title") or "КП").strip()
     page = str(cite.get("page_from") or "")
     path = _basename(cite.get("path") or "")
     header = " · ".join(x for x in [path, f"стр. {page}" if page else ""] if x)
-    return meaningful_excerpt(text, limit=360), section, header
+    return verified, section, header
 
 
 def _mkb_reference_line(code: str, title: str | None) -> str:
@@ -225,38 +244,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
     if not diag_text and doc.diagnoses:
         diag_text = "; ".join(d.diagnosis_name or d.raw_text for d in doc.diagnoses if d.raw_text)
 
-    comments: list[str] = []
-    scores: list[int] = []
-    mkb_excerpts: list[str] = []
-
-    for d in doc.diagnoses:
-        code = d.icd10_code
-        if not code:
-            comments.append("Код МКБ-10 не указан для одного из диагнозов.")
-            scores.append(40)
-            continue
-        valid = icd_mkb.is_code_in_ru_reference(code)
-        title = icd_mkb.ru_title(code)
-        desc = icd_mkb.describe_code(code)
-        if valid and title:
-            mkb_excerpts.append(_mkb_reference_line(code, title))
-            match = _title_match_score(d.diagnosis_name or d.raw_text or diag_text, title)
-            if match >= 0.35:
-                scores.append(95)
-                comments.append(f"Код {code} в справочнике МКБ; формулировка согласуется с рубрикой «{title[:80]}».")
-            else:
-                scores.append(78)
-                comments.append(
-                    f"Код {code} валиден ({title[:60]}), но текст диагноза слабо совпадает с рубрикой МКБ."
-                )
-        elif valid:
-            scores.append(72)
-            comments.append(f"Код {code} найден в справочнике МКБ.")
-            if desc.get("title_ru"):
-                mkb_excerpts.append(_mkb_reference_line(code, str(desc["title_ru"])))
-        else:
-            scores.append(30)
-            comments.append(f"Код {code} не найден в русском справочнике МКБ-10.")
+    comments, scores, mkb_excerpts = diagnosis_assessment_lines(doc)
 
     if not doc.diagnoses:
         if icd_codes:
@@ -377,14 +365,20 @@ def _exams_card(
     get_chunks: GetChunksFn | None = None,
     protocol_paths: list[str] | None = None,
 ) -> dict[str, Any]:
-    ranked = rank_kp_items_by_context(
+    diag_pool = filter_kp_items_by_demographics(
         list(profile.get("diagnostics") or []),
+        list(profile.get("diagnostics_meta") or []),
+        ctx,
+    )
+    ranked = rank_kp_items_by_context(
+        diag_pool,
         ctx,
         meta=list(profile.get("diagnostics_meta") or []),
         limit=12,
     )
     required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
-    kz_blob = _kz_exam_blob(doc)
+    kz_blob = expand_kz_blob(doc, "exams")
+    raw_text = (getattr(doc, "raw_text", None) or "").strip()
     cite = next(
         (c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("diagnostics", "criteria_block", "table")),
         (profile.get("cites") or [{}])[0] if profile.get("cites") else {},
@@ -452,34 +446,41 @@ def _exams_card(
             context_ru=basis,
         )
 
-    pct, found, missing = _coverage_pct(required, kz_blob, meta=ranked)
-    findings = [f"✓ {x}" for x in found[:6]]
-    gaps = [f"— {x}" for x in missing[:6]]
-    if kp_title:
-        comment = f"КП «{kp_title}»: в КЗ отражено {len(found)} из {len(required)} рекомендуемых обследований."
-    else:
-        comment = f"В КЗ отражено {len(found)} из {len(required)} обследований по КП."
-    if pick_note:
-        comment = f"{pick_note} {comment}"
+    pct, found, missing, details = coverage_with_evidence(
+        required, kz_blob, meta=ranked, raw_text=raw_text,
+    )
+    comment = kp_coverage_comment(
+        kp_title, found, missing, details, kind="обследований", pick_note=pick_note,
+    )
     if not kz_blob:
         pct = min(pct, 35)
         comment += " Назначения и результаты обследований в КЗ не распознаны."
 
-    return _card(
+    card = _card(
         "exams",
         score_pct=max(pct, 15) if kz_blob else min(pct, 40),
         comment_ru=comment,
-        conclusion_excerpt=_excerpt(kz_blob, 360),
+        conclusion_excerpt=best_kz_excerpt_from_details(details, kz_blob) or _excerpt(kz_blob, 360),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
         protocol_section=proto_section or "Обследование",
         protocol_page=str(cite.get("page_from") or ""),
         source_kind="kp",
         protocol_path=cite.get("path") or "",
         chunk_id=cite.get("chunk_id"),
-        findings_ru=findings,
-        gaps_ru=gaps,
         context_ru=basis,
     )
+    card["_cites"] = list(profile.get("cites") or [])
+    enrich_kp_card(
+        card,
+        details=details,
+        kz_blob=kz_blob,
+        cite=cite,
+        ranked=ranked,
+        get_chunks=get_chunks,
+        protocol_paths=protocol_paths or profile.get("paths"),
+    )
+    card.pop("_cites", None)
+    return card
 
 
 def _treatment_card(
@@ -487,8 +488,16 @@ def _treatment_card(
     profile: dict[str, Any],
     ctx: dict[str, Any],
     protocol_matches: list[dict[str, Any]] | None,
+    *,
+    get_chunks: GetChunksFn | None = None,
+    protocol_paths: list[str] | None = None,
 ) -> dict[str, Any]:
-    pool = list(profile.get("medications") or []) + list(profile.get("treatment") or [])
+    pool_raw = list(profile.get("medications") or []) + list(profile.get("treatment") or [])
+    pool = filter_kp_items_by_demographics(
+        pool_raw,
+        list(profile.get("medications_meta") or []) + list(profile.get("treatment_meta") or []),
+        ctx,
+    )
     ranked = rank_kp_items_by_context(
         pool,
         ctx,
@@ -496,7 +505,8 @@ def _treatment_card(
         limit=12,
     )
     required = [r["text"] for r in ranked if is_kp_checklist_item(r.get("text") or "")]
-    kz_blob = _kz_treatment_blob(doc)
+    kz_blob = expand_kz_blob(doc, "treatment")
+    raw_text = (getattr(doc, "raw_text", None) or "").strip()
     cite = next(
         (c for c in (profile.get("cites") or []) if c.get("chunk_type") in ("pharmacotherapy", "treatment", "drug_list")),
         (profile.get("cites") or [{}])[0] if profile.get("cites") else {},
@@ -536,34 +546,41 @@ def _treatment_card(
             context_ru=basis,
         )
 
-    pct, found, missing = _coverage_pct(required, kz_blob, meta=ranked)
-    findings = [f"✓ {x}" for x in found[:6]]
-    gaps = [f"— {x}" for x in missing[:6]]
-    if kp_title:
-        comment = f"КП «{kp_title}»: в КЗ отражено {len(found)} из {len(required)} рекомендаций по лечению."
-    else:
-        comment = f"В КЗ отражено {len(found)} из {len(required)} назначений по КП."
-    if pick_note:
-        comment = f"{pick_note} {comment}"
+    pct, found, missing, details = coverage_with_evidence(
+        required, kz_blob, meta=ranked, raw_text=raw_text,
+    )
+    comment = kp_coverage_comment(
+        kp_title, found, missing, details, kind="назначений по лечению", pick_note=pick_note,
+    )
     if not kz_blob:
         pct = min(pct, 35)
         comment += " Назначения в КЗ не распознаны."
 
-    return _card(
+    card = _card(
         "treatment",
         score_pct=max(pct, 20) if kz_blob else min(pct, 45),
         comment_ru=comment,
-        conclusion_excerpt=_excerpt(kz_blob, 360),
+        conclusion_excerpt=best_kz_excerpt_from_details(details, kz_blob) or _excerpt(kz_blob, 360),
         protocol_excerpt=(proto_header + ": " if proto_header else "") + proto_text,
         protocol_section=proto_section or "Лечение",
         protocol_page=str(cite.get("page_from") or ""),
         source_kind="kp",
         protocol_path=cite.get("path") or "",
         chunk_id=cite.get("chunk_id"),
-        findings_ru=findings,
-        gaps_ru=gaps,
         context_ru=basis,
     )
+    card["_cites"] = list(profile.get("cites") or [])
+    enrich_kp_card(
+        card,
+        details=details,
+        kz_blob=kz_blob,
+        cite=cite,
+        ranked=ranked,
+        get_chunks=get_chunks,
+        protocol_paths=protocol_paths or profile.get("paths"),
+    )
+    card.pop("_cites", None)
+    return card
 
 
 def _follow_up_card(
@@ -571,18 +588,7 @@ def _follow_up_card(
     icd_codes: list[str],
     profile: dict[str, Any],
 ) -> dict[str, Any]:
-    follow_text = doc.sections.follow_up_text or ""
-    if doc.follow_up:
-        follow_text = follow_text or "; ".join(
-            (f.raw_text or "") for f in doc.follow_up if f.raw_text
-        )
-    blob = "\n".join(
-        x for x in [
-            follow_text,
-            doc.sections.general_recommendations or "",
-            doc.sections.recommendations_treatment or "",
-        ] if x
-    )
+    blob = expand_kz_blob(doc, "follow_up")
 
     reg = lookup_follow_up_expectations(icd_codes)
     kp_mon = list(profile.get("monitoring") or [])
@@ -594,11 +600,12 @@ def _follow_up_card(
 
     proto_excerpt = ""
     if kp_mon:
-        proto_excerpt = kp_mon[0][:280]
+        proto_excerpt = verify_protocol_excerpt(kp_mon[0][:400])
         source_kind = "kp"
         section = "Диспансерное наблюдение (КП)"
     else:
-        proto_excerpt = (reg.get("conclusion_requirement") or hints[0] if hints else "")[:280]
+        raw_reg = (reg.get("conclusion_requirement") or hints[0] if hints else "")[:280]
+        proto_excerpt = verify_protocol_excerpt(raw_reg) or raw_reg[:280]
         source_kind = "regulation"
         section = reg.get("regulation_source") or "НПА № 127"
 
@@ -695,7 +702,7 @@ def build_consult_alignment(
         )
     )
     cards.append(_exams_card(doc, profile, ctx, protocol_matches, get_chunks=get_chunks, protocol_paths=paths_for_cards))
-    cards.append(_treatment_card(doc, profile, ctx, protocol_matches))
+    cards.append(_treatment_card(doc, profile, ctx, protocol_matches, get_chunks=get_chunks, protocol_paths=paths_for_cards))
     cards.append(_follow_up_card(doc, icd_codes, profile))
     cards.append(_limitations_card(profile, ctx, protocol_matches))
 
@@ -703,6 +710,7 @@ def build_consult_alignment(
         bid = str(card.get("block_id") or "")
         if bid and bid != "limitations":
             merge_sop_into_card(card, evaluate_sop_block(doc, bid))
+            finalize_completeness_card(card)
 
     by_id = {c["block_id"]: c for c in cards}
     ordered = [by_id[bid] for bid in ALIGNMENT_CARD_ORDER if bid in by_id]
@@ -714,9 +722,12 @@ def build_consult_alignment(
         c["comment_ru"] for c in ordered if c["block_id"] == "limitations"
     )
 
+    criteria = [_card_to_criterion(c) for c in ordered if c["block_id"] != "limitations"]
+    criteria = maybe_apply_criteria_narrative(criteria)
+
     return {
         "alignment_cards": ordered,
-        "criteria": [_card_to_criterion(c) for c in ordered if c["block_id"] != "limitations"],
+        "criteria": criteria,
         "alignment_mean_score": mean_score,
         "limitations_ru": limitations,
         "audit_trail": {
@@ -740,6 +751,7 @@ def _card_to_criterion(card: dict[str, Any]) -> dict[str, Any]:
         "protocol_excerpt", "protocol_section", "protocol_page",
         "source_kind", "source_label", "protocol_path", "chunk_id", "deterministic",
         "findings_ru", "gaps_ru", "context_ru", "reference_ru", "block_id",
+        "item_details", "gap_protocol_refs", "comment_narrative_llm",
     )}
     return out
 

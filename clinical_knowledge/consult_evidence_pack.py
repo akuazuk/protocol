@@ -35,6 +35,7 @@ def _excerpt_item(
     page: int | None = None,
     match_status: str = "protocol_excerpt",
     source: str = "rich_chunk",
+    chunk_id: str | None = None,
 ) -> dict[str, Any]:
     return {
         "block_id": block_id,
@@ -44,6 +45,7 @@ def _excerpt_item(
         "page": page,
         "match_status": match_status,
         "source": source,
+        "chunk_id": chunk_id,
     }
 
 
@@ -209,6 +211,7 @@ def _rich_chunk_excerpts(
                         page=int(page) if isinstance(page, (int, float)) else None,
                         match_status="rich_chunk",
                         source="rich_chunk",
+                        chunk_id=str(ch.get("chunk_id") or "") or None,
                     )
                 )
     return out

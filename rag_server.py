@@ -8072,7 +8072,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-25-r5-respiratory-routing-plan-def"
+BUILD_VERSION = "2026-06-01-r6-criteria-table-quality"
 
 
 def _app_version() -> str:
