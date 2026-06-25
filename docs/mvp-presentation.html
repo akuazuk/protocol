@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Презентация Protocol: каталог КП Минздрава РБ, двухконтурная проверка КЗ, send_gate, cisz_readiness FHIR BY, интеграция МИС Айболит и ЦИСЗ." />
+  <meta name="description" content="Презентация Protocol: каталог КП Минздрава РБ, L0/L1/L2-lite аудит КЗ (8 блоков, alignment, СОП Кравира), send_gate, cisz_readiness, B2C-витрина для пациентов, интеграция МИС Айболит." />
   <title>Protocol - КП Минздрава, аудит КЗ и готовность к ЦИСЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -200,6 +200,7 @@
     .hero-pill--o { background: rgba(217, 119, 6, 0.15); color: #b45309; }
     .hero-pill--b { background: rgba(12, 107, 148, 0.14); color: var(--ocean); }
     .hero-pill--v { background: rgba(92, 61, 158, 0.14); color: var(--violet); }
+    .hero-pill--p { background: rgba(190, 24, 93, 0.12); color: var(--pink-accent); }
 
     .hero-eyebrow {
       font-family: "Outfit", sans-serif;
@@ -418,6 +419,158 @@
       font-weight: 700;
       color: var(--green-700);
     }
+    .site-doc-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.85rem;
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed rgba(26, 138, 114, 0.22);
+    }
+    .site-doc-nav a {
+      font-weight: 700;
+      color: var(--green-700);
+      text-decoration: none;
+      font-size: 0.86rem;
+    }
+    .site-doc-nav a:hover { text-decoration: underline; }
+    .site-doc-nav a.doc-nav--patient {
+      color: var(--violet);
+    }
+    .blocks-eight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+      gap: 0.5rem;
+      margin: 0.85rem 0 0;
+    }
+    .block-chip {
+      padding: 0.55rem 0.65rem;
+      border-radius: 12px;
+      font-size: 0.76rem;
+      line-height: 1.35;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
+    }
+    .block-chip strong {
+      display: block;
+      font-family: Outfit, sans-serif;
+      font-size: 0.78rem;
+      color: var(--green-950);
+      margin-bottom: 0.15rem;
+    }
+    .block-chip--warn { border-left: 3px solid var(--amber); }
+    .block-chip--safe { border-left: 3px solid var(--risk); }
+    .tiers-shell {
+      margin: 1.5rem 0;
+      padding: 1.35rem 1.4rem 1.45rem;
+      border-radius: 24px;
+      background: linear-gradient(165deg, #f8fbff 0%, #f2f6f4 100%);
+      border: 1px solid rgba(12, 107, 148, 0.2);
+      box-shadow: var(--shadow);
+    }
+    .tiers-shell h2 { margin-top: 0; }
+    .tier-ladder {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.75rem;
+    }
+    .tier-step {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr;
+      gap: 0.65rem;
+      align-items: start;
+      padding: 0.65rem 0.75rem;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.14);
+    }
+    .tier-step__badge {
+      font-family: Outfit, sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 10px;
+      text-align: center;
+      background: rgba(26, 138, 114, 0.14);
+      color: var(--green-950);
+    }
+    .tier-step--l1 .tier-step__badge { background: rgba(67, 56, 202, 0.14); color: var(--indigo); }
+    .tier-step--l2 .tier-step__badge { background: rgba(12, 107, 148, 0.14); color: var(--ocean); }
+    .tier-step p { margin: 0; font-size: 0.86rem; }
+    .patient-shell {
+      margin: 1.5rem 0;
+      padding: 1.35rem 1.4rem 1.45rem;
+      border-radius: 24px;
+      background:
+        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(92, 61, 158, 0.14), transparent 55%),
+        linear-gradient(165deg, #faf8ff 0%, #f6f3fa 55%, #f4f8f6 100%);
+      border: 1px solid rgba(92, 61, 158, 0.22);
+      box-shadow: var(--shadow);
+    }
+    .patient-shell h2 { margin-top: 0; color: var(--violet); }
+    .patient-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 0.65rem;
+      margin-top: 0.75rem;
+    }
+    .patient-feat {
+      padding: 0.75rem 0.85rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(92, 61, 158, 0.16);
+      font-size: 0.86rem;
+    }
+    .patient-feat strong {
+      display: block;
+      font-family: Outfit, sans-serif;
+      font-size: 0.88rem;
+      margin-bottom: 0.25rem;
+      color: var(--violet);
+    }
+    .btn-patient-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.85rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 999px;
+      font-family: Outfit, sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #7c5cbf 0%, #5c3d9e 55%, #3d2a6e 100%);
+      box-shadow: 0 6px 20px rgba(92, 61, 158, 0.35);
+    }
+    .btn-patient-link:hover { filter: brightness(1.06); }
+    .alignment-shell {
+      margin: 1.5rem 0;
+      padding: 1.2rem 1.3rem 1.3rem;
+      border-radius: 22px;
+      background: linear-gradient(165deg, #fff 0%, rgba(232, 245, 241, 0.65) 100%);
+      border: 1px solid rgba(26, 138, 114, 0.2);
+    }
+    .alignment-shell h2 { margin-top: 0; }
+    .alignment-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin: 0.75rem 0;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+    @media (max-width: 720px) {
+      .alignment-flow { grid-template-columns: 1fr; }
+    }
+    .alignment-node {
+      padding: 0.65rem 0.5rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+    }
+    .alignment-node strong { display: block; font-size: 0.84rem; margin-bottom: 0.2rem; }
 
     .pull-quote {
       margin: 1.25rem 0;
@@ -1577,6 +1730,10 @@
       .stat-splash .cell,
       .live-kpi,
       .live-stats-shell,
+      .tiers-shell,
+      .patient-shell,
+      .alignment-shell,
+      .block-chip,
       .kpi-cell,
       .card,
       .simple-callout,
@@ -1597,6 +1754,9 @@
       .ministry-talk,
       .wins-shell,
       .live-stats-shell,
+      .tiers-shell,
+      .patient-shell,
+      .dual-contour-shell,
       .intro-two,
       .compare-wrap,
       .stat-splash,
@@ -1771,14 +1931,7 @@
           Печать
         </button>
         <a href="../index.html#consult-review">К приложению</a>
-        <span aria-hidden="true">·</span>
-        <a href="architecture-kravira-fhir-mis-print.html">Архитектура (HTML)</a>
-        <span aria-hidden="true">·</span>
-        <a href="architecture-kravira-fhir-mis.pdf">Архитектура (PDF)</a>
-        <span aria-hidden="true">·</span>
-        <a href="pre-sign-checklist-print.html">Чек-лист перед подписью</a>
-        <span aria-hidden="true">·</span>
-        <a href="ministry-brief-print.html">Буклет (печать)</a>
+        <a href="../patient.html">Для пациентов</a>
         <span class="nav-hint">
           Блоки не режутся посередине: если не помещаются на странице, переносятся целиком.
         </span>
@@ -1805,6 +1958,8 @@
         <span class="hero-pill hero-pill--v" id="hero-pill-chunks">… фрагментов RAG</span>
         <span class="hero-pill hero-pill--b">FHIR BY 5.0 · ЦИСЗ</span>
         <span class="hero-pill hero-pill--o">send_gate · cisz_readiness</span>
+        <span class="hero-pill hero-pill--v">L0 / L1 / L2-lite</span>
+        <span class="hero-pill hero-pill--p">B2C · patient.html</span>
       </div>
       <p class="tag-demo" style="margin-top: 0.85rem" id="hero-tag">
         Статистика корпуса и правил подгружается с сервера приложения (<code>/api/corpus-stats</code>, <code>/api/clinical-knowledge/status</code>).
@@ -1905,7 +2060,7 @@
     <div class="tri-diagram screen-only" aria-label="Три стороны: пациент, врач, клиника">
       <div class="tri-card">
         <span class="bubble">Пациент</span>
-        <p>Заключение ближе к официальным рекомендациям Минздрава - с опорой на цитируемый текст протокола, а не на общие формулировки.</p>
+        <p>Заключение ближе к официальным рекомендациям Минздрава - с опорой на цитируемый текст протокола. Отдельная B2C-витрина для самопроверки выписки.</p>
       </div>
       <div class="tri-card">
         <span class="bubble">Врач</span>
@@ -2057,6 +2212,17 @@ flowchart TB
         <div class="layer-card"><strong>КП · протокол</strong><span id="layer-protocol">…</span></div>
         <div class="layer-card"><strong>КП · клиника + safety</strong><span id="layer-clinical">…</span></div>
         <div class="layer-card" style="border-left: 3px solid var(--ocean)"><strong>ЦИСЗ · cisz_readiness</strong><span id="layer-cisz">Bundle · Composition · ресурсы</span></div>
+      </div>
+      <h3 style="margin-top: 1.1rem; font-size: 1rem">8 блоков структурного разбора КЗ</h3>
+      <div class="blocks-eight-grid" aria-label="Восемь блоков структурного аудита">
+        <div class="block-chip"><strong>Оформление</strong>Шапка, подписи, дата</div>
+        <div class="block-chip"><strong>Данные пациента</strong>Идентификация, контекст</div>
+        <div class="block-chip"><strong>Протокол</strong>Применимость выбранного КП</div>
+        <div class="block-chip"><strong>Диагноз</strong>МКБ, формулировка</div>
+        <div class="block-chip block-chip--warn"><strong>Обследования</strong>Назначения vs КП</div>
+        <div class="block-chip"><strong>Лечение</strong>Тактика, препараты</div>
+        <div class="block-chip block-chip--safe"><strong>Безопасность</strong>Red flags, safety cap</div>
+        <div class="block-chip"><strong>Контроль</strong>Наблюдение, динамика</div>
       </div>
       <div class="charts-row charts-row--2" style="margin-top: 1rem">
         <div class="chart-box chart-box--violet">
@@ -2234,6 +2400,7 @@ flowchart TB
           <ul style="margin: 0; padding-left: 1.1rem; font-size: 0.88rem">
             <li>8 блоков структурного разбора КЗ + детерминированные правила из PDF;</li>
             <li>гибрид <strong>75% структура + 25% правила</strong>, safety cap при red flags;</li>
+            <li>alignment «КЗ ↔ КП ↔ СОП»; таблица замечаний по блокам;</li>
             <li>карта доказательств с цитатами; компактный UI со спойлерами по блокам.</li>
           </ul>
           <p class="gate-formula">клиника = min(гибрид, структурный)</p>
@@ -2250,14 +2417,69 @@ flowchart TB
       </div>
       <p style="margin: 0.75rem 0 0; font-size: 0.88rem; color: var(--muted)">
         Нормативная база: программа испытаний амбулаторного профиля; протокол информационного взаимодействия МИС ОЗ с ЦИСЗ v.1.4.
-        Подробная схема интеграции - в документе архитектуры.
+        Подробные схемы - в блоке «Материалы проекта» внизу страницы.
       </p>
-      <div class="doc-links-row">
-        <a href="pre-sign-checklist-print.html">Чек-лист перед подписью (HTML)</a>
-        <a href="architecture-kravira-fhir-mis-print.html">Архитектура FHIR · МИС · ЦИСЗ (HTML)</a>
-        <a href="architecture-kravira-fhir-mis.pdf">Скачать PDF</a>
-        <a href="../index.html#consult-review">Открыть приложение</a>
+    </section>
+
+    <section class="tiers-shell screen-only" id="consult-tiers" aria-labelledby="tiers-title">
+      <h2 id="tiers-title">Уровни проверки: L0, L1 и L2-lite</h2>
+      <p class="lay-lead" style="margin-top: 0.35rem">
+        В UI по умолчанию - <strong>L1</strong> (~5-15 с): структурный разбор, alignment-карточки «КЗ ↔ КП ↔ СОП Кравира», rich chunks по matched PDF.
+        L2-lite добавляет evidence pack без полного RAG по корпусу. L0 - для МИС при каждом сохранении (&lt;2 с).
+      </p>
+      <div class="tier-ladder">
+        <div class="tier-step">
+          <span class="tier-step__badge">L0</span>
+          <p><strong>МИС · каждое сохранение.</strong> 8 блоков, правила, send_gate, cisz_readiness A-C. Без LLM и полного RAG. <code>consult-compliance-screen</code>.</p>
+        </div>
+        <div class="tier-step tier-step--l1">
+          <span class="tier-step__badge">L1</span>
+          <p><strong>Рекомендуемый в браузере.</strong> Structured + alignment + чек-лист СОП Kravira + таблица «Замечания по блокам» + подсказки по протоколу.</p>
+        </div>
+        <div class="tier-step tier-step--l2">
+          <span class="tier-step__badge">L2</span>
+          <p><strong>L2-lite на облаке.</strong> L1 + evidence pack + L2-fast narrative. Полный L2 (corpus RAG + LLM) - локально или по флагу.</p>
+        </div>
       </div>
+      <div class="mermaid-wrap" style="margin-top: 0.85rem">
+        <pre class="mermaid">
+flowchart LR
+    IN["PDF / Bundle"] --> L0["L0 gate"]
+    IN --> L1["L1 structured + alignment"]
+    L1 --> L2["L2-lite evidence"]
+    L0 --> GATE["send_gate"]
+    L1 --> GATE
+    L2 --> REP["Отчёт + цитаты КП"]
+        </pre>
+      </div>
+    </section>
+
+    <section class="alignment-shell screen-only" id="alignment-sop" aria-labelledby="alignment-title">
+      <h2 id="alignment-title">Alignment, СОП Kravira и замечания по блокам</h2>
+      <p style="margin: 0.35rem 0 0; font-size: 0.9rem; max-width: 52em">
+        Детерминированные карточки связывают фрагменты КЗ с пунктами клинического протокола и внутренними правилами СОП Kravira.
+        В UI - подсвеченная таблица «Замечания по блокам» и чек-лист перед оформлением вместо ссылки на черновик КЗ.
+      </p>
+      <div class="alignment-flow" aria-hidden="true">
+        <div class="alignment-node"><strong>Текст КЗ</strong>8 блоков structured</div>
+        <div class="alignment-node"><strong>Клинический протокол</strong>Цитаты из PDF Минздрава</div>
+        <div class="alignment-node"><strong>СОП Kravira</strong>Чек-лист оформления</div>
+      </div>
+    </section>
+
+    <section class="patient-shell screen-only" id="patient-b2c" aria-labelledby="patient-b2c-title">
+      <h2 id="patient-b2c-title">B2C: проверка заключения для пациента</h2>
+      <p style="margin: 0.35rem 0 0; font-size: 0.9rem; max-width: 52em">
+        Отдельный контур <strong>P1</strong> без send_gate и ЦИСЗ: светофор, понятные блоки, вопросы врачу, опциональная сверка с анализами (фаза 2a).
+        PWA-витрина с историей проверок на устройстве.
+      </p>
+      <div class="patient-features">
+        <div class="patient-feat"><strong>Светофор и балл</strong>Ориентир по соответствию протоколам Минздрава - не диагноз и не МЭЭ.</div>
+        <div class="patient-feat"><strong>8 блоков простым языком</strong>Жалобы, анамнез, статус, диагноз, обследования, лечение, контроль, ограничения.</div>
+        <div class="patient-feat"><strong>Анализы (опц.)</strong>Загрузка бланков - сверка маркеров ОАК/СРБ с текстом КЗ.</div>
+        <div class="patient-feat"><strong>API tier P1</strong><code>POST /api/patient/review</code> - без B2B-полей cisz и send_gate.</div>
+      </div>
+      <a href="../patient.html" class="btn-patient-link">Открыть витрину для пациентов</a>
     </section>
 
     <div class="print-only" style="margin: 8px 0 12px; font-size: 9.5pt;">
@@ -2269,7 +2491,7 @@ flowchart TB
       <div class="kpi-cell"><strong id="cap-protocols">478</strong><span>протоколов в индексируемом корпусе</span></div>
       <div class="kpi-cell"><strong id="cap-rules">498</strong><span>клинических правил из PDF (100% покрытие)</span></div>
       <div class="kpi-cell"><strong>2 контура</strong><span>КП Минздрава · готовность FHIR к ЦИСЗ</span></div>
-      <div class="kpi-cell"><strong>L0 / L2</strong><span>экран &lt;2 с · полный отчёт + RAG</span></div>
+      <div class="kpi-cell"><strong>L0 / L1 / L2</strong><span>gate · alignment · L2-lite evidence</span></div>
       <div class="kpi-cell"><strong>send_gate</strong><span>допуск к ЭЦП и отправке в ЦИСЗ</span></div>
     </div>
     <!-- Дубль KPI для печати (канвасы скрыты) -->
@@ -2308,6 +2530,7 @@ flowchart TB
         <ul>
           <li>До <strong>трёх PDF</strong> или один <strong>FHIR Bundle</strong> (адаптер синтезирует текст для парсера).</li>
           <li><strong>Дашборд из 4 карточек</strong>: гибрид, структурный, LLM (L2), ЦИСЗ - пастельные tier-good / mid / cisz.</li>
+          <li><strong>L1 по умолчанию</strong>: alignment, СОП Kravira, «Замечания по блокам»; L2-lite - evidence pack.</li>
           <li><strong>Карта доказательств</strong>, спойлеры по блокам, safety cap; таблица «Готовность к ЦИСЗ» со слоями A-C.</li>
           <li><code>send_gate</code> в JSON для МИС: статус, <code>gate_score</code>, порог учреждения (inform / soft / hard).</li>
         </ul>
@@ -2370,10 +2593,11 @@ flowchart TB
       <div class="compare-col compare-col--plus">
         <h3>С приложением Protocol</h3>
         <ul>
-          <li>Один интерфейс: подбор КП, выдержки, черновик КЗ, компактный дашборд с 4 оценками.</li>
-          <li>Два контура: КП (гибрид + safety) и ЦИСЗ (Bundle/Composition); <code>send_gate</code> до ЭЦП.</li>
+          <li>Один интерфейс: подбор КП, L1/L2-lite аудит, alignment и СОП Kravira.</li>
+          <li>Два контура B2B: КП (гибрид + safety) и ЦИСЗ (Bundle/Composition); <code>send_gate</code> до ЭЦП.</li>
+          <li>Отдельно B2C-витрина <code>patient.html</code> - tier P1 без ЦИСЗ, со сверкой анализов.</li>
           <li><span id="compare-rules-line">498+ правил</span> из PDF; FHIR-адаптер, cisz_readiness, validate-bundle.</li>
-          <li>L0/L2 API для «Айболит»: тот же контур на сеть центров без дублирования логики.</li>
+          <li>L0/L1/L2 API для «Айболит»: тот же контур на сеть центров без дублирования логики.</li>
         </ul>
       </div>
     </div>
@@ -2388,16 +2612,16 @@ flowchart TB
       <span class="flow-arrow">→</span>
       <div class="flow-step flow-step--a">L0 &lt;2 с</div>
       <span class="flow-arrow">→</span>
-      <div class="flow-step flow-step--b">КП + cisz_readiness</div>
+      <div class="flow-step flow-step--b">L1 alignment</div>
       <span class="flow-arrow">→</span>
       <div class="flow-step flow-step--c">send_gate</div>
       <span class="flow-arrow">→</span>
-      <div class="flow-step flow-step--a">L2 + RAG (опц.)</div>
+      <div class="flow-step flow-step--a">L2-lite (опц.)</div>
       <span class="flow-arrow">→</span>
       <div class="flow-step flow-step--b">ЕСИФЮЛ → ЦИСЗ</div>
     </div>
     <p class="print-only" style="font-size: 9.5pt">
-      Поток: PDF/Bundle → L0 (структура, правила КП, cisz A-C) → gate_score → при allowed: ЭЦП через ЕСИФЮЛ и CMS в ЦИСЗ; при blocked - доработка. L2 - полный отчёт, карта доказательств, LLM по КП.
+      Поток: PDF/Bundle → L0 (gate) → L1 (structured + alignment + СОП) → gate_score → при allowed: ЭЦП через ЕСИФЮЛ; L2-lite - evidence pack и narrative.
     </p>
 
     <span class="section-ribbon screen-only">Техническая архитектура</span>
@@ -2427,6 +2651,10 @@ flowchart TB
         <strong>Аудит 1-3 PDF</strong>: compliance engine, карта доказательств, HTML-отчёт.
       </div>
       <div class="api-chip">
+        <code>POST /api/consult-review/tier</code>
+        <strong>L0 / L1 / L2</strong> - tiering: structured, alignment, L2-lite evidence pack.
+      </div>
+      <div class="api-chip">
         <code>POST /api/consult-compliance-screen</code>
         <strong>L0 для МИС</strong>: text или bundle; send_gate, cisz_readiness, &lt;2 с без LLM/RAG.
       </div>
@@ -2441,6 +2669,14 @@ flowchart TB
       <div class="api-chip">
         <code>GET /api/clinical-knowledge/status</code>
         <strong>База правил</strong>: нозологии, protocol cards, покрытие PDF каталога.
+      </div>
+      <div class="api-chip">
+        <code>POST /api/patient/review</code>
+        <strong>B2C tier P1</strong>: отчёт для пациента, опц. lab_files, без send_gate.
+      </div>
+      <div class="api-chip">
+        <code>GET /api/methodist/*</code>
+        <strong>Кабинет методиста</strong>: workbench, feedback JSONL, очередь кейсов.
       </div>
       <div class="api-chip">
         <code>GET /api/corpus-stats</code>
@@ -2524,10 +2760,10 @@ flowchart TB
 
     <h3>Этажи проверки L0 - L3</h3>
     <div class="stack-layers screen-only" aria-label="Этажи L0-L3">
-      <div class="layer layer--l1"><strong>L0</strong> · каждое сохранение · &lt;2 с · send_gate без LLM</div>
-      <div class="layer layer--l2"><strong>L1</strong> · выборка 10-20% · случаи с низким gate</div>
-      <div class="layer layer--l3"><strong>L2</strong> · полный отчёт · RAG · карта доказательств</div>
-      <div class="layer layer--l4"><strong>L3</strong> · validate-bundle · интегратор · тест ЦИСЗ</div>
+      <div class="layer layer--l1"><strong>L0</strong> · 100% КЗ · &lt;2 с · send_gate без LLM</div>
+      <div class="layer layer--l2"><strong>L1</strong> · UI по умолчанию · alignment + СОП + 8 блоков</div>
+      <div class="layer layer--l3"><strong>L2-lite</strong> · evidence pack · L2-fast на облаке</div>
+      <div class="layer layer--l4"><strong>L3</strong> · validate-bundle · ручной аудит методслужбы</div>
     </div>
 
     <h3>Сценарий врача за один приём (упрощённо)</h3>
@@ -2584,7 +2820,7 @@ flowchart LR
         </p>
       </div>
       <div class="chart-box">
-        <h3 style="margin-top: 0">Шесть блоков аудита (гастро · fixture)</h3>
+        <h3 style="margin-top: 0">Блоки аудита (8 направлений · гастро fixture)</h3>
         <div class="screen-chart" style="height: 220px; position: relative;">
           <canvas id="chartLine" aria-label="Блоки аудита гастро КЗ"></canvas>
         </div>
@@ -2596,7 +2832,7 @@ flowchart LR
           </ul>
         </div>
         <p class="chart-caption" id="chart-line-caption">
-          Детализация по блокам: оформление, протокол, диагноз, лечение, безопасность, наблюдение.
+          Детализация по блокам scoring: оформление, протокол, диагноз, лечение, безопасность, контроль (эталон gastro_adult).
         </p>
       </div>
       <div class="chart-box">
@@ -2641,7 +2877,7 @@ flowchart LR
 
     <div class="charts-row charts-split">
       <div class="chart-box">
-        <h3 style="margin-top: 0">Два эталонных КЗ: профиль по шести блокам</h3>
+        <h3 style="margin-top: 0">Два эталонных КЗ: профиль по блокам scoring</h3>
         <p class="chart-caption" style="margin-top: 0; margin-bottom: 0.5rem" id="chart-radar-caption">
           Зелёная заливка - гастро (в основном соответствует); красная - хирургия с красным флагом (ручная проверка).
         </p>
@@ -2680,8 +2916,8 @@ flowchart LR
     <h2>Дорожная карта (этапы)</h2>
     <ol class="timeline">
       <li>
-        <strong>Production-ready в браузере</strong>&nbsp;- каталог Минздрава (478 PDF), 8-блочный аудит, компактный UI с дашбордом и спойлерами,
-        <code>send_gate</code>, <code>cisz_readiness</code> (слои A-C), L0/L2 API, validate-bundle; архитектурный документ FHIR BY.
+        <strong>Production-ready в браузере</strong>&nbsp;- каталог Минздрава, L0/L1/L2-lite, 8-блочный аудит, alignment и СОП Kravira,
+        <code>send_gate</code>, <code>cisz_readiness</code>, B2C-витрина <code>patient.html</code>, кабинет методиста; архитектурные документы FHIR BY.
       </li>
       <li>
         <strong>Интеграция с МИС «Айболит»</strong>&nbsp;- автовызов L0 при сохранении; soft_gate перед ЕСИФЮЛ; панель gate в рабочем месте врача; журнал качества.
@@ -2740,12 +2976,18 @@ flowchart LR
     </div>
 
     <footer class="page-foot">
-      Документ носит методический и прогностический характер. Форматы обмена с ЦИСЗ, применение КЭП/УКЭП через ЕСИФЮЛ, обработка ПДн и хостинг - по дорожной карте ИБ и законодательства РБ.
-      Архитектура интеграции:&nbsp;<a href="architecture-kravira-fhir-mis-print.html">HTML</a>,
-      <a href="architecture-kravira-fhir-mis.pdf">PDF</a>,
-      <a href="pre-sign-checklist-print.html">чек-лист перед подписью</a>.
-      Клинические протоколы - на&nbsp;<a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">сайте Минздрава Республики Беларусь</a>.
-      Приложение:&nbsp;<a href="../index.html#consult-review">Protocol</a>.
+      <p style="margin: 0">
+        Документ носит методический и прогностический характер. Форматы обмена с ЦИСЗ, применение КЭП/УКЭП через ЕСИФЮЛ, обработка ПДн и хостинг - по дорожной карте ИБ и законодательства РБ.
+      </p>
+      <nav class="site-doc-nav" aria-label="Материалы проекта">
+        <a href="../index.html#consult-review">Protocol (врачи)</a>
+        <a href="../patient.html" class="doc-nav--patient">Проверка для пациентов</a>
+        <a href="architecture-kravira-fhir-mis.pdf">Архитектура FHIR · PDF</a>
+        <a href="architecture-stages-print.html">Архитектура по этапам</a>
+        <a href="pre-sign-checklist-print.html">Чек-лист перед подписью</a>
+        <a href="ministry-brief-print.html">Буклет для руководства</a>
+        <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">Протоколы Минздрава РБ</a>
+      </nav>
     </footer>
   </div>
 
@@ -2779,12 +3021,24 @@ flowchart LR
       };
       var BLOCK_LABELS = {
         documentation: "Оформление",
+        patient_data: "Данные пациента",
         protocol: "Протокол",
         diagnosis: "Диагноз",
+        required_exams: "Обследования",
         treatment: "Лечение",
         safety: "Безопасность",
-        follow_up: "Наблюдение",
+        follow_up: "Контроль",
       };
+      var BLOCK_ORDER = [
+        "documentation",
+        "patient_data",
+        "protocol",
+        "diagnosis",
+        "required_exams",
+        "treatment",
+        "safety",
+        "follow_up",
+      ];
       var RUBRIC_LABELS = {
         stomatologiya: "Стоматология",
         khirurgiya: "Хирургия",
@@ -3603,7 +3857,12 @@ flowchart LR
         var gastro = kzFixtures.gastro_adult;
         var ctxLine = document.getElementById("chartLine");
         if (ctxLine && gastro && gastro.blocks) {
-          var blockKeys = Object.keys(BLOCK_LABELS);
+          var blockKeys = BLOCK_ORDER.filter(function (k) {
+            return gastro.blocks[k] != null;
+          });
+          if (!blockKeys.length) {
+            blockKeys = Object.keys(gastro.blocks);
+          }
           chartLineInst = new Chart(ctxLine, {
             type: "line",
             data: {
@@ -3707,7 +3966,18 @@ flowchart LR
         var ctxRadar = document.getElementById("chartRadar");
         var surgery = kzFixtures.surgery_redflag;
         if (ctxRadar && gastro && gastro.blocks && surgery && surgery.blocks) {
-          var radarLabels = Object.keys(BLOCK_LABELS).map(function (k) { return BLOCK_LABELS[k]; });
+          var radarLabels = BLOCK_ORDER.filter(function (k) {
+            return BLOCK_LABELS[k];
+          }).map(function (k) { return BLOCK_LABELS[k]; });
+          var radarKeys = BLOCK_ORDER.filter(function (k) {
+            return (gastro.blocks && gastro.blocks[k] != null) || (surgery.blocks && surgery.blocks[k] != null);
+          });
+          if (!radarKeys.length) {
+            radarKeys = Object.keys(BLOCK_LABELS).filter(function (k) {
+              return (gastro.blocks && gastro.blocks[k] != null) || (surgery.blocks && surgery.blocks[k] != null);
+            });
+          }
+          radarLabels = radarKeys.map(function (k) { return BLOCK_LABELS[k] || k; });
           chartRadarInst = new Chart(ctxRadar, {
             type: "radar",
             data: {
@@ -3715,7 +3985,7 @@ flowchart LR
               datasets: [
                 {
                   label: "Гастро · " + gastro.overall_score + "%",
-                  data: Object.keys(BLOCK_LABELS).map(function (k) { return gastro.blocks[k]; }),
+                  data: radarKeys.map(function (k) { return gastro.blocks[k]; }),
                   fill: true,
                   backgroundColor: "rgba(26, 138, 114, 0.28)",
                   borderColor: g,
@@ -3724,7 +3994,7 @@ flowchart LR
                 },
                 {
                   label: "Хирургия · " + surgery.overall_score + "%",
-                  data: Object.keys(BLOCK_LABELS).map(function (k) { return surgery.blocks[k]; }),
+                  data: radarKeys.map(function (k) { return surgery.blocks[k]; }),
                   fill: true,
                   backgroundColor: "rgba(155, 28, 46, 0.16)",
                   borderColor: "#9b1c2e",
