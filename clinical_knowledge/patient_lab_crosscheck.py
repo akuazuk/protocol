@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .lab_result_parser import extract_lab_markers, marker_names
+from .lab_result_parser import detect_lab_panels, extract_lab_markers, format_marker_line, marker_names
 
 
 def _normalize_marker(name: str) -> str:
@@ -42,6 +42,8 @@ def crosscheck_labs_with_kz(
 
     markers = extract_lab_markers(lab)
     names = marker_names(markers)
+    panels = detect_lab_panels(lab)
+    marker_lines = [format_marker_line(m) for m in markers[:20]]
     in_kz: list[str] = []
     missing: list[str] = []
     for name in names:
@@ -51,6 +53,13 @@ def crosscheck_labs_with_kz(
             missing.append(name)
 
     notes: list[str] = []
+    if panels:
+        notes.append("Распознаны бланки: " + ", ".join(panels[:3]) + ".")
+    if marker_lines:
+        preview = "; ".join(marker_lines[:6])
+        if len(marker_lines) > 6:
+            preview += f" и ещё {len(marker_lines) - 6}"
+        notes.append(f"Найденные показатели: {preview}.")
     if missing:
         shown = ", ".join(missing[:5])
         if len(missing) > 5:
@@ -69,7 +78,9 @@ def crosscheck_labs_with_kz(
 
     return {
         "lab_count": len(markers),
+        "panels_ru": panels[:5],
         "markers": markers[:25],
+        "marker_lines_ru": marker_lines[:20],
         "in_kz": in_kz[:15],
         "missing_in_kz": missing[:15],
         "notes_ru": notes,

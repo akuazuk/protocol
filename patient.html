@@ -858,6 +858,13 @@
         if (lc.notes_ru && lc.notes_ru.length) {
           lc.notes_ru.forEach(function (n) { html += "<p style=\"margin:0.35rem 0\">" + escapeHtml(n) + "</p>"; });
         }
+        if (lc.marker_lines_ru && lc.marker_lines_ru.length) {
+          html += '<ul style="margin:0.35rem 0 0.5rem;padding-left:1.1rem;font-size:0.78rem;line-height:1.45">';
+          lc.marker_lines_ru.forEach(function (line) {
+            html += "<li>" + escapeHtml(line) + "</li>";
+          });
+          html += "</ul>";
+        }
         if (lc.missing_in_kz && lc.missing_in_kz.length) {
           html += '<div class="lab-tags">';
           lc.missing_in_kz.forEach(function (m) {
