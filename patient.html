@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a8a72" />
+  <title>Проверь своё заключение - Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-950: #063d35;
+      --green-800: #0d5c4a;
+      --green-600: #1a8a72;
+      --green-soft: #e8f5f1;
+      --text: #1a2e2a;
+      --muted: #5a6f6a;
+      --border: rgba(26, 138, 114, 0.22);
+      --risk: #b91c1c;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f4f8f6 0%, #fff 40%);
+      min-height: 100dvh;
+      padding: 0 0 2rem;
+    }
+    .wrap { max-width: 28rem; margin: 0 auto; padding: 1rem 1rem 0; }
+    header {
+      padding: 1rem 0 0.75rem;
+      text-align: center;
+    }
+    h1 {
+      font-family: Outfit, sans-serif;
+      font-size: 1.35rem;
+      margin: 0 0 0.35rem;
+      color: var(--green-950);
+    }
+    .lead { font-size: 0.9rem; color: var(--muted); line-height: 1.45; margin: 0; }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin: 0.75rem 0;
+      box-shadow: 0 4px 18px rgba(6, 61, 53, 0.06);
+    }
+    label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--green-800); margin-bottom: 0.35rem; }
+    input[type="file"], input[type="number"], select {
+      width: 100%;
+      font: inherit;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid #c5d9d3;
+      background: #fff;
+    }
+    .row { display: flex; gap: 0.65rem; }
+    .row > * { flex: 1; }
+    .consent {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+    .consent input { margin-top: 0.2rem; flex-shrink: 0; }
+    .btn {
+      display: block;
+      width: 100%;
+      font-family: Outfit, sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--green-600), var(--green-800));
+      color: #fff;
+      margin-top: 0.75rem;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .status { text-align: center; font-size: 0.88rem; color: var(--muted); min-height: 1.2rem; margin-top: 0.5rem; }
+    .hidden { display: none !important; }
+
+    .score-ring {
+      width: 7.5rem;
+      height: 7.5rem;
+      border-radius: 50%;
+      margin: 0.5rem auto 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Outfit, sans-serif;
+      border: 5px solid var(--green-600);
+      background: #fff;
+    }
+    .score-ring--green { border-color: #1a8a72; background: linear-gradient(180deg, #f4faf8, #fff); }
+    .score-ring--yellow { border-color: #d97706; background: linear-gradient(180deg, #fffbeb, #fff); }
+    .score-ring--red { border-color: #dc2626; background: linear-gradient(180deg, #fef2f2, #fff); }
+    .score-pct { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .score-label { font-size: 0.72rem; text-align: center; color: var(--muted); padding: 0 0.5rem; margin-top: 0.25rem; }
+
+    .blocks-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 0.5rem;
+    }
+    .blocks-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--green-soft);
+    }
+    .blocks-table td {
+      padding: 0.5rem;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.1);
+    }
+    tr.block-row--ok td { background: rgba(26, 138, 114, 0.06); }
+    tr.block-row--attention td { background: rgba(217, 119, 6, 0.08); }
+    tr.block-row--concern td { background: rgba(220, 38, 38, 0.07); }
+    .pill {
+      display: inline-block;
+      padding: 0.12rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .pill--ok { background: #d1fae5; color: #166534; }
+    .pill--attention { background: #fde68a; color: #92400e; }
+    .pill--concern { background: #fecaca; color: #991b1b; }
+    .gap-list { margin: 0.25rem 0 0; padding-left: 1rem; color: #4a5f58; font-size: 0.78rem; }
+    .questions { list-style: none; padding: 0; margin: 0; }
+    .questions li {
+      padding: 0.5rem 0.65rem;
+      margin-bottom: 0.4rem;
+      border-radius: 10px;
+      background: #fff8eb;
+      border-left: 3px solid var(--warn);
+      font-size: 0.84rem;
+      line-height: 1.4;
+    }
+    .cite {
+      padding: 0.55rem 0.65rem;
+      margin-bottom: 0.45rem;
+      border-radius: 10px;
+      background: var(--green-soft);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    .cite strong { color: var(--green-800); font-size: 0.78rem; }
+    .disclaimer {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 0.75rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid var(--border);
+    }
+    .foot { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 1rem; }
+    .foot a { color: var(--green-800); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Проверь своё заключение</h1>
+      <p class="lead">Сверка с клиническими протоколами Минздрава РБ. Загрузите фото или PDF после приёма.</p>
+    </header>
+
+    <section class="card" id="form-card">
+      <label for="kz-files">Фото или PDF заключения</label>
+      <input type="file" id="kz-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+
+      <div class="row" style="margin-top: 0.65rem">
+        <div>
+          <label for="age-years">Возраст</label>
+          <input type="number" id="age-years" min="1" max="120" placeholder="необяз." />
+        </div>
+        <div>
+          <label for="sex">Пол</label>
+          <select id="sex">
+            <option value="">не указан</option>
+            <option value="female">женский</option>
+            <option value="male">мужской</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="consent" style="margin-top: 0.75rem">
+        <input type="checkbox" id="consent" />
+        <span>Согласен на обработку загруженного документа для автоматической сверки с протоколами. Данные не используются для обучения моделей.</span>
+      </label>
+
+      <button type="button" class="btn" id="btn-check" disabled>Проверить заключение</button>
+      <p class="status" id="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card hidden" id="result-card">
+      <div id="score-ring" class="score-ring score-ring--yellow">
+        <span class="score-pct" id="score-pct">-</span>
+        <span class="score-label" id="score-label">-</span>
+      </div>
+
+      <h2 style="font-family: Outfit,sans-serif; font-size: 1rem; margin: 0 0 0.35rem; color: var(--green-800)">Замечания по блокам</h2>
+      <div style="overflow-x: auto">
+        <table class="blocks-table" id="blocks-table">
+          <thead>
+            <tr>
+              <th>Блок</th>
+              <th>Оценка</th>
+              <th>Комментарий</th>
+            </tr>
+          </thead>
+          <tbody id="blocks-tbody"></tbody>
+        </table>
+      </div>
+
+      <h2 style="font-family: Outfit,sans-serif; font-size: 1rem; margin: 1rem 0 0.35rem; color: var(--green-800)">Вопросы врачу</h2>
+      <ul class="questions" id="questions-list"></ul>
+
+      <details style="margin-top: 0.75rem" id="cites-details">
+        <summary style="font-weight: 600; color: var(--green-800); cursor: pointer">Цитаты из протокола Минздрава</summary>
+        <div id="cites-wrap" style="margin-top: 0.5rem"></div>
+      </details>
+
+      <p class="disclaimer" id="disclaimer"></p>
+      <button type="button" class="btn" id="btn-again" style="background: #fff; color: var(--green-800); border: 2px solid var(--border)">Проверить другой документ</button>
+    </section>
+
+    <p class="foot">Protocol · МЦ «Кравира» · <a href="/">Версия для врачей</a></p>
+  </div>
+
+  <script>
+    (function () {
+      var filesEl = document.getElementById("kz-files");
+      var consentEl = document.getElementById("consent");
+      var btn = document.getElementById("btn-check");
+      var statusEl = document.getElementById("status");
+      var formCard = document.getElementById("form-card");
+      var resultCard = document.getElementById("result-card");
+
+      function apiBase() {
+        return window.location.origin;
+      }
+
+      function updateBtn() {
+        btn.disabled = !(consentEl.checked && filesEl.files && filesEl.files.length);
+      }
+      filesEl.addEventListener("change", updateBtn);
+      consentEl.addEventListener("change", updateBtn);
+
+      function pillClass(status) {
+        if (status === "ok") return "pill pill--ok";
+        if (status === "concern") return "pill pill--concern";
+        return "pill pill--attention";
+      }
+      function pillLabel(status) {
+        if (status === "ok") return "Хорошо";
+        if (status === "concern") return "Важно";
+        return "Уточнить";
+      }
+      function rowClass(status) {
+        return "block-row--" + (status || "attention");
+      }
+
+      function renderReport(pr) {
+        var ring = document.getElementById("score-ring");
+        var light = pr.traffic_light || "yellow";
+        ring.className = "score-ring score-ring--" + light;
+        document.getElementById("score-pct").textContent =
+          pr.overall_pct != null ? pr.overall_pct + "%" : "—";
+        document.getElementById("score-label").textContent = pr.overall_label_ru || "";
+
+        var tbody = document.getElementById("blocks-tbody");
+        tbody.innerHTML = "";
+        (pr.blocks || []).forEach(function (b) {
+          var tr = document.createElement("tr");
+          tr.className = rowClass(b.status);
+          var gapsHtml = "";
+          if (b.gaps && b.gaps.length) {
+            gapsHtml = "<ul class=\"gap-list\">" + b.gaps.map(function (g) {
+              return "<li>" + escapeHtml(g) + "</li>";
+            }).join("") + "</ul>";
+          }
+          tr.innerHTML =
+            "<td><strong>" + escapeHtml(b.title || "") + "</strong></td>" +
+            "<td><span class=\"" + pillClass(b.status) + "\">" +
+            (b.score_pct != null ? b.score_pct + "% · " : "") +
+            pillLabel(b.status) + "</span></td>" +
+            "<td>" + escapeHtml(b.summary_ru || "—") + gapsHtml + "</td>";
+          tbody.appendChild(tr);
+        });
+
+        var qList = document.getElementById("questions-list");
+        qList.innerHTML = "";
+        (pr.questions_for_doctor || []).forEach(function (q) {
+          var li = document.createElement("li");
+          li.textContent = q;
+          qList.appendChild(li);
+        });
+        if (!pr.questions_for_doctor || !pr.questions_for_doctor.length) {
+          var li = document.createElement("li");
+          li.textContent = "Серьёзных вопросов к врачу по стандарту не выявлено.";
+          li.style.background = "#f4faf8";
+          li.style.borderColor = "#1a8a72";
+          qList.appendChild(li);
+        }
+
+        var cites = document.getElementById("cites-wrap");
+        var citesDetails = document.getElementById("cites-details");
+        cites.innerHTML = "";
+        if (pr.protocol_citations && pr.protocol_citations.length) {
+          citesDetails.hidden = false;
+          pr.protocol_citations.forEach(function (c) {
+            var div = document.createElement("div");
+            div.className = "cite";
+            div.innerHTML =
+              "<strong>" + escapeHtml(c.protocol_title || "Протокол") +
+              (c.section ? " · " + escapeHtml(c.section) : "") + "</strong><br>" +
+              escapeHtml(c.excerpt || "");
+            cites.appendChild(div);
+          });
+        } else {
+          citesDetails.hidden = true;
+        }
+
+        var disc = pr.disclaimer_ru || "";
+        if (pr.limitations_ru) disc += " " + pr.limitations_ru;
+        document.getElementById("disclaimer").textContent = disc;
+      }
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      btn.addEventListener("click", function () {
+        if (!filesEl.files || !filesEl.files.length) return;
+        var fd = new FormData();
+        var i;
+        for (i = 0; i < filesEl.files.length; i++) {
+          fd.append("files", filesEl.files[i]);
+        }
+        fd.append("consent", "1");
+        var age = document.getElementById("age-years").value;
+        var sex = document.getElementById("sex").value;
+        if (age) fd.append("age_years", age);
+        if (sex) fd.append("sex", sex);
+
+        btn.disabled = true;
+        statusEl.textContent = "Анализируем документ… обычно до 20 секунд.";
+
+        fetch(apiBase() + "/api/patient/review", { method: "POST", body: fd })
+          .then(function (r) {
+            return r.json().then(function (j) {
+              if (!r.ok) throw new Error(j.detail || "Ошибка сервера");
+              return j;
+            });
+          })
+          .then(function (data) {
+            statusEl.textContent = "";
+            formCard.classList.add("hidden");
+            resultCard.classList.remove("hidden");
+            renderReport((data && data.patient_report) || {});
+          })
+          .catch(function (err) {
+            statusEl.textContent = err.message || "Не удалось выполнить проверку.";
+            updateBtn();
+          });
+      });
+
+      document.getElementById("btn-again").addEventListener("click", function () {
+        resultCard.classList.add("hidden");
+        formCard.classList.remove("hidden");
+        filesEl.value = "";
+        updateBtn();
+        statusEl.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>

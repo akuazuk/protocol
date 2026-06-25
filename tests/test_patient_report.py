@@ -1,0 +1,88 @@
+"""B2C patient report (tier P1)."""
+from __future__ import annotations
+
+from clinical_knowledge.patient_report import (
+    build_patient_report,
+    block_status_for_score,
+    traffic_light_for_pct,
+)
+from clinical_knowledge.patient_review import (
+    patient_demographics_from_form,
+    run_patient_review,
+)
+
+KZ = """\
+Врач: флеболог
+Дата консультации: 12.04.2024
+Дата рождения: 15.08.1970
+Пол: женский
+Жалобы: отёк правой голени.
+Диагноз: I80.1 Флеботромбоз поверхностных вен нижней конечности.
+Рекомендации по лечению: ривароксабан 20 мг 1 раз в день постоянно.
+Контроль через 3 месяца.
+"""
+
+
+def test_traffic_light_thresholds() -> None:
+    assert traffic_light_for_pct(80)[0] == "green"
+    assert traffic_light_for_pct(65)[0] == "yellow"
+    assert traffic_light_for_pct(40)[0] == "red"
+    assert block_status_for_score(80) == "ok"
+    assert block_status_for_score(60) == "attention"
+    assert block_status_for_score(30) == "concern"
+
+
+def test_build_patient_report_from_alignment() -> None:
+    l1 = {
+        "confidence_score": 85,
+        "matched_protocols_count": 2,
+        "overall_score": 72,
+        "alignment": {
+            "alignment_mean_score": 68,
+            "alignment_cards": [
+                {
+                    "block_id": "diagnosis",
+                    "name_ru": "Диагноз",
+                    "score_pct": 80,
+                    "comment_ru": "Код МКБ указан.",
+                    "gaps_ru": [],
+                    "protocol_excerpt": "При флеботромбозе указывают локализацию и стадию.",
+                    "protocol_title": "КП ТГВ",
+                },
+                {
+                    "block_id": "treatment",
+                    "name_ru": "Лечение",
+                    "score_pct": 45,
+                    "comment_ru": "Доза антикоагулянта не детализирована.",
+                    "gaps_ru": ["Нет длительности терапии"],
+                    "protocol_excerpt": "",
+                },
+            ],
+            "limitations_ru": "",
+        },
+    }
+    rep = build_patient_report(l1)
+    assert rep["traffic_light"] == "yellow"
+    assert rep["overall_pct"] == 68
+    assert len(rep["blocks"]) >= 2
+    assert rep["questions_for_doctor"]
+    assert rep["protocol_citations"]
+    assert "не является диагнозом" in rep["disclaimer_ru"].lower()
+
+
+def test_patient_demographics_from_form() -> None:
+    meta = patient_demographics_from_form(age_years="48", sex="male")
+    assert meta == {"age_years": 48, "sex": "male"}
+    assert patient_demographics_from_form(age_years="", sex="") is None
+
+
+def test_run_patient_review_integration() -> None:
+    out = run_patient_review(text=KZ, consultation_id="t-patient")
+    assert out["ok"] is True
+    assert out["review_tier"] == "P1"
+    assert "patient_report" in out
+    assert "send_gate" not in out
+    assert "cisz_readiness" not in out
+    pr = out["patient_report"]
+    assert pr["overall_pct"] is not None
+    assert isinstance(pr["blocks"], list)

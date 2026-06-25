@@ -7412,6 +7412,7 @@ _RATE_WINDOW_SEC = 60.0
 _RATE_LIMITS: dict[str, int] = {
     "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 10),
     "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 2),
+    "/api/patient/review": env_int("RATE_LIMIT_PATIENT_PER_MIN", 5),
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 5),
@@ -7746,6 +7747,14 @@ class ConsultValidateBundleIn(BaseModel):
     scenario: str = Field(default="auto", max_length=32)
 
 
+class PatientReviewJsonIn(BaseModel):
+    """B2C: проверка своего КЗ (tier P1) - текст без файла."""
+
+    text: str = Field(..., min_length=40, max_length=200000)
+    age_years: int | None = Field(default=None, ge=1, le=120)
+    sex: str | None = Field(default=None, max_length=16, description="male | female")
+
+
 class ConsultationTemplateIn(BaseModel):
     """Шаблон консультативного заключения по развёрнутой выдержке."""
 
@@ -8072,7 +8081,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r6-block-gaps-table"
+BUILD_VERSION = "2026-06-24-r7-patient-b2c"
 
 
 def _app_version() -> str:
@@ -10858,6 +10867,112 @@ async def api_consult_review_stream(
     )
 
 
+def _patient_review_enabled() -> bool:
+    return env_bool("PATIENT_REVIEW_ENABLED", True)
+
+
+def _run_patient_review_core(
+    *,
+    text: str,
+    consultation_id: str = "patient",
+    demographics_meta: dict | None = None,
+) -> dict:
+    from clinical_knowledge.patient_review import run_patient_review
+
+    _ensure_consult_rag_ready()
+    return run_patient_review(
+        text=text,
+        consultation_id=consultation_id,
+        demographics_meta=demographics_meta,
+    )
+
+
+@app.get("/api/patient/status")
+def api_patient_status() -> dict:
+    """Статус B2C-контура для мобильного приложения и patient.html."""
+    return {
+        "ok": True,
+        "enabled": _patient_review_enabled(),
+        "review_tier": "P1",
+        "build_version": BUILD_VERSION,
+        "upload": "POST /api/patient/review",
+        "disclaimer": (
+            "Ориентировочная сверка с клиническими протоколами Минздрава РБ; "
+            "не диагноз и не замена очного приёма."
+        ),
+    }
+
+
+@app.post("/api/patient/review/json")
+async def api_patient_review_json(body: PatientReviewJsonIn) -> dict:
+    """B2C: проверка текста КЗ (tier P1) без загрузки файла."""
+    if not _patient_review_enabled():
+        raise HTTPException(status_code=503, detail="Проверка для пациентов временно недоступна.")
+    from clinical_knowledge.patient_review import patient_demographics_from_form
+
+    demo = patient_demographics_from_form(age_years=body.age_years, sex=body.sex)
+    t0 = time.perf_counter()
+    result = await _run_consult_review_blocking(
+        _run_patient_review_core,
+        text=body.text.strip(),
+        consultation_id="patient-json",
+        demographics_meta=demo,
+    )
+    result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
+    result["build_version"] = BUILD_VERSION
+    return result
+
+
+@app.post("/api/patient/review")
+async def api_patient_review(
+    request: "Request",
+    files: Annotated[
+        list[UploadFile],
+        File(description="Фото или PDF консультативного заключения (1-5 файлов)"),
+    ],
+    age_years: str = Form("", description="Возраст пациента (необязательно)"),
+    sex: str = Form("", description="Пол: male/female (необязательно)"),
+    consent: str = Form("", description="1 - согласие на обработку документа"),
+) -> dict:
+    """B2C: загрузка КЗ пациентом → отчёт P1 (без ЦИСЗ и send_gate)."""
+    if not _patient_review_enabled():
+        raise HTTPException(status_code=503, detail="Проверка для пациентов временно недоступна.")
+    if (consent or "").strip() not in ("1", "true", "yes", "on"):
+        raise HTTPException(
+            status_code=400,
+            detail="Нужно согласие на обработку загруженного документа.",
+        )
+    if not files:
+        raise HTTPException(status_code=400, detail="Загрузите фото или PDF заключения.")
+    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 5)
+    if len(files) > max_files:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Не более {max_files} файлов за один запрос.",
+        )
+
+    from clinical_knowledge.patient_review import patient_demographics_from_form
+
+    full_text, consult_docs_meta, pdf_warnings, _doc_texts = (
+        await _parse_consult_review_uploads_async(files)
+    )
+    demo = patient_demographics_from_form(age_years=age_years, sex=sex)
+    t0 = time.perf_counter()
+    result = await _run_consult_review_blocking(
+        _run_patient_review_core,
+        text=full_text,
+        consultation_id="patient-upload",
+        demographics_meta=demo,
+    )
+    result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
+    if pdf_warnings:
+        result["pdf_warnings"] = pdf_warnings
+    if consult_docs_meta:
+        result["document_count"] = len(consult_docs_meta)
+    result["build_version"] = BUILD_VERSION
+    return result
+
+
 # Статика (index.html, protocols.json, PDF) - регистрировать после API-маршрутов.
 # Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
 if (ROOT / "index.html").is_file():
@@ -10880,6 +10995,21 @@ if (ROOT / "index.html").is_file():
         p = ROOT / "consult_review.html"
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница consult_review.html не найдена")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
+
+    @app.get("/patient", include_in_schema=False)
+    def _redirect_patient() -> RedirectResponse:
+        return RedirectResponse(url="/patient.html", status_code=302)
+
+    @app.get("/patient.html", include_in_schema=False)
+    def _serve_patient_html() -> FileResponse:
+        p = ROOT / "patient.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
         return FileResponse(
             path=str(p),
             media_type="text/html; charset=utf-8",
