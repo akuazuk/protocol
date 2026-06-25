@@ -43,3 +43,37 @@ jobs:
           RAG_GEMINI_EMBED_RERANK: "0"
           RAG_CHUNKS_JSONL: tests/fixtures/chunks.mini.jsonl
         run: pytest tests/test_search_golden.py tests/test_search_retrieval.py -q
+
+  manifest-mode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-rag.txt -r requirements-dev.txt
+
+      - name: Pytest (lazy manifest startup)
+        env:
+          RAG_GEMINI_EMBED_RERANK: "0"
+          RAG_STARTUP_MODE: manifest
+          RAG_LAZY_CHUNK_STORE: "1"
+          RAG_MANIFEST_PATH: data/catalog/corpus_path_manifest.jsonl
+          RAG_LEX_SHARDS_DIR: data/catalog/lex_shards
+          RAG_PATH_LEX_SHARDS: "1"
+          RAG_FORBID_FULL_CORPUS_RETRIEVE: "1"
+          CONSULT_L2_FAST: "1"
+        run: |
+          pytest tests/test_corpus_path_manifest.py tests/test_chunk_store.py \
+            tests/test_lazy_retrieve.py tests/test_consult_l2_fast.py \
+            tests/test_consult_evidence_quality.py tests/test_respiratory_path_filters.py \
+            tests/test_plan_definition_export.py -q

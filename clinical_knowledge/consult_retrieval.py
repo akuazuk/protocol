@@ -4,6 +4,13 @@ from __future__ import annotations
 from typing import Any
 
 from clinical_knowledge.rule_family_gates import expand_specialty_slugs_for_icd, expand_specialty_slugs_for_clinical_text
+from clinical_knowledge.respiratory_path_filters import (
+    filter_paths_for_respiratory_context,
+    is_urti_icd_only,
+    path_has_respiratory_wrong_markers,
+    path_has_urti_markers,
+    scan_registry_urti_paths,
+)
 
 
 def _icd_root(code: str) -> str:
@@ -467,6 +474,16 @@ def consult_target_protocol_paths(
             protocol_matches.append(row)
 
     _ensure_icd_protocol_pick()
+
+    if is_urti_icd_only(primary_icd) and paths:
+        titles = {str(m.get("source_path") or ""): str(m.get("title") or "") for m in protocol_matches}
+        paths = filter_paths_for_respiratory_context(paths, limit=limit, titles=titles)
+        if not any(path_has_urti_markers(p, titles.get(p, "")) for p in paths):
+            for sp in scan_registry_urti_paths(specialty_slugs=slugs, limit=limit):
+                if sp not in seen:
+                    add(sp, "icd_title_urti_fallback", 22.0)
+                    if len(paths) >= limit:
+                        break
 
     if not paths and primary_icd:
         icd_roots = {_icd_root(c) for c in primary_icd}

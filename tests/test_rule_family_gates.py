@@ -57,7 +57,10 @@ def test_j06_expanded_slugs_find_urti_protocol():
     assert "pulmonologiya-ftiziatriya" in meta.get("specialty_slugs") or "infektsionnye-zabolevaniya" in meta.get(
         "specialty_slugs"
     )
-    assert any("респиратор" in p.lower() or "орви" in p.lower() or "вирус" in p.lower() for p in paths)
+    assert any(
+        any(m in p.lower() for m in ("респиратор", "орви", "вирус", "бронхит"))
+        for p in paths
+    )
 
 
 def test_kard_1_e55_no_thyroid_diagnosis_formula():

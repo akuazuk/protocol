@@ -25,6 +25,10 @@ from clinical_knowledge.rule_family_gates import (
     expand_specialty_slugs_for_clinical_text,
     expand_specialty_slugs_for_icd,
 )
+from clinical_knowledge.respiratory_path_filters import (
+    filter_paths_for_respiratory_context,
+    path_has_respiratory_wrong_markers,
+)
 from clinical_knowledge.search_clinical_routing import (
     detect_clinical_route_ids,
     expand_slugs_for_clinical_routes,
@@ -523,6 +527,8 @@ def search_target_protocol_paths(
             continue
         if throat and _domain_mismatch_for_query(sp, sp, throat=throat, gi=_has_gi_context(query)):
             continue
+        if cough_fever and path_has_respiratory_wrong_markers(sp, title_guess):
+            continue
         if gi_functional:
             title_guess = Path(sp).stem.lower().replace("_", " ")
             if any(m in blob or m in title_guess for m in _GI_TITLE_WRONG):
@@ -615,6 +621,8 @@ def search_target_protocol_paths(
             else:
                 rest.append(sp)
         deduped = respiratory + rest
+    if cough_fever:
+        deduped = filter_paths_for_respiratory_context(deduped, limit=max(limit, len(deduped)))
     if gi_functional:
         gi_ok: list[str] = []
         gi_rest: list[str] = []
