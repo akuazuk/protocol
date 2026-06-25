@@ -1406,38 +1406,113 @@
     .consult-crit-pill.tier-low { background: #f5ebeb; color: #8f5a5a; }
 
     .consult-evidence-gaps-title {
-      margin: 0.5rem 0 0.35rem;
-      font-size: 0.82rem;
-      font-weight: 650;
-      color: #3d5c54;
+      margin: 0.65rem 0 0.4rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1a5c4a;
+      font-family: Outfit, sans-serif;
     }
 
-    #consult-block-gaps-list {
-      list-style: none;
-      padding-left: 0;
-      margin: 0 0 0.75rem;
+    .consult-block-gaps-wrap {
+      margin: 0 0 0.85rem;
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(6, 61, 53, 0.04);
     }
 
-    .consult-evidence-gap-item {
-      margin: 0 0 0.45rem;
-      padding: 0.45rem 0.55rem;
-      border-radius: 8px;
-      background: #f4f8f6;
-      border: 1px solid rgba(26, 138, 114, 0.14);
-      line-height: 1.45;
+    .consult-block-gaps-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 0.84rem;
+      line-height: 1.45;
     }
 
-    .consult-evidence-gap-block {
-      display: block;
+    .consult-block-gaps-table th {
+      text-align: left;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #5a6f6a;
+      background: linear-gradient(180deg, #f4faf8 0%, #eef6f3 100%);
+      border-bottom: 1px solid rgba(26, 138, 114, 0.16);
+    }
+
+    .consult-block-gaps-table td {
+      padding: 0.5rem 0.65rem;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.1);
+    }
+
+    .consult-block-gaps-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .consult-block-gaps-table tr.consult-block-gaps-row--critical td {
+      background: linear-gradient(90deg, rgba(185, 28, 28, 0.08) 0%, rgba(254, 242, 242, 0.55) 100%);
+    }
+
+    .consult-block-gaps-table tr.consult-block-gaps-row--warn td {
+      background: linear-gradient(90deg, rgba(180, 83, 9, 0.07) 0%, rgba(255, 251, 235, 0.65) 100%);
+    }
+
+    .consult-block-gaps-table tr.consult-block-gaps-row--info td {
+      background: linear-gradient(90deg, rgba(26, 138, 114, 0.06) 0%, rgba(244, 250, 248, 0.8) 100%);
+    }
+
+    .consult-block-gaps-block {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       font-weight: 650;
       color: #1a5c4a;
-      margin-bottom: 0.15rem;
+      white-space: nowrap;
     }
 
-    .consult-evidence-gap-text {
+    .consult-block-gaps-block-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .consult-block-gaps-block-dot--diagnosis { background: #7c6bb8; }
+    .consult-block-gaps-block-dot--exams { background: #3b82a8; }
+    .consult-block-gaps-block-dot--treatment { background: #1a8a72; }
+    .consult-block-gaps-block-dot--followup { background: #b45309; }
+    .consult-block-gaps-block-dot--default { background: #8aa39c; }
+
+    .consult-block-gaps-text {
       color: #2d4a42;
     }
+
+    .consult-block-gaps-pill {
+      display: inline-block;
+      padding: 0.14rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .consult-block-gaps-pill.tier-low {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    .consult-block-gaps-pill.tier-mid {
+      background: #fde68a;
+      color: #92400e;
+    }
+
+    .consult-block-gaps-pill.tier-good {
+      background: #d1fae5;
+      color: #166534;
+    }
+
 
     #consult-evidence-table .consult-evidence-protocol {
       font-size: 0.8rem;
@@ -11387,7 +11462,18 @@
             <summary>Сверка с протоколом</summary>
             <p class="consult-hint-small" id="consult-evidence-meta" style="margin: 0.35rem 0"></p>
             <p class="consult-evidence-gaps-title" id="consult-evidence-gaps-title" hidden>Замечания по блокам</p>
-            <ul class="consult-hint-small" id="consult-block-gaps-list" style="margin: 0.35rem 0 0.6rem; padding-left: 0"></ul>
+            <div class="consult-block-gaps-wrap" id="consult-block-gaps-wrap" hidden>
+              <table class="consult-block-gaps-table" id="consult-block-gaps-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Блок</th>
+                    <th scope="col">Замечание</th>
+                    <th scope="col">Важность</th>
+                  </tr>
+                </thead>
+                <tbody id="consult-block-gaps-tbody"></tbody>
+              </table>
+            </div>
             <div style="overflow-x: auto">
               <table class="consult-out-table" id="consult-evidence-table">
                 <thead>
@@ -26190,11 +26276,66 @@
     return formatProtocolDisplayTitle(p, meta.title || meta.display_title || "");
   }
 
+  function consultBlockGapsSeverity(g) {
+    if (g && g.low_score) {
+      return { rowClass: "consult-block-gaps-row--critical", pillClass: "tier-low", label: "Критично" };
+    }
+    var txt = String((g && g.gap_ru) || "").toLowerCase();
+    if (
+      /не указан|не описан|не заполн|отсутств|не отраж|не назнач|без\s+кода|не\s+согласован/.test(txt)
+    ) {
+      return { rowClass: "consult-block-gaps-row--warn", pillClass: "tier-mid", label: "Уточнить" };
+    }
+    return { rowClass: "consult-block-gaps-row--info", pillClass: "tier-good", label: "Сверка" };
+  }
+
+  function consultBlockGapsDotClass(blockId) {
+    var bid = String(blockId || "").trim();
+    if (bid === "diagnosis") return "consult-block-gaps-block-dot--diagnosis";
+    if (bid === "exams") return "consult-block-gaps-block-dot--exams";
+    if (bid === "treatment") return "consult-block-gaps-block-dot--treatment";
+    if (bid === "followup" || bid === "follow_up") return "consult-block-gaps-block-dot--followup";
+    return "consult-block-gaps-block-dot--default";
+  }
+
+  function renderConsultBlockGapsTable(gaps) {
+    var wrap = document.getElementById("consult-block-gaps-wrap");
+    var tbody = document.getElementById("consult-block-gaps-tbody");
+    var gapsTitle = document.getElementById("consult-evidence-gaps-title");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    if (gapsTitle) gapsTitle.hidden = !gaps || !gaps.length;
+    if (wrap) wrap.hidden = !gaps || !gaps.length;
+    if (!gaps || !gaps.length) return;
+    gaps.forEach(function (g) {
+      var block = g.name_ru || EVIDENCE_BLOCK_LABELS[g.block_id] || g.block_id || "—";
+      var txt = String(g.gap_ru || "").trim();
+      if (!txt && !block) return;
+      var sev = consultBlockGapsSeverity(g);
+      var tr = document.createElement("tr");
+      tr.className = sev.rowClass;
+      tr.innerHTML =
+        '<td><span class="consult-block-gaps-block">' +
+        '<span class="consult-block-gaps-block-dot ' +
+        consultBlockGapsDotClass(g.block_id) +
+        '" aria-hidden="true"></span>' +
+        escapeHtml(block) +
+        "</span></td>" +
+        '<td class="consult-block-gaps-text">' +
+        escapeHtml(txt || "—") +
+        "</td>" +
+        '<td><span class="consult-block-gaps-pill ' +
+        sev.pillClass +
+        '">' +
+        escapeHtml(sev.label) +
+        "</span></td>";
+      tbody.appendChild(tr);
+    });
+  }
+
   function renderConsultEvidencePanel(data) {
     var spoiler = document.getElementById("consult-evidence-spoiler");
     var meta = document.getElementById("consult-evidence-meta");
-    var gapsTitle = document.getElementById("consult-evidence-gaps-title");
-    var gapsList = document.getElementById("consult-block-gaps-list");
     var tb = document.querySelector("#consult-evidence-table tbody");
     var narBtn = document.getElementById("consult-btn-l2-narrative");
     if (!spoiler) return;
@@ -26261,29 +26402,7 @@
     } else if (meta) {
       meta.textContent = "";
     }
-    if (gapsList) {
-      gapsList.innerHTML = "";
-      if (gapsTitle) gapsTitle.hidden = gaps.length === 0;
-      if (gaps.length) {
-        gaps.forEach(function (g) {
-          var li = document.createElement("li");
-          li.className = "consult-evidence-gap-item";
-          var block = g.name_ru || EVIDENCE_BLOCK_LABELS[g.block_id] || g.block_id || "";
-          var txt = String(g.gap_ru || "").trim();
-          if (block && txt) {
-            li.innerHTML =
-              "<span class=\"consult-evidence-gap-block\">" +
-              escapeHtml(block) +
-              "</span><span class=\"consult-evidence-gap-text\">" +
-              escapeHtml(txt) +
-              "</span>";
-          } else {
-            li.textContent = txt || block;
-          }
-          gapsList.appendChild(li);
-        });
-      }
-    }
+    renderConsultBlockGapsTable(gaps);
     spoiler.hidden = rows === 0 && gaps.length === 0;
     if (narBtn) {
       narBtn.hidden = !(pack && l2mode !== "narrative" && data && data.review_tier === "L2");

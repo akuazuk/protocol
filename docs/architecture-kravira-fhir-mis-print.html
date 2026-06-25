@@ -81,7 +81,7 @@
       <tbody>
         <tr><td>Заказчик пилота</td><td>МЦ «Кравира» (частная ОЗ, интеграция с МИС «Айболит», EPAM)</td></tr>
         <tr><td>Стек сервера</td><td>Python 3.11+, FastAPI (<code>rag_server.py</code>), детерминированные правила + RAG + LLM (опционально)</td></tr>
-        <tr><td>Корпус КП</td><td>~478 PDF клинических протоколов Минздрава РБ, ~105 000 фрагментов в индексе</td></tr>
+        <tr><td>Корпус КП</td><td>~478 PDF клинических протоколов Минздрава РБ, ~55 000 фрагментов в lazy-индексе (manifest + disk)</td></tr>
         <tr><td>FHIR</td><td>HL7 FHIR 5.0, профили <a href="https://fhir.by">fhir.by</a> (пакет fhir.by#1.4.411)</td></tr>
         <tr><td>Роль в контуре ЦИСЗ</td><td>Предимпортная экспертиза КЗ и Bundle <strong>до ЭЦП</strong>; Protocol <strong>не</strong> вызывает ЦИСЗ и не подписывает пакеты</td></tr>
       </tbody>
@@ -107,7 +107,7 @@
     <div class="diagram">ЭТАП 0          Официальные PDF протоколов Минздрава (~478 документов)
     │              Справочники МКБ, правила, карточки протоколов
     ▼
-ЭТАП 1          «Книжная полка»: ~105 000 фрагментов текста + индексы поиска
+ЭТАП 1          «Книжная полка»: ~55 000 фрагментов + path lex shards + manifest
     │
     ├────────────────────────────┬────────────────────────────
     ▼                            ▼
@@ -142,7 +142,7 @@
     <table class="simple">
       <thead><tr><th>Фаза</th><th>Модули</th><th>Эффект</th></tr></thead>
       <tbody>
-        <tr><td><strong>1</strong></td><td><code>build_chunk_embeddings.py</code>, <code>RAG_PRECOMPUTED_CHUNK_EMBED</code></td><td>Офлайн-эмбеддинги ~105k чанков; 1 API-вызов на запрос вместо ~44</td></tr>
+        <tr><td><strong>1</strong></td><td><code>build_chunk_embeddings.py</code>, <code>RAG_PRECOMPUTED_CHUNK_EMBED</code></td><td>Офлайн-эмбеддинги ~55k чанков; 1 API-вызов на запрос вместо ~44</td></tr>
         <tr><td><strong>2</strong></td><td><code>vector_index.py</code>, <code>build_vector_index.py</code>, <code>RAG_VECTOR_INDEX</code></td><td>Vector top-200 → lex/BM25 → embed-rerank top-44</td></tr>
         <tr><td><strong>3</strong></td><td><code>semantic_rule_fallback.py</code></td><td>Синонимы для <code>required_exam</code> / <code>keyword_presence</code> после substring</td></tr>
         <tr><td><strong>4</strong></td><td><code>consult_tiering.py</code>, <code>/api/consult-review/tier</code></td><td>L0/L1/L2 для массового потока МИС</td></tr>
@@ -174,7 +174,7 @@
     <p>Дополнительно: <code>annotate_applicability()</code> - применимость КП (амбулатория/стационар, возраст). Специальные эвристики: при I80-I89 приоритет венозных КП, штраф карточек по сердечной недостаточности при флеботромбозе.</p>
 
     <h3>3.5.2. RAG-отбор PDF-фрагментов (retrieve)</h3>
-    <p>Модуль <code>rag_server.retrieve()</code> - подбор <em>конкретных абзацев</em> из ~105k чанков. Это основа цитат в отчёте.</p>
+    <p>Модуль <code>rag_server.retrieve()</code> - подбор <em>конкретных абзацев</em> из корпуса. На Render поиск и КЗ ограничены allowlist путей (<code>RAG_FORBID_FULL_CORPUS_RETRIEVE=1</code>).</p>
     <div class="diagram">Запрос (жалобы + МКБ + фокус КЗ)
     │
     ├─ [опц.] Vector index: top-200 по cosine (RAG_VECTOR_INDEX)
@@ -199,24 +199,27 @@
 
   <!-- ===== 3.6 АРХИТЕКТУРА ОЦЕНОК ===== -->
   <section class="card card--kz">
-    <h2>3.6. Архитектура оценок и анализа - четыре слоя</h2>
-    <p>Итоговый балл для МИС строится <strong>снизу вверх</strong>. LLM не является главным источником при включённом структурном разборе.</p>
+    <h2>3.6. Архитектура оценок и анализа - пять слоёв</h2>
+    <p>Итоговый балл для МИС строится <strong>снизу вверх</strong>. В production (июнь 2026) критерии для врача в первую очередь из <strong>детерминированного alignment</strong>, а не из LLM.</p>
     <div class="diagram">СЛОЙ 1  Парсинг КЗ
            consult_parser / fhir_bundle_adapter → ConsultationDocument
            │
 СЛОЙ 2  Подбор КП + правила
-           match_protocol_cards + retrieve + rule_checker (482+ правил)
-           + rules_summary_fallback по МКБ
+           match_protocol_cards + rich chunks / retrieve (allowlist)
+           + rule_checker (482+ правил) + rules_summary_fallback по МКБ
            │
 СЛОЙ 3  Compliance engine (8 блоков, evidence_map, red flags)
            compliance_engine.build_compliance_report()
-           requirement_checker + safety_checker
            │
-СЛОЙ 4  Гибрид headline + gate
+СЛОЙ 4  Alignment cards (КЗ ↔ КП ↔ СОП №2 Кравира)
+           consult_alignment + consult_criteria_enrichment
+           criteria_source: deterministic_alignment
+           │
+СЛОЙ 5  Гибрид headline + gate
            consult_overall_score: 75%·структурный + 25%·правила
            compliance_gate: gate_score = min(гибрид, структурный, cisz)
            │
-ПАРАЛЛЕЛЬНО (L2): LLM synthesize → критерии с цитатами (для методслужбы)</div>
+ОПЦИОНАЛЬНО (L2 full / narrative): LLM synthesize, consult_criteria_narrative</div>
 
     <h3>3.6.1. Формулы итогового процента</h3>
     <table class="simple">
@@ -247,13 +250,23 @@
 
     <h3>3.6.3. Уровни проверки (L0 / L1 / L2)</h3>
     <table class="simple">
-      <thead><tr><th>Уровень</th><th>API</th><th>Что включено</th><th>Время</th></tr></thead>
+      <thead><tr><th>Уровень</th><th>API</th><th>Что включено</th><th>UI / Render</th></tr></thead>
       <tbody>
-        <tr><td><strong>L0</strong></td><td><code>/api/consult-compliance-screen</code>, tier=L0</td><td>Парсинг + 8 блоков + send_gate + cisz; без RAG/LLM</td><td>&lt; 2 с</td></tr>
-        <tr><td><strong>L1</strong></td><td><code>/api/consult-review/tier</code> tier=L1</td><td>Полный <code>analyze_consultation_text</code> + отчёт HTML/MD</td><td>секунды</td></tr>
-        <tr><td><strong>L2</strong></td><td><code>/api/consult-review</code>, tier=L2</td><td>RAG + LLM-критерии + structured + cisz</td><td>30-90 с</td></tr>
+        <tr><td><strong>L0</strong></td><td><code>/api/consult-compliance-screen</code>, tier=L0</td><td>Парсинг + 8 блоков + send_gate + cisz; без alignment/RAG/LLM</td><td>&lt; 2 с; 100% потока МИС</td></tr>
+        <tr><td><strong>L1</strong></td><td><code>/api/consult-review/tier</code> tier=L1</td><td>Structured + <strong>alignment cards</strong> + СОП Кравира + rich chunks по matched PDF</td><td><strong>Кнопка по умолчанию</strong> (~5-15 с)</td></tr>
+        <tr><td><strong>L2</strong></td><td><code>/api/consult-review</code>, stream, tier=L2</td><td><strong>Production:</strong> L2-lite = L1 + evidence pack + L2-fast. <strong>Local:</strong> full RAG + LLM</td><td>~15-30 с на Render</td></tr>
       </tbody>
     </table>
+    <p>Ключевые env на Render (<code>render.yaml</code>): <code>CONSULT_RENDER_L2_LITE=1</code>, <code>CONSULT_L2_FAST=1</code>, <code>CONSULT_ALIGNMENT_ENABLED=1</code>, <code>CONSULT_REVIEW_FORBID_FULL_CORPUS=1</code>, <code>CONSULT_REVIEW_CACHE=1</code>.</p>
+
+    <h3>3.6.4. Детерминированное согласование (alignment)</h3>
+    <p>Модули <code>consult_alignment.py</code>, <code>consult_criteria_enrichment.py</code>, <code>kravira_sop_rules.py</code> (СОП №2, папка <code>doc_kravira</code>). По каждому блоку КЗ (жалобы, анамнез, статус, диагноз, обследование, лечение, наблюдение) формируется карточка:</p>
+    <ul>
+      <li>фрагмент из КЗ и выдержка из клинического протокола Минздрава;</li>
+      <li>эталон по СОП Кравира (оформление амбулаторной карты);</li>
+      <li>оценка покрытия, gaps/findings, <code>comment_ru</code> для врача.</li>
+    </ul>
+    <p>При <code>CONSULT_ALIGNMENT_PRIMARY=1</code> (default) критерии в отчёте помечаются <code>criteria_source: deterministic_alignment</code> - воспроизводимый аудит для методслужбы. Опционально <code>CONSULT_CRITERIA_NARRATIVE=1</code> - LLM переформулирует комментарии без новых фактов.</p>
   </section>
 
   <!-- ===== 4. КЗ ПОДРОБНО ===== -->
@@ -261,22 +274,22 @@
     <h2>4. Блок анализа КЗ - подробно</h2>
     <p>Это <strong>ядро</strong> проекта. Ниже - что именно происходит после нажатия «Проверить» и как формируется оценка перед отправкой в Минздрав.</p>
 
-    <h3>4.1. Два параллельных контура оценки</h3>
-    <div class="diagram">                    ВХОД: PDF или текст КЗ
+    <h3>4.1. Три контура оценки (июнь 2026)</h3>
+    <div class="diagram">                    ВХОД: PDF, текст или FHIR Bundle
                               │
-              ┌───────────────┴───────────────┐
-              ▼                               ▼
-    КОНТУР A - «Экспертная таблица»     КОНТУР B - «Структурный аудит»
-    (языковая модель + RAG)            (только правила, без LLM)
-              │                               │
-    · критерии понятным языком         · 8 блоков с весами
-    · комментарии врачу                · карта доказательств (evidence_map)
-    · не используется для блокировки     · send_gate - можно ли подписать
-              │                               │
-              └───────────────┬───────────────┘
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+  КОНТУР A              КОНТУР B              КОНТУР C
+  Alignment cards       Структурный аудит      LLM (опционально)
+  (primary criteria)    8 блоков + gate        L2 full / narrative
+        │                     │                     │
+  · КЗ ↔ КП ↔ СОП       · send_gate            · summary_ru
+  · детерминированно    · gate_score           · не для блокировки
+        │                     │                     │
+        └─────────────────────┴─────────────────────┘
                               ▼
-              ИТОГ на экране: % соответствия (из контура B)
-              + пояснения LLM (контур A) + цитаты из PDF протокола</div>
+              ИТОГ: gate_score + alignment cards + evidence pack (L2)
+              + cisz_readiness + sign_decision для МИС</div>
 
     <h3>4.2. Семь шагов конвейера (контур B + поиск)</h3>
 
@@ -332,20 +345,29 @@
     <h3>4.7. Уверенность разбора (confidence)</h3>
     <p>Отдельный показатель: насколько система уверена, что правильно поняла PDF. Низкая уверенность - повод не блокировать автоматически, а отправить на ручную проверку.</p>
 
-    <h3>4.8. Полный конвейер проверки L2 (что происходит после «Проанализировать»)</h3>
+    <h3>4.8. Конвейер L2: две ветки</h3>
+    <p><strong>4.8.1. L2-lite (production Render, default)</strong></p>
+    <div class="diagram">PDF / Bundle / текст
+    │
+    ├─ L1 structured + alignment (CONSULT_ALIGNMENT_ENABLED=1)
+    ├─ preload чанков только по matched paths (consult_memory, forbid full corpus)
+    ├─ consult_evidence_pack + consult_evidence_quality (фильтр шума PDF)
+    ├─ build_l2_fast_review (CONSULT_L2_FAST=1) ИЛИ LLM synthesize
+    ├─ опц. CONSULT_L2_NARRATIVE / consult_criteria_narrative
+    ├─ cisz_readiness + gate_score → send_gate
+    └─ UI: alignment + «Сверка с протоколом» (evidence pack)</div>
+    <p><strong>4.8.2. L2 full (локально, CONSULT_RENDER_L2_LITE=0)</strong></p>
     <div class="diagram">PDF / Bundle / текст + опционально рубрики каталога
     │
     ├─ 1. Извлечение: PDF → text_extract; Bundle → fhir_bundle_adapter
-    ├─ 2. Парсинг → ConsultationDocument; МКБ из блока «Диагноз» (приоритет над симптом-кодами)
-    ├─ 3. match_protocol_cards (веса: МКБ 40%, диагноз 20%, рубрика 15%…)
-    ├─ 4. RAG retrieve: [vector top-200] → lex+BM25 → embed-rerank top-44
-    │      strict allowlist PDF; второй проход при низком score
-    ├─ 5. rule_checker + rules_summary_fallback по МКБ → rules_compliance_pct
-    ├─ 6. LLM synthesize: критерии с цитатами (не влияют на headline при structured=on)
+    ├─ 2. Парсинг → ConsultationDocument; МКБ из блока «Диагноз»
+    ├─ 3. match_protocol_cards + respiratory_path_filters (ОРВИ)
+    ├─ 4. RAG retrieve: vector → lex+BM25 → embed-rerank (allowlist)
+    ├─ 5. rule_checker + rules_summary_fallback → rules_compliance_pct
+    ├─ 6. alignment + опц. LLM synthesize
     ├─ 7. analyze_consultation_text → 8 блоков → evidence_map, safety cap
-    ├─ 8. Гибрид: 75%·структурный + 25%·правила; cisz_readiness параллельно
-    ├─ 9. gate_score = min(гибрид, структурный, cisz_score) → send_gate
-    └─ 10. JSON + UI: 3 карточки %, чек-лист ЦИСЗ, решение о подписи</div>
+    ├─ 8. Гибрид + cisz_readiness → gate_score → send_gate
+    └─ 9. JSON + UI</div>
 
     <h3>4.9. Три процента на экране - не путать (реализовано в UI)</h3>
     <p>На экране врача - <strong>три карточки</strong> с пастельной подсветкой по уровню (≥75 / 50-74 / &lt;50). Длинные тексты - в спойлерах (<code>&lt;details&gt;</code>).</p>
@@ -389,7 +411,9 @@
     <table class="simple">
       <thead><tr><th>Блок UI</th><th>Видимость</th><th>Содержание</th></tr></thead>
       <tbody>
-        <tr><td>Дашборд оценок</td><td>Сразу</td><td>3 карточки: гибрид, структурный, LLM; донаты и таблицы блоков (без ЦИСЗ)</td></tr>
+        <tr><td>Дашборд оценок</td><td>Сразу</td><td>3 карточки: гибрид, структурный, LLM (если есть); донаты и таблицы блоков</td></tr>
+        <tr><td><strong>Карточки согласования</strong></td><td><strong>Сразу (L1/L2)</strong></td><td>Alignment по блокам: КЗ, КП, СОП Кравира, gaps, <code>criteria_source</code></td></tr>
+        <tr><td><strong>Сверка с протоколом</strong></td><td>L2-lite</td><td>Evidence pack: выдержки КП с читаемыми названиями, фильтр оглавления PDF</td></tr>
         <tr><td>Решение о подписи</td><td>Сразу</td><td><code>sign_decision</code> / <code>sign_decision_ru</code> - одна рекомендация врачу (подписать / доработать / override)</td></tr>
         <tr><td><strong>Готовность к ЦИСЗ</strong></td><td><strong>Сразу (отдельный блок)</strong></td><td>Чек-лист «Готовность к ЦИСЗ - Первичный приём (3.2.1)»: ✓/✗ по проверкам, критические пробелы, спойлер «Полная расшифровка» (<code>cisz_readiness</code>, слои A-C)</td></tr>
         <tr><td>Краткий вывод</td><td>Спойлер (открыт)</td><td><code>summary_ru</code> от LLM</td></tr>
@@ -397,7 +421,7 @@
         <tr><td>Допуск к подписи (МИС)</td><td>Сразу</td><td><code>send_gate</code>: статус, <code>gate_score</code>, порог 70%</td></tr>
         <tr><td>Сводка методслужбы</td><td>Спойлер</td><td>Зоны риска &lt;70% с чипами %; группы 70-84% / ≥85%</td></tr>
         <tr><td>Структурный отчёт</td><td>Спойлер</td><td>HTML: A/B/C, 8 блоков, диагноз/лечение, red flags, evidence_map - пастельные бейджи</td></tr>
-        <tr><td>Критерии модели</td><td>Спойлер</td><td>3 колонки; цитаты КЗ/протокола - во вложенных «Цитаты»</td></tr>
+        <tr><td>Критерии модели</td><td>Спойлер</td><td>LLM-критерии (L2 full) или дубль alignment; цитаты - во вложенных «Цитаты»</td></tr>
         <tr><td>Протоколы · N PDF</td><td>Спойлер</td><td>Чипы PDF; обрезанные фрагменты разделов</td></tr>
         <tr><td>Онко-предупреждение</td><td>Сразу (если есть)</td><td>Только по тексту КЗ, не по фрагментам протоколов</td></tr>
         <tr><td>Экспорт</td><td>Кнопки</td><td>Печать, HTML методслужбы, JSON (<code>send_gate</code>)</td></tr>
@@ -450,10 +474,10 @@
 МИС собирает пакет данных (Bundle) из формы
     ▼
 ┌─────────────────────────────────────────────────────────┐
-│ PROTOCOL (до ЭЦП) - на каждое сохранение               │
+│ PROTOCOL (до ЭЦП)                                        │
 │  L0 (100% КЗ): gate_score + cisz + клиника  &lt; 2 с     │
-│  L1 (10-20%):  полный structured-отчёт                 │
-│  L2 (2-5%):    RAG + LLM + цитаты из PDF протоколов    │
+│  L1 (выборка / UI default): structured + alignment      │
+│  L2 (углублённо): L2-lite на Render - evidence + fast    │
 └─────────────────────────────────────────────────────────┘
     │  gate_score &lt; порога → врач дорабатывает КЗ
     ▼
@@ -646,8 +670,8 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <thead><tr><th>Уровень</th><th>Охват</th><th>Содержание</th><th>Время</th></tr></thead>
       <tbody>
         <tr><td><strong>L0</strong></td><td>100% КЗ</td><td><code>/api/consult-compliance-screen</code> или <code>tier=L0</code>: parse + 8 блоков + cisz + send_gate</td><td>&lt; 2 сек</td></tr>
-        <tr><td><strong>L1</strong></td><td>10-20%</td><td><code>tier=L1</code>: полный structured + HTML/MD отчёт, без RAG/LLM</td><td>секунды</td></tr>
-        <tr><td><strong>L2</strong></td><td>2-5%</td><td><code>tier=L2</code> / <code>/api/consult-review</code>: RAG + LLM + semantic rerank</td><td>~30-90 с</td></tr>
+        <tr><td><strong>L1</strong></td><td>10-20% / UI default</td><td>Structured + alignment + СОП + rich chunks; без full corpus RAG</td><td>~5-15 с</td></tr>
+        <tr><td><strong>L2</strong></td><td>2-5% / кнопка L2</td><td>Render: L2-lite (evidence pack + L2-fast). Local: full RAG + LLM</td><td>~15-30 с / 30-90 с</td></tr>
         <tr><td><strong>L3</strong></td><td>0,5-1%</td><td>Ручной разбор методслужбой</td><td>человек</td></tr>
       </tbody>
     </table>
@@ -672,23 +696,22 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
   <!-- ===== 9. ДОРАБОТКИ ===== -->
   <section class="card card--stage">
     <h2>9. Состояние проекта (июнь 2026)</h2>
-    <h3>Реализовано</h3>
+    <h3>Реализовано (июнь 2026)</h3>
     <ul>
-      <li><code>compliance_gate.py</code> - <code>send_gate</code>, <code>gate_score = min(гибрид, структурный)</code>, режимы inform/soft/hard/critical_only.</li>
-      <li>API: L0 <code>/api/consult-compliance-screen</code>, L1/L2 <code>/api/consult-review/tier</code>, полный <code>/api/consult-review/json</code>.</li>
-      <li>Семантический RAG: 5 фаз (embeddings, vector index, semantic rules, tiering, batch enrichment).</li>
-      <li><code>vector_index.py</code>, <code>semantic_rule_fallback.py</code>, <code>consult_tiering.py</code>.</li>
-      <li><code>fhir_bundle_adapter.py</code> - Bundle → ConsultationDocument и синтетический текст (Subjective/Objective, ServiceRequest, MedicationRequest, AllergyIntolerance…).</li>
-      <li><code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code>, <code>fhir_bundle_inspect.py</code> - три слоя: Протокол v.1.4 (Bundle/Composition) + программа испытаний v.1.3-4.</li>
-      <li><code>consult_screen.py</code> - L0 без RAG/LLM-критериев + <code>cisz_readiness</code>.</li>
-      <li>Гибридный headline: 75% структурный + 25% правила + safety cap.</li>
-      <li>Матчер протоколов: приоритет венозных КП при I80-I89; штраф КП по СН при флеботромбозе.</li>
-      <li>Онко-скан - только по тексту КЗ (<code>CONSULT_ONCO_SCAN_SOURCE=kz_only</code>), не по фрагментам RAG.</li>
-      <li>Summary-fallback по МКБ (<code>rules_summary_fallback.py</code>, <code>protocol_summary/icd_index.py</code>) - после RAG, прогрев индекса при старте; ~0,1 с вместо ~30 с на полный корпус.</li>
-      <li><code>sign_decision</code> - единое решение о подписи для врача (<code>compliance_gate.py</code>).</li>
-      <li>UI: дашборд (гибрид / структурный / LLM), отдельный чек-лист ЦИСЗ 3.2.1, карточка «Решение о подписи», <code>send_gate</code>.</li>
-      <li>HTML-отчёт структурного разбора - спойлеры, пастельные бейджи (<code>consult_report.py</code>).</li>
-      <li>Тесты: <code>test_cisz_readiness</code>, <code>test_compliance_gate</code>, <code>test_fhir_bundle_adapter</code>, <code>test_consult_screen</code>.</li>
+      <li><code>compliance_gate.py</code> - <code>send_gate</code>, <code>gate_score</code>, режимы inform/soft/hard/critical_only, <code>sign_decision</code>.</li>
+      <li>API: L0 <code>/api/consult-compliance-screen</code>, L1/L2 <code>/api/consult-review/tier</code>, stream <code>/api/consult-review/stream</code>.</li>
+      <li><strong>Alignment:</strong> <code>consult_alignment.py</code>, <code>consult_criteria_enrichment.py</code>, <code>kravira_sop_rules.py</code> - primary criteria в L1/L2-lite.</li>
+      <li><strong>L2-lite на Render:</strong> <code>consult_evidence_pack.py</code>, <code>consult_l2_review.py</code>, <code>consult_memory.py</code>, <code>CONSULT_RENDER_L2_LITE=1</code>.</li>
+      <li><strong>Lazy RAG:</strong> manifest + disk (<code>RAG_LAZY_CHUNK_STORE</code>), path lex shards, forbid full corpus retrieve.</li>
+      <li>Семантический RAG: embeddings, vector index, semantic rules, tiering, batch enrichment.</li>
+      <li><code>fhir_bundle_adapter.py</code>, <code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code> - FHIR BY + программа испытаний v.1.3-4.</li>
+      <li><code>respiratory_path_filters.py</code> - гигиена подбора КП при ОРВИ (J00-J06).</li>
+      <li><code>plan_definition_export.py</code> - черновик экспорта Protocol Summary → FHIR PlanDefinition (CDS hook).</li>
+      <li>Методслужба: <code>feedback_store.py</code>, Methodist workbench в UI, <code>/api/ml/feedback</code>.</li>
+      <li>Поиск: tiers S0/S1/S2, воронка <code>search_funnel.py</code>, чек-лист оформления КЗ по СОП в карточке рекомендованного КП.</li>
+      <li>Гибридный headline: 75% структурный + 25% правила + safety cap; онко-скан только по тексту КЗ.</li>
+      <li>UI: alignment cards, evidence pack, ЦИСЗ 3.2.1, send_gate, Methodist panels.</li>
+      <li>Тесты: alignment, criteria enrichment, evidence quality, cisz, compliance_gate, respiratory filters.</li>
     </ul>
     <h3>В работе / следующий приоритет</h3>
     <ol>
@@ -715,7 +738,16 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <thead><tr><th>Модуль</th><th>Назначение</th><th>Вход</th><th>Выход</th></tr></thead>
       <tbody>
         <tr><td><code>rag_server.py</code></td><td>HTTP API, версия <code>BUILD_VERSION</code></td><td>REST / multipart</td><td>JSON, SSE stream</td></tr>
-        <tr><td><code>consult_review_pipeline.py</code></td><td>L2 конвейер с прогрессом</td><td>text / bundle meta</td><td>review + structured_analysis + cisz; summary-fallback после RAG</td></tr>
+        <tr><td><code>consult_review_pipeline.py</code></td><td>L2-lite / full L2 с SSE-прогрессом</td><td>text / bundle meta</td><td>review + alignment + evidence + cisz</td></tr>
+        <tr><td><code>consult_alignment.py</code></td><td>Карточки согласования КЗ ↔ КП ↔ СОП</td><td>ConsultationDocument + paths</td><td>alignment[], criteria</td></tr>
+        <tr><td><code>consult_criteria_enrichment.py</code></td><td>Выдержки и покрытие по блокам</td><td>КЗ + chunks + summary</td><td>enriched cards</td></tr>
+        <tr><td><code>kravira_sop_rules.py</code></td><td>Эталон СОП №2 (doc_kravira)</td><td>block_id</td><td>findings/gaps, reference</td></tr>
+        <tr><td><code>consult_evidence_pack.py</code></td><td>Выдержки КП для L2-lite UI</td><td>matched paths</td><td>evidence_map, protocol_ui_meta</td></tr>
+        <tr><td><code>consult_l2_review.py</code></td><td>L2-fast deterministic review</td><td>L1 + evidence</td><td>block_gaps, l2_mode</td></tr>
+        <tr><td><code>consult_memory.py</code></td><td>Кэш чанков, preload paths</td><td>PDF paths</td><td>chunk cache, forbid full corpus</td></tr>
+        <tr><td><code>respiratory_path_filters.py</code></td><td>Фильтр ложных КП при ОРВИ</td><td>ICD J00-J06</td><td>filtered paths</td></tr>
+        <tr><td><code>plan_definition_export.py</code></td><td>Summary → FHIR PlanDefinition</td><td>protocol summary card</td><td>draft CDS resource</td></tr>
+        <tr><td><code>feedback_store.py</code></td><td>ML-разметка методслужбы</td><td>JSONL events</td><td>export tar.gz</td></tr>
         <tr><td><code>rules_summary_fallback.py</code></td><td>Доп. правила из summary по МКБ</td><td>rules_check, ICD</td><td>обновлённый <code>rules_compliance_pct</code></td></tr>
         <tr><td><code>protocol_summary/icd_index.py</code></td><td>Быстрый индекс МКБ → summary</td><td>ICD-10</td><td>refs для fallback; prewarm при старте</td></tr>
         <tr><td><code>consult_screen.py</code></td><td>L0 скрининг (&lt;2 с)</td><td>text | bundle</td><td>send_gate + cisz_readiness</td></tr>
@@ -740,7 +772,8 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <li><code>tests/test_compliance_gate.py</code> - режимы inform/soft/hard/critical_only</li>
       <li><code>tests/test_fhir_bundle_adapter.py</code> - маппинг Bundle → КЗ</li>
       <li><code>tests/test_consult_screen.py</code>, <code>test_consult_tiering.py</code> - L0/L1/L2</li>
-      <li><code>tests/test_vector_index.py</code>, <code>test_semantic_rule_fallback.py</code> - семантический RAG</li>
+      <li><code>tests/test_consult_alignment.py</code>, <code>test_consult_criteria_enrichment.py</code>, <code>test_consult_evidence_quality.py</code></li>
+      <li><code>tests/test_respiratory_path_filters.py</code>, <code>test_plan_definition_export.py</code></li>
       <li>Фикстуры FHIR: <code>tests/fixtures/fhir_by/</code></li>
     </ul>
     <h3>10.2. Нормативные документы в репозитории</h3>
@@ -753,10 +786,11 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
 
   <section class="card">
     <h2>11. Заключение для методслужбы и ИТ Минздрава</h2>
-    <p>Protocol реализует <strong>двухконтурную предимпортную экспертизу</strong> амбулаторного заключения:</p>
+    <p>Protocol реализует <strong>трёхконтурную предимпортную экспертизу</strong> амбулаторного заключения:</p>
     <ol>
-      <li><strong>Клинический контур</strong> - соответствие тексту/структуре официальным клиническим протоколам Минздрава РБ (детерминированные правила, evidence_map, опционально LLM для пояснений).</li>
-      <li><strong>Контур готовности к ЦИСЗ</strong> - зеркало требований Протокола взаимодействия v.1.4 (Bundle/Composition) и программы испытаний МИС v.1.3-4 (ресурсы приёма).</li>
+      <li><strong>Структурный контур</strong> - 8 блоков compliance, evidence_map, safety cap, <code>send_gate</code>.</li>
+      <li><strong>Alignment</strong> - детерминированное согласование КЗ с клиническими протоколами Минздрава и СОП №2 Кравира (оформление амбулаторной карты).</li>
+      <li><strong>Контур готовности к ЦИСЗ</strong> - зеркало требований Протокола взаимодействия v.1.4 и программы испытаний МИС v.1.3-4.</li>
     </ol>
     <p>Итоговый <code>gate_score = min(клинический балл, cisz_score)</code> даёт МИС единый порог для политики подписи. Система <strong>прозрачна</strong>: каждая оценка раскладывается на проверки с весами; критические пробелы по ЦИСЗ и red flags по безопасности учитываются отдельно.</p>
     <p>Protocol <strong>не подменяет</strong> ЦИСЗ: серверная валидация НСИ, OperationOutcome и ProcessingStatus остаются на стороне государственного контура. Задача модуля - снизить долю отклонённых пакетов и клинически слабых КЗ <em>до</em> вызова ЕСИФЮЛ и <code>Bundle/$import</code>.</p>
