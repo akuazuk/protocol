@@ -914,12 +914,22 @@ def iter_consult_review_pipeline(
 
     # --- Единый parse КЗ для structured + alignment ---
     parsed_doc = None
+    consult_src_name = ""
+    consult_src_type = ""
+    try:
+        if consult_docs_meta and isinstance(consult_docs_meta[0], dict):
+            consult_src_name = str(consult_docs_meta[0].get("filename") or "").strip()
+            consult_src_type = str(consult_docs_meta[0].get("format") or "").strip()
+    except Exception:
+        pass
     try:
         from clinical_knowledge.consult_parser import parse_consultation
 
         parsed_doc = parse_consultation(
             full_text,
             consultation_id=(content_signature or "consult")[:16] or "consult",
+            source_file=consult_src_name,
+            source_file_type=consult_src_type,
             demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
         )
     except Exception:
@@ -937,6 +947,8 @@ def iter_consult_review_pipeline(
             sa = analyze_consultation_text(
                 full_text,
                 consultation_id=(content_signature or "consult")[:16] or "consult",
+                source_file=consult_src_name,
+                source_file_type=consult_src_type,
                 demographics_meta=demographics_meta if isinstance(demographics_meta, dict) else None,
                 specialty_slug=doctor_rubric,
                 with_markdown=rs._consult_response_include_html(),

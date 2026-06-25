@@ -732,11 +732,7 @@ def build_consult_alignment(
 
     criteria = [_card_to_criterion(c) for c in ordered if c["block_id"] != "limitations"]
     kz_file = (doc.source_file or "").strip()
-    kz_label = kz_source_label(kz_file)
-    for row in criteria:
-        if kz_file:
-            row["kz_source_file"] = kz_file
-        row["kz_source_label"] = kz_label
+    kz_label = kz_source_label(kz_file) if kz_file else ""
     criteria = maybe_apply_criteria_narrative(criteria)
 
     return {
@@ -783,6 +779,10 @@ def merge_alignment_into_review(review: dict[str, Any], alignment: dict[str, Any
         review["criteria_source"] = "deterministic_alignment"
     if alignment.get("limitations_ru") and not (review.get("limitations_ru") or "").strip():
         review["limitations_ru"] = alignment["limitations_ru"]
+    if alignment.get("kz_source_file"):
+        review["kz_source_file"] = alignment["kz_source_file"]
+    if alignment.get("kz_source_label"):
+        review["kz_source_label"] = alignment["kz_source_label"]
     review["alignment_cards"] = alignment.get("alignment_cards") or []
     review["alignment_mean_score"] = alignment.get("alignment_mean_score")
 

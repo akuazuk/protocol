@@ -1628,6 +1628,17 @@
       border-bottom-color: rgba(26, 138, 114, 0.65);
     }
 
+    .consult-crit-kz-link-wrap {
+      padding: 0.45rem 0.55rem 0.35rem;
+      margin: 0 0.5rem;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.12);
+    }
+
+    .consult-crit-kz-link-wrap .consult-kz-source-link {
+      margin-top: 0;
+      font-size: 0.78rem;
+    }
+
     .consult-crit-empty {
       display: inline-block;
       font-size: 0.74rem;
@@ -11592,6 +11603,7 @@
 
           <details class="consult-spoiler consult-hide-print" id="consult-criteria-spoiler" open>
             <summary id="consult-criteria-summary">Подробные комментарии и цитаты</summary>
+            <div id="consult-crit-kz-link" class="consult-crit-kz-link-wrap" hidden></div>
             <div style="overflow-x: auto; padding: 0 0.5rem 0.55rem">
               <table class="consult-crit-table" id="consult-out-table">
                 <colgroup>
@@ -25867,9 +25879,89 @@
     return "src-completeness";
   }
 
+  function syncConsultUploadObjectUrls() {
+    var sess = consultReviewSession();
+    if (sess.uploadUrls) {
+      sess.uploadUrls.forEach(function (u) {
+        try {
+          URL.revokeObjectURL(u);
+        } catch (eRev) {}
+      });
+    }
+    sess.uploadUrls = [];
+    sess.uploadNames = [];
+    sess.uploadTypes = [];
+    var inp = document.getElementById("consult-pdf-file");
+    if (!inp || !inp.files) return;
+    var i;
+    for (i = 0; i < inp.files.length; i++) {
+      var f = inp.files[i];
+      sess.uploadUrls.push(URL.createObjectURL(f));
+      sess.uploadNames.push(f.name || "");
+      sess.uploadTypes.push(f.type || "");
+    }
+  }
+
+  function resolveConsultKzLabel(data) {
+    var docs = (data && data.consult_documents) || [];
+    var i;
+    for (i = 0; i < docs.length; i++) {
+      var fn = docs[i] && docs[i].filename;
+      if (fn) {
+        return formatProtocolDisplayTitle("", String(fn));
+      }
+    }
+    var rev = (data && data.review) || {};
+    if (rev.kz_source_file) {
+      return formatProtocolDisplayTitle("", String(rev.kz_source_file));
+    }
+    if (rev.kz_source_label && rev.kz_source_label !== "клиническое заключение") {
+      return String(rev.kz_source_label);
+    }
+    var sess = consultReviewSession();
+    if (sess.uploadNames && sess.uploadNames[0]) {
+      return formatProtocolDisplayTitle("", String(sess.uploadNames[0]));
+    }
+    return "";
+  }
+
+  function openConsultKzDocument(data) {
+    var sess = consultReviewSession();
+    if (sess.uploadUrls && sess.uploadUrls.length) {
+      window.open(sess.uploadUrls[0], "_blank", "noopener,noreferrer");
+      return;
+    }
+    scrollToConsultKzDocument();
+  }
+
+  function renderConsultCriteriaKzSourceBar(data) {
+    var bar = document.getElementById("consult-crit-kz-link");
+    if (!bar) return;
+    var label = resolveConsultKzLabel(data);
+    if (!label) {
+      bar.hidden = true;
+      bar.innerHTML = "";
+      return;
+    }
+    bar.hidden = false;
+    bar.innerHTML =
+      '<a class="consult-kz-source-link" href="#" id="consult-kz-source-link" title="Открыть загруженное заключение">' +
+      "Полное заключение: " +
+      escapeHtml(label) +
+      "</a>";
+    var link = document.getElementById("consult-kz-source-link");
+    if (link) {
+      link.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        openConsultKzDocument(data);
+      });
+    }
+  }
+
   function scrollToConsultKzDocument() {
     var spoiler = document.getElementById("consult-structured-spoiler");
     if (spoiler) {
+      spoiler.hidden = false;
       spoiler.open = true;
       spoiler.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -25882,40 +25974,16 @@
     }
   }
 
-  function resolveConsultKzLabel(c, data) {
-    if (c && c.kz_source_label) return String(c.kz_source_label);
-    var docs = (data && data.consult_documents) || [];
-    if (docs.length && docs[0].filename) {
-      return formatProtocolDisplayTitle("", String(docs[0].filename));
-    }
-    if (data && data.kz_source_label) return String(data.kz_source_label);
-    return "клиническое заключение";
-  }
-
-  function renderConsultKzSourceLink(c, data) {
-    var label = resolveConsultKzLabel(c, data);
-    return (
-      '<a class="consult-kz-source-link" href="#" onclick="scrollToConsultKzDocument(); return false;" title="Открыть полный разбор заключения">' +
-      "Полное заключение: " +
-      escapeHtml(label) +
-      "</a>"
-    );
-  }
-
-  function renderConsultCriteriaKzCell(c, data) {
+  function renderConsultCriteriaKzCell(c) {
     var text = (c.conclusion_excerpt || "").trim();
-    var parts = [];
     if (text) {
-      parts.push(
+      return (
         '<blockquote class="consult-crit-quote consult-crit-quote--kz-full">' +
-          escapeHtml(text) +
-          "</blockquote>"
+        escapeHtml(text) +
+        "</blockquote>"
       );
-    } else {
-      parts.push(renderConsultCriteriaQuote("", "В КЗ нет текста по этому разделу"));
     }
-    parts.push(renderConsultKzSourceLink(c, data));
-    return parts.join("");
+    return renderConsultCriteriaQuote("", "В КЗ нет текста по этому разделу");
   }
 
   function scrollToConsultEvidenceChunk(chunkId) {
@@ -26366,6 +26434,7 @@
         critSum.textContent = "Подробные комментарии и цитаты (" + critList.length + ")";
       }
     }
+    renderConsultCriteriaKzSourceBar(data);
 
     var tb = document.querySelector("#consult-out-table tbody");
     if (tb) {
@@ -26400,7 +26469,7 @@
         var tdComment = document.createElement("td");
         tdComment.innerHTML = renderConsultCriteriaComment(c);
         var tdKz = document.createElement("td");
-        tdKz.innerHTML = renderConsultCriteriaKzCell(c, data);
+        tdKz.innerHTML = renderConsultCriteriaKzCell(c);
         var tdProto = document.createElement("td");
         tdProto.innerHTML = renderConsultReferenceCell(c);
         tr.appendChild(tdName);
@@ -27163,6 +27232,12 @@
     if (methPanel) methPanel.hidden = true;
     var pw = document.getElementById("consult-out-paths");
     if (pw) pw.innerHTML = "";
+    syncConsultUploadObjectUrls();
+    var kzLink = document.getElementById("consult-crit-kz-link");
+    if (kzLink) {
+      kzLink.hidden = true;
+      kzLink.innerHTML = "";
+    }
     window.__consultReviewLastPayload = null;
     var mWorkbench = document.getElementById("methodist-workbench-wrap");
     if (mWorkbench) mWorkbench.hidden = true;
@@ -27335,6 +27410,7 @@
           updateConsultProgressUI(0, "подготовка…", "");
         }
         refreshConsultFileName();
+        syncConsultUploadObjectUrls();
       });
     }
 
