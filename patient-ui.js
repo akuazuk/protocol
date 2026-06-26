@@ -7,15 +7,20 @@
   var REPORT_KEY = "protocol_patient_last_report_v3";
   var REMINDER_KEY = "protocol_patient_reminder_v1";
   var SESSION_KEY = "protocol_patient_session_token";
-  var QUESTION_TONE_KEY = "protocol_patient_question_tone_v1";
+  var QUESTION_TONE_KEY = "protocol_patient_question_tone_v2";
 
   var questionTonesCatalog = [
-    { id: "friendly", label_ru: "Дружелюбно", emoji: "💬", description_ru: "Тепло и уважительно - рекомендуем", default: true },
-    { id: "serious", label_ru: "Серьёзно", emoji: "🎯", description_ru: "Коротко и по делу" },
-    { id: "official", label_ru: "Официально", emoji: "📋", description_ru: "Формально, на «Вы»" },
-    { id: "light", label_ru: "С лёгкостью", emoji: "✨", description_ru: "Мягкий юмор без сарказма" },
+    { id: "serious", label_ru: "Строго и серьёзно", emoji: "🎯", description_ru: "Коротко, по делу, без шуток", default: true, accent: "#1e3a5f" },
+    { id: "official", label_ru: "Официально", emoji: "📋", description_ru: "Деловой стиль, обращение на «Вы»", accent: "#1d4ed8" },
+    { id: "playful", label_ru: "Шуточно", emoji: "✨", description_ru: "С лёгким юмором и креативом", accent: "#d97706" },
   ];
-  var selectedQuestionTone = "friendly";
+  var selectedQuestionTone = "serious";
+
+  function normalizeQuestionToneId(tone) {
+    var map = { friendly: "serious", light: "playful", дружелюбно: "serious", "с лёгкостью": "playful" };
+    var t = (tone || "").trim();
+    return map[t] || t || "serious";
+  }
 
   var params = new URLSearchParams(window.location.search);
   var clinicId = params.get("clinic") || "";
@@ -286,12 +291,12 @@
   function loadQuestionTone() {
     try {
       var saved = localStorage.getItem(QUESTION_TONE_KEY);
-      if (saved) selectedQuestionTone = saved;
+      if (saved) selectedQuestionTone = normalizeQuestionToneId(saved);
     } catch (e) {}
   }
 
   function saveQuestionTone(tone) {
-    selectedQuestionTone = tone || "friendly";
+    selectedQuestionTone = normalizeQuestionToneId(tone || "serious");
     try { localStorage.setItem(QUESTION_TONE_KEY, selectedQuestionTone); } catch (e) {}
   }
 
@@ -302,12 +307,21 @@
     questionTonesCatalog.forEach(function (t) {
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "tone-chip" + (selectedQuestionTone === t.id ? " tone-chip--active" : "");
+      var active = selectedQuestionTone === t.id;
+      btn.className = "tone-card tone-card--" + t.id + (active ? " tone-card--active" : "");
       btn.setAttribute("role", "radio");
-      btn.setAttribute("aria-checked", selectedQuestionTone === t.id ? "true" : "false");
+      btn.setAttribute("aria-checked", active ? "true" : "false");
       btn.dataset.tone = t.id;
+      if (t.accent) btn.style.setProperty("--tone-accent", t.accent);
       btn.title = t.description_ru || "";
-      btn.innerHTML = '<span class="tone-chip__emoji" aria-hidden="true">' + (t.emoji || "💬") + "</span>" + escapeHtml(t.label_ru || t.id);
+      btn.innerHTML =
+        '<span class="tone-card__glow" aria-hidden="true"></span>' +
+        '<span class="tone-card__emoji" aria-hidden="true">' + (t.emoji || "💬") + "</span>" +
+        '<span class="tone-card__copy">' +
+        '<span class="tone-card__label">' + escapeHtml(t.label_ru || t.id) + "</span>" +
+        '<span class="tone-card__desc">' + escapeHtml(t.description_ru || "") + "</span>" +
+        "</span>" +
+        '<span class="tone-card__check" aria-hidden="true">' + (active ? "✓" : "") + "</span>";
       btn.addEventListener("click", function () {
         saveQuestionTone(t.id);
         renderTonePicker();
@@ -341,7 +355,7 @@
       .then(function (data) {
         if (data && data.question_tones && data.question_tones.length) {
           questionTonesCatalog = data.question_tones;
-          if (data.default_question_tone) selectedQuestionTone = data.default_question_tone;
+          if (data.default_question_tone) selectedQuestionTone = normalizeQuestionToneId(data.default_question_tone);
           loadQuestionTone();
           renderTonePicker();
         }
@@ -360,7 +374,7 @@
     }
     if (section) {
       section.classList.remove("hidden");
-      var tone = (pr && pr.question_tone) || selectedQuestionTone || "friendly";
+      var tone = normalizeQuestionToneId((pr && pr.question_tone) || selectedQuestionTone || "serious");
       section.className = "report-panel report-panel--questions questions-panel questions-panel--tone-" + tone;
       var lead = document.getElementById("questions-panel-lead");
       if (lead) lead.textContent = (pr && pr.questions_intro_ru) || "Сформулированы так, чтобы врачу было комфортно отвечать.";
@@ -392,6 +406,7 @@
       li.innerHTML =
         '<label class="question-card__label" for="ck-' + escapeHtml(item.id) + '">' +
         '<div class="question-card__shell">' +
+        '<span class="question-card__quote" aria-hidden="true">«</span>' +
         '<span class="question-card__emoji" aria-hidden="true">' + escapeHtml(emoji) + "</span>" +
         '<span class="question-card__num" aria-hidden="true">' + (idx + 1) + "</span>" +
         '<span class="question-card__body">' + cat +
@@ -674,7 +689,7 @@
     if (clinicId) fd.append("clinic_id", clinicId);
     if (selectedTier) fd.append("tier_id", selectedTier);
     if (paidToken) fd.append("payment_token", paidToken);
-    fd.append("question_tone", selectedQuestionTone || "friendly");
+    fd.append("question_tone", selectedQuestionTone || "serious");
     return fd;
   }
 

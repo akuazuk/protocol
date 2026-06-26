@@ -173,8 +173,8 @@ def _question_title(text: str) -> str:
     return " ".join(words[:6]) + ("…" if len(words) > 6 else "")
 
 
-def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -> list[dict[str, str]]:
-    out: list[dict[str, str]] = []
+def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
     seen: set[str] = set()
     for card in cards:
         if not isinstance(card, dict):
@@ -199,19 +199,17 @@ def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -
             if txt:
                 items.append(("gap", txt))
         for kind, raw in items:
-            if kind == "comment":
-                q = _comment_to_question(raw, name, bid)
-            else:
-                q = _gap_to_question(raw, name, bid)
-            key = re.sub(r"\s+", " ", q.lower())[:100]
-            if not q or key in seen:
+            dedupe = f"{bid}:{kind}:{raw.lower()[:80]}"
+            if dedupe in seen:
                 continue
-            seen.add(key)
+            seen.add(dedupe)
             out.append(
                 {
                     "id": f"q{len(out)+1}",
-                    "title": _question_title(q),
-                    "text": q,
+                    "source_gap": raw if kind == "gap" else "",
+                    "source_comment": raw if kind == "comment" else "",
+                    "text": "",
+                    "title": "",
                     "severity": severity,
                     "category_ru": _category_for_block(bid, name),
                     "block_id": bid,
@@ -582,13 +580,15 @@ def build_patient_report(
             )
         elif lab_crosscheck.get("summary_ru"):
             miss_note = str(lab_crosscheck.get("summary_ru") or "")
-        if miss_note and not any(q.get("text") == miss_note for q in structured_questions):
+        if miss_note and not any(q.get("source_comment") == miss_note for q in structured_questions):
             structured_questions.insert(
                 0,
                 {
                     "id": f"q{len(structured_questions)+1}",
-                    "title": _question_title(miss_note),
-                    "text": miss_note,
+                    "source_comment": miss_note,
+                    "intent": "labs_missing_in_kz",
+                    "text": "",
+                    "title": "",
                     "severity": "medium",
                     "category_ru": BLOCK_CATEGORY_RU["labs"],
                     "block_id": "labs",
@@ -600,13 +600,15 @@ def build_patient_report(
             if "обследован" in note.lower()
             else note
         )
-        if qtext and not any(q.get("text") == qtext for q in structured_questions):
+        if qtext and not any((q.get("source_comment") or q.get("source_gap")) == qtext for q in structured_questions):
             structured_questions.insert(
                 0,
                 {
                     "id": f"q{len(structured_questions)+1}",
-                    "title": _question_title(qtext),
-                    "text": qtext,
+                    "source_comment": qtext,
+                    "intent": "exams_plan",
+                    "text": "",
+                    "title": "",
                     "severity": "medium",
                     "category_ru": BLOCK_CATEGORY_RU["exams"],
                     "block_id": "exams",
@@ -617,13 +619,15 @@ def build_patient_report(
             if not isinstance(m, dict):
                 continue
             note = str(m.get("patient_note_ru") or "").strip()
-            if note and not any(q.get("text") == note for q in structured_questions):
+            if note and not any(q.get("source_comment") == note for q in structured_questions):
                 structured_questions.insert(
                     0,
                     {
                         "id": f"q{len(structured_questions)+1}",
-                        "title": _question_title(note),
-                        "text": note,
+                        "source_comment": note,
+                        "intent": "exams_protocol_gap",
+                        "text": "",
+                        "title": "",
                         "severity": "high",
                         "category_ru": BLOCK_CATEGORY_RU["protocol"],
                         "block_id": "exams",
@@ -637,8 +641,10 @@ def build_patient_report(
             0,
             {
                 "id": "q0",
-                "title": "Качество документа",
-                "text": warn,
+                "source_comment": warn,
+                "intent": "document_quality",
+                "text": "",
+                "title": "",
                 "severity": "high",
                 "category_ru": BLOCK_CATEGORY_RU["document"],
                 "block_id": "limitations",

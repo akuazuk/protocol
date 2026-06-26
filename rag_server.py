@@ -8156,7 +8156,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r22-patient-all-formats"
+BUILD_VERSION = "2026-06-24-r23-question-tones-v2"
 
 
 def _app_version() -> str:
@@ -11052,7 +11052,7 @@ def api_patient_status() -> dict:
         "lab_upload": "optional lab_files in multipart",
         "question_tone_field": "question_tone",
         "question_tones": question_tones_for_api(),
-        "default_question_tone": "friendly",
+        "default_question_tone": "serious",
         "upload_formats": {
             "extensions": list(consult_review_allowed_extensions()),
             "accept": consult_review_file_accept_attr(),
@@ -11166,7 +11166,7 @@ async def api_patient_review(
     clinic_id: str = Form("", description="White-label clinic id"),
     tier_id: str = Form("", description="product tier id"),
     payment_token: str = Form("", description="Оплата (если PATIENT_PAYMENT_REQUIRED=1)"),
-    question_tone: str = Form("friendly", description="Тон вопросов врачу: friendly|serious|official|light"),
+    question_tone: str = Form("serious", description="Тон вопросов врачу: serious|official|playful"),
 ) -> dict:
     """B2C: загрузка КЗ пациентом → отчёт P1 (без ЦИСЗ и send_gate)."""
     if not _patient_review_enabled():
@@ -11235,7 +11235,7 @@ async def api_patient_review_stream(
     clinic_id: str = Form(""),
     tier_id: str = Form(""),
     payment_token: str = Form(""),
-    question_tone: str = Form("friendly"),
+    question_tone: str = Form("serious"),
 ):
     """B2C: SSE-прогресс проверки КЗ."""
     from consult_review_pipeline import sse_encode_done, sse_encode_error, sse_encode_progress
