@@ -7,7 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Проверь КЗ" />
   <link rel="manifest" href="/patient-manifest.webmanifest" />
-  <link rel="stylesheet" href="/patient-tokens.css?v=2026-06-24-r19" />
+  <meta name="protocol-patient-build" content="__BUILD_VERSION__" />
+  <link rel="stylesheet" href="/patient-tokens.css?v=__BUILD_VERSION__" />
   <title>Проверь КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -247,6 +248,20 @@
 
     .status { text-align: center; font-size: 0.84rem; color: var(--muted); min-height: 1.25rem; margin-top: 0.55rem; }
     .hidden { display: none !important; }
+    .report-panel.hidden { display: none !important; }
+
+    /* Критичные стили отчёта (fallback если tokens.css из кэша) */
+    .block-item { border-radius: 12px; border: 1px solid var(--border); overflow: hidden; background: #fff; margin-bottom: 0.5rem; }
+    .block-item__cols { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(26, 138, 114, 0.1); }
+    .block-item__name { font-family: Outfit, sans-serif; font-weight: 700; font-size: 0.84rem; color: var(--g800); }
+    .block-item__score { display: flex; align-items: center; gap: 0.35rem; justify-self: end; }
+    .block-item__comment { padding: 0.55rem 0.7rem 0.65rem; }
+    .block-item__comment-label { display: block; font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.25rem; }
+    .blocks-grid-head { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; padding: 0 0.15rem 0.4rem; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+    .upload-joke__inner { padding: 1.15rem 1rem; border-radius: 20px; text-align: center; background: linear-gradient(160deg, #fff 0%, #fffbeb 48%, #fef3c7 100%); border: 1px solid rgba(217, 119, 6, 0.28); }
+    .upload-joke__emoji { font-size: 2.75rem; margin-bottom: 0.45rem; }
+    .upload-joke__title { font-family: Outfit, sans-serif; font-size: 1.08rem; font-weight: 800; color: var(--g950); margin: 0 0 0.45rem; }
+    a.proto-link { font-weight: 650; color: var(--g800); text-decoration: none; border-bottom: 1px solid rgba(26, 138, 114, 0.34); }
 
     .loader-overlay {
       position: fixed;
@@ -421,6 +436,8 @@
       color: var(--muted);
       margin-top: 1.25rem;
       line-height: 1.5;
+    }
+    .foot-build { font-size: 0.65rem; opacity: 0.75; }
     }
     .foot a { color: var(--g600); font-weight: 600; }
 
@@ -847,7 +864,9 @@
       <details><summary>Куда деваются мои документы?</summary>Файлы обрабатываются для одной проверки и не используются для обучения моделей. История на устройстве хранит только дату и краткий итог.</details>
     </section>
 
-    <p class="foot">МЦ «Кравира» · Не замена врача и не медицинское заключение<br /><a href="/">Protocol для специалистов</a></p>
+    <p class="foot">МЦ «Кравира» · Не замена врача и не медицинское заключение<br />
+      <span class="foot-build">Сборка __BUILD_VERSION__</span><br />
+      <a href="/">Protocol для специалистов</a></p>
   </div>
 
   <div class="loader-overlay hidden" id="loader" aria-live="polite" aria-busy="true">
@@ -856,6 +875,6 @@
     <p class="loader-sub" id="loader-sub">Сверка с протоколами Минздрава, обычно до 20 секунд</p>
   </div>
 
-  <script src="/patient-ui.js?v=2026-06-24-r19" defer></script>
+  <script src="/patient-ui.js?v=__BUILD_VERSION__" defer></script>
 </body>
 </html>

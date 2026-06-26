@@ -8124,7 +8124,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r19-upload-joke-detector"
+BUILD_VERSION = "2026-06-24-r20-patient-sw-cache-fix"
 
 
 def _app_version() -> str:
@@ -10914,6 +10914,19 @@ def _patient_review_enabled() -> bool:
     return env_bool("PATIENT_REVIEW_ENABLED", True)
 
 
+def _patient_html_response() -> "Response":
+    """patient.html с подставленной BUILD_VERSION (без устаревшего SW-кэша)."""
+    p = ROOT / "patient.html"
+    if not p.is_file():
+        raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
+    html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
+    return Response(
+        content=html,
+        media_type="text/html; charset=utf-8",
+        headers={"Cache-Control": "no-cache, must-revalidate"},
+    )
+
+
 def _run_patient_review_core(
     *,
     text: str,
@@ -11300,15 +11313,8 @@ if (ROOT / "index.html").is_file():
         )
 
     @app.get("/patient.html", include_in_schema=False)
-    def _serve_patient_html() -> FileResponse:
-        p = ROOT / "patient.html"
-        if not p.is_file():
-            raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
-        return FileResponse(
-            path=str(p),
-            media_type="text/html; charset=utf-8",
-            headers={"Cache-Control": "no-cache"},
-        )
+    def _serve_patient_html() -> Response:
+        return _patient_html_response()
 
     @app.get("/patient-manifest.webmanifest", include_in_schema=False)
     def _serve_patient_manifest() -> FileResponse:
@@ -11322,7 +11328,11 @@ if (ROOT / "index.html").is_file():
         p = ROOT / "patient-sw.js"
         if not p.is_file():
             raise HTTPException(status_code=404)
-        return FileResponse(path=str(p), media_type="application/javascript")
+        return FileResponse(
+            path=str(p),
+            media_type="application/javascript; charset=utf-8",
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
 
     app.mount(
         "/",

@@ -4,7 +4,7 @@
   var HISTORY_KEY = "protocol_patient_history_v2";
   var CHECKLIST_KEY = "protocol_patient_checklist_v1";
   var ONBOARD_KEY = "protocol_patient_onboard_done";
-  var REPORT_KEY = "protocol_patient_last_report_v2";
+  var REPORT_KEY = "protocol_patient_last_report_v3";
   var REMINDER_KEY = "protocol_patient_reminder_v1";
   var SESSION_KEY = "protocol_patient_session_token";
 
@@ -586,6 +586,11 @@
     formCard.classList.add("hidden");
     resultCard.classList.remove("hidden");
     var pr = (data && data.patient_report) || {};
+    if (data && data.upload_mismatch) {
+      pr.upload_mismatch = true;
+      if (data.guessed_kind) pr.guessed_kind = data.guessed_kind;
+      if (data.mismatch_slot) pr.mismatch_slot = data.mismatch_slot;
+    }
     renderReport(pr);
     window.scrollTo({ top: 0, behavior: "smooth" });
     track("upload_done", {
@@ -759,7 +764,31 @@
   setupInstallHint();
   if (!restoreReport()) updateBtn();
 
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/patient-sw.js").catch(function () {});
+  function refreshPatientShell() {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      regs.forEach(function (r) { r.update(); });
+    });
+    var meta = document.querySelector('meta[name="protocol-patient-build"]');
+    var build = meta && meta.getAttribute("content");
+    if (build && build.indexOf("__BUILD") === 0) return;
+    try {
+      var prev = localStorage.getItem("protocol_patient_build_seen");
+      if (prev && prev !== build) {
+        sessionStorage.removeItem(REPORT_KEY);
+        sessionStorage.removeItem("protocol_patient_last_report_v2");
+      }
+      if (build) localStorage.setItem("protocol_patient_build_seen", build);
+    } catch (e) {}
+  }
+  refreshPatientShell();
+  if ("serviceWorker" in navigator) {
+    var buildMeta = document.querySelector('meta[name="protocol-patient-build"]');
+    var buildTag = buildMeta && buildMeta.getAttribute("content");
+    var swUrl = "/patient-sw.js";
+    if (buildTag && buildTag.indexOf("__BUILD") !== 0) swUrl += "?v=" + encodeURIComponent(buildTag);
+    navigator.serviceWorker.register(swUrl).catch(function () {});
+  }
 
   var deferredPrompt;
   window.addEventListener("beforeinstallprompt", function (e) {
