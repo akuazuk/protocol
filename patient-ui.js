@@ -317,6 +317,24 @@
     });
   }
 
+  function syncUploadFormatsFromApi() {
+    fetch(window.location.origin + "/api/patient/status")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var fm = data && data.upload_formats;
+        if (!fm) return;
+        if (fm.accept) {
+          if (kzInput) kzInput.setAttribute("accept", fm.accept);
+          if (labInput) labInput.setAttribute("accept", fm.accept);
+        }
+        if (fm.hint_ru) {
+          var kh = document.getElementById("kz-formats-hint");
+          if (kh) kh.textContent = fm.hint_ru;
+        }
+      })
+      .catch(function () {});
+  }
+
   function syncQuestionTonesFromApi() {
     fetch(window.location.origin + "/api/patient/status")
       .then(function (r) { return r.json(); })
@@ -844,6 +862,7 @@
   setupInstallHint();
   loadQuestionTone();
   renderTonePicker();
+  syncUploadFormatsFromApi();
   syncQuestionTonesFromApi();
   if (!restoreReport()) updateBtn();
 

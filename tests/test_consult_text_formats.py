@@ -45,6 +45,26 @@ def test_jpg_extension_rejected_before_fix_was_plain() -> None:
     assert ".jpeg" in rs.CONSULT_REVIEW_ALLOWED_EXTENSIONS
 
 
+def test_consult_review_file_accept_attr_includes_docx_and_images() -> None:
+    import rag_server as rs
+
+    accept = rs.consult_review_file_accept_attr()
+    assert ".pdf" in accept
+    assert ".docx" in accept
+    assert ".odt" in accept
+    assert ".heic" in accept
+    assert "image/*" in accept
+
+
+def test_patient_html_injects_formats() -> None:
+    import rag_server as rs
+
+    html = rs._patient_html_response().body.decode("utf-8")
+    assert ".docx" in html
+    assert "__PATIENT_FILE_ACCEPT__" not in html
+    assert "__PATIENT_FORMATS_HINT__" not in html
+
+
 def test_decode_utf8_text() -> None:
     import rag_server as rs
 

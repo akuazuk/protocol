@@ -729,23 +729,23 @@
     <section class="card" id="form-card">
       <p class="card-title">Документы</p>
       <div class="drop-zone" id="kz-drop">
-        <input type="file" id="kz-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+        <input type="file" id="kz-files" accept="__PATIENT_FILE_ACCEPT__" multiple capture="environment" />
         <div class="drop-zone__icon" aria-hidden="true"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
         <div class="drop-zone__title">Консультативное заключение</div>
-        <div class="drop-zone__hint">Фото или PDF, до 5 файлов</div>
+        <div class="drop-zone__hint" id="kz-formats-hint">__PATIENT_FORMATS_HINT__</div>
         <div class="file-chips" id="kz-chips"></div>
       </div>
 
       <div class="drop-zone drop-zone--secondary" id="lab-drop">
-        <input type="file" id="lab-files" accept="image/*,application/pdf,.pdf,.jpg,.jpeg,.png,.webp" multiple capture="environment" />
+        <input type="file" id="lab-files" accept="__PATIENT_FILE_ACCEPT__" multiple capture="environment" />
         <div class="drop-zone__title">Анализы (необязательно)</div>
-        <div class="drop-zone__hint">Сверим показатели с текстом заключения</div>
+        <div class="drop-zone__hint" id="lab-formats-hint">Те же форматы: PDF, Word, фото бланка</div>
         <div class="file-chips" id="lab-chips"></div>
       </div>
 
       <details class="photo-tips">
         <summary>Как сфотографировать документ</summary>
-        <p style="margin:0.35rem 0 0">Положите лист на ровную поверхность, включите свет без бликов, снимите все страницы целиком. Если есть PDF из клиники - загрузите его.</p>
+        <p style="margin:0.35rem 0 0">Можно сфотографировать, загрузить PDF или файл из клиники (Word, ODT). Положите лист ровно, без бликов, все страницы целиком.</p>
       </details>
 
       <div class="row">

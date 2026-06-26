@@ -4992,6 +4992,38 @@ def consult_review_allowed_extensions() -> tuple[str, ...]:
     return tuple(sorted(CONSULT_REVIEW_ALLOWED_EXTENSIONS))
 
 
+def consult_review_file_accept_attr() -> str:
+    """Значение атрибута accept для input[type=file] (B2B и B2C)."""
+    mime = (
+        "image/*",
+        "application/pdf",
+        "text/plain",
+        "text/html",
+        "text/rtf",
+        "application/rtf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.oasis.opendocument.text",
+    )
+    parts: list[str] = list(mime) + list(consult_review_allowed_extensions())
+    seen: set[str] = set()
+    out: list[str] = []
+    for p in parts:
+        key = p.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(p)
+    return ",".join(out)
+
+
+def consult_review_formats_hint_ru(*, max_files: int = 5) -> str:
+    """Краткая подсказка для UI загрузки документов."""
+    return (
+        f"PDF, Word (DOCX), ODT, RTF, HTML, текст (TXT, MD), "
+        f"фото (JPG, PNG, HEIC) - до {max_files} файлов"
+    )
+
+
 def _consult_extension(filename: str) -> str:
     name = (filename or "").strip().lower()
     dot = name.rfind(".")
@@ -8124,7 +8156,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r21-question-tone-ui"
+BUILD_VERSION = "2026-06-24-r22-patient-all-formats"
 
 
 def _app_version() -> str:
@@ -10920,6 +10952,9 @@ def _patient_html_response() -> "Response":
     if not p.is_file():
         raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
     html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
+    html = html.replace("__PATIENT_FILE_ACCEPT__", consult_review_file_accept_attr())
+    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 5)
+    html = html.replace("__PATIENT_FORMATS_HINT__", consult_review_formats_hint_ru(max_files=max_files))
     return Response(
         content=html,
         media_type="text/html; charset=utf-8",
@@ -11018,6 +11053,13 @@ def api_patient_status() -> dict:
         "question_tone_field": "question_tone",
         "question_tones": question_tones_for_api(),
         "default_question_tone": "friendly",
+        "upload_formats": {
+            "extensions": list(consult_review_allowed_extensions()),
+            "accept": consult_review_file_accept_attr(),
+            "hint_ru": consult_review_formats_hint_ru(
+                max_files=env_int("PATIENT_REVIEW_MAX_FILES", 5),
+            ),
+        },
         "payment_required": payment_required(),
         "tiers": tier_catalog_public(),
         "disclaimer": (
