@@ -83,6 +83,8 @@ def test_build_patient_report_from_alignment() -> None:
     assert rep["next_steps_ru"]
     assert rep.get("report_schema_version") == 2
     assert rep.get("headline_ru")
+    assert rep.get("protocol_links")
+    assert rep["blocks"][0].get("protocol_link")
     assert "не является диагнозом" in rep["disclaimer_ru"].lower()
 
 

@@ -8124,7 +8124,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r17-patient-proto-links-questions"
+BUILD_VERSION = "2026-06-24-r18-patient-premium-report"
 
 
 def _app_version() -> str:
@@ -11282,14 +11282,22 @@ if (ROOT / "index.html").is_file():
         p = ROOT / "patient-tokens.css"
         if not p.is_file():
             raise HTTPException(status_code=404)
-        return FileResponse(path=str(p), media_type="text/css; charset=utf-8")
+        return FileResponse(
+            path=str(p),
+            media_type="text/css; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
 
     @app.get("/patient-ui.js", include_in_schema=False)
     def _serve_patient_ui_js() -> FileResponse:
         p = ROOT / "patient-ui.js"
         if not p.is_file():
             raise HTTPException(status_code=404)
-        return FileResponse(path=str(p), media_type="application/javascript; charset=utf-8")
+        return FileResponse(
+            path=str(p),
+            media_type="application/javascript; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
 
     @app.get("/patient.html", include_in_schema=False)
     def _serve_patient_html() -> FileResponse:

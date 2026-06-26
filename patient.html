@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Проверь КЗ" />
   <link rel="manifest" href="/patient-manifest.webmanifest" />
-  <link rel="stylesheet" href="/patient-tokens.css" />
+  <link rel="stylesheet" href="/patient-tokens.css?v=2026-06-24-r18" />
   <title>Проверь КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -763,25 +763,39 @@
       </details>
     </section>
 
-    <section class="card hidden" id="result-card" aria-live="polite">
+    <section class="card hidden result-card" id="result-card" aria-live="polite">
       <div id="quality-banner" class="quality-banner hidden" role="alert"></div>
 
-      <p class="headline-ru" id="headline-ru"></p>
-      <span class="traffic-pill traffic-pill--yellow" id="traffic-pill" role="status"></span>
-      <span class="matched-badge hidden" id="matched-badge"></span>
-      <p class="plain-summary" id="plain-summary"></p>
+      <div class="result-hero">
+        <div class="result-hero__copy">
+          <p class="headline-ru" id="headline-ru"></p>
+          <span class="traffic-pill traffic-pill--yellow" id="traffic-pill" role="status"></span>
+          <span class="matched-badge hidden" id="matched-badge" aria-hidden="true"></span>
+          <p class="plain-summary" id="plain-summary"></p>
+        </div>
+        <div class="score-card score-card--hero" id="score-card-wrap">
+          <svg class="score-svg" id="score-svg" viewBox="0 0 88 88" aria-hidden="true"></svg>
+          <p class="score-caption" id="score-caption"></p>
+        </div>
+      </div>
+
+      <div id="protocol-strip" class="protocol-strip hidden" aria-label="Протоколы Минздрава"></div>
 
       <div id="read-back-wrap" class="read-back hidden">
         <strong>Что мы прочитали в вашем документе</strong>
         <ul id="read-back-list"></ul>
       </div>
 
-      <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
-      <ol class="next-steps" id="next-steps"></ol>
+      <section class="report-panel report-panel--questions" id="questions-section">
+        <div class="section-head"><span class="section-dot"></span><h2>Вопросы врачу</h2></div>
+        <p class="panel-lead">Сформулированы так, как вы могли бы спросить на приёме. Отметьте обсуждённое - сохранится на устройстве.</p>
+        <ul class="question-cards" id="action-checklist"></ul>
+      </section>
 
-      <div class="section-head" style="margin-top:0.5rem"><span class="section-dot"></span><h2>Чек-лист для приёма</h2></div>
-      <p style="font-size:0.76rem;color:var(--muted);margin:0 0 0.5rem">Отметьте обсуждённое — сохранится на устройстве.</p>
-      <ul class="checklist" id="action-checklist"></ul>
+      <section class="report-panel">
+        <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
+        <ol class="next-steps" id="next-steps"></ol>
+      </section>
 
       <div id="priority-wrap" class="hidden">
         <div class="section-head"><span class="section-dot"></span><h2>На что обратить внимание</h2></div>
@@ -790,16 +804,11 @@
 
       <div id="p2-narratives" class="p2-narratives hidden"></div>
 
-      <div class="score-card score-card--secondary" id="score-card-wrap">
-        <svg class="score-svg" id="score-svg" viewBox="0 0 88 88" aria-hidden="true"></svg>
-        <p class="score-caption" id="score-caption"></p>
-      </div>
-
-      <details class="cites-fold" id="blocks-details">
-        <summary>Замечания по разделам</summary>
-        <div class="block-cards-labels" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
-        <div class="block-cards" id="block-cards" style="margin-top:0.15rem"></div>
-      </details>
+      <section class="report-panel report-panel--blocks" id="blocks-panel">
+        <div class="section-head"><span class="section-dot"></span><h2>Замечания по разделам</h2></div>
+        <div class="blocks-grid-head" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
+        <div class="blocks-grid" id="block-cards"></div>
+      </section>
 
       <div id="lab-result" class="hidden"></div>
       <div id="protocol-result" class="hidden"></div>
@@ -842,6 +851,6 @@
     <p class="loader-sub" id="loader-sub">Сверка с протоколами Минздрава, обычно до 20 секунд</p>
   </div>
 
-  <script src="/patient-ui.js" defer></script>
+  <script src="/patient-ui.js?v=2026-06-24-r18" defer></script>
 </body>
 </html>

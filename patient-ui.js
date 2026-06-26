@@ -14,6 +14,7 @@
   var paidToken = params.get("paid") || localStorage.getItem("protocol_patient_payment_token") || "";
 
   var lastReport = null;
+  var lastProtocolLinks = [];
   var clinicConfig = null;
   var selectedTier = tierId || "basic";
   var useSse = true;
@@ -34,22 +35,77 @@
     return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function renderProtocolLink(link, fallbackTitle) {
-    if (!link || !link.pdf_url) {
+  function resolveProtocolLink(link, fallbackTitle, fallbackPath) {
+    if (link && link.pdf_url) return link;
+    var path = (link && link.path) || fallbackPath || "";
+    var title = (link && link.title) || fallbackTitle || "";
+    var i;
+    for (i = 0; i < lastProtocolLinks.length; i++) {
+      var pl = lastProtocolLinks[i];
+      if (path && pl.path === path) return pl;
+      if (title && pl.title && pl.title.toLowerCase() === title.toLowerCase()) return pl;
+    }
+    if (lastProtocolLinks.length === 1 && (title || path)) return lastProtocolLinks[0];
+    return link || null;
+  }
+
+  function renderProtocolLink(link, fallbackTitle, fallbackPath) {
+    var resolved = resolveProtocolLink(link, fallbackTitle, fallbackPath);
+    if (!resolved || !resolved.pdf_url) {
       return fallbackTitle ? escapeHtml(fallbackTitle) : "";
     }
-    var title = link.title || fallbackTitle || "Клинический протокол Минздрава";
-    return '<a class="proto-link" href="' + escapeHtml(link.pdf_url) + '" target="_blank" rel="noopener noreferrer" title="Открыть PDF протокола">' + escapeHtml(title) + "</a>";
+    var title = resolved.title || fallbackTitle || "Клинический протокол Минздрава";
+    return (
+      '<a class="proto-link" href="' +
+      escapeHtml(resolved.pdf_url) +
+      '" target="_blank" rel="noopener noreferrer" title="Открыть PDF протокола Минздрава">' +
+      '<span class="proto-link__icon" aria-hidden="true">PDF</span>' +
+      '<span class="proto-link__text">' +
+      escapeHtml(title) +
+      "</span></a>"
+    );
+  }
+
+  function renderProtocolChip(link) {
+    var resolved = resolveProtocolLink(link);
+    if (!resolved || !resolved.pdf_url) return "";
+    var rubric = resolved.rubric ? '<span class="proto-chip__rubric">' + escapeHtml(resolved.rubric) + "</span>" : "";
+    return (
+      '<li class="proto-chip">' +
+      '<span class="proto-chip__icon" aria-hidden="true">КП</span>' +
+      '<div class="proto-chip__body">' +
+      renderProtocolLink(resolved) +
+      rubric +
+      "</div></li>"
+    );
+  }
+
+  function renderProtocolStrip(links) {
+    var strip = document.getElementById("protocol-strip");
+    if (!strip) return;
+    if (!links || !links.length) {
+      strip.classList.add("hidden");
+      strip.innerHTML = "";
+      return;
+    }
+    strip.classList.remove("hidden");
+    var html = '<div class="protocol-strip__label">Сверка с протоколами Минздрава</div><ul class="proto-chips">';
+    links.forEach(function (l) {
+      html += renderProtocolChip(l);
+    });
+    html += "</ul>";
+    strip.innerHTML = html;
   }
 
   function renderProtocolLinksList(links, limit) {
     if (!links || !links.length) return "";
     var n = limit || links.length;
     var parts = [];
-    for (var i = 0; i < links.length && i < n; i++) {
+    var i;
+    for (i = 0; i < links.length && i < n; i++) {
       parts.push(renderProtocolLink(links[i]));
     }
-    return parts.join(", ");
+    return parts.join("");
   }
 
   function track(event, meta) {
@@ -133,23 +189,29 @@
     } catch (e) { return false; }
   }
 
-  function renderScoreRing(pct, light, label, compact) {
-    var svg = document.getElementById("score-svg");
-    var card = document.getElementById("score-card-wrap");
-    if (!svg) return;
-    if (card) card.classList.toggle("score-card--secondary", !!compact);
+  function scoreRingHtml(pct, light, compact) {
     var r = compact ? 40 : 52;
     var c = 2 * Math.PI * r;
     var off = c * (1 - (pct != null ? pct / 100 : 0));
     var color = light === "green" ? "#1a8a72" : light === "red" ? "#dc2626" : "#d97706";
     var cx = compact ? 44 : 60;
-    svg.setAttribute("viewBox", compact ? "0 0 88 88" : "0 0 120 120");
-    svg.innerHTML =
+    return (
       '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="#e8f5f1" stroke-width="' + (compact ? 8 : 10) + '"/>' +
       '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="' + (compact ? 8 : 10) + '" ' +
       'stroke-dasharray="' + c + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 ' + cx + " " + cx + ')"/>' +
       '<text x="' + cx + '" y="' + (cx - 2) + '" text-anchor="middle" font-size="' + (compact ? "16" : "22") + '" font-weight="800" fill="#063d35">' +
-      (pct != null ? pct + "%" : "—") + "</text>";
+      (pct != null ? pct + "%" : "—") + "</text>"
+    );
+  }
+
+  function renderScoreRing(pct, light, label, compact) {
+    var svg = document.getElementById("score-svg");
+    var card = document.getElementById("score-card-wrap");
+    if (!svg) return;
+    if (card) card.classList.toggle("score-card--secondary", !!compact);
+    var cx = compact ? 44 : 60;
+    svg.setAttribute("viewBox", compact ? "0 0 88 88" : "0 0 120 120");
+    svg.innerHTML = scoreRingHtml(pct, light, compact);
     var cap = document.getElementById("score-caption");
     if (cap) cap.textContent = label || "";
   }
@@ -169,6 +231,83 @@
     el.textContent = dq.hint_ru;
     el.classList.remove("hidden");
     if (dq.level === "low" && light === "green") el.textContent += " Не полагайтесь только на «зелёный» статус.";
+  }
+
+  function renderBlocksPanel(blocks) {
+    var cards = document.getElementById("block-cards");
+    var panel = document.getElementById("blocks-panel");
+    if (!cards) return;
+    cards.innerHTML = "";
+    if (!blocks || !blocks.length) {
+      if (panel) panel.classList.add("hidden");
+      return;
+    }
+    if (panel) panel.classList.remove("hidden");
+    blocks.forEach(function (b) {
+      var article = document.createElement("article");
+      article.className = "block-item block-item--" + (b.status || "attention");
+      var scoreText = b.score_pct != null ? '<span class="block-item__pct">' + b.score_pct + "%</span>" : "";
+      var gaps = b.gaps && b.gaps.length
+        ? '<ul class="gap-list">' + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>"
+        : "";
+      var protoLine = "";
+      if (b.protocol_excerpt || b.protocol_link) {
+        protoLine = '<div class="block-item__proto"><span class="block-item__proto-label">По протоколу</span>';
+        if (b.protocol_link) protoLine += renderProtocolLink(b.protocol_link);
+        if (b.protocol_excerpt) {
+          protoLine += '<p class="block-item__excerpt">' + escapeHtml(b.protocol_excerpt) + "</p>";
+        }
+        protoLine += "</div>";
+      }
+      var comment = (b.summary_ru || b.why_ru || "—").trim();
+      article.innerHTML =
+        '<div class="block-item__cols">' +
+        '<div class="block-item__name">' + escapeHtml(b.title) + "</div>" +
+        '<div class="block-item__score">' + scoreText + '<span class="' + pillClass(b.status) + '">' + pillLabel(b.status) + "</span></div>" +
+        "</div>" +
+        '<div class="block-item__comment">' +
+        '<span class="block-item__comment-label">Комментарий</span>' +
+        '<p class="block-item__comment-text">' + escapeHtml(comment) + "</p>" +
+        protoLine + gaps +
+        "</div>";
+      cards.appendChild(article);
+    });
+  }
+
+  function renderQuestionCards(items) {
+    var cl = document.getElementById("action-checklist");
+    var section = document.getElementById("questions-section");
+    if (!cl) return;
+    cl.innerHTML = "";
+    if (!items || !items.length) {
+      if (section) section.classList.add("hidden");
+      return;
+    }
+    if (section) section.classList.remove("hidden");
+    var checklistState = loadChecklistState();
+    items.forEach(function (item, idx) {
+      var li = document.createElement("li");
+      var checked = !!checklistState[item.id];
+      var sev = item.severity === "high" ? " question-card--high" : item.severity === "low" ? " question-card--low" : "";
+      if (checked) li.className = "question-card checked" + sev;
+      else li.className = "question-card" + sev;
+      var cat = item.category_ru
+        ? '<span class="question-card__cat">' + escapeHtml(item.category_ru) + "</span>"
+        : "";
+      li.innerHTML =
+        '<label class="question-card__label" for="ck-' + escapeHtml(item.id) + '">' +
+        '<span class="question-card__num" aria-hidden="true">' + (idx + 1) + "</span>" +
+        '<span class="question-card__body">' + cat +
+        '<span class="question-card__text">' + escapeHtml(item.text || item.title || "") + "</span></span>" +
+        '<input type="checkbox" id="ck-' + escapeHtml(item.id) + '" ' + (checked ? "checked" : "") + " />" +
+        "</label>";
+      var cb = li.querySelector("input");
+      cb.addEventListener("change", function () {
+        saveChecklistItem(item.id, cb.checked);
+        li.classList.toggle("checked", cb.checked);
+      });
+      cl.appendChild(li);
+    });
   }
 
   function renderP2Narratives(pr) {
@@ -222,18 +361,18 @@
       box.classList.add("hidden"); box.innerHTML = ""; return;
     }
     box.classList.remove("hidden");
-    var html = '<details class="cites-fold"><summary>Требования протокола Минздрава</summary><div style="margin-top:0.45rem">';
+    var html = '<section class="report-panel report-panel--protocol"><div class="section-head"><span class="section-dot"></span><h2>Требования протокола</h2></div>';
     if (pc.protocol_title || pc.protocol_link) {
-      html += '<p style="font-size:0.78rem;color:var(--muted);margin:0 0 0.5rem">';
-      if (pc.protocol_link) html += "Протокол: " + renderProtocolLink(pc.protocol_link, pc.protocol_title);
+      html += '<div class="protocol-panel-head">';
+      if (pc.protocol_link) html += renderProtocolLink(pc.protocol_link, pc.protocol_title);
       else html += escapeHtml(pc.protocol_title || "");
-      html += "</p>";
+      html += "</div>";
     }
     pc.missing_recommended_exams.forEach(function (m) {
-      html += '<div class="block-card block-card--concern" style="margin-bottom:0.4rem"><strong>' + escapeHtml(m.exam_name || "Обследование") + "</strong>";
-      html += "<p style=\"margin:0.25rem 0 0\">" + escapeHtml(m.patient_note_ru || "") + "</p></div>";
+      html += '<div class="protocol-req block-item block-item--concern"><strong>' + escapeHtml(m.exam_name || "Обследование") + "</strong>";
+      html += "<p>" + escapeHtml(m.patient_note_ru || "") + "</p></div>";
     });
-    html += "</div></details>";
+    html += "</section>";
     box.innerHTML = html;
   }
 
@@ -288,6 +427,7 @@
 
   function renderReport(pr) {
     lastReport = pr;
+    lastProtocolLinks = pr.protocol_links || [];
     saveReport(pr);
 
     var hl = document.getElementById("headline-ru");
@@ -295,22 +435,11 @@
 
     renderTrafficPill(pr.traffic_light, pr.overall_label_ru);
     renderQualityBanner(pr.document_quality, pr.traffic_light);
-    renderScoreRing(pr.overall_pct, pr.traffic_light, "Детальная оценка по блокам", true);
+    renderScoreRing(pr.overall_pct, pr.traffic_light, "Сводная оценка по разделам", true);
+    renderProtocolStrip(lastProtocolLinks);
 
     var mb = document.getElementById("matched-badge");
-    var cnt = pr.matched_protocols_count;
-    if (mb) {
-      if (cnt > 0 || (pr.protocol_links && pr.protocol_links.length)) {
-        var links = pr.protocol_links || [];
-        if (links.length) {
-          mb.innerHTML = "Сверка с " + renderProtocolLinksList(links, 3);
-          if (links.length > 3) mb.innerHTML += " и ещё " + (links.length - 3);
-        } else {
-          mb.textContent = "Сверка с " + cnt + " протоколами Минздрава";
-        }
-        mb.classList.remove("hidden");
-      } else mb.classList.add("hidden");
-    }
+    if (mb) mb.classList.add("hidden");
 
     var ps = document.getElementById("plain-summary");
     if (ps) ps.textContent = pr.plain_summary_ru || "";
@@ -338,6 +467,8 @@
       });
     } else if (rbw) rbw.classList.add("hidden");
 
+    renderQuestionCards(pr.action_checklist || []);
+
     var pw = document.getElementById("priority-wrap");
     var pl = document.getElementById("priority-list");
     if (pl) pl.innerHTML = "";
@@ -354,51 +485,7 @@
       } else pw.classList.add("hidden");
     }
 
-    var cl = document.getElementById("action-checklist");
-    if (cl) {
-      cl.innerHTML = "";
-      var checklistState = loadChecklistState();
-      var items = pr.action_checklist || [];
-      items.forEach(function (item) {
-        var li = document.createElement("li");
-        var checked = !!checklistState[item.id];
-        if (checked) li.className = "checked";
-        li.innerHTML = '<input type="checkbox" id="ck-' + escapeHtml(item.id) + '" ' + (checked ? "checked" : "") + " />" +
-          '<label for="ck-' + escapeHtml(item.id) + '"><span class="checklist__title">' + escapeHtml(item.title || "Вопрос") + "</span>" + escapeHtml(item.text || "") + "</label>";
-        var cb = li.querySelector("input");
-        cb.addEventListener("change", function () {
-          saveChecklistItem(item.id, cb.checked);
-          li.classList.toggle("checked", cb.checked);
-        });
-        cl.appendChild(li);
-      });
-    }
-
-    var cards = document.getElementById("block-cards");
-    if (cards) {
-      cards.innerHTML = "";
-      (pr.blocks || []).forEach(function (b) {
-        var div = document.createElement("div");
-        div.className = "block-card block-card--" + (b.status || "attention");
-        var gaps = b.gaps && b.gaps.length ? "<ul class=\"gap-list\">" + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>" : "";
-        var why = b.why_ru ? '<p class="block-card__why"><span class="block-card__why-label">Почему так: </span>' + escapeHtml(b.why_ru) + "</p>" : "";
-        var protoLine = "";
-        if (b.protocol_excerpt || b.protocol_link) {
-          protoLine = '<p class="block-card__proto"><span class="block-card__proto-label">По </span>';
-          if (b.protocol_link) protoLine += renderProtocolLink(b.protocol_link);
-          else protoLine += "протоколу";
-          if (b.protocol_excerpt) protoLine += ": " + escapeHtml(b.protocol_excerpt);
-          protoLine += "</p>";
-        }
-        div.innerHTML =
-          '<div class="block-card__head"><span class="block-card__title">' + escapeHtml(b.title) + "</span>" +
-          '<span class="' + pillClass(b.status) + ' block-card__score">' +
-          (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></div>" +
-          '<div class="block-card__comment"><span class="block-card__comment-label">Комментарий</span>' +
-          escapeHtml(b.summary_ru || "—") + why + protoLine + gaps + "</div>";
-        cards.appendChild(div);
-      });
-    }
+    renderBlocksPanel(pr.blocks || []);
 
     renderP2Narratives(pr);
     renderLabPanel(pr.lab_crosscheck);
@@ -414,8 +501,8 @@
           var div = document.createElement("div");
           div.className = "cite";
           var head = renderProtocolLink(c.protocol_link, c.protocol_title || "Протокол");
-          if (c.section) head += " · " + escapeHtml(c.section);
-          div.innerHTML = "<strong>" + head + "</strong>" + escapeHtml(c.excerpt || "");
+          if (c.section) head += ' <span class="cite__section">· ' + escapeHtml(c.section) + "</span>";
+          div.innerHTML = "<div class=\"cite__head\">" + head + "</div><p class=\"cite__text\">" + escapeHtml(c.excerpt || "") + "</p>";
           cites.appendChild(div);
         });
       } else if (citesDetails) citesDetails.hidden = true;
