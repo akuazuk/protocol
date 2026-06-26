@@ -62,17 +62,77 @@ def block_status_for_score(score_pct: int | None) -> BlockStatus:
     return "concern"
 
 
-def _gap_to_question(gap: str, block_name: str) -> str:
-    g = (gap or "").strip()
+def _gap_to_question(gap: str, block_name: str, block_id: str = "") -> str:
+    """Сформулировать вопрос так, как пациент спросил бы на приёме."""
+    g = (gap or "").strip().rstrip(".")
     if not g:
         return ""
     if g.endswith("?"):
-        return g
+        return _polish_question(g)
+
     low = g.lower()
-    if any(low.startswith(p) for p in _QUESTION_PREFIXES):
-        return g[0].upper() + g[1:] if g else g
-    prefix = f"По разделу «{block_name}»: " if block_name else ""
-    return f"{prefix}уточните у врача - {g.rstrip('.')}"
+    bid = (block_id or "").strip().lower()
+
+    if re.search(r"длительност", low) and re.search(r"терап|лечен|при[её]м", low):
+        return "Сколько времени мне нужно принимать назначенное лечение?"
+    if re.search(r"доз", low):
+        return "Подскажите, как именно мне принимать препараты - дозу, время и длительность курса?"
+    if re.search(r"узи|ультразвук", low):
+        return "Нужно ли мне проходить УЗИ, и когда это лучше сделать?"
+    if re.search(r"\bоак\b|анализ крови", low):
+        return "Нужно ли сдавать общий анализ крови, и учтены ли мои последние результаты?"
+    if re.search(r"контрол|наблюден|повторн", low):
+        return "Когда мне приходить на контроль и что вы будете проверять?"
+    if re.search(r"локализац", low):
+        return "Можно уточнить, где именно у меня локализовано заболевание?"
+    if re.search(r"стади", low):
+        return "На какой стадии сейчас заболевание и что это значит для лечения?"
+    if re.search(r"обязательн", low) and re.search(r"лаборатор|исследован", low):
+        return "Какие обследования мне ещё нужно пройти по стандарту лечения?"
+
+    if bid == "treatment":
+        return f"По лечению в заключении не хватает: «{g}». Не могли бы вы это пояснить?"
+    if bid == "exams":
+        return f"По обследованиям: «{g}» - это уже сделано или мне нужно записаться?"
+    if bid == "diagnosis":
+        return f"Можно уточнить диагноз простыми словами? В заключении неясно: {g}."
+    if bid == "follow_up":
+        return "Когда мне нужен следующий визит и что взять с собой на приём?"
+    if bid == "complaints":
+        return f"В жалобах не отражено: «{g}». Это важно для моего случая?"
+    if bid == "anamnesis":
+        return f"В анамнезе не указано: «{g}». Нужно ли это дополнить?"
+    if bid == "objective_status":
+        return f"В осмотре не описано: «{g}». Можете пояснить?"
+
+    if block_name:
+        return f"По разделу «{block_name}»: не могли бы вы пояснить - {g}?"
+    return f"Не могли бы вы пояснить: {g}?"
+
+
+def _polish_question(text: str) -> str:
+    t = (text or "").strip()
+    if not t:
+        return ""
+    if not t.endswith("?"):
+        t += "?"
+    if t[0].islower():
+        t = t[0].upper() + t[1:]
+    return t
+
+
+def _comment_to_question(comment: str, block_name: str, block_id: str) -> str:
+    c = (comment or "").strip()
+    if not c:
+        return ""
+    low = c.lower()
+    if "доз" in low and ("не детализ" in low or "не указан" in low):
+        return "Подскажите, как именно мне принимать назначенные препараты - дозу и как долго?"
+    if "мало детал" in low or "кратко" in low:
+        return f"Можно подробнее рассказать про раздел «{block_name}» в моём заключении?"
+    if "не указан" in low and block_id == "diagnosis":
+        return "Можно уточнить формулировку диагноза и код заболевания простыми словами?"
+    return _gap_to_question(c, block_name, block_id)
 
 
 def _question_title(text: str) -> str:
@@ -94,23 +154,27 @@ def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -
         if card.get("block_id") == "limitations":
             continue
         name = str(card.get("name_ru") or "").strip()
+        bid = str(card.get("block_id") or "").strip()
         score = _clamp_pct(card.get("score_pct"))
         severity = "low"
         if score is not None and score < 50:
             severity = "high"
         elif score is not None and score < 75:
             severity = "medium"
-        items: list[str] = []
+        items: list[tuple[str, str]] = []
         if score is not None and score < 75:
             comment = str(card.get("comment_ru") or "").strip()
             if comment and len(comment) > 12:
-                items.append(comment)
+                items.append(("comment", comment))
         for g in card.get("gaps_ru") or []:
             txt = str(g).strip()
             if txt:
-                items.append(txt)
-        for raw in items:
-            q = _gap_to_question(raw, name)
+                items.append(("gap", txt))
+        for kind, raw in items:
+            if kind == "comment":
+                q = _comment_to_question(raw, name, bid)
+            else:
+                q = _gap_to_question(raw, name, bid)
             key = re.sub(r"\s+", " ", q.lower())[:100]
             if not q or key in seen:
                 continue
@@ -121,8 +185,50 @@ def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -
     return out
 
 
-def _collect_citations(cards: list[dict[str, Any]], limit: int = 5) -> list[dict[str, str]]:
-    out: list[dict[str, str]] = []
+def _protocol_link_dict(
+    *,
+    protocol_path: str | None = None,
+    title: str | None = None,
+    section: str | None = None,
+) -> dict[str, Any] | None:
+    from clinical_knowledge.protocol_links import protocol_link_payload
+
+    payload = protocol_link_payload(protocol_path, title=title, section=section)
+    return payload
+
+
+def _protocol_link_from_card(card: dict[str, Any]) -> dict[str, Any] | None:
+    if not isinstance(card, dict):
+        return None
+    return _protocol_link_dict(
+        protocol_path=str(card.get("protocol_path") or ""),
+        title=str(card.get("protocol_title") or "") or None,
+        section=str(card.get("protocol_section") or "") or None,
+    )
+
+
+def _collect_protocol_links(cards: list[dict[str, Any]], l1_result: dict[str, Any]) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for card in cards:
+        link = _protocol_link_from_card(card)
+        if link and link.get("path") and link["path"] not in seen:
+            seen.add(str(link["path"]))
+            out.append(link)
+    sa = l1_result.get("structured_analysis") if isinstance(l1_result.get("structured_analysis"), dict) else {}
+    for m in sa.get("matches") or []:
+        if not isinstance(m, dict):
+            continue
+        path = str(m.get("source_path") or m.get("local_path") or "")
+        link = _protocol_link_dict(protocol_path=path, title=str(m.get("title") or "") or None)
+        if link and link.get("path") and link["path"] not in seen:
+            seen.add(str(link["path"]))
+            out.append(link)
+    return out[:8]
+
+
+def _collect_citations(cards: list[dict[str, Any]], limit: int = 5) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
     seen: set[str] = set()
     for card in cards:
         if not isinstance(card, dict):
@@ -136,13 +242,15 @@ def _collect_citations(cards: list[dict[str, Any]], limit: int = 5) -> list[dict
         seen.add(key)
         title = str(card.get("protocol_title") or card.get("name_ru") or "Клинический протокол").strip()
         section = str(card.get("protocol_section") or "").strip()
-        out.append(
-            {
-                "protocol_title": title[:200],
-                "section": section[:120],
-                "excerpt": excerpt[:420],
-            }
-        )
+        link = _protocol_link_from_card(card)
+        row: dict[str, Any] = {
+            "protocol_title": title[:200],
+            "section": section[:120],
+            "excerpt": excerpt[:420],
+        }
+        if link:
+            row["protocol_link"] = link
+        out.append(row)
         if len(out) >= limit:
             break
     return out
@@ -193,18 +301,20 @@ def _patient_blocks(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 summary = findings[0]
         gaps = [str(g).strip() for g in card.get("gaps_ru") or [] if str(g).strip()][:3]
         excerpt = str(card.get("protocol_excerpt") or "").strip()[:420]
-        blocks.append(
-            {
-                "id": bid,
-                "title": str(card.get("name_ru") or bid),
-                "score_pct": score,
-                "status": status,
-                "summary_ru": summary,
-                "why_ru": _block_why_ru(card, status, score),
-                "protocol_excerpt": excerpt,
-                "gaps": gaps,
-            }
-        )
+        plink = _protocol_link_from_card(card)
+        block: dict[str, Any] = {
+            "id": bid,
+            "title": str(card.get("name_ru") or bid),
+            "score_pct": score,
+            "status": status,
+            "summary_ru": summary,
+            "why_ru": _block_why_ru(card, status, score),
+            "protocol_excerpt": excerpt,
+            "gaps": gaps,
+        }
+        if plink:
+            block["protocol_link"] = plink
+        blocks.append(block)
     return blocks
 
 
@@ -354,9 +464,9 @@ def build_patient_report(
         miss = lab_crosscheck.get("missing_in_kz_lines") or []
         if miss:
             miss_note = (
-                "В загруженных анализах есть показатели, не названные в заключении: "
-                + "; ".join(miss[:4])
-                + ". Уточните у врача, учтены ли они."
+                "В моих анализах есть показатели, которых нет в заключении ("
+                + "; ".join(miss[:3])
+                + "). Не могли бы вы пояснить, учтены ли они в лечении?"
             )
         elif lab_crosscheck.get("summary_ru"):
             miss_note = str(lab_crosscheck.get("summary_ru") or "")
@@ -371,13 +481,18 @@ def build_patient_report(
                 },
             )
     for note in exams_kz_notes or []:
-        if note and not any(q.get("text") == note for q in structured_questions):
+        qtext = (
+            "В заключении мало информации об обследованиях - что уже сделано и что ещё нужно пройти?"
+            if "обследован" in note.lower()
+            else note
+        )
+        if qtext and not any(q.get("text") == qtext for q in structured_questions):
             structured_questions.insert(
                 0,
                 {
                     "id": f"q{len(structured_questions)+1}",
-                    "title": _question_title(note),
-                    "text": note,
+                    "title": _question_title(qtext),
+                    "text": qtext,
                     "severity": "medium",
                 },
             )
@@ -428,6 +543,7 @@ def build_patient_report(
         "questions_structured": structured_questions,
         "action_checklist": action_checklist,
         "protocol_citations": _collect_citations(cards),
+        "protocol_links": _collect_protocol_links(cards, l1_result),
         "limitations_ru": limitations,
         "confidence_score": conf,
         "disclaimer_ru": PATIENT_DISCLAIMER_RU,

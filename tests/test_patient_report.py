@@ -32,6 +32,15 @@ def test_traffic_light_thresholds() -> None:
     assert block_status_for_score(30) == "concern"
 
 
+def test_human_doctor_questions() -> None:
+    from clinical_knowledge.patient_report import _gap_to_question
+
+    q = _gap_to_question("Нет длительности терапии", "Лечение", "treatment")
+    assert "?" in q
+    assert "лечен" in q.lower() or "принимать" in q.lower()
+    assert "уточните у врача" not in q.lower()
+
+
 def test_build_patient_report_from_alignment() -> None:
     l1 = {
         "confidence_score": 85,
@@ -48,6 +57,7 @@ def test_build_patient_report_from_alignment() -> None:
                     "gaps_ru": [],
                     "protocol_excerpt": "При флеботромбозе указывают локализацию и стадию.",
                     "protocol_title": "КП ТГВ",
+                    "protocol_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/kp_tgv.pdf",
                 },
                 {
                     "block_id": "treatment",

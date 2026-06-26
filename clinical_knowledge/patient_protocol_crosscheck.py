@@ -38,8 +38,10 @@ def crosscheck_protocol_requirements(
     matches = sa.get("matches") if isinstance(sa.get("matches"), list) else []
 
     protocol_title = ""
+    protocol_path = ""
     if matches and isinstance(matches[0], dict):
         protocol_title = str(matches[0].get("title") or "").strip()[:220]
+        protocol_path = str(matches[0].get("source_path") or matches[0].get("local_path") or "")
 
     exam_assessments = list(comp.get("exam_assessments") or [])
     lab_names = marker_names(extract_lab_markers(lab_text)) if (lab_text or "").strip() else []
@@ -60,8 +62,8 @@ def crosscheck_protocol_requirements(
             continue
         severity = "high" if status == "missing_required" else "medium"
         note = (
-            f"По клиническому протоколу Минздрава обычно отражают «{exam_name}». "
-            "В вашем заключении и загруженных анализах этого не видно - уточните у врача, нужно ли обследование."
+            f"По стандарту Минздрава для таких случаев обычно указывают «{exam_name}». "
+            f"У меня в заключении этого нет - нужно ли мне это обследование?"
         )
         missing.append(
             {
@@ -87,8 +89,14 @@ def crosscheck_protocol_requirements(
     elif exam_assessments:
         notes.append("Основные обследования из протокола в документе отражены или не требуются для этого случая.")
 
+    from clinical_knowledge.protocol_links import protocol_link_payload
+
+    protocol_link = protocol_link_payload(protocol_path, title=protocol_title) if protocol_path else None
+
     return {
         "protocol_title": protocol_title,
+        "protocol_path": protocol_path,
+        "protocol_link": protocol_link,
         "missing_recommended_exams": missing[:12],
         "notes_ru": notes,
     }

@@ -569,6 +569,36 @@
       line-height: 1.5;
       color: var(--muted);
     }
+    .block-card__comment-label,
+    .block-card__proto-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    .block-card__proto {
+      margin: 0.45rem 0 0;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      color: var(--g800);
+    }
+    a.proto-link {
+      font-weight: 650;
+      color: var(--g800);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.34);
+      padding-bottom: 0.05em;
+      line-height: 1.45;
+    }
+    a.proto-link:hover,
+    a.proto-link:focus-visible {
+      color: var(--g950);
+      border-bottom-color: currentColor;
+    }
+    .matched-badge .proto-link { font-size: 0.72rem; font-weight: 600; }
 
     .checklist { list-style: none; padding: 0; margin: 0; }
     .checklist li {
@@ -767,7 +797,8 @@
 
       <details class="cites-fold" id="blocks-details">
         <summary>Замечания по разделам</summary>
-        <div class="block-cards" id="block-cards" style="margin-top:0.45rem"></div>
+        <div class="block-cards-labels" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
+        <div class="block-cards" id="block-cards" style="margin-top:0.15rem"></div>
       </details>
 
       <div id="lab-result" class="hidden"></div>

@@ -34,6 +34,24 @@
     return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
+  function renderProtocolLink(link, fallbackTitle) {
+    if (!link || !link.pdf_url) {
+      return fallbackTitle ? escapeHtml(fallbackTitle) : "";
+    }
+    var title = link.title || fallbackTitle || "Клинический протокол Минздрава";
+    return '<a class="proto-link" href="' + escapeHtml(link.pdf_url) + '" target="_blank" rel="noopener noreferrer" title="Открыть PDF протокола">' + escapeHtml(title) + "</a>";
+  }
+
+  function renderProtocolLinksList(links, limit) {
+    if (!links || !links.length) return "";
+    var n = limit || links.length;
+    var parts = [];
+    for (var i = 0; i < links.length && i < n; i++) {
+      parts.push(renderProtocolLink(links[i]));
+    }
+    return parts.join(", ");
+  }
+
   function track(event, meta) {
     try {
       fetch(window.location.origin + "/api/patient/analytics", {
@@ -205,7 +223,12 @@
     }
     box.classList.remove("hidden");
     var html = '<details class="cites-fold"><summary>Требования протокола Минздрава</summary><div style="margin-top:0.45rem">';
-    if (pc.protocol_title) html += '<p style="font-size:0.78rem;color:var(--muted)">' + escapeHtml(pc.protocol_title) + "</p>";
+    if (pc.protocol_title || pc.protocol_link) {
+      html += '<p style="font-size:0.78rem;color:var(--muted);margin:0 0 0.5rem">';
+      if (pc.protocol_link) html += "Протокол: " + renderProtocolLink(pc.protocol_link, pc.protocol_title);
+      else html += escapeHtml(pc.protocol_title || "");
+      html += "</p>";
+    }
     pc.missing_recommended_exams.forEach(function (m) {
       html += '<div class="block-card block-card--concern" style="margin-bottom:0.4rem"><strong>' + escapeHtml(m.exam_name || "Обследование") + "</strong>";
       html += "<p style=\"margin:0.25rem 0 0\">" + escapeHtml(m.patient_note_ru || "") + "</p></div>";
@@ -277,8 +300,14 @@
     var mb = document.getElementById("matched-badge");
     var cnt = pr.matched_protocols_count;
     if (mb) {
-      if (cnt > 0) {
-        mb.textContent = "Сверка с " + cnt + " протоколами Минздрава";
+      if (cnt > 0 || (pr.protocol_links && pr.protocol_links.length)) {
+        var links = pr.protocol_links || [];
+        if (links.length) {
+          mb.innerHTML = "Сверка с " + renderProtocolLinksList(links, 3);
+          if (links.length > 3) mb.innerHTML += " и ещё " + (links.length - 3);
+        } else {
+          mb.textContent = "Сверка с " + cnt + " протоколами Минздрава";
+        }
         mb.classList.remove("hidden");
       } else mb.classList.add("hidden");
     }
@@ -353,11 +382,20 @@
         div.className = "block-card block-card--" + (b.status || "attention");
         var gaps = b.gaps && b.gaps.length ? "<ul class=\"gap-list\">" + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>" : "";
         var why = b.why_ru ? '<p class="block-card__why"><span class="block-card__why-label">Почему так: </span>' + escapeHtml(b.why_ru) + "</p>" : "";
-        var excerpt = b.protocol_excerpt ? '<p style="margin:0.35rem 0 0;font-size:0.72rem;color:var(--muted)">Протокол: ' + escapeHtml(b.protocol_excerpt) + "</p>" : "";
+        var protoLine = "";
+        if (b.protocol_excerpt || b.protocol_link) {
+          protoLine = '<p class="block-card__proto"><span class="block-card__proto-label">По </span>';
+          if (b.protocol_link) protoLine += renderProtocolLink(b.protocol_link);
+          else protoLine += "протоколу";
+          if (b.protocol_excerpt) protoLine += ": " + escapeHtml(b.protocol_excerpt);
+          protoLine += "</p>";
+        }
         div.innerHTML =
           '<div class="block-card__head"><span class="block-card__title">' + escapeHtml(b.title) + "</span>" +
-          '<span class="' + pillClass(b.status) + ' block-card__score">' + pillLabel(b.status) + "</span></div>" +
-          '<div class="block-card__comment">' + escapeHtml(b.summary_ru || "—") + why + excerpt + gaps + "</div>";
+          '<span class="' + pillClass(b.status) + ' block-card__score">' +
+          (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></div>" +
+          '<div class="block-card__comment"><span class="block-card__comment-label">Комментарий</span>' +
+          escapeHtml(b.summary_ru || "—") + why + protoLine + gaps + "</div>";
         cards.appendChild(div);
       });
     }
@@ -375,7 +413,9 @@
         pr.protocol_citations.forEach(function (c) {
           var div = document.createElement("div");
           div.className = "cite";
-          div.innerHTML = "<strong>" + escapeHtml(c.protocol_title || "Протокол") + "</strong>" + escapeHtml(c.excerpt || "");
+          var head = renderProtocolLink(c.protocol_link, c.protocol_title || "Протокол");
+          if (c.section) head += " · " + escapeHtml(c.section);
+          div.innerHTML = "<strong>" + head + "</strong>" + escapeHtml(c.excerpt || "");
           cites.appendChild(div);
         });
       } else if (citesDetails) citesDetails.hidden = true;
