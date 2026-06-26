@@ -8,6 +8,27 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+def test_jpg_extension_allowed(monkeypatch: pytest.MonkeyPatch) -> None:
+    import rag_server as rs
+
+    monkeypatch.setattr(
+        "clinical_knowledge.image_ocr.ocr_image_bytes",
+        lambda data: ("Консультативное заключение\nДиагноз I10", ["Текст извлечён из фото через OCR"]),
+    )
+    # minimal JPEG header
+    jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 100
+    txt, warns = rs.extract_consult_text_from_bytes(jpeg, "photo.jpg")
+    assert "I10" in txt
+    assert any("OCR" in w for w in warns)
+
+
+def test_jpg_extension_rejected_before_fix_was_plain() -> None:
+    import rag_server as rs
+
+    assert ".jpg" in rs.CONSULT_REVIEW_ALLOWED_EXTENSIONS
+    assert ".jpeg" in rs.CONSULT_REVIEW_ALLOWED_EXTENSIONS
+
+
 def test_decode_utf8_text() -> None:
     import rag_server as rs
 

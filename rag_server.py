@@ -4972,6 +4972,9 @@ _CONSULT_HTML_EXTENSIONS = frozenset({".html", ".htm"})
 _CONSULT_RTF_EXTENSIONS = frozenset({".rtf"})
 _CONSULT_DOCX_EXTENSIONS = frozenset({".docx"})
 _CONSULT_ODT_EXTENSIONS = frozenset({".odt"})
+_CONSULT_IMAGE_EXTENSIONS = frozenset(
+    {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".tif", ".tiff"}
+)
 
 CONSULT_REVIEW_ALLOWED_EXTENSIONS = frozenset(
     _CONSULT_PDF_EXTENSIONS
@@ -4980,6 +4983,7 @@ CONSULT_REVIEW_ALLOWED_EXTENSIONS = frozenset(
     | _CONSULT_RTF_EXTENSIONS
     | _CONSULT_DOCX_EXTENSIONS
     | _CONSULT_ODT_EXTENSIONS
+    | _CONSULT_IMAGE_EXTENSIONS
 )
 
 
@@ -5128,6 +5132,10 @@ def _is_zip_payload(data: bytes) -> bool:
 
 
 def _sniff_consult_format(data: bytes, ext: str) -> str:
+    from clinical_knowledge.image_ocr import sniff_image_payload
+
+    if ext in _CONSULT_IMAGE_EXTENSIONS or sniff_image_payload(data):
+        return "image"
     if _normalize_pdf_bytes(data) is not None:
         return "pdf"
     stripped = data.lstrip(b"\x00 \t\r\n\xef\xbb\xbf\xfe\xff")
@@ -5158,7 +5166,9 @@ def extract_consult_text_from_bytes(data: bytes, filename: str = "") -> tuple[st
         )
     if not ext:
         fmt = _sniff_consult_format(data, "")
-        if fmt == "pdf":
+        if fmt == "image":
+            ext = ".jpg"
+        elif fmt == "pdf":
             ext = ".pdf"
         elif fmt == "docx":
             ext = ".docx"
@@ -5170,6 +5180,17 @@ def extract_consult_text_from_bytes(data: bytes, filename: str = "") -> tuple[st
             ext = ".txt"
 
     fmt = _sniff_consult_format(data, ext)
+    if fmt == "image":
+        from clinical_knowledge.image_ocr import ocr_image_bytes
+
+        txt, warns = ocr_image_bytes(data)
+        if not txt.strip():
+            hint = warns[0] if warns else "Переснимите при хорошем свете или загрузите PDF."
+            raise HTTPException(
+                status_code=400,
+                detail=f"Не удалось распознать текст на фото «{filename or 'image'}». {hint}",
+            )
+        return txt, warns
     if fmt == "pdf":
         if _is_zip_payload(data) and _normalize_pdf_bytes(data) is None:
             return _extract_docx_text(data)
@@ -8103,7 +8124,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r14-patient-waves-abcd"
+BUILD_VERSION = "2026-06-24-r15-jpg-upload-ocr"
 
 
 def _app_version() -> str:
