@@ -129,6 +129,9 @@ services:
         value: /var/data/ml/feedback
       - key: CONSULT_ALIGNMENT_ENABLED
         value: "1"
+      # Фото КЗ: Tesseract если есть в образе; иначе Gemini Vision (GOOGLE_API_KEY)
+      - key: PATIENT_OCR_GEMINI
+        value: "1"
       # Persistent Disk на /var/data обязателен, если задан ML_FEEDBACK_DIR=/var/data/ml/feedback
       # - key: ML_FEEDBACK_DIR
       #   value: /var/data/ml/feedback

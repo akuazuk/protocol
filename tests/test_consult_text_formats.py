@@ -8,6 +8,22 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+def test_jpg_uses_gemini_when_tesseract_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:
+    import rag_server as rs
+    from clinical_knowledge import image_ocr as io_mod
+
+    monkeypatch.setattr(io_mod, "_ocr_tesseract", lambda data: ("", []))
+    monkeypatch.setattr(
+        io_mod,
+        "_ocr_gemini_vision",
+        lambda data: ("Консультативное заключение\nДиагноз: I10", ["Текст извлечён из фото через Gemini Vision"]),
+    )
+    jpeg = b"\xff\xd8\xff\xe0" + b"\x00" * 100
+    txt, warns = rs.extract_consult_text_from_bytes(jpeg, "image.jpg")
+    assert "I10" in txt
+    assert any("Gemini" in w for w in warns)
+
+
 def test_jpg_extension_allowed(monkeypatch: pytest.MonkeyPatch) -> None:
     import rag_server as rs
 
