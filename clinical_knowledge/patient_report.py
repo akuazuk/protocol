@@ -214,6 +214,7 @@ def _collect_structured_questions(cards: list[dict[str, Any]], limit: int = 8) -
                     "text": q,
                     "severity": severity,
                     "category_ru": _category_for_block(bid, name),
+                    "block_id": bid,
                 }
             )
             if len(out) >= limit:
@@ -544,8 +545,19 @@ def build_patient_report(
     lab_crosscheck: dict[str, Any] | None = None,
     protocol_context: dict[str, Any] | None = None,
     exams_kz_notes: list[str] | None = None,
+    question_tone: str | None = None,
 ) -> dict[str, Any]:
     """Преобразует результат L1 structured в отчёт для пациента."""
+    from clinical_knowledge.patient_question_tone import (
+        apply_tone_to_questions,
+        normalize_question_tone,
+        question_tones_for_api,
+        questions_etiquette_ru,
+        questions_panel_intro_ru,
+        tone_meta,
+    )
+
+    tone = normalize_question_tone(question_tone)
     align = l1_result.get("alignment") if isinstance(l1_result.get("alignment"), dict) else {}
     cards = list(align.get("alignment_cards") or [])
     overall = resolve_patient_overall_pct(l1_result)
@@ -579,6 +591,7 @@ def build_patient_report(
                     "text": miss_note,
                     "severity": "medium",
                     "category_ru": BLOCK_CATEGORY_RU["labs"],
+                    "block_id": "labs",
                 },
             )
     for note in exams_kz_notes or []:
@@ -596,6 +609,7 @@ def build_patient_report(
                     "text": qtext,
                     "severity": "medium",
                     "category_ru": BLOCK_CATEGORY_RU["exams"],
+                    "block_id": "exams",
                 },
             )
     if protocol_context:
@@ -612,9 +626,28 @@ def build_patient_report(
                         "text": note,
                         "severity": "high",
                         "category_ru": BLOCK_CATEGORY_RU["protocol"],
+                        "block_id": "exams",
                     },
                 )
     structured_questions = structured_questions[:8]
+
+    if conf is not None and conf < 55 and limitations:
+        warn = f"Качество распознавания документа низкое ({conf}%). {limitations}"
+        structured_questions.insert(
+            0,
+            {
+                "id": "q0",
+                "title": "Качество документа",
+                "text": warn,
+                "severity": "high",
+                "category_ru": BLOCK_CATEGORY_RU["document"],
+                "block_id": "limitations",
+            },
+        )
+        if light == "green":
+            light, overall_label = "yellow", "Качество документа низкое — переснимите или загрузите PDF"
+
+    structured_questions = apply_tone_to_questions(structured_questions, tone)
 
     blocks = _patient_blocks(cards)
     if exams_kz_notes:
@@ -631,36 +664,13 @@ def build_patient_report(
             "title": q["title"],
             "severity": q.get("severity", "medium"),
             "category_ru": q.get("category_ru") or BLOCK_CATEGORY_RU["document"],
+            "block_id": q.get("block_id") or "",
+            "tone": q.get("tone") or tone,
+            "emoji": q.get("emoji") or "💬",
             "checked": False,
         }
         for q in structured_questions
     ]
-
-    if conf is not None and conf < 55 and limitations:
-        warn = f"Качество распознавания документа низкое ({conf}%). {limitations}"
-        structured_questions.insert(
-            0,
-            {
-                "id": "q0",
-                "title": "Качество документа",
-                "text": warn,
-                "severity": "high",
-                "category_ru": BLOCK_CATEGORY_RU["document"],
-            },
-        )
-        action_checklist.insert(
-            0,
-            {
-                "id": "q0",
-                "text": warn,
-                "title": "Качество документа",
-                "severity": "high",
-                "category_ru": BLOCK_CATEGORY_RU["document"],
-                "checked": False,
-            },
-        )
-        if light == "green":
-            light, overall_label = "yellow", "Качество документа низкое — переснимите или загрузите PDF"
 
     report = {
         "report_schema_version": 2,
@@ -676,6 +686,11 @@ def build_patient_report(
         "questions_for_doctor": [q["text"] for q in structured_questions],
         "questions_structured": structured_questions,
         "action_checklist": action_checklist,
+        "question_tone": tone,
+        "question_tone_meta": tone_meta(tone),
+        "question_tones_available": question_tones_for_api(),
+        "questions_intro_ru": questions_panel_intro_ru(tone),
+        "questions_etiquette_ru": questions_etiquette_ru(tone),
         "protocol_citations": _collect_citations(cards),
         "protocol_links": _collect_protocol_links(cards, l1_result),
         "limitations_ru": limitations,

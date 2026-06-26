@@ -7,6 +7,15 @@
   var REPORT_KEY = "protocol_patient_last_report_v3";
   var REMINDER_KEY = "protocol_patient_reminder_v1";
   var SESSION_KEY = "protocol_patient_session_token";
+  var QUESTION_TONE_KEY = "protocol_patient_question_tone_v1";
+
+  var questionTonesCatalog = [
+    { id: "friendly", label_ru: "Дружелюбно", emoji: "💬", description_ru: "Тепло и уважительно - рекомендуем", default: true },
+    { id: "serious", label_ru: "Серьёзно", emoji: "🎯", description_ru: "Коротко и по делу" },
+    { id: "official", label_ru: "Официально", emoji: "📋", description_ru: "Формально, на «Вы»" },
+    { id: "light", label_ru: "С лёгкостью", emoji: "✨", description_ru: "Мягкий юмор без сарказма" },
+  ];
+  var selectedQuestionTone = "friendly";
 
   var params = new URLSearchParams(window.location.search);
   var clinicId = params.get("clinic") || "";
@@ -274,7 +283,55 @@
     });
   }
 
-  function renderQuestionCards(items) {
+  function loadQuestionTone() {
+    try {
+      var saved = localStorage.getItem(QUESTION_TONE_KEY);
+      if (saved) selectedQuestionTone = saved;
+    } catch (e) {}
+  }
+
+  function saveQuestionTone(tone) {
+    selectedQuestionTone = tone || "friendly";
+    try { localStorage.setItem(QUESTION_TONE_KEY, selectedQuestionTone); } catch (e) {}
+  }
+
+  function renderTonePicker() {
+    var wrap = document.getElementById("tone-chips");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    questionTonesCatalog.forEach(function (t) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tone-chip" + (selectedQuestionTone === t.id ? " tone-chip--active" : "");
+      btn.setAttribute("role", "radio");
+      btn.setAttribute("aria-checked", selectedQuestionTone === t.id ? "true" : "false");
+      btn.dataset.tone = t.id;
+      btn.title = t.description_ru || "";
+      btn.innerHTML = '<span class="tone-chip__emoji" aria-hidden="true">' + (t.emoji || "💬") + "</span>" + escapeHtml(t.label_ru || t.id);
+      btn.addEventListener("click", function () {
+        saveQuestionTone(t.id);
+        renderTonePicker();
+        track("question_tone_pick", { tone: t.id });
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function syncQuestionTonesFromApi() {
+    fetch(window.location.origin + "/api/patient/status")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.question_tones && data.question_tones.length) {
+          questionTonesCatalog = data.question_tones;
+          if (data.default_question_tone) selectedQuestionTone = data.default_question_tone;
+          loadQuestionTone();
+          renderTonePicker();
+        }
+      })
+      .catch(function () {});
+  }
+
+  function renderQuestionCards(items, pr) {
     var cl = document.getElementById("action-checklist");
     var section = document.getElementById("questions-section");
     if (!cl) return;
@@ -283,7 +340,26 @@
       if (section) section.classList.add("hidden");
       return;
     }
-    if (section) section.classList.remove("hidden");
+    if (section) {
+      section.classList.remove("hidden");
+      var tone = (pr && pr.question_tone) || selectedQuestionTone || "friendly";
+      section.className = "report-panel report-panel--questions questions-panel questions-panel--tone-" + tone;
+      var lead = document.getElementById("questions-panel-lead");
+      if (lead) lead.textContent = (pr && pr.questions_intro_ru) || "Сформулированы так, чтобы врачу было комфортно отвечать.";
+      var etiquette = document.getElementById("questions-panel-etiquette");
+      if (etiquette) etiquette.textContent = (pr && pr.questions_etiquette_ru) || "Отметьте обсуждённое - сохранится на устройстве.";
+      var emojiEl = document.getElementById("questions-panel-emoji");
+      var meta = (pr && pr.question_tone_meta) || {};
+      if (emojiEl) emojiEl.textContent = meta.emoji || "🩺";
+      var badge = document.getElementById("questions-tone-badge");
+      if (badge) {
+        if (meta.label_ru) {
+          badge.classList.remove("hidden");
+          badge.innerHTML = '<span class="questions-tone-badge__emoji" aria-hidden="true">' + escapeHtml(meta.emoji || "💬") + "</span>" +
+            '<span class="questions-tone-badge__text">Тон: ' + escapeHtml(meta.label_ru) + "</span>";
+        } else badge.classList.add("hidden");
+      }
+    }
     var checklistState = loadChecklistState();
     items.forEach(function (item, idx) {
       var li = document.createElement("li");
@@ -291,16 +367,19 @@
       var sev = item.severity === "high" ? " question-card--high" : item.severity === "low" ? " question-card--low" : "";
       if (checked) li.className = "question-card checked" + sev;
       else li.className = "question-card" + sev;
+      var emoji = item.emoji || "💬";
       var cat = item.category_ru
         ? '<span class="question-card__cat">' + escapeHtml(item.category_ru) + "</span>"
         : "";
       li.innerHTML =
         '<label class="question-card__label" for="ck-' + escapeHtml(item.id) + '">' +
+        '<div class="question-card__shell">' +
+        '<span class="question-card__emoji" aria-hidden="true">' + escapeHtml(emoji) + "</span>" +
         '<span class="question-card__num" aria-hidden="true">' + (idx + 1) + "</span>" +
         '<span class="question-card__body">' + cat +
         '<span class="question-card__text">' + escapeHtml(item.text || item.title || "") + "</span></span>" +
         '<input type="checkbox" id="ck-' + escapeHtml(item.id) + '" ' + (checked ? "checked" : "") + " />" +
-        "</label>";
+        "</div></label>";
       var cb = li.querySelector("input");
       cb.addEventListener("change", function () {
         saveChecklistItem(item.id, cb.checked);
@@ -506,7 +585,7 @@
       });
     } else if (rbw) rbw.classList.add("hidden");
 
-    renderQuestionCards(pr.action_checklist || []);
+    renderQuestionCards(pr.action_checklist || [], pr);
 
     var pw = document.getElementById("priority-wrap");
     var pl = document.getElementById("priority-list");
@@ -577,6 +656,7 @@
     if (clinicId) fd.append("clinic_id", clinicId);
     if (selectedTier) fd.append("tier_id", selectedTier);
     if (paidToken) fd.append("payment_token", paidToken);
+    fd.append("question_tone", selectedQuestionTone || "friendly");
     return fd;
   }
 
@@ -762,6 +842,9 @@
   loadTiers();
   ensureGuestSession();
   setupInstallHint();
+  loadQuestionTone();
+  renderTonePicker();
+  syncQuestionTonesFromApi();
   if (!restoreReport()) updateBtn();
 
   function refreshPatientShell() {

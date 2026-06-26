@@ -8124,7 +8124,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r20-patient-sw-cache-fix"
+BUILD_VERSION = "2026-06-24-r21-question-tone-ui"
 
 
 def _app_version() -> str:
@@ -10934,6 +10934,7 @@ def _run_patient_review_core(
     demographics_meta: dict | None = None,
     lab_text: str | None = None,
     product_tier: str = "P1",
+    question_tone: str | None = None,
 ) -> dict:
     from clinical_knowledge.patient_review import run_patient_review
 
@@ -10944,6 +10945,7 @@ def _run_patient_review_core(
         demographics_meta=demographics_meta,
         lab_text=lab_text,
         product_tier=product_tier,
+        question_tone=question_tone,
     )
 
 
@@ -11002,6 +11004,7 @@ async def _parse_patient_lab_uploads_async(
 def api_patient_status() -> dict:
     """Статус B2C-контура для мобильного приложения и patient.html."""
     from clinical_knowledge.patient_payment import payment_required, tier_catalog_public
+    from clinical_knowledge.patient_question_tone import question_tones_for_api
 
     return {
         "ok": True,
@@ -11012,6 +11015,9 @@ def api_patient_status() -> dict:
         "upload": "POST /api/patient/review",
         "upload_stream": "POST /api/patient/review/stream",
         "lab_upload": "optional lab_files in multipart",
+        "question_tone_field": "question_tone",
+        "question_tones": question_tones_for_api(),
+        "default_question_tone": "friendly",
         "payment_required": payment_required(),
         "tiers": tier_catalog_public(),
         "disclaimer": (
@@ -11118,6 +11124,7 @@ async def api_patient_review(
     clinic_id: str = Form("", description="White-label clinic id"),
     tier_id: str = Form("", description="product tier id"),
     payment_token: str = Form("", description="Оплата (если PATIENT_PAYMENT_REQUIRED=1)"),
+    question_tone: str = Form("friendly", description="Тон вопросов врачу: friendly|serious|official|light"),
 ) -> dict:
     """B2C: загрузка КЗ пациентом → отчёт P1 (без ЦИСЗ и send_gate)."""
     if not _patient_review_enabled():
@@ -11156,6 +11163,7 @@ async def api_patient_review(
         demographics_meta=demo,
         lab_text=lab_text or None,
         product_tier=product_tier,
+        question_tone=(question_tone or "").strip() or None,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     if pdf_warnings:
@@ -11185,6 +11193,7 @@ async def api_patient_review_stream(
     clinic_id: str = Form(""),
     tier_id: str = Form(""),
     payment_token: str = Form(""),
+    question_tone: str = Form("friendly"),
 ):
     """B2C: SSE-прогресс проверки КЗ."""
     from consult_review_pipeline import sse_encode_done, sse_encode_error, sse_encode_progress
@@ -11214,6 +11223,7 @@ async def api_patient_review_stream(
                 demographics_meta=demo,
                 lab_text=lab_text or None,
                 product_tier=product_tier,
+                question_tone=(question_tone or "").strip() or None,
             ):
                 if kind == "progress":
                     yield sse_encode_progress(

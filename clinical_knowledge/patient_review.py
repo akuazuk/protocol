@@ -15,6 +15,7 @@ def run_patient_review(
     specialty_slug: str | None = None,
     lab_text: str | None = None,
     product_tier: str = "P1",
+    question_tone: str | None = None,
 ) -> dict[str, Any]:
     """P1/P2: structured + alignment без ЦИСЗ и без LLM-критериев."""
     raw = (text or "").strip()
@@ -71,6 +72,7 @@ def run_patient_review(
         lab_crosscheck=lab_check,
         protocol_context=protocol_context,
         exams_kz_notes=exams_kz_notes,
+        question_tone=question_tone,
     )
     tier = (product_tier or "P1").strip().upper()
     if tier == "P2":
@@ -98,6 +100,7 @@ def iter_patient_review_progress(
     demographics_meta: dict[str, Any] | None = None,
     lab_text: str | None = None,
     product_tier: str = "P1",
+    question_tone: str | None = None,
 ) -> Iterator[tuple[str, dict[str, Any]]]:
     """SSE-прогресс: (kind, payload) где kind in progress|done|error."""
     try:
@@ -116,6 +119,7 @@ def iter_patient_review_progress(
             demographics_meta=demographics_meta,
             lab_text=lab_text,
             product_tier=product_tier,
+            question_tone=question_tone,
         )
         yield "done", result
     except ValueError as e:
