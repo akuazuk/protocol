@@ -180,7 +180,7 @@
       var raw = sessionStorage.getItem(REPORT_KEY);
       if (!raw) return false;
       var pr = JSON.parse(raw);
-      if (!pr || !pr.plain_summary_ru) return false;
+      if (!pr || (!pr.plain_summary_ru && !pr.upload_mismatch)) return false;
       formCard.classList.add("hidden");
       resultCard.classList.remove("hidden");
       renderReport(pr);
@@ -425,10 +425,49 @@
     return lines.join("\n");
   }
 
+  function renderUploadJokeCard(pr) {
+    var el = document.getElementById("upload-joke-card");
+    var body = document.getElementById("result-body");
+    if (!el) return;
+    var joke = pr.upload_joke || {};
+    var emoji = joke.emoji || "🤔";
+    var title = joke.title_ru || pr.headline_ru || "Это не тот документ";
+    var text = joke.body_ru || pr.plain_summary_ru || "";
+    var guess = joke.guessed_what_ru ? '<span class="upload-joke__guess">Похоже на: ' + escapeHtml(joke.guessed_what_ru) + "</span>" : "";
+    var hint = joke.hint_ru || "";
+    el.classList.remove("hidden");
+    el.innerHTML =
+      '<div class="upload-joke__inner">' +
+      '<div class="upload-joke__emoji" aria-hidden="true">' + emoji + "</div>" +
+      '<h2 class="upload-joke__title">' + escapeHtml(title) + "</h2>" +
+      guess +
+      '<p class="upload-joke__body">' + escapeHtml(text) + "</p>" +
+      (hint ? '<p class="upload-joke__hint">' + escapeHtml(hint) + "</p>" : "") +
+      "</div>";
+    if (body) body.classList.add("hidden");
+    var again = document.getElementById("btn-again");
+    if (again) again.textContent = "Загрузить правильный документ";
+  }
+
   function renderReport(pr) {
     lastReport = pr;
     lastProtocolLinks = pr.protocol_links || [];
     saveReport(pr);
+
+    var jokeCard = document.getElementById("upload-joke-card");
+    var resultBody = document.getElementById("result-body");
+    if (pr.upload_mismatch) {
+      renderUploadJokeCard(pr);
+      track("report_view", { upload_mismatch: true, kind: pr.guessed_kind || pr.mismatch_slot });
+      return;
+    }
+    if (jokeCard) {
+      jokeCard.classList.add("hidden");
+      jokeCard.innerHTML = "";
+    }
+    if (resultBody) resultBody.classList.remove("hidden");
+    var againBtn = document.getElementById("btn-again");
+    if (againBtn) againBtn.textContent = "Проверить другой документ";
 
     var hl = document.getElementById("headline-ru");
     if (hl) hl.textContent = pr.headline_ru || pr.overall_label_ru || "";
@@ -546,9 +585,15 @@
     if (btn) btn.disabled = false;
     formCard.classList.add("hidden");
     resultCard.classList.remove("hidden");
-    renderReport((data && data.patient_report) || {});
+    var pr = (data && data.patient_report) || {};
+    renderReport(pr);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    track("upload_done", { light: (data.patient_report || {}).traffic_light, latency_ms: data.latency_ms });
+    track("upload_done", {
+      light: pr.traffic_light,
+      latency_ms: data.latency_ms,
+      upload_mismatch: !!(data && data.upload_mismatch) || !!pr.upload_mismatch,
+      guessed_kind: data.guessed_kind || pr.guessed_kind,
+    });
   }
 
   function runReviewFetch() {

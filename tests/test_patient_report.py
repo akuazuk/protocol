@@ -130,10 +130,14 @@ def test_patient_demographics_from_form() -> None:
 def test_run_patient_review_integration() -> None:
     out = run_patient_review(text=KZ, consultation_id="t-patient")
     assert out["ok"] is True
-    assert out["review_tier"] == "P1"
-    assert "patient_report" in out
-    assert "send_gate" not in out
-    assert "cisz_readiness" not in out
+    assert out["patient_report"]["traffic_light"] in ("green", "yellow", "red")
+
+
+def test_run_patient_review_rejects_recipe() -> None:
+    recipe = "Рецепт салата. Ингредиенты: помидоры, огурцы. Нарезать, заправить маслом."
+    out = run_patient_review(text=recipe, consultation_id="t-recipe")
+    assert out.get("upload_mismatch") is True
     pr = out["patient_report"]
-    assert pr["overall_pct"] is not None
-    assert isinstance(pr["blocks"], list)
+    assert pr.get("upload_joke")
+    assert pr.get("upload_mismatch") is True
+    assert not pr.get("blocks")

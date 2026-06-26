@@ -1,0 +1,400 @@
+"""Определение «не тот документ» в B2C и шутливый ответ пациенту."""
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+from typing import Any, Literal
+
+UploadSlot = Literal["kz", "lab"]
+
+# --- эвристики «похоже на КЗ» ---
+_KZ_HINTS: list[tuple[int, re.Pattern[str]]] = [
+    (3, re.compile(r"консультативн\w*\s+заключен", re.I)),
+    (3, re.compile(r"консультаци\w*", re.I)),
+    (2, re.compile(r"жалоб\w*", re.I)),
+    (2, re.compile(r"\bдиагноз\b", re.I)),
+    (2, re.compile(r"рекомендац\w*", re.I)),
+    (2, re.compile(r"\bмкб\b|icd[\-\s]?10", re.I)),
+    (2, re.compile(r"объективн\w*\s+статус", re.I)),
+    (2, re.compile(r"\bанамнез\b", re.I)),
+    (2, re.compile(r"врач\s*[:\-]|зав\.?\s*отделен", re.I)),
+    (1, re.compile(r"заключен\w*", re.I)),
+    (1, re.compile(r"контрольн\w*\s+явк|повторн\w*\s+(?:явк|визит|консультац)", re.I)),
+    (1, re.compile(r"специальност\w*\s+врач", re.I)),
+]
+
+# --- типы «чужих» документов ---
+_GUESS_PATTERNS: list[tuple[str, str, re.Pattern[str]]] = [
+    (
+        "recipe",
+        "рецепт блюда",
+        re.compile(
+            r"ингредиент|приготовлен|нарезать|духовк|варить|обжарить|"
+            r"столов\w*\s+ложк|чайн\w*\s+ложк|грамм\b|мл\b.*мук",
+            re.I,
+        ),
+    ),
+    (
+        "menu",
+        "меню или прайс кафе",
+        re.compile(r"меню\b|блюдо\b|десерт\b|напиток\b|доставк\w*\s+еды|бургер|пицц", re.I),
+    ),
+    (
+        "receipt",
+        "кассовый чек",
+        re.compile(r"касс\w*|чек\b|итого\b|сдача\b|унп\b|рн\s*мм|фискальн", re.I),
+    ),
+    (
+        "passport",
+        "паспорт или удостоверение",
+        re.compile(
+            r"паспорт\b|удостоверен\w*\s+личност|личный\s+номер|"
+            r"идентификационн\w*\s+номер|выдан\b.*\d{2}\.\d{2}\.\d{4}",
+            re.I,
+        ),
+    ),
+    (
+        "homework",
+        "школьная тетрадь",
+        re.compile(r"задач\w*\s*№|уравнен|реши\w*|контрольн\w*\s+работ|класс\b.*предмет", re.I),
+    ),
+    (
+        "contract",
+        "договор",
+        re.compile(r"договор\b|сторон\w*\s+договор|подписант|юридическ\w*\s+адрес", re.I),
+    ),
+    (
+        "resume",
+        "резюме",
+        re.compile(r"резюме\b|опыт\s+работ|желаем\w*\s+должност|навык\w*", re.I),
+    ),
+    (
+        "ticket",
+        "билет",
+        re.compile(r"билет\b|рейс\b|посадочн\w*\s+талон|вагон\b|кинотеатр", re.I),
+    ),
+    (
+        "social",
+        "скриншот из соцсетей",
+        re.compile(r"instagram|telegram|подписчик|лайк\b|репост|сторис|tiktok", re.I),
+    ),
+    (
+        "invoice",
+        "счёт на оплату",
+        re.compile(r"счёт\s+на\s+оплат|счет\s*№|банковск\w*\s+реквизит|плательщик", re.I),
+    ),
+    (
+        "parking",
+        "парковочный талон",
+        re.compile(r"парковк|штраф\b.*транспорт|госномер", re.I),
+    ),
+    (
+        "pet",
+        "ветеринарная выписка",
+        re.compile(r"ветеринар|кошк|собак|питомец|вакцинац\w*\s+животн", re.I),
+    ),
+]
+
+_JOKES: dict[str, dict[str, str]] = {
+    "recipe": {
+        "emoji": "🍲",
+        "title": "Это похоже на кулинарный шедевр, а не на заключение",
+        "body": "Борщ мы уважаем, но сверить его с протоколом Минздрава пока не научились. "
+        "Загрузите консультативное заключение от врача - фото или PDF.",
+    },
+    "menu": {
+        "emoji": "🍕",
+        "title": "Вкусно, но не медицински",
+        "body": "Меню отличное, только врач по нему диагноз не поставит. "
+        "Нам нужно заключение после приёма - с жалобами, диагнозом и рекомендациями.",
+    },
+    "receipt": {
+        "emoji": "🧾",
+        "title": "Чек принят, сдача с протоколом - ноль",
+        "body": "Кассовый чек - не консультативное заключение. "
+        "Попробуйте сфотографировать лист из поликлиники с текстом врача.",
+    },
+    "passport": {
+        "emoji": "🪪",
+        "title": "Паспорт в безопасности - проверяем только КЗ",
+        "body": "Документы личности лучше не светить в медицинских сервисах. "
+        "Загрузите именно консультативное заключение.",
+    },
+    "homework": {
+        "emoji": "📐",
+        "title": "Двойка по медицине, пятёрка по алгебре",
+        "body": "Тетрадь с задачами - не то, что мы сверяем с клиническими протоколами. "
+        "Нужен лист из клиники после консультации.",
+    },
+    "contract": {
+        "emoji": "📜",
+        "title": "Договор подписан - с протоколом не подписан",
+        "body": "Юридические бумаги мы не читаем. Пришлите консультативное заключение врача.",
+    },
+    "resume": {
+        "emoji": "💼",
+        "title": "Резюме сильное, КЗ не приложено",
+        "body": "HR-отдел нас не интересует - только медицинское заключение после приёма.",
+    },
+    "ticket": {
+        "emoji": "🎫",
+        "title": "Приятного рейса - но не к врачу через нас",
+        "body": "Билет не заменяет консультативное заключение. Загрузите выписку из клиники.",
+    },
+    "social": {
+        "emoji": "📱",
+        "title": "Лайк за креатив, но это не КЗ",
+        "body": "Скрин из мессенджера или соцсети - не медицинский документ. "
+        "Нужен лист с заключением врача.",
+    },
+    "invoice": {
+        "emoji": "💳",
+        "title": "Счёт оплатите в банке, КЗ - здесь",
+        "body": "Счёт на оплату услуг - не то же самое, что консультативное заключение.",
+    },
+    "parking": {
+        "emoji": "🅿️",
+        "title": "Парковка оплачена, диагноз - нет",
+        "body": "Талон или штраф с парковки мы сверять не будем. Нужно заключение врача.",
+    },
+    "pet": {
+        "emoji": "🐾",
+        "title": "Пушистому - к ветеринару, вам - человеческое КЗ",
+        "body": "Ветеринарная выписка - отдельная история. "
+        "Загрузите своё консультативное заключение.",
+    },
+    "lab_in_kz": {
+        "emoji": "🧪",
+        "title": "Это бланк анализов - он ценный, но не на этом месте",
+        "body": "Похоже, вы загрузили результаты анализов в поле для заключения. "
+        "КЗ - отдельно, анализы - в блок «Анализы (необязательно)» ниже.",
+    },
+    "kz_in_lab": {
+        "emoji": "📋",
+        "title": "Заключение врача - не в баночку для анализов",
+        "body": "Похоже, консультативное заключение попало в поле для бланков анализов. "
+        "Поменяйте файлы местами - и всё заработает.",
+    },
+    "unknown": {
+        "emoji": "🤔",
+        "title": "Мы честно посмотрели - это не похоже на КЗ",
+        "body": "В тексте нет типичных разделов заключения: жалобы, диагноз, рекомендации. "
+        "Сфотографируйте весь лист из клиники или загрузите PDF.",
+    },
+    "lab_unknown": {
+        "emoji": "🔬",
+        "title": "В пробирке пусто - в файле тоже не анализы",
+        "body": "Не нашли привычных показателей лаборатории (гемоглобин, глюкоза, СОЭ и т.п.). "
+        "Загрузите бланк из лаборатории или клиники.",
+    },
+    "empty": {
+        "emoji": "👻",
+        "title": "Текста почти нет - как анализ без крови",
+        "body": "Документ пустой или плохо читается. Переснимите при свете или загрузите PDF.",
+    },
+}
+
+
+@dataclass(frozen=True)
+class UploadGuess:
+    slot: UploadSlot
+    is_expected: bool
+    kind: str
+    label_ru: str
+    score_kz: int
+    score_lab: int
+
+
+def _score_patterns(text: str, patterns: list[tuple[int, re.Pattern[str]]]) -> int:
+    blob = (text or "").strip()
+    if not blob:
+        return 0
+    return sum(pts for pts, rx in patterns if rx.search(blob))
+
+
+def _guess_foreign_kind(text: str) -> tuple[str, str]:
+    blob = (text or "").strip()
+    for kind, label, rx in _GUESS_PATTERNS:
+        if rx.search(blob):
+            return kind, label
+    return "unknown", "непонятный документ"
+
+
+def _lab_marker_count(text: str) -> int:
+    from clinical_knowledge.lab_result_parser import extract_lab_markers
+
+    return len(extract_lab_markers(text or ""))
+
+
+def _kz_score(text: str) -> int:
+    return _score_patterns(text, _KZ_HINTS)
+
+
+def _lab_score(text: str) -> int:
+    blob = (text or "").strip()
+    if not blob:
+        return 0
+    n = _lab_marker_count(blob)
+    score = min(n * 4, 24)
+    if re.search(r"биохимич\w*\s+анализ|общий\s+анализ\s+крови|анализ\s+мочи|инвитро|кравира|synlab|референс", blob, re.I):
+        score += 4
+    if re.search(r"ед/л|ммоль/л|г/л|результат\s+исследован", blob, re.I):
+        score += 2
+    return score
+
+
+def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
+    blob = (text or "").strip()
+    if len(blob) < 40:
+        return UploadGuess("kz", False, "empty", "пустой или нечитаемый файл", 0, 0)
+
+    kz = _kz_score(blob)
+    lab = _lab_score(blob)
+
+    if lab >= 14 and kz < 8:
+        return UploadGuess("kz", False, "lab_in_kz", "бланк анализов", kz, lab)
+
+    if kz >= 10:
+        return UploadGuess("kz", True, "kz", "консультативное заключение", kz, lab)
+
+    kind, label = _guess_foreign_kind(blob)
+    if kind != "unknown":
+        return UploadGuess("kz", False, kind, label, kz, lab)
+
+    if kz >= 5 and len(blob) > 120:
+        return UploadGuess("kz", True, "kz", "возможное заключение", kz, lab)
+
+    if len(blob) < 100 and kz < 3:
+        return UploadGuess("kz", False, "empty", "слишком мало текста", kz, lab)
+
+    fn = (filename or "").lower()
+    if fn and kz < 4 and not lab:
+        if any(x in fn for x in ("receipt", "cheque", "menu", "recipe", "passport")):
+            kind, label = _guess_foreign_kind(fn.replace("_", " "))
+            if kind != "unknown":
+                return UploadGuess("kz", False, kind, label, kz, lab)
+
+    if kz < 4:
+        return UploadGuess("kz", False, "unknown", "не похоже на КЗ", kz, lab)
+
+    return UploadGuess("kz", True, "kz", "консультативное заключение", kz, lab)
+
+
+def classify_lab_upload(text: str, *, filename: str = "") -> UploadGuess:
+    blob = (text or "").strip()
+    if not blob:
+        return UploadGuess("lab", True, "empty", "", 0, 0)
+
+    kz = _kz_score(blob)
+    lab = _lab_score(blob)
+
+    if kz >= 12 and lab < 8:
+        return UploadGuess("lab", False, "kz_in_lab", "консультативное заключение", kz, lab)
+
+    if lab >= 8:
+        return UploadGuess("lab", True, "lab", "бланк анализов", kz, lab)
+
+    kind, label = _guess_foreign_kind(blob)
+    if kind != "unknown" and lab < 6:
+        return UploadGuess("lab", False, kind, label, kz, lab)
+
+    if lab >= 4:
+        return UploadGuess("lab", True, "lab", "возможный бланк анализов", kz, lab)
+
+    if kz >= 6 and lab < 4:
+        return UploadGuess("lab", False, "kz_in_lab", "консультативное заключение", kz, lab)
+
+    if lab < 3 and len(blob) > 60:
+        return UploadGuess("lab", False, "lab_unknown", "не похоже на анализы", kz, lab)
+
+    return UploadGuess("lab", True, "lab", "бланк анализов", kz, lab)
+
+
+def _joke_for_guess(guess: UploadGuess) -> dict[str, str]:
+    kind = guess.kind
+    if guess.slot == "lab" and kind not in ("kz_in_lab", "lab_unknown") and kind in _JOKES:
+        kind = "lab_unknown"
+    if kind == "lab_in_kz":
+        key = "lab_in_kz"
+    elif kind == "kz_in_lab":
+        key = "kz_in_lab"
+    elif kind == "empty":
+        key = "empty"
+    elif guess.slot == "lab" and kind == "lab_unknown":
+        key = "lab_unknown"
+    elif kind not in _JOKES:
+        key = "unknown"
+    else:
+        key = kind
+    base = dict(_JOKES[key])
+    if guess.label_ru and key not in ("empty", "unknown", "lab_unknown", "lab_in_kz", "kz_in_lab"):
+        base["body"] = (
+            f"Похоже, вы прислали: {guess.label_ru}. "
+            + base["body"]
+        )
+    return base
+
+
+def build_upload_joke_report(guess: UploadGuess) -> dict[str, Any]:
+    joke = _joke_for_guess(guess)
+    slot_label = "заключение" if guess.slot == "kz" else "анализы"
+    hint = (
+        "Загрузите консультативное заключение (фото или PDF всего листа)."
+        if guess.slot == "kz"
+        else "В блок «Анализы» - бланк из лаборатории с показателями и единицами измерения."
+    )
+    return {
+        "report_schema_version": 2,
+        "upload_mismatch": True,
+        "mismatch_slot": guess.slot,
+        "guessed_kind": guess.kind,
+        "guessed_label_ru": guess.label_ru,
+        "headline_ru": joke["title"],
+        "overall_pct": None,
+        "overall_label_ru": "Другой документ",
+        "traffic_light": "yellow",
+        "plain_summary_ru": joke["body"],
+        "upload_joke": {
+            "emoji": joke["emoji"],
+            "title_ru": joke["title"],
+            "body_ru": joke["body"],
+            "guessed_what_ru": guess.label_ru,
+            "slot_ru": slot_label,
+            "hint_ru": hint,
+        },
+        "next_steps_ru": [
+            hint,
+            "Проверьте, что снимок без бликов и видны все страницы.",
+            "После правильной загрузки нажмите «Проверить заключение» снова.",
+        ],
+        "questions_for_doctor": [],
+        "questions_structured": [],
+        "action_checklist": [],
+        "blocks": [],
+        "protocol_links": [],
+        "protocol_citations": [],
+        "matched_protocols_count": 0,
+        "disclaimer_ru": (
+            "Это не медицинская оценка - мы не смогли распознать нужный тип документа."
+        ),
+        "document_quality": {"confidence_pct": None, "level": "low", "hint_ru": hint},
+    }
+
+
+def check_patient_uploads(
+    *,
+    kz_text: str,
+    lab_text: str | None = None,
+    kz_filename: str = "",
+    lab_filename: str = "",
+) -> UploadGuess | None:
+    """Вернуть первое несоответствие (КЗ важнее анализов) или None."""
+    kz_guess = classify_kz_upload(kz_text, filename=kz_filename)
+    if not kz_guess.is_expected:
+        return kz_guess
+    lab = (lab_text or "").strip()
+    if lab:
+        lab_guess = classify_lab_upload(lab, filename=lab_filename)
+        if not lab_guess.is_expected:
+            return lab_guess
+    return None

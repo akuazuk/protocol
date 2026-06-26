@@ -21,6 +21,25 @@ def run_patient_review(
     if not raw:
         raise ValueError("Пустой текст заключения")
 
+    from .patient_upload_classifier import build_upload_joke_report, check_patient_uploads
+
+    mismatch = check_patient_uploads(kz_text=raw, lab_text=lab_text)
+    if mismatch:
+        joke_report = build_upload_joke_report(mismatch)
+        return {
+            "ok": True,
+            "upload_mismatch": True,
+            "mismatch_slot": mismatch.slot,
+            "guessed_kind": mismatch.kind,
+            "review_tier": (product_tier or "P1").strip().upper(),
+            "patient_report": joke_report,
+            "confidence_score": None,
+            "matched_protocols_count": 0,
+            "llm_used": False,
+            "rag_used": False,
+            "criteria_source": "upload_classifier",
+        }
+
     from .patient_exams_enrich import exams_block_notes_for_report
     from .patient_lab_crosscheck import crosscheck_labs_with_kz
     from .patient_protocol_crosscheck import crosscheck_protocol_requirements

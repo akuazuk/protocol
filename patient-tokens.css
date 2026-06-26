@@ -482,3 +482,94 @@ a.proto-link:focus-visible .proto-link__text {
   .result-hero { grid-template-columns: 1fr; }
   .score-card--hero { justify-self: center; }
 }
+
+.upload-joke {
+  margin: 0 0 1rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+.upload-joke__inner {
+  position: relative;
+  padding: 1.15rem 1rem 1rem;
+  border-radius: 20px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -20%, rgba(251, 191, 36, 0.28), transparent),
+    linear-gradient(160deg, #fff 0%, #fffbeb 48%, #fef3c7 100%);
+  border: 1px solid rgba(217, 119, 6, 0.28);
+  box-shadow:
+    0 10px 28px rgba(146, 64, 14, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+  overflow: hidden;
+}
+.upload-joke__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -12deg,
+    transparent,
+    transparent 14px,
+    rgba(255, 255, 255, 0.35) 14px,
+    rgba(255, 255, 255, 0.35) 28px
+  );
+  pointer-events: none;
+  opacity: 0.45;
+}
+.upload-joke__emoji {
+  position: relative;
+  font-size: 2.75rem;
+  line-height: 1;
+  margin-bottom: 0.45rem;
+  filter: drop-shadow(0 4px 8px rgba(146, 64, 14, 0.15));
+  animation: joke-bounce 1.8s ease-in-out infinite;
+}
+@keyframes joke-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upload-joke__emoji { animation: none; }
+}
+.upload-joke__title {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--g950);
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.02em;
+}
+.upload-joke__guess {
+  position: relative;
+  display: inline-block;
+  margin: 0 0 0.55rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #92400e;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+.upload-joke__body {
+  position: relative;
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: #5c4a32;
+}
+.upload-joke__hint {
+  position: relative;
+  margin: 0.75rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--g800);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px dashed rgba(26, 138, 114, 0.35);
+}
