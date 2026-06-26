@@ -10,9 +10,9 @@
   var QUESTION_TONE_KEY = "protocol_patient_question_tone_v2";
 
   var questionTonesCatalog = [
-    { id: "serious", label_ru: "Строго и серьёзно", emoji: "🎯", description_ru: "Коротко, по делу, без шуток", default: true, accent: "#1e3a5f" },
-    { id: "official", label_ru: "Официально", emoji: "📋", description_ru: "Деловой стиль, обращение на «Вы»", accent: "#1d4ed8" },
-    { id: "playful", label_ru: "Шуточно", emoji: "✨", description_ru: "С лёгким юмором и креативом", accent: "#d97706" },
+    { id: "serious", label_ru: "Строго и серьёзно", emoji: "serious", icon: "serious", description_ru: "Коротко, по делу, без шуток", default: true, accent: "#1e3a5f" },
+    { id: "official", label_ru: "Официально", emoji: "official", icon: "official", description_ru: "Деловой стиль, обращение на «Вы»", accent: "#1d4ed8" },
+    { id: "playful", label_ru: "Шуточно", emoji: "playful", icon: "playful", description_ru: "Креативно про выписку и анализы", accent: "#b8860b" },
   ];
   var selectedQuestionTone = "serious";
 
@@ -47,6 +47,35 @@
 
   function escapeHtml(s) {
     return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  var LUX_ICON_PATHS = {
+    serious: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
+    official: '<path d="M7 4h10a1 1 0 0 1 1 1v14l-4-2.5L10 19l-4-2.5V5a1 1 0 0 1 1-1z"/><path d="M9.5 8h5M9.5 11.5h5M9.5 15h3"/>',
+    playful: '<path d="M12 3l1.2 3.6L17 7.8l-3 2.2.9 3.5L12 11.8 9.1 13.5l.9-3.5-3-2.2 3.8-1.2z"/><path d="M5 5l.8 1.6L7.4 7l-1.6.8L5 9.4 4.2 7.8 2.6 7l1.6-.8z"/><path d="M18.5 14l.7 1.4 1.6.8-1.6.8-.7 1.4-.7-1.4-1.6-.8 1.6-.8z"/>',
+    speech: '<path d="M6 8.5a5.5 5.5 0 0 1 9.3-3.9A4.5 4.5 0 0 1 12 17H8l-3.5 2.5V16.2A5.4 5.4 0 0 1 6 8.5z"/>',
+    history: '<path d="M6 4.5v3H9"/><path d="M6 9a6 6 0 1 0 1.8 4.2"/><path d="M9 11.5h4M9 14.5h6"/>',
+    stethoscope: '<path d="M6.5 5.5a3 3 0 0 1 6 0v5a2.5 2.5 0 0 0 5 0V8"/><circle cx="17.5" cy="8" r="2"/><path d="M17.5 10v2.5a4 4 0 0 1-8 0"/>',
+    dna: '<path d="M8 4c3 0 4.5 2 4.5 4S11 12 8 12s-4.5 2-4.5 4 1.5 4 4.5 4"/><path d="M16 4c-3 0-4.5 2-4.5 4s1.5 4 4.5 4 4.5 2 4.5 4-1.5 4-4.5 4"/><path d="M8.5 7h7M8.5 17h7"/>',
+    scan: '<rect x="4.5" y="5.5" width="15" height="13" rx="2"/><path d="M8 9.5h8M8 12.5h6M8 15.5h4"/><path d="M7 4.5v2M17 4.5v2M7 17.5v2M17 17.5v2"/>',
+    pill: '<rect x="5" y="9" width="14" height="6" rx="3"/><path d="M12 9v6"/><path d="M5 12H3M21 12h-2"/>',
+    calendar: '<rect x="4.5" y="6" width="15" height="13" rx="2"/><path d="M8 4.5v3M16 4.5v3M4.5 10h15"/><path d="M9 14h2M13 14h2"/>',
+    lab: '<path d="M9 4.5h6l-2 5.5v7.5H11V10z"/><path d="M7.5 17.5h9"/><circle cx="14.5" cy="13" r="1"/>',
+    protocol: '<path d="M6.5 4.5h9l3 3v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1z"/><path d="M15.5 4.5v3h3"/><path d="M8.5 11h7M8.5 14.5h5"/>',
+    document: '<path d="M7 4.5h7l3 3v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1z"/><path d="M14 4.5v3h3"/><path d="M8.5 12h7M8.5 15.5h5"/>',
+    chat: '<path d="M5 6.5a2.5 2.5 0 0 1 2.5-2.5h9A2.5 2.5 0 0 1 19 6.5v6A2.5 2.5 0 0 1 16.5 15H11l-3.5 2.5V15H7.5A2.5 2.5 0 0 1 5 12.5z"/>'
+  };
+
+  function luxIconHtml(id, extraClass) {
+    var key = id || "chat";
+    var paths = LUX_ICON_PATHS[key] || LUX_ICON_PATHS.chat;
+    var cls = "lux-icon" + (extraClass ? " " + extraClass : "");
+    return (
+      '<span class="' + cls + '" aria-hidden="true">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round">' +
+      paths +
+      "</svg></span>"
+    );
   }
 
   function resolveProtocolLink(link, fallbackTitle, fallbackPath) {
@@ -316,7 +345,7 @@
       btn.title = t.description_ru || "";
       btn.innerHTML =
         '<span class="tone-card__glow" aria-hidden="true"></span>' +
-        '<span class="tone-card__emoji" aria-hidden="true">' + (t.emoji || "💬") + "</span>" +
+        luxIconHtml(t.icon || t.emoji || t.id, "tone-card__icon lux-icon--tone") +
         '<span class="tone-card__copy">' +
         '<span class="tone-card__label">' + escapeHtml(t.label_ru || t.id) + "</span>" +
         '<span class="tone-card__desc">' + escapeHtml(t.description_ru || "") + "</span>" +
@@ -382,12 +411,12 @@
       if (etiquette) etiquette.textContent = (pr && pr.questions_etiquette_ru) || "Отметьте обсуждённое - сохранится на устройстве.";
       var emojiEl = document.getElementById("questions-panel-emoji");
       var meta = (pr && pr.question_tone_meta) || {};
-      if (emojiEl) emojiEl.textContent = meta.emoji || "🩺";
+      if (emojiEl) emojiEl.innerHTML = luxIconHtml(meta.icon || meta.emoji || "stethoscope", "lux-icon--hero");
       var badge = document.getElementById("questions-tone-badge");
       if (badge) {
         if (meta.label_ru) {
           badge.classList.remove("hidden");
-          badge.innerHTML = '<span class="questions-tone-badge__emoji" aria-hidden="true">' + escapeHtml(meta.emoji || "💬") + "</span>" +
+          badge.innerHTML = luxIconHtml(meta.icon || meta.emoji, "lux-icon--badge") +
             '<span class="questions-tone-badge__text">Тон: ' + escapeHtml(meta.label_ru) + "</span>";
         } else badge.classList.add("hidden");
       }
@@ -399,15 +428,15 @@
       var sev = item.severity === "high" ? " question-card--high" : item.severity === "low" ? " question-card--low" : "";
       if (checked) li.className = "question-card checked" + sev;
       else li.className = "question-card" + sev;
-      var emoji = item.emoji || "💬";
+      var iconId = item.icon || item.emoji || "chat";
       var cat = item.category_ru
-        ? '<span class="question-card__cat">' + escapeHtml(item.category_ru) + "</span>"
+        ? '<span class="question-card__cat">' + luxIconHtml(iconId, "lux-icon--cat") + escapeHtml(item.category_ru) + "</span>"
         : "";
       li.innerHTML =
         '<label class="question-card__label" for="ck-' + escapeHtml(item.id) + '">' +
         '<div class="question-card__shell">' +
         '<span class="question-card__quote" aria-hidden="true">«</span>' +
-        '<span class="question-card__emoji" aria-hidden="true">' + escapeHtml(emoji) + "</span>" +
+        luxIconHtml(iconId, "question-card__icon lux-icon--card") +
         '<span class="question-card__num" aria-hidden="true">' + (idx + 1) + "</span>" +
         '<span class="question-card__body">' + cat +
         '<span class="question-card__text">' + escapeHtml(item.text || item.title || "") + "</span></span>" +

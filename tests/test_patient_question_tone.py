@@ -34,7 +34,18 @@ def test_same_intent_differs_by_tone() -> None:
     assert serious != official != playful
     assert all(q.endswith("?") for q in (serious, official, playful))
     assert "Вы" in official or "прошу" in official.lower()
-    assert "пенсии" in playful.lower() or "числа" in playful.lower()
+    assert "пенсии" in playful.lower() or "сериала" in playful.lower() or "недель" in playful.lower()
+
+
+def test_playful_no_duplicate_in_report() -> None:
+    raw = [
+        {"id": "q1", "source_gap": "Нет длительности терапии", "block_id": "treatment", "category_ru": "Лечение"},
+        {"id": "q2", "source_gap": "Нет срока приёма", "block_id": "treatment", "category_ru": "Лечение"},
+        {"id": "q3", "source_comment": "Доза не детализирована", "block_id": "treatment", "category_ru": "Лечение"},
+    ]
+    out = apply_tone_to_questions(raw, "playful")
+    texts = [q["text"] for q in out]
+    assert len(texts) == len(set(t.lower() for t in texts))
 
 
 def test_playful_tone_respectful() -> None:
@@ -87,5 +98,5 @@ def test_build_report_includes_tone_meta() -> None:
     assert rep["question_tone_meta"]["label_ru"]
     assert rep["questions_intro_ru"]
     assert rep["action_checklist"]
-    assert rep["action_checklist"][0].get("emoji")
+    assert rep["action_checklist"][0].get("icon") or rep["action_checklist"][0].get("emoji")
     assert "Прошу" in rep["action_checklist"][0]["text"]

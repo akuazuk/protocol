@@ -8156,7 +8156,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r23-question-tones-v2"
+BUILD_VERSION = "2026-06-24-r24-playful-lux-icons"
 
 
 def _app_version() -> str:
