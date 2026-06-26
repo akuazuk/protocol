@@ -1,7 +1,7 @@
-"""B2C проверка КЗ (tier P1): L1 + patient report."""
+"""B2C проверка КЗ (tier P1/P2): L1 + patient report."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Iterator
 
 from .consult_tiering import run_l1_structured_review
 from .patient_report import build_patient_report, sanitize_patient_api_payload
@@ -14,8 +14,9 @@ def run_patient_review(
     demographics_meta: dict[str, Any] | None = None,
     specialty_slug: str | None = None,
     lab_text: str | None = None,
+    product_tier: str = "P1",
 ) -> dict[str, Any]:
-    """P1: structured + alignment без ЦИСЗ и без LLM."""
+    """P1/P2: structured + alignment без ЦИСЗ и без LLM-критериев."""
     raw = (text or "").strip()
     if not raw:
         raise ValueError("Пустой текст заключения")
@@ -52,17 +53,56 @@ def run_patient_review(
         protocol_context=protocol_context,
         exams_kz_notes=exams_kz_notes,
     )
+    tier = (product_tier or "P1").strip().upper()
+    if tier == "P2":
+        from .patient_p2_enrich import enrich_patient_report_p2
+
+        patient_report = enrich_patient_report_p2(patient_report)
+
     payload: dict[str, Any] = {
         "ok": True,
-        "review_tier": "P1",
+        "review_tier": tier,
         "patient_report": patient_report,
         "confidence_score": l1.get("confidence_score"),
         "matched_protocols_count": l1.get("matched_protocols_count"),
         "llm_used": False,
-        "rag_used": False,
+        "rag_used": bool(l1.get("matched_protocols_count")),
         "criteria_source": l1.get("criteria_source") or "deterministic_alignment",
     }
     return sanitize_patient_api_payload(payload)
+
+
+def iter_patient_review_progress(
+    *,
+    text: str,
+    consultation_id: str = "patient",
+    demographics_meta: dict[str, Any] | None = None,
+    lab_text: str | None = None,
+    product_tier: str = "P1",
+) -> Iterator[tuple[str, dict[str, Any]]]:
+    """SSE-прогресс: (kind, payload) где kind in progress|done|error."""
+    try:
+        yield "progress", {"stage": "parse", "pct": 15, "label_ru": "Разбор текста заключения…"}
+        raw = (text or "").strip()
+        if not raw:
+            yield "error", {"detail": "Пустой текст заключения", "status": 400}
+            return
+        yield "progress", {"stage": "align", "pct": 45, "label_ru": "Сверка с протоколами Минздрава…"}
+        if (lab_text or "").strip():
+            yield "progress", {"stage": "labs", "pct": 65, "label_ru": "Сверка с бланками анализов…"}
+        yield "progress", {"stage": "report", "pct": 85, "label_ru": "Формирование отчёта для пациента…"}
+        result = run_patient_review(
+            text=raw,
+            consultation_id=consultation_id,
+            demographics_meta=demographics_meta,
+            lab_text=lab_text,
+            product_tier=product_tier,
+        )
+        yield "done", result
+    except ValueError as e:
+        yield "error", {"detail": str(e), "status": 400}
+    except Exception as e:
+        yield "error", {"detail": str(e)[:400], "status": 500}
 
 
 def patient_demographics_from_form(

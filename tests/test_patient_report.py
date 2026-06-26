@@ -71,6 +71,8 @@ def test_build_patient_report_from_alignment() -> None:
     assert rep["document_quality"]["level"] in ("good", "medium", "low")
     assert rep["action_checklist"]
     assert rep["next_steps_ru"]
+    assert rep.get("report_schema_version") == 2
+    assert rep.get("headline_ru")
     assert "не является диагнозом" in rep["disclaimer_ru"].lower()
 
 

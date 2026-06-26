@@ -1,0 +1,181 @@
+:root {
+  --g950: #063d35;
+  --g800: #0d5c4a;
+  --g600: #1a8a72;
+  --g400: #3db896;
+  --gsoft: #e8f5f1;
+  --gsoft2: #f4faf8;
+  --text: #1a2e2a;
+  --muted: #5a6f6a;
+  --border: rgba(26, 138, 114, 0.2);
+  --shadow: 0 8px 32px rgba(6, 61, 53, 0.08);
+  --warn: #d97706;
+  --risk: #dc2626;
+  --focus-ring: 0 0 0 3px rgba(26, 138, 114, 0.35);
+  --touch-min: 44px;
+  --radius-card: 18px;
+  --radius-pill: 999px;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-display: Outfit, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.traffic-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+.traffic-pill--green { background: #d1fae5; color: #166534; }
+.traffic-pill--yellow { background: #fde68a; color: #92400e; }
+.traffic-pill--red { background: #fecaca; color: #991b1b; }
+
+.headline-ru {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: var(--g950);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.score-card--secondary { opacity: 0.95; }
+.score-card--secondary .score-svg { width: 5.5rem; height: 5.5rem; }
+
+.block-card__why {
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--g800);
+}
+.block-card__why-label { color: var(--muted); font-weight: 600; }
+
+.p2-narratives { margin: 0 0 1rem; }
+.p2-narrative {
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.4rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.p2-narrative strong { color: var(--g800); display: block; margin-bottom: 0.2rem; }
+
+.clinic-banner {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--g800);
+  padding: 0.45rem 0.65rem;
+  margin-bottom: 0.65rem;
+  border-radius: 12px;
+  background: var(--gsoft);
+  border: 1px solid var(--border);
+}
+
+.tier-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.65rem 0;
+}
+.tier-chip {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  min-height: var(--touch-min);
+}
+.tier-chip--active {
+  background: var(--g600);
+  color: #fff;
+  border-color: var(--g600);
+}
+
+.payment-note {
+  font-size: 0.76rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.privacy-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.65rem;
+}
+.privacy-actions button {
+  font-size: 0.72rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--g800);
+  cursor: pointer;
+  min-height: var(--touch-min);
+}
+
+.reminder-bar {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px dashed var(--border);
+  font-size: 0.78rem;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--gsoft) 25%, #fff 50%, var(--gsoft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 8px;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; background: var(--gsoft); }
+}
+
+.install-hint {
+  margin: 0.75rem 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--gsoft), #fff);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+.install-hint button {
+  margin-top: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--g600);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: var(--touch-min);
+}

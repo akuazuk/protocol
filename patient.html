@@ -7,6 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Проверь КЗ" />
   <link rel="manifest" href="/patient-manifest.webmanifest" />
+  <link rel="stylesheet" href="/patient-tokens.css" />
   <title>Проверь КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -647,6 +648,12 @@
       <span class="brand">Проверь КЗ</span>
       <a class="top-link" href="/">Врачам</a>
     </div>
+    <div id="clinic-banner" class="clinic-banner hidden" role="status"></div>
+    <div id="install-hint" class="install-hint hidden">
+      Установите на главный экран — быстрее открывать перед визитом к врачу.
+      <button type="button" id="btn-install-pwa" class="hidden">Добавить на экран</button>
+      <button type="button" id="btn-install-dismiss">Понятно</button>
+    </div>
 
     <header class="hero">
       <div class="hero-icon" aria-hidden="true">
@@ -711,8 +718,11 @@
 
       <label class="consent">
         <input type="checkbox" id="consent" />
-        <span>Согласен на обработку документов для автоматической сверки. Данные не используются для обучения моделей и не передаются третьим лицам.</span>
+        <span>Согласен на обработку документов для одной проверки. Файлы не сохраняются на сервере после ответа. <a href="/docs/patient-privacy-stub.html" style="color:var(--g600)">Политика</a></span>
       </label>
+
+      <div id="tier-bar" class="tier-bar" aria-label="Тариф проверки"></div>
+      <p class="payment-note" id="payment-note">Оплата не требуется в демо-режиме. В пилоте клиники — от 2,99 BYN.</p>
 
       <button type="button" class="btn-primary" id="btn-check" disabled>Проверить заключение</button>
       <p class="status" id="status" aria-live="polite"></p>
@@ -723,39 +733,42 @@
       </details>
     </section>
 
-    <section class="card hidden" id="result-card">
-      <div id="quality-banner" class="quality-banner hidden" role="status"></div>
+    <section class="card hidden" id="result-card" aria-live="polite">
+      <div id="quality-banner" class="quality-banner hidden" role="alert"></div>
 
-      <div class="score-card">
-        <svg class="score-svg" id="score-svg" viewBox="0 0 120 120" aria-hidden="true"></svg>
-        <p class="score-caption" id="score-caption"></p>
-      </div>
-
+      <p class="headline-ru" id="headline-ru"></p>
+      <span class="traffic-pill traffic-pill--yellow" id="traffic-pill" role="status"></span>
       <span class="matched-badge hidden" id="matched-badge"></span>
       <p class="plain-summary" id="plain-summary"></p>
-
-      <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
-      <ol class="next-steps" id="next-steps"></ol>
-
-      <div id="priority-wrap" class="hidden">
-        <div class="section-head"><span class="section-dot"></span><h2>На что обратить внимание</h2></div>
-        <ul class="priority-list" id="priority-list"></ul>
-      </div>
 
       <div id="read-back-wrap" class="read-back hidden">
         <strong>Что мы прочитали в вашем документе</strong>
         <ul id="read-back-list"></ul>
       </div>
 
-      <details class="cites-fold" open id="blocks-details">
-        <summary>Замечания по разделам</summary>
-        <div class="block-cards-labels" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
-        <div class="block-cards" id="block-cards" style="margin-top:0.15rem"></div>
-      </details>
+      <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
+      <ol class="next-steps" id="next-steps"></ol>
 
-      <div class="section-head" style="margin-top:0.85rem"><span class="section-dot"></span><h2>Чек-лист для приёма</h2></div>
-      <p style="font-size:0.76rem;color:var(--muted);margin:0 0 0.5rem">Отметьте, что уже обсудили с врачом - сохранится на этом устройстве.</p>
+      <div class="section-head" style="margin-top:0.5rem"><span class="section-dot"></span><h2>Чек-лист для приёма</h2></div>
+      <p style="font-size:0.76rem;color:var(--muted);margin:0 0 0.5rem">Отметьте обсуждённое — сохранится на устройстве.</p>
       <ul class="checklist" id="action-checklist"></ul>
+
+      <div id="priority-wrap" class="hidden">
+        <div class="section-head"><span class="section-dot"></span><h2>На что обратить внимание</h2></div>
+        <ul class="priority-list" id="priority-list"></ul>
+      </div>
+
+      <div id="p2-narratives" class="p2-narratives hidden"></div>
+
+      <div class="score-card score-card--secondary" id="score-card-wrap">
+        <svg class="score-svg" id="score-svg" viewBox="0 0 88 88" aria-hidden="true"></svg>
+        <p class="score-caption" id="score-caption"></p>
+      </div>
+
+      <details class="cites-fold" id="blocks-details">
+        <summary>Замечания по разделам</summary>
+        <div class="block-cards" id="block-cards" style="margin-top:0.45rem"></div>
+      </details>
 
       <div id="lab-result" class="hidden"></div>
       <div id="protocol-result" class="hidden"></div>
@@ -765,7 +778,16 @@
         <div id="cites-wrap" style="margin-top: 0.45rem"></div>
       </details>
 
+      <div class="reminder-bar">
+        <strong>Напомнить обсудить с врачом</strong>
+        <p style="margin:0.35rem 0 0">Сохраним напоминание на этом устройстве через 48 часов.</p>
+        <button type="button" class="btn-secondary" id="btn-set-reminder" style="margin-top:0.45rem;width:100%">Напомнить</button>
+      </div>
+
       <p class="disclaimer" id="disclaimer"></p>
+      <div class="privacy-actions">
+        <button type="button" id="btn-clear-data">Удалить данные на устройстве</button>
+      </div>
       <div class="btn-row">
         <button type="button" class="btn-secondary" id="btn-print">Лист на приём</button>
         <button type="button" class="btn-secondary" id="btn-share">Поделиться</button>
@@ -783,388 +805,12 @@
     <p class="foot">МЦ «Кравира» · Не замена врача и не медицинское заключение<br /><a href="/">Protocol для специалистов</a></p>
   </div>
 
-  <div class="loader-overlay hidden" id="loader" aria-live="polite">
-    <div class="loader-ring"></div>
-    <p class="loader-text">Анализируем документ</p>
-    <p class="loader-sub">Сверка с протоколами Минздрава, обычно до 20 секунд</p>
+  <div class="loader-overlay hidden" id="loader" aria-live="polite" aria-busy="true">
+    <div class="loader-ring" role="progressbar"></div>
+    <p class="loader-text" id="loader-text">Анализируем документ</p>
+    <p class="loader-sub" id="loader-sub">Сверка с протоколами Минздрава, обычно до 20 секунд</p>
   </div>
 
-  <script>
-    (function () {
-      var HISTORY_KEY = "protocol_patient_history_v2";
-      var CHECKLIST_KEY = "protocol_patient_checklist_v1";
-      var ONBOARD_KEY = "protocol_patient_onboard_done";
-      var lastReport = null;
-      var kzInput = document.getElementById("kz-files");
-      var labInput = document.getElementById("lab-files");
-      var consentEl = document.getElementById("consent");
-      var btn = document.getElementById("btn-check");
-      var statusEl = document.getElementById("status");
-      var loader = document.getElementById("loader");
-      var formCard = document.getElementById("form-card");
-      var resultCard = document.getElementById("result-card");
-      var onboard = document.getElementById("onboard");
-
-      function escapeHtml(s) {
-        return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      }
-
-      function renderChips(input, containerId) {
-        var el = document.getElementById(containerId);
-        if (!el) return;
-        el.innerHTML = "";
-        if (!input.files || !input.files.length) return;
-        for (var i = 0; i < input.files.length; i++) {
-          var span = document.createElement("span");
-          span.className = "file-chip";
-          span.textContent = input.files[i].name;
-          el.appendChild(span);
-        }
-      }
-
-      function updateBtn() {
-        btn.disabled = !(consentEl.checked && kzInput.files && kzInput.files.length);
-      }
-      kzInput.addEventListener("change", function () { renderChips(kzInput, "kz-chips"); updateBtn(); });
-      labInput.addEventListener("change", function () { renderChips(labInput, "lab-chips"); });
-      consentEl.addEventListener("change", updateBtn);
-
-      if (localStorage.getItem(ONBOARD_KEY) === "1") {
-        onboard.classList.add("hidden");
-      }
-      document.getElementById("btn-onboard-ok").addEventListener("click", function () {
-        localStorage.setItem(ONBOARD_KEY, "1");
-        onboard.classList.add("hidden");
-      });
-
-      function pillClass(s) {
-        if (s === "ok") return "pill pill--ok";
-        if (s === "concern") return "pill pill--concern";
-        return "pill pill--attention";
-      }
-      function pillLabel(s) {
-        if (s === "ok") return "Хорошо";
-        if (s === "concern") return "Важно";
-        return "Уточнить";
-      }
-
-      function loadChecklistState() {
-        try { return JSON.parse(localStorage.getItem(CHECKLIST_KEY) || "{}"); } catch (e) { return {}; }
-      }
-      function saveChecklistItem(id, checked) {
-        var st = loadChecklistState();
-        st[id] = !!checked;
-        localStorage.setItem(CHECKLIST_KEY, JSON.stringify(st));
-      }
-
-      function renderScoreRing(pct, light, label) {
-        var svg = document.getElementById("score-svg");
-        var r = 52;
-        var c = 2 * Math.PI * r;
-        var off = c * (1 - (pct != null ? pct / 100 : 0));
-        var color = light === "green" ? "#1a8a72" : light === "red" ? "#dc2626" : "#d97706";
-        svg.innerHTML =
-          '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="#e8f5f1" stroke-width="10"/>' +
-          '<circle cx="60" cy="60" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="10" ' +
-          'stroke-dasharray="' + c + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 60 60)"/>' +
-          '<text x="60" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="#063d35">' +
-          (pct != null ? pct + "%" : "—") + "</text>";
-        document.getElementById("score-caption").textContent = label || "";
-      }
-
-      function renderQualityBanner(dq) {
-        var el = document.getElementById("quality-banner");
-        if (!dq || !dq.hint_ru || dq.level === "good") { el.classList.add("hidden"); return; }
-        el.className = "quality-banner quality-banner--" + (dq.level === "low" ? "low" : "medium");
-        el.textContent = dq.hint_ru;
-        el.classList.remove("hidden");
-      }
-
-      function renderLabPanel(lc) {
-        var box = document.getElementById("lab-result");
-        if (!lc || !lc.lab_count) { box.classList.add("hidden"); box.innerHTML = ""; return; }
-        box.classList.remove("hidden");
-        var html = '<details class="cites-fold" open><summary>Сверка с анализами</summary><div class="lab-panel" style="margin-top:0.45rem">';
-        if (lc.summary_ru) {
-          html += '<p class="lab-summary">' + escapeHtml(lc.summary_ru) + "</p>";
-        }
-        if (lc.panels_ru && lc.panels_ru.length) {
-          html += '<p style="font-size:0.72rem;color:var(--muted);margin:0 0 0.45rem">Бланки: ' + escapeHtml(lc.panels_ru.join(", ")) + "</p>";
-        }
-        var rows = lc.markers_table || [];
-        if (rows.length) {
-          html += '<table class="lab-table"><thead><tr><th>Показатель</th><th>Результат</th><th>В заключении</th></tr></thead><tbody>';
-          rows.forEach(function (r) {
-            var val = r.value != null && r.value !== "" ? String(r.value) : "—";
-            if (r.unit) val += " " + r.unit;
-            if (r.flag === "high") val += " ↑";
-            html += "<tr><td>" + escapeHtml(r.marker || "—") + "</td><td>" + escapeHtml(val) + "</td><td>" +
-              (r.in_kz ? "да" : "нет") + "</td></tr>";
-          });
-          html += "</tbody></table>";
-        } else if (lc.marker_lines_ru && lc.marker_lines_ru.length) {
-          html += '<ul style="margin:0.35rem 0;padding-left:1.1rem;font-size:0.78rem;line-height:1.45">';
-          lc.marker_lines_ru.forEach(function (line) { html += "<li>" + escapeHtml(line) + "</li>"; });
-          html += "</ul>";
-        }
-        if (lc.missing_in_kz_lines && lc.missing_in_kz_lines.length) {
-          html += '<p class="lab-miss-title">Не названы в тексте заключения</p>';
-          html += '<ul style="margin:0;padding-left:1.1rem;font-size:0.78rem;line-height:1.45;color:var(--muted)">';
-          lc.missing_in_kz_lines.forEach(function (line) { html += "<li>" + escapeHtml(line) + "</li>"; });
-          html += "</ul>";
-        }
-        html += "</div></details>";
-        box.innerHTML = html;
-      }
-
-      function renderProtocolPanel(pc) {
-        var box = document.getElementById("protocol-result");
-        if (!pc || !(pc.missing_recommended_exams && pc.missing_recommended_exams.length)) {
-          box.classList.add("hidden"); box.innerHTML = ""; return;
-        }
-        box.classList.remove("hidden");
-        var html = '<details class="cites-fold" open><summary>Требования протокола Минздрава</summary><div style="margin-top:0.45rem">';
-        if (pc.protocol_title) html += "<p style=\"font-size:0.78rem;color:var(--muted);margin:0 0 0.5rem\">" + escapeHtml(pc.protocol_title) + "</p>";
-        pc.missing_recommended_exams.forEach(function (m) {
-          html += '<div class="block-card block-card--concern" style="margin-bottom:0.4rem">';
-          html += "<strong>" + escapeHtml(m.exam_name || "Обследование") + "</strong>";
-          html += "<p style=\"margin:0.25rem 0 0\">" + escapeHtml(m.patient_note_ru || "") + "</p>";
-          if (m.protocol_excerpt) html += "<p style=\"margin:0.35rem 0 0;font-size:0.74rem;color:var(--muted)\">" + escapeHtml(m.protocol_excerpt) + "</p>";
-          html += "</div>";
-        });
-        html += "</div></details>";
-        box.innerHTML = html;
-      }
-
-      function saveHistory(pr) {
-        try {
-          var list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-          list.unshift({
-            ts: new Date().toISOString(),
-            pct: pr.overall_pct,
-            light: pr.traffic_light,
-            label: pr.overall_label_ru,
-            summary: pr.plain_summary_ru || "",
-          });
-          localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(0, 5)));
-          renderHistory();
-        } catch (e) {}
-      }
-
-      function renderHistory() {
-        var wrap = document.getElementById("history-wrap");
-        var listEl = document.getElementById("history-list");
-        try {
-          var list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-          if (!list.length) { wrap.classList.add("hidden"); return; }
-          wrap.classList.remove("hidden");
-          listEl.innerHTML = list.map(function (it) {
-            var d = new Date(it.ts);
-            var sum = it.summary ? "<br />" + escapeHtml(it.summary.slice(0, 120)) + (it.summary.length > 120 ? "…" : "") : "";
-            return '<div class="history-item">' + d.toLocaleString("ru-RU") + " · " + (it.pct != null ? it.pct + "%" : "—") + " · " + escapeHtml(it.label || "") + sum + "</div>";
-          }).join("");
-        } catch (e) { wrap.classList.add("hidden"); }
-      }
-      renderHistory();
-
-      function buildShareText(pr) {
-        var lines = ["Проверь КЗ - лист на приём", ""];
-        if (pr.plain_summary_ru) lines.push(pr.plain_summary_ru);
-        if (pr.overall_pct != null) lines.push("Оценка: " + pr.overall_pct + "% - " + (pr.overall_label_ru || ""));
-        var qs = pr.questions_for_doctor || [];
-        if (qs.length) {
-          lines.push("", "Вопросы врачу:");
-          qs.forEach(function (q, i) { lines.push((i + 1) + ". " + q); });
-        }
-        lines.push("", "Не является диагнозом. protocol.kravira.by/patient");
-        return lines.join("\n");
-      }
-
-      function renderReport(pr) {
-        lastReport = pr;
-        renderScoreRing(pr.overall_pct, pr.traffic_light, pr.overall_label_ru);
-        renderQualityBanner(pr.document_quality);
-
-        var mb = document.getElementById("matched-badge");
-        var cnt = pr.matched_protocols_count;
-        if (cnt > 0) {
-          mb.textContent = "Сверка с " + cnt + " протокол" + (cnt === 1 ? "ом" : cnt < 5 ? "ами" : "ами") + " Минздрава";
-          mb.classList.remove("hidden");
-        } else { mb.classList.add("hidden"); }
-
-        document.getElementById("plain-summary").textContent = pr.plain_summary_ru || pr.overall_label_ru || "";
-
-        var ns = document.getElementById("next-steps");
-        ns.innerHTML = "";
-        (pr.next_steps_ru || []).forEach(function (s) {
-          var li = document.createElement("li");
-          li.textContent = s;
-          ns.appendChild(li);
-        });
-
-        var pw = document.getElementById("priority-wrap");
-        var pl = document.getElementById("priority-list");
-        pl.innerHTML = "";
-        var topics = pr.priority_topics || [];
-        if (topics.length) {
-          pw.classList.remove("hidden");
-          topics.forEach(function (t) {
-            var li = document.createElement("li");
-            if (t.severity === "high") li.className = "sev-high";
-            li.innerHTML = "<strong>" + escapeHtml(t.topic) + "</strong><br />" + escapeHtml(t.why_ru || "");
-            pl.appendChild(li);
-          });
-        } else { pw.classList.add("hidden"); }
-
-        var rbw = document.getElementById("read-back-wrap");
-        var rbl = document.getElementById("read-back-list");
-        rbl.innerHTML = "";
-        var rb = pr.document_read_back_ru || [];
-        if (rb.length) {
-          rbw.classList.remove("hidden");
-          rb.forEach(function (line) {
-            var li = document.createElement("li");
-            li.textContent = line;
-            rbl.appendChild(li);
-          });
-        } else { rbw.classList.add("hidden"); }
-
-        var cards = document.getElementById("block-cards");
-        cards.innerHTML = "";
-        (pr.blocks || []).forEach(function (b) {
-          var div = document.createElement("div");
-          div.className = "block-card block-card--" + (b.status || "attention");
-          var gaps = "";
-          if (b.gaps && b.gaps.length) {
-            gaps = "<ul class=\"gap-list\">" + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>";
-          }
-          div.innerHTML =
-            '<div class="block-card__head">' +
-            '<span class="block-card__title">' + escapeHtml(b.title) + "</span>" +
-            '<span class="' + pillClass(b.status) + ' block-card__score">' +
-            (b.score_pct != null ? b.score_pct + "% · " : "") + pillLabel(b.status) + "</span></div>" +
-            '<div class="block-card__comment">' + escapeHtml(b.summary_ru || "—") + gaps + "</div>";
-          cards.appendChild(div);
-        });
-
-        var cl = document.getElementById("action-checklist");
-        cl.innerHTML = "";
-        var checklistState = loadChecklistState();
-        var items = pr.action_checklist || [];
-        if (!items.length && (pr.questions_for_doctor || []).length) {
-          items = pr.questions_for_doctor.map(function (q, i) {
-            return { id: "q" + (i + 1), title: "Вопрос " + (i + 1), text: q, severity: "medium" };
-          });
-        }
-        items.forEach(function (item) {
-          var li = document.createElement("li");
-          var checked = !!checklistState[item.id];
-          if (checked) li.className = "checked";
-          li.innerHTML =
-            '<input type="checkbox" id="ck-' + escapeHtml(item.id) + '" ' + (checked ? "checked" : "") + " />" +
-            '<label for="ck-' + escapeHtml(item.id) + '"><span class="checklist__title">' + escapeHtml(item.title || "Вопрос") + "</span>" +
-            escapeHtml(item.text || "") + "</label>";
-          var cb = li.querySelector("input");
-          cb.addEventListener("change", function () {
-            saveChecklistItem(item.id, cb.checked);
-            li.classList.toggle("checked", cb.checked);
-          });
-          li.addEventListener("click", function (e) {
-            if (e.target.tagName !== "INPUT") { cb.checked = !cb.checked; cb.dispatchEvent(new Event("change")); }
-          });
-          cl.appendChild(li);
-        });
-
-        renderLabPanel(pr.lab_crosscheck);
-        renderProtocolPanel(pr.protocol_context);
-
-        var cites = document.getElementById("cites-wrap");
-        var citesDetails = document.getElementById("cites-details");
-        cites.innerHTML = "";
-        if (pr.protocol_citations && pr.protocol_citations.length) {
-          citesDetails.hidden = false;
-          pr.protocol_citations.forEach(function (c) {
-            var div = document.createElement("div");
-            div.className = "cite";
-            div.innerHTML = "<strong>" + escapeHtml(c.protocol_title || "Протокол") + (c.section ? " · " + escapeHtml(c.section) : "") + "</strong>" + escapeHtml(c.excerpt || "");
-            cites.appendChild(div);
-          });
-        } else {
-          citesDetails.hidden = true;
-        }
-
-        var disc = pr.disclaimer_ru || "";
-        if (pr.limitations_ru) disc += " " + pr.limitations_ru;
-        document.getElementById("disclaimer").textContent = disc;
-        saveHistory(pr);
-      }
-
-      document.getElementById("btn-print").addEventListener("click", function () {
-        window.print();
-      });
-
-      document.getElementById("btn-share").addEventListener("click", function () {
-        if (!lastReport) return;
-        var text = buildShareText(lastReport);
-        if (navigator.share) {
-          navigator.share({ title: "Проверь КЗ - лист на приём", text: text }).catch(function () {});
-        } else if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () {
-            statusEl.textContent = "Текст скопирован - вставьте в заметки или мессенджер.";
-          }).catch(function () { statusEl.textContent = "Не удалось скопировать."; });
-        } else {
-          statusEl.textContent = "Скопируйте текст вручную из раздела «Чек-лист для приёма».";
-        }
-      });
-
-      btn.addEventListener("click", function () {
-        if (!kzInput.files || !kzInput.files.length) return;
-        var fd = new FormData();
-        var i;
-        for (i = 0; i < kzInput.files.length; i++) fd.append("files", kzInput.files[i]);
-        if (labInput.files) {
-          for (i = 0; i < labInput.files.length; i++) fd.append("lab_files", labInput.files[i]);
-        }
-        fd.append("consent", "1");
-        var age = document.getElementById("age-years").value;
-        var sex = document.getElementById("sex").value;
-        if (age) fd.append("age_years", age);
-        if (sex) fd.append("sex", sex);
-
-        btn.disabled = true;
-        loader.classList.remove("hidden");
-        statusEl.textContent = "";
-
-        fetch(window.location.origin + "/api/patient/review", { method: "POST", body: fd })
-          .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.detail || "Ошибка"); return j; }); })
-          .then(function (data) {
-            loader.classList.add("hidden");
-            formCard.classList.add("hidden");
-            resultCard.classList.remove("hidden");
-            renderReport((data && data.patient_report) || {});
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          })
-          .catch(function (err) {
-            loader.classList.add("hidden");
-            statusEl.textContent = err.message || "Не удалось выполнить проверку.";
-            updateBtn();
-          });
-      });
-
-      document.getElementById("btn-again").addEventListener("click", function () {
-        resultCard.classList.add("hidden");
-        formCard.classList.remove("hidden");
-        kzInput.value = "";
-        labInput.value = "";
-        renderChips(kzInput, "kz-chips");
-        renderChips(labInput, "lab-chips");
-        updateBtn();
-      });
-
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/patient-sw.js").catch(function () {});
-      }
-    })();
-  </script>
+  <script src="/patient-ui.js" defer></script>
 </body>
 </html>

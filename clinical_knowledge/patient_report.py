@@ -148,6 +148,31 @@ def _collect_citations(cards: list[dict[str, Any]], limit: int = 5) -> list[dict
     return out
 
 
+def _block_why_ru(card: dict[str, Any], status: BlockStatus, score: int | None) -> str:
+    """Краткое объяснение статуса блока для пациента."""
+    if status == "ok":
+        return "Раздел заполнен в соответствии с типовыми требованиями протокола."
+    comment = str(card.get("comment_ru") or "").strip()
+    gaps = [str(g).strip() for g in card.get("gaps_ru") or [] if str(g).strip()]
+    if comment and len(comment) > 12:
+        return comment
+    if gaps:
+        return "Не хватает: " + "; ".join(gaps[:2]) + "."
+    if score is not None and score < 50:
+        return "По этому разделу мало информации для уверенной сверки с протоколом."
+    return "Есть отдельные пробелы — уточните у врача на приёме."
+
+
+def _headline_ru(light: TrafficLight, overall_label: str, conf: int | None) -> str:
+    if conf is not None and conf < 55:
+        return "Сначала улучшите качество фото или загрузите PDF — оценка может быть неточной"
+    if light == "green":
+        return "Можно спокойно идти на приём — критичных пробелов не найдено"
+    if light == "yellow":
+        return "Есть что обсудить с врачом — список вопросов ниже"
+    return "Рекомендуем обсудить заключение с врачом — много неучтённого по стандарту"
+
+
 def _patient_blocks(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_id = {
         str(c.get("block_id")): c
@@ -167,6 +192,7 @@ def _patient_blocks(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
             if findings:
                 summary = findings[0]
         gaps = [str(g).strip() for g in card.get("gaps_ru") or [] if str(g).strip()][:3]
+        excerpt = str(card.get("protocol_excerpt") or "").strip()[:420]
         blocks.append(
             {
                 "id": bid,
@@ -174,6 +200,8 @@ def _patient_blocks(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "score_pct": score,
                 "status": status,
                 "summary_ru": summary,
+                "why_ru": _block_why_ru(card, status, score),
+                "protocol_excerpt": excerpt,
                 "gaps": gaps,
             }
         )
@@ -382,8 +410,12 @@ def build_patient_report(
         warn = f"Качество распознавания документа низкое ({conf}%). {limitations}"
         structured_questions.insert(0, {"id": "q0", "title": "Качество документа", "text": warn, "severity": "high"})
         action_checklist.insert(0, {"id": "q0", "text": warn, "title": "Качество документа", "severity": "high", "checked": False})
+        if light == "green":
+            light, overall_label = "yellow", "Качество документа низкое — переснимите или загрузите PDF"
 
     report = {
+        "report_schema_version": 2,
+        "headline_ru": _headline_ru(light, overall_label, conf),
         "overall_pct": overall,
         "overall_label_ru": overall_label,
         "traffic_light": light,

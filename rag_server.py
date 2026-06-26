@@ -7413,6 +7413,8 @@ _RATE_LIMITS: dict[str, int] = {
     "/api/assist": env_int("RATE_LIMIT_ASSIST_PER_MIN", 10),
     "/api/consult-review": env_int("RATE_LIMIT_CONSULT_PER_MIN", 2),
     "/api/patient/review": env_int("RATE_LIMIT_PATIENT_PER_MIN", 5),
+    "/api/patient/review/stream": env_int("RATE_LIMIT_PATIENT_PER_MIN", 5),
+    "/api/patient/analytics": env_int("RATE_LIMIT_PATIENT_PER_MIN", 30),
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 5),
@@ -7748,11 +7750,31 @@ class ConsultValidateBundleIn(BaseModel):
 
 
 class PatientReviewJsonIn(BaseModel):
-    """B2C: проверка своего КЗ (tier P1) - текст без файла."""
+    """B2C: проверка своего КЗ (tier P1/P2) - текст без файла."""
 
     text: str = Field(..., min_length=40, max_length=200000)
     age_years: int | None = Field(default=None, ge=1, le=120)
     sex: str | None = Field(default=None, max_length=16, description="male | female")
+    clinic_id: str | None = Field(default=None, max_length=32)
+    tier_id: str | None = Field(default=None, max_length=24)
+    payment_token: str | None = Field(default=None, max_length=128)
+
+
+class PatientAnalyticsIn(BaseModel):
+    event: str = Field(..., min_length=2, max_length=48)
+    clinic_id: str | None = Field(default=None, max_length=32)
+    tier_id: str | None = Field(default=None, max_length=24)
+    meta: dict | None = None
+
+
+class PatientAccountSyncIn(BaseModel):
+    session_token: str = Field(..., min_length=8, max_length=256)
+    history: list[dict] = Field(default_factory=list)
+
+
+class PatientPaymentSessionIn(BaseModel):
+    tier_id: str = Field(default="basic", max_length=24)
+    clinic_id: str | None = Field(default=None, max_length=32)
 
 
 class ConsultationTemplateIn(BaseModel):
@@ -8081,7 +8103,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r13-block-cards-layout"
+BUILD_VERSION = "2026-06-24-r14-patient-waves-abcd"
 
 
 def _app_version() -> str:
@@ -10877,6 +10899,7 @@ def _run_patient_review_core(
     consultation_id: str = "patient",
     demographics_meta: dict | None = None,
     lab_text: str | None = None,
+    product_tier: str = "P1",
 ) -> dict:
     from clinical_knowledge.patient_review import run_patient_review
 
@@ -10886,7 +10909,27 @@ def _run_patient_review_core(
         consultation_id=consultation_id,
         demographics_meta=demographics_meta,
         lab_text=lab_text,
+        product_tier=product_tier,
     )
+
+
+def _patient_product_tier_from_catalog(tier_id: str | None) -> str:
+    from clinical_knowledge.patient_clinic_config import resolve_tier
+
+    tier = resolve_tier(tier_id)
+    return str(tier.get("review_tier") or "P1").upper()
+
+
+def _require_patient_payment(payment_token: str | None, tier_id: str | None) -> None:
+    from clinical_knowledge.patient_payment import payment_required, verify_payment_token
+
+    if not payment_required():
+        return
+    if not verify_payment_token(payment_token, tier_id=tier_id):
+        raise HTTPException(
+            status_code=402,
+            detail="Требуется оплата. Создайте сессию: POST /api/patient/payment/session",
+        )
 
 
 async def _parse_patient_lab_uploads_async(
@@ -10905,7 +10948,9 @@ async def _parse_patient_lab_uploads_async(
     warnings: list[str] = []
     for raw_fn, data in items:
         try:
-            txt, warns = extract_consult_text_from_bytes(data, raw_fn)
+            from clinical_knowledge.patient_lab_ocr import extract_lab_text_from_bytes
+
+            txt, warns = extract_lab_text_from_bytes(data, raw_fn)
         except HTTPException:
             raise
         except Exception as e:
@@ -10922,18 +10967,81 @@ async def _parse_patient_lab_uploads_async(
 @app.get("/api/patient/status")
 def api_patient_status() -> dict:
     """Статус B2C-контура для мобильного приложения и patient.html."""
+    from clinical_knowledge.patient_payment import payment_required, tier_catalog_public
+
     return {
         "ok": True,
         "enabled": _patient_review_enabled(),
         "review_tier": "P1",
+        "report_schema_version": 2,
         "build_version": BUILD_VERSION,
         "upload": "POST /api/patient/review",
+        "upload_stream": "POST /api/patient/review/stream",
         "lab_upload": "optional lab_files in multipart",
+        "payment_required": payment_required(),
+        "tiers": tier_catalog_public(),
         "disclaimer": (
             "Ориентировочная сверка с клиническими протоколами Минздрава РБ; "
             "не диагноз и не замена очного приёма."
         ),
     }
+
+
+@app.get("/api/patient/clinic")
+def api_patient_clinic(clinic_id: str = "") -> dict:
+    from clinical_knowledge.patient_clinic_config import clinic_public_view, resolve_clinic
+
+    clinic = resolve_clinic(clinic_id)
+    if not clinic:
+        return {"ok": True, "clinic": None}
+    return {"ok": True, "clinic": clinic_public_view(clinic)}
+
+
+@app.get("/api/patient/tiers")
+def api_patient_tiers() -> dict:
+    from clinical_knowledge.patient_payment import tier_catalog_public
+
+    return {"ok": True, "tiers": tier_catalog_public()}
+
+
+@app.post("/api/patient/payment/session")
+def api_patient_payment_session(body: PatientPaymentSessionIn) -> dict:
+    from clinical_knowledge.patient_payment import create_payment_session
+
+    return create_payment_session(tier_id=body.tier_id, clinic_id=body.clinic_id)
+
+
+@app.post("/api/patient/analytics")
+def api_patient_analytics(body: PatientAnalyticsIn) -> dict:
+    from clinical_knowledge.patient_analytics import record_patient_event
+
+    return record_patient_event(
+        event=body.event,
+        clinic_id=body.clinic_id,
+        tier_id=body.tier_id,
+        meta=body.meta,
+    )
+
+
+@app.post("/api/patient/account/session")
+def api_patient_account_session() -> dict:
+    from clinical_knowledge.patient_account import create_guest_session
+
+    return create_guest_session()
+
+
+@app.post("/api/patient/account/sync")
+def api_patient_account_sync(body: PatientAccountSyncIn) -> dict:
+    from clinical_knowledge.patient_account import sync_history
+
+    return sync_history(body.session_token, body.history)
+
+
+@app.get("/api/patient/account/history")
+def api_patient_account_history(session_token: str = "") -> dict:
+    from clinical_knowledge.patient_account import get_history
+
+    return get_history(session_token)
 
 
 @app.post("/api/patient/review/json")
@@ -10944,12 +11052,15 @@ async def api_patient_review_json(body: PatientReviewJsonIn) -> dict:
     from clinical_knowledge.patient_review import patient_demographics_from_form
 
     demo = patient_demographics_from_form(age_years=body.age_years, sex=body.sex)
+    _require_patient_payment(body.payment_token, body.tier_id)
+    product_tier = _patient_product_tier_from_catalog(body.tier_id)
     t0 = time.perf_counter()
     result = await _run_consult_review_blocking(
         _run_patient_review_core,
         text=body.text.strip(),
         consultation_id="patient-json",
         demographics_meta=demo,
+        product_tier=product_tier,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     result["build_version"] = BUILD_VERSION
@@ -10970,6 +11081,9 @@ async def api_patient_review(
     age_years: str = Form("", description="Возраст пациента (необязательно)"),
     sex: str = Form("", description="Пол: male/female (необязательно)"),
     consent: str = Form("", description="1 - согласие на обработку документа"),
+    clinic_id: str = Form("", description="White-label clinic id"),
+    tier_id: str = Form("", description="product tier id"),
+    payment_token: str = Form("", description="Оплата (если PATIENT_PAYMENT_REQUIRED=1)"),
 ) -> dict:
     """B2C: загрузка КЗ пациентом → отчёт P1 (без ЦИСЗ и send_gate)."""
     if not _patient_review_enabled():
@@ -10998,6 +11112,8 @@ async def api_patient_review(
     if lab_files:
         lab_text, lab_warnings = await _parse_patient_lab_uploads_async(lab_files)
     demo = patient_demographics_from_form(age_years=age_years, sex=sex)
+    _require_patient_payment(payment_token, tier_id)
+    product_tier = _patient_product_tier_from_catalog(tier_id)
     t0 = time.perf_counter()
     result = await _run_consult_review_blocking(
         _run_patient_review_core,
@@ -11005,6 +11121,7 @@ async def api_patient_review(
         consultation_id="patient-upload",
         demographics_meta=demo,
         lab_text=lab_text or None,
+        product_tier=product_tier,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     if pdf_warnings:
@@ -11014,7 +11131,86 @@ async def api_patient_review(
     if consult_docs_meta:
         result["document_count"] = len(consult_docs_meta)
     result["build_version"] = BUILD_VERSION
+    if clinic_id.strip():
+        result["clinic_id"] = clinic_id.strip()
+    if tier_id.strip():
+        result["tier_id"] = tier_id.strip()
     return result
+
+
+@app.post("/api/patient/review/stream")
+async def api_patient_review_stream(
+    files: Annotated[
+        list[UploadFile],
+        File(description="Фото или PDF консультативного заключения"),
+    ],
+    lab_files: Annotated[list[UploadFile] | None, File()] = None,
+    age_years: str = Form(""),
+    sex: str = Form(""),
+    consent: str = Form(""),
+    clinic_id: str = Form(""),
+    tier_id: str = Form(""),
+    payment_token: str = Form(""),
+):
+    """B2C: SSE-прогресс проверки КЗ."""
+    from consult_review_pipeline import sse_encode_done, sse_encode_error, sse_encode_progress
+    from clinical_knowledge.patient_review import iter_patient_review_progress, patient_demographics_from_form
+
+    if not _patient_review_enabled():
+        raise HTTPException(status_code=503, detail="Проверка для пациентов временно недоступна.")
+    if (consent or "").strip() not in ("1", "true", "yes", "on"):
+        raise HTTPException(status_code=400, detail="Нужно согласие на обработку документа.")
+    if not files:
+        raise HTTPException(status_code=400, detail="Загрузите фото или PDF заключения.")
+    _require_patient_payment(payment_token, tier_id)
+    product_tier = _patient_product_tier_from_catalog(tier_id)
+
+    full_text, _, pdf_warnings, _ = await _parse_consult_review_uploads_async(files)
+    lab_text = ""
+    if lab_files:
+        lab_text, _ = await _parse_patient_lab_uploads_async(lab_files)
+    demo = patient_demographics_from_form(age_years=age_years, sex=sex)
+
+    def event_gen():
+        yield sse_encode_progress("extract", 20, f"Текст извлечён ({len(full_text)} симв.)")
+        try:
+            for kind, payload in iter_patient_review_progress(
+                text=full_text,
+                consultation_id="patient-stream",
+                demographics_meta=demo,
+                lab_text=lab_text or None,
+                product_tier=product_tier,
+            ):
+                if kind == "progress":
+                    yield sse_encode_progress(
+                        payload["stage"],
+                        payload["pct"],
+                        payload["label_ru"],
+                    )
+                elif kind == "done":
+                    payload["build_version"] = BUILD_VERSION
+                    if pdf_warnings:
+                        payload["pdf_warnings"] = pdf_warnings
+                    if clinic_id.strip():
+                        payload["clinic_id"] = clinic_id.strip()
+                    if tier_id.strip():
+                        payload["tier_id"] = tier_id.strip()
+                    yield sse_encode_done(payload)
+                    return
+                elif kind == "error":
+                    yield sse_encode_error(str(payload.get("detail") or "Ошибка"), int(payload.get("status") or 500))
+                    return
+        except HTTPException as e:
+            detail = e.detail if isinstance(e.detail, str) else str(e.detail)
+            yield sse_encode_error(detail, e.status_code)
+        except Exception as e:
+            yield sse_encode_error(str(e)[:400], 500)
+
+    return StreamingResponse(
+        event_gen(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 # Статика (index.html, protocols.json, PDF) - регистрировать после API-маршрутов.
@@ -11048,6 +11244,31 @@ if (ROOT / "index.html").is_file():
     @app.get("/patient", include_in_schema=False)
     def _redirect_patient() -> RedirectResponse:
         return RedirectResponse(url="/patient.html", status_code=302)
+
+    @app.get("/check", include_in_schema=False)
+    def _redirect_check() -> RedirectResponse:
+        return RedirectResponse(url="/patient-check.html", status_code=302)
+
+    @app.get("/patient-check.html", include_in_schema=False)
+    def _serve_patient_check_html() -> FileResponse:
+        p = ROOT / "patient-check.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404)
+        return FileResponse(path=str(p), media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
+
+    @app.get("/patient-tokens.css", include_in_schema=False)
+    def _serve_patient_tokens_css() -> FileResponse:
+        p = ROOT / "patient-tokens.css"
+        if not p.is_file():
+            raise HTTPException(status_code=404)
+        return FileResponse(path=str(p), media_type="text/css; charset=utf-8")
+
+    @app.get("/patient-ui.js", include_in_schema=False)
+    def _serve_patient_ui_js() -> FileResponse:
+        p = ROOT / "patient-ui.js"
+        if not p.is_file():
+            raise HTTPException(status_code=404)
+        return FileResponse(path=str(p), media_type="application/javascript; charset=utf-8")
 
     @app.get("/patient.html", include_in_schema=False)
     def _serve_patient_html() -> FileResponse:
