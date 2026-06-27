@@ -719,15 +719,6 @@ def build_patient_report(
 
 def sanitize_patient_api_payload(payload: dict[str, Any]) -> dict[str, Any]:
     """Убирает B2B-поля (ЦИСЗ, send_gate, сырой structured)."""
-    out = dict(payload)
-    for key in (
-        "send_gate",
-        "cisz_readiness",
-        "structured_analysis",
-        "alignment",
-        "report_html",
-        "report_markdown",
-        "review",
-    ):
-        out.pop(key, None)
-    return out
+    from clinical_knowledge.patient_report_v2 import strip_b2b_from_payload
+
+    return strip_b2b_from_payload(payload)

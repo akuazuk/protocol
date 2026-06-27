@@ -25,6 +25,7 @@
   var params = new URLSearchParams(window.location.search);
   var clinicId = params.get("clinic") || "";
   var tierId = params.get("tier") || "";
+  var noHistoryMode = params.get("no_history") === "1";
   var paidToken = params.get("paid") || localStorage.getItem("protocol_patient_payment_token") || "";
   var monetization = {
     monetization_enabled: false,
@@ -310,6 +311,7 @@
   }
 
   function saveReport(pr) {
+    if (noHistoryMode) return;
     try { sessionStorage.setItem(REPORT_KEY, JSON.stringify(pr)); } catch (e) {}
   }
   function restoreReport() {
@@ -612,6 +614,7 @@
   }
 
   function saveHistory(pr) {
+    if (noHistoryMode) return;
     try {
       var list = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
       list.unshift({ ts: new Date().toISOString(), pct: pr.overall_pct, light: pr.traffic_light, label: pr.overall_label_ru, summary: pr.plain_summary_ru || "" });
@@ -660,7 +663,189 @@
     return lines.join("\n");
   }
 
-  function renderUploadJokeCard(pr) {
+  function normalizePatientReport(raw) {
+    var pr = raw || {};
+    if (pr.top_summary && pr.scores) return pr;
+    if (pr.report_schema_version >= 2 && pr.top_summary) return pr;
+    var legacy = {
+      report_schema_version: pr.report_schema_version || 1,
+      headline_ru: pr.headline_ru || pr.overall_label_ru || "",
+      plain_summary_ru: pr.plain_summary_ru || "",
+      top_summary: {
+        headline_ru: pr.headline_ru || pr.overall_label_ru || "",
+        plain_summary_ru: pr.plain_summary_ru || "",
+        main_takeaway_ru: "",
+      },
+      scores: {
+        document_completeness: { pct: pr.overall_pct, label_ru: "Полнота КЗ", hint_ru: pr.overall_label_ru || "" },
+        patient_clarity: { pct: pr.overall_pct, label_ru: "Понятность", hint_ru: "" },
+        protocol_match_confidence: { pct: null, label_ru: "Уверенность КП", hint_ru: "" },
+      },
+      show_single_overall_score: true,
+      understood_from_document: (pr.document_read_back_ru || []).map(function (line) {
+        return { label_ru: "Факт", value_ru: line };
+      }),
+      clarification_points: (pr.priority_topics || []).map(function (t) {
+        return { topic_ru: t.topic, text_ru: t.why_ru };
+      }),
+      message_to_doctor: { text_ru: (pr.questions_for_doctor || []).slice(0, 3).join(" ") },
+      visit_sheet: { text_ru: buildShareText(pr) },
+      plain_terms: [],
+    };
+    return Object.assign({}, pr, legacy);
+  }
+
+  function renderTopSummary(report) {
+    var top = report.top_summary || {};
+    var hl = document.getElementById("headline-ru");
+    var ps = document.getElementById("plain-summary");
+    var mt = document.getElementById("main-takeaway");
+    var pcn = document.getElementById("protocol-confidence-note");
+    if (hl) hl.textContent = top.headline_ru || report.headline_ru || "";
+    if (ps) ps.textContent = top.plain_summary_ru || report.plain_summary_ru || "";
+    if (mt) {
+      if (top.main_takeaway_ru) {
+        mt.textContent = top.main_takeaway_ru;
+        mt.classList.remove("hidden");
+      } else mt.classList.add("hidden");
+    }
+    if (pcn) {
+      var note = top.protocol_confidence_note_ru || "";
+      if (note) {
+        pcn.textContent = note;
+        pcn.classList.remove("hidden");
+        track("low_confidence_shown", { bucket: report.protocol_confidence_bucket });
+      } else pcn.classList.add("hidden");
+    }
+  }
+
+  function renderScoreCards(report) {
+    var wrap = document.getElementById("score-cards-wrap");
+    var hero = document.getElementById("score-card-wrap");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    var scores = report.scores || {};
+    var keys = ["document_completeness", "patient_clarity", "protocol_match_confidence"];
+    var any = false;
+    keys.forEach(function (k) {
+      var sc = scores[k];
+      if (!sc) return;
+      any = true;
+      var div = document.createElement("div");
+      div.className = "score-card-mini";
+      div.innerHTML =
+        '<div class="score-card-mini__label">' + escapeHtml(sc.label_ru || k) + "</div>" +
+        '<div class="score-card-mini__pct">' + (sc.pct != null ? sc.pct + "%" : "-") + "</div>" +
+        '<p class="score-card-mini__hint">' + escapeHtml(sc.hint_ru || "") + "</p>";
+      wrap.appendChild(div);
+    });
+    if (hero) {
+      if (report.show_single_overall_score === false || any) {
+        hero.classList.add("hidden");
+      } else {
+        hero.classList.remove("hidden");
+        renderScoreRing(report.overall_pct, report.traffic_light, "Сводная оценка", true);
+      }
+    }
+  }
+
+  function renderUnderstoodFromDocument(report) {
+    var ul = document.getElementById("understood-list");
+    var wrap = document.getElementById("understood-wrap");
+    if (!ul || !wrap) return;
+    ul.innerHTML = "";
+    var items = report.understood_from_document || [];
+    if (!items.length) {
+      wrap.classList.add("hidden");
+      return;
+    }
+    wrap.classList.remove("hidden");
+    items.forEach(function (it) {
+      var li = document.createElement("li");
+      li.textContent = (it.label_ru ? it.label_ru + ": " : "") + (it.value_ru || "");
+      ul.appendChild(li);
+    });
+  }
+
+  function renderClarificationPoints(report) {
+    var ul = document.getElementById("clarify-list");
+    var wrap = document.getElementById("clarify-wrap");
+    if (!ul || !wrap) return;
+    ul.innerHTML = "";
+    var items = report.clarification_points || [];
+    if (!items.length) {
+      wrap.classList.add("hidden");
+      return;
+    }
+    wrap.classList.remove("hidden");
+    items.forEach(function (it) {
+      var li = document.createElement("li");
+      li.textContent = it.text_ru || it.topic_ru || "";
+      ul.appendChild(li);
+    });
+  }
+
+  function renderMessageToDoctor(report) {
+    var el = document.getElementById("message-doctor-text");
+    var wrap = document.getElementById("message-doctor-wrap");
+    var msg = report.message_to_doctor || {};
+    if (!el || !wrap) return;
+    if (!msg.text_ru) {
+      wrap.classList.add("hidden");
+      return;
+    }
+    wrap.classList.remove("hidden");
+    el.textContent = msg.text_ru;
+  }
+
+  function renderVisitSheet(report) {
+    var el = document.getElementById("visit-sheet-text");
+    var wrap = document.getElementById("visit-sheet-wrap");
+    var vs = report.visit_sheet || {};
+    if (!el || !wrap) return;
+    if (!vs.text_ru) {
+      wrap.classList.add("hidden");
+      return;
+    }
+    wrap.classList.remove("hidden");
+    el.textContent = vs.text_ru;
+  }
+
+  function renderPlainTerms(report) {
+    var ul = document.getElementById("plain-terms-list");
+    var wrap = document.getElementById("plain-terms-wrap");
+    if (!ul || !wrap) return;
+    ul.innerHTML = "";
+    var terms = report.plain_terms || [];
+    if (!terms.length) {
+      wrap.hidden = true;
+      return;
+    }
+    wrap.hidden = false;
+    terms.forEach(function (t) {
+      var li = document.createElement("li");
+      li.innerHTML = "<strong>" + escapeHtml(t.term || "") + "</strong> - " + escapeHtml(t.explanation_ru || "");
+      ul.appendChild(li);
+    });
+  }
+
+  function renderRedFlags(report) {
+    var el = document.getElementById("red-flags-wrap");
+    if (!el) return;
+    if (report.red_flags_ru) {
+      el.textContent = report.red_flags_ru;
+      el.classList.remove("hidden");
+    } else el.classList.add("hidden");
+  }
+
+  function copyText(text, eventName) {
+    if (!text || !navigator.clipboard) return;
+    navigator.clipboard.writeText(text).then(function () {
+      if (statusEl) statusEl.textContent = "Скопировано.";
+      track(eventName || "question_copied");
+    });
+  }
+
     var el = document.getElementById("upload-joke-card");
     var body = document.getElementById("result-body");
     if (!el) return;
@@ -685,6 +870,7 @@
   }
 
   function renderReport(pr) {
+    pr = normalizePatientReport(pr);
     lastReport = pr;
     lastProtocolLinks = pr.protocol_links || [];
     saveReport(pr);
@@ -705,25 +891,34 @@
     if (againBtn) againBtn.textContent = "Проверить другой документ";
 
     var hl = document.getElementById("headline-ru");
-    if (hl) hl.textContent = pr.headline_ru || pr.overall_label_ru || "";
+    if (hl && !pr.top_summary) hl.textContent = pr.headline_ru || pr.overall_label_ru || "";
 
+    renderTopSummary(pr);
     renderTrafficPill(pr.traffic_light, pr.overall_label_ru);
     renderQualityBanner(pr.document_quality, pr.traffic_light);
-    renderScoreRing(pr.overall_pct, pr.traffic_light, "Сводная оценка по разделам", true);
+    renderScoreCards(pr);
     renderProtocolStrip(lastProtocolLinks);
 
     var mb = document.getElementById("matched-badge");
     if (mb) mb.classList.add("hidden");
 
     var ps = document.getElementById("plain-summary");
-    if (ps) ps.textContent = pr.plain_summary_ru || "";
+    if (ps && !pr.top_summary) ps.textContent = pr.plain_summary_ru || "";
+
+    renderUnderstoodFromDocument(pr);
+    renderClarificationPoints(pr);
+    renderMessageToDoctor(pr);
+    renderVisitSheet(pr);
+    renderPlainTerms(pr);
+    renderRedFlags(pr);
 
     var ns = document.getElementById("next-steps");
     if (ns) {
       ns.innerHTML = "";
-      (pr.next_steps_ru || []).forEach(function (s) {
+      var steps = pr.next_steps || pr.next_steps_ru || [];
+      steps.forEach(function (s) {
         var li = document.createElement("li");
-        li.textContent = s;
+        li.textContent = typeof s === "string" ? s : s.step_ru || "";
         ns.appendChild(li);
       });
     }
@@ -790,7 +985,17 @@
       disc.textContent = t;
     }
     saveHistory(pr);
-    track("report_view", { light: pr.traffic_light, pct: pr.overall_pct, block_count: (pr.blocks || []).length });
+    track("report_view", {
+      light: pr.traffic_light,
+      pct: pr.overall_pct,
+      block_count: (pr.blocks || []).length,
+      protocol_confidence_bucket: pr.protocol_confidence_bucket,
+    });
+    track("patient_result_aha", {
+      has_questions: !!(pr.questions_for_doctor && pr.questions_for_doctor.length),
+      has_visit_sheet: !!(pr.visit_sheet && pr.visit_sheet.text_ru),
+      protocol_confidence_bucket: pr.protocol_confidence_bucket,
+    });
   }
 
   function showLoader(stage) {
@@ -906,6 +1111,29 @@
 
   var btnPrint = document.getElementById("btn-print");
   if (btnPrint) btnPrint.addEventListener("click", function () { track("print_tap"); window.print(); });
+  var btnPrintVisit = document.getElementById("btn-print-visit");
+  if (btnPrintVisit) btnPrintVisit.addEventListener("click", function () {
+    track("visit_sheet_downloaded");
+    window.print();
+  });
+
+  var btnCopyMsg = document.getElementById("btn-copy-message");
+  if (btnCopyMsg) btnCopyMsg.addEventListener("click", function () {
+    if (!lastReport || !lastReport.message_to_doctor) return;
+    copyText(lastReport.message_to_doctor.text_ru, "message_copied");
+  });
+  var btnShareMsg = document.getElementById("btn-share-message");
+  if (btnShareMsg) btnShareMsg.addEventListener("click", function () {
+    if (!lastReport || !lastReport.message_to_doctor) return;
+    var text = lastReport.message_to_doctor.text_ru;
+    if (navigator.share) navigator.share({ title: "Сообщение врачу", text: text }).catch(function () {});
+    else copyText(text, "share_clicked");
+  });
+  var btnCopyVisit = document.getElementById("btn-copy-visit");
+  if (btnCopyVisit) btnCopyVisit.addEventListener("click", function () {
+    if (!lastReport || !lastReport.visit_sheet) return;
+    copyText(lastReport.visit_sheet.text_ru, "visit_sheet_copied");
+  });
 
   var btnShare = document.getElementById("btn-share");
   if (btnShare) btnShare.addEventListener("click", function () {

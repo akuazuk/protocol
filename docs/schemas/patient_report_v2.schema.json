@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://protocol.local/schemas/patient_report_v2.schema.json",
+  "title": "PatientReportV2",
+  "type": "object",
+  "required": [
+    "report_schema_version",
+    "top_summary",
+    "scores",
+    "understood_from_document",
+    "clarification_points",
+    "questions_for_doctor",
+    "message_to_doctor",
+    "visit_sheet",
+    "disclaimer_ru"
+  ],
+  "properties": {
+    "report_schema_version": { "type": "integer", "const": 2 },
+    "patient_mode": { "type": "string", "enum": ["patient"] },
+    "top_summary": {
+      "type": "object",
+      "required": ["headline_ru", "plain_summary_ru"],
+      "properties": {
+        "status": { "type": "string" },
+        "headline_ru": { "type": "string" },
+        "plain_summary_ru": { "type": "string" },
+        "main_takeaway_ru": { "type": "string" }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["document_completeness", "patient_clarity", "protocol_match_confidence"],
+      "properties": {
+        "document_completeness": { "$ref": "#/$defs/scoreCard" },
+        "patient_clarity": { "$ref": "#/$defs/scoreCard" },
+        "protocol_match_confidence": { "$ref": "#/$defs/scoreCard" }
+      }
+    },
+    "understood_from_document": { "type": "array" },
+    "clarification_points": { "type": "array" },
+    "questions_for_doctor": { "type": "array", "items": { "type": "string" } },
+    "message_to_doctor": {
+      "type": "object",
+      "properties": {
+        "title_ru": { "type": "string" },
+        "text_ru": { "type": "string" },
+        "actions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visit_sheet": {
+      "type": "object",
+      "properties": {
+        "title_ru": { "type": "string" },
+        "text_ru": { "type": "string" },
+        "actions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "plain_terms": { "type": "array" },
+    "protocol_confidence": { "type": "number" },
+    "protocol_confidence_bucket": { "type": "string", "enum": ["low", "medium", "high"] },
+    "show_single_overall_score": { "type": "boolean" },
+    "traffic_light": { "type": "string", "enum": ["green", "yellow", "red"] },
+    "disclaimer_ru": { "type": "string" },
+    "red_flags_ru": { "type": "string" },
+    "gate_score": { "not": {} },
+    "send_gate": { "not": {} },
+    "alignment": { "not": {} }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "scoreCard": {
+      "type": "object",
+      "properties": {
+        "pct": { "type": ["integer", "null"] },
+        "label_ru": { "type": "string" },
+        "hint_ru": { "type": "string" },
+        "bucket": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    }
+  }
+}

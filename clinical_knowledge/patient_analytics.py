@@ -21,6 +21,18 @@ ALLOWED_EVENTS = frozenset(
         "restore_report",
         "install_pwa_prompt",
         "reminder_set",
+        "review_started",
+        "review_completed",
+        "result_viewed",
+        "checklist_opened",
+        "question_copied",
+        "visit_sheet_downloaded",
+        "share_clicked",
+        "delete_data_clicked",
+        "low_confidence_shown",
+        "patient_result_aha",
+        "message_copied",
+        "visit_sheet_copied",
     }
 )
 
@@ -37,7 +49,21 @@ def record_patient_event(
         return {"ok": False, "error": "unknown_event"}
     safe_meta: dict[str, Any] = {}
     for k, v in (meta or {}).items():
-        if k in ("latency_ms", "light", "block_count", "lab_count", "checked_count", "pct"):
+        if k in (
+            "latency_ms",
+            "light",
+            "block_count",
+            "lab_count",
+            "checked_count",
+            "pct",
+            "time_to_result_ms",
+            "has_questions",
+            "has_visit_sheet",
+            "protocol_confidence_bucket",
+            "document_quality_bucket",
+            "tier",
+            "upload_mismatch",
+        ):
             if isinstance(v, (int, float, str, bool)) or v is None:
                 safe_meta[k] = v
     payload = {

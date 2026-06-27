@@ -8168,7 +8168,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r26-patient-upload-brand"
+BUILD_VERSION = "2026-06-24-r27-patient-report-v2"
 
 
 def _app_version() -> str:
@@ -11075,8 +11075,20 @@ async def _parse_patient_lab_uploads_async(
 
 
 @app.get("/api/patient/status")
+@app.get("/api/patient/config")
+@app.get("/api/patient/health")
 def api_patient_status() -> dict:
     """Статус B2C-контура для мобильного приложения и patient.html."""
+    from clinical_knowledge.patient_flags import (
+        patient_no_history_mode_enabled,
+        patient_plain_terms_enabled,
+        patient_protocol_age_filter_enabled,
+        patient_question_safety_enabled,
+        patient_report_v2_enabled,
+        patient_safe_quotes_enabled,
+        patient_show_protocol_technical_block,
+        patient_visit_sheet_pdf_enabled,
+    )
     from clinical_knowledge.patient_payment import payment_required, tier_catalog_public
     from clinical_knowledge.patient_question_tone import question_tones_for_api
     from clinical_knowledge.patient_monetization_config import monetization_public_view
@@ -11088,12 +11100,23 @@ def api_patient_status() -> dict:
         "review_tier": "P1",
         "report_schema_version": 2,
         "build_version": BUILD_VERSION,
+        "brand_name": "Protocol",
         "upload": "POST /api/patient/review",
         "upload_stream": "POST /api/patient/review/stream",
         "lab_upload": "optional lab_files in multipart",
         "question_tone_field": "question_tone",
         "question_tones": question_tones_for_api(),
-        "default_question_tone": "serious",
+        "default_question_tone": "calm_respectful",
+        "feature_flags": {
+            "PATIENT_REPORT_V2_ENABLED": patient_report_v2_enabled(),
+            "PATIENT_PROTOCOL_AGE_FILTER_ENABLED": patient_protocol_age_filter_enabled(),
+            "PATIENT_SAFE_QUOTES_ENABLED": patient_safe_quotes_enabled(),
+            "PATIENT_QUESTION_SAFETY_ENABLED": patient_question_safety_enabled(),
+            "PATIENT_PLAIN_TERMS_ENABLED": patient_plain_terms_enabled(),
+            "PATIENT_VISIT_SHEET_PDF_ENABLED": patient_visit_sheet_pdf_enabled(),
+            "PATIENT_NO_HISTORY_MODE_ENABLED": patient_no_history_mode_enabled(),
+            "PATIENT_SHOW_PROTOCOL_TECHNICAL_BLOCK": patient_show_protocol_technical_block(),
+        },
         "upload_formats": {
             "extensions": list(consult_review_allowed_extensions()),
             "accept": consult_review_file_accept_attr(),

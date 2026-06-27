@@ -118,6 +118,36 @@
       letter-spacing: -0.03em;
       line-height: 1.2;
     }
+    .score-cards { display: grid; gap: 0.55rem; margin: 0.75rem 0 0.35rem; }
+    .score-card-mini {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+    }
+    .score-card-mini__label { font-weight: 700; font-size: 0.82rem; color: var(--g800); }
+    .score-card-mini__pct { font-size: 1.25rem; font-weight: 800; color: var(--g950); }
+    .score-card-mini__hint { font-size: 0.78rem; color: var(--muted); margin: 0.25rem 0 0; line-height: 1.35; }
+    .summary-block { margin: 0.65rem 0; }
+    .summary-block h3 { font-size: 0.92rem; margin: 0 0 0.35rem; color: var(--g800); }
+    .summary-block ul { margin: 0; padding-left: 1.1rem; font-size: 0.86rem; }
+    .action-row { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.45rem; }
+    .action-row button { flex: 1; min-width: 7rem; }
+    .red-flags {
+      background: #fff8f0;
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      margin-top: 0.65rem;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
     .hero-lead {
       margin: 0;
       font-size: 0.92rem;
@@ -761,8 +791,8 @@
       <div class="hero-icon" aria-hidden="true">
         <img src="/protocol-logo.svg" width="52" height="52" alt="" style="width:3.25rem;height:3.25rem;border-radius:18px" />
       </div>
-      <h1>Проверь своё заключение</h1>
-      <p class="hero-lead">Сверка с официальными клиническими протоколами Минздрава РБ. Поймите, всё ли врач учёл и заполнил.</p>
+      <h1>Protocol · после приёма</h1>
+      <p class="hero-lead">Поймите своё заключение, подготовьте вопросы врачу и лист на следующий визит. Сверка с протоколами Минздрава РБ - ориентир, не диагноз.</p>
     </header>
 
     <section class="onboard" id="onboard">
@@ -861,20 +891,38 @@
       <div id="upload-joke-card" class="upload-joke hidden" role="status" aria-live="polite"></div>
 
       <div id="result-body">
+      <section class="report-panel" id="top-summary-wrap">
+        <div class="section-head"><span class="section-dot"></span><h2>Краткий итог</h2></div>
+        <p class="headline-ru" id="headline-ru"></p>
+        <p class="plain-summary" id="plain-summary"></p>
+        <p class="plain-summary hidden" id="main-takeaway"></p>
+        <p class="plain-summary hidden" id="protocol-confidence-note"></p>
+      </section>
+
       <div class="result-hero">
         <div class="result-hero__copy">
-          <p class="headline-ru" id="headline-ru"></p>
           <span class="traffic-pill traffic-pill--yellow" id="traffic-pill" role="status"></span>
           <span class="matched-badge hidden" id="matched-badge" aria-hidden="true"></span>
-          <p class="plain-summary" id="plain-summary"></p>
         </div>
-        <div class="score-card score-card--hero" id="score-card-wrap">
+        <div class="score-card score-card--hero hidden" id="score-card-wrap">
           <svg class="score-svg" id="score-svg" viewBox="0 0 88 88" aria-hidden="true"></svg>
           <p class="score-caption" id="score-caption"></p>
         </div>
       </div>
 
+      <div id="score-cards-wrap" class="score-cards" aria-label="Индексы проверки"></div>
+
       <div id="protocol-strip" class="protocol-strip hidden" aria-label="Протоколы Минздрава"></div>
+
+      <section class="report-panel summary-block" id="understood-wrap">
+        <h3>Что понятно</h3>
+        <ul id="understood-list"></ul>
+      </section>
+
+      <section class="report-panel summary-block" id="clarify-wrap">
+        <h3>Что стоит уточнить</h3>
+        <ul id="clarify-list"></ul>
+      </section>
 
       <div id="read-back-wrap" class="read-back hidden">
         <strong>Что мы прочитали в вашем документе</strong>
@@ -893,6 +941,31 @@
         <p class="questions-panel__etiquette" id="questions-panel-etiquette"></p>
         <ul class="question-cards" id="action-checklist"></ul>
       </section>
+
+      <section class="report-panel" id="message-doctor-wrap">
+        <div class="section-head"><span class="section-dot"></span><h2>Короткое сообщение врачу</h2></div>
+        <p id="message-doctor-text"></p>
+        <div class="action-row">
+          <button type="button" class="btn-secondary" id="btn-copy-message">Скопировать сообщение</button>
+          <button type="button" class="btn-secondary" id="btn-share-message">Поделиться</button>
+        </div>
+      </section>
+
+      <section class="report-panel" id="visit-sheet-wrap">
+        <div class="section-head"><span class="section-dot"></span><h2>Лист на приём</h2></div>
+        <pre id="visit-sheet-text" class="visit-sheet-pre" style="white-space:pre-wrap;font-family:inherit;font-size:0.82rem;margin:0"></pre>
+        <div class="action-row">
+          <button type="button" class="btn-secondary" id="btn-copy-visit">Скопировать лист</button>
+          <button type="button" class="btn-secondary" id="btn-print-visit">Скачать / печать</button>
+        </div>
+      </section>
+
+      <details class="cites-fold" id="plain-terms-wrap">
+        <summary>Непонятные термины</summary>
+        <ul id="plain-terms-list" style="margin:0.45rem 0 0;padding-left:1.1rem"></ul>
+      </details>
+
+      <div id="red-flags-wrap" class="red-flags hidden" role="note"></div>
 
       <section class="report-panel">
         <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
@@ -941,7 +1014,7 @@
 
     <section class="faq card" id="faq-section">
       <p class="card-title">Частые вопросы</p>
-      <details><summary>Как считается оценка?</summary>Мы сравниваем разделы вашего заключения с требованиями клинических протоколов Минздрава РБ по той же теме. Процент - средняя оценка по блокам, не «оценка врача».</details>
+      <details><summary>Как считаются индексы?</summary>Три индекса: полнота КЗ, понятность для пациента и уверенность подбора клинического протокола. Это не «оценка врача» - ориентир для разговора на приёме.</details>
       <details><summary>Это диагноз или второе мнение?</summary>Нет. Это ориентир для разговора с врачом: что заполнено, что можно уточнить. Решения о лечении принимает только лечащий врач.</details>
       <details><summary>Куда деваются мои документы?</summary>Файлы обрабатываются для одной проверки и не используются для обучения моделей. История на устройстве хранит только дату и краткий итог.</details>
     </section>

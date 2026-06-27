@@ -52,6 +52,19 @@ def run_patient_review(
         specialty_slug=specialty_slug,
         skip_alignment=False,
     )
+
+    from .patient_context import extract_patient_context
+    from .patient_flags import patient_protocol_age_filter_enabled, patient_report_v2_enabled
+    from .patient_protocol_filter import filter_l1_protocols
+    from .patient_quote_quality import filter_card_excerpts
+
+    patient_ctx = extract_patient_context(l1, kz_text=raw, demographics_meta=demographics_meta)
+    if patient_protocol_age_filter_enabled():
+        l1 = filter_l1_protocols(l1, patient_ctx)
+        align_tmp = l1.get("alignment") if isinstance(l1.get("alignment"), dict) else {}
+        cards_tmp = list(align_tmp.get("alignment_cards") or [])
+        if cards_tmp:
+            align_tmp["alignment_cards"] = filter_card_excerpts(cards_tmp)
     align = l1.get("alignment") if isinstance(l1.get("alignment"), dict) else {}
     cards = list(align.get("alignment_cards") or [])
     exams_card = next((c for c in cards if isinstance(c, dict) and c.get("block_id") == "exams"), None)
@@ -72,13 +85,24 @@ def run_patient_review(
         lab_crosscheck=lab_check,
         protocol_context=protocol_context,
         exams_kz_notes=exams_kz_notes,
-        question_tone=question_tone,
+        question_tone=question_tone or "serious",
     )
     tier = (product_tier or "P1").strip().upper()
     if tier == "P2":
         from .patient_p2_enrich import enrich_patient_report_p2
 
         patient_report = enrich_patient_report_p2(patient_report)
+
+    if patient_report_v2_enabled():
+        from .patient_report_v2 import enrich_patient_report_v2
+
+        patient_report = enrich_patient_report_v2(
+            patient_report,
+            l1_result=l1,
+            kz_text=raw,
+            patient_context=patient_ctx,
+            question_tone=question_tone,
+        )
 
     payload: dict[str, Any] = {
         "ok": True,

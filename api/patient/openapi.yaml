@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Protocol Patient B2C API
+  version: "2.0"
+  description: Patient-facing review API (navigator after visit). Brand Protocol.
+paths:
+  /api/patient/review:
+    post:
+      summary: Run patient KZ review
+      responses:
+        "200":
+          description: Review result with patient_report v2
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  patient_report:
+                    $ref: "../docs/schemas/patient_report_v2.schema.json"
+  /api/patient/review/stream:
+    post:
+      summary: SSE progress + review result
+  /api/patient/analytics:
+    post:
+      summary: Privacy-safe analytics events
+  /api/patient/config:
+    get:
+      summary: Patient UI config and feature flags
+  /api/patient/health:
+    get:
+      summary: Health check
