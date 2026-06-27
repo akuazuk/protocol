@@ -8169,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r42-methodist-tabs-nonsticky"
+BUILD_VERSION = "2026-06-24-r43-patient-quality-b2c-panel"
 
 
 def _app_version() -> str:
@@ -10199,17 +10199,26 @@ def api_methodist_queue(
 
 @app.get("/api/methodist/patient-quality")
 def api_methodist_patient_quality(request: "Request") -> dict:
-    """Последний ночной отчёт B2C и черновики snippet-паков."""
+    """Live-статистика B2C, последний ночной отчёт и черновики snippet-паков."""
     _require_methodist_auth(request)
-    from clinical_knowledge.patient_nightly_quality import load_latest_nightly_report
-    from clinical_knowledge.patient_specialty import list_pending_snippet_updates
+    from clinical_knowledge.patient_nightly_quality import build_methodist_patient_quality_view
 
-    report = load_latest_nightly_report()
-    report["pending_snippets_detail"] = list_pending_snippet_updates()
-    md_path = ROOT / "data" / "ml" / "reports" / "patient_nightly_latest.md"
-    if md_path.is_file():
-        report["markdown_ru"] = md_path.read_text(encoding="utf-8")[:12000]
-    return report
+    return build_methodist_patient_quality_view()
+
+
+@app.post("/api/methodist/patient-quality/refresh")
+def api_methodist_patient_quality_refresh(request: "Request") -> dict:
+    """Пересобрать ночной отчёт B2C (агрегация + LLM/эвристика, без email)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.patient_nightly_quality import (
+        build_methodist_patient_quality_view,
+        run_patient_nightly_quality,
+    )
+
+    run_patient_nightly_quality(send_email=False)
+    out = build_methodist_patient_quality_view()
+    out["refreshed"] = True
+    return out
 
 
 @app.get("/api/methodist/protocol-search")

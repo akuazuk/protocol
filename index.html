@@ -7268,6 +7268,27 @@
       margin: 0 auto;
       padding: 0.5rem 0 2rem;
     }
+
+    .methodist-patient-quality {
+      margin-top: 1.35rem;
+      padding-top: 1.15rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.16);
+    }
+
+    .methodist-patient-quality-kpi {
+      margin: 0.75rem 0 0.85rem;
+    }
+
+    .methodist-patient-quality-body {
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow: auto;
+    }
+
+    .methodist-patient-quality.is-loading .methodist-patient-quality-body,
+    .methodist-patient-quality.is-loading .methodist-patient-quality-kpi {
+      opacity: 0.55;
+    }
     .methodist-b2c-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -12440,6 +12461,21 @@
           <span id="methodist-b2c-status" class="methodist-b2c-status"></span>
         </div>
         <p class="methodist-tier-hint" id="b2c-config-path" style="margin-top:0.5rem"></p>
+        <div id="methodist-patient-quality" class="methodist-patient-quality consult-hide-print">
+          <div class="methodist-ml-dashboard__hero">
+            <div>
+              <h2>Protocol · после приёма (B2C)</h2>
+              <p>Ночной отчёт качества patient.html: флаги, рекомендации LLM, черновики snippet-паков.</p>
+              <p class="methodist-tier-hint" id="methodist-patient-quality-meta"></p>
+            </div>
+            <div class="methodist-ml-dashboard__hero-actions">
+              <button type="button" class="btn-ml-dash-refresh" id="methodist-patient-quality-refresh">Обновить</button>
+            </div>
+          </div>
+          <div id="methodist-patient-quality-error" class="methodist-ml-error" hidden></div>
+          <div id="methodist-patient-quality-kpi" class="analytics-kpi-grid methodist-patient-quality-kpi" hidden></div>
+          <pre id="methodist-patient-quality-body" class="methodist-ml-meta methodist-patient-quality-body"></pre>
+        </div>
       </div>
     </div>
 
@@ -12480,17 +12516,6 @@
             </thead>
             <tbody></tbody>
           </table>
-        </div>
-        <div id="methodist-patient-quality" class="methodist-ml-dashboard consult-hide-print" style="margin-top:1.25rem">
-          <div class="methodist-ml-dashboard__hero">
-            <div>
-              <h2>Protocol · после приёма (B2C)</h2>
-              <p>Ночной отчёт качества patient.html: флаги, рекомендации LLM, черновики snippet-паков.</p>
-            </div>
-            <button type="button" class="btn-ml-dash-refresh" id="methodist-patient-quality-refresh">Обновить</button>
-          </div>
-          <div id="methodist-patient-quality-error" class="methodist-ml-error" hidden></div>
-          <pre id="methodist-patient-quality-body" class="methodist-ml-meta" style="white-space:pre-wrap;max-height:420px;overflow:auto"></pre>
         </div>
       </div>
     </div>
@@ -20720,6 +20745,7 @@
       })
       .finally(function () {
         if (root) root.classList.remove("is-loading");
+        loadMethodistPatientQualityPanel(false);
       });
   }
 
@@ -20797,41 +20823,97 @@
       .finally(function () {
         if (root) root.classList.remove("is-loading");
       });
-    loadMethodistPatientQualityPanel();
   }
 
-  function loadMethodistPatientQualityPanel() {
-    if (!window.__methodistMode || !window.__methodistToken) return;
+  function renderMethodistPatientQualityPanel(data) {
+    var root = document.getElementById("methodist-patient-quality");
+    var kpiEl = document.getElementById("methodist-patient-quality-kpi");
     var bodyEl = document.getElementById("methodist-patient-quality-body");
+    var metaEl = document.getElementById("methodist-patient-quality-meta");
+    var stats = (data && (data.live_stats || data.stats)) || {};
+    var llm = (data && data.llm_review) || {};
+    var flagCount = Object.keys(stats.quality_flags || {}).length;
+    var pendingCount = ((data && data.pending_snippets_detail) || []).length;
+
+    if (metaEl) {
+      var parts = [];
+      if (data && data.nightly_available && data.nightly_generated_at) {
+        parts.push("Ночной отчёт: " + data.nightly_generated_at);
+      } else {
+        parts.push("Live-статистика из feedback (ночной отчёт ещё не сохранён)");
+      }
+      if (data && data.refreshed) parts.push("пересобрано только что");
+      metaEl.textContent = parts.join(" · ");
+    }
+
+    if (kpiEl) {
+      kpiEl.hidden = false;
+      kpiEl.innerHTML =
+        '<div class="analytics-kpi analytics-kpi--accent"><strong>' +
+        (stats.review_count != null ? stats.review_count : 0) +
+        '</strong><span>проверок B2C</span></div>' +
+        '<div class="analytics-kpi"><strong>' +
+        (stats.avg_patient_clarity != null ? stats.avg_patient_clarity + "%" : "—") +
+        '</strong><span>средняя понятность</span></div>' +
+        '<div class="analytics-kpi"><strong>' +
+        (llm.health_score != null ? llm.health_score + "/5" : "—") +
+        '</strong><span>health score</span></div>' +
+        '<div class="analytics-kpi"><strong>' +
+        flagCount +
+        '</strong><span>типов quality flags</span></div>' +
+        '<div class="analytics-kpi"><strong>' +
+        pendingCount +
+        '</strong><span>черновиков snippet</span></div>';
+    }
+
+    if (bodyEl) {
+      if (data && data.markdown_ru) {
+        bodyEl.textContent = data.markdown_ru;
+      } else if (llm.summary_ru) {
+        bodyEl.textContent = llm.summary_ru;
+      } else {
+        bodyEl.textContent =
+          "Нет данных B2C. Включите PATIENT_TELEMETRY=1, проведите проверки на patient.html или запустите scripts/run_patient_nightly_quality.py";
+      }
+    }
+    if (root) root.classList.remove("is-loading");
+  }
+
+  function loadMethodistPatientQualityPanel(regenerate) {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var root = document.getElementById("methodist-patient-quality");
     var errEl = document.getElementById("methodist-patient-quality-error");
+    var refreshBtn = document.getElementById("methodist-patient-quality-refresh");
+    if (root) root.classList.add("is-loading");
     if (errEl) errEl.hidden = true;
+    if (refreshBtn) refreshBtn.disabled = true;
     var baseEl = document.getElementById("rag-base");
     var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
-    fetch(base + "/api/methodist/patient-quality", {
+    var url = base + "/api/methodist/patient-quality" + (regenerate ? "/refresh" : "");
+    var opts = {
       headers: {
         "X-Methodist-Token": window.__methodistToken,
         "X-Methodist-Reviewer": window.__methodistReviewer || "",
       },
-    })
+    };
+    if (regenerate) opts.method = "POST";
+    fetch(url, opts)
       .then(function (r) {
         if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); });
         return r.json();
       })
       .then(function (data) {
-        if (!bodyEl) return;
-        if (data.markdown_ru) {
-          bodyEl.textContent = data.markdown_ru;
-        } else if (data.llm_review && data.llm_review.summary_ru) {
-          bodyEl.textContent = data.llm_review.summary_ru;
-        } else {
-          bodyEl.textContent = data.error || "Отчёт ещё не сформирован. Запустите scripts/run_patient_nightly_quality.py";
-        }
+        renderMethodistPatientQualityPanel(data);
       })
       .catch(function (e) {
         if (errEl) {
           errEl.hidden = false;
           errEl.textContent = "B2C quality: " + methodistApiErrorRu(e.message || e);
         }
+        if (root) root.classList.remove("is-loading");
+      })
+      .finally(function () {
+        if (refreshBtn) refreshBtn.disabled = false;
       });
   }
 
@@ -28204,7 +28286,7 @@
     if (pqRefresh && !pqRefresh.getAttribute("data-wired")) {
       pqRefresh.setAttribute("data-wired", "1");
       pqRefresh.addEventListener("click", function () {
-        loadMethodistPatientQualityPanel();
+        loadMethodistPatientQualityPanel(true);
       });
     }
 

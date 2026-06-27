@@ -330,3 +330,38 @@ def load_latest_nightly_report() -> dict[str, Any]:
         return data
     except json.JSONDecodeError:
         return {"ok": False, "error": "invalid_json"}
+
+
+def build_methodist_patient_quality_view() -> dict[str, Any]:
+    """Ответ для GET /api/methodist/patient-quality: live stats + последний отчёт или черновик."""
+    from .patient_specialty import list_pending_snippet_updates
+
+    live_stats = aggregate_patient_feedback()
+    pending_detail = list_pending_snippet_updates()
+    pending_paths = [str(p.get("path") or "") for p in pending_detail if p.get("path")]
+    report = load_latest_nightly_report()
+
+    if report.get("ok"):
+        llm_review = report.get("llm_review") or _deterministic_review(live_stats)
+        stats_for_md = report.get("stats") or live_stats
+        snippet_paths = report.get("pending_snippets") or pending_paths
+        if LATEST_MD.is_file():
+            markdown_ru = LATEST_MD.read_text(encoding="utf-8")[:12000]
+        else:
+            markdown_ru = build_markdown_report(stats_for_md, llm_review, snippet_paths)
+        nightly_generated_at = report.get("generated_at") or stats_for_md.get("generated_at")
+    else:
+        llm_review = _deterministic_review(live_stats)
+        markdown_ru = build_markdown_report(live_stats, llm_review, pending_paths)
+        nightly_generated_at = None
+
+    return {
+        "ok": True,
+        "live_stats": live_stats,
+        "stats": live_stats,
+        "llm_review": llm_review,
+        "pending_snippets_detail": pending_detail,
+        "markdown_ru": markdown_ru,
+        "nightly_available": bool(report.get("ok")),
+        "nightly_generated_at": nightly_generated_at,
+    }
