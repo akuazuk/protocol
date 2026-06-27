@@ -197,15 +197,45 @@ def ebitda_sensitivity_b2c_conv(conv: float, b2b_share: float = 0.08) -> int:
     return b2b + b2c + api - opex
 
 
-B2C_CONV_SENSITIVITY = [
-    (
-        f"{c:.2%}".replace(".", ","),
-        f"{int(B2C_TAM_TOUCHES_YEAR * c):,}".replace(",", " "),
-        str(b2c_protocol_k(int(B2C_TAM_TOUCHES_YEAR * c))),
-        str(ebitda_sensitivity_b2c_conv(c)),
-    )
-    for c in (0.001, 0.00232, 0.0033, 0.005, 0.01)
-]
+def build_b2c_conv_sensitivity_rows() -> list[tuple[str, str, str, str, str]]:
+    """conv, checks, b2c_k, total rev, EBITDA (B2B 8% и OPEX фикс.)."""
+    b2b_k = b2b_k_from_kz_month(int(MARKET_KZ_MONTH * 0.08))
+    api_k = SCENARIO_CAUTIOUS["api_k"]
+    opex_k = SCENARIO_CAUTIOUS["opex_k"]
+
+    levels: list[tuple[float | None, int | None]] = [
+        (0.001, None),
+        (None, FIN_Y3["b2c_checks"]),
+        (0.0033, None),
+        (0.005, None),
+        (0.01, None),
+    ]
+    rows: list[tuple[str, str, str, str, str]] = []
+    for conv, checks_override in levels:
+        if checks_override is not None:
+            checks = checks_override
+            conv_f = checks / B2C_TAM_TOUCHES_YEAR
+        else:
+            assert conv is not None
+            checks = int(B2C_TAM_TOUCHES_YEAR * conv)
+            conv_f = conv
+        b2c_k = b2c_protocol_k(checks)
+        rev_k = b2b_k + b2c_k + api_k
+        ebitda = rev_k - opex_k
+        conv_pct = f"{conv_f * 100:.3f}".replace(".", ",").rstrip("0").rstrip(",") + "%"
+        rows.append(
+            (
+                conv_pct,
+                f"{checks:,}".replace(",", " "),
+                str(b2c_k),
+                str(rev_k),
+                str(ebitda),
+            )
+        )
+    return rows
+
+
+B2C_CONV_SENSITIVITY = build_b2c_conv_sensitivity_rows()
 
 # Синхронизация FIN_Y* с исправленной B2C-формулой
 def _sync_fin_year(year: dict, checks: int) -> dict:

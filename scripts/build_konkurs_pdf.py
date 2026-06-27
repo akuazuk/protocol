@@ -39,6 +39,11 @@ def main() -> int:
     args = parser.parse_args()
 
     ASSETS.mkdir(parents=True, exist_ok=True)
+    from konkurs_audit import assert_financial_model
+
+    print("Audit...")
+    assert_financial_model()
+
     print("Charts...")
     generate_charts(ASSETS)
 

@@ -421,7 +421,7 @@ Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники 
 
 def _expansion_html() -> str:
     risk_rows = [(a, b, c) for a, b, c in EXPANSION_RISKS]
-    tam_rows = [(a, b, c, d, e) for a, b, c, d, e in B2C_TAM_COMPARE_TABLE]
+    tam_rows = [(a, b, c, d, e, f) for a, b, c, d, e, f in B2C_TAM_COMPARE_TABLE]
     return f"""
 <div class="section"><h2>6.2. Расширение B2C: госполиклиники РБ и экспорт (РФ)</h2></div>
 <div class="section-body">
@@ -430,7 +430,7 @@ def _expansion_html() -> str:
 <div class="highlight"><strong>Источник:</strong> Белстат - <strong>108,4 млн</strong> посещений врачей в РБ в 2025 г.
 (амбулаторно + на дому), ~12 на жителя. Базовый план B2C использует знаменатель <strong>30 млн</strong> (частный сектор) -
 это <strong>не противоречие</strong>, а сознательно осторожный горизонт 2029; расширенный TAM B2C - отдельный upside.</div>
-{_table(['Знаменатель TAM B2C', 'Обращений/год', 'Конверсия', 'Проверок/год', 'Protocol B2C, тыс. BYN'], tam_rows, caption='Сравнение TAM B2C: частный сектор vs все поликлиники vs экспорт (не базовый P&L 2029)')}
+{_table(['Знаменатель TAM B2C', 'Обращений/год', 'Конверсия', 'Проверок/год', 'B2C Protocol, тыс. BYN', 'Примечание'], tam_rows, caption='Сравнение TAM B2C: только выручка B2C Protocol (без B2B, API, OPEX и EBITDA)')}
 <p>{_e(EXPANSION_RUSSIA.replace(chr(10), ' '))}</p>
 <h3>Переносимость ML и корпуса протоколов</h3>
 <p>{_e(EXPANSION_ML_PORTABILITY.replace(chr(10), ' '))}</p>
@@ -568,7 +568,8 @@ def _finance_block(assets_rel: str) -> str:
 {_table(['Сценарий 2029', 'B2B TAM', 'B2C conv', 'Выручка', 'EBITDA/год', 'EBITDA/мес'], SCENARIO_COMPARE_TABLE, caption='Три сценария года 3: осторожный · базовый · оптimистичный')}
 {_table(['Канал', 'Вероятность', 'План тыс.', 'Драйвер'], CHANNEL_TABLE, caption='Какой канал с большей вероятностью даст выручку')}
 {_table(['Доля TAM B2B', 'EBITDA тыс./год', 'КЗ/мес B2B'], pen_rows, caption='Чувствительность EBITDA к проникновению B2B (B2C и API фикс. - осторожный сценарий 2029)')}
-{_table(['Конверсия B2C', 'Проверок/год', 'B2C тыс.', 'EBITDA тыс.'], b2c_pen_rows, caption='Чувствительность EBITDA к конверсии B2C (B2B фикс. 8% TAM частного сектора, знаменатель 30 млн КЗ/год)')}
+{_table(['Конверсия B2C', 'Проверок/год', 'B2C, тыс.', 'Выручка итого, тыс.', 'EBITDA, тыс.'], b2c_pen_rows, caption='Чувствительность EBITDA к конверсии B2C (B2B фикс. 8% = 1 800 тыс., API 75, OPEX 650; знаменатель 30 млн КЗ/год). При росте проверок EBITDA растёт на ту же величину, что и B2C: +1 тыс. B2C → +1 тыс. EBITDA.')}
+<div class="highlight"><strong>Не путать с §6.2:</strong> таблица расширенного TAM (108,4 млн посещений) показывает только <em>выручку B2C</em> (686-1 592 тыс.) без B2B и OPEX - там нет столбца EBITDA. Столбец «B2C, тыс.» ниже - доля выручки, а EBITDA включает B2B (~1 800 тыс.) минус OPEX.</div>
 {img('chart_revenue_ebitda.png', 'Выручка и EBITDA по годам (Plotly)')}
 {img('chart_monetization.png', '8 дополнительных каналов монетизации 2029')}
 {img('chart_all_scenarios.png', 'Все сценарии 2029: до 3,5 млн выручки')}

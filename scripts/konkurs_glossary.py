@@ -35,6 +35,7 @@ FORMULA_TABLE = [
     ("B2C чек пациента", "Σ (цена tier × доля микса)", "8,33 BYN (микс tier)"),
     ("B2C Protocol/проверка", "80%×8,33×70% + 20%×8,33", "6,33 BYN (rev-share + прямой)"),
     ("EBITDA", "B2B + B2C + API − OPEX", "тыс. BYN/год"),
+    ("EBITDA B2C-чувствит.", "1 875 + B2C − 650", "B2B 1 800 + API 75 фикс.; Δ EBITDA = Δ B2C"),
     ("EBITDA/мес", "EBITDA год / 12", "при 8% TAM ≈ 139 тыс. BYN/мес"),
     ("Доля TAM B2B Y3", "200 000 / 2 500 000", "8%"),
     ("B2C конверсия Y3", "69 600 / 30 000 000", "0,23% (частный TAM B2C)"),
@@ -49,48 +50,6 @@ GLOSSARY_INTRO = """
 
 def build_calc_audit_table() -> list[tuple[str, str, str, str]]:
     """Актуальная сверка ключевых показателей (генерируется из финмодели)."""
-    from konkurs_finance import (
-        FIN_Y1,
-        FIN_Y2,
-        FIN_Y3,
-        KRAVIRA_B2B_YEAR,
-        MARKET_KZ_MONTH,
-        MARKET_KZ_YEAR,
-        TAM_B2B_CEILING_YEAR_K,
-        ebitda_k,
-        ebitda_month_k,
-        total_rev_k,
-    )
-    from konkurs_scenarios import B2C_PROTOCOL_PER_CHECK, b2c_protocol_k
+    from konkurs_audit import run_financial_audit
 
-    rows = [
-        ("TAM КЗ/год", f"{MARKET_KZ_YEAR:,}".replace(",", " "), "25 000 / 1% × 12", "OK"),
-        ("TAM B2B потолок, тыс.", f"{TAM_B2B_CEILING_YEAR_K:,}".replace(",", " "), "30 млн × 0,75 / 1000", "OK"),
-        ("Кравира B2B, тыс.", str(KRAVIRA_B2B_YEAR // 1000), "25k×0,69×12/1000", "OK"),
-        ("B2C Protocol/проверка", f"{B2C_PROTOCOL_PER_CHECK} BYN", "микс tier + rev-share", "OK"),
-    ]
-    for label, fin in [("2027", FIN_Y1), ("2028", FIN_Y2), ("2029", FIN_Y3)]:
-        calc_b2c = b2c_protocol_k(fin["b2c_checks"])
-        calc_rev = fin["b2b_k"] + calc_b2c + fin.get("api_k", 0)
-        calc_ebitda = calc_rev - fin["opex_k"]
-        ok = calc_b2c == fin["b2c_k"] and calc_rev == total_rev_k(fin) and calc_ebitda == ebitda_k(fin)
-        rows.append(
-            (
-                f"Выручка {label}, тыс.",
-                str(total_rev_k(fin)),
-                f"B2B {fin['b2b_k']} + B2C {fin['b2c_k']} + API {fin.get('api_k', 0)}",
-                "OK" if ok else "проверить",
-            )
-        )
-        rows.append(
-            (
-                f"EBITDA {label}, тыс./мес",
-                f"{ebitda_k(fin)} / {ebitda_month_k(fin)}",
-                f"выручка − OPEX {fin['opex_k']}",
-                "OK" if ok else "проверить",
-            )
-        )
-    rows.append(
-        ("Доля TAM B2B Y3", f"{FIN_Y3['kz_month']:,} / {MARKET_KZ_MONTH:,}".replace(",", " "), "8%", "OK")
-    )
-    return rows
+    return run_financial_audit()

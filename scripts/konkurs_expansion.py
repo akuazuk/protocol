@@ -20,12 +20,12 @@ RU_AMBULATORY_VISITS_YEAR_EST = 550_000_000
 BASE_B2C_CONV = FIN_Y3["b2c_checks"] / B2C_TAM_PRIVATE_YEAR  # ~0,232%
 
 
-def _row(denominator_label: str, tam: int, conv: float, note: str) -> tuple[str, str, str, str, str]:
+def _row(denominator_label: str, tam: int, conv: float, note: str) -> tuple[str, str, str, str, str, str]:
     checks = int(tam * conv)
     rev_k = b2c_protocol_k(checks)
-    conv_pct = f"{conv * 100:.2f}%".replace(".", ",")
+    conv_pct = f"{conv * 100:.3f}".replace(".", ",").rstrip("0").rstrip(",") + "%"
     checks_s = f"{checks:,}".replace(",", " ")
-    return (denominator_label, f"{tam:,}".replace(",", " "), conv_pct, checks_s, str(rev_k))
+    return (denominator_label, f"{tam:,}".replace(",", " "), conv_pct, checks_s, str(rev_k), note)
 
 
 # Сравнение: тот же % конверсии, разный знаменатель TAM B2C
@@ -34,25 +34,25 @@ B2C_TAM_COMPARE_TABLE = [
         "Частный сектор (базовый план 2029)",
         B2C_TAM_PRIVATE_YEAR,
         BASE_B2C_CONV,
-        "текущий осторожный финплан",
+        "совпадает с финпланом 2029",
     ),
     _row(
         "Все амбул. посещения РБ (Belstat 2025)",
         B2C_TAM_NATIONAL_AMBULATORY_YEAR,
         BASE_B2C_CONV,
-        "гос- + частные поликлиники; тот же % конверсии",
+        "тот же %; больше проверок → больше B2C",
     ),
     _row(
         "Все амбул. посещения РБ",
         B2C_TAM_NATIONAL_AMBULATORY_YEAR,
-        0.001,  # 0,10%
-        "upside при массовом SEO и сарафане",
+        0.001,
+        "upside; не EBITDA 2029",
     ),
     _row(
         "РФ, амбул. обращения (оценка)",
         RU_AMBULATORY_VISITS_YEAR_EST,
-        0.0005,  # 0,05%
-        "экспорт B2C 2031+; только открытые КП/приказы",
+        0.0005,
+        "экспорт 2031+; не базовый P&L",
     ),
 ]
 
