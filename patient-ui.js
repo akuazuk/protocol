@@ -894,6 +894,7 @@
   }
 
   function renderUploadJokeCard(pr) {
+    resetResultViewForMismatch();
     var el = document.getElementById("upload-joke-card");
     var body = document.getElementById("result-body");
     if (!el) return;
@@ -914,6 +915,52 @@
       "</div>";
     if (body) body.classList.add("hidden");
     setAgainButtonVisible(true, "Загрузить правильный документ");
+  }
+
+  function resetResultViewForMismatch() {
+    var qb = document.getElementById("quality-banner");
+    if (qb) {
+      qb.classList.add("hidden");
+      qb.textContent = "";
+    }
+    var body = document.getElementById("result-body");
+    if (body) body.classList.add("hidden");
+    lastProtocolLinks = [];
+    renderProtocolStrip([]);
+    ["headline-ru", "plain-summary", "main-takeaway", "protocol-confidence-note"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = "";
+      if (id !== "headline-ru" && id !== "plain-summary") el.classList.add("hidden");
+    });
+    var mb = document.getElementById("matched-badge");
+    if (mb) {
+      mb.classList.add("hidden");
+      mb.innerHTML = "";
+      mb.setAttribute("aria-hidden", "true");
+    }
+    var tp = document.getElementById("traffic-pill");
+    if (tp) {
+      tp.className = "traffic-pill traffic-pill--yellow hidden";
+      tp.textContent = "";
+    }
+    var scoreWrap = document.getElementById("score-cards-wrap");
+    if (scoreWrap) scoreWrap.innerHTML = "";
+    var hero = document.getElementById("score-card-wrap");
+    if (hero) hero.classList.add("hidden");
+    renderBlocksPanel([]);
+    renderProtocolPanel(null);
+    var labBox = document.getElementById("lab-result");
+    if (labBox) {
+      labBox.classList.add("hidden");
+      labBox.innerHTML = "";
+    }
+    var cites = document.getElementById("cites-wrap");
+    if (cites) cites.innerHTML = "";
+    var citesDetails = document.getElementById("cites-details");
+    if (citesDetails) citesDetails.hidden = true;
+    var jokeCard = document.getElementById("upload-joke-card");
+    if (jokeCard) jokeCard.classList.remove("hidden");
   }
 
   function renderReport(pr) {
@@ -1117,6 +1164,10 @@
 
   function runReviewSse() {
     track("upload_start", { tier: selectedTier, sse: true });
+    try {
+      sessionStorage.removeItem(REPORT_KEY);
+      reviewFingerprint = null;
+    } catch (e) {}
     btn.disabled = true;
     showLoader("Загрузка файлов…");
     fetch(window.location.origin + "/api/patient/review/stream", { method: "POST", body: buildFormData() })

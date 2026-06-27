@@ -16,6 +16,8 @@ def run_patient_review(
     lab_text: str | None = None,
     product_tier: str = "P1",
     question_tone: str | None = None,
+    kz_filename: str = "",
+    lab_filename: str = "",
 ) -> dict[str, Any]:
     """P1/P2: structured + alignment без ЦИСЗ и без LLM-критериев."""
     raw = (text or "").strip()
@@ -24,7 +26,12 @@ def run_patient_review(
 
     from .patient_upload_classifier import build_upload_joke_report, check_patient_uploads
 
-    mismatch = check_patient_uploads(kz_text=raw, lab_text=lab_text)
+    mismatch = check_patient_uploads(
+        kz_text=raw,
+        lab_text=lab_text,
+        kz_filename=kz_filename,
+        lab_filename=lab_filename,
+    )
     if mismatch:
         joke_report = build_upload_joke_report(mismatch)
         return {
@@ -125,6 +132,8 @@ def iter_patient_review_progress(
     lab_text: str | None = None,
     product_tier: str = "P1",
     question_tone: str | None = None,
+    kz_filename: str = "",
+    lab_filename: str = "",
 ) -> Iterator[tuple[str, dict[str, Any]]]:
     """SSE-прогресс: (kind, payload) где kind in progress|done|error."""
     try:
@@ -144,6 +153,8 @@ def iter_patient_review_progress(
             lab_text=lab_text,
             product_tier=product_tier,
             question_tone=question_tone,
+            kz_filename=kz_filename,
+            lab_filename=lab_filename,
         )
         yield "done", result
     except ValueError as e:

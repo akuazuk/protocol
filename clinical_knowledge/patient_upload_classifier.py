@@ -175,6 +175,12 @@ _JOKES: dict[str, dict[str, str]] = {
         "body": "Похоже, консультативное заключение попало в поле для бланков анализов. "
         "Поменяйте файлы местами - и всё заработает.",
     },
+    "protocol_pdf": {
+        "emoji": "📑",
+        "title": "Это клинический протокол Минздрава, а не ваше заключение",
+        "body": "Вы загрузили текст протокола для врачей, а не консультативное заключение после приёма. "
+        "Нужен лист из клиники с жалобами, диагнозом и рекомендациями именно по вашему визиту.",
+    },
     "unknown": {
         "emoji": "🤔",
         "title": "Мы честно посмотрели - это не похоже на КЗ",
@@ -243,6 +249,30 @@ def _lab_score(text: str) -> int:
     return score
 
 
+def _has_typical_kz_sections(text: str) -> bool:
+    low = (text or "").lower()
+    markers = (
+        bool(re.search(r"жалоб\w*", low)),
+        bool(re.search(r"\bдиагноз\b", low)),
+        bool(re.search(r"рекомендац\w*", low)),
+    )
+    return sum(markers) >= 2
+
+
+def _looks_like_minzdrav_protocol(text: str) -> bool:
+    low = (text or "").lower()
+    if re.search(r"консультативн\w*\s+заключен", low):
+        return False
+    if not re.search(r"клинический\s+протокол", low):
+        return False
+    return bool(
+        re.search(r"министерств\w*\s+здоров", low)
+        or re.search(r"утвержден\w*\s+приказ", low)
+        or re.search(r"республик\w*\s+беларус", low)
+        or re.search(r"общие\s+положен", low)
+    )
+
+
 def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
     blob = (text or "").strip()
     if len(blob) < 40:
@@ -254,6 +284,9 @@ def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
     if lab >= 14 and kz < 8:
         return UploadGuess("kz", False, "lab_in_kz", "бланк анализов", kz, lab)
 
+    if _looks_like_minzdrav_protocol(blob):
+        return UploadGuess("kz", False, "protocol_pdf", "клинический протокол Минздрава", kz, lab)
+
     if kz >= 10:
         return UploadGuess("kz", True, "kz", "консультативное заключение", kz, lab)
 
@@ -261,7 +294,9 @@ def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
     if kind != "unknown":
         return UploadGuess("kz", False, kind, label, kz, lab)
 
-    if kz >= 5 and len(blob) > 120:
+    has_sections = _has_typical_kz_sections(blob)
+
+    if has_sections and kz >= 5 and len(blob) > 80:
         return UploadGuess("kz", True, "kz", "возможное заключение", kz, lab)
 
     if len(blob) < 100 and kz < 3:
@@ -274,7 +309,7 @@ def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
             if kind != "unknown":
                 return UploadGuess("kz", False, kind, label, kz, lab)
 
-    if kz < 4:
+    if not has_sections or kz < 4:
         return UploadGuess("kz", False, "unknown", "не похоже на КЗ", kz, lab)
 
     return UploadGuess("kz", True, "kz", "консультативное заключение", kz, lab)

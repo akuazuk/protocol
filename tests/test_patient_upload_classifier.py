@@ -70,6 +70,32 @@ def test_joke_report_shape() -> None:
     assert rep["headline_ru"]
 
 
+PROTOCOL_PDF = """
+КЛИНИЧЕСКИЙ ПРОТОКОЛ
+диагностики и лечения пациентов с заболеваниями кожи
+УТВЕРЖДЕН
+приказом Министерства здравоохранения Республики Беларусь
+1. Общие положения
+Настоящий клинический протокол устанавливает порядок диагностики и лечения.
+2. Диагностика
+Рекомендуется осмотр и назначение обследований по показаниям.
+"""
+
+
+def test_classify_minzdrav_protocol_pdf_as_not_kz() -> None:
+    g = classify_kz_upload(PROTOCOL_PDF)
+    assert not g.is_expected
+    assert g.kind == "protocol_pdf"
+
+
+def test_joke_report_has_no_protocol_match() -> None:
+    g = classify_kz_upload(RECIPE)
+    rep = build_upload_joke_report(g)
+    assert rep["matched_protocols_count"] == 0
+    assert not rep.get("protocol_links")
+    assert not rep.get("protocol_context")
+
+
 def test_check_patient_uploads_priority_kz() -> None:
     mismatch = check_patient_uploads(kz_text=RECIPE, lab_text=LAB)
     assert mismatch is not None

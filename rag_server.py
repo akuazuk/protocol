@@ -8169,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r32-patient-header-again"
+BUILD_VERSION = "2026-06-24-r33-mismatch-no-protocol"
 
 
 def _app_version() -> str:
@@ -11025,6 +11025,8 @@ def _run_patient_review_core(
     lab_text: str | None = None,
     product_tier: str = "P1",
     question_tone: str | None = None,
+    kz_filename: str = "",
+    lab_filename: str = "",
 ) -> dict:
     from clinical_knowledge.patient_review import run_patient_review
 
@@ -11036,7 +11038,16 @@ def _run_patient_review_core(
         lab_text=lab_text,
         product_tier=product_tier,
         question_tone=question_tone,
+        kz_filename=kz_filename,
+        lab_filename=lab_filename,
     )
+
+
+def _first_upload_filename(files: list | None) -> str:
+    if not files:
+        return ""
+    fn = getattr(files[0], "filename", None) or ""
+    return str(fn).strip()
 
 
 def _attach_patient_review_telemetry(
@@ -11314,6 +11325,8 @@ async def api_patient_review(
         lab_text=lab_text or None,
         product_tier=product_tier,
         question_tone=(question_tone or "").strip() or None,
+        kz_filename=_first_upload_filename(files),
+        lab_filename=_first_upload_filename(lab_files),
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     _attach_patient_review_telemetry(
@@ -11380,6 +11393,8 @@ async def api_patient_review_stream(
                 lab_text=lab_text or None,
                 product_tier=product_tier,
                 question_tone=(question_tone or "").strip() or None,
+                kz_filename=_first_upload_filename(files),
+                lab_filename=_first_upload_filename(lab_files),
             ):
                 if kind == "progress":
                     yield sse_encode_progress(

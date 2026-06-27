@@ -141,3 +141,18 @@ def test_run_patient_review_rejects_recipe() -> None:
     assert pr.get("upload_joke")
     assert pr.get("upload_mismatch") is True
     assert not pr.get("blocks")
+    assert out.get("matched_protocols_count") == 0
+
+
+def test_run_patient_review_rejects_protocol_pdf() -> None:
+    protocol = (
+        "КЛИНИЧЕСКИЙ ПРОТОКОЛ диагностики и лечения. "
+        "УТВЕРЖДЕН приказом Министерства здравоохранения Республики Беларусь. "
+        "1. Общие положения. 2. Диагностика. Рекомендуется осмотр."
+    )
+    out = run_patient_review(text=protocol, consultation_id="t-protocol-pdf")
+    assert out.get("upload_mismatch") is True
+    assert out.get("matched_protocols_count") == 0
+    pr = out["patient_report"]
+    assert pr.get("upload_joke")
+    assert not pr.get("protocol_links")
