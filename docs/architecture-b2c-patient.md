@@ -2,7 +2,7 @@
 
 > **Audience:** LLM agents, backend/frontend developers, product owners.  
 > **Purpose:** Полный технический и продуктовый контекст B2C-контура для изучения, доработки и рефакторинга.  
-> **Last aligned with code:** 2026-06-24 · `BUILD_VERSION` `2026-06-24-r40-sticky-logo-docs-sync`  
+> **Last aligned with code:** 2026-06-24 · `BUILD_VERSION` `2026-06-24-r51-footer-methodist-docs-logo`  
 > **Companion docs:** [`roadmap-patient-app.md`](roadmap-patient-app.md) (волны A-D, метрики), [`patient-privacy-stub.html`](patient-privacy-stub.html)
 
 ---

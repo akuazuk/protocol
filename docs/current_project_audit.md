@@ -1,7 +1,7 @@
 # Аудит проекта Protocol - модуль проверки КЗ (KZ Compliance Checker)
 
 > Обновлено: 2026-06-24 (синхронизация с prod UI и docs).  
-> Версия сборки: `2026-06-24-r40-sticky-logo-docs-sync`.  
+> Версия сборки: `2026-06-24-r51-footer-methodist-docs-logo`.  
 > См. также: `docs/project-docs-maintenance.md` - чек-лист актуализации документов.
 
 ---

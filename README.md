@@ -30,8 +30,7 @@
 - [docs/mvp-presentation.html](docs/mvp-presentation.html) - презентация MVP для руководства (качество, МИС, Минздрав; концепт-демо графики)
 - [docs/deployment-belarus.md](docs/deployment-belarus.md) - развёртывание в контуре РБ
 - [docs/roadmap-mis.md](docs/roadmap-mis.md) - этап 2: интеграция с МИС
-- [docs/architecture-kravira-fhir-mis-print.html](docs/architecture-kravira-fhir-mis-print.html) - архитектура: КЗ, FHIR BY, ЦИСЗ, МИС «Айболит» (HTML)
-- [docs/architecture-kravira-fhir-mis.pdf](docs/architecture-kravira-fhir-mis.pdf) - тот же документ (PDF)
+- [docs/architecture-kravira-fhir-mis.pdf](docs/architecture-kravira-fhir-mis.pdf) - архитектура: КЗ, FHIR BY, ЦИСЗ, МИС «Айболит» (PDF; HTML-исходник для печати: `architecture-kravira-fhir-mis-print.html`)
 - [docs/pre-sign-checklist-print.html](docs/pre-sign-checklist-print.html) - чек-лист перед подписью ЭЦП для врача (одна страница, печать/PDF)
 - [docs/pre-sign-checklist.pdf](docs/pre-sign-checklist.pdf) - тот же чек-лист (PDF)
 - [docs/architecture-b2c-patient.md](docs/architecture-b2c-patient.md) - архитектура B2C (`patient.html`, API `/api/patient/*`)

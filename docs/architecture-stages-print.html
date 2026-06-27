@@ -93,6 +93,17 @@
       color: var(--muted);
       margin-top: 0.5rem;
     }
+    .doc-brand {
+      margin: 0 0 0.75rem;
+      line-height: 0;
+    }
+    .doc-brand__logo {
+      display: block;
+      height: 2rem;
+      width: auto;
+      max-width: 14rem;
+      object-fit: contain;
+    }
     .print-module {
       margin: 0.65rem 0;
       padding: 0.85rem 1rem;
@@ -196,10 +207,13 @@
     </div>
 
     <header class="hero print-module">
+      <div class="doc-brand">
+        <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+      </div>
       <h1>Protocol: архитектура по этапам</h1>
       <p><strong>Навигатор клинических протоколов Минздрава РБ и ориентировочная проверка консультативных заключений (КЗ).</strong></p>
       <p>Документ описывает текущую реализацию (MVP), целевую интеграцию с МИС и Минздравом через стандарт FHIR BY / ЦИСЗ, а также предложения по масштабированию на тысячи КЗ в сутки.</p>
-      <p class="hero-meta">Версия документа: 2026-06-24 · Сборка приложения: 2026-06-24-r5-arch-docs-update · Не является ТЗ и не заменяет нормативные акты Минздрава.</p>
+      <p class="hero-meta">Версия документа: 2026-06-24 · Сборка приложения: <code>GET /api/version</code> · UI: mini-logo + pastel pill tabs; footer 4 карточки (врач) / расширенный набор в <code>?mode=methodist</code>.</p>
     </header>
 
     <section class="print-module print-module--accent">
@@ -326,18 +340,18 @@
       <p>Два клиентских shell в production: B2B <code>index.html</code> (~29k строк) и B2C <code>patient.html</code> (~1,1k строк + <code>patient-ui.js</code>). Inline CSS + vanilla JS, без bundler.</p>
       <h3>7.1. index.html (B2B)</h3>
       <ul>
-        <li><strong>Липкая шапка:</strong> минилого <code>protocol-logo-mini.svg</code> + вкладки при прокрутке (как в B2C).</li>
-        <li><strong>Вкладки:</strong> «Проверка КЗ» (<code>#consult-review</code>), «Поиск протоколов» (<code>#search</code>), «Статистика»; hash сохраняется при F5.</li>
+        <li><strong>Липкая шапка:</strong> mini-logo <code>protocol-logo-mini.svg</code> и вкладки «Проверка КЗ» / «Поиск протоколов» в одну строку; pill-стиль с пастельной заливкой.</li>
+        <li><strong>Вкладки:</strong> «Проверка КЗ» (<code>#consult-review</code>), «Поиск протоколов» (<code>#search</code>); «Статистика поиска» - в footer; hash сохраняется при F5.</li>
+        <li><strong>Footer (врач):</strong> четыре карточки - статистика, B2C, презентация MVP, вход в кабинет методиста; буклет, архитектура PDF и чек-лист - только в <code>?mode=methodist</code>.</li>
         <li><strong>Методслужба:</strong> <code>?mode=methodist</code> + токен - workbench, очередь (<code>#methodist-queue</code>), ML-дашборд (<code>#ml-dashboard</code>), B2C-тарифы (<code>#b2c-monetization</code>).</li>
         <li><strong>Structured analysis:</strong> 8 блоков compliance, alignment, evidence pack; SSE для потоковой проверки КЗ.</li>
-        <li><strong>Footer:</strong> единая сетка материалов (презентация, буклет, архитектура, patient B2C, кабинет методиста).</li>
       </ul>
       <h3>7.2. patient.html (B2C «Проверь КЗ»)</h3>
       <ul>
         <li>Отдельная PWA: загрузка PDF/фото КЗ, отчёт простым языком, tier-цены, white-label клиники.</li>
         <li>API: <code>POST /api/patient/review</code>, sanitize без полей B2B; см. <code>docs/architecture-b2c-patient.md</code>.</li>
       </ul>
-      <p>Подробная архитектура проверки КЗ перед отправкой в Минздрав: <a href="architecture-kravira-fhir-mis-print.html"><strong>architecture-kravira-fhir-mis-print.html</strong></a>. Также: <code>docs/mvp-presentation.html</code>, <code>docs/pre-sign-checklist-print.html</code>, <code>docs/project-docs-maintenance.md</code>.</p>
+      <p>Подробная архитектура проверки КЗ перед отправкой в Минздрав: <a href="architecture-kravira-fhir-mis.pdf"><strong>architecture-kravira-fhir-mis.pdf</strong></a> (HTML-исходник для печати: <code>architecture-kravira-fhir-mis-print.html</code>). Также: <code>docs/mvp-presentation.html</code>, <code>docs/pre-sign-checklist-print.html</code>, <code>docs/project-docs-maintenance.md</code>.</p>
     </section>
 
     <section class="print-module print-module--accent">

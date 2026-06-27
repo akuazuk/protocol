@@ -16,7 +16,7 @@
 | Логотипы / sticky chrome | architecture-b2c §14.1, презентация, буклет |
 | Scoring / блоки КЗ (6→8 и т.д.) | audit, implementation_plan, presentation, biz plan |
 | FHIR / ЦИСЗ / send_gate | `architecture-kravira-fhir-mis-print.html` + PDF |
-| Footer / материалы проекта | `index.html`, `docs/mvp-presentation.html` footer |
+| Footer / материалы проекта | `index.html` (4 public + methodist-only), `docs/mvp-presentation.html` footer |
 
 **Правило:** любой осмысленный коммит с изменением кода или user-facing docs → поднять `BUILD_VERSION` и прогнать `check_project_docs.py`.
 
@@ -45,8 +45,9 @@
    - `curl -s http://127.0.0.1:8787/api/corpus-stats` - число протоколов, chunks (для презентации).
    - Проверить hash-вкладки: `#consult-review`, `#search`, `#methodist-queue`, `#b2c-monetization`.
 3. **UI shell:**
-   - `index.html`: sticky mini logo (`protocol-logo-mini.svg`), footer grid, methodist `?mode=methodist`.
-   - `patient.html`: sticky top-bar, hero wordmark, без слогана в шапке.
+   - `index.html`: sticky mini logo + pastel pill tabs в одной строке; footer - 4 карточки для врача (статистика, B2C, презентация, кабинет); буклет, архитектура PDF, чек-лист - только в `?mode=methodist`.
+   - `patient.html`: sticky top-bar, hero wordmark.
+   - Print-docs: wordmark `protocol-logo-wordmark.svg` в шапке каждого HTML-документа в `docs/`.
 4. **Тексты:** нет устаревших «6 блоков», «?methodist=1», «B2C в будущем» (если `patient.html` уже в prod).
 5. **Метаданные docs:** в audit / architecture-b2c - строка `Last aligned with code` + текущий `BUILD_VERSION`.
 6. **Архитектурный HTML:** если меняли `architecture-*-print.html` → `python3 scripts/build_architecture_pdf.py --all` и коммит PDF.
@@ -88,5 +89,6 @@ python3 scripts/update_quality_benchmark.py --mini
 | Дата | BUILD_VERSION | Комментарий |
 |------|---------------|-------------|
 | 2026-06-24 | `2026-06-24-r40-sticky-logo-docs-sync` | Sticky mini logo в index; чек-лист maintenance; обновление README, stages, b2c, brief, presentation |
+| 2026-06-24 | `2026-06-24-r51-footer-methodist-docs-logo` | Footer 4+methodist-only; logo в print-docs; pastel UI в stages; архитектура PDF в ссылках |
 
 *При следующем релизе добавьте строку в эту таблицу.*

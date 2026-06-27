@@ -124,6 +124,8 @@
       padding: 0.15rem 0.45rem; border-radius: 999px; background: rgba(26, 138, 114, 0.12);
     }
     .flow .arrow { background: none; padding: 0; color: var(--muted); font-weight: 400; }
+    .doc-brand { margin: 0 0 0.65rem; line-height: 0; }
+    .doc-brand__logo { display: block; height: 1.85rem; width: auto; max-width: 13rem; object-fit: contain; }
     @media print {
       @page { size: A4 portrait; margin: 8mm; }
       body { font-size: 9pt; background: #fff; }
@@ -144,7 +146,7 @@
   <div class="no-print">
     <span style="font-family: Outfit, sans-serif; font-weight: 700; color: var(--g950)">Protocol · чек-лист для врача</span>
     <a href="pre-sign-checklist.pdf" target="_blank" rel="noopener">PDF чек-листа</a>
-    <a href="architecture-kravira-fhir-mis-print.html">Полная архитектура</a>
+    <a href="architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener">Архитектура (PDF)</a>
     <a href="../index.html#consult-review">К приложению</a>
     <button type="button" onclick="window.print()">Печать / PDF</button>
   </div>
@@ -152,6 +154,9 @@
   <article class="sheet">
     <header class="sheet-header">
       <div>
+        <div class="doc-brand">
+          <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="220" height="38" alt="Protocol" />
+        </div>
         <p class="eyebrow">МЦ «Кравира» · перед ЭЦП и отправкой в ЦИСЗ</p>
         <h1>Чек-лист перед подписью консультативного заключения</h1>
       </div>
@@ -323,7 +328,7 @@
     <p class="foot">
       Protocol не подписывает и не отправляет данные в ЦИСЗ - только ориентир методслужбы по КП Минздрава и чек-лист FHIR.
       Не замена МЭЭ. Полная архитектура:
-      <a href="architecture-kravira-fhir-mis-print.html">architecture-kravira-fhir-mis-print.html</a>
+      <a href="architecture-kravira-fhir-mis.pdf">architecture-kravira-fhir-mis.pdf</a>
       · Нормативка: FHIR BY, Протокол МИС-ЦИСЗ v.1.4, программа испытаний МИС v.1.3-4.
     </p>
   </article>

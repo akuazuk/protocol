@@ -134,10 +134,22 @@
       font-weight: 700;
       padding: 0.32rem 0.65rem;
       border-radius: 999px;
-      background: rgba(26, 138, 114, 0.16);
-      color: var(--green-950);
+      background: #ecfbf4;
+      border: 1px solid rgba(52, 168, 130, 0.38);
+      color: #0a7058;
     }
-    .meta-pill--accent { background: rgba(217, 119, 6, 0.16); color: var(--amber); }
+    .meta-pill--accent { background: #fdebd3; border-color: rgba(234, 160, 80, 0.35); color: var(--amber); }
+    .doc-brand {
+      margin: 0 0 0.85rem;
+      line-height: 0;
+    }
+    .doc-brand__logo {
+      display: block;
+      height: 2rem;
+      width: auto;
+      max-width: 14rem;
+      object-fit: contain;
+    }
 
     h2 {
       font-family: "Outfit", sans-serif;
@@ -349,6 +361,9 @@
     </div>
 
     <header class="booklet-cover">
+      <div class="doc-brand">
+        <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+      </div>
       <p class="eyebrow">Методический буклет</p>
       <h1>Навигатор клинических протоколов Минздрава Республики Беларусь</h1>
       <p class="subtitle">
@@ -466,7 +481,7 @@
         <li>Вводный сценарий в браузере: <code>/?presentation=1</code> или <code>/?demo=1</code> - четыре слайда о задаче, контурах и KPI, затем интерфейс.</li>
         <li>Основной раздел проверки консультативных заключений: <code>/#consult-review</code>.</li>
         <li>Расширенная презентация с графиками и дорожной картой: <a href="mvp-presentation.html">mvp-presentation.html</a> (PDF с сохранением фона).</li>
-        <li>Архитектура FHIR / ЦИСЗ: <a href="architecture-kravira-fhir-mis-print.html">architecture-kravira-fhir-mis-print.html</a>.</li>
+        <li>Архитектура FHIR / ЦИСЗ: <a href="architecture-kravira-fhir-mis.pdf">architecture-kravira-fhir-mis.pdf</a>.</li>
         <li>Чек-лист перед подписью ЭЦП: <a href="pre-sign-checklist-print.html">pre-sign-checklist-print.html</a> (одна страница для врача).</li>
       </ul>
 

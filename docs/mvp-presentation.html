@@ -107,6 +107,17 @@
       font-size: 0.88rem;
     }
     .nav-top a:hover { text-decoration: underline; }
+    .doc-brand {
+      display: inline-flex;
+      align-items: center;
+      line-height: 0;
+    }
+    .doc-brand__logo {
+      height: 1.65rem;
+      width: auto;
+      max-width: 12rem;
+      object-fit: contain;
+    }
     .btn-print {
       font-family: "Outfit", sans-serif;
       font-weight: 700;
@@ -1928,8 +1939,9 @@
   <div class="bg-soft screen-only" aria-hidden="true"></div>
   <div class="wrap">
     <nav class="nav-top" aria-label="Навигация документа">
-      <span style="font-family: Outfit, sans-serif; font-weight: 700; color: var(--green-950)"
-        >Protocol · навигатор протоколов и аудит КЗ</span>
+      <a class="doc-brand" href="../index.html#consult-review">
+        <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="220" height="38" alt="Protocol" />
+      </a>
       <div class="nav-actions no-print">
         <button type="button" class="btn-print" id="btn-save-pdf" title="Открыть диалог сохранения в PDF">
           Сохранить в PDF
@@ -1949,6 +1961,9 @@
     </nav>
 
     <header class="hero">
+      <div class="doc-brand" style="margin-bottom: 0.85rem">
+        <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="260" height="46" alt="Protocol" style="height: 2.15rem; width: auto; max-width: 16rem" />
+      </div>
       <p class="hero-eyebrow">Protocol · навигатор протоколов Минздрава РБ и аудит КЗ</p>
       <h1>Клинические протоколы Минздрава РБ: B2B-проверка КЗ, B2C для пациентов и готовность к ЦИСЗ</h1>
       <p class="hero-lead">
@@ -2993,8 +3008,6 @@ flowchart LR
         <a href="architecture-stages-print.html">Архитектура по этапам</a>
         <a href="pre-sign-checklist-print.html">Чек-лист перед подписью</a>
         <a href="ministry-brief-print.html">Буклет для руководства</a>
-        <a href="architecture-b2c-patient.md">Архитектура B2C (MD)</a>
-        <a href="project-docs-maintenance.md">Синхронизация docs</a>
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">Протоколы Минздрава РБ</a>
       </nav>
     </footer>

@@ -47,6 +47,8 @@
     .tag--high{background:#fde68a;color:#92400e}
     .tag--med{background:#bbf7d0;color:#166534}
     .footnote{font-size:.78rem;color:var(--muted);margin-top:.9rem;padding-top:.55rem;border-top:1px solid var(--border)}
+    .doc-brand{margin:0 0 .75rem;line-height:0}
+    .doc-brand__logo{display:block;height:2rem;width:auto;max-width:14rem;object-fit:contain}
     @media print{
       @page{size:A4;margin:10mm}
       body{font-size:10pt;background:#fff}
@@ -69,6 +71,9 @@
   </div>
 
   <header class="hero">
+    <div class="doc-brand">
+      <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+    </div>
     <h1>Protocol: архитектура по этапам и проверка КЗ перед отправкой в Минздрав</h1>
     <p class="lead">Модуль анализа клинических протоколов и консультативных заключений - разработка МЦ «Кравира». Интеграция с МИС «Айболит» (EPAM) - следующий этап.</p>
     <p class="footnote" style="border:0;margin:0;padding:0">
@@ -779,7 +784,7 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
     <h3>10.3. B2C-контур для пациентов (production)</h3>
     <p>Отдельный клиентский shell <code>patient.html</code> («Проверь КЗ») использует тот же детерминированный L1-pipeline, но отдаёт пациенту sanitize-отчёт без полей B2B (gate_score, cisz, methodist). White-label клиники, tier-цены, PWA + service worker.</p>
     <ul>
-      <li>Frontend: <code>patient.html</code>, <code>patient-ui.js</code>, sticky mini logo <code>protocol-logo-mini.svg</code>.</li>
+      <li>Frontend: <code>patient.html</code>, <code>patient-ui.js</code>, sticky mini logo; B2B <code>index.html</code> - mini-logo + pastel pill tabs в одной строке.</li>
       <li>API: <code>POST /api/patient/review</code>, <code>/api/patient/payment/session</code>, <code>GET /api/patient/config</code>.</li>
       <li>Документация: <code>docs/architecture-b2c-patient.md</code>, настройки monetization в кабинете методиста (<code>#b2c-monetization</code>).</li>
     </ul>
