@@ -7,7 +7,6 @@ from .patient_exam_extraction import exams_patient_summary, extract_exams_from_t
 from .patient_flags import (
     patient_plain_terms_enabled,
     patient_protocol_age_filter_enabled,
-    patient_question_safety_enabled,
     patient_report_v2_enabled,
     patient_safe_quotes_enabled,
     patient_show_protocol_technical_block,
@@ -24,7 +23,8 @@ from .patient_narrative import (
 )
 from .patient_plain_language import explain_terms_for_patient
 from .patient_protocol_filter import compute_protocol_match_confidence
-from .patient_questions import apply_safe_questions, DEFAULT_CALM_TONE
+from .patient_question_builder import build_useful_patient_questions
+from .patient_questions import DEFAULT_CALM_TONE
 from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text
 
 _B2B_FORBIDDEN_KEYS = frozenset(
@@ -158,20 +158,35 @@ def _build_top_summary(
     }
 
 
+def _consolidate_protocol_display(report: dict[str, Any]) -> None:
+    """Один блок ссылок на КП; в карточках блоков - только цитата без дубля PDF."""
+    links = list(report.get("protocol_links") or [])
+    if links:
+        report["primary_protocol"] = links[0]
+        report["protocol_links"] = links[:1]
+    for b in report.get("blocks") or []:
+        if isinstance(b, dict) and b.get("protocol_excerpt"):
+            b.pop("protocol_link", None)
+    for c in report.get("protocol_citations") or []:
+        if isinstance(c, dict):
+            c.pop("protocol_link", None)
+            if links:
+                c["protocol_title"] = (links[0].get("title") if isinstance(links[0], dict) else None) or c.get("protocol_title")
+
+
 def _message_to_doctor(questions: list[dict[str, Any]], kz_text: str) -> dict[str, Any]:
-    qtexts = [str(q.get("text") or "") for q in questions if q.get("text")][:4]
-    body = (
-        "Добрый день. После консультации хочу уточнить: "
-        + "; ".join(q.replace("?", "") for q in qtexts[:3])
-        + ". "
-    )
+    qtexts = [str(q.get("text") or "") for q in questions if q.get("text")][:3]
+    if not qtexts:
+        return {"title_ru": "Короткое сообщение врачу", "text_ru": "", "actions": ["copy", "share"]}
+    bullets = "; ".join(q.replace("?", "") for q in qtexts)
+    body = f"Добрый день. После консультации хочу уточнить: {bullets}."
     low = (kz_text or "").lower()
     if "головн" in low:
-        body += "Также подскажите, пожалуйста, что делать, если головная боль сохранится или усилится."
+        body += " Подскажите также, что делать, если головная боль сохранится."
     elif "высыпан" in low or "кож" in low:
-        body += "Также подскажите, пожалуйста, что делать, если высыпания сохранятся или появится температура."
+        body += " Подскажите также, что делать, если высыпания сохранятся."
     else:
-        body += "Также подскажите, пожалуйста, что делать, если самочувствие не улучится."
+        body += " Подскажите также, что делать, если самочувствие не улучится."
     return {
         "title_ru": "Короткое сообщение врачу",
         "text_ru": body,
@@ -227,16 +242,21 @@ def enrich_patient_report_v2(
     doc_pct = _document_completeness(blocks, exams, meds)
     clarity_pct = _patient_clarity(meds, exams, blocks)
     proto_pct = _clamp_pct(proto_conf * 100)
+    clarify = build_clarification_points(meds=meds, exams=exams, kz_text=kz_text)
 
-    structured = list(report.get("questions_structured") or [])
-    if patient_question_safety_enabled():
-        structured = apply_safe_questions(
-            structured,
-            kz_text=kz_text,
-            exams=exams,
-            tone=question_tone or DEFAULT_CALM_TONE,
-            safety_enabled=True,
-        )
+    structured = build_useful_patient_questions(
+        kz_text=kz_text,
+        clarification_points=clarify,
+        exams=exams,
+        meds=meds,
+        lab_crosscheck=report.get("lab_crosscheck") if isinstance(report.get("lab_crosscheck"), dict) else None,
+        structured_gaps=list(report.get("questions_structured") or []),
+        limit=5,
+    )
+    tone = question_tone or DEFAULT_CALM_TONE
+    for q in structured:
+        q["tone"] = tone
+        q["emoji"] = "💬"
     report["questions_structured"] = structured
     report["questions_for_doctor"] = [q["text"] for q in structured if q.get("text")]
     report["action_checklist"] = [
@@ -249,6 +269,7 @@ def enrich_patient_report_v2(
             "block_id": q.get("block_id", ""),
             "tone": q.get("tone") or DEFAULT_CALM_TONE,
             "emoji": q.get("emoji") or "💬",
+            "why_ru": q.get("why_ru") or "",
             "checked": False,
         }
         for i, q in enumerate(structured)
@@ -263,7 +284,6 @@ def enrich_patient_report_v2(
         proto_bucket=proto_bucket,
     )
     understood = _understood_from_document(kz_text, exams, meds, blocks)
-    clarify = build_clarification_points(meds=meds, exams=exams, kz_text=kz_text)
 
     clarity_hint = "Рекомендации в целом понятны."
     if clarity_pct < 75:
@@ -319,6 +339,11 @@ def enrich_patient_report_v2(
     report["exams_summary_ru"] = exams_patient_summary(exams)
     report["medications_summary_ru"] = medications_patient_summary(meds)
 
+    report["questions_intro_ru"] = (
+        "Короткие вопросы по вашему заключению - отметьте обсуждённые на приёме."
+    )
+    report["questions_etiquette_ru"] = "Нажмите галочку после разговора с врачом - список сохранится на устройстве."
+
     if patient_safe_quotes_enabled():
         report["protocol_citations"] = filter_protocol_citations(list(report.get("protocol_citations") or []))
 
@@ -345,6 +370,7 @@ def enrich_patient_report_v2(
             b["summary_ru"] = report["medications_summary_ru"] or b.get("summary_ru", "")
 
     report["blocks"] = blocks
+    _consolidate_protocol_display(report)
     report["disclaimer_ru"] = (
         "Protocol помогает понять документ и подготовить вопросы для разговора с врачом. "
         "Не ставит диагноз, не отменяет лечение и не оценивает врача. "

@@ -1,0 +1,43 @@
+name: Patient B2C nightly quality
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -q pyyaml
+
+      - name: Run nightly report (dry-run without secrets)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          PATIENT_REPORT_EMAIL_TO: akuazuk@gmail.com
+        run: |
+          if [ -d data/ml/feedback ] && ls data/ml/feedback/patient_*.jsonl 1>/dev/null 2>&1; then
+            python3 scripts/run_patient_nightly_quality.py || true
+          else
+            python3 scripts/run_patient_nightly_quality.py --dry-run
+            echo "No patient feedback yet - dry run only"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: patient-nightly-${{ github.run_id }}
+          path: |
+            data/ml/reports/patient_nightly_latest.*
+          if-no-files-found: ignore

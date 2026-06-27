@@ -81,6 +81,25 @@ JSONL-файлы: одна строка = один объект. Поле `event
 }
 ```
 
+## patient_review (B2C telemetry, без ПДн)
+
+```json
+{
+  "event_type": "patient_review",
+  "ts": "2026-06-24T12:00:00Z",
+  "text_hash": "sha256:…",
+  "build_version": "2026-06-24-r30-patient-quality-nightly",
+  "context": {"specialty_inferred": "dermatology", "icd10": ["L93.0"], "has_lab_upload": true},
+  "quality_flags": ["no_mri_in_source_but_in_summary"],
+  "scores": {"patient_clarity": 53}
+}
+```
+
+Файлы: `patient_review.jsonl`, `patient_ui.jsonl`, `patient_nightly.jsonl`.  
+Снимки отчёта: `data/ml/analyses/patient/{hash}.json`.  
+Ночной отчёт: `python3 scripts/run_patient_nightly_quality.py` → `data/ml/reports/patient_nightly_latest.md` + email на `PATIENT_REPORT_EMAIL_TO` (по умолчанию akuazuk@gmail.com).  
+Мethodist UI: вкладка «Очередь» → блок «Protocol · после приёма», API `GET /api/methodist/patient-quality`.
+
 API: `POST /api/ml/feedback` (заголовок `X-Methodist-Token`).  
 Полный текст КЗ: `data/ml/secure/kz_text/{hash}.txt` (не в git).  
 Снимок ответа: `data/ml/analyses/{analysis_id}.json`.

@@ -40,6 +40,7 @@
 
   var lastReport = null;
   var lastProtocolLinks = [];
+  var reviewFingerprint = null;
   var clinicConfig = null;
   var selectedTier = tierId || "basic";
   var useSse = true;
@@ -147,10 +148,18 @@
       return;
     }
     strip.classList.remove("hidden");
-    var html = '<div class="protocol-strip__label">Сверка с протоколами Минздрава</div><ul class="proto-chips">';
-    links.forEach(function (l) {
-      html += renderProtocolChip(l);
-    });
+    var primary = links[0];
+    var extra = links.length > 1 ? links.length - 1 : 0;
+    var html =
+      '<div class="protocol-strip__label">Клинический протокол Минздрава (ориентир для сверки)</div>' +
+      '<ul class="proto-chips">' +
+      renderProtocolChip(primary);
+    if (extra > 0) {
+      html +=
+        '<li class="proto-chip proto-chip--more"><span class="proto-chip__more">+ ещё ' +
+        extra +
+        " протокол(ов) в системе - основной указан выше</span></li>";
+    }
     html += "</ul>";
     strip.innerHTML = html;
   }
@@ -171,7 +180,13 @@
       fetch(window.location.origin + "/api/patient/analytics", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: event, clinic_id: clinicId || null, tier_id: selectedTier, meta: meta || {} }),
+        body: JSON.stringify({
+          event: event,
+          clinic_id: clinicId || null,
+          tier_id: selectedTier,
+          text_hash: reviewFingerprint || null,
+          meta: meta || {},
+        }),
       }).catch(function () {});
     } catch (e) {}
   }
@@ -396,13 +411,12 @@
         ? '<ul class="gap-list">' + b.gaps.map(function (g) { return "<li>" + escapeHtml(g) + "</li>"; }).join("") + "</ul>"
         : "";
       var protoLine = "";
-      if (b.protocol_excerpt || b.protocol_link) {
-        protoLine = '<div class="block-item__proto"><span class="block-item__proto-label">По протоколу</span>';
-        if (b.protocol_link) protoLine += renderProtocolLink(b.protocol_link);
-        if (b.protocol_excerpt) {
-          protoLine += '<p class="block-item__excerpt">' + escapeHtml(b.protocol_excerpt) + "</p>";
-        }
-        protoLine += "</div>";
+      if (b.protocol_excerpt) {
+        protoLine =
+          '<div class="block-item__proto"><span class="block-item__proto-label">По протоколу Минздрава</span>' +
+          '<p class="block-item__excerpt">' +
+          escapeHtml(b.protocol_excerpt) +
+          "</p></div>";
       }
       var comment = (b.summary_ru || b.why_ru || "-").trim();
       article.innerHTML =
@@ -508,20 +522,21 @@
       var tone = normalizeQuestionToneId((pr && pr.question_tone) || selectedQuestionTone || "serious");
       section.className = "report-panel report-panel--questions questions-panel questions-panel--tone-" + tone;
       var lead = document.getElementById("questions-panel-lead");
-      if (lead) lead.textContent = (pr && pr.questions_intro_ru) || "Сформулированы так, чтобы врачу было комфортно отвечать.";
-      var etiquette = document.getElementById("questions-panel-etiquette");
-      if (etiquette) etiquette.textContent = (pr && pr.questions_etiquette_ru) || "Отметьте обсуждённое - сохранится на устройстве.";
-      var emojiEl = document.getElementById("questions-panel-emoji");
-      var meta = (pr && pr.question_tone_meta) || {};
-      if (emojiEl) emojiEl.innerHTML = luxIconHtml(meta.icon || meta.emoji || "stethoscope", "lux-icon--hero");
-      var badge = document.getElementById("questions-tone-badge");
-      if (badge) {
-        if (meta.label_ru) {
-          badge.classList.remove("hidden");
-          badge.innerHTML = luxIconHtml(meta.icon || meta.emoji, "lux-icon--badge") +
-            '<span class="questions-tone-badge__text">Тон: ' + escapeHtml(meta.label_ru) + "</span>";
-        } else badge.classList.add("hidden");
+      if (lead) {
+        lead.textContent =
+          (pr && pr.questions_intro_ru) ||
+          "Вопросы по вашему заключению - коротко и по делу. Отметьте обсуждённые на приёме.";
       }
+      var etiquette = document.getElementById("questions-panel-etiquette");
+      if (etiquette) {
+        etiquette.textContent =
+          (pr && pr.questions_etiquette_ru) ||
+          "Нажмите галочку после разговора с врачом - список сохранится на устройстве.";
+      }
+      var emojiEl = document.getElementById("questions-panel-emoji");
+      if (emojiEl) emojiEl.innerHTML = luxIconHtml("stethoscope", "lux-icon--hero");
+      var badge = document.getElementById("questions-tone-badge");
+      if (badge) badge.classList.add("hidden");
     }
     var checklistState = loadChecklistState();
     items.forEach(function (item, idx) {
@@ -530,24 +545,38 @@
       var sev = item.severity === "high" ? " question-card--high" : item.severity === "low" ? " question-card--low" : "";
       if (checked) li.className = "question-card checked" + sev;
       else li.className = "question-card" + sev;
-      var iconId = item.icon || item.emoji || "chat";
       var cat = item.category_ru
-        ? '<span class="question-card__cat">' + luxIconHtml(iconId, "lux-icon--cat") + escapeHtml(item.category_ru) + "</span>"
+        ? '<span class="question-card__cat">' + escapeHtml(item.category_ru) + "</span>"
+        : "";
+      var why = item.why_ru
+        ? '<span class="question-card__why">' + escapeHtml(item.why_ru) + "</span>"
         : "";
       li.innerHTML =
-        '<label class="question-card__label" for="ck-' + escapeHtml(item.id) + '">' +
+        '<label class="question-card__label" for="ck-' +
+        escapeHtml(item.id) +
+        '">' +
         '<div class="question-card__shell">' +
-        '<span class="question-card__quote" aria-hidden="true">«</span>' +
-        luxIconHtml(iconId, "question-card__icon lux-icon--card") +
-        '<span class="question-card__num" aria-hidden="true">' + (idx + 1) + "</span>" +
-        '<span class="question-card__body">' + cat +
-        '<span class="question-card__text">' + escapeHtml(item.text || item.title || "") + "</span></span>" +
-        '<input type="checkbox" id="ck-' + escapeHtml(item.id) + '" ' + (checked ? "checked" : "") + " />" +
+        '<span class="question-card__num" aria-hidden="true">' +
+        (idx + 1) +
+        "</span>" +
+        '<span class="question-card__body">' +
+        cat +
+        '<span class="question-card__text">' +
+        escapeHtml(item.text || item.title || "") +
+        "</span>" +
+        why +
+        "</span>" +
+        '<input type="checkbox" class="question-card__check" id="ck-' +
+        escapeHtml(item.id) +
+        '" ' +
+        (checked ? "checked" : "") +
+        ' aria-label="Обсудили с врачом" />' +
         "</div></label>";
       var cb = li.querySelector("input");
       cb.addEventListener("change", function () {
         saveChecklistItem(item.id, cb.checked);
         li.classList.toggle("checked", cb.checked);
+        track("checklist_item", { checked: cb.checked, intent: item.intent || item.block_id });
       });
       cl.appendChild(li);
     });
@@ -606,10 +635,7 @@
     box.classList.remove("hidden");
     var html = '<section class="report-panel report-panel--protocol"><div class="section-head"><span class="section-dot"></span><h2>Требования протокола</h2></div>';
     if (pc.protocol_title || pc.protocol_link) {
-      html += '<div class="protocol-panel-head">';
-      if (pc.protocol_link) html += renderProtocolLink(pc.protocol_link, pc.protocol_title);
-      else html += escapeHtml(pc.protocol_title || "");
-      html += "</div>";
+      html += '<p class="protocol-panel-note">См. протокол Минздрава в блоке выше.</p>';
     }
     pc.missing_recommended_exams.forEach(function (m) {
       html += '<div class="protocol-req block-item block-item--concern"><strong>' + escapeHtml(m.exam_name || "Обследование") + "</strong>";
@@ -879,7 +905,8 @@
   function renderReport(pr) {
     pr = normalizePatientReport(pr);
     lastReport = pr;
-    lastProtocolLinks = pr.protocol_links || [];
+    lastProtocolLinks = pr.protocol_links || (pr.primary_protocol ? [pr.primary_protocol] : []);
+    reviewFingerprint = pr.review_fingerprint || null;
     saveReport(pr);
 
     var jokeCard = document.getElementById("upload-joke-card");
@@ -976,9 +1003,14 @@
         pr.protocol_citations.forEach(function (c) {
           var div = document.createElement("div");
           div.className = "cite";
-          var head = renderProtocolLink(c.protocol_link, c.protocol_title || "Протокол");
+          var head = escapeHtml(c.protocol_title || "По протоколу Минздрава");
           if (c.section) head += ' <span class="cite__section">· ' + escapeHtml(c.section) + "</span>";
-          div.innerHTML = "<div class=\"cite__head\">" + head + "</div><p class=\"cite__text\">" + escapeHtml(c.excerpt || "") + "</p>";
+          div.innerHTML =
+            '<div class="cite__head">' +
+            head +
+            '</div><p class="cite__text">' +
+            escapeHtml(c.excerpt || "") +
+            "</p>";
           cites.appendChild(div);
         });
       } else if (citesDetails) citesDetails.hidden = true;
@@ -1038,6 +1070,10 @@
       pr.upload_mismatch = true;
       if (data.guessed_kind) pr.guessed_kind = data.guessed_kind;
       if (data.mismatch_slot) pr.mismatch_slot = data.mismatch_slot;
+    }
+    if (data && data.review_fingerprint) {
+      pr.review_fingerprint = data.review_fingerprint;
+      reviewFingerprint = data.review_fingerprint;
     }
     renderReport(pr);
     window.scrollTo({ top: 0, behavior: "smooth" });

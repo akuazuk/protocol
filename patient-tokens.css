@@ -616,36 +616,48 @@ a.proto-link:focus-visible .proto-link__text {
 .question-card__shell {
   position: relative;
   display: grid;
-  grid-template-columns: auto auto auto 1fr auto;
-  gap: 0.5rem;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.65rem;
   align-items: start;
-  padding: 0.78rem 0.8rem 0.78rem 0.7rem;
-  border-radius: 16px;
-  background:
-    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255, 255, 255, 0.95), transparent 70%),
-    linear-gradient(160deg, #fff 0%, var(--q-bg1, #f4faf8) 100%);
+  padding: 0.78rem 0.85rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fff 0%, var(--q-bg1, #f4faf8) 100%);
   border: 1px solid var(--q-accent, rgba(26, 138, 114, 0.2));
   border-left: 3px solid var(--q-accent-solid, var(--g600));
-  box-shadow: 0 6px 18px rgba(6, 61, 53, 0.07);
-  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(6, 61, 53, 0.06);
 }
-.question-card__quote {
+.question-card__quote { display: none; }
+.question-card__shell::before { display: none; }
+.question-card__why {
+  display: block;
+  margin-top: 0.28rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--muted);
+  font-weight: 500;
+}
+.question-card__check {
   position: relative;
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  line-height: 1;
-  font-weight: 800;
-  color: var(--q-accent-solid, var(--g600));
-  opacity: 0.35;
-  margin-top: -0.1rem;
+  margin-top: 0.15rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--q-accent-solid, var(--g600));
 }
-.question-card__shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(-10deg, transparent, transparent 16px, rgba(255,255,255,0.35) 16px, rgba(255,255,255,0.35) 32px);
-  opacity: 0.35;
-  pointer-events: none;
+.proto-chip--more {
+  list-style: none;
+  padding: 0.45rem 0.65rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: #fafafa;
+}
+.proto-chip__more {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.protocol-panel-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0 0 0.45rem;
 }
 .question-card__emoji,
 .question-card__icon { position: relative; }

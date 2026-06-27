@@ -7818,6 +7818,7 @@ class PatientAnalyticsIn(BaseModel):
     clinic_id: str | None = Field(default=None, max_length=32)
     tier_id: str | None = Field(default=None, max_length=24)
     meta: dict | None = None
+    text_hash: str | None = Field(default=None, max_length=64)
 
 
 class PatientAccountSyncIn(BaseModel):
@@ -8168,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r29-patient-narrative-fix"
+BUILD_VERSION = "2026-06-24-r30-patient-quality-nightly"
 
 
 def _app_version() -> str:
@@ -10196,6 +10197,21 @@ def api_methodist_queue(
     return build_methodist_queue(limit=limit, domain=dom)
 
 
+@app.get("/api/methodist/patient-quality")
+def api_methodist_patient_quality(request: "Request") -> dict:
+    """Последний ночной отчёт B2C и черновики snippet-паков."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.patient_nightly_quality import load_latest_nightly_report
+    from clinical_knowledge.patient_specialty import list_pending_snippet_updates
+
+    report = load_latest_nightly_report()
+    report["pending_snippets_detail"] = list_pending_snippet_updates()
+    md_path = ROOT / "data" / "ml" / "reports" / "patient_nightly_latest.md"
+    if md_path.is_file():
+        report["markdown_ru"] = md_path.read_text(encoding="utf-8")[:12000]
+    return report
+
+
 @app.get("/api/methodist/protocol-search")
 def api_methodist_protocol_search(
     request: "Request",
@@ -11023,6 +11039,31 @@ def _run_patient_review_core(
     )
 
 
+def _attach_patient_review_telemetry(
+    result: dict,
+    *,
+    kz_text: str,
+    lab_upload: bool = False,
+    latency_ms: int | None = None,
+) -> dict:
+    if not isinstance(result, dict) or result.get("upload_mismatch"):
+        return result
+    pr = result.get("patient_report")
+    if not isinstance(pr, dict):
+        return result
+    from clinical_knowledge.patient_feedback_store import record_patient_review_snapshot
+
+    fp = record_patient_review_snapshot(
+        kz_text=kz_text,
+        report=pr,
+        build_version=BUILD_VERSION,
+        latency_ms=latency_ms,
+        has_lab_upload=lab_upload,
+    )
+    result["review_fingerprint"] = fp
+    return result
+
+
 def _patient_product_tier_from_catalog(tier_id: str | None) -> str:
     from clinical_knowledge.patient_clinic_config import resolve_tier
 
@@ -11167,6 +11208,8 @@ def api_patient_analytics(body: PatientAnalyticsIn) -> dict:
         clinic_id=body.clinic_id,
         tier_id=body.tier_id,
         meta=body.meta,
+        text_hash=body.text_hash,
+        build_version=BUILD_VERSION,
     )
 
 
@@ -11273,6 +11316,12 @@ async def api_patient_review(
         question_tone=(question_tone or "").strip() or None,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
+    _attach_patient_review_telemetry(
+        result,
+        kz_text=full_text,
+        lab_upload=bool(lab_text),
+        latency_ms=result["latency_ms"],
+    )
     if pdf_warnings:
         result["pdf_warnings"] = pdf_warnings
     if lab_warnings:
@@ -11340,6 +11389,11 @@ async def api_patient_review_stream(
                     )
                 elif kind == "done":
                     payload["build_version"] = BUILD_VERSION
+                    _attach_patient_review_telemetry(
+                        payload,
+                        kz_text=full_text,
+                        lab_upload=bool(lab_text),
+                    )
                     if pdf_warnings:
                         payload["pdf_warnings"] = pdf_warnings
                     if clinic_id.strip():

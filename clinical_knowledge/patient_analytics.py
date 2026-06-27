@@ -5,6 +5,8 @@ import logging
 import time
 from typing import Any
 
+from .patient_feedback_store import record_patient_ui_event
+
 logger = logging.getLogger("protocol.patient.analytics")
 
 ALLOWED_EVENTS = frozenset(
@@ -33,6 +35,8 @@ ALLOWED_EVENTS = frozenset(
         "patient_result_aha",
         "message_copied",
         "visit_sheet_copied",
+        "question_tone_pick",
+        "patient_feedback",
     }
 )
 
@@ -43,6 +47,8 @@ def record_patient_event(
     clinic_id: str | None = None,
     tier_id: str | None = None,
     meta: dict[str, Any] | None = None,
+    text_hash: str | None = None,
+    build_version: str | None = None,
 ) -> dict[str, Any]:
     name = (event or "").strip().lower()
     if name not in ALLOWED_EVENTS:
@@ -63,6 +69,10 @@ def record_patient_event(
             "document_quality_bucket",
             "tier",
             "upload_mismatch",
+            "rating",
+            "reason_tag",
+            "intent",
+            "tone",
         ):
             if isinstance(v, (int, float, str, bool)) or v is None:
                 safe_meta[k] = v
@@ -74,4 +84,10 @@ def record_patient_event(
         "meta": safe_meta,
     }
     logger.info("patient_event %s", payload)
+    record_patient_ui_event(
+        event=name,
+        text_hash_value=text_hash,
+        meta=safe_meta,
+        build_version=build_version,
+    )
     return {"ok": True, "recorded": name}
