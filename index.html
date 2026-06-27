@@ -538,15 +538,27 @@
     .app-sticky-bar__logo {
       display: block;
       width: auto;
-      height: 2.35rem;
-      max-width: min(100%, 16rem);
       object-fit: contain;
-      transition: height 0.15s ease, max-width 0.15s ease;
+      transition: opacity 0.12s ease;
     }
 
-    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo {
+    .app-sticky-bar__logo--full {
+      height: 2.35rem;
+      max-width: min(100%, 16rem);
+    }
+
+    .app-sticky-bar__logo--mini {
+      display: none;
       height: 1.05rem;
-      max-width: min(100%, 8.5rem);
+      max-width: min(100%, 9rem);
+    }
+
+    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--full {
+      display: none;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--mini {
+      display: block;
     }
 
     .app-chrome.app-chrome--scrolled .app-main-tabs--primary {
@@ -677,16 +689,24 @@
     }
 
     .site-footer-brand {
-      margin: 0 0 0.85rem;
+      margin: 0 0 0.55rem;
     }
 
     .site-footer-brand__logo {
       display: block;
       width: auto;
-      height: 2rem;
-      max-width: min(100%, 14rem);
+      height: 1.75rem;
+      max-width: min(100%, 12rem);
+      margin: 0 auto;
       object-fit: contain;
       opacity: 0.92;
+    }
+
+    .site-footer-meta {
+      margin: 1.15rem 0 0;
+      padding: 0.95rem 0 0.15rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.12);
+      text-align: center;
     }
 
     .consult-intro-brand {
@@ -3825,7 +3845,7 @@
     body.methodist-mode #panel-main-search .query-form-hint,
     body.methodist-mode #panel-main-search .search-panel__badge,
     body.methodist-mode #site-bottom-zone,
-    body.methodist-mode #section-footer p:first-of-type,
+    body.methodist-mode #section-footer .site-footer-source,
     body.methodist-mode .site-footer-doc-links {
       display: none !important;
     }
@@ -3843,7 +3863,7 @@
       padding: 0;
     }
 
-    body.methodist-mode #section-footer p:last-of-type {
+    body.methodist-mode #section-footer .site-footer-meta {
       margin: 0;
       text-align: center;
     }
@@ -8564,8 +8584,8 @@
     }
 
     .site-footer-source {
-      margin: 0;
-      font-size: 0.8rem;
+      margin: 0 0 0.45rem;
+      font-size: 0.78rem;
       line-height: 1.55;
       color: var(--muted);
     }
@@ -8575,10 +8595,17 @@
       font-weight: 650;
     }
 
-    .site-bottom-zone {
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(26, 138, 114, 0.22);
+    .site-footer-version-line {
+      margin: 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      opacity: 0.85;
+    }
+
+    footer .site-bottom-zone {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.14);
     }
 
     .site-bottom-zone__title {
@@ -11086,8 +11113,9 @@
     </div>
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__head">
-        <a class="app-sticky-bar__brand" href="#app-main-tabs" aria-label="Protocol">
-          <img class="app-sticky-bar__logo" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
+        <a class="app-sticky-bar__brand" href="#" aria-label="Protocol">
+          <img class="app-sticky-bar__logo app-sticky-bar__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
+          <img class="app-sticky-bar__logo app-sticky-bar__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="" aria-hidden="true" />
         </a>
         <div class="app-main-tabs app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
@@ -12586,23 +12614,7 @@
       </div>
     </div>
 
-    <section class="site-bottom-zone" id="site-bottom-zone" aria-label="Учебные кейсы">
-      <details class="training-panel" id="training-panel">
-        <summary>Учебные клинические ситуации (10 кейсов)</summary>
-        <p class="info-panel-note" style="margin: 0.45rem 0">Для ординаторов: подставляет запрос и запускает подбор.</p>
-        <div class="demo-cases-chips" id="training-cases-chips"></div>
-      </details>
-    </section>
-
     <footer class="site-footer site-footer--compact" id="section-footer">
-      <div class="site-footer-brand">
-        <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
-      </div>
-      <p class="site-footer-source">
-        Источник PDF:
-        <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
-        Сервис не изменяет тексты PDF. Не замена очной консультации и МЭЭ.
-      </p>
       <nav class="site-footer-nav consult-hide-print" aria-label="Материалы и сервисы">
         <button type="button" class="site-footer-card site-footer-card--analytics" id="tab-analytics-stats" aria-selected="false" aria-controls="panel-analytics-stats">
           <span class="site-footer-card__icon" aria-hidden="true">
@@ -12675,9 +12687,26 @@
           </span>
         </a>
       </nav>
-      <p class="site-footer-meta" style="margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); opacity: 0.85">
-        <span class="site-footer-version">Версия: <span id="build-version-badge">…</span></span>
-      </p>
+      <section class="site-bottom-zone" id="site-bottom-zone" aria-label="Учебные кейсы">
+        <details class="training-panel" id="training-panel">
+          <summary>Учебные клинические ситуации (10 кейсов)</summary>
+          <p class="info-panel-note" style="margin: 0.45rem 0">Для ординаторов: подставляет запрос и запускает подбор.</p>
+          <div class="demo-cases-chips" id="training-cases-chips"></div>
+        </details>
+      </section>
+      <div class="site-footer-meta">
+        <div class="site-footer-brand">
+          <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+        </div>
+        <p class="site-footer-source">
+          Источник PDF:
+          <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
+          Сервис не изменяет тексты PDF. Не замена очной консультации и МЭЭ.
+        </p>
+        <p class="site-footer-version-line">
+          <span class="site-footer-version">Версия: <span id="build-version-badge">…</span></span>
+        </p>
+      </div>
     </footer>
   </div>
 
@@ -13744,6 +13773,8 @@
   }
 
   function scrollToPageTop() {
+    var chrome = document.getElementById("app-chrome");
+    if (chrome) chrome.classList.remove("app-chrome--scrolled");
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
@@ -26396,13 +26427,13 @@
       } else if (isAnalytics) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
         if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
-        window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (isConsult) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#consult-review");
       } else {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#search");
       }
     } catch (e) {}
+    scrollToPageTop();
     window.__mainAppTab = which;
     updateScrollFabVisibility();
   }
@@ -28252,6 +28283,13 @@
     }
     syncScrollChrome();
     window.addEventListener("scroll", syncScrollChrome, { passive: true });
+    var brand = document.querySelector(".app-sticky-bar__brand");
+    if (brand) {
+      brand.addEventListener("click", function (e) {
+        e.preventDefault();
+        scrollToPageTop();
+      });
+    }
   }
 
   function initMainAppTabsAndConsultReview() {
