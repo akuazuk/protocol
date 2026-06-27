@@ -2473,6 +2473,10 @@
       border-radius: 0;
     }
 
+    .logo picture {
+      display: block;
+    }
+
     .logo img {
       width: auto;
       height: 3.35rem;
@@ -6214,8 +6218,8 @@
       }
 
       .logo img {
-        height: 2.65rem;
-        max-width: min(100%, 16rem);
+        height: 1.55rem;
+        max-width: min(100%, 10.5rem);
       }
 
       .brand h1 {
@@ -10833,12 +10837,15 @@
       <header class="site-header" id="section-header">
       <div class="site-header__top">
         <div class="logo">
-          <img
-            src="/protocol-logo-wordmark.svg"
-            width="296"
-            height="104"
-            alt="Protocol"
-          />
+          <picture>
+            <source media="(max-width: 720px)" srcset="/protocol-logo-mini.svg" />
+            <img
+              src="/protocol-logo-wordmark.svg"
+              width="296"
+              height="104"
+              alt="Protocol"
+            />
+          </picture>
         </div>
         <div class="brand">
           <h1>
@@ -17220,7 +17227,7 @@
       "</div>" +
       '<article class="consultation-template-card" id="consultation-template-card-root" hidden>' +
       '<header class="consultation-template-header">' +
-      '<img class="consultation-template-logo" src="/protocol-logo-wordmark.svg" width="240" height="44" alt="Protocol" />' +
+      '<img class="consultation-template-logo" src="/protocol-logo-mini.svg" width="180" height="21" alt="Protocol" />' +
       "<div>" +
       '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
       '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
@@ -18465,7 +18472,7 @@
       "</div>" +
       '<article class="consultation-template-card" id="consultation-template-card-root" hidden>' +
       '<header class="consultation-template-header">' +
-      '<img class="consultation-template-logo" src="/protocol-logo-wordmark.svg" width="240" height="44" alt="Protocol" />' +
+      '<img class="consultation-template-logo" src="/protocol-logo-mini.svg" width="180" height="21" alt="Protocol" />' +
       "<div>" +
       '<h2 class="consultation-template-title">Консультативное заключение</h2>' +
       '<p class="consultation-template-sub">Шаблон по данным протокола Минздрава РБ</p>' +
