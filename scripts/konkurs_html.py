@@ -53,6 +53,7 @@ from konkurs_finance import (  # noqa: E402
     total_rev_k,
 )
 from konkurs_scenarios import (  # noqa: E402
+    B2C_CONV_SENSITIVITY,
     B2C_PROTOCOL_PER_CHECK,
     CHANNEL_TABLE,
     MONTHLY_Y3_CAUTIOUS,
@@ -62,6 +63,15 @@ from konkurs_scenarios import (  # noqa: E402
     SCENARIO_COMPARE_TABLE,
     SCENARIO_OPTIMISTIC,
     TAM_BRIDGE,
+)
+from konkurs_expansion import (  # noqa: E402
+    B2C_TAM_COMPARE_TABLE,
+    EXPANSION_INTRO,
+    EXPANSION_ML_PORTABILITY,
+    EXPANSION_PUBLIC_SECTOR,
+    EXPANSION_RISKS,
+    EXPANSION_RUSSIA,
+    BELSTAT_AMBULATORY_VISITS_YEAR,
 )
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
@@ -159,7 +169,9 @@ li { margin-bottom: 1.5mm; }
 .cover hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--sage-light), transparent);
   margin: 8mm auto; width: 70%; }
 .cover .logo-lockup { margin: 0 auto 8mm; }
-.cover .logo-lockup img { height: 14mm; width: auto; }
+.cover .logo-lockup img { height: 14mm; width: auto; max-width: 92%; }
+.cover .logo-lockup--hero { margin: 0 auto 12mm; }
+.cover .logo-lockup--hero img { height: 36mm; width: auto; max-width: 95%; }
 .cover .logo-emblem { margin: 0 auto 4mm; }
 .cover .logo-emblem img { height: 18mm; width: auto; }
 .mission {
@@ -242,13 +254,18 @@ def _page(title: str, body: str, *, extra_head: str = "") -> str:
 </head><body><div class="wrap">{body}</div></body></html>"""
 
 
-def _cover(title: str, doc_kind: str) -> str:
-    logo_rel = "../../protocol-logo-wordmark.svg"
+def _cover(title: str, doc_kind: str, *, show_emblem: bool = True, hero_logo: bool = False) -> str:
+    logo_rel = "../../protocol-logo-wordmark-text.svg" if hero_logo else "../../protocol-logo-wordmark.svg"
     emblem_rel = "../../protocol-logo.svg"
+    emblem_html = (
+        f'  <div class="logo-emblem"><img src="{emblem_rel}" alt="Protocol"/></div>\n'
+        if show_emblem
+        else ""
+    )
+    lockup_cls = "logo-lockup logo-lockup--hero" if hero_logo else "logo-lockup"
     return f"""
 <div class="cover">
-  <div class="logo-emblem"><img src="{emblem_rel}" alt="Protocol"/></div>
-  <div class="logo-lockup"><img src="{logo_rel}" alt="Protocol"/></div>
+{emblem_html}  <div class="{lockup_cls}"><img src="{logo_rel}" alt="Protocol"/></div>
   <div class="badge">Белинфонд · 2026 · {_e(NOMINATION)}</div>
   <div class="title">{_e(title)}</div>
   <div class="subtitle">{_e(doc_kind)}</div>
@@ -402,6 +419,25 @@ Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники 
 </div>"""
 
 
+def _expansion_html() -> str:
+    risk_rows = [(a, b, c) for a, b, c in EXPANSION_RISKS]
+    tam_rows = [(a, b, c, d, e) for a, b, c, d, e in B2C_TAM_COMPARE_TABLE]
+    return f"""
+<div class="section"><h2>6.2. Расширение B2C: госполиклиники РБ и экспорт (РФ)</h2></div>
+<div class="section-body">
+<p>{_e(EXPANSION_INTRO.replace(chr(10), ' '))}</p>
+<p>{_e(EXPANSION_PUBLIC_SECTOR.replace(chr(10), ' '))}</p>
+<div class="highlight"><strong>Источник:</strong> Белстат - <strong>108,4 млн</strong> посещений врачей в РБ в 2025 г.
+(амбулаторно + на дому), ~12 на жителя. Базовый план B2C использует знаменатель <strong>30 млн</strong> (частный сектор) -
+это <strong>не противоречие</strong>, а сознательно осторожный горизонт 2029; расширенный TAM B2C - отдельный upside.</div>
+{_table(['Знаменатель TAM B2C', 'Обращений/год', 'Конверсия', 'Проверок/год', 'Protocol B2C, тыс. BYN'], tam_rows, caption='Сравнение TAM B2C: частный сектор vs все поликлиники vs экспорт (не базовый P&L 2029)')}
+<p>{_e(EXPANSION_RUSSIA.replace(chr(10), ' '))}</p>
+<h3>Переносимость ML и корпуса протоколов</h3>
+<p>{_e(EXPANSION_ML_PORTABILITY.replace(chr(10), ' '))}</p>
+{_table(['Риск', 'Уровень', 'Митигация'], risk_rows, caption='Риски расширения B2C / экспорта')}
+</div>"""
+
+
 def _continuous_ml_html() -> str:
     principles = ML_PRINCIPLES_TABLE
     roadmap = ML_ROADMAP_TABLE
@@ -434,6 +470,8 @@ def _sections_html_with_b2c() -> str:
         body = SECTIONS.get(key, "")
         out.append(f'<div class="section"><h2>{_e(title)}</h2></div>')
         out.append(f'<div class="section-body">{_ps(body)}</div>')
+        if key == "6.":
+            out.append(_expansion_html())
         if key == "8.":
             out.append(_b2c_ux_html())
         if key == "9.":
@@ -496,7 +534,7 @@ def _finance_block(assets_rel: str) -> str:
         ("TAM B2B потолок", f"{TAM_B2B_CEILING_YEAR_K:,} тыс. BYN/год".replace(",", " "), "30 млн КЗ × 0,75 BYN (теория)"),
         ("SAM - крупные ОЗ 5%", f"{SAM_KZ_YEAR:,} КЗ/год".replace(",", " "), "целевой B2B-сегмент"),
         ("SOM - план B2B 2029", f"{FIN_Y3['kz_month']:,} КЗ/мес ({Y3_MARKET_SHARE:.0%} TAM)".replace(",", " "), "осторожный сценарий"),
-        ("B2C конверсия 2029", f"{FIN_Y3['b2c_checks']:,} проверок/год".replace(",", " "), f"{FIN_Y3['b2c_checks']/MARKET_KZ_YEAR:.2%} от TAM"),
+        ("B2C конверсия 2029", f"{FIN_Y3['b2c_checks']:,} проверок/год".replace(",", " "), f"{FIN_Y3['b2c_checks']/MARKET_KZ_YEAR:.2%} от частного TAM B2C (30 млн)"),
     ]
     fin_rows = [
         ("Доля TAM B2B", "1%", "3%", "8%"),
@@ -513,29 +551,31 @@ def _finance_block(assets_rel: str) -> str:
         ("EBITDA мес, тыс.", f"{ebitda_month_k(FIN_Y1)}", f"+{ebitda_month_k(FIN_Y2)}", f"+{ebitda_month_k(FIN_Y3)}"),
     ]
     bridge_rows = [(name, f"{kz:,}".replace(",", " ") if kz else " - ", f"{rev:,}".replace(",", " "), note) for name, kz, rev, note in TAM_BRIDGE]
-    pen_rows = [(f"{p}% TAM B2B", f"{e:,}".replace(",", " "), f"~{int(MARKET_KZ_MONTH*p/100):,} КЗ/мес".replace(",", " ")) for p, e in PENETRATION_SENSITIVITY]
+    pen_rows = [
+        (f"{p}% TAM B2B (частный сектор)", f"{e:,}".replace(",", " "), f"~{int(MARKET_KZ_MONTH*p/100):,} КЗ/мес B2B".replace(",", " "))
+        for p, e in PENETRATION_SENSITIVITY
+    ]
+    b2c_pen_rows = list(B2C_CONV_SENSITIVITY)
     return f"""
 <div class="section"><h2>Финансовые приложения и графики</h2></div>
 <div class="section-body">
 {stats}
 {_table(['Показатель рынка РБ', 'Значение', 'Источник'], RB_MARKET_TABLE, caption='Контекст рынка платных медуслуг РБ')}
-<div class="highlight"><strong>Важно:</strong> TAM 2,5 млн КЗ/мес - весь частный рынок РБ. В осторожном плане 2029 Protocol обрабатывает
-<strong>200 тыс. КЗ/мес B2B (8%)</strong> и <strong>{FIN_Y3['b2c_checks']:,} B2C-проверок/год (0,23%)</strong> - поэтому EBITDA
-<strong>+{ebitda_k(FIN_Y3)} тыс./год (~{ebitda_month_k(FIN_Y3)} тыс./мес)</strong>, а не выручка от полного TAM
-(теор. потолок B2B ~{TAM_B2B_CEILING_YEAR_K:,} тыс./год). Средняя выручка Protocol с B2C: ~{B2C_PROTOCOL_PER_CHECK} BYN/проверка (чек пациента {B2C_AVG_PRICE} BYN, rev-share 30% на 80% потока).</div>
+<div class="highlight"><strong>Важно:</strong> TAM B2B = 2,5 млн КЗ/мес (частные ОЗ). TAM B2C в базовом плане = 30 млн КЗ/год (тот же частный сегмент); расширенный B2C TAM - 108,4 млн амбул. посещений (§6.2). В осторожном плане 2029: <strong>200 тыс. КЗ/мес B2B (8%)</strong> и <strong>{FIN_Y3['b2c_checks']:,} B2C-проверок/год (0,23% частного TAM B2C)</strong> - EBITDA <strong>+{ebitda_k(FIN_Y3)} тыс./год (~{ebitda_month_k(FIN_Y3)} тыс./мес)</strong>. Теор. потолок B2B ~{TAM_B2B_CEILING_YEAR_K:,} тыс./год. B2C Protocol/проверка: ~{B2C_PROTOCOL_PER_CHECK} BYN.</div>
 {_table(['Этап', 'КЗ/год', 'Выручка тыс.', 'Пояснение'], bridge_rows, caption='Мост TAM → SAM → SOM → выручка Protocol')}
 {_table(['Показатель', 'Значение', 'Комментарий'], tam_rows, caption='TAM / SAM / SOM - различие рынка и плана')}
 {_table(['Показатель', '2027', '2028', '2029'], fin_rows, caption='Финансовый план · осторожный сценарий (тыс. BYN)')}
-{_table(['Сценарий 2029', 'B2B TAM', 'B2C conv', 'Выручка', 'EBITDA/год', 'EBITDA/мес'], SCENARIO_COMPARE_TABLE, caption='Три сценария года 3: осторожный · базовый · оптимистичный')}
+{_table(['Сценарий 2029', 'B2B TAM', 'B2C conv', 'Выручка', 'EBITDA/год', 'EBITDA/мес'], SCENARIO_COMPARE_TABLE, caption='Три сценария года 3: осторожный · базовый · оптimистичный')}
 {_table(['Канал', 'Вероятность', 'План тыс.', 'Драйвер'], CHANNEL_TABLE, caption='Какой канал с большей вероятностью даст выручку')}
-{_table(['Проникновение B2B', 'EBITDA тыс./год', 'КЗ/мес'], pen_rows, caption='Чувствительность EBITDA к доле TAM (B2C фикс.)')}
+{_table(['Доля TAM B2B', 'EBITDA тыс./год', 'КЗ/мес B2B'], pen_rows, caption='Чувствительность EBITDA к проникновению B2B (B2C и API фикс. - осторожный сценарий 2029)')}
+{_table(['Конверсия B2C', 'Проверок/год', 'B2C тыс.', 'EBITDA тыс.'], b2c_pen_rows, caption='Чувствительность EBITDA к конверсии B2C (B2B фикс. 8% TAM частного сектора, знаменатель 30 млн КЗ/год)')}
 {img('chart_revenue_ebitda.png', 'Выручка и EBITDA по годам (Plotly)')}
 {img('chart_monetization.png', '8 дополнительных каналов монетизации 2029')}
 {img('chart_all_scenarios.png', 'Все сценарии 2029: до 3,5 млн выручки')}
 {img('chart_expanded_potential.png', 'Базовый vs расширенный потенциал 2029')}
 {img('chart_scenarios_ebitda.png', 'EBITDA 2029: три сценария (год и месяц)')}
 {img('chart_scenarios_revenue.png', 'Структура выручки 2029 по сценариям B2B/B2C/API')}
-{img('chart_penetration.png', 'Чувствительность EBITDA к проникновению B2B')}
+{img('chart_penetration.png', 'Чувствительность EBITDA к проникновению B2B (B2C фикс.)')}
 {img('chart_channel_outlook.png', 'Вероятность успеха каналов монетизации')}
 {img('chart_ebitda_monthly.png', 'EBITDA: год vs месяц · подпись 8% TAM')}
 {img('chart_b2b_split.png', 'B2B: Кравира vs другие клиники РБ')}
@@ -562,7 +602,7 @@ on-prem L0 и масштабирование на 5-10 частных ОЗ к 20
 
 def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
     body = (
-        _cover("БИЗНЕС-ПЛАН", "инновационного проекта")
+        _cover("БИЗНЕС-ПЛАН", "инновационного проекта", show_emblem=False, hero_logo=True)
         + _mission_block()
         + f'<div class="toc"><h2>Содержание</h2><pre>{_e(TOC)}</pre></div>'
         + '<div class="section"><h2>3. Резюме</h2></div>'

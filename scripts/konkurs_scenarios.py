@@ -165,7 +165,7 @@ TAM_BRIDGE = [
     ("TAM - весь рынок", MARKET_KZ_YEAR, TAM_CEILING_B2B_YEAR_K, "30 млн КЗ/год · теор. B2B 22 500 тыс. BYN/год"),
     ("SAM - крупные ОЗ 5%", SAM_KZ_YEAR, int(SAM_KZ_YEAR * PRICE_BLEND_Y2Y3 / 1000), "1,5 млн КЗ/год · целевой B2B-сегмент"),
     ("SOM - план 2029 (8%)", SOM_Y3_KZ_YEAR, SCENARIO_CAUTIOUS["b2b_k"], "2,4 млн КЗ/год · 200 тыс. КЗ/мес B2B"),
-    ("B2C + API 2029", SCENARIO_CAUTIOUS["b2c_checks"], SCENARIO_CAUTIOUS["b2c_k"] + SCENARIO_CAUTIOUS["api_k"], "69,6 тыс. проверок · 0,23% TAM"),
+    ("B2C + API 2029", SCENARIO_CAUTIOUS["b2c_checks"], SCENARIO_CAUTIOUS["b2c_k"] + SCENARIO_CAUTIOUS["api_k"], "69,6 тыс. проверок · 0,23% частного TAM B2C"),
     ("Выручка Protocol", 0, SCENARIO_CAUTIOUS["total_rev_k"], "осторожный сценарий · 2 315 тыс. BYN/год"),
 ]
 
@@ -182,6 +182,29 @@ def ebitda_sensitivity_b2b_share(share: float) -> int:
 PENETRATION_SENSITIVITY = [
     (pct, ebitda_sensitivity_b2b_share(pct / 100))
     for pct in (3, 5, 8, 10, 12, 15, 20)
+]
+
+# Чувствительность EBITDA к конверсии B2C (B2B фикс. 8% TAM частного сектора, API и OPEX - cautious)
+def ebitda_sensitivity_b2c_conv(conv: float, b2b_share: float = 0.08) -> int:
+    from konkurs_finance import MARKET_KZ_MONTH
+
+    kz = int(MARKET_KZ_MONTH * b2b_share)
+    b2b = b2b_k_from_kz_month(kz)
+    checks = int(B2C_TAM_TOUCHES_YEAR * conv)
+    b2c = b2c_protocol_k(checks)
+    api = SCENARIO_CAUTIOUS["api_k"]
+    opex = SCENARIO_CAUTIOUS["opex_k"]
+    return b2b + b2c + api - opex
+
+
+B2C_CONV_SENSITIVITY = [
+    (
+        f"{c:.2%}".replace(".", ","),
+        f"{int(B2C_TAM_TOUCHES_YEAR * c):,}".replace(",", " "),
+        str(b2c_protocol_k(int(B2C_TAM_TOUCHES_YEAR * c))),
+        str(ebitda_sensitivity_b2c_conv(c)),
+    )
+    for c in (0.001, 0.00232, 0.0033, 0.005, 0.01)
 ]
 
 # Синхронизация FIN_Y* с исправленной B2C-формулой

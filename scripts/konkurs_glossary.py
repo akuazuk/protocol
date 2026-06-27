@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 GLOSSARY_TABLE = [
-    ("TAM", "Total Addressable Market", "Весь рынок: 2,5 млн КЗ/мес (30 млн/год) в частных ОЗ РБ"),
-    ("SAM", "Serviceable Addressable Market", "Доступный сегмент: ~5% TAM - крупные ОЗ с ЦИСЗ и потоком >5 000 КЗ/мес"),
-    ("SOM", "Serviceable Obtainable Market", "Реалистичная доля к 2029: 8% TAM B2B = 200 тыс. КЗ/мес"),
+    ("TAM B2B", "Total Addressable Market (B2B)", "Частные ОЗ РБ: 2,5 млн КЗ/мес (30 млн/год) - единица для доли B2B"),
+    ("TAM B2C (базовый)", "B2C addressable (base plan)", "30 млн КЗ/год частный сектор - знаменатель конверсии в финплане 2029"),
+    ("TAM B2C (расшир.)", "Extended B2C TAM", "108,4 млн амбул. посещений/год (Belstat 2025) - гос- + частные поликлиники"),
+    ("SAM", "Serviceable Addressable Market", "Доступный B2B-сегмент: ~5% TAM B2B - крупные ОЗ с ЦИСЗ и потоком >5 000 КЗ/мес"),
+    ("SOM", "Serviceable Obtainable Market", "Реалистичная доля B2B к 2029: 8% TAM B2B = 200 тыс. КЗ/мес"),
     ("КЗ", "Консультативное заключение", "Документ врача после приёма; единица учёта B2B"),
     ("B2B", "Business-to-Business", "Продажа клиникам и сетям ОЗ: проверка каждого КЗ в МИС (L0)"),
     ("B2C", "Business-to-Consumer", "Продажа пациентам: загрузка PDF своего КЗ на protocol.by"),
@@ -35,7 +37,8 @@ FORMULA_TABLE = [
     ("EBITDA", "B2B + B2C + API − OPEX", "тыс. BYN/год"),
     ("EBITDA/мес", "EBITDA год / 12", "при 8% TAM ≈ 139 тыс. BYN/мес"),
     ("Доля TAM B2B Y3", "200 000 / 2 500 000", "8%"),
-    ("B2C конверсия Y3", "69 600 / 30 000 000", "0,23%"),
+    ("B2C конверсия Y3", "69 600 / 30 000 000", "0,23% (частный TAM B2C)"),
+    ("B2C upside РБ", "108,4 млн × 0,23%", "~1 590 тыс. BYN (не базовый план)"),
 ]
 
 GLOSSARY_INTRO = """
