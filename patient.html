@@ -50,7 +50,49 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.85rem 0 0.25rem;
+      gap: 0.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      margin: 0 -1rem;
+      padding: 0.75rem 1rem 0.55rem;
+      background: rgba(248, 251, 250, 0.94);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+    }
+    .top-bar.top-bar--result {
+      border-bottom-color: var(--border);
+    }
+    .top-bar__actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+    .top-bar__again {
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--g800);
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.22);
+      border-radius: 999px;
+      padding: 0.38rem 0.62rem;
+      cursor: pointer;
+      max-width: 8.75rem;
+      text-align: center;
+      box-shadow: 0 1px 0 rgba(6, 61, 53, 0.04);
+    }
+    .top-bar__again:hover {
+      border-color: var(--g600);
+      color: var(--g950);
+    }
+    .top-bar__again:focus-visible {
+      outline: 2px solid var(--g600);
+      outline-offset: 2px;
     }
     .brand-lockup {
       display: flex;
@@ -782,7 +824,7 @@
 <body>
   <div class="page-bg" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="top-bar">
+    <div class="top-bar" id="top-bar">
       <div class="brand-lockup brand" aria-label="Protocol - Проверь КЗ">
         <img class="brand-lockup__mark" src="/protocol-logo.svg" width="32" height="32" alt="" />
         <div class="brand-lockup__text">
@@ -790,14 +832,12 @@
           <span class="brand-lockup__tag">Проверь КЗ</span>
         </div>
       </div>
-      <a class="top-link" href="/">Врачам</a>
+      <div class="top-bar__actions">
+        <button type="button" class="top-bar__again hidden" id="btn-again" hidden>Проверить другой документ</button>
+        <a class="top-link" href="/">Врачам</a>
+      </div>
     </div>
     <div id="clinic-banner" class="clinic-banner hidden" role="status"></div>
-    <div id="install-hint" class="install-hint hidden">
-      Установите на главный экран - быстрее открывать перед визитом к врачу.
-      <button type="button" id="btn-install-pwa" class="hidden">Добавить на экран</button>
-      <button type="button" id="btn-install-dismiss">Понятно</button>
-    </div>
 
     <header class="hero">
       <div class="hero-icon" aria-hidden="true">
@@ -1022,8 +1062,6 @@
         <button type="button" class="btn-secondary" id="btn-share">Поделиться</button>
       </div>
       </div>
-
-      <button type="button" class="btn-primary btn-ghost" id="btn-again">Проверить другой документ</button>
     </section>
 
     <section class="faq card" id="faq-section">

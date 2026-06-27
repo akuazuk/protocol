@@ -164,6 +164,21 @@
     strip.innerHTML = html;
   }
 
+  function setAgainButtonVisible(visible, label) {
+    var btn = document.getElementById("btn-again");
+    var bar = document.getElementById("top-bar");
+    if (btn) {
+      if (label) {
+        btn.textContent = label;
+      } else if (!visible || btn.textContent === "Загрузить правильный документ") {
+        btn.textContent = "Проверить другой документ";
+      }
+      btn.classList.toggle("hidden", !visible);
+      btn.hidden = !visible;
+    }
+    if (bar) bar.classList.toggle("top-bar--result", !!visible);
+  }
+
   function renderProtocolLinksList(links, limit) {
     if (!links || !links.length) return "";
     var n = limit || links.length;
@@ -898,8 +913,7 @@
       (hint ? '<p class="upload-joke__hint">' + escapeHtml(hint) + "</p>" : "") +
       "</div>";
     if (body) body.classList.add("hidden");
-    var again = document.getElementById("btn-again");
-    if (again) again.textContent = "Загрузить правильный документ";
+    setAgainButtonVisible(true, "Загрузить правильный документ");
   }
 
   function renderReport(pr) {
@@ -921,9 +935,6 @@
       jokeCard.innerHTML = "";
     }
     if (resultBody) resultBody.classList.remove("hidden");
-    var againBtn = document.getElementById("btn-again");
-    if (againBtn) againBtn.textContent = "Проверить другой документ";
-
     var hl = document.getElementById("headline-ru");
     if (hl && !pr.top_summary) hl.textContent = pr.headline_ru || pr.overall_label_ru || "";
 
@@ -1035,6 +1046,7 @@
       has_visit_sheet: !!(pr.visit_sheet && pr.visit_sheet.text_ru),
       protocol_confidence_bucket: pr.protocol_confidence_bucket,
     });
+    setAgainButtonVisible(true);
   }
 
   function showLoader(stage) {
@@ -1193,8 +1205,10 @@
 
   var btnAgain = document.getElementById("btn-again");
   if (btnAgain) btnAgain.addEventListener("click", function () {
+    setAgainButtonVisible(false);
     resultCard.classList.add("hidden");
     formCard.classList.remove("hidden");
+    sessionStorage.removeItem(REPORT_KEY);
     kzFilesList = [];
     labFilesList = [];
     clearFileInputs([kzCameraInput, kzPickInput, labCameraInput, labPickInput]);
@@ -1373,20 +1387,11 @@
       }).catch(function () {});
   }
 
-  function setupInstallHint() {
-    var hint = document.getElementById("install-hint");
-    if (!hint || window.matchMedia("(display-mode: standalone)").matches) return;
-    hint.classList.remove("hidden");
-    var btnInstall = document.getElementById("btn-install-dismiss");
-    if (btnInstall) btnInstall.addEventListener("click", function () { hint.classList.add("hidden"); });
-  }
-
   if (paidToken) localStorage.setItem("protocol_patient_payment_token", paidToken);
   if (paidToken && statusEl) statusEl.textContent = "Оплата подтверждена. Загрузите КЗ и нажмите «Проверить».";
   loadClinic();
   syncPatientMonetizationFromApi();
   ensureGuestSession();
-  setupInstallHint();
   loadQuestionTone();
   renderTonePicker();
   syncUploadFormatsFromApi();
@@ -1418,18 +1423,4 @@
     if (buildTag && buildTag.indexOf("__BUILD") !== 0) swUrl += "?v=" + encodeURIComponent(buildTag);
     navigator.serviceWorker.register(swUrl).catch(function () {});
   }
-
-  var deferredPrompt;
-  window.addEventListener("beforeinstallprompt", function (e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    var ib = document.getElementById("btn-install-pwa");
-    if (ib) {
-      ib.classList.remove("hidden");
-      ib.addEventListener("click", function () {
-        if (deferredPrompt) deferredPrompt.prompt();
-        track("install_pwa_prompt");
-      });
-    }
-  });
 })();
