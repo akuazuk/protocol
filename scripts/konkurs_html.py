@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import html
+import re
 import sys
 from pathlib import Path
 
@@ -271,9 +272,29 @@ def _e(text: str) -> str:
     return html.escape(text, quote=True)
 
 
+def _inline_md(text: str) -> str:
+    """Markdown **жирный** → <strong> для print HTML (звёздочки не попадают в PDF)."""
+    if "**" not in text:
+        return html.escape(text, quote=True)
+    out: list[str] = []
+    pos = 0
+    for m in re.finditer(r"\*\*(.+?)\*\*", text):
+        if m.start() > pos:
+            out.append(html.escape(text[pos : m.start()], quote=True))
+        out.append(f"<strong>{html.escape(m.group(1), quote=True)}</strong>")
+        pos = m.end()
+    if pos < len(text):
+        out.append(html.escape(text[pos:], quote=True))
+    return "".join(out)
+
+
+def _prose(text: str) -> str:
+    return _inline_md(text.replace("\n", " ").replace("\r", ""))
+
+
 def _ps(text: str) -> str:
     parts = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
-    return "".join(f"<p>{_e(p.replace(chr(10), ' '))}</p>" for p in parts)
+    return "".join(f"<p>{_inline_md(p.replace(chr(10), ' '))}</p>" for p in parts)
 
 
 def _table(headers: list[str], rows: list[tuple | list], *, caption: str = "", css_class: str = "") -> str:
@@ -334,8 +355,8 @@ def _mission_block() -> str:
   <strong>100% КЗ</strong>, а пациенту - право проверить заключение по тем же стандартам.</p>
   <p>История продукта начинается в МЦ «Кравира» - якорном медцентре, где Protocol прошёл первый production-пилот
   (25 000 КЗ/мес). Кравира - партнёр и участник конкурса; бренд и масштабирование - <strong>Protocol</strong>.</p>
-  <p>{_e(MARKET_CONTEXT.replace(chr(10), ' '))}</p>
-  <p>{_e(CISZ_CONTEXT.replace(chr(10), ' '))}</p>
+  <p>{_prose(MARKET_CONTEXT)}</p>
+  <p>{_prose(CISZ_CONTEXT)}</p>
 </div>"""
 
 
@@ -361,9 +382,9 @@ def _ecosystem_html() -> str:
     return f"""
 <div class="section"><h2>3.1. Экосистема B2C ↔ B2B ↔ государство: саморегулирующийся контур</h2></div>
 <div class="section-body">
-<p>{_e(ECOSYSTEM_INTRO.replace(chr(10), ' '))}</p>
+<p>{_prose(ECOSYSTEM_INTRO)}</p>
 {_table(['Участник / этап', 'Что происходит', 'Эффект'], rows, caption='Flywheel: как интересы пациента, клиники и государства усиливают друг друга')}
-<p>{_e(ECOSYSTEM_GOVERNANCE.replace(chr(10), ' '))}</p>
+<p>{_prose(ECOSYSTEM_GOVERNANCE)}</p>
 <div class="highlight"><strong>Ключевая идея для инвестора и регулятора:</strong> массовое использование B2C пациентами
 создаёт рыночное давление на клиники без отдельного административного приказа; клиники с B2B закрывают
 проблемы до подписи ЭЦП; государство получает более чистые данные в ЦИСЗ и исполнение КП при роли
@@ -406,7 +427,7 @@ def _market_scope_html() -> str:
     return f"""
 <div class="section"><h2>Масштаб рынка: все частные ОЗ и все пациенты РБ</h2></div>
 <div class="section-body">
-<p>{_e(MARKET_SCOPE_NOTE.replace(chr(10), ' '))}</p>
+<p>{_prose(MARKET_SCOPE_NOTE)}</p>
 <div class="stats">
   <div class="stat"><b>~1%</b><span class="muted">якорный пилот Кравира</span></div>
   <div class="stat"><b>{MARKET_KZ_MONTH:,}</b><span class="muted">КЗ/мес частный сектор</span></div>
@@ -446,7 +467,7 @@ def _b2c_ux_html() -> str:
     return f"""
 <div class="section"><h2>8.1. B2C: MVP, UX, tier-цены и rev-share (национальный рынок)</h2></div>
 <div class="section-body">
-<p>{_e(B2C_UX_INTRO.replace(chr(10), ' '))}</p>
+<p>{_prose(B2C_UX_INTRO)}</p>
 {''.join(scenarios_html)}
 {_table(['Tier', 'Specialty / приём', 'BYN', 'Микс'], B2C_PRICING_TABLE, caption='Tier-цены B2C по сложности приёма')}
 {_table(['Продукт', 'Оплата пациента', 'Клинике 30%', 'Protocol 70%'], B2C_REVSHARE_EXAMPLES, caption='Rev-share при оплате по SMS/QR-ссылке клиники')}
@@ -468,15 +489,15 @@ def _expansion_html() -> str:
     return f"""
 <div class="section"><h2>6.2. Расширение B2C: госполиклиники РБ и экспорт (РФ)</h2></div>
 <div class="section-body">
-<p>{_e(EXPANSION_INTRO.replace(chr(10), ' '))}</p>
-<p>{_e(EXPANSION_PUBLIC_SECTOR.replace(chr(10), ' '))}</p>
+<p>{_prose(EXPANSION_INTRO)}</p>
+<p>{_prose(EXPANSION_PUBLIC_SECTOR)}</p>
 <div class="highlight"><strong>Источник:</strong> Белстат - <strong>108,4 млн</strong> посещений врачей в РБ в 2025 г.
 (амбулаторно + на дому), ~12 на жителя. Базовый план B2C использует знаменатель <strong>30 млн</strong> (частный сектор) -
 это <strong>не противоречие</strong>, а сознательно осторожный горизонт 2029; расширенный TAM B2C - отдельный upside.</div>
 {_table(['Знаменатель TAM B2C', 'Обращений/год', 'Конверсия', 'Проверок/год', 'B2C Protocol, тыс. BYN', 'Примечание'], tam_rows, caption='Сравнение TAM B2C: только выручка B2C Protocol (без B2B, API, OPEX и EBITDA)')}
-<p>{_e(EXPANSION_RUSSIA.replace(chr(10), ' '))}</p>
+<p>{_prose(EXPANSION_RUSSIA)}</p>
 <h3>Переносимость ML и корпуса протоколов</h3>
-<p>{_e(EXPANSION_ML_PORTABILITY.replace(chr(10), ' '))}</p>
+<p>{_prose(EXPANSION_ML_PORTABILITY)}</p>
 {_table(['Риск', 'Уровень', 'Митигация'], risk_rows, caption='Риски расширения B2C / экспорта')}
 </div>"""
 
@@ -494,11 +515,11 @@ def _intl_expansion_html() -> str:
     return f"""
 <div class="section"><h2>6.3. Международная экспансия: рынки с гос. регламентами</h2></div>
 <div class="section-body">
-<p>{_e(INTL_EXPANSION_INTRO.replace(chr(10), ' '))}</p>
-<p>{_e(INTL_TIER1.replace(chr(10), ' '))}</p>
-<p>{_e(INTL_TIER2.replace(chr(10), ' '))}</p>
-<p>{_e(INTL_FLYWHEEL.replace(chr(10), ' '))}</p>
-<div class="highlight"><strong>Методика расчёта:</strong> {_e(CALC_METHODOLOGY.replace(chr(10), ' '))}</div>
+<p>{_prose(INTL_EXPANSION_INTRO)}</p>
+<p>{_prose(INTL_TIER1)}</p>
+<p>{_prose(INTL_TIER2)}</p>
+<p>{_prose(INTL_FLYWHEEL)}</p>
+<div class="highlight"><strong>Методика расчёта:</strong> {_prose(CALC_METHODOLOGY)}</div>
 <div class="stats">
   <div class="stat"><b>{upside_caut}</b><span class="muted">тыс. BYN B2C / 9 стран (осторожная conv.)</span></div>
   <div class="stat"><b>{upside_base}</b><span class="muted">тыс. BYN B2C / 9 стран (базовая conv.)</span></div>
@@ -511,8 +532,7 @@ def _intl_expansion_html() -> str:
 {_table(['Шаг', 'Содержание', 'Срок', 'Критерий'], step_rows, caption='Playbook входа на новый рынок (7 шагов)')}
 {_table(['Страна', 'Inv. год 1, тыс. BYN', 'B2C launch', 'B2B horizon'], cost_rows, caption='Оценка инвестиций входа по странам (corpus + legal + ML + marketing)')}
 {_table(['Риск', 'Уровень', 'Митигация'], intl_risk_rows, caption='Риски международной экспансии')}
-<p class="muted">Tier 3 EU/NICE и Китай - вне горизонта 2033. **США** - отдельный стратегический рынок (§6.5):
-Epic/CDS, payer economics, Visit Prep; не смешивать с таблицами Tier 1-2 выше.</p>
+<p class="muted">{_prose('Tier 3 EU/NICE и Китай - вне горизонта 2033. **США** - отдельный стратегический рынок (§6.5): Epic/CDS, payer economics, Visit Prep; не смешивать с таблицами Tier 1-2 выше.')}</p>
 </div>"""
 
 
@@ -534,10 +554,10 @@ def _us_expansion_html(assets_rel: str = "_assets") -> str:
     return f"""
 <div class="section"><h2>6.5. Выход на рынок США: Visit Prep, payer flywheel и страховая экономика</h2></div>
 <div class="section-body">
-<p>{_e(US_EXPANSION_INTRO.replace(chr(10), ' '))}</p>
-<p>{_e(US_VALUE_PROP.replace(chr(10), ' '))}</p>
+<p>{_prose(US_EXPANSION_INTRO)}</p>
+<p>{_prose(US_VALUE_PROP)}</p>
 <h3>Страховая и сетевая модель: кто выигрывает и как монетизируется</h3>
-<p>{_e(US_INSURANCE_MODEL.replace(chr(10), ' '))}</p>
+<p>{_prose(US_INSURANCE_MODEL)}</p>
 <div class="stats">
   <div class="stat"><b>990 млн</b><span class="muted">office visits/год (TAM)</span></div>
   <div class="stat"><b>{b2c_base}</b><span class="muted">тыс. BYN B2C (0,05% conv.)</span></div>
@@ -576,11 +596,11 @@ def _future_html(assets_rel: str = "_assets") -> str:
     return f"""
 <div class="section"><h2>6.4. Будущее Protocol: платформа, Big Tech и health-community</h2></div>
 <div class="section-body">
-<p>{_e(FUTURE_VISION.replace(chr(10), ' '))}</p>
+<p>{_prose(FUTURE_VISION)}</p>
 <h3>Интеграции Google, Meta, Apple</h3>
-<p>{_e(PLATFORM_INTEGRATIONS.replace(chr(10), ' '))}</p>
+<p>{_prose(PLATFORM_INTEGRATIONS)}</p>
 <h3>Protocol Community - мини-соцсеть вокруг доказательной медицины</h3>
-<p>{_e(COMMUNITY_VISION.replace(chr(10), ' '))}</p>
+<p>{_prose(COMMUNITY_VISION)}</p>
 <div class="stats">
   <div class="stat"><b>2033+</b><span class="muted">Platform API</span></div>
   <div class="stat"><b>2034+</b><span class="muted">Care Rooms (Meta)</span></div>
@@ -609,13 +629,13 @@ def _continuous_ml_html() -> str:
     return f"""
 <div class="section"><h2>17. Непрерывное дообучение моделей Protocol</h2></div>
 <div class="section-body">
-<p>{_e(CONTINUOUS_ML_INTRO.replace(chr(10), ' '))}</p>
-<div class="highlight">{_e(ML_COMPETITION_NOTE.replace(chr(10), ' '))}</div>
+<p>{_prose(CONTINUOUS_ML_INTRO)}</p>
+<div class="highlight">{_prose(ML_COMPETITION_NOTE)}</div>
 <h3>Результаты эксперимента embedder (июнь 2026)</h3>
 {_table(['Метрика', 'Baseline e5', 'Fine-tune', 'Δ'], ML_EXPERIMENT_EMBEDDER_TABLE, caption='Офлайн MRR на seed 313 пар (ml/experiments/embedder_exp_001)')}
 <h3>A/B: baseline vs fine-tune в retrieve()</h3>
 {_table(['Слой оценки', 'Baseline e5', 'Fine-tune', 'Δ'], ML_AB_KZ_TABLE, caption='consult_gold + golden RAG на полном корпусе КП')}
-<p>{_e(ML_AB_INTERPRETATION.replace(chr(10), ' '))}</p>
+<p>{_prose(ML_AB_INTERPRETATION)}</p>
 <h3>Принцип: что обучается, а что нет</h3>
 {_table(['Компонент', 'Механизм', 'Обучение'], principles, caption='Разделение детерминированного ядра и ML')}
 <h3>Цикл MLOps</h3>
@@ -654,7 +674,7 @@ def _monetization_html() -> str:
     return f"""
 <div class="section"><h2>9.2. Дополнительная монетизация (рост выручки и прибыли)</h2></div>
 <div class="section-body">
-<p>{_e(MONETIZATION_INTRO.replace(chr(10), ' '))}</p>
+<p>{_prose(MONETIZATION_INTRO)}</p>
 <div class="stats">
   <div class="stat"><b>{base_rev}</b><span class="muted">тыс. BYN базовый 2029</span></div>
   <div class="stat"><b>+{EXPANDED_Y3['extra_rev_k']}</b><span class="muted">тыс. доп. каналы</span></div>
