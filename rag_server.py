@@ -8169,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r37-logo-t-cross-color"
+BUILD_VERSION = "2026-06-24-r38-patient-topbar-no-tagline"
 
 
 def _app_version() -> str:
