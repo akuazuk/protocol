@@ -1,6 +1,6 @@
 # Финансовые допущения конкурса Белинфонд 2026
 
-Единый источник цифр для БП, приложений и `.docx`. Код: `scripts/konkurs_finance.py`, `scripts/konkurs_scenarios.py`, `scripts/konkurs_expansion.py`.
+Единый источник цифр для БП, приложений и `.docx`. Код: `scripts/konkurs_finance.py`, `scripts/konkurs_scenarios.py`, `scripts/konkurs_expansion.py`, `scripts/konkurs_expansion_intl.py`.
 
 ## Якорь рынка B2B
 
@@ -69,6 +69,23 @@
 | 1,000% | 300 000 | 1 899 | 3 774 | 3 124 |
 
 **§6.2 (расширенный TAM):** столбец «B2C Protocol, тыс.» - **только** B2C-выручка без B2B/OPEX. Например 108 400 проверок при 0,10% → **686 тыс. B2C**, это не EBITDA (для сравнения: при 30 000 проверок EBITDA = 1 414 тыс.).
+
+## Международная экспансия (§6.3, не в EBITDA 2029)
+
+Источник: `scripts/konkurs_expansion_intl.py`.
+
+| Показатель | Значение |
+|------------|----------|
+| Цена Tier 1 (RU/KZ/UZ/KG) | **6,331 BYN/проверка** (как РБ) |
+| Цена Tier 2 (IN/TR/EG/BR/PH) | **8,0 BYN/проверка** (~2,5 USD) |
+| Сумма B2C, осторожная conv. | **~5 050 тыс. BYN/год** (9 стран) |
+| Сумма B2C, базовая conv. | **~12 800 тыс. BYN/год** (сценарий 2033) |
+| Tier 1 только (базовая conv.) | **~4 915 тыс. BYN/год** |
+| Инвестиции по фазам GTM | **190 + 215 + 275 тыс. BYN** (2029-2033) |
+
+**Формула:** проверок = TAM обращений × conv; B2C тыс. = проверок × цена / 1000.
+
+**Playbook:** аудит 500 PDF → legal/DPA → locale ML → B2C pilot → rev-share → SEO → B2B L0.
 
 ## Сертификат ГКНТ
 

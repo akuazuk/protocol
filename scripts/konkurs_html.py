@@ -73,6 +73,22 @@ from konkurs_expansion import (  # noqa: E402
     EXPANSION_RUSSIA,
     BELSTAT_AMBULATORY_VISITS_YEAR,
 )
+from konkurs_expansion_intl import (  # noqa: E402
+    CALC_METHODOLOGY,
+    GTM_PHASES,
+    GTM_STEPS,
+    INTL_CORPUS_TABLE,
+    INTL_ENTRY_COST_TABLE,
+    INTL_EXPANSION_INTRO,
+    INTL_FLYWHEEL,
+    INTL_MARKET_BASE_TABLE,
+    INTL_MARKET_CAUTIOUS_TABLE,
+    INTL_RISKS,
+    INTL_TIER1,
+    INTL_TIER2,
+    INTL_UPSIDE_BASE_K,
+    INTL_UPSIDE_CAUTIOUS_K,
+)
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
     ECOSYSTEM_FLYWHEEL,
@@ -438,6 +454,40 @@ def _expansion_html() -> str:
 </div>"""
 
 
+def _intl_expansion_html() -> str:
+    caut_rows = list(INTL_MARKET_CAUTIOUS_TABLE)
+    base_rows = list(INTL_MARKET_BASE_TABLE)
+    corpus_rows = list(INTL_CORPUS_TABLE)
+    cost_rows = list(INTL_ENTRY_COST_TABLE)
+    gtm_rows = list(GTM_PHASES)
+    step_rows = list(GTM_STEPS)
+    intl_risk_rows = [(a, b, c) for a, b, c in INTL_RISKS]
+    upside_caut = f"{INTL_UPSIDE_CAUTIOUS_K:,}".replace(",", " ")
+    upside_base = f"{INTL_UPSIDE_BASE_K:,}".replace(",", " ")
+    return f"""
+<div class="section"><h2>6.3. Международная экспансия: рынки с гос. регламентами</h2></div>
+<div class="section-body">
+<p>{_e(INTL_EXPANSION_INTRO.replace(chr(10), ' '))}</p>
+<p>{_e(INTL_TIER1.replace(chr(10), ' '))}</p>
+<p>{_e(INTL_TIER2.replace(chr(10), ' '))}</p>
+<p>{_e(INTL_FLYWHEEL.replace(chr(10), ' '))}</p>
+<div class="highlight"><strong>Методика расчёта:</strong> {_e(CALC_METHODOLOGY.replace(chr(10), ' '))}</div>
+<div class="stats">
+  <div class="stat"><b>{upside_caut}</b><span class="muted">тыс. BYN B2C / 9 стран (осторожная conv.)</span></div>
+  <div class="stat"><b>{upside_base}</b><span class="muted">тыс. BYN B2C / 9 стран (базовая conv.)</span></div>
+  <div class="stat"><b>9</b><span class="muted">целевых рынков Tier 1-2</span></div>
+</div>
+{_table(['Страна', 'Tier', 'Обращений/год', 'Conv.', 'Проверок/год', 'B2C тыс. BYN', 'Запуск'], caut_rows, caption='Международный upside B2C · осторожная конверсия (не в EBITDA 2029)')}
+{_table(['Страна', 'Tier', 'Обращений/год', 'Conv.', 'Проверок/год', 'B2C тыс. BYN', 'Запуск'], base_rows, caption='Международный upside B2C · базовая конверсия (сценарий 2033)')}
+{_table(['Страна', 'Корпус регламентов', 'Портал', 'Язык', 'Tier'], corpus_rows, caption='Официальные репозитории клинических регламентов')}
+{_table(['Фаза', 'География', 'Действия', 'B2C upside', 'Inv. тыс. BYN'], gtm_rows, caption='Дорожная карта выхода на рынки 2029-2033')}
+{_table(['Шаг', 'Содержание', 'Срок', 'Критерий'], step_rows, caption='Playbook входа на новый рынок (7 шагов)')}
+{_table(['Страна', 'Inv. год 1, тыс. BYN', 'B2C launch', 'B2B horizon'], cost_rows, caption='Оценка инвестиций входа по странам (corpus + legal + ML + marketing)')}
+{_table(['Риск', 'Уровень', 'Митигация'], intl_risk_rows, caption='Риски международной экспансии')}
+<p class="muted">Tier 3 (Китай 临床路径, EU/NICE) - вне горизонта 2033: другой тип регламента, высокая стоимость NLP и доминирование Epic/UpToDate/CDSS.</p>
+</div>"""
+
+
 def _continuous_ml_html() -> str:
     principles = ML_PRINCIPLES_TABLE
     roadmap = ML_ROADMAP_TABLE
@@ -472,6 +522,7 @@ def _sections_html_with_b2c() -> str:
         out.append(f'<div class="section-body">{_ps(body)}</div>')
         if key == "6.":
             out.append(_expansion_html())
+            out.append(_intl_expansion_html())
         if key == "8.":
             out.append(_b2c_ux_html())
         if key == "9.":
