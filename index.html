@@ -504,14 +504,10 @@
     }
 
     .app-chrome:not(.app-chrome--scrolled) .app-chrome__head {
-      flex-wrap: wrap;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: stretch;
       gap: 0.5rem;
-      padding: 0.55rem 0 0.4rem;
-    }
-
-    .app-chrome:not(.app-chrome--scrolled) .app-sticky-bar__brand {
-      width: 100%;
+      padding: 0.55rem 0 0.45rem;
     }
 
     .app-chrome:not(.app-chrome--scrolled) .app-main-tabs--primary {
@@ -519,14 +515,14 @@
     }
 
     .app-chrome.app-chrome--scrolled .app-chrome__head {
-      padding: 0.28rem 0 0.22rem;
-      gap: 0.4rem;
+      flex-direction: row;
+      align-items: center;
+      padding: 0.32rem 0 0.28rem;
+      gap: 0.55rem;
     }
 
     .app-chrome__head {
       display: flex;
-      align-items: center;
-      gap: 0.55rem;
       padding: 0.45rem 0 0.35rem;
       transition: padding 0.15s ease, gap 0.15s ease;
     }
@@ -539,46 +535,62 @@
       line-height: 0;
     }
 
-    .app-sticky-bar__brand img {
+    .app-sticky-bar__logo {
       display: block;
       width: auto;
-      object-fit: contain;
-      transition: height 0.15s ease, opacity 0.12s ease;
-    }
-
-    .app-sticky-bar__logo--full {
       height: 2.35rem;
       max-width: min(100%, 16rem);
+      object-fit: contain;
+      transition: height 0.15s ease, max-width 0.15s ease;
     }
 
-    .app-sticky-bar__logo--mini {
-      display: none;
+    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo {
       height: 1.05rem;
-      max-width: min(100%, 9rem);
+      max-width: min(100%, 8.5rem);
     }
 
-    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--full {
-      display: none;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--mini {
-      display: block;
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0.3rem;
+      width: auto;
+      flex: 1;
+      min-width: 0;
+      justify-content: flex-end;
     }
 
     .app-chrome.app-chrome--scrolled .app-main-tabs--primary button {
-      min-height: 2.1rem;
-      padding: 0.38rem 0.5rem 0.42rem;
-      border-radius: 11px;
-      gap: 0.32rem;
+      flex: 0 1 auto;
+      min-height: 1.85rem;
+      min-width: 0;
+      padding: 0.3rem 0.62rem;
+      border-radius: 999px;
+      border-width: 1px;
+      gap: 0;
+      box-shadow: none;
+      background: rgba(255, 255, 255, 0.92);
     }
 
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-visual svg {
-      width: 0.95rem;
-      height: 0.95rem;
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button[aria-selected="true"] {
+      border-color: rgba(26, 138, 114, 0.5);
+      background: rgba(232, 245, 241, 0.98);
+      box-shadow: none;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-visual {
+      display: none;
     }
 
     .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-title {
       font-size: 0.74rem;
+      white-space: nowrap;
     }
 
     .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-sub {
@@ -11075,8 +11087,7 @@
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__head">
         <a class="app-sticky-bar__brand" href="#app-main-tabs" aria-label="Protocol">
-          <img class="app-sticky-bar__logo app-sticky-bar__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
-          <img class="app-sticky-bar__logo app-sticky-bar__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+          <img class="app-sticky-bar__logo" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
         </a>
         <div class="app-main-tabs app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
