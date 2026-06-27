@@ -562,23 +562,47 @@
       overflow: hidden;
     }
 
-    .app-main-tabs--methodist {
+    @media (max-width: 540px) {
+      .app-chrome__head {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .app-main-tabs--primary .app-main-tab-sub {
+        display: none;
+      }
+
+      .app-main-tabs--primary button {
+        min-height: 2.45rem;
+        padding: 0.45rem 0.5rem;
+      }
+    }
+
+    /* Вкладки кабинета методиста - не липкие, только в mode=methodist */
+    .methodist-workspace-tabs {
+      margin: 0 0 1rem;
+    }
+
+    body:not(.methodist-mode) .methodist-workspace-tabs {
+      display: none !important;
+    }
+
+    .methodist-workspace-tabs button {
+      flex: 1 1 11rem;
+    }
+
+    #tab-methodist-ml-stats,
+    #tab-methodist-queue,
+    #tab-methodist-search-stats,
+    #tab-methodist-b2c {
       display: none;
-      gap: 0.4rem;
-      margin: 0 0 0.35rem;
-      padding-bottom: 0.15rem;
-      flex-wrap: wrap;
     }
 
-    body.methodist-mode .app-main-tabs--methodist {
+    body.methodist-mode #tab-methodist-ml-stats:not([hidden]),
+    body.methodist-mode #tab-methodist-queue:not([hidden]),
+    body.methodist-mode #tab-methodist-search-stats:not([hidden]),
+    body.methodist-mode #tab-methodist-b2c:not([hidden]) {
       display: flex;
-    }
-
-    .app-main-tabs--methodist button {
-      flex: 1 1 9.5rem;
-      min-height: 2.85rem;
-      padding: 0.55rem 0.7rem 0.6rem;
-      border-radius: 14px;
     }
 
     .site-footer-brand {
@@ -10991,7 +11015,9 @@
       </button>
         </div>
       </div>
-      <div class="app-main-tabs app-main-tabs--methodist" role="tablist" aria-label="Кабинет методиста" id="methodist-main-tabs" hidden>
+    </div>
+
+    <div class="app-main-tabs methodist-workspace-tabs consult-hide-print" role="tablist" aria-label="Кабинет методиста" id="methodist-main-tabs" hidden>
       <button type="button" role="tab" id="tab-methodist-queue" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-queue" hidden>
         <span class="app-main-tab-visual" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -11039,7 +11065,6 @@
           <span class="app-main-tab-sub">тарифы patient.html, оплата и тексты для пациента</span>
         </span>
       </button>
-      </div>
     </div>
 
     <div class="demo-cases-bar" id="demo-cases-bar" hidden>
