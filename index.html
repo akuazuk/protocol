@@ -486,6 +486,54 @@
     }
 
     /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
+    .app-shell-brand {
+      display: flex;
+      align-items: center;
+      margin: 0 0 0.65rem;
+    }
+
+    .app-shell-brand__logo {
+      display: block;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .app-shell-brand__logo--full {
+      height: 2.45rem;
+      max-width: min(100%, 17rem);
+    }
+
+    .app-shell-brand__logo--mini {
+      display: none;
+      height: 1.25rem;
+      max-width: min(100%, 9.5rem);
+    }
+
+    .site-footer-brand {
+      margin: 0 0 0.85rem;
+    }
+
+    .site-footer-brand__logo {
+      display: block;
+      width: auto;
+      height: 2rem;
+      max-width: min(100%, 14rem);
+      object-fit: contain;
+      opacity: 0.92;
+    }
+
+    .consult-intro-brand {
+      margin: 0 0 0.85rem;
+    }
+
+    .consult-intro-brand__logo {
+      display: block;
+      width: auto;
+      height: 2.35rem;
+      max-width: min(100%, 16rem);
+      object-fit: contain;
+    }
+
     .app-main-tabs {
       display: flex;
       gap: 0.55rem;
@@ -6217,9 +6265,17 @@
         justify-content: center;
       }
 
+      .app-shell-brand__logo--full {
+        display: none;
+      }
+
+      .app-shell-brand__logo--mini {
+        display: block;
+      }
+
       .logo img {
-        height: 1.55rem;
-        max-width: min(100%, 10.5rem);
+        height: 2.35rem;
+        max-width: min(100%, 14rem);
       }
 
       .brand h1 {
@@ -10740,6 +10796,10 @@
       <span class="methodist-mode-banner__reviewer" id="methodist-mode-banner-reviewer" hidden></span>
       <button type="button" class="btn-methodist-exit" id="methodist-btn-exit">Выйти</button>
     </div>
+    <div class="app-shell-brand consult-hide-print" aria-label="Protocol">
+      <img class="app-shell-brand__logo app-shell-brand__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
+      <img class="app-shell-brand__logo app-shell-brand__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+    </div>
     <div class="app-main-tabs" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
         <span class="app-main-tab-visual" aria-hidden="true">
@@ -10837,15 +10897,12 @@
       <header class="site-header" id="section-header">
       <div class="site-header__top">
         <div class="logo">
-          <picture>
-            <source media="(max-width: 720px)" srcset="/protocol-logo-mini.svg" />
-            <img
-              src="/protocol-logo-wordmark.svg"
-              width="296"
-              height="104"
-              alt="Protocol"
-            />
-          </picture>
+          <img
+            src="/protocol-logo-wordmark.svg"
+            width="296"
+            height="104"
+            alt="Protocol"
+          />
         </div>
         <div class="brand">
           <h1>
@@ -11336,6 +11393,9 @@
     >
       <div id="consult-print-root">
         <header class="consult-intro-card consult-print-header" id="consult-intro-card">
+          <div class="consult-intro-brand consult-hide-print">
+            <img class="consult-intro-brand__logo" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
+          </div>
           <p class="consult-brand-eyebrow consult-intro-b2c-only">Главный раздел</p>
           <div class="consult-intro-heading-row">
             <div class="consult-intro-visual" aria-hidden="true">
@@ -12306,6 +12366,9 @@
     </section>
 
     <footer class="site-footer site-footer--compact" id="section-footer">
+      <div class="site-footer-brand">
+        <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+      </div>
       <p>
         Источник PDF:
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
@@ -19712,9 +19775,6 @@
         tabMl.removeAttribute("hidden");
       } else {
         tabMl.setAttribute("hidden", "");
-        if (typeof switchMainAppTab === "function") {
-          switchMainAppTab(MAIN_TAB_CONSULT);
-        }
       }
     }
     if (tabQueue) {
@@ -19730,13 +19790,46 @@
       else tabB2c.setAttribute("hidden", "");
     }
     if (!active) setMethodistAiFlowState("");
-    if (active && typeof switchMainAppTab === "function") {
-      switchMainAppTab(MAIN_TAB_CONSULT);
-    }
     var workbench = document.getElementById("methodist-workbench-wrap");
     if (workbench && !active) workbench.hidden = true;
     var dash = document.getElementById("methodist-eval-dashboard");
     if (dash && !active) dash.hidden = true;
+    syncMainAppTabFromLocation();
+  }
+
+  function isMethodistOnlyMainTabHash(hash) {
+    return (
+      hash === "#ml-dashboard" ||
+      hash === "#search-dashboard" ||
+      hash === "#methodist-queue" ||
+      hash === "#b2c-monetization"
+    );
+  }
+
+  function syncMainAppTabFromLocation() {
+    if (typeof switchMainAppTab !== "function") return;
+    var h = window.location.hash || "";
+    if (!window.__methodistMode && isMethodistOnlyMainTabHash(h)) {
+      switchMainAppTab(MAIN_TAB_CONSULT);
+      return;
+    }
+    if (h === "#ml-dashboard" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_ML_STATS);
+    } else if (h === "#search-dashboard" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+    } else if (h === "#methodist-queue" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_QUEUE);
+    } else if (h === "#b2c-monetization" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_B2C);
+    } else if (h === "#analytics-stats" || h === "#analytics") {
+      switchMainAppTab(MAIN_TAB_ANALYTICS);
+    } else if (h === "#search" || h === "#/search") {
+      switchMainAppTab(MAIN_TAB_SEARCH);
+    } else if (h === "#consult-review") {
+      switchMainAppTab(MAIN_TAB_CONSULT);
+    } else {
+      switchMainAppTab(MAIN_TAB_CONSULT);
+    }
   }
 
   function destroyMethodistMlCharts() {
@@ -25955,6 +26048,7 @@
         history.replaceState(null, "", window.location.pathname + window.location.search + "#search");
       }
     } catch (e) {}
+    window.__mainAppTab = which;
     updateScrollFabVisibility();
   }
 
@@ -27924,22 +28018,7 @@
     }
 
     function applyMainTabFromHash() {
-      var h = window.location.hash || "";
-      if (h === "#ml-dashboard" && window.__methodistMode) {
-        switchMainAppTab(MAIN_TAB_ML_STATS);
-      } else if (h === "#search-dashboard" && window.__methodistMode) {
-        switchMainAppTab(MAIN_TAB_SEARCH_STATS);
-      } else if (h === "#methodist-queue" && window.__methodistMode) {
-        switchMainAppTab(MAIN_TAB_QUEUE);
-      } else if (h === "#b2c-monetization" && window.__methodistMode) {
-        switchMainAppTab(MAIN_TAB_B2C);
-      } else if (h === "#analytics-stats" || h === "#analytics") {
-        switchMainAppTab(MAIN_TAB_ANALYTICS);
-      } else if (h === "#search" || h === "#/search") {
-        switchMainAppTab(MAIN_TAB_SEARCH);
-      } else {
-        switchMainAppTab(MAIN_TAB_CONSULT);
-      }
+      syncMainAppTabFromLocation();
     }
 
     window.addEventListener("hashchange", applyMainTabFromHash);
