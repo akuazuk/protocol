@@ -8169,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r43-patient-quality-b2c-panel"
+BUILD_VERSION = "2026-06-24-r44-chrome-logo-scroll-compact"
 
 
 def _app_version() -> str:

@@ -503,11 +503,32 @@
       border-bottom-color: rgba(26, 138, 114, 0.14);
     }
 
+    .app-chrome:not(.app-chrome--scrolled) .app-chrome__head {
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.55rem 0 0.4rem;
+    }
+
+    .app-chrome:not(.app-chrome--scrolled) .app-sticky-bar__brand {
+      width: 100%;
+    }
+
+    .app-chrome:not(.app-chrome--scrolled) .app-main-tabs--primary {
+      width: 100%;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-chrome__head {
+      padding: 0.28rem 0 0.22rem;
+      gap: 0.4rem;
+    }
+
     .app-chrome__head {
       display: flex;
       align-items: center;
       gap: 0.55rem;
       padding: 0.45rem 0 0.35rem;
+      transition: padding 0.15s ease, gap 0.15s ease;
     }
 
     .app-sticky-bar__brand {
@@ -520,10 +541,48 @@
 
     .app-sticky-bar__brand img {
       display: block;
-      height: 1.15rem;
       width: auto;
-      max-width: min(100%, 9rem);
       object-fit: contain;
+      transition: height 0.15s ease, opacity 0.12s ease;
+    }
+
+    .app-sticky-bar__logo--full {
+      height: 2.35rem;
+      max-width: min(100%, 16rem);
+    }
+
+    .app-sticky-bar__logo--mini {
+      display: none;
+      height: 1.05rem;
+      max-width: min(100%, 9rem);
+    }
+
+    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--full {
+      display: none;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--mini {
+      display: block;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button {
+      min-height: 2.1rem;
+      padding: 0.38rem 0.5rem 0.42rem;
+      border-radius: 11px;
+      gap: 0.32rem;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-visual svg {
+      width: 0.95rem;
+      height: 0.95rem;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-title {
+      font-size: 0.74rem;
+    }
+
+    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-sub {
+      display: none;
     }
 
     /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
@@ -2557,11 +2616,20 @@
     }
 
     .site-header__top {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      gap: 0.8rem 1rem;
+      display: block;
       width: 100%;
+    }
+
+    .search-clear-zone {
+      display: flex;
+      justify-content: flex-end;
+      margin: 1.15rem 0 0.35rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(26, 138, 114, 0.12);
+    }
+
+    .search-clear-zone .btn-toolbar-clear {
+      max-width: 100%;
     }
 
     .site-header__bottom {
@@ -3734,6 +3802,7 @@
     }
 
     /* На вкладке «Поиск · оценки» панель живёт в #search-methodist-panel-home */
+    body.methodist-mode #panel-main-search .search-clear-zone,
     body.methodist-mode #panel-main-search .site-header__top,
     body.methodist-mode #panel-main-search .site-header__legal-note,
     body.methodist-mode #panel-main-search .hero-intro,
@@ -11006,7 +11075,8 @@
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__head">
         <a class="app-sticky-bar__brand" href="#app-main-tabs" aria-label="Protocol">
-          <img src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+          <img class="app-sticky-bar__logo app-sticky-bar__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
+          <img class="app-sticky-bar__logo app-sticky-bar__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
         <div class="app-main-tabs app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
@@ -11096,14 +11166,6 @@
     <div id="panel-main-search" role="tabpanel" aria-labelledby="tab-main-search" hidden>
       <header class="site-header" id="section-header">
       <div class="site-header__top">
-        <div class="logo">
-          <img
-            src="/protocol-logo-wordmark.svg"
-            width="296"
-            height="104"
-            alt="Protocol"
-          />
-        </div>
         <div class="brand">
           <h1>
             <span class="brand-title-line">Навигатор клинических протоколов</span>
@@ -11118,11 +11180,6 @@
               >Поиск по <strong>диагнозу и МКБ-10</strong>; жалобы можно уточнить до кодов МКБ. Не замена очного приёма и
               не установление диагноза.</span>
           </p>
-          <div class="badge-row">
-            <span class="badge badge--green" id="proto-count-badge"
-              ><span class="badge-num">…</span> протоколов в каталоге</span>
-            <span class="badge badge--red"><span class="badge-dot" aria-hidden="true"></span>Ориентир, не МЭЭ</span>
-          </div>
         </div>
       </div>
       <div class="site-header__bottom">
@@ -11130,17 +11187,6 @@
           Информация из опубликованных протоколов; решение принимает врач. Персональные данные в PDF КЗ - только в
           защищённом контуре учреждения.
         </p>
-        <div class="toolbar-new-search">
-          <button
-            type="button"
-            class="btn-assist btn-toolbar-clear"
-            id="btn-new-search-full"
-            title="Очистить поле запроса, контекст пациента, рубрики и результаты подбора"
-          >
-            <span class="btn-toolbar-clear__main">Очистить всё</span>
-            <span class="btn-toolbar-clear__sub">запрос, рубрики, контекст и результаты</span>
-          </button>
-        </div>
       </div>
     </header>
 
@@ -11439,6 +11485,18 @@
         </div>
 
         </section>
+
+      <div class="search-clear-zone toolbar-new-search consult-hide-print">
+        <button
+          type="button"
+          class="btn-assist btn-toolbar-clear"
+          id="btn-new-search-full"
+          title="Очистить поле запроса, контекст пациента, рубрики и результаты подбора"
+        >
+          <span class="btn-toolbar-clear__main">Очистить всё</span>
+          <span class="btn-toolbar-clear__sub">запрос, рубрики, контекст и результаты</span>
+        </button>
+      </div>
     </div>
     <!-- /#panel-main-search -->
 
@@ -11593,9 +11651,6 @@
     >
       <div id="consult-print-root">
         <header class="consult-intro-card consult-print-header" id="consult-intro-card">
-          <div class="consult-intro-brand consult-hide-print">
-            <img class="consult-intro-brand__logo" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
-          </div>
           <p class="consult-brand-eyebrow consult-intro-b2c-only">Главный раздел</p>
           <div class="consult-intro-heading-row">
             <div class="consult-intro-visual" aria-hidden="true">
@@ -28187,7 +28242,7 @@
     var chrome = document.getElementById("app-chrome");
     if (!chrome) return;
     function syncScrollChrome() {
-      chrome.classList.toggle("app-chrome--scrolled", window.scrollY > 8);
+      chrome.classList.toggle("app-chrome--scrolled", window.scrollY > 48);
     }
     syncScrollChrome();
     window.addEventListener("scroll", syncScrollChrome, { passive: true });
