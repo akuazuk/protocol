@@ -33,8 +33,13 @@ from konkurs_monetization import (
     EXPANDED_Y3,
     EXTRA_STREAMS_Y3,
 )
+from konkurs_expansion import B2C_TAM_COMPARE_TABLE
+from konkurs_expansion_intl import INTL_MARKET_BASE_TABLE, INTL_MARKET_CAUTIOUS_TABLE
+from konkurs_future import FUTURE_ROADMAP_TABLE, FUTURE_STREAMS
+from konkurs_impact import ECOSYSTEM_FLYWHEEL
 from konkurs_scenarios import (
     ALL_SCENARIOS_Y3,
+    B2C_CONV_SENSITIVITY,
     B2C_PROTOCOL_PER_CHECK,
     CHANNEL_OUTLOOK,
     PENETRATION_SENSITIVITY,
@@ -252,7 +257,10 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
            (ROI_TOTAL_SAVING - ROI_METHODIST_SAVING) / 1000, ROI_TOTAL_SAVING / 1000],
         marker_color=[COLOR_NEGATIVE, c[0], c[1], c[2]], marker_line_width=0,
         text=[f"{ROI_NET/1000:+.1f} нетто/мес" if i == 0 else "" for i in range(4)], textposition="outside"))
-    fig.update_layout(**_layout(f"ROI якоря Кравира · нетто {ROI_NET/1000:+.1f} тыс. BYN/мес", showlegend=False))
+    fig.update_layout(**_layout(
+        f"ROI якорного пилота МЦ «Кравира» · нетто {ROI_NET/1000:+.1f} тыс. BYN/мес",
+        showlegend=False,
+    ))
     fig.update_yaxes(title="тыс. BYN / мес")
     p = assets_dir / "chart_roi.png"
     _export(fig, p)
@@ -433,5 +441,130 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     p = assets_dir / "chart_expanded_potential.png"
     _export(fig, p)
     paths["expanded_potential"] = p
+
+    # --- B2C sensitivity (EBITDA vs конверсия) ---
+    conv_labels = [row[0] for row in B2C_CONV_SENSITIVITY]
+    ebitda_vals = [int(row[4].replace("+", "").replace(" ", "")) for row in B2C_CONV_SENSITIVITY]
+    fig = go.Figure(go.Scatter(
+        x=conv_labels, y=ebitda_vals, mode="lines+markers",
+        line=dict(color=c[2], width=2.5), marker=dict(size=9, color=c[2]),
+        text=[f"+{v}" for v in ebitda_vals], textposition="top center",
+    ))
+    fig.update_layout(**_layout("Чувствительность EBITDA к конверсии B2C (B2B 8% фикс.)", showlegend=False))
+    fig.update_yaxes(title="EBITDA, тыс. BYN/год")
+    fig.update_xaxes(title="Конверсия B2C от 30 млн КЗ/год")
+    p = assets_dir / "chart_b2c_sensitivity.png"
+    _export(fig, p)
+    paths["b2c_sensitivity"] = p
+
+    # --- B2C TAM compare (upside сценарии) ---
+    tam_labels = []
+    tam_revs = []
+    for row in B2C_TAM_COMPARE_TABLE:
+        label = row[0][:28] + "…" if len(row[0]) > 28 else row[0]
+        tam_labels.append(label)
+        tam_revs.append(int(row[4]))
+    fig = go.Figure(go.Bar(
+        x=tam_labels, y=tam_revs, marker_color=c[: len(tam_labels)],
+        text=[f"{v:,}".replace(",", " ") for v in tam_revs], textposition="outside",
+        marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("B2C Protocol: сравнение TAM-знаменателей (тыс. BYN/год)", showlegend=False))
+    fig.update_yaxes(title="B2C выручка, тыс. BYN")
+    p = assets_dir / "chart_b2c_tam_compare.png"
+    _export(fig, p)
+    paths["b2c_tam_compare"] = p
+
+    # --- International markets (base conv.) ---
+    intl_sorted = sorted(
+        [(row[0], int(row[5])) for row in INTL_MARKET_BASE_TABLE],
+        key=lambda x: x[1],
+        reverse=True,
+    )
+    countries = [x[0] for x in intl_sorted]
+    intl_revs = [x[1] for x in intl_sorted]
+    fig = go.Figure(go.Bar(
+        y=countries, x=intl_revs, orientation="h",
+        marker_color=c[1], text=[f"{v:,}".replace(",", " ") for v in intl_revs],
+        textposition="outside", marker_line_width=0,
+    ))
+    fig.update_layout(**_layout(
+        "Международный B2C upside · базовая конверсия (2033, тыс. BYN/год)",
+        showlegend=False,
+    ))
+    fig.update_xaxes(title="B2C Protocol, тыс. BYN/год")
+    p = assets_dir / "chart_intl_markets.png"
+    _export(fig, p)
+    paths["intl_markets"] = p
+
+    # --- Intl cautious vs base (grouped) ---
+    base_map = {row[0]: int(row[5]) for row in INTL_MARKET_BASE_TABLE}
+    caut_map = {row[0]: int(row[5]) for row in INTL_MARKET_CAUTIOUS_TABLE}
+    intl_c = list(base_map.keys())
+    fig = go.Figure()
+    fig.add_trace(go.Bar(name="Осторожная", x=intl_c, y=[caut_map[k] for k in intl_c],
+                         marker_color=c[0], opacity=0.88, marker_line_width=0))
+    fig.add_trace(go.Bar(name="Базовая", x=intl_c, y=[base_map[k] for k in intl_c],
+                         marker_color=c[2], opacity=0.88, marker_line_width=0))
+    fig.update_layout(**_layout("9 рынков: B2C upside осторожный vs базовый", barmode="group", legend_items=2))
+    fig.update_yaxes(title="тыс. BYN/год")
+    p = assets_dir / "chart_intl_compare.png"
+    _export(fig, p)
+    paths["intl_compare"] = p
+
+    # --- Ecosystem flywheel (impact score) ---
+    fly_steps = [f"{i + 1}. {ECOSYSTEM_FLYWHEEL[i][0][:22]}" for i in range(len(ECOSYSTEM_FLYWHEEL))]
+    fly_scores = [5, 4, 5, 4, 5, 4][: len(ECOSYSTEM_FLYWHEEL)]
+    fig = go.Figure(go.Bar(
+        y=fly_steps, x=fly_scores, orientation="h",
+        marker_color=c[3], marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("Flywheel Protocol: B2C → B2B → ЦИСЗ (относ. сила эффекта)", showlegend=False))
+    fig.update_xaxes(title="Относительный эффект", range=[0, 6])
+    p = assets_dir / "chart_ecosystem_flywheel.png"
+    _export(fig, p)
+    paths["ecosystem_flywheel"] = p
+
+    # --- Platform roadmap ---
+    road_labels = [f"{row[0]} · {row[1]}" for row in FUTURE_ROADMAP_TABLE]
+    road_phase = {"MVP": 1, "Scale RB": 2, "Profit RB": 2, "Tier 1": 3, "Tier 2": 4, "Tier 2+": 4, "Platform": 5, "Ecosystem": 5}
+    road_vals = [road_phase.get(row[3], 3) for row in FUTURE_ROADMAP_TABLE]
+    fig = go.Figure(go.Bar(
+        y=road_labels, x=road_vals, orientation="h",
+        marker_color=c[4], text=[row[3] for row in FUTURE_ROADMAP_TABLE],
+        textposition="outside", marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("Дорожная карта Protocol 2026-2035", showlegend=False))
+    fig.update_xaxes(title="Зрелость платформы (1=MVP … 5=Ecosystem)", range=[0, 6])
+    p = assets_dir / "chart_platform_roadmap.png"
+    _export(fig, p)
+    paths["platform_roadmap"] = p
+
+    # --- Future revenue streams (2035 horizon) ---
+    stream_names = [s[0] for s in FUTURE_STREAMS]
+    stream_vals = [s[1] for s in FUTURE_STREAMS]
+    fig = go.Figure(go.Bar(
+        y=stream_names, x=stream_vals, orientation="h",
+        marker_color=c[2], text=[f"{v:,}".replace(",", " ") for v in stream_vals],
+        textposition="outside", marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("Потоки выручки Protocol: база → платформа (тыс. BYN/год)", showlegend=False))
+    fig.update_xaxes(title="тыс. BYN/год (ориентир)")
+    p = assets_dir / "chart_future_streams.png"
+    _export(fig, p)
+    paths["future_streams"] = p
+
+    # --- Platform layers ---
+    layers = ["Ядро (RAG + gate + КП)", "Каналы (B2B/B2C/API)", "Платформа (Big Tech + Community)"]
+    layer_maturity = [5, 4, 2]
+    fig = go.Figure(go.Bar(
+        x=layers, y=layer_maturity, marker_color=[c[0], c[2], c[4]],
+        text=["2026 ✓", "2028-29", "2033-35"], textposition="outside", marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("Три слоя развития Protocol", showlegend=False))
+    fig.update_yaxes(title="Зрелость (1-5)", range=[0, 6])
+    p = assets_dir / "chart_platform_layers.png"
+    _export(fig, p)
+    paths["platform_layers"] = p
 
     return paths

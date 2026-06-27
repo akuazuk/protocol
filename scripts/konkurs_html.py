@@ -89,6 +89,14 @@ from konkurs_expansion_intl import (  # noqa: E402
     INTL_UPSIDE_BASE_K,
     INTL_UPSIDE_CAUTIOUS_K,
 )
+from konkurs_future import (  # noqa: E402
+    COMMUNITY_VISION,
+    FUTURE_RISKS,
+    FUTURE_ROADMAP_TABLE,
+    FUTURE_STREAMS,
+    FUTURE_VISION,
+    PLATFORM_INTEGRATIONS,
+)
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
     ECOSYSTEM_FLYWHEEL,
@@ -303,10 +311,12 @@ def _mission_block() -> str:
     return f"""
 <div class="mission">
   <h2>Миссия Protocol</h2>
-  <p>Сделать качество амбулаторной помощи в Беларуси <strong>измеримым и прозрачным</strong> - для каждого
-  консультативного заключения, до подписи врачом и до попадания данных в ЦИСЗ. Не заменяя врача и МЭЭ,
-  мы даём инструмент соответствия <strong>478 клиническим протоколам Минздрава</strong> на потоке
-  <strong>100% КЗ</strong>, а пациенту - право проверить своё заключение по тем же стандартам.</p>
+  <p>Protocol - платформа, которая делает качество амбулаторной помощи <strong>измеримым и прозрачным</strong>
+  для каждого консультативного заключения - до подписи врачом и до попадания данных в ЦИСЗ. Мы не заменяем врача
+  и МЭЭ; мы даём инструмент соответствия <strong>478 клиническим протоколам Минздрава</strong> на потоке
+  <strong>100% КЗ</strong>, а пациенту - право проверить заключение по тем же стандартам.</p>
+  <p>История продукта начинается в МЦ «Кравира» - якорном медцентре, где Protocol прошёл первый production-пилот
+  (25 000 КЗ/мес). Кравира - партнёр и участник конкурса; бренд и масштабирование - <strong>Protocol</strong>.</p>
   <p>{_e(MARKET_CONTEXT.replace(chr(10), ' '))}</p>
   <p>{_e(CISZ_CONTEXT.replace(chr(10), ' '))}</p>
 </div>"""
@@ -381,7 +391,7 @@ def _market_scope_html() -> str:
 <div class="section-body">
 <p>{_e(MARKET_SCOPE_NOTE.replace(chr(10), ' '))}</p>
 <div class="stats">
-  <div class="stat"><b>1%</b><span class="muted">Кравира от TAM</span></div>
+  <div class="stat"><b>~1%</b><span class="muted">якорный пилот Кравира</span></div>
   <div class="stat"><b>{MARKET_KZ_MONTH:,}</b><span class="muted">КЗ/мес частный сектор</span></div>
   <div class="stat"><b>8</b><span class="muted">клиник B2B к 2029</span></div>
   <div class="stat"><b>{CLINIC_B2C_REV_Y3_K}</b><span class="muted">тыс. BYN rev-share клиникам</span></div>
@@ -488,6 +498,41 @@ def _intl_expansion_html() -> str:
 </div>"""
 
 
+def _future_html(assets_rel: str = "_assets") -> str:
+    def img(name: str, cap: str) -> str:
+        return f'<div class="chart"><div class="caption">{_e(cap)}</div><img src="{assets_rel}/{name}" alt=""/></div>'
+
+    road_rows = [(a, b, c, d) for a, b, c, d in FUTURE_ROADMAP_TABLE]
+    stream_rows = [(a, f"{b:,}".replace(",", " "), c) for a, b, c in FUTURE_STREAMS]
+    risk_rows = [(a, b, c) for a, b, c in FUTURE_RISKS]
+    return f"""
+<div class="section"><h2>6.4. Будущее Protocol: платформа, Big Tech и health-community</h2></div>
+<div class="section-body">
+<p>{_e(FUTURE_VISION.replace(chr(10), ' '))}</p>
+<h3>Интеграции Google, Meta, Apple</h3>
+<p>{_e(PLATFORM_INTEGRATIONS.replace(chr(10), ' '))}</p>
+<h3>Protocol Community - мини-соцсеть вокруг доказательной медицины</h3>
+<p>{_e(COMMUNITY_VISION.replace(chr(10), ' '))}</p>
+<div class="stats">
+  <div class="stat"><b>2033+</b><span class="muted">Platform API</span></div>
+  <div class="stat"><b>2034+</b><span class="muted">Care Rooms (Meta)</span></div>
+  <div class="stat"><b>2035</b><span class="muted">Community Pro</span></div>
+  <div class="stat"><b>3 слоя</b><span class="muted">ядро → каналы → платформа</span></div>
+</div>
+{img('chart_platform_layers.png', 'Три слоя развития Protocol: ядро, каналы, платформа')}
+{img('chart_platform_roadmap.png', 'Дорожная карта Protocol 2026-2035')}
+{img('chart_future_streams.png', 'Потоки выручки: от B2B РБ к международной платформе')}
+{img('chart_ecosystem_flywheel.png', 'Flywheel: B2C давит на B2B, B2B улучшает данные для ЦИСЗ')}
+{_table(['Период', 'Бренд', 'Веха', 'Фаза'], road_rows, caption='Дорожная карта развития Protocol (не EBITDA 2029)')}
+{_table(['Поток', 'Ориентир тыс. BYN/год', 'Горизонт'], stream_rows, caption='Дополнительные потоки выручки платформенного этапа')}
+{_table(['Риск', 'Уровень', 'Митигация'], risk_rows, caption='Риски платформенного и community-слоя')}
+<div class="highlight"><strong>Для инвестора:</strong> Protocol строит не «локальный SaaS Кравиры», а
+<strong>национальную и международную платформу</strong> контроля качества КЗ. Кравира остаётся якорным пилотом
+и первым B2B/B2C-кейсом; дальше - сеть ОЗ, patient.html, locale-pack, API и community вокруг официальных
+клинических протоколов. Big Tech - каналы дистрибуции и уведомлений, не замена evidence_map.</div>
+</div>"""
+
+
 def _continuous_ml_html() -> str:
     principles = ML_PRINCIPLES_TABLE
     roadmap = ML_ROADMAP_TABLE
@@ -514,7 +559,7 @@ def _continuous_ml_html() -> str:
 </div>"""
 
 
-def _sections_html_with_b2c() -> str:
+def _sections_html_with_b2c(assets_rel: str = "_assets") -> str:
     out = []
     for key, title in SECTION_TITLES.items():
         body = SECTIONS.get(key, "")
@@ -523,6 +568,7 @@ def _sections_html_with_b2c() -> str:
         if key == "6.":
             out.append(_expansion_html())
             out.append(_intl_expansion_html())
+            out.append(_future_html(assets_rel))
         if key == "8.":
             out.append(_b2c_ux_html())
         if key == "9.":
@@ -634,6 +680,14 @@ def _finance_block(assets_rel: str) -> str:
 {img('chart_b2c_tiers.png', 'Tier-цены B2C по specialty')}
 {img('chart_b2c_revshare.png', 'Rev-share 30/70: примеры по tier')}
 {img('chart_b2c_growth.png', 'Рост B2C и сценарий upside')}
+{img('chart_b2c_sensitivity.png', 'EBITDA vs конверсия B2C (B2B 8% фикс.)')}
+{img('chart_b2c_tam_compare.png', 'B2C TAM: частный сектор vs национальный vs экспорт')}
+{img('chart_intl_markets.png', 'Международный B2C upside по 9 странам (базовая conv.)')}
+{img('chart_intl_compare.png', '9 рынков: осторожный vs базовый B2C upside')}
+{img('chart_ecosystem_flywheel.png', 'Flywheel Protocol: B2C → B2B → государство')}
+{img('chart_platform_roadmap.png', 'Дорожная карта Protocol 2026-2035')}
+{img('chart_future_streams.png', 'Потоки выручки платформенного этапа')}
+{img('chart_platform_layers.png', 'Три слоя: ядро · каналы · платформа')}
 {_table(['Статья инвестиций', 'BYN', 'Срок'], INVESTMENT_PLAN, caption='Инвестиции 2026-2027')}
 {_table(['Драйвер', 'Пояснение'], list(CISZ_DRIVERS))}
 {_table(['Альтернатива', 'Охват', 'Слабость', 'Стоимость'], COMPETITOR_MATRIX, caption='Конкуренты')}
@@ -663,12 +717,12 @@ def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
         + _market_scope_html()
         + _stakeholders_html()
         + _analogues_html()
-        + _sections_html_with_b2c()
+        + _sections_html_with_b2c(assets_rel)
         + _continuous_ml_html()
         + _glossary_html()
         + _finance_block(assets_rel)
     )
-    path.write_text(_page("Бизнес-план Protocol - Кравира", body), encoding="utf-8")
+    path.write_text(_page("Бизнес-план Protocol", body), encoding="utf-8")
 
 
 def write_zayavka_html(path: Path) -> None:
