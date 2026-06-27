@@ -8169,7 +8169,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r55-konkurs-cover-wordmark-clean"
+BUILD_VERSION = "2026-06-24-r56-konkurs-hero-full-wordmark"
 
 
 def _app_version() -> str:

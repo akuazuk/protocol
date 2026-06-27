@@ -170,8 +170,8 @@ li { margin-bottom: 1.5mm; }
   margin: 8mm auto; width: 70%; }
 .cover .logo-lockup { margin: 0 auto 8mm; }
 .cover .logo-lockup img { height: 14mm; width: auto; max-width: 92%; }
-.cover .logo-lockup--hero { margin: 0 auto 12mm; }
-.cover .logo-lockup--hero img { height: 36mm; width: auto; max-width: 95%; }
+.cover .logo-lockup--hero { margin: 0 auto 14mm; width: 168mm; max-width: 90%; }
+.cover .logo-lockup--hero img { width: 100%; height: auto; display: block; }
 .cover .logo-emblem { margin: 0 auto 4mm; }
 .cover .logo-emblem img { height: 18mm; width: auto; }
 .mission {
@@ -255,7 +255,7 @@ def _page(title: str, body: str, *, extra_head: str = "") -> str:
 
 
 def _cover(title: str, doc_kind: str, *, show_emblem: bool = True, hero_logo: bool = False) -> str:
-    logo_rel = "../../protocol-logo-wordmark-text.svg" if hero_logo else "../../protocol-logo-wordmark.svg"
+    logo_rel = "../../protocol-logo-wordmark.svg"
     emblem_rel = "../../protocol-logo.svg"
     emblem_html = (
         f'  <div class="logo-emblem"><img src="{emblem_rel}" alt="Protocol"/></div>\n'
