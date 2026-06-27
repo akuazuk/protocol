@@ -7830,6 +7830,18 @@ class PatientPaymentSessionIn(BaseModel):
     clinic_id: str | None = Field(default=None, max_length=32)
 
 
+class PatientMonetizationPatchIn(BaseModel):
+    monetization_enabled: bool | None = None
+    payment_required: bool | None = None
+    show_tier_picker: bool | None = None
+    show_prices: bool | None = None
+    default_tier_id: str | None = Field(default=None, max_length=24)
+    enabled_tier_ids: list[str] | None = None
+    demo_note_ru: str | None = Field(default=None, max_length=500)
+    paid_note_ru: str | None = Field(default=None, max_length=500)
+    value_banner_ru: str | None = Field(default=None, max_length=500)
+
+
 class ConsultationTemplateIn(BaseModel):
     """Шаблон консультативного заключения по развёрнутой выдержке."""
 
@@ -8156,7 +8168,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r24-playful-lux-icons"
+BUILD_VERSION = "2026-06-24-r25-b2c-monetization-tab"
 
 
 def _app_version() -> str:
@@ -10143,6 +10155,33 @@ def api_methodist_stats(request: "Request") -> dict:
     return build_methodist_dashboard_stats()
 
 
+@app.get("/api/methodist/patient-monetization")
+def api_methodist_patient_monetization_get(request: "Request") -> dict:
+    """Настройки монетизации B2C для кабинета методиста."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.patient_monetization_config import monetization_admin_view
+
+    return {"ok": True, "config": monetization_admin_view()}
+
+
+@app.put("/api/methodist/patient-monetization")
+def api_methodist_patient_monetization_put(
+    request: "Request",
+    body: PatientMonetizationPatchIn,
+) -> dict:
+    """Сохранить настройки монетизации B2C."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.patient_monetization_config import (
+        monetization_admin_view,
+        save_patient_monetization_config,
+    )
+
+    patch = body.model_dump(exclude_none=True)
+    reviewer = (request.headers.get("x-methodist-reviewer") or "").strip()
+    saved = save_patient_monetization_config(patch, reviewer=reviewer)
+    return {"ok": True, "config": monetization_admin_view(), "saved": saved}
+
+
 @app.get("/api/methodist/queue")
 def api_methodist_queue(
     request: "Request",
@@ -11040,7 +11079,9 @@ def api_patient_status() -> dict:
     """Статус B2C-контура для мобильного приложения и patient.html."""
     from clinical_knowledge.patient_payment import payment_required, tier_catalog_public
     from clinical_knowledge.patient_question_tone import question_tones_for_api
+    from clinical_knowledge.patient_monetization_config import monetization_public_view
 
+    mon = monetization_public_view()
     return {
         "ok": True,
         "enabled": _patient_review_enabled(),
@@ -11061,7 +11102,8 @@ def api_patient_status() -> dict:
             ),
         },
         "payment_required": payment_required(),
-        "tiers": tier_catalog_public(),
+        "monetization": mon,
+        "tiers": mon.get("tiers") or tier_catalog_public(),
         "disclaimer": (
             "Ориентировочная сверка с клиническими протоколами Минздрава РБ; "
             "не диагноз и не замена очного приёма."

@@ -26,6 +26,16 @@
   var clinicId = params.get("clinic") || "";
   var tierId = params.get("tier") || "";
   var paidToken = params.get("paid") || localStorage.getItem("protocol_patient_payment_token") || "";
+  var monetization = {
+    monetization_enabled: false,
+    payment_required: false,
+    show_tier_picker: false,
+    show_prices: true,
+    default_tier_id: "basic",
+    payment_note_ru: "",
+    value_banner_ru: "",
+    tiers: [],
+  };
 
   var lastReport = null;
   var lastProtocolLinks = [];
@@ -175,7 +185,11 @@
   }
 
   function updateBtn() {
-    btn.disabled = !(consentEl.checked && kzInput.files && kzInput.files.length);
+    var ready = consentEl && consentEl.checked && kzInput.files && kzInput.files.length;
+    if (btn) {
+      btn.disabled = !ready;
+      btn.textContent = ready && needsPaymentBeforeReview() ? "Оплатить и проверить" : "Проверить заключение";
+    }
   }
 
   if (kzInput) kzInput.addEventListener("change", function () { renderChips(kzInput, "kz-chips"); updateBtn(); });
@@ -802,6 +816,11 @@
 
   if (btn) btn.addEventListener("click", function () {
     if (!kzInput.files || !kzInput.files.length) return;
+    if (needsPaymentBeforeReview()) {
+      btn.disabled = true;
+      startPaymentSession(false);
+      return;
+    }
     if (useSse) runReviewSse(); else runReviewFetch();
   });
 
@@ -859,27 +878,132 @@
       var brand = document.querySelector(".brand");
       if (brand && clinicId) brand.textContent = clinicConfig.name_ru;
       if (!tierId && clinicConfig.default_tier) selectedTier = clinicConfig.default_tier;
-      loadTiers();
+      syncPatientMonetizationFromApi();
     }).catch(function () {});
   }
 
-  function loadTiers() {
-    fetch(window.location.origin + "/api/patient/tiers").then(function (r) { return r.json(); }).then(function (data) {
-      var bar = document.getElementById("tier-bar");
-      if (!bar || !data.tiers) return;
-      bar.innerHTML = "";
-      data.tiers.forEach(function (t) {
-        var chip = document.createElement("button");
-        chip.type = "button";
-        chip.className = "tier-chip" + (t.tier_id === selectedTier ? " tier-chip--active" : "");
-        chip.textContent = t.label_ru + " · " + t.price_byn + " BYN";
-        chip.addEventListener("click", function () {
-          selectedTier = t.tier_id;
-          loadTiers();
-        });
-        bar.appendChild(chip);
+  function applyMonetizationState(mon) {
+    if (!mon) return;
+    monetization = mon;
+    if (mon.default_tier_id && !tierId) selectedTier = mon.default_tier_id;
+    if (mon.payment_required && paidToken) {
+      var payNote = document.getElementById("payment-note");
+      if (payNote) payNote.classList.add("payment-note--paid");
+    }
+    renderMonetizationUi();
+  }
+
+  function renderMonetizationUi() {
+    var wrap = document.getElementById("tier-wrap");
+    var banner = document.getElementById("patient-value-banner");
+    var payNote = document.getElementById("payment-note");
+    if (banner) {
+      if (monetization.value_banner_ru) {
+        banner.textContent = monetization.value_banner_ru;
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+        banner.textContent = "";
+      }
+    }
+    if (wrap) {
+      if (monetization.monetization_enabled && monetization.show_tier_picker) {
+        wrap.classList.remove("hidden");
+      } else {
+        wrap.classList.add("hidden");
+      }
+    }
+    if (payNote) {
+      payNote.textContent = monetization.payment_note_ru || "";
+      payNote.classList.toggle("hidden", !payNote.textContent);
+    }
+    renderTierBar(monetization.tiers || []);
+    updateBtn();
+  }
+
+  function renderTierBar(tiers) {
+    var bar = document.getElementById("tier-bar");
+    if (!bar) return;
+    bar.innerHTML = "";
+    if (!tiers || !tiers.length) return;
+    tiers.forEach(function (t) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      var active = t.tier_id === selectedTier;
+      btn.className = "tier-card-opt" + (active ? " tier-card-opt--active" : "");
+      var price = "";
+      if (monetization.show_prices && t.price_byn != null) {
+        price = '<span class="tier-card-opt__price">' + escapeHtml(String(t.price_byn)) + " BYN</span>";
+      }
+      var hint = t.hint_ru
+        ? '<span class="tier-card-opt__hint">' + escapeHtml(t.hint_ru) + "</span>"
+        : "";
+      btn.innerHTML =
+        '<span class="tier-card-opt__head">' +
+        '<span class="tier-card-opt__label">' + escapeHtml(t.label_ru || t.tier_id) + "</span>" +
+        price +
+        "</span>" + hint;
+      btn.addEventListener("click", function () {
+        selectedTier = t.tier_id;
+        renderTierBar(tiers);
+        updateBtn();
+        track("tier_pick", { tier: t.tier_id });
       });
-    }).catch(function () {});
+      bar.appendChild(btn);
+    });
+  }
+
+  function syncPatientMonetizationFromApi() {
+    fetch(window.location.origin + "/api/patient/status")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data) return;
+        var mon = data.monetization || {};
+        if (!mon.tiers && data.tiers) mon.tiers = data.tiers;
+        mon.payment_required = !!data.payment_required;
+        applyMonetizationState(mon);
+      })
+      .catch(function () {});
+  }
+
+  function needsPaymentBeforeReview() {
+    return !!(monetization.payment_required && !paidToken);
+  }
+
+  function startPaymentSession(thenReview) {
+    statusEl.textContent = "Создаём сессию оплаты…";
+    fetch(window.location.origin + "/api/patient/payment/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tier_id: selectedTier || "basic", clinic_id: clinicId || null }),
+    })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.detail || "Ошибка оплаты"); return j; }); })
+      .then(function (sess) {
+        if (sess.payment_token) {
+          paidToken = sess.payment_token;
+          localStorage.setItem("protocol_patient_payment_token", paidToken);
+        }
+        if (sess.provider === "dev-mock" && paidToken) {
+          statusEl.textContent = "Оплата (демо) принята. Запускаем проверку…";
+          if (useSse) runReviewSse(); else runReviewFetch();
+          return;
+        }
+        if (thenReview && paidToken) {
+          statusEl.textContent = "";
+          if (useSse) runReviewSse(); else runReviewFetch();
+          return;
+        }
+        if (sess.payment_url) {
+          window.location.href = sess.payment_url;
+        } else {
+          statusEl.textContent = "Оплата недоступна. Обратитесь в клинику.";
+          updateBtn();
+        }
+      })
+      .catch(function (err) {
+        statusEl.textContent = err.message || "Не удалось начать оплату.";
+        updateBtn();
+      });
   }
 
   function ensureGuestSession() {
@@ -900,8 +1024,9 @@
   }
 
   if (paidToken) localStorage.setItem("protocol_patient_payment_token", paidToken);
+  if (paidToken && statusEl) statusEl.textContent = "Оплата подтверждена. Загрузите КЗ и нажмите «Проверить».";
   loadClinic();
-  loadTiers();
+  syncPatientMonetizationFromApi();
   ensureGuestSession();
   setupInstallHint();
   loadQuestionTone();

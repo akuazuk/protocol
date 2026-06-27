@@ -31,6 +31,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "Промо-проверка",
         "price_byn": 2.99,
         "review_tier": "P1",
+        "hint_ru": "Светофор, блоки КЗ и вопросы врачу — вход по ссылке клиники.",
         "includes": ["traffic_light", "blocks", "questions"],
     },
     "basic": {
@@ -38,6 +39,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "Базовая проверка",
         "price_byn": 4.99,
         "review_tier": "P1",
+        "hint_ru": "Полный разбор 8 блоков, вопросы врачу и цитаты из протоколов Минздрава.",
         "includes": ["traffic_light", "blocks", "questions", "citations"],
     },
     "plus": {
@@ -45,6 +47,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "С анализами",
         "price_byn": 6.99,
         "review_tier": "P1",
+        "hint_ru": "Всё из базового + сверка бланков анализов с заключением и протоколом.",
         "includes": ["basic", "lab_crosscheck", "protocol_crosscheck"],
     },
     "detailed": {
@@ -52,6 +55,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "Подробная проверка",
         "price_byn": 9.99,
         "review_tier": "P2",
+        "hint_ru": "Расширенный отчёт простым языком и пакет доказательств по протоколу.",
         "includes": ["plus", "plain_narrative", "evidence_pack"],
     },
     "onco": {
@@ -59,6 +63,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "Онкология",
         "price_byn": 14.99,
         "review_tier": "P2",
+        "hint_ru": "Углублённый разбор при онкологическом контексте и приоритеты безопасности лечения.",
         "includes": ["detailed", "priority_treatment_safety"],
     },
 }

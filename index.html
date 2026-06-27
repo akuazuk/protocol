@@ -7126,6 +7126,10 @@
       display: none;
     }
 
+    #tab-methodist-b2c {
+      display: none;
+    }
+
     body.methodist-mode #tab-methodist-ml-stats {
       display: flex;
     }
@@ -7137,6 +7141,88 @@
     body.methodist-mode #tab-methodist-search-stats {
       display: flex;
     }
+
+    body.methodist-mode #tab-methodist-b2c {
+      display: flex;
+    }
+
+    .methodist-b2c-panel {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0.5rem 0 2rem;
+    }
+    .methodist-b2c-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    @media (max-width: 820px) {
+      .methodist-b2c-grid { grid-template-columns: 1fr; }
+    }
+    .methodist-b2c-card {
+      border: 1px solid #dbe7e3;
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      background: #fff;
+    }
+    .methodist-b2c-card h3 {
+      margin: 0 0 0.45rem;
+      font-size: 0.88rem;
+      color: #0d5c4a;
+    }
+    .methodist-b2c-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      margin: 0.45rem 0;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+    .methodist-b2c-toggle input { margin-top: 0.2rem; }
+    .methodist-b2c-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+    .methodist-b2c-tier-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.4rem;
+      border-radius: 8px;
+      background: #f8fbfa;
+    }
+    .methodist-b2c-tier-row small {
+      display: block;
+      color: #6b7280;
+      margin-top: 0.1rem;
+    }
+    .methodist-b2c-note {
+      width: 100%;
+      min-height: 3.2rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 8px;
+      border: 1px solid #dbe7e3;
+      resize: vertical;
+    }
+    .methodist-b2c-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.85rem;
+    }
+    .methodist-b2c-status {
+      font-size: 0.76rem;
+      color: #6b7280;
+    }
+    .methodist-b2c-status.is-ok { color: #0d5c4a; }
+    .methodist-b2c-status.is-err { color: #b91c1c; }
 
     .methodist-retrieval-fix-wrap.is-required {
       border: 1px solid #c45a2a;
@@ -10699,6 +10785,17 @@
           <span class="app-main-tab-sub">AI-разметка retrieval и улучшения RAG</span>
         </span>
       </button>
+      <button type="button" role="tab" id="tab-methodist-b2c" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-b2c" hidden>
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h.01M10 15h4"/>
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title">B2C · монетизация</span>
+          <span class="app-main-tab-sub">тарифы patient.html, оплата и тексты для пациента</span>
+        </span>
+      </button>
       <button type="button" role="tab" id="tab-main-search" aria-selected="false" aria-controls="panel-main-search">
         <span class="app-main-tab-visual" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -12049,6 +12146,62 @@
             </table>
           </div>
         </section>
+      </div>
+    </div>
+
+    <div
+      id="panel-methodist-b2c"
+      class="panel-methodist-b2c"
+      role="tabpanel"
+      aria-labelledby="tab-methodist-b2c"
+      hidden
+    >
+      <div id="methodist-b2c-root" class="methodist-b2c-panel consult-hide-print">
+        <div class="methodist-ml-dashboard__hero">
+          <div>
+            <h2>Монетизация B2C (patient.html)</h2>
+            <p>
+              Включите тарифы и оплату для пациентов, выберите доступные уровни проверки и тексты подсказок.
+              Изменения применяются сразу на <a href="patient.html" target="_blank" rel="noopener noreferrer">patient.html</a>.
+            </p>
+          </div>
+          <div class="methodist-ml-dashboard__hero-actions">
+            <button type="button" class="btn-ml-dash-refresh" id="methodist-b2c-refresh">Обновить</button>
+          </div>
+        </div>
+        <div id="methodist-b2c-error" class="methodist-ml-error" hidden></div>
+        <div class="methodist-b2c-grid">
+          <div class="methodist-b2c-card">
+            <h3>Режим</h3>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="b2c-mon-enabled" /> Монетизация включена (тарифы и цены на форме пациента)</label>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="b2c-pay-required" /> Требовать оплату перед проверкой</label>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="b2c-show-picker" /> Показывать выбор тарифа пациенту</label>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="b2c-show-prices" /> Показывать цены в BYN</label>
+            <p class="methodist-tier-hint" id="b2c-effective-hint"></p>
+          </div>
+          <div class="methodist-b2c-card">
+            <h3>Тариф по умолчанию</h3>
+            <select id="b2c-default-tier" class="methodist-b2c-note" style="min-height:auto"></select>
+            <h3 style="margin-top:0.65rem">Доступные тарифы</h3>
+            <div id="b2c-tier-list" class="methodist-b2c-tiers"></div>
+          </div>
+          <div class="methodist-b2c-card">
+            <h3>Текст при бесплатной проверке</h3>
+            <textarea id="b2c-demo-note" class="methodist-b2c-note" maxlength="500"></textarea>
+          </div>
+          <div class="methodist-b2c-card">
+            <h3>Текст при платной проверке</h3>
+            <textarea id="b2c-paid-note" class="methodist-b2c-note" maxlength="500"></textarea>
+            <h3 style="margin-top:0.65rem">Ценность для пациента (баннер)</h3>
+            <textarea id="b2c-value-banner" class="methodist-b2c-note" maxlength="500"></textarea>
+          </div>
+        </div>
+        <div class="methodist-b2c-actions">
+          <button type="button" class="btn-primary" id="methodist-b2c-save">Сохранить настройки</button>
+          <a href="patient.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть patient.html</a>
+          <span id="methodist-b2c-status" class="methodist-b2c-status"></span>
+        </div>
+        <p class="methodist-tier-hint" id="b2c-config-path" style="margin-top:0.5rem"></p>
       </div>
     </div>
 
@@ -19305,6 +19458,7 @@
   var MAIN_TAB_ML_STATS = "ml-stats";
   var MAIN_TAB_QUEUE = "queue";
   var MAIN_TAB_SEARCH_STATS = "search-stats";
+  var MAIN_TAB_B2C = "b2c-monetization";
   var METHODIST_RETRIEVAL_PROTOCOL_TAGS = ["wrong_protocol", "missed_protocol"];
   var __methodistMlCharts = {};
 
@@ -19534,6 +19688,7 @@
     var tabMl = document.getElementById("tab-methodist-ml-stats");
     var tabQueue = document.getElementById("tab-methodist-queue");
     var tabSearchStats = document.getElementById("tab-methodist-search-stats");
+    var tabB2c = document.getElementById("tab-methodist-b2c");
     if (tabMl) {
       if (active) {
         tabMl.removeAttribute("hidden");
@@ -19551,6 +19706,10 @@
     if (tabSearchStats) {
       if (active) tabSearchStats.removeAttribute("hidden");
       else tabSearchStats.setAttribute("hidden", "");
+    }
+    if (tabB2c) {
+      if (active) tabB2c.removeAttribute("hidden");
+      else tabB2c.setAttribute("hidden", "");
     }
     if (!active) setMethodistAiFlowState("");
     if (active && typeof switchMainAppTab === "function") {
@@ -20128,6 +20287,157 @@
         if (errEl) {
           errEl.hidden = false;
           errEl.textContent = "Не удалось открыть снимок: " + methodistApiErrorRu(e.message || e);
+        }
+      });
+  }
+
+  function renderMethodistB2cConfig(cfg) {
+    if (!cfg) return;
+    var en = document.getElementById("b2c-mon-enabled");
+    var pay = document.getElementById("b2c-pay-required");
+    var pick = document.getElementById("b2c-show-picker");
+    var prices = document.getElementById("b2c-show-prices");
+    var demo = document.getElementById("b2c-demo-note");
+    var paid = document.getElementById("b2c-paid-note");
+    var banner = document.getElementById("b2c-value-banner");
+    var defSel = document.getElementById("b2c-default-tier");
+    var tierList = document.getElementById("b2c-tier-list");
+    var hint = document.getElementById("b2c-effective-hint");
+    var pathEl = document.getElementById("b2c-config-path");
+    if (en) en.checked = !!cfg.monetization_enabled;
+    if (pay) pay.checked = !!cfg.payment_required;
+    if (pick) pick.checked = cfg.show_tier_picker !== false;
+    if (prices) prices.checked = cfg.show_prices !== false;
+    if (demo) demo.value = cfg.demo_note_ru || "";
+    if (paid) paid.value = cfg.paid_note_ru || "";
+    if (banner) banner.value = cfg.value_banner_ru || "";
+    if (hint) {
+      hint.textContent = cfg.payment_required_effective
+        ? "Сейчас для пациента: оплата обязательна перед проверкой."
+        : "Сейчас для пациента: проверка бесплатна (демо или монетизация выключена).";
+    }
+    if (pathEl) pathEl.textContent = cfg.config_path ? "Файл настроек: " + cfg.config_path : "";
+    var enabled = cfg.enabled_tier_ids || [];
+    if (defSel) {
+      defSel.innerHTML = "";
+      (cfg.tier_catalog_all || []).forEach(function (t) {
+        if (enabled.indexOf(t.tier_id) < 0) return;
+        var opt = document.createElement("option");
+        opt.value = t.tier_id;
+        opt.textContent = t.label_ru + " (" + t.price_byn + " BYN, " + t.review_tier + ")";
+        if (t.tier_id === cfg.default_tier_id) opt.selected = true;
+        defSel.appendChild(opt);
+      });
+    }
+    if (tierList) {
+      tierList.innerHTML = "";
+      (cfg.tier_catalog_all || []).forEach(function (t) {
+        var row = document.createElement("label");
+        row.className = "methodist-b2c-tier-row";
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = t.tier_id;
+        cb.checked = enabled.indexOf(t.tier_id) >= 0;
+        cb.dataset.tierId = t.tier_id;
+        var body = document.createElement("span");
+        body.innerHTML = "<strong>" + escapeHtml(t.label_ru) + "</strong> · " + t.price_byn + " BYN · " + escapeHtml(t.review_tier) +
+          (t.hint_ru ? "<small>" + escapeHtml(t.hint_ru) + "</small>" : "");
+        row.appendChild(cb);
+        row.appendChild(body);
+        tierList.appendChild(row);
+      });
+    }
+  }
+
+  function collectMethodistB2cPatch() {
+    var enabledIds = [];
+    document.querySelectorAll("#b2c-tier-list input[type=checkbox]").forEach(function (cb) {
+      if (cb.checked) enabledIds.push(cb.value);
+    });
+    if (!enabledIds.length) enabledIds = ["basic"];
+    return {
+      monetization_enabled: !!(document.getElementById("b2c-mon-enabled") && document.getElementById("b2c-mon-enabled").checked),
+      payment_required: !!(document.getElementById("b2c-pay-required") && document.getElementById("b2c-pay-required").checked),
+      show_tier_picker: !!(document.getElementById("b2c-show-picker") && document.getElementById("b2c-show-picker").checked),
+      show_prices: !!(document.getElementById("b2c-show-prices") && document.getElementById("b2c-show-prices").checked),
+      default_tier_id: (document.getElementById("b2c-default-tier") && document.getElementById("b2c-default-tier").value) || "basic",
+      enabled_tier_ids: enabledIds,
+      demo_note_ru: ((document.getElementById("b2c-demo-note") || {}).value || "").trim(),
+      paid_note_ru: ((document.getElementById("b2c-paid-note") || {}).value || "").trim(),
+      value_banner_ru: ((document.getElementById("b2c-value-banner") || {}).value || "").trim(),
+    };
+  }
+
+  function loadMethodistB2cMonetizationPanel() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var root = document.getElementById("methodist-b2c-root");
+    var errEl = document.getElementById("methodist-b2c-error");
+    var st = document.getElementById("methodist-b2c-status");
+    if (root) root.classList.add("is-loading");
+    if (errEl) errEl.hidden = true;
+    if (st) { st.textContent = ""; st.className = "methodist-b2c-status"; }
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+    fetch(base + "/api/methodist/patient-monetization", {
+      headers: {
+        "X-Methodist-Token": window.__methodistToken,
+        "X-Methodist-Reviewer": window.__methodistReviewer || "",
+      },
+    })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); });
+        return r.json();
+      })
+      .then(function (data) {
+        renderMethodistB2cConfig(data.config || {});
+      })
+      .catch(function (e) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось загрузить настройки B2C: " + methodistApiErrorRu(e.message || e);
+        }
+      })
+      .finally(function () {
+        if (root) root.classList.remove("is-loading");
+      });
+  }
+
+  function saveMethodistB2cMonetizationPanel() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var st = document.getElementById("methodist-b2c-status");
+    var errEl = document.getElementById("methodist-b2c-error");
+    if (errEl) errEl.hidden = true;
+    if (st) { st.textContent = "Сохранение…"; st.className = "methodist-b2c-status"; }
+    var baseEl = document.getElementById("rag-base");
+    var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
+    fetch(base + "/api/methodist/patient-monetization", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Methodist-Token": window.__methodistToken,
+        "X-Methodist-Reviewer": window.__methodistReviewer || "",
+      },
+      body: JSON.stringify(collectMethodistB2cPatch()),
+    })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.status); });
+        return r.json();
+      })
+      .then(function (data) {
+        renderMethodistB2cConfig(data.config || {});
+        if (st) {
+          st.textContent = "Сохранено. Проверьте patient.html в новой вкладке.";
+          st.className = "methodist-b2c-status is-ok";
+        }
+      })
+      .catch(function (e) {
+        if (st) {
+          st.textContent = "Ошибка сохранения.";
+          st.className = "methodist-b2c-status is-err";
+        }
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = methodistApiErrorRu(e.message || e);
         }
       });
   }
@@ -25502,17 +25812,20 @@
     var tabMl = document.getElementById("tab-methodist-ml-stats");
     var tabQueue = document.getElementById("tab-methodist-queue");
     var tabSearchStats = document.getElementById("tab-methodist-search-stats");
+    var tabB2c = document.getElementById("tab-methodist-b2c");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
     var panelAnalytics = document.getElementById("panel-analytics-stats");
     var panelMl = document.getElementById("panel-methodist-ml-stats");
     var panelQueue = document.getElementById("panel-methodist-queue");
     var panelSearchStats = document.getElementById("panel-methodist-search-stats");
+    var panelB2c = document.getElementById("panel-methodist-b2c");
     if (!tabSearch || !tabConsult || !panelSearch || !panelConsult) return;
     var isConsult = which === MAIN_TAB_CONSULT;
     var isMl = which === MAIN_TAB_ML_STATS;
     var isQueue = which === MAIN_TAB_QUEUE;
     var isSearchStats = which === MAIN_TAB_SEARCH_STATS;
+    var isB2c = which === MAIN_TAB_B2C;
     var isAnalytics = which === MAIN_TAB_ANALYTICS;
     var isSearch = which === MAIN_TAB_SEARCH;
     tabSearch.setAttribute("aria-selected", isSearch ? "true" : "false");
@@ -25535,19 +25848,25 @@
       tabSearchStats.setAttribute("aria-selected", isSearchStats ? "true" : "false");
       tabSearchStats.tabIndex = isSearchStats ? 0 : -1;
     }
+    if (tabB2c) {
+      tabB2c.setAttribute("aria-selected", isB2c ? "true" : "false");
+      tabB2c.tabIndex = isB2c ? 0 : -1;
+    }
     panelSearch.hidden = !isSearch;
     panelConsult.hidden = !isConsult;
     if (panelAnalytics) panelAnalytics.hidden = !isAnalytics;
     if (panelMl) panelMl.hidden = !isMl;
     if (panelQueue) panelQueue.hidden = !isQueue;
     if (panelSearchStats) panelSearchStats.hidden = !isSearchStats;
+    if (panelB2c) panelB2c.hidden = !isB2c;
     document.body.classList.remove(
       "app-tab-search",
       "app-tab-consult",
       "app-tab-analytics",
       "app-tab-ml",
       "app-tab-queue",
-      "app-tab-search-stats"
+      "app-tab-search-stats",
+      "app-tab-b2c"
     );
     if (isSearch) document.body.classList.add("app-tab-search");
     else if (isConsult) document.body.classList.add("app-tab-consult");
@@ -25555,6 +25874,7 @@
     else if (isMl) document.body.classList.add("app-tab-ml");
     else if (isQueue) document.body.classList.add("app-tab-queue");
     else if (isSearchStats) document.body.classList.add("app-tab-search-stats");
+    else if (isB2c) document.body.classList.add("app-tab-b2c");
     syncSearchMethodistPanelPlacement();
     if (isSearchStats && typeof mountPendingSearchReviewWorkbench === "function") {
       mountPendingSearchReviewWorkbench();
@@ -25569,6 +25889,9 @@
       } else if (isQueue) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#methodist-queue");
         if (typeof loadMethodistQueuePanel === "function") loadMethodistQueuePanel();
+      } else if (isB2c) {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#b2c-monetization");
+        if (typeof loadMethodistB2cMonetizationPanel === "function") loadMethodistB2cMonetizationPanel();
       } else if (isAnalytics) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
         if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
@@ -27425,6 +27748,7 @@
     var tml = document.getElementById("tab-methodist-ml-stats");
     var tq = document.getElementById("tab-methodist-queue");
     var tss = document.getElementById("tab-methodist-search-stats");
+    var tb2c = document.getElementById("tab-methodist-b2c");
     var tablist = document.getElementById("app-main-tabs");
     if (!ts || !tc) return;
 
@@ -27456,6 +27780,26 @@
       tss.setAttribute("data-wired", "1");
       tss.addEventListener("click", function () {
         switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+      });
+    }
+    if (tb2c && !tb2c.getAttribute("data-wired")) {
+      tb2c.setAttribute("data-wired", "1");
+      tb2c.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_B2C);
+      });
+    }
+    var b2cRefresh = document.getElementById("methodist-b2c-refresh");
+    if (b2cRefresh && !b2cRefresh.getAttribute("data-wired")) {
+      b2cRefresh.setAttribute("data-wired", "1");
+      b2cRefresh.addEventListener("click", function () {
+        loadMethodistB2cMonetizationPanel();
+      });
+    }
+    var b2cSave = document.getElementById("methodist-b2c-save");
+    if (b2cSave && !b2cSave.getAttribute("data-wired")) {
+      b2cSave.setAttribute("data-wired", "1");
+      b2cSave.addEventListener("click", function () {
+        saveMethodistB2cMonetizationPanel();
       });
     }
     var refreshBtn = document.getElementById("methodist-ml-dash-refresh");
@@ -27497,6 +27841,7 @@
         if (window.__methodistMode && tq && !tq.hidden) tabs.push(tq);
         if (window.__methodistMode && tml && !tml.hidden) tabs.push(tml);
         if (window.__methodistMode && tss && !tss.hidden) tabs.push(tss);
+        if (window.__methodistMode && tb2c && !tb2c.hidden) tabs.push(tb2c);
         tabs.push(tc);
         if (ta) tabs.push(ta);
         var idx = tabs.findIndex(function (t) {
@@ -27511,6 +27856,7 @@
         else if (tabs[idx] === ta) switchMainAppTab(MAIN_TAB_ANALYTICS);
         else if (tabs[idx] === tml) switchMainAppTab(MAIN_TAB_ML_STATS);
         else if (tabs[idx] === tss) switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+        else if (tabs[idx] === tb2c) switchMainAppTab(MAIN_TAB_B2C);
         else if (tabs[idx] === tq) switchMainAppTab(MAIN_TAB_QUEUE);
         else switchMainAppTab(MAIN_TAB_CONSULT);
       });
@@ -27524,6 +27870,8 @@
         switchMainAppTab(MAIN_TAB_SEARCH_STATS);
       } else if (h === "#methodist-queue" && window.__methodistMode) {
         switchMainAppTab(MAIN_TAB_QUEUE);
+      } else if (h === "#b2c-monetization" && window.__methodistMode) {
+        switchMainAppTab(MAIN_TAB_B2C);
       } else if (h === "#analytics-stats" || h === "#analytics") {
         switchMainAppTab(MAIN_TAB_ANALYTICS);
       } else if (h === "#search" || h === "#/search") {

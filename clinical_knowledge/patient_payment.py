@@ -11,12 +11,9 @@ from .patient_clinic_config import TIER_CATALOG, resolve_tier
 
 
 def payment_required() -> bool:
-    return os.environ.get("PATIENT_PAYMENT_REQUIRED", "0").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-        "on",
-    )
+    from .patient_monetization_config import payment_required_effective
+
+    return payment_required_effective()
 
 
 def _dev_secret() -> str:
@@ -60,14 +57,6 @@ def verify_payment_token(token: str | None, *, tier_id: str | None = None) -> bo
 
 
 def tier_catalog_public() -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-    for t in TIER_CATALOG.values():
-        out.append(
-            {
-                "tier_id": t["tier_id"],
-                "label_ru": t["label_ru"],
-                "price_byn": t["price_byn"],
-                "review_tier": t["review_tier"],
-            }
-        )
-    return out
+    from .patient_monetization_config import tier_catalog_for_patient
+
+    return tier_catalog_for_patient()

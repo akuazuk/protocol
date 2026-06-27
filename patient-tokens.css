@@ -92,11 +92,68 @@
   border: 1px solid var(--border);
 }
 
+.tier-wrap.hidden { display: none; }
+
+.patient-value-banner {
+  margin: 0.55rem 0 0.35rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  line-height: 1.48;
+  color: var(--g800);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, var(--gsoft) 100%);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
+}
+
 .tier-bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  flex-direction: column;
+  gap: 0.45rem;
   margin: 0.65rem 0;
+}
+.tier-card-opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.62rem 0.7rem;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  min-height: var(--touch-min);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.tier-card-opt--active {
+  border-color: var(--g600);
+  box-shadow: 0 6px 18px rgba(26, 138, 114, 0.14);
+  background: linear-gradient(160deg, #fff 0%, var(--gsoft2) 100%);
+}
+.tier-card-opt__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+.tier-card-opt__label {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--g950);
+}
+.tier-card-opt__price {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--g700);
+  white-space: nowrap;
+}
+.tier-card-opt__hint {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.42;
+  color: var(--muted);
 }
 .tier-chip {
   font-size: 0.72rem;
