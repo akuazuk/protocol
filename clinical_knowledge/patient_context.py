@@ -29,7 +29,7 @@ def _infer_specialty(doc: dict[str, Any], kz_text: str = "") -> str | None:
         return "neurology"
     if "флеболог" in blob:
         return "phlebology"
-    if "дерматовенеролог" in blob or "дерматолог" in blob:
+    if re.search(r"дерматовенеролог|(?:осмотр|консультац)[^\n]{0,40}дерматолог", blob):
         return "dermatology"
     if "l93" in blob.replace(" ", "") or "волчан" in blob:
         return "dermatology"

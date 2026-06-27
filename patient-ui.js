@@ -1087,6 +1087,10 @@
 
   function runReviewFetch() {
     track("upload_start", { tier: selectedTier, lab_count: labFilesList.length });
+    try {
+      sessionStorage.removeItem(REPORT_KEY);
+      reviewFingerprint = null;
+    } catch (e) {}
     btn.disabled = true;
     showLoader("Анализируем документ");
     fetch(window.location.origin + "/api/patient/review", { method: "POST", body: buildFormData() })

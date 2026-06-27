@@ -7,20 +7,33 @@ from typing import Any
 from .patient_exam_extraction import imaging_exams, lab_exams
 
 
-def _section_after(text: str, label: str, *, max_len: int = 220) -> str:
-    pat = re.compile(rf"{re.escape(label)}\s*:?\s*(.+?)(?:\n\s*\n|\n[A-ZА-ЯЁ][^\n]{{3,}}:|\Z)", re.I | re.S)
-    m = pat.search(text or "")
-    if not m:
-        return ""
-    return re.sub(r"\s+", " ", m.group(1)).strip()[:max_len]
+def _section_after(text: str, label: str | tuple[str, ...], *, max_len: int = 220) -> str:
+    labels = (label,) if isinstance(label, str) else label
+    for item in labels:
+        pat = re.compile(
+            rf"{re.escape(item)}\s*:?\s*(.+?)(?:\n\s*\n|\n[A-ZА-ЯЁ][^\n]{{3,}}:|\Z)",
+            re.I | re.S,
+        )
+        m = pat.search(text or "")
+        if m:
+            return re.sub(r"\s+", " ", m.group(1)).strip()[:max_len]
+    return ""
+
+
+_SPECIALTY_VISIT_RU: dict[str, str] = {
+    "neurology": "невролога",
+    "dermatology": "дерматовенеролога",
+    "phlebology": "флеболога",
+}
 
 
 def extract_complaint_phrase(kz_text: str) -> str:
     low = (kz_text or "").lower()
-    sec = _section_after(kz_text, "Жалобы")
+    sec = _section_after(kz_text, ("Жалобы пациента", "Жалобы"))
     if sec and len(sec) > 6:
         sec = re.sub(r"\s+", " ", sec).strip()
         sec = re.sub(r"^на\s+", "", sec, flags=re.I)
+        sec = re.sub(r"^пациента\s*:?\s*", "", sec, flags=re.I)
         sec = sec.replace(" а коже", " на коже")
         return sec[:120]
     if "высыпан" in low:
@@ -49,10 +62,14 @@ def extract_diagnosis_phrase(kz_text: str) -> str:
 
 
 def extract_specialty_phrase(kz_text: str, specialty: str | None) -> str:
+    if specialty and specialty in _SPECIALTY_VISIT_RU:
+        return _SPECIALTY_VISIT_RU[specialty]
     low = (kz_text or "").lower()
-    if specialty == "neurology" or "невролог" in low:
+    if re.search(r"медицинский осмотр[^\n]{0,48}флеболог", low) or re.search(r"^\s*флеболог\s*$", low, re.M):
+        return "флеболога"
+    if "невролог" in low and "флеболог" not in low[:800]:
         return "невролога"
-    if specialty == "dermatology" or "дерматовенеролог" in low or "дерматолог" in low:
+    if re.search(r"дерматовенеролог|(?:осмотр|консультац)[^\n]{0,40}дерматолог", low):
         return "дерматовенеролога"
     return "врача"
 
@@ -191,7 +208,9 @@ def red_flags_for_context(kz_text: str, specialty: str | None) -> str:
             " При неврологических жалобах - внезапная очень сильная головная боль, "
             "слабость в руке или ноге, нарушение речи."
         )
-    if "высыпан" in low or "кож" in low or specialty == "dermatology" or "l93" in low.replace(" ", ""):
+    if specialty == "phlebology" or ("i80" in low.replace(" ", "") or "тромб" in low or "тгв" in low):
+        base += " При проблемах с венами - резкое усиление отёка, боль в груди, одышка."
+    elif specialty == "dermatology" or "высыпан" in low or ("l93" in low.replace(" ", "")):
         base += " При кожных проблемах - быстрое распространение высыпаний, отёк лица, одышка."
     base += " Это общая справочная информация, не диагноз."
     return base
