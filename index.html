@@ -8284,6 +8284,122 @@
       color: var(--green-800);
     }
 
+    .site-footer-nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+      gap: 0.55rem;
+      margin: 0.95rem 0 0.75rem;
+    }
+
+    .site-footer-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      padding: 0.68rem 0.72rem;
+      border-radius: 14px;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      background: rgba(255, 255, 255, 0.78);
+      text-decoration: none;
+      color: var(--green-950);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+      box-shadow: 0 2px 10px rgba(6, 61, 53, 0.04);
+    }
+
+    .site-footer-card:hover,
+    .site-footer-card:focus-visible {
+      border-color: rgba(26, 138, 114, 0.34);
+      box-shadow: 0 6px 18px rgba(6, 61, 53, 0.08);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .site-footer-card--patient {
+      background: linear-gradient(145deg, rgba(92, 61, 158, 0.09) 0%, rgba(26, 138, 114, 0.07) 100%);
+      border-color: rgba(92, 61, 158, 0.2);
+    }
+
+    .site-footer-card--presentation {
+      background: linear-gradient(145deg, rgba(13, 92, 74, 0.1) 0%, rgba(26, 138, 114, 0.05) 100%);
+    }
+
+    .site-footer-card--methodist {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(232, 245, 241, 0.85) 100%);
+    }
+
+    .site-footer-card__icon {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26, 138, 114, 0.12);
+      color: var(--green-800);
+    }
+
+    .site-footer-card--patient .site-footer-card__icon {
+      background: rgba(92, 61, 158, 0.14);
+      color: #5c3d9e;
+    }
+
+    .site-footer-card--presentation .site-footer-card__icon {
+      background: rgba(13, 92, 74, 0.14);
+    }
+
+    .site-footer-card--methodist .site-footer-card__icon {
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+    }
+
+    .site-footer-card__text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+      min-width: 0;
+    }
+
+    .site-footer-card__title {
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--green-950);
+    }
+
+    .site-footer-card__sub {
+      font-size: 0.68rem;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    body.methodist-mode .site-footer-card--methodist {
+      display: none;
+    }
+
+    .site-footer-nav .btn-methodist-enter {
+      width: 100%;
+      padding: 0.68rem 0.72rem;
+      border-radius: 14px;
+      font-weight: inherit;
+    }
+
+    .site-footer-source {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .site-footer-source a {
+      color: var(--green-800);
+      font-weight: 650;
+    }
+
     .site-bottom-zone {
       margin-top: 2.5rem;
       padding-top: 1.5rem;
@@ -10780,9 +10896,6 @@
   </div>
   <div class="bg-pattern" aria-hidden="true"></div>
   <div class="wrap">
-    <div class="methodist-topbar consult-hide-print" id="methodist-topbar">
-      <button type="button" class="btn-methodist-enter" id="methodist-btn-enter">Кабинет методиста</button>
-    </div>
     <div class="methodist-mode-banner consult-hide-print" id="methodist-mode-banner" hidden aria-live="polite">
       <div class="methodist-mode-banner__main">
         <span class="methodist-mode-banner__icon" aria-hidden="true">М</span>
@@ -11409,14 +11522,6 @@
               <h2>Проверка консультативного заключения</h2>
               <p class="consult-hint-small" style="margin: 0.35rem 0 0; color: var(--green-800); font-weight: 600">
                 PDF, TXT, DOCX, RTF, ODT, HTML → сверка с фрагментами клинических протоколов Минздрава РБ
-              </p>
-              <p class="consult-hint-small consult-intro-hide-print" style="margin: 0.5rem 0 0">
-                <a href="docs/mvp-presentation.html" class="btn-presentation-prominent" target="_blank" rel="noopener noreferrer">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4M7 8h2v6H7zM11 10h2v4h-2zM15 7h2v7h-2z" />
-                  </svg>
-                  <span class="btn-presentation-prominent__text"><span>Презентация MVP для руководства</span><small>схемы контура качества и дорожная карта</small></span>
-                </a>
               </p>
             </div>
           </div>
@@ -12325,9 +12430,9 @@
     </div>
 
     <section class="site-bottom-zone" id="site-bottom-zone" aria-labelledby="site-bottom-title">
-      <h2 id="site-bottom-title" class="site-bottom-zone__title">Материалы проекта</h2>
+      <h2 id="site-bottom-title" class="site-bottom-zone__title">Учебные материалы</h2>
       <p class="site-bottom-zone__lead site-bottom-zone__lead--search-only">
-        Презентация, архитектура и учебные кейсы. Статистика - вкладка «Статистика поиска».
+        Клинические ситуации для ординаторов. Документы и сервисы - в подвале страницы.
       </p>
 
       <details class="training-panel" id="training-panel">
@@ -12335,56 +12440,81 @@
         <p class="info-panel-note" style="margin: 0.45rem 0">Для ординаторов: подставляет запрос и запускает подбор.</p>
         <div class="demo-cases-chips" id="training-cases-chips"></div>
       </details>
-
-      <div class="site-bottom-links">
-        <p class="compliance-norm-panel" style="margin:0;padding:0.65rem 0.75rem;font-size:0.82rem;border:none;background:rgba(232,245,241,0.45)">
-          <strong>Источник:</strong>
-          <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
-          Сервис не изменяет тексты PDF. Не замена МЭЭ.
-        </p>
-        <p class="minister-doc-links">
-          <span class="site-bottom-patient-row">
-            <a href="patient.html" class="btn-patient-prominent">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M12 21s-6-4.35-6-10a6 6 0 1112 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/>
-              </svg>
-              <span class="btn-presentation-prominent__text"><span>Проверь своё заключение</span><small>для пациентов: фото КЗ и анализы</small></span>
-            </a>
-          <a href="docs/mvp-presentation.html" class="btn-presentation-prominent" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="2" y="3" width="20" height="14" rx="2" /><path d="M8 21h8M12 17v4M7 8h2v6H7zM11 10h2v4h-2zM15 7h2v7h-2z" />
-            </svg>
-            <span class="btn-presentation-prominent__text"><span>Презентация MVP</span><small>графики и инфографика</small></span>
-          </a>
-          <a href="docs/ministry-brief-print.html" target="_blank" rel="noopener">Буклет для руководства</a>
-          <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener">Архитектура (HTML)</a>
-          <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener">Архитектура (PDF)</a>
-          <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener">Чек-лист перед подписью</a>
-          </span>
-        </p>
-      </div>
     </section>
 
     <footer class="site-footer site-footer--compact" id="section-footer">
       <div class="site-footer-brand">
         <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
       </div>
-      <p>
+      <p class="site-footer-source">
         Источник PDF:
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
-        Не замена очной консультации.
+        Сервис не изменяет тексты PDF. Не замена очной консультации и МЭЭ.
       </p>
+      <nav class="site-footer-nav consult-hide-print" aria-label="Материалы и сервисы">
+        <a href="patient.html" class="site-footer-card site-footer-card--patient">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-4.35-6-10a6 6 0 1112 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Проверь своё заключение</span>
+            <span class="site-footer-card__sub">B2C для пациентов: фото КЗ и анализы</span>
+          </span>
+        </a>
+        <a href="docs/mvp-presentation.html" class="site-footer-card site-footer-card--presentation" target="_blank" rel="noopener noreferrer">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4M7 8h2v6H7zM11 10h2v4h-2zM15 7h2v7h-2z"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Презентация MVP</span>
+            <span class="site-footer-card__sub">Графики, контур качества, дорожная карта</span>
+          </span>
+        </a>
+        <button type="button" class="site-footer-card site-footer-card--methodist btn-methodist-enter" id="methodist-btn-enter">
+          <span class="site-footer-card__icon" aria-hidden="true">М</span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Кабинет методиста</span>
+            <span class="site-footer-card__sub">Разметка КЗ и работа методслужбы</span>
+          </span>
+        </button>
+        <a href="docs/ministry-brief-print.html" class="site-footer-card" target="_blank" rel="noopener noreferrer">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Буклет для руководства</span>
+            <span class="site-footer-card__sub">Кратко для Минздрава и клиники</span>
+          </span>
+        </a>
+        <a href="docs/architecture-kravira-fhir-mis.pdf" class="site-footer-card" target="_blank" rel="noopener noreferrer">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Архитектура (PDF)</span>
+            <span class="site-footer-card__sub">Protocol, FHIR и контур МИС</span>
+          </span>
+        </a>
+        <a href="docs/architecture-kravira-fhir-mis-print.html" class="site-footer-card" target="_blank" rel="noopener noreferrer">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Архитектура (HTML)</span>
+            <span class="site-footer-card__sub">Версия для просмотра в браузере</span>
+          </span>
+        </a>
+        <a href="docs/pre-sign-checklist-print.html" class="site-footer-card" target="_blank" rel="noopener noreferrer">
+          <span class="site-footer-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </span>
+          <span class="site-footer-card__text">
+            <span class="site-footer-card__title">Чек-лист перед подписью</span>
+            <span class="site-footer-card__sub">Контроль перед ЭЦП заключения</span>
+          </span>
+        </a>
+      </nav>
       <p class="site-footer-meta" style="margin: 0.35rem 0 0; font-size: 0.72rem; color: var(--muted); opacity: 0.85">
-        <span class="site-footer-doc-links">
-          <a href="patient.html">Проверь своё заключение (пациентам)</a>
-          ·
-          <a href="docs/architecture-kravira-fhir-mis.pdf" target="_blank" rel="noopener noreferrer">Архитектура Protocol (PDF)</a>
-          ·
-          <a href="docs/architecture-kravira-fhir-mis-print.html" target="_blank" rel="noopener noreferrer">HTML</a>
-          ·
-          <a href="docs/pre-sign-checklist-print.html" target="_blank" rel="noopener noreferrer">Чек-лист перед подписью</a>
-          ·
-        </span>
         <span class="site-footer-version">Версия: <span id="build-version-badge">…</span></span>
       </p>
     </footer>
