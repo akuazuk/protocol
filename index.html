@@ -441,90 +441,25 @@
       color: #4b635c;
     }
 
-    .app-main-tab-visual {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5rem;
-      height: 2.5rem;
-      flex-shrink: 0;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.45);
-      color: var(--green-700);
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.7),
-        0 2px 8px rgba(13, 92, 74, 0.08);
-    }
-
-    .app-main-tabs button[aria-selected="true"] .app-main-tab-visual {
-      background: linear-gradient(150deg, rgba(60, 184, 154, 0.35) 0%, rgba(6, 61, 53, 0.12) 100%);
-      color: var(--green-950);
-    }
-
-    .app-main-tab-visual svg {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    .app-main-tab-text {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .app-main-tabs button.app-main-tab--primary[aria-selected="true"] {
-      border-color: rgba(18, 107, 92, 0.65);
-      background: linear-gradient(
-        165deg,
-        rgba(225, 245, 238, 0.98) 0%,
-        rgba(255, 255, 255, 0.99) 48%,
-        rgba(200, 230, 218, 0.45) 100%
-      );
-      box-shadow:
-        0 12px 36px rgba(13, 92, 74, 0.16),
-        0 0 0 1px rgba(26, 138, 114, 0.15);
-    }
-
-    /* Липкая шапка с минилого (как patient.html) + вкладки */
+    /* Липкая шапка: mini-logo + вкладки в одну строку */
     .app-chrome {
       position: sticky;
       top: 0;
       z-index: 45;
       margin: 0 0 1rem;
-      padding: 0 0 0.15rem;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+      padding: 0 0 0.12rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 252, 249, 0.94) 100%);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s ease;
-    }
-
-    .app-chrome.app-chrome--scrolled {
-      border-bottom-color: rgba(26, 138, 114, 0.14);
-    }
-
-    .app-chrome:not(.app-chrome--scrolled) .app-chrome__head {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.5rem;
-      padding: 0.55rem 0 0.45rem;
-    }
-
-    .app-chrome:not(.app-chrome--scrolled) .app-main-tabs--primary {
-      width: 100%;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-chrome__head {
-      flex-direction: row;
-      align-items: center;
-      padding: 0.32rem 0 0.28rem;
-      gap: 0.55rem;
+      border-bottom: 1px solid rgba(26, 138, 114, 0.2);
     }
 
     .app-chrome__head {
       display: flex;
-      padding: 0.45rem 0 0.35rem;
-      transition: padding 0.15s ease, gap 0.15s ease;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.38rem 0 0.32rem;
     }
 
     .app-sticky-bar__brand {
@@ -538,111 +473,42 @@
     .app-sticky-bar__logo {
       display: block;
       width: auto;
+      height: 1.12rem;
+      max-width: min(100%, 9.5rem);
       object-fit: contain;
-      transition: opacity 0.12s ease;
     }
-
-    .app-sticky-bar__logo--full {
-      height: 2.35rem;
-      max-width: min(100%, 16rem);
-    }
-
-    .app-sticky-bar__logo--mini {
-      display: none;
-      height: 1.05rem;
-      max-width: min(100%, 9rem);
-    }
-
-    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--full {
-      display: none;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-sticky-bar__logo--mini {
-      display: block;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 0.3rem;
-      width: auto;
-      flex: 1;
-      min-width: 0;
-      justify-content: flex-end;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button {
-      flex: 0 1 auto;
-      min-height: 1.85rem;
-      min-width: 0;
-      padding: 0.3rem 0.62rem;
-      border-radius: 999px;
-      border-width: 1px;
-      gap: 0;
-      box-shadow: none;
-      background: rgba(255, 255, 255, 0.92);
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary button[aria-selected="true"] {
-      border-color: rgba(26, 138, 114, 0.5);
-      background: rgba(232, 245, 241, 0.98);
-      box-shadow: none;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-visual {
-      display: none;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-title {
-      font-size: 0.74rem;
-      white-space: nowrap;
-    }
-
-    .app-chrome.app-chrome--scrolled .app-main-tabs--primary .app-main-tab-sub {
-      display: none;
-    }
-
-    /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
 
     .app-main-tabs--primary {
       flex: 1;
       min-width: 0;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.4rem;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.35rem;
     }
 
     .app-main-tabs--primary button {
-      flex: none;
-      min-height: 2.75rem;
-      padding: 0.52rem 0.62rem 0.58rem;
-      gap: 0.45rem;
-      border-radius: 14px;
+      flex: 0 1 auto;
+      min-height: 2rem;
+      min-width: 0;
+      padding: 0.34rem 0.82rem;
+      align-items: center;
+      gap: 0;
     }
 
-    .app-main-tabs--primary .app-main-tab-visual svg {
-      width: 1.15rem;
-      height: 1.15rem;
+    .app-main-tabs--primary .app-main-tab-visual,
+    .app-main-tabs--primary .app-main-tab-sub {
+      display: none;
     }
 
     .app-main-tabs--primary .app-main-tab-title {
       font-size: 0.82rem;
-    }
-
-    .app-main-tabs--primary .app-main-tab-sub {
-      font-size: 0.66rem;
-      line-height: 1.25;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     @media (max-width: 540px) {
@@ -651,18 +517,21 @@
         gap: 0.4rem;
       }
 
-      .app-main-tabs--primary .app-main-tab-sub {
-        display: none;
+      .app-main-tabs--primary {
+        width: 100%;
+        justify-content: flex-start;
       }
 
       .app-main-tabs--primary button {
-        min-height: 2.45rem;
-        padding: 0.45rem 0.5rem;
+        flex: 1 1 auto;
       }
     }
 
     /* Вкладки кабинета методиста - не липкие, только в mode=methodist */
     .methodist-workspace-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
       margin: 0 0 1rem;
     }
 
@@ -671,7 +540,20 @@
     }
 
     .methodist-workspace-tabs button {
-      flex: 1 1 11rem;
+      flex: 0 1 auto;
+      min-height: 2rem;
+      padding: 0.34rem 0.72rem;
+      align-items: center;
+      gap: 0;
+    }
+
+    .methodist-workspace-tabs .app-main-tab-visual,
+    .methodist-workspace-tabs .app-main-tab-sub {
+      display: none;
+    }
+
+    .methodist-workspace-tabs .app-main-tab-title {
+      font-size: 0.78rem;
     }
 
     #tab-methodist-ml-stats,
@@ -685,7 +567,7 @@
     body.methodist-mode #tab-methodist-queue:not([hidden]),
     body.methodist-mode #tab-methodist-search-stats:not([hidden]),
     body.methodist-mode #tab-methodist-b2c:not([hidden]) {
-      display: flex;
+      display: inline-flex;
     }
 
     .site-footer-brand {
@@ -721,64 +603,71 @@
       object-fit: contain;
     }
 
+    .app-main-tab-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
     .app-main-tabs {
       display: flex;
-      gap: 0.55rem;
+      gap: 0.35rem;
       margin: 0;
       flex-wrap: wrap;
     }
 
-    .app-main-tabs button {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      flex: 1 1 13.5rem;
-      min-height: 3.4rem;
-      padding: 0.75rem 1rem 0.8rem;
-      border-radius: 18px;
-      border: 2px solid rgba(26, 138, 114, 0.32);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(232, 245, 241, 0.45) 100%);
+    .app-main-tabs button,
+    .assist-fact-tab,
+    .protocol-brief-tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2rem;
+      padding: 0.34rem 0.78rem;
+      border-radius: 999px;
+      border: 1.5px solid rgba(20, 130, 105, 0.5);
+      background: transparent;
+      color: #0a6b55;
       cursor: pointer;
       font-family: inherit;
-      text-align: left;
-      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
-      box-shadow: 0 2px 12px rgba(6, 61, 53, 0.06);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s, color 0.15s;
+      box-shadow: none;
     }
 
-    .app-main-tabs button:hover {
-      border-color: rgba(26, 138, 114, 0.55);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(6, 61, 53, 0.1);
+    .app-main-tabs button:hover,
+    .assist-fact-tab:hover,
+    .protocol-brief-tab:hover {
+      border-color: rgba(15, 118, 96, 0.72);
+      background: rgba(232, 245, 241, 0.38);
+      color: #044838;
+      transform: none;
     }
 
-    .app-main-tabs button[aria-selected="true"] {
-      border-color: var(--green-600);
-      background: linear-gradient(155deg, rgba(232, 245, 241, 0.98) 0%, rgba(255, 255, 255, 0.99) 55%, rgba(220, 234, 228, 0.55) 100%);
-      box-shadow:
-        0 8px 28px rgba(13, 92, 74, 0.14),
-        0 0 0 1px rgba(26, 138, 114, 0.12);
+    .app-main-tabs button[aria-selected="true"],
+    .assist-fact-tab.is-active,
+    .protocol-brief-tab.is-active {
+      border-color: rgba(12, 107, 88, 0.82);
+      background: rgba(204, 245, 232, 0.94);
+      color: #033d32;
+      box-shadow: 0 2px 12px rgba(13, 92, 74, 0.16);
     }
 
     .app-main-tab-text .app-main-tab-title {
       display: block;
       font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: clamp(1rem, 2.8vw, 1.18rem);
-      font-weight: 700;
-      color: var(--green-950);
-      letter-spacing: -0.02em;
+      font-size: inherit;
+      font-weight: inherit;
+      color: inherit;
+      letter-spacing: -0.01em;
       line-height: 1.2;
     }
 
     .app-main-tab-text .app-main-tab-sub {
-      display: block;
-      margin-top: 0.2rem;
-      font-size: 0.74rem;
-      font-weight: 600;
-      font-family: "DM Sans", system-ui, sans-serif;
-      color: var(--muted);
-      line-height: 1.35;
-      text-transform: none;
-      letter-spacing: 0;
+      display: none;
     }
 
     .panel-consult-review {
@@ -3844,7 +3733,6 @@
     body.methodist-mode #panel-main-search .search-panel__hint,
     body.methodist-mode #panel-main-search .query-form-hint,
     body.methodist-mode #panel-main-search .search-panel__badge,
-    body.methodist-mode #site-bottom-zone,
     body.methodist-mode #section-footer .site-footer-source,
     body.methodist-mode .site-footer-doc-links {
       display: none !important;
@@ -5483,30 +5371,6 @@
       flex-wrap: wrap;
       gap: 0.35rem;
       margin: 0.65rem 0 0.75rem;
-    }
-
-    .assist-fact-tab {
-      font: inherit;
-      font-size: 0.82rem;
-      font-weight: 700;
-      padding: 0.45rem 0.75rem;
-      border-radius: 10px;
-      border: 2px solid rgba(26, 138, 114, 0.38);
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--green-800);
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .assist-fact-tab:hover {
-      border-color: rgba(26, 138, 114, 0.65);
-      box-shadow: 0 1px 4px rgba(26, 138, 114, 0.12);
-    }
-
-    .assist-fact-tab.is-active {
-      border-color: rgba(26, 138, 114, 0.85);
-      background: rgba(236, 253, 245, 0.98);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
     .assist-fact-tab-panels {
@@ -8602,26 +8466,6 @@
       opacity: 0.85;
     }
 
-    footer .site-bottom-zone {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(26, 138, 114, 0.14);
-    }
-
-    .site-bottom-zone__title {
-      margin: 0 0 0.35rem;
-      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
-      font-size: 1.05rem;
-      color: var(--green-950);
-    }
-
-    .site-bottom-zone__lead {
-      margin: 0 0 1rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
     .pilot-charts-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
@@ -8925,26 +8769,6 @@
       background: linear-gradient(180deg, rgba(232, 245, 241, 0.35) 0%, rgba(255, 255, 255, 0) 28%);
     }
 
-    body.app-tab-analytics #site-bottom-zone {
-      display: none !important;
-    }
-
-    body.app-tab-consult #training-panel {
-      display: none !important;
-    }
-
-    body.app-tab-consult .site-bottom-zone__lead {
-      display: none;
-    }
-
-    body.app-tab-consult .site-bottom-zone__lead--search-only {
-      display: none;
-    }
-
-    body.app-tab-search .site-bottom-zone__lead--search-only {
-      display: block;
-    }
-
     body.app-tab-analytics .site-footer--compact {
       margin-top: 0;
       border-top: 1px solid rgba(26, 138, 114, 0.12);
@@ -9236,20 +9060,6 @@
       font-size: 0.75rem;
       color: var(--muted);
       margin: 0.35rem 0 0;
-    }
-
-    .training-panel {
-      border-radius: 16px;
-      border: 1px dashed rgba(26, 138, 114, 0.35);
-      padding: 0.65rem 0.85rem;
-      margin-bottom: 1rem;
-      background: rgba(255, 255, 255, 0.65);
-    }
-
-    .training-panel summary {
-      cursor: pointer;
-      font-weight: 700;
-      color: var(--green-900);
     }
 
     .search-mode-toolbar {
@@ -9579,24 +9389,6 @@
       margin-bottom: 0.75rem;
       padding-bottom: 0.55rem;
       border-bottom: 1px solid rgba(203, 213, 225, 0.55);
-    }
-
-    .protocol-brief-tab {
-      font-family: inherit;
-      font-size: 0.78rem;
-      font-weight: 650;
-      padding: 0.35rem 0.72rem;
-      border-radius: 999px;
-      border: 1px solid rgba(203, 213, 225, 0.7);
-      background: #fff;
-      color: #475569;
-      cursor: pointer;
-    }
-
-    .protocol-brief-tab.is-active {
-      border-color: var(--green-700);
-      background: rgba(232, 245, 241, 0.95);
-      color: var(--green-900);
     }
 
     .protocol-brief-panel[hidden] {
@@ -11114,8 +10906,7 @@
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__head">
         <a class="app-sticky-bar__brand" href="#" aria-label="Protocol">
-          <img class="app-sticky-bar__logo app-sticky-bar__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
-          <img class="app-sticky-bar__logo app-sticky-bar__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="" aria-hidden="true" />
+          <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
         <div class="app-main-tabs app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
@@ -12687,13 +12478,6 @@
           </span>
         </a>
       </nav>
-      <section class="site-bottom-zone" id="site-bottom-zone" aria-label="Учебные кейсы">
-        <details class="training-panel" id="training-panel">
-          <summary>Учебные клинические ситуации (10 кейсов)</summary>
-          <p class="info-panel-note" style="margin: 0.45rem 0">Для ординаторов: подставляет запрос и запускает подбор.</p>
-          <div class="demo-cases-chips" id="training-cases-chips"></div>
-        </details>
-      </section>
       <div class="site-footer-meta">
         <div class="site-footer-brand">
           <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
@@ -13773,8 +13557,6 @@
   }
 
   function scrollToPageTop() {
-    var chrome = document.getElementById("app-chrome");
-    if (chrome) chrome.classList.remove("app-chrome--scrolled");
     try {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
@@ -25433,35 +25215,6 @@
     if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
   }
 
-  function loadTrainingCasesChips() {
-    var wrap = document.getElementById("training-cases-chips");
-    if (!wrap) return;
-    fetch(apiBaseUrl() + "/api/training-cases")
-      .then(function (r) {
-        return r.ok ? r.json() : null;
-      })
-      .then(function (data) {
-        wrap.innerHTML = "";
-        (data.cases || []).forEach(function (tc) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.className = "btn-demo-case";
-          b.title = tc.hint || "";
-          b.textContent = tc.label || tc.query;
-          b.addEventListener("click", function () {
-            switchMainAppTab(MAIN_TAB_SEARCH);
-            var inp = document.getElementById("q");
-            if (inp && tc.query) inp.value = tc.query;
-            if (tc.query) {
-              runAssist().catch(function () {});
-            }
-          });
-          wrap.appendChild(b);
-        });
-      })
-      .catch(function () {});
-  }
-
   function initConsultDemoTextButton() {
     var btn = document.getElementById("consult-btn-demo-text");
     var hint = document.getElementById("consult-demo-text-hint");
@@ -25526,7 +25279,7 @@
     {
       title: "Демонстрация",
       html:
-        "<p>Ниже - рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии, учебные кейсы или загрузите обезличенное консультативное заключение.</p>" +
+        "<p>Ниже - рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии или загрузите обезличенное консультативное заключение.</p>" +
         "<p>Оценка не является МЭЭ и не заменяет решение врача.</p>" +
         "<p><a href=\"docs/mvp-presentation.html\" target=\"_blank\" rel=\"noopener\">Полная презентация MVP</a> - диаграммы, витрина для МИС и Минздрава (новая вкладка).</p>",
     },
@@ -28276,13 +28029,6 @@
   }
 
   function initAppStickyChrome() {
-    var chrome = document.getElementById("app-chrome");
-    if (!chrome) return;
-    function syncScrollChrome() {
-      chrome.classList.toggle("app-chrome--scrolled", window.scrollY > 48);
-    }
-    syncScrollChrome();
-    window.addEventListener("scroll", syncScrollChrome, { passive: true });
     var brand = document.querySelector(".app-sticky-bar__brand");
     if (brand) {
       brand.addEventListener("click", function (e) {
@@ -29343,7 +29089,6 @@
   initCitationsOnlyToggle();
   initSearchSteppedToggle();
   loadBuildVersionBadge();
-  loadTrainingCasesChips();
   initConsultDemoTextButton();
 
   if (isPresentationMode()) {
