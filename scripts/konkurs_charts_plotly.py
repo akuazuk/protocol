@@ -36,6 +36,15 @@ from konkurs_monetization import (
 from konkurs_expansion import B2C_TAM_COMPARE_TABLE
 from konkurs_expansion_intl import INTL_MARKET_BASE_TABLE, INTL_MARKET_CAUTIOUS_TABLE
 from konkurs_future import FUTURE_ROADMAP_TABLE, FUTURE_STREAMS
+from konkurs_expansion_us import (
+    US_B2C_BASE_K,
+    US_B2C_CAUTIOUS_K,
+    US_B2C_UPSIDE_K,
+    US_INSURANCE_FLYWHEEL,
+    US_REVENUE_STACK_TABLE,
+    US_STAKEHOLDER_VALUE,
+    US_TAM_TABLE,
+)
 from konkurs_impact import ECOSYSTEM_FLYWHEEL
 from konkurs_scenarios import (
     ALL_SCENARIOS_Y3,
@@ -566,5 +575,67 @@ def generate_charts(assets_dir: Path) -> dict[str, Path]:
     p = assets_dir / "chart_platform_layers.png"
     _export(fig, p)
     paths["platform_layers"] = p
+
+    # --- USA: stakeholder value ---
+    us_names = [x[0] for x in US_STAKEHOLDER_VALUE]
+    us_vals = [x[1] for x in US_STAKEHOLDER_VALUE]
+    fig = go.Figure(go.Bar(
+        y=us_names, x=us_vals, orientation="h",
+        marker_color=c[1], marker_line_width=0,
+        text=[str(v) for v in us_vals], textposition="outside",
+    ))
+    fig.update_layout(**_layout("США: ценность Protocol для стейкholders (1-10)", showlegend=False))
+    fig.update_xaxes(title="Относительная ценность", range=[0, 11])
+    p = assets_dir / "chart_us_stakeholders.png"
+    _export(fig, p)
+    paths["us_stakeholders"] = p
+
+    # --- USA: B2C TAM scenarios ---
+    us_scenarios = ["0,01%", "0,05%", "0,10%"]
+    us_b2c_k = [US_B2C_CAUTIOUS_K, US_B2C_BASE_K, US_B2C_UPSIDE_K]
+    fig = go.Figure(go.Bar(
+        x=us_scenarios, y=us_b2c_k, marker_color=[c[0], c[2], c[4]],
+        text=[f"{v:,}".replace(",", " ") for v in us_b2c_k], textposition="outside",
+        marker_line_width=0,
+    ))
+    fig.update_layout(**_layout(
+        "США: B2C upside Visit Prep + AVS (990 млн визитов/год, тыс. BYN)",
+        showlegend=False,
+    ))
+    fig.update_yaxes(title="B2C Protocol, тыс. BYN/год")
+    fig.update_xaxes(title="Конверсия ambulatory visits")
+    p = assets_dir / "chart_us_tam.png"
+    _export(fig, p)
+    paths["us_tam"] = p
+
+    # --- USA: revenue stack ---
+    stack_labels = [row[0][:35] + "…" if len(row[0]) > 35 else row[0] for row in US_REVENUE_STACK_TABLE[:-1]]
+    stack_vals = [int(row[1].replace(" ", "")) for row in US_REVENUE_STACK_TABLE[:-1]]
+    fig = go.Figure(go.Bar(
+        y=stack_labels, x=stack_vals, orientation="h",
+        marker_color=c[2], text=[f"{v:,}".replace(",", " ") for v in stack_vals],
+        textposition="outside", marker_line_width=0,
+    ))
+    fig.update_layout(**_layout("США: стек выручки Protocol 2037+ (тыс. BYN/год, upside)", showlegend=False))
+    fig.update_xaxes(title="тыс. BYN/год")
+    p = assets_dir / "chart_us_revenue_stack.png"
+    _export(fig, p)
+    paths["us_revenue_stack"] = p
+
+    # --- USA: insurance flywheel ---
+    fly_us = [x[0] for x in US_INSURANCE_FLYWHEEL]
+    fly_us_scores = [x[1] for x in US_INSURANCE_FLYWHEEL]
+    fig = go.Figure(go.Bar(
+        y=fly_us, x=fly_us_scores, orientation="h",
+        marker_color=c[3], marker_line_width=0,
+    ))
+    fig.update_layout(**_layout(
+        "США: payer flywheel - Prep Card → Verified clinic → MLR ↓",
+        showlegend=False,
+    ))
+    fig.update_xaxes(title="Сила эффекта", range=[0, 6])
+    p = assets_dir / "chart_us_insurance_flywheel.png"
+    _export(fig, p)
+    paths["us_insurance_flywheel"] = p
 
     return paths

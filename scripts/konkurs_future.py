@@ -54,6 +54,7 @@ FUTURE_ROADMAP_TABLE = [
     ("2032-2033", "Protocol LATAM/EG", "PCDT, EHC CPG; PT/AR packs", "Tier 2+"),
     ("2033-2034", "Protocol Platform", "Google/Meta/Apple connectors; Public API", "Platform"),
     ("2034-2035", "Protocol Community", "Care Rooms; Chronic Pro; insurer API", "Ecosystem"),
+    ("2035-2037", "Protocol USA", "Visit Prep; Epic L0; MA payer Verified tier", "US Tier 3"),
 ]
 
 FUTURE_STREAMS = [
@@ -63,6 +64,7 @@ FUTURE_STREAMS = [
     ("Platform API", 450, "2034"),
     ("Community Pro", 280, "2035"),
     ("Insurer/wellness", 320, "2035"),
+    ("USA B2C + B2B + Payer", 53500, "2037"),
 ]
 
 FUTURE_RISKS = [

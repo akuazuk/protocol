@@ -97,6 +97,23 @@ from konkurs_future import (  # noqa: E402
     FUTURE_VISION,
     PLATFORM_INTEGRATIONS,
 )
+from konkurs_expansion_us import (  # noqa: E402
+    US_B2C_BASE_K,
+    US_CORPUS_TABLE,
+    US_ENTRY_COST_K,
+    US_EXPANSION_INTRO,
+    US_GTM_PHASES,
+    US_GTM_STEPS,
+    US_INSURANCE_ECON_TABLE,
+    US_INSURANCE_MODEL,
+    US_PRODUCT_TABLE,
+    US_REVENUE_STACK_TABLE,
+    US_RISKS,
+    US_STAKEHOLDER_TABLE,
+    US_TAM_TABLE,
+    US_TOTAL_UPSIDE_K,
+    US_VALUE_PROP,
+)
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
     ECOSYSTEM_FLYWHEEL,
@@ -494,7 +511,58 @@ def _intl_expansion_html() -> str:
 {_table(['Шаг', 'Содержание', 'Срок', 'Критерий'], step_rows, caption='Playbook входа на новый рынок (7 шагов)')}
 {_table(['Страна', 'Inv. год 1, тыс. BYN', 'B2C launch', 'B2B horizon'], cost_rows, caption='Оценка инвестиций входа по странам (corpus + legal + ML + marketing)')}
 {_table(['Риск', 'Уровень', 'Митигация'], intl_risk_rows, caption='Риски международной экспансии')}
-<p class="muted">Tier 3 (Китай 临床路径, EU/NICE) - вне горизонта 2033: другой тип регламента, высокая стоимость NLP и доминирование Epic/UpToDate/CDSS.</p>
+<p class="muted">Tier 3 EU/NICE и Китай - вне горизонта 2033. **США** - отдельный стратегический рынок (§6.5):
+Epic/CDS, payer economics, Visit Prep; не смешивать с таблицами Tier 1-2 выше.</p>
+</div>"""
+
+
+def _us_expansion_html(assets_rel: str = "_assets") -> str:
+    def img(name: str, cap: str) -> str:
+        return f'<div class="chart"><div class="caption">{_e(cap)}</div><img src="{assets_rel}/{name}" alt=""/></div>'
+
+    stake_rows = list(US_STAKEHOLDER_TABLE)
+    corpus_rows = list(US_CORPUS_TABLE)
+    product_rows = list(US_PRODUCT_TABLE)
+    tam_rows = list(US_TAM_TABLE)
+    rev_rows = list(US_REVENUE_STACK_TABLE)
+    gtm_rows = list(US_GTM_PHASES)
+    step_rows = list(US_GTM_STEPS)
+    econ_rows = list(US_INSURANCE_ECON_TABLE)
+    risk_rows = [(a, b, c) for a, b, c in US_RISKS]
+    upside = f"{US_TOTAL_UPSIDE_K:,}".replace(",", " ")
+    b2c_base = f"{US_B2C_BASE_K:,}".replace(",", " ")
+    return f"""
+<div class="section"><h2>6.5. Выход на рынок США: Visit Prep, payer flywheel и страховая экономика</h2></div>
+<div class="section-body">
+<p>{_e(US_EXPANSION_INTRO.replace(chr(10), ' '))}</p>
+<p>{_e(US_VALUE_PROP.replace(chr(10), ' '))}</p>
+<h3>Страховая и сетевая модель: кто выигрывает и как монетизируется</h3>
+<p>{_e(US_INSURANCE_MODEL.replace(chr(10), ' '))}</p>
+<div class="stats">
+  <div class="stat"><b>990 млн</b><span class="muted">office visits/год (TAM)</span></div>
+  <div class="stat"><b>{b2c_base}</b><span class="muted">тыс. BYN B2C (0,05% conv.)</span></div>
+  <div class="stat"><b>{upside}</b><span class="muted">тыс. BYN stack 2037+</span></div>
+  <div class="stat"><b>2033-37</b><span class="muted">GTM HIPAA → Epic → Payer</span></div>
+</div>
+{img('chart_us_stakeholders.png', 'Ценность Protocol для стейкholders США')}
+{img('chart_us_insurance_flywheel.png', 'Payer flywheel: Prep Card снижает copay → клиника Verified → MLR ↓')}
+{img('chart_us_tam.png', 'B2C upside: Visit Prep + AVS при разной конверсии')}
+{img('chart_us_revenue_stack.png', 'Стек выручки USA: B2C + B2B Epic + Payer API + Employer PEPM')}
+{_table(['Стейкholder', 'Без Protocol', 'С Protocol', 'Монетизация'], stake_rows, caption='Кому полезен Protocol в США: пациент, врач, клиника, payer, employer')}
+{_table(['Сценарий', 'Визитов/год TAM', 'Conv.', 'Проверок/год', 'B2C тыс. BYN', 'Канал'], tam_rows, caption='TAM США: ambulatory office visits (~990 млн/год, CDC/NCHS). Не в EBITDA 2029.')}
+{_table(['Показатель', 'Без Protocol', 'С Protocol', 'Эффект'], econ_rows, caption='Страховая экономика: copay, MLR, HEDIS, network tier (иллюстративная модель для actuarial pilot)')}
+{_table(['Продукт', 'Канал', 'Цена USD', 'Когда', 'Суть'], product_rows, caption='Продуктовая линейка Protocol USA')}
+{_table(['Корпус', 'Тип', 'Источник', 'Блок отчёта'], corpus_rows, caption='US guideline pack (не единый MOH; ingest + license where needed)')}
+{_table(['Поток', 'Ориентир тыс. BYN/год', 'Горизонт'], rev_rows, caption='Суммарный upside USA (B2C + B2B + payer + employer)')}
+{_table(['Фаза', 'Фокус', 'Deliverable', 'Upside', 'Inv. тыс. BYN'], gtm_rows, caption='GTM США 2033-2037 (после Tier 1-2 и platform API)')}
+{_table(['Шаг', 'Содержание', 'Срок', 'Критерий'], step_rows, caption='Playbook входа на рынок США (7 шагов)')}
+{_table(['Риск', 'Уровень', 'Митигация'], risk_rows, caption='Риски US expansion')}
+<div class="highlight"><strong>Суть для конкурса:</strong> Protocol помогает пациенту <em>подготовиться к приёму</em>
+(Visit Prep Card) и проверить выписку после визита - по тем же 8 блокам и evidence_map, что в РБ. Это
+<strong>стимулирует качество клиники</strong> (L0 в Epic до sign note) и создаёт <strong>страховые рычаги</strong>:
+payer снижает copay подготовленному пациенту и повышает fee schedule / network tier клинике с Protocol Verified;
+клиника без Protocol в value-based сети несёт actuarial surcharge. Якорный пилот - МЦ «Кravira», РБ; США - масштаб
+и payer economics, не замена локального пилота.</div>
 </div>"""
 
 
@@ -569,6 +637,7 @@ def _sections_html_with_b2c(assets_rel: str = "_assets") -> str:
             out.append(_expansion_html())
             out.append(_intl_expansion_html())
             out.append(_future_html(assets_rel))
+            out.append(_us_expansion_html(assets_rel))
         if key == "8.":
             out.append(_b2c_ux_html())
         if key == "9.":
@@ -688,6 +757,10 @@ def _finance_block(assets_rel: str) -> str:
 {img('chart_platform_roadmap.png', 'Дорожная карта Protocol 2026-2035')}
 {img('chart_future_streams.png', 'Потоки выручки платформенного этапа')}
 {img('chart_platform_layers.png', 'Три слоя: ядро · каналы · платформа')}
+{img('chart_us_stakeholders.png', 'США: ценность для patient / payer / clinic')}
+{img('chart_us_tam.png', 'США: B2C upside Visit Prep + AVS')}
+{img('chart_us_revenue_stack.png', 'США: стек выручки 2037+')}
+{img('chart_us_insurance_flywheel.png', 'США: payer flywheel Prep → Verified → MLR')}
 {_table(['Статья инвестиций', 'BYN', 'Срок'], INVESTMENT_PLAN, caption='Инвестиции 2026-2027')}
 {_table(['Драйвер', 'Пояснение'], list(CISZ_DRIVERS))}
 {_table(['Альтернатива', 'Охват', 'Слабость', 'Стоимость'], COMPETITOR_MATRIX, caption='Конкуренты')}
