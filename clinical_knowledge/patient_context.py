@@ -14,6 +14,7 @@ def _doc_from_l1(l1_result: dict[str, Any]) -> dict[str, Any]:
 
 
 def _infer_specialty(doc: dict[str, Any], kz_text: str = "") -> str | None:
+    blob = (kz_text or "").lower()
     for key in ("doctor_specialty", "specialty", "specialty_slug"):
         val = str(doc.get(key) or "").strip().lower()
         if val:
@@ -21,12 +22,17 @@ def _infer_specialty(doc: dict[str, Any], kz_text: str = "") -> str | None:
                 return "neurology"
             if "flebolog" in val or "флеболог" in val:
                 return "phlebology"
+            if "dermat" in val or "дермат" in val:
+                return "dermatology"
             return val[:48]
-    blob = (kz_text or "").lower()
     if "невролог" in blob:
         return "neurology"
     if "флеболог" in blob:
         return "phlebology"
+    if "дерматовенеролог" in blob or "дерматолог" in blob:
+        return "dermatology"
+    if "l93" in blob.replace(" ", "") or "волчан" in blob:
+        return "dermatology"
     return None
 
 

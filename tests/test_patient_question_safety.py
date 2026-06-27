@@ -24,9 +24,17 @@ def test_calm_questions_for_neurology() -> None:
             "block_id": "exams",
             "category_ru": "Обследования",
             "severity": "medium",
-        }
+        },
+        {
+            "id": "q2",
+            "source_gap": "Неясно слово «после» в схеме лечения",
+            "block_id": "treatment",
+            "category_ru": "Лечение",
+            "severity": "medium",
+        },
     ]
-    out = build_calm_questions(structured, kz_text=kz)
+    exams = [{"exam_type": "MRI", "category": "imaging", "label_ru": "МРТ"}]
+    out = build_calm_questions(structured, kz_text=kz, exams=exams)
     texts = " ".join(q["text"] for q in out).lower()
     assert "мрт" in texts
     assert "после" in texts or "препарат" in texts

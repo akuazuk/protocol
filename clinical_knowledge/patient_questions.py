@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .patient_exam_extraction import imaging_exams
 from .patient_question_tone import (
     apply_tone_to_questions,
     detect_question_intent,
@@ -25,16 +26,17 @@ FORBIDDEN_PATTERNS_RU: tuple[re.Pattern[str], ...] = (
 
 _CALM_TEMPLATES: dict[str, str] = {
     "exams_mri_deadline": (
-        "Подскажите, пожалуйста, в какие сроки нужно выполнить МРТ шейного отдела позвоночника и головного мозга?"
+        "Подскажите, пожалуйста, в какие сроки нужно выполнить назначенное МРТ?"
     ),
     "follow_up_timing": (
-        "Повторный осмотр невролога нужен после МРТ или через определённое количество дней лечения?"
+        "Повторный осмотр нужен после обследований или через определённое количество дней лечения?"
     ),
     "treatment_after": "Как правильно понимать слово «после» в схеме лечения?",
     "treatment_duration": "Сколько дней принимать препараты?",
-    "symptoms_worse": "Что делать, если головная боль сохранится или усилится?",
+    "symptoms_worse": "Что делать, если симптомы сохранятся или усилятся?",
     "urgent_symptoms": "При каких симптомах нужно обращаться срочно?",
     "exams_plan": "Какие обследования уже выполнены и какие необходимо пройти далее?",
+    "labs_plan": "Когда сдать назначенные анализы и как подготовиться?",
     "follow_up": "Когда следующий визит и что подготовить к приёму?",
     "treatment_dose": "Подскажите, пожалуйста, как правильно принимать назначенные препараты - дозу, время и длительность?",
 }
@@ -56,20 +58,34 @@ def sanitize_question_text(text: str) -> str:
     return t.strip()
 
 
-def _calm_question_for_intent(intent: str | None, raw: str, block_id: str) -> str:
-    if intent and intent in _CALM_TEMPLATES:
-        return _CALM_TEMPLATES[intent]
+def _has_mri(exams: list[dict[str, Any]] | None) -> bool:
+    return any(e.get("exam_type") == "MRI" for e in (exams or []))
+
+
+def _calm_question_for_intent(
+    intent: str | None,
+    raw: str,
+    block_id: str,
+    *,
+    exams: list[dict[str, Any]] | None = None,
+) -> str:
     low = raw.lower()
-    if "мрт" in low:
+    if "мрт" in low and _has_mri(exams):
         return _CALM_TEMPLATES["exams_mri_deadline"]
+    if intent == "exams_mri_deadline" and not _has_mri(exams):
+        intent = "exams_plan"
+    if intent and intent in _CALM_TEMPLATES:
+        if intent == "exams_mri_deadline" and not _has_mri(exams):
+            return _CALM_TEMPLATES["exams_plan"]
+        return _CALM_TEMPLATES[intent]
     if "после" in low and block_id == "treatment":
         return _CALM_TEMPLATES["treatment_after"]
     if "длительност" in low or "сколько дней" in low:
         return _CALM_TEMPLATES["treatment_duration"]
     if "контрол" in low or "повторн" in low:
         return _CALM_TEMPLATES["follow_up_timing"]
-    if "головн" in low and ("сохран" in low or "усил" in low):
-        return _CALM_TEMPLATES["symptoms_worse"]
+    if "анализ" in low or block_id == "labs":
+        return _CALM_TEMPLATES["labs_plan"]
     return ""
 
 
@@ -77,6 +93,7 @@ def build_calm_questions(
     structured: list[dict[str, Any]],
     *,
     kz_text: str = "",
+    exams: list[dict[str, Any]] | None = None,
     tone: str | None = None,
 ) -> list[dict[str, Any]]:
     """Переформулировать вопросы в спокойном тоне с фильтром deny-list."""
@@ -98,7 +115,7 @@ def build_calm_questions(
         intent = row.get("intent") or detect_question_intent(raw, block_id, kind="comment" if comment else "gap")
 
         if use_calm:
-            calm = _calm_question_for_intent(intent, raw, block_id)
+            calm = _calm_question_for_intent(intent, raw, block_id, exams=exams)
             if calm and calm.lower() not in seen:
                 text = calm
             else:
@@ -129,42 +146,18 @@ def build_calm_questions(
         text = sanitize_question_text(text)
         if not text or is_forbidden_question(text):
             continue
+        if "мрт" in text.lower() and not _has_mri(exams) and "мрт" not in (kz_text or "").lower():
+            continue
         norm = text.lower()[:80]
         if norm in seen:
             continue
         seen.add(norm)
         item = dict(row)
         item["text"] = text if text.endswith("?") else text.rstrip(".") + "?"
-        item["title"] = item["text"].split("?")[0][:60] + "?"
+        item["title"] = item["text"].split("?")[0].strip()[:60] + "?"
         item["tone"] = DEFAULT_CALM_TONE if use_calm else tid
         item["intent"] = intent
         out.append(item)
-
-    if "мрт" in (kz_text or "").lower():
-        extra = [
-            ("exams_mri_deadline", _CALM_TEMPLATES["exams_mri_deadline"]),
-            ("follow_up_timing", _CALM_TEMPLATES["follow_up_timing"]),
-            ("treatment_after", _CALM_TEMPLATES["treatment_after"]),
-            ("treatment_duration", _CALM_TEMPLATES["treatment_duration"]),
-            ("symptoms_worse", _CALM_TEMPLATES["symptoms_worse"]),
-            ("urgent_symptoms", _CALM_TEMPLATES["urgent_symptoms"]),
-        ]
-        for intent_key, qtext in extra:
-            if qtext.lower()[:60] in seen:
-                continue
-            seen.add(qtext.lower()[:60])
-            out.append(
-                {
-                    "id": f"q_calm_{len(out)+1}",
-                    "text": qtext,
-                    "title": qtext.split("?")[0][:60] + "?",
-                    "severity": "medium",
-                    "category_ru": "Контроль" if "осмотр" in qtext else "Лечение",
-                    "block_id": "follow_up" if "осмотр" in qtext else "treatment",
-                    "tone": DEFAULT_CALM_TONE,
-                    "intent": intent_key,
-                }
-            )
 
     return out[:10]
 
@@ -173,9 +166,10 @@ def apply_safe_questions(
     structured: list[dict[str, Any]],
     *,
     kz_text: str = "",
+    exams: list[dict[str, Any]] | None = None,
     tone: str | None = None,
     safety_enabled: bool = True,
 ) -> list[dict[str, Any]]:
     if not safety_enabled:
         return apply_tone_to_questions(structured, tone)
-    return build_calm_questions(structured, kz_text=kz_text, tone=tone)
+    return build_calm_questions(structured, kz_text=kz_text, exams=exams, tone=tone)

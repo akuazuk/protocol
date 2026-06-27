@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .patient_exam_extraction import exams_patient_summary, extract_exams_from_text
+from .patient_exam_extraction import exams_patient_summary, extract_exams_from_text, imaging_exams, lab_exams
 from .patient_flags import (
     patient_plain_terms_enabled,
     patient_protocol_age_filter_enabled,
@@ -13,17 +13,19 @@ from .patient_flags import (
     patient_show_protocol_technical_block,
 )
 from .patient_medication_extraction import extract_medications_from_text, medications_patient_summary
+from .patient_narrative import (
+    build_clarification_points,
+    build_main_takeaway,
+    build_top_summary_plain,
+    extract_complaint_phrase,
+    extract_diagnosis_phrase,
+    extract_follow_up_phrase,
+    red_flags_for_context,
+)
 from .patient_plain_language import explain_terms_for_patient
 from .patient_protocol_filter import compute_protocol_match_confidence
 from .patient_questions import apply_safe_questions, DEFAULT_CALM_TONE
 from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text
-
-RED_FLAGS_RU = (
-    "Срочно обратитесь за медицинской помощью, если состояние резко ухудшается, "
-    "появилась внезапная очень сильная головная боль, слабость в руке или ноге, "
-    "нарушение речи, потеря сознания, высокая температура, повторная рвота "
-    "или другие необычные симптомы. Это общая справочная информация, не диагноз."
-)
 
 _B2B_FORBIDDEN_KEYS = frozenset(
     {
@@ -80,7 +82,7 @@ def _patient_clarity(meds: list[dict[str, Any]], exams: list[dict[str, Any]], bl
         issues = m.get("clarity_issues") or []
         clarity_penalty += min(8, len(issues) * 3)
     if exams and not any(e.get("deadline") for e in exams):
-        clarity_penalty += 10
+        clarity_penalty += min(10, 4 + len(exams))
     by_id = {str(b.get("id")): b for b in blocks if isinstance(b, dict)}
     fu = by_id.get("follow_up")
     if fu and fu.get("status") in ("attention", "concern"):
@@ -95,39 +97,34 @@ def _understood_from_document(
     blocks: list,
 ) -> list[dict[str, str]]:
     items: list[dict[str, str]] = []
-    low = (kz_text or "").lower()
-    if "головн" in low and "бол" in low:
-        items.append({"type": "complaint", "label_ru": "Жалоба", "value_ru": "головная боль"})
-    if "m53" in low.replace(" ", "") or "шейно" in low:
-        items.append({"type": "diagnosis", "label_ru": "Диагноз", "value_ru": "M53.0 - шейно-черепной синдром"})
+    complaint = extract_complaint_phrase(kz_text)
+    if complaint and complaint != "обращения":
+        items.append({"type": "complaint", "label_ru": "Жалоба", "value_ru": complaint})
+    diag = extract_diagnosis_phrase(kz_text)
+    if diag:
+        items.append({"type": "diagnosis", "label_ru": "Диагноз", "value_ru": diag})
     elif any(b.get("id") == "diagnosis" for b in blocks if isinstance(b, dict)):
         items.append({"type": "diagnosis", "label_ru": "Диагноз", "value_ru": "указан в заключении"})
+
     by_id = {str(b.get("id")): b for b in blocks if isinstance(b, dict)}
     if by_id.get("objective_status") and by_id["objective_status"].get("status") != "concern":
-        items.append({"type": "exam_findings", "label_ru": "Осмотр", "value_ru": "описан подробно"})
-    if exams:
-        labels = ", ".join(str(e.get("label_ru") or "МРТ") for e in exams[:2])
+        items.append({"type": "exam_findings", "label_ru": "Осмотр", "value_ru": "описан в заключении"})
+
+    imaging = imaging_exams(exams)
+    labs = lab_exams(exams)
+    if imaging:
+        labels = ", ".join(str(e.get("label_ru") or "") for e in imaging[:3])
         items.append({"type": "exams", "label_ru": "Обследования", "value_ru": f"назначено: {labels}"})
+    if labs:
+        labels = ", ".join(str(e.get("label_ru") or "") for e in labs[:3])
+        items.append({"type": "labs", "label_ru": "Анализы", "value_ru": f"рекомендовано: {labels}"})
     if meds:
-        items.append({"type": "treatment", "label_ru": "Лечение", "value_ru": f"назначено ({len(meds)} препарат(ов))"})
-    if "повторн" in low and "невролог" in low:
-        items.append({"type": "follow_up", "label_ru": "Контроль", "value_ru": "повторный осмотр невролога"})
+        names = ", ".join(str(m.get("name") or "") for m in meds[:4])
+        items.append({"type": "treatment", "label_ru": "Лечение", "value_ru": names or f"{len(meds)} препарат(ов)"})
+    fu = extract_follow_up_phrase(kz_text)
+    if fu:
+        items.append({"type": "follow_up", "label_ru": "Контроль", "value_ru": fu})
     return items[:8]
-
-
-def _clarification_points(meds: list, exams: list, kz_text: str) -> list[dict[str, str]]:
-    points: list[dict[str, str]] = []
-    if exams:
-        points.append({"topic_ru": "МРТ", "text_ru": "когда выполнить МРТ"})
-    if "повторн" in (kz_text or "").lower():
-        points.append({"topic_ru": "Контроль", "text_ru": "когда повторный осмотр"})
-    if any(m.get("start_condition") == "после" for m in meds):
-        points.append({"topic_ru": "Лечение", "text_ru": "что означает «после» в схеме лечения"})
-    if meds:
-        points.append({"topic_ru": "Лечение", "text_ru": "сколько дней принимать препараты"})
-    points.append({"topic_ru": "Самочувствие", "text_ru": "что делать, если симптомы сохранятся или усилятся"})
-    points.append({"topic_ru": "Безопасность", "text_ru": "какие симптомы требуют срочного обращения"})
-    return points[:8]
 
 
 def _build_top_summary(
@@ -139,19 +136,11 @@ def _build_top_summary(
     proto_conf: float,
     proto_bucket: str,
 ) -> dict[str, Any]:
-    low = (kz_text or "").lower()
-    specialty_ru = "невролога" if specialty == "neurology" else "врача"
-    complaint = "головной боли" if "головн" in low else "обращения"
-    diag = "M53.0" if "m53" in low.replace(" ", "") else "диагноз указан"
-    exam_part = ""
-    if exams:
-        exam_part = "назначил МРТ шейного отдела позвоночника и головного мозга, " if any(
-            e.get("exam_type") == "MRI" for e in exams
-        ) else "назначил обследования, "
-    plain = (
-        f"Вы были на консультации {specialty_ru} по поводу {complaint}. "
-        f"Врач указал {diag}, {exam_part}повторный осмотр и лечение. "
-        "Стоит уточнить сроки МРТ, повторного осмотра и последовательность приёма препаратов."
+    plain = build_top_summary_plain(
+        specialty=specialty,
+        kz_text=kz_text,
+        exams=exams,
+        meds=meds,
     )
     headline = "Основные разделы КЗ заполнены. Есть вопросы по срокам и понятности назначений."
     if proto_bucket == "low":
@@ -160,7 +149,7 @@ def _build_top_summary(
         "status": "clarify_some_points",
         "headline_ru": headline,
         "plain_summary_ru": plain,
-        "main_takeaway_ru": "Стоит уточнить сроки МРТ, повторного осмотра и порядок приёма препаратов.",
+        "main_takeaway_ru": build_main_takeaway(exams=exams, meds=meds, kz_text=kz_text),
         "protocol_confidence_note_ru": (
             "Точный протокол подобран не полностью. Сверка носит ориентировочный характер."
             if proto_conf < 0.5
@@ -176,8 +165,11 @@ def _message_to_doctor(questions: list[dict[str, Any]], kz_text: str) -> dict[st
         + "; ".join(q.replace("?", "") for q in qtexts[:3])
         + ". "
     )
-    if "головн" in (kz_text or "").lower():
+    low = (kz_text or "").lower()
+    if "головн" in low:
         body += "Также подскажите, пожалуйста, что делать, если головная боль сохранится или усилится."
+    elif "высыпан" in low or "кож" in low:
+        body += "Также подскажите, пожалуйста, что делать, если высыпания сохранятся или появится температура."
     else:
         body += "Также подскажите, пожалуйста, что делать, если самочувствие не улучится."
     return {
@@ -196,9 +188,7 @@ def _visit_sheet(
     ctx = top_summary.get("plain_summary_ru") or "Консультация по поводу обращения."
     clarify_lines = [f"- {c.get('text_ru')}" for c in clarification if c.get("text_ru")]
     q_lines = [f"{i+1}. {q.get('text')}" for i, q in enumerate(questions) if q.get("text")]
-    bring = ["- КЗ", "- результаты обследований, если уже выполнены", "- список принимаемых препаратов"]
-    if "рентген" in (kz_text or "").lower():
-        bring.append("- предыдущие обследования, включая рентген")
+    bring = ["- КЗ", "- результаты обследований и анализов, если уже выполнены", "- список принимаемых препаратов"]
     text = (
         "Лист на приём\n\n"
         f"Краткий контекст:\n{ctx}\n\n"
@@ -228,6 +218,7 @@ def enrich_patient_report_v2(
         return report
 
     ctx = patient_context or {}
+    specialty = ctx.get("specialty")
     blocks = list(report.get("blocks") or [])
     exams = extract_exams_from_text(kz_text)
     meds = extract_medications_from_text(kz_text)
@@ -242,6 +233,7 @@ def enrich_patient_report_v2(
         structured = apply_safe_questions(
             structured,
             kz_text=kz_text,
+            exams=exams,
             tone=question_tone or DEFAULT_CALM_TONE,
             safety_enabled=True,
         )
@@ -263,7 +255,7 @@ def enrich_patient_report_v2(
     ]
 
     top = _build_top_summary(
-        specialty=ctx.get("specialty"),
+        specialty=specialty,
         kz_text=kz_text,
         exams=exams,
         meds=meds,
@@ -271,7 +263,22 @@ def enrich_patient_report_v2(
         proto_bucket=proto_bucket,
     )
     understood = _understood_from_document(kz_text, exams, meds, blocks)
-    clarify = _clarification_points(meds, exams, kz_text)
+    clarify = build_clarification_points(meds=meds, exams=exams, kz_text=kz_text)
+
+    clarity_hint = "Рекомендации в целом понятны."
+    if clarity_pct < 75:
+        bits: list[str] = []
+        if imaging_exams(exams) or lab_exams(exams):
+            bits.append("сроки обследований и анализов")
+        if meds:
+            bits.append("схему лечения")
+        if extract_follow_up_phrase(kz_text):
+            bits.append("контрольный визит")
+        clarity_hint = (
+            "Есть неясность по " + ", ".join(bits) + "."
+            if bits
+            else "Есть неясность в деталях назначений."
+        )
 
     report["report_schema_version"] = 2
     report["patient_mode"] = "patient"
@@ -288,20 +295,14 @@ def enrich_patient_report_v2(
     ]
     report["message_to_doctor"] = _message_to_doctor(structured, kz_text)
     report["visit_sheet"] = _visit_sheet(top, clarify, structured, kz_text)
-    report["red_flags_ru"] = RED_FLAGS_RU
+    report["red_flags_ru"] = red_flags_for_context(kz_text, specialty)
     report["scores"] = {
         "document_completeness": _score_card(
             doc_pct,
             "Полнота КЗ",
             "Основные разделы есть. Часть деталей стоит уточнить." if doc_pct >= 70 else "Есть пробелы в разделах заключения.",
         ),
-        "patient_clarity": _score_card(
-            clarity_pct,
-            "Понятность для пациента",
-            "Есть неясность по срокам обследования, повторному осмотру и последовательности лекарств."
-            if clarity_pct < 75
-            else "Рекомендации в целом понятны.",
-        ),
+        "patient_clarity": _score_card(clarity_pct, "Понятность для пациента", clarity_hint),
         "protocol_match_confidence": _score_card(
             proto_pct,
             "Уверенность подбора КП",
