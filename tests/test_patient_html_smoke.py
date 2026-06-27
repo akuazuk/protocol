@@ -19,6 +19,14 @@ def test_patient_html_has_v2_blocks() -> None:
         assert needle in html, f"missing {needle}"
 
 
+def test_patient_ui_js_syntax_valid() -> None:
+    import subprocess
+
+    js = Path(__file__).resolve().parents[1] / "patient-ui.js"
+    proc = subprocess.run(["node", "--check", str(js)], capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stderr or proc.stdout
+
+
 def test_patient_ui_has_normalize_and_render() -> None:
     js = (Path(__file__).resolve().parents[1] / "patient-ui.js").read_text(encoding="utf-8")
     for fn in (
@@ -28,5 +36,7 @@ def test_patient_ui_has_normalize_and_render() -> None:
         "renderClarificationPoints",
         "renderMessageToDoctor",
         "renderVisitSheet",
+        "renderUploadJokeCard",
+        "wireUploadZone",
     ):
         assert fn in js, f"missing {fn}"

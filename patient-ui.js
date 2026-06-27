@@ -282,6 +282,12 @@
   if (btnOnboard) btnOnboard.addEventListener("click", function () {
     localStorage.setItem(ONBOARD_KEY, "1");
     if (onboard) onboard.classList.add("hidden");
+    if (formCard) {
+      formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      var firstUpload = document.getElementById("kz-btn-camera");
+      if (firstUpload) firstUpload.focus();
+    }
+    if (statusEl) statusEl.textContent = "Выберите «Сделать фото» или «Загрузить файл» для заключения.";
   });
 
   function pillClass(s) {
@@ -846,6 +852,7 @@
     });
   }
 
+  function renderUploadJokeCard(pr) {
     var el = document.getElementById("upload-joke-card");
     var body = document.getElementById("result-body");
     if (!el) return;

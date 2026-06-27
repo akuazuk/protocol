@@ -517,7 +517,6 @@
       line-height: 1.5;
     }
     .foot-build { font-size: 0.65rem; opacity: 0.75; }
-    }
     .foot a { color: var(--g600); font-weight: 600; }
 
     .onboard {
@@ -545,6 +544,19 @@
       line-height: 1.45;
     }
     .onboard-item strong { display: block; font-size: 0.82rem; color: var(--g800); margin-bottom: 0.15rem; }
+    .onboard-lead {
+      margin: 0 0 0.65rem;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .onboard-cta-hint {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.4;
+    }
 
     .photo-tips {
       margin-top: 0.55rem;
@@ -796,13 +808,15 @@
     </header>
 
     <section class="onboard" id="onboard">
-      <h2>Что мы проверяем</h2>
+      <h2>Как это работает</h2>
+      <p class="onboard-lead">Загрузите консультативное заключение - мы поможем понять его и подготовить вопросы врачу. Это не диагноз и не оценка врача.</p>
       <div class="onboard-grid">
-        <div class="onboard-item"><strong>Проверяем</strong>Соответствие разделов КЗ стандарту Минздрава: жалобы, диагноз, обследования, лечение, контроль.</div>
-        <div class="onboard-item"><strong>Не проверяем</strong>Правильность диагноза, назначений и тактики лечения - это решает только ваш врач.</div>
-        <div class="onboard-item"><strong>Не заменяем</strong>Очный приём, второе мнение и медицинское заключение.</div>
+        <div class="onboard-item"><strong>1. Загрузите КЗ</strong>Фото или PDF из поликлиники - можно несколько страниц.</div>
+        <div class="onboard-item"><strong>2. Получите итог</strong>Краткий разбор, что понятно и что стоит уточнить на приёме.</div>
+        <div class="onboard-item"><strong>3. Возьмите с собой</strong>Список вопросов и лист на приём - можно скопировать или распечатать.</div>
       </div>
-      <button type="button" class="btn-primary" id="btn-onboard-ok">Понятно, начать</button>
+      <button type="button" class="btn-primary" id="btn-onboard-ok">К загрузке документа</button>
+      <p class="onboard-cta-hint">Откроется форма ниже - нажмите «Сделать фото» или «Загрузить файл».</p>
     </section>
 
     <div class="steps" id="steps-bar" aria-hidden="true">
