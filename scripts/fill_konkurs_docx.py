@@ -100,12 +100,12 @@ STRATEGY_METHODS = (
 )
 STRATEGY_YEAR_PLAN = """\
 1) Завершить пилот L0 в Кравире и метрики B2B.
-2) Запустить beta B2C: загрузка КЗ физлицом, оплата 4,99/9,99 BYN, дисклеймер и политика ПДн.
+2) Масштабировать B2C (patient.html развёрнут): ERIP, tier 4,99-14,99 BYN, QR/SMS rev-share, политика ПДн.
 3) Интегрировать API в МИС «Айболит».
-4) QR-кампания «Проверьте своё заключение» в Кравире.
+4) QR-кампания «Проверьте своё заключение» в Кравире и партнёрских ОЗ.
 5) Подключить 2 внешние клиники B2B."""
 STRATEGY_5Y = """\
-2027: Кравира B2B + B2C beta. 2028: 5-10 ОЗ B2B, 30-50k B2C проверок/год. 2029: white-label МИС, 5% рынка B2B. 2030: госсектор/сети. 2031: регион ЕАЭС, адаптация корпуса КП."""
+2026-2027: Кравира B2B + B2C MVP (patient.html) + ERIP. 2028: 5-10 ОЗ B2B, 30-50k B2C проверок/год. 2029: white-label МИС, 8% рынка B2B. 2030: госсектор/сети. 2031: регион ЕАЭС, адаптация корпуса КП."""
 
 
 def _download_templates() -> None:
@@ -246,7 +246,7 @@ def _fill_strategy(src: Path, dest: Path) -> None:
         3: PROJECT_NAME,
         6: NOMINATION,
         9: f"{ORG_NAME} ({ORG_SHORT})",
-        15: f"опытный образец, B2B-пилот в Кравире, beta B2C для физлиц ({STRATEGY_YEAR} год).",
+        15: f"опытный образец, B2B-пилот в Кравире, B2C MVP patient.html (масштаб ERIP и rev-share - {STRATEGY_YEAR}).",
     }
     for idx, text in replacements.items():
         if idx < len(doc.paragraphs):

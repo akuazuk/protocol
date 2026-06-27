@@ -36,6 +36,10 @@ li { margin-bottom: 1.5mm; }
   background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
 .cover hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--sage-light), transparent);
   margin: 8mm auto; width: 70%; }
+.cover .logo-lockup { margin: 0 auto 8mm; }
+.cover .logo-lockup img { height: 14mm; width: auto; }
+.cover .logo-emblem { margin: 0 auto 4mm; }
+.cover .logo-emblem img { height: 18mm; width: auto; }
 .mission {
   page-break-after: always; padding: 14mm 16mm;
   background: linear-gradient(135deg, #6b9080 0%, #7a9e8e 100%); color: #fff;
@@ -81,9 +85,15 @@ tr:nth-child(even) td { background: var(--sage-pale); }
 .scenario .tag { font-size: 8.5pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
 .flow { font-family: monospace; font-size: 8.5pt; background: var(--sage-pale); padding: 3mm 4mm;
   border-radius: 2mm; margin: 2mm 0 3mm; word-break: break-word; }
+.flow-cycle { font-size: 9pt; background: #fff; border: 1px solid var(--border); border-radius: 3mm;
+  padding: 4mm 5mm; margin: 4mm 0 5mm; page-break-inside: avoid; }
+.flow-cycle .step { margin-bottom: 3mm; padding-left: 3mm; border-left: 2px solid var(--sage); }
+.flow-cycle .step b { color: #3d5c52; }
 </style>
 </head><body><div class="wrap">
 <div class="cover">
+  <div class="logo-emblem"><img src="../../protocol-logo.svg" alt="Protocol"/></div>
+  <div class="logo-lockup"><img src="../../protocol-logo-wordmark.svg" alt="Protocol"/></div>
   <div class="badge">Белинфонд · 2026 · Лучший инновационный проект</div>
   <div class="title">СТРАТЕГИЯ</div>
   <div class="subtitle">коммерциализации инновационного проекта</div>
@@ -98,4 +108,4 @@ tr:nth-child(even) td { background: var(--sage-pale); }
     +375 29 608-75-95 · akuazuk@gmail.com · https://kravira.by<br/><br/>
     <span class="muted">Минск · 2026</span>
   </div>
-</div><div class="section"><h2>Проект и организация</h2></div><div class="section-body"><p><strong>Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</strong></p><p>Общество с дополнительной ответственностью «Медицинский центр «Кравира»»</p></div><div class="section"><h2>Уровень коммерциализации</h2></div><div class="section-body"><p>отмечены: определены способы монетизации (B2B микроплатёж + B2C для физлиц), ценовая политика, каналы продаж (МИС, клиники, веб-витрина); определён потенциальный заказчик - МЦ «Кравира»; предварительный вывод на рынок - письма заинтересованности оформляются до 01.08.2026.</p><p>Опытный образец, B2B-пилот в Кравире, beta B2C (2027).</p></div><div class="section"><h2>Способы коммерциализации</h2></div><div class="section-body"><p>реализация услуг (B2B проверка КЗ, B2C самопроверка для физлиц); предоставление права использования (лицензия API для МИС); заинтересованность (письма клиник и интегратора МИС).</p></div><div class="section"><h2>План на ближайший год</h2></div><div class="section-body"><p>1) Завершить пилот L0 в Кравире и метрики B2B. 2) Запустить beta B2C: загрузка КЗ физлицом, оплата 4,99/9,99 BYN, дисклеймер и политика ПДн. 3) Интегрировать API в МИС «Айболит». 4) QR-кампания «Проверьте своё заключение» в Кравире. 5) Подключить 2 внешние клиники B2B.</p></div><div class="section"><h2>Стратегия на 5 лет</h2></div><div class="section-body"><p>2027: Кравира B2B + B2C beta. 2028: 5-10 ОЗ B2B, 30-50k B2C проверок/год. 2029: white-label МИС, 5% рынка B2B. 2030: госсектор/сети. 2031: регион ЕАЭС, адаптация корпуса КП.</p></div></div></body></html>
+</div><div class="section"><h2>Проект и организация</h2></div><div class="section-body"><p><strong>Protocol - предимпортная экспертиза консультативных заключений и сервис проверки КЗ для пациентов</strong></p><p>Общество с дополнительной ответственностью «Медицинский центр «Кравира»»</p></div><div class="section"><h2>Уровень коммерциализации</h2></div><div class="section-body"><p>отмечены: определены способы монетизации (B2B микроплатёж + B2C для физлиц), ценовая политика, каналы продаж (МИС, клиники, веб-витрина); определён потенциальный заказчик - МЦ «Кравира»; предварительный вывод на рынок - письма заинтересованности оформляются до 01.08.2026.</p><p>Опытный образец, B2B-пилот в Кравире, B2C MVP patient.html (ERIP и rev-share - 2027).</p></div><div class="section"><h2>Способы коммерциализации</h2></div><div class="section-body"><p>реализация услуг (B2B проверка КЗ, B2C самопроверка для физлиц); предоставление права использования (лицензия API для МИС); заинтересованность (письма клиник и интегратора МИС).</p></div><div class="section"><h2>План на ближайший год</h2></div><div class="section-body"><p>1) Завершить пилот L0 в Кравире и метрики B2B. 2) Масштабировать B2C (patient.html развёрнут): ERIP, tier 4,99-14,99 BYN, QR/SMS rev-share, политика ПДн. 3) Интегрировать API в МИС «Айболит». 4) QR-кампания «Проверьте своё заключение» в Кравире и партнёрских ОЗ. 5) Подключить 2 внешние клиники B2B.</p></div><div class="section"><h2>Стратегия на 5 лет</h2></div><div class="section-body"><p>2026-2027: Кравира B2B + B2C MVP (patient.html) + ERIP. 2028: 5-10 ОЗ B2B, 30-50k B2C проверок/год. 2029: white-label МИС, 8% рынка B2B. 2030: госсектор/сети. 2031: регион ЕАЭС, адаптация корпуса КП.</p></div></div></body></html>

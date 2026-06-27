@@ -65,6 +65,9 @@ from konkurs_scenarios import (  # noqa: E402
 )
 from konkurs_impact import (  # noqa: E402
     CISZ_CONTEXT,
+    ECOSYSTEM_FLYWHEEL,
+    ECOSYSTEM_GOVERNANCE,
+    ECOSYSTEM_INTRO,
     GLOBAL_ANALOGUES,
     MARKET_CONTEXT,
     STAKEHOLDER_BENEFITS,
@@ -155,6 +158,10 @@ li { margin-bottom: 1.5mm; }
   background: #fff; padding: 6mm 8mm; border-radius: 4mm; border: 1px solid var(--border); }
 .cover hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--sage-light), transparent);
   margin: 8mm auto; width: 70%; }
+.cover .logo-lockup { margin: 0 auto 8mm; }
+.cover .logo-lockup img { height: 14mm; width: auto; }
+.cover .logo-emblem { margin: 0 auto 4mm; }
+.cover .logo-emblem img { height: 18mm; width: auto; }
 .mission {
   page-break-after: always; padding: 14mm 16mm;
   background: linear-gradient(135deg, #6b9080 0%, #7a9e8e 100%); color: #fff;
@@ -200,6 +207,10 @@ tr:nth-child(even) td { background: var(--sage-pale); }
 .scenario .tag { font-size: 8.5pt; color: var(--sage); font-weight: 600; margin-bottom: 2mm; }
 .flow { font-family: monospace; font-size: 8.5pt; background: var(--sage-pale); padding: 3mm 4mm;
   border-radius: 2mm; margin: 2mm 0 3mm; word-break: break-word; }
+.flow-cycle { font-size: 9pt; background: #fff; border: 1px solid var(--border); border-radius: 3mm;
+  padding: 4mm 5mm; margin: 4mm 0 5mm; page-break-inside: avoid; }
+.flow-cycle .step { margin-bottom: 3mm; padding-left: 3mm; border-left: 2px solid var(--sage); }
+.flow-cycle .step b { color: #3d5c52; }
 """
 
 
@@ -232,8 +243,12 @@ def _page(title: str, body: str, *, extra_head: str = "") -> str:
 
 
 def _cover(title: str, doc_kind: str) -> str:
+    logo_rel = "../../protocol-logo-wordmark.svg"
+    emblem_rel = "../../protocol-logo.svg"
     return f"""
 <div class="cover">
+  <div class="logo-emblem"><img src="{emblem_rel}" alt="Protocol"/></div>
+  <div class="logo-lockup"><img src="{logo_rel}" alt="Protocol"/></div>
   <div class="badge">Белинфонд · 2026 · {_e(NOMINATION)}</div>
   <div class="title">{_e(title)}</div>
   <div class="subtitle">{_e(doc_kind)}</div>
@@ -279,6 +294,22 @@ def _stakeholders_html() -> str:
     return f"""
 <div class="section"><h2>Социальная значимость: кому и как помогает Protocol</h2></div>
 <div class="section-body"><div class="grid2">{''.join(cards)}</div></div>"""
+
+
+def _ecosystem_html() -> str:
+    rows = [(a, b, c) for a, b, c in ECOSYSTEM_FLYWHEEL]
+    return f"""
+<div class="section"><h2>3.1. Экосистема B2C ↔ B2B ↔ государство: саморегулирующийся контур</h2></div>
+<div class="section-body">
+<p>{_e(ECOSYSTEM_INTRO.replace(chr(10), ' '))}</p>
+{_table(['Участник / этап', 'Что происходит', 'Эффект'], rows, caption='Flywheel: как интересы пациента, клиники и государства усиливают друг друга')}
+<p>{_e(ECOSYSTEM_GOVERNANCE.replace(chr(10), ' '))}</p>
+<div class="highlight"><strong>Ключевая идея для инвестора и регулятора:</strong> массовое использование B2C пациентами
+создаёт рыночное давление на клиники без отдельного административного приказа; клиники с B2B закрывают
+проблемы до подписи ЭЦП; государство получает более чистые данные в ЦИСЗ и исполнение КП при роли
+«контролёра нормативки», а не операционного аудитора каждого КЗ. Protocol постоянно развивает patient-блок
+и B2B-ядро на одном evidence_map - цикл самоконтроля рынка.</div>
+</div>"""
 
 
 def _analogues_html() -> str:
@@ -353,7 +384,7 @@ def _b2c_ux_html() -> str:
 </div>""")
     oos = "".join(f"<li>{_e(x)}</li>" for x in B2C_OUT_OF_SCOPE)
     return f"""
-<div class="section"><h2>8.1. B2C: UX, tier-цены и rev-share (национальный рынок)</h2></div>
+<div class="section"><h2>8.1. B2C: MVP, UX, tier-цены и rev-share (национальный рынок)</h2></div>
 <div class="section-body">
 <p>{_e(B2C_UX_INTRO.replace(chr(10), ' '))}</p>
 {''.join(scenarios_html)}
@@ -365,7 +396,7 @@ def _b2c_ux_html() -> str:
   ('2. SMS/email rev-share', 'Высокая', 'Основной канал масштаба'),
   ('3. Национальный SEO', 'Средняя', '2028+, без rev-share'),
 ], caption='Приоритет запуска B2C')}
-<div class="highlight">Пилот Q4 2026: QR + SMS rev-share в Кравире; масштаб 2027+ на сеть частных ОЗ РБ.
+<div class="highlight">B2C MVP развёрнут (patient.html, tier P1, API /api/patient/*). Коммерческий запуск QR + SMS rev-share и ERIP - Q4 2026 / 2027.
 Rev-share {int(CLINIC_B2C_REVSHARE * 100)}% мотивирует клиники рассылать ссылку - доп. доход ~{CLINIC_B2C_REV_Y3_K} тыс. BYN/год к 2029 (осторожный сценарий, B2C {FIN_Y3['b2c_k']} тыс. Protocol).</div>
 <p><strong>Вне scope (не делаем в 2026-2027):</strong></p><ul>{oos}</ul>
 </div>"""
@@ -536,6 +567,7 @@ def write_business_plan_html(path: Path, assets_rel: str = "_assets") -> None:
         + f'<div class="toc"><h2>Содержание</h2><pre>{_e(TOC)}</pre></div>'
         + '<div class="section"><h2>3. Резюме</h2></div>'
         + f'<div class="section-body">{_ps(RESUME)}</div>'
+        + _ecosystem_html()
         + _market_scope_html()
         + _stakeholders_html()
         + _analogues_html()
@@ -598,7 +630,7 @@ def write_strategy_html(path: Path) -> None:
         + f'<div class="section"><h2>Проект и организация</h2></div>'
         + f'<div class="section-body"><p><strong>{_e(ORG_PROJECT)}</strong></p><p>{_e(ORG_NAME)}</p></div>'
         + f'<div class="section"><h2>Уровень коммерциализации</h2></div>'
-        + f'<div class="section-body"><p>{_e(STRATEGY_LEVELS)}</p><p>Опытный образец, B2B-пилот в Кравире, beta B2C ({STRATEGY_YEAR}).</p></div>'
+        + f'<div class="section-body"><p>{_e(STRATEGY_LEVELS)}</p><p>Опытный образец, B2B-пилот в Кравире, B2C MVP patient.html (ERIP и rev-share - {STRATEGY_YEAR}).</p></div>'
         + f'<div class="section"><h2>Способы коммерциализации</h2></div>'
         + f'<div class="section-body"><p>{_e(STRATEGY_METHODS)}</p></div>'
         + f'<div class="section"><h2>План на ближайший год</h2></div>'
