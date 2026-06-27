@@ -367,17 +367,17 @@ def _block_why_ru(card: dict[str, Any], status: BlockStatus, score: int | None) 
         return "Не хватает: " + "; ".join(gaps[:2]) + "."
     if score is not None and score < 50:
         return "По этому разделу мало информации для уверенной сверки с протоколом."
-    return "Есть отдельные пробелы — уточните у врача на приёме."
+    return "Есть отдельные пробелы - уточните у врача на приёме."
 
 
 def _headline_ru(light: TrafficLight, overall_label: str, conf: int | None) -> str:
     if conf is not None and conf < 55:
-        return "Сначала улучшите качество фото или загрузите PDF — оценка может быть неточной"
+        return "Сначала улучшите качество фото или загрузите PDF - оценка может быть неточной"
     if light == "green":
-        return "Можно спокойно идти на приём — критичных пробелов не найдено"
+        return "Можно спокойно идти на приём - критичных пробелов не найдено"
     if light == "yellow":
-        return "Есть что обсудить с врачом — список вопросов ниже"
-    return "Рекомендуем обсудить заключение с врачом — много неучтённого по стандарту"
+        return "Есть что обсудить с врачом - список вопросов ниже"
+    return "Рекомендуем обсудить заключение с врачом - много неучтённого по стандарту"
 
 
 def _patient_blocks(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -651,7 +651,7 @@ def build_patient_report(
             },
         )
         if light == "green":
-            light, overall_label = "yellow", "Качество документа низкое — переснимите или загрузите PDF"
+            light, overall_label = "yellow", "Качество документа низкое - переснимите или загрузите PDF"
 
     structured_questions = apply_tone_to_questions(structured_questions, tone)
 

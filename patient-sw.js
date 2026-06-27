@@ -1,5 +1,5 @@
 /* PWA shell для patient.html. HTML/JS/CSS — только network-first (без устаревшего кэша). */
-const CACHE = "protocol-patient-v6";
+const CACHE = "protocol-patient-v7";
 const OFFLINE_ASSETS = ["/patient-manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {

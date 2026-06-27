@@ -31,7 +31,7 @@ TIER_CATALOG: dict[str, dict[str, Any]] = {
         "label_ru": "Промо-проверка",
         "price_byn": 2.99,
         "review_tier": "P1",
-        "hint_ru": "Светофор, блоки КЗ и вопросы врачу — вход по ссылке клиники.",
+        "hint_ru": "Светофор, блоки КЗ и вопросы врачу - вход по ссылке клиники.",
         "includes": ["traffic_light", "blocks", "questions"],
     },
     "basic": {

@@ -34,7 +34,7 @@ def test_same_intent_differs_by_tone() -> None:
     assert serious != official != playful
     assert all(q.endswith("?") for q in (serious, official, playful))
     assert "Вы" in official or "прошу" in official.lower()
-    assert "пенсии" in playful.lower() or "сериала" in playful.lower() or "недель" in playful.lower()
+    assert "поликлиник" in playful.lower() or "талон" in playful.lower() or "регистратур" in playful.lower() or "недель" in playful.lower()
 
 
 def test_playful_no_duplicate_in_report() -> None:

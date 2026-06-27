@@ -12,7 +12,7 @@
   var questionTonesCatalog = [
     { id: "serious", label_ru: "Строго и серьёзно", emoji: "serious", icon: "serious", description_ru: "Коротко, по делу, без шуток", default: true, accent: "#1e3a5f" },
     { id: "official", label_ru: "Официально", emoji: "official", icon: "official", description_ru: "Деловой стиль, обращение на «Вы»", accent: "#1d4ed8" },
-    { id: "playful", label_ru: "Шуточно", emoji: "playful", icon: "playful", description_ru: "Креативно про выписку и анализы", accent: "#b8860b" },
+    { id: "playful", label_ru: "Шуточно", emoji: "playful", icon: "playful", description_ru: "По-домашнему, с лёгким юмором про поликлинику и выписку", accent: "#b8860b" },
   ];
   var selectedQuestionTone = "serious";
 
@@ -43,8 +43,12 @@
   var selectedTier = tierId || "basic";
   var useSse = true;
 
-  var kzInput = document.getElementById("kz-files");
-  var labInput = document.getElementById("lab-files");
+  var kzFilesList = [];
+  var labFilesList = [];
+  var kzCameraInput = document.getElementById("kz-files-camera");
+  var kzPickInput = document.getElementById("kz-files-pick");
+  var labCameraInput = document.getElementById("lab-files-camera");
+  var labPickInput = document.getElementById("lab-files-pick");
   var consentEl = document.getElementById("consent");
   var btn = document.getElementById("btn-check");
   var statusEl = document.getElementById("status");
@@ -171,29 +175,105 @@
     } catch (e) {}
   }
 
-  function renderChips(input, containerId) {
+  function fileKey(f) {
+    return [f.name, f.size, f.lastModified].join("|");
+  }
+
+  function mergeFilesIntoList(list, incoming) {
+    var map = {};
+    var order = [];
+    function add(f) {
+      var k = fileKey(f);
+      if (!map[k]) {
+        map[k] = f;
+        order.push(k);
+      }
+    }
+    var i;
+    for (i = 0; i < list.length; i++) add(list[i]);
+    for (i = 0; i < incoming.length; i++) add(incoming[i]);
+    return order.map(function (k) { return map[k]; });
+  }
+
+  function renderFileChips(list, containerId, dropId) {
     var el = document.getElementById(containerId);
+    var drop = dropId ? document.getElementById(dropId) : null;
     if (!el) return;
     el.innerHTML = "";
-    if (!input.files || !input.files.length) return;
-    for (var i = 0; i < input.files.length; i++) {
+    if (drop) drop.classList.toggle("drop-zone--has-files", list.length > 0);
+    for (var i = 0; i < list.length; i++) {
       var span = document.createElement("span");
       span.className = "file-chip";
-      span.textContent = input.files[i].name;
+      span.textContent = list[i].name;
       el.appendChild(span);
     }
   }
 
+  function clearFileInputs(inputs) {
+    inputs.forEach(function (inp) {
+      if (inp) inp.value = "";
+    });
+  }
+
+  function wireUploadZone(opts) {
+    var getList = opts.getList;
+    var setList = opts.setList;
+    var cameraInput = opts.cameraInput;
+    var pickInput = opts.pickInput;
+    var btnCamera = document.getElementById(opts.btnCameraId);
+    var btnFile = document.getElementById(opts.btnFileId);
+    var chipsId = opts.chipsId;
+    var dropId = opts.dropId;
+    var onChange = opts.onChange;
+
+    function handlePick(input) {
+      if (!input || !input.files || !input.files.length) return;
+      var merged = mergeFilesIntoList(getList(), Array.prototype.slice.call(input.files));
+      setList(merged);
+      renderFileChips(getList(), chipsId, dropId);
+      clearFileInputs([cameraInput, pickInput]);
+      if (onChange) onChange();
+    }
+
+    if (btnCamera && cameraInput) {
+      btnCamera.addEventListener("click", function () { cameraInput.click(); });
+      cameraInput.addEventListener("change", function () { handlePick(cameraInput); });
+    }
+    if (btnFile && pickInput) {
+      btnFile.addEventListener("click", function () { pickInput.click(); });
+      pickInput.addEventListener("change", function () { handlePick(pickInput); });
+    }
+  }
+
   function updateBtn() {
-    var ready = consentEl && consentEl.checked && kzInput.files && kzInput.files.length;
+    var ready = consentEl && consentEl.checked && kzFilesList.length > 0;
     if (btn) {
       btn.disabled = !ready;
       btn.textContent = ready && needsPaymentBeforeReview() ? "Оплатить и проверить" : "Проверить заключение";
     }
   }
 
-  if (kzInput) kzInput.addEventListener("change", function () { renderChips(kzInput, "kz-chips"); updateBtn(); });
-  if (labInput) labInput.addEventListener("change", function () { renderChips(labInput, "lab-chips"); });
+  wireUploadZone({
+    getList: function () { return kzFilesList; },
+    setList: function (v) { kzFilesList = v; },
+    cameraInput: kzCameraInput,
+    pickInput: kzPickInput,
+    btnCameraId: "kz-btn-camera",
+    btnFileId: "kz-btn-file",
+    chipsId: "kz-chips",
+    dropId: "kz-drop",
+    onChange: updateBtn,
+  });
+  wireUploadZone({
+    getList: function () { return labFilesList; },
+    setList: function (v) { labFilesList = v; },
+    cameraInput: labCameraInput,
+    pickInput: labPickInput,
+    btnCameraId: "lab-btn-camera",
+    btnFileId: "lab-btn-file",
+    chipsId: "lab-chips",
+    dropId: "lab-drop",
+  });
   if (consentEl) consentEl.addEventListener("change", updateBtn);
 
   if (localStorage.getItem(ONBOARD_KEY) === "1" && onboard) onboard.classList.add("hidden");
@@ -257,7 +337,7 @@
       '<circle cx="' + cx + '" cy="' + cx + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="' + (compact ? 8 : 10) + '" ' +
       'stroke-dasharray="' + c + '" stroke-dashoffset="' + off + '" stroke-linecap="round" transform="rotate(-90 ' + cx + " " + cx + ')"/>' +
       '<text x="' + cx + '" y="' + (cx - 2) + '" text-anchor="middle" font-size="' + (compact ? "16" : "22") + '" font-weight="800" fill="#063d35">' +
-      (pct != null ? pct + "%" : "—") + "</text>"
+      (pct != null ? pct + "%" : "-") + "</text>"
     );
   }
 
@@ -316,7 +396,7 @@
         }
         protoLine += "</div>";
       }
-      var comment = (b.summary_ru || b.why_ru || "—").trim();
+      var comment = (b.summary_ru || b.why_ru || "-").trim();
       article.innerHTML =
         '<div class="block-item__cols">' +
         '<div class="block-item__name">' + escapeHtml(b.title) + "</div>" +
@@ -381,8 +461,8 @@
         var fm = data && data.upload_formats;
         if (!fm) return;
         if (fm.accept) {
-          if (kzInput) kzInput.setAttribute("accept", fm.accept);
-          if (labInput) labInput.setAttribute("accept", fm.accept);
+          if (kzPickInput) kzPickInput.setAttribute("accept", fm.accept);
+          if (labPickInput) labPickInput.setAttribute("accept", fm.accept);
         }
         if (fm.hint_ru) {
           var kh = document.getElementById("kz-formats-hint");
@@ -493,10 +573,10 @@
     if (rows.length) {
       html += '<table class="lab-table"><thead><tr><th>Показатель</th><th>Результат</th><th>В заключении</th></tr></thead><tbody>';
       rows.forEach(function (r) {
-        var val = r.value != null && r.value !== "" ? String(r.value) : "—";
+        var val = r.value != null && r.value !== "" ? String(r.value) : "-";
         if (r.unit) val += " " + r.unit;
         if (r.flag === "high") val += " ↑";
-        html += "<tr><td>" + escapeHtml(r.marker || "—") + "</td><td>" + escapeHtml(val) + "</td><td>" + (r.in_kz ? "да" : "нет") + "</td></tr>";
+        html += "<tr><td>" + escapeHtml(r.marker || "-") + "</td><td>" + escapeHtml(val) + "</td><td>" + (r.in_kz ? "да" : "нет") + "</td></tr>";
       });
       html += "</tbody></table>";
     }
@@ -561,14 +641,14 @@
       wrap.classList.remove("hidden");
       listEl.innerHTML = list.map(function (it) {
         var d = new Date(it.ts);
-        return '<div class="history-item">' + d.toLocaleString("ru-RU") + " · " + (it.pct != null ? it.pct + "%" : "—") + " · " + escapeHtml(it.label || "") + "</div>";
+        return '<div class="history-item">' + d.toLocaleString("ru-RU") + " · " + (it.pct != null ? it.pct + "%" : "-") + " · " + escapeHtml(it.label || "") + "</div>";
       }).join("");
     } catch (e) { wrap.classList.add("hidden"); }
   }
   renderHistory();
 
   function buildShareText(pr) {
-    var lines = ["Проверь КЗ — лист на приём", ""];
+    var lines = ["Проверь КЗ - лист на приём", ""];
     if (pr.headline_ru) lines.push(pr.headline_ru);
     if (pr.plain_summary_ru) lines.push(pr.plain_summary_ru);
     var qs = pr.questions_for_doctor || [];
@@ -722,8 +802,8 @@
   function buildFormData() {
     var fd = new FormData();
     var i;
-    for (i = 0; i < kzInput.files.length; i++) fd.append("files", kzInput.files[i]);
-    if (labInput.files) for (i = 0; i < labInput.files.length; i++) fd.append("lab_files", labInput.files[i]);
+    for (i = 0; i < kzFilesList.length; i++) fd.append("files", kzFilesList[i]);
+    for (i = 0; i < labFilesList.length; i++) fd.append("lab_files", labFilesList[i]);
     fd.append("consent", "1");
     var age = document.getElementById("age-years");
     var sex = document.getElementById("sex");
@@ -758,7 +838,7 @@
   }
 
   function runReviewFetch() {
-    track("upload_start", { tier: selectedTier, lab_count: labInput.files ? labInput.files.length : 0 });
+    track("upload_start", { tier: selectedTier, lab_count: labFilesList.length });
     btn.disabled = true;
     showLoader("Анализируем документ");
     fetch(window.location.origin + "/api/patient/review", { method: "POST", body: buildFormData() })
@@ -815,7 +895,7 @@
   }
 
   if (btn) btn.addEventListener("click", function () {
-    if (!kzInput.files || !kzInput.files.length) return;
+    if (!kzFilesList.length) return;
     if (needsPaymentBeforeReview()) {
       btn.disabled = true;
       startPaymentSession(false);
@@ -840,10 +920,11 @@
   if (btnAgain) btnAgain.addEventListener("click", function () {
     resultCard.classList.add("hidden");
     formCard.classList.remove("hidden");
-    kzInput.value = "";
-    labInput.value = "";
-    renderChips(kzInput, "kz-chips");
-    renderChips(labInput, "lab-chips");
+    kzFilesList = [];
+    labFilesList = [];
+    clearFileInputs([kzCameraInput, kzPickInput, labCameraInput, labPickInput]);
+    renderFileChips(kzFilesList, "kz-chips", "kz-drop");
+    renderFileChips(labFilesList, "lab-chips", "lab-drop");
     updateBtn();
   });
 
@@ -875,8 +956,10 @@
         banner.classList.remove("hidden");
       }
       if (clinicConfig.primary_color) document.documentElement.style.setProperty("--g600", clinicConfig.primary_color);
-      var brand = document.querySelector(".brand");
+      var brand = document.querySelector(".brand-lockup__name");
       if (brand && clinicId) brand.textContent = clinicConfig.name_ru;
+      var brandTag = document.querySelector(".brand-lockup__tag");
+      if (brandTag && clinicId && clinicConfig.tagline_ru) brandTag.textContent = clinicConfig.tagline_ru;
       if (!tierId && clinicConfig.default_tier) selectedTier = clinicConfig.default_tier;
       syncPatientMonetizationFromApi();
     }).catch(function () {});

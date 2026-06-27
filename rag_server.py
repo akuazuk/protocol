@@ -8168,7 +8168,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r25-b2c-monetization-tab"
+BUILD_VERSION = "2026-06-24-r26-patient-upload-brand"
 
 
 def _app_version() -> str:

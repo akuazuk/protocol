@@ -52,6 +52,32 @@
       justify-content: space-between;
       padding: 0.85rem 0 0.25rem;
     }
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      text-align: left;
+    }
+    .brand-lockup__mark {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(26, 138, 114, 0.28);
+    }
+    .brand-lockup__text { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-lockup__name {
+      font-family: Outfit, sans-serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--g950);
+      letter-spacing: -0.02em;
+    }
+    .brand-lockup__tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--g600);
+    }
     .brand {
       font-family: Outfit, sans-serif;
       font-weight: 800;
@@ -148,21 +174,40 @@
       padding: 1.15rem 0.75rem;
       text-align: center;
       background: linear-gradient(180deg, #fafdfc, #fff);
-      cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
     }
-    .drop-zone:hover, .drop-zone:focus-within {
+    .drop-zone--has-files {
       border-color: var(--g600);
       background: var(--gsoft);
     }
-    .drop-zone input {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
+    .upload-actions {
+      display: flex;
+      gap: 0.45rem;
+      justify-content: center;
+      margin-top: 0.7rem;
+      flex-wrap: wrap;
     }
+    .upload-btn {
+      flex: 1;
+      min-width: 7.25rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 999px;
+      border: 1.5px solid rgba(26, 138, 114, 0.35);
+      background: #fff;
+      color: var(--g800);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .upload-btn:hover { background: var(--gsoft); border-color: var(--g600); }
+    .upload-btn--primary {
+      background: linear-gradient(135deg, var(--g600), var(--g800));
+      color: #fff;
+      border-color: transparent;
+    }
+    .upload-btn--primary:hover { filter: brightness(1.05); }
     .drop-zone__icon { font-size: 1.75rem; line-height: 1; margin-bottom: 0.35rem; }
     .drop-zone__title { font-weight: 700; font-size: 0.88rem; color: var(--g800); }
     .drop-zone__hint { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; }
@@ -219,6 +264,10 @@
       color: var(--muted);
     }
     .consent input { margin-top: 0.15rem; accent-color: var(--g600); flex-shrink: 0; }
+    .consent--submit {
+      margin-top: 0.85rem;
+      margin-bottom: 0.15rem;
+    }
 
     .btn-primary {
       display: block;
@@ -692,19 +741,25 @@
   <div class="page-bg" aria-hidden="true"></div>
   <div class="wrap">
     <div class="top-bar">
-      <span class="brand">Проверь КЗ</span>
+      <div class="brand-lockup brand" aria-label="Protocol - Проверь КЗ">
+        <img class="brand-lockup__mark" src="/protocol-logo.svg" width="32" height="32" alt="" />
+        <div class="brand-lockup__text">
+          <span class="brand-lockup__name">Protocol</span>
+          <span class="brand-lockup__tag">Проверь КЗ</span>
+        </div>
+      </div>
       <a class="top-link" href="/">Врачам</a>
     </div>
     <div id="clinic-banner" class="clinic-banner hidden" role="status"></div>
     <div id="install-hint" class="install-hint hidden">
-      Установите на главный экран — быстрее открывать перед визитом к врачу.
+      Установите на главный экран - быстрее открывать перед визитом к врачу.
       <button type="button" id="btn-install-pwa" class="hidden">Добавить на экран</button>
       <button type="button" id="btn-install-dismiss">Понятно</button>
     </div>
 
     <header class="hero">
       <div class="hero-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <img src="/protocol-logo.svg" width="52" height="52" alt="" style="width:3.25rem;height:3.25rem;border-radius:18px" />
       </div>
       <h1>Проверь своё заключение</h1>
       <p class="hero-lead">Сверка с официальными клиническими протоколами Минздрава РБ. Поймите, всё ли врач учёл и заполнил.</p>
@@ -729,17 +784,27 @@
     <section class="card" id="form-card">
       <p class="card-title">Документы</p>
       <div class="drop-zone" id="kz-drop">
-        <input type="file" id="kz-files" accept="__PATIENT_FILE_ACCEPT__" multiple capture="environment" />
+        <input type="file" id="kz-files-camera" accept="image/*" capture="environment" hidden />
+        <input type="file" id="kz-files-pick" accept="__PATIENT_FILE_ACCEPT__" multiple hidden />
         <div class="drop-zone__icon" aria-hidden="true"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
         <div class="drop-zone__title">Консультативное заключение</div>
         <div class="drop-zone__hint" id="kz-formats-hint">__PATIENT_FORMATS_HINT__</div>
+        <div class="upload-actions">
+          <button type="button" class="upload-btn upload-btn--primary" id="kz-btn-camera">Сделать фото</button>
+          <button type="button" class="upload-btn" id="kz-btn-file">Загрузить файл</button>
+        </div>
         <div class="file-chips" id="kz-chips"></div>
       </div>
 
       <div class="drop-zone drop-zone--secondary" id="lab-drop">
-        <input type="file" id="lab-files" accept="__PATIENT_FILE_ACCEPT__" multiple capture="environment" />
+        <input type="file" id="lab-files-camera" accept="image/*" capture="environment" hidden />
+        <input type="file" id="lab-files-pick" accept="__PATIENT_FILE_ACCEPT__" multiple hidden />
         <div class="drop-zone__title">Анализы (необязательно)</div>
         <div class="drop-zone__hint" id="lab-formats-hint">Те же форматы: PDF, Word, фото бланка</div>
+        <div class="upload-actions">
+          <button type="button" class="upload-btn upload-btn--primary" id="lab-btn-camera">Сделать фото</button>
+          <button type="button" class="upload-btn" id="lab-btn-file">Загрузить файл</button>
+        </div>
         <div class="file-chips" id="lab-chips"></div>
       </div>
 
@@ -763,11 +828,6 @@
         </div>
       </div>
 
-      <label class="consent">
-        <input type="checkbox" id="consent" />
-        <span>Согласен на обработку документов для одной проверки. Файлы не сохраняются на сервере после ответа. <a href="/docs/patient-privacy-stub.html" style="color:var(--g600)">Политика</a></span>
-      </label>
-
       <div class="tone-picker" id="tone-picker" aria-label="Тон вопросов врачу">
         <p class="tone-picker__label">Как сформулировать вопросы врачу</p>
         <p class="tone-picker__hint">Три стиля - от строгого до шуточного. По умолчанию «Строго и серьёзно»: врачу проще ответить по сути, без лишних эмоций.</p>
@@ -781,7 +841,12 @@
       <p class="payment-note" id="payment-note">Оплата не требуется в демо-режиме. В пилоте клиники - от 2,99 BYN.</p>
       </div>
 
-      <button type="button" class="btn-primary" id="btn-check" disabled>Проверить заключение</button>
+      <label class="consent consent--submit">
+        <input type="checkbox" id="consent" />
+        <span>Согласен на обработку документов для одной проверки. Файлы не сохраняются на сервере после ответа. <a href="/docs/patient-privacy-stub.html" style="color:var(--g600)">Политика</a></span>
+      </label>
+
+      <button type="button" class="btn-primary" id="btn-check" disabled style="margin-top:0.55rem">Проверить заключение</button>
       <p class="status" id="status" aria-live="polite"></p>
 
       <details class="history hidden" id="history-wrap">
