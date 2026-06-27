@@ -420,18 +420,25 @@
       color: var(--green-700);
     }
     .site-doc-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem 0.85rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+      gap: 0.55rem;
       margin-top: 0.85rem;
       padding-top: 0.75rem;
       border-top: 1px dashed rgba(26, 138, 114, 0.22);
     }
     .site-doc-nav a {
+      display: block;
+      padding: 0.55rem 0.65rem;
+      border-radius: 12px;
       font-weight: 700;
       color: var(--green-700);
       text-decoration: none;
-      font-size: 0.86rem;
+      font-size: 0.82rem;
+      line-height: 1.35;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(26, 138, 114, 0.16);
+      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
     }
     .site-doc-nav a:hover { text-decoration: underline; }
     .site-doc-nav a.doc-nav--patient {
@@ -1943,7 +1950,7 @@
 
     <header class="hero">
       <p class="hero-eyebrow">Protocol · навигатор протоколов Минздрава РБ и аудит КЗ</p>
-      <h1>Клинические протоколы Минздрава РБ и двухконтурная проверка КЗ до подписи и ЦИСЗ</h1>
+      <h1>Клинические протоколы Минздрава РБ: B2B-проверка КЗ, B2C для пациентов и готовность к ЦИСЗ</h1>
       <p class="hero-lead">
         Protocol индексирует официальные PDF Минздрава, подбирает протоколы по МКБ и тексту заключения,
         выполняет <strong>детерминированный аудит по КП</strong> (8 блоков, карта доказательств, safety cap)
@@ -2986,6 +2993,8 @@ flowchart LR
         <a href="architecture-stages-print.html">Архитектура по этапам</a>
         <a href="pre-sign-checklist-print.html">Чек-лист перед подписью</a>
         <a href="ministry-brief-print.html">Буклет для руководства</a>
+        <a href="architecture-b2c-patient.md">Архитектура B2C (MD)</a>
+        <a href="project-docs-maintenance.md">Синхронизация docs</a>
         <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener">Протоколы Минздрава РБ</a>
       </nav>
     </footer>

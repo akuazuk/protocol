@@ -322,16 +322,22 @@
     </section>
 
     <section class="print-module print-module--accent">
-      <h2>7. Этап 5. Frontend (index.html)</h2>
-      <p>Монолитный SPA (~28k строк): inline CSS + vanilla JS, без bundler.</p>
+      <h2>7. Этап 5. Frontend</h2>
+      <p>Два клиентских shell в production: B2B <code>index.html</code> (~29k строк) и B2C <code>patient.html</code> (~1,1k строк + <code>patient-ui.js</code>). Inline CSS + vanilla JS, без bundler.</p>
+      <h3>7.1. index.html (B2B)</h3>
       <ul>
-        <li><strong>Вкладка по умолчанию:</strong> «Проверка КЗ» (<code>#consult-review</code>); кнопка L1 «Проанализировать», отдельно L2.</li>
-        <li><strong>Поиск протоколов:</strong> <code>#search</code>, уровни S0/S1/S2; чек-лист оформления КЗ по СОП Кравира под рекомендованным КП.</li>
-        <li><strong>Методслужба:</strong> <code>?methodist=1</code> + токен - workbench, разметка feedback, очередь кейсов.</li>
-        <li>SSE для потоковой проверки КЗ; карточки alignment и evidence pack в L1/L2.</li>
-        <li>Читаемые названия PDF (<code>beautify_protocol_title</code>), фильтр шумных выдержек.</li>
+        <li><strong>Липкая шапка:</strong> минилого <code>protocol-logo-mini.svg</code> + вкладки при прокрутке (как в B2C).</li>
+        <li><strong>Вкладки:</strong> «Проверка КЗ» (<code>#consult-review</code>), «Поиск протоколов» (<code>#search</code>), «Статистика»; hash сохраняется при F5.</li>
+        <li><strong>Методслужба:</strong> <code>?mode=methodist</code> + токен - workbench, очередь (<code>#methodist-queue</code>), ML-дашборд (<code>#ml-dashboard</code>), B2C-тарифы (<code>#b2c-monetization</code>).</li>
+        <li><strong>Structured analysis:</strong> 8 блоков compliance, alignment, evidence pack; SSE для потоковой проверки КЗ.</li>
+        <li><strong>Footer:</strong> единая сетка материалов (презентация, буклет, архитектура, patient B2C, кабинет методиста).</li>
       </ul>
-      <p>Подробная архитектура проверки КЗ перед отправкой в Минздрав: <a href="architecture-kravira-fhir-mis-print.html"><strong>architecture-kravira-fhir-mis-print.html</strong></a>. Также: <code>docs/mvp-presentation.html</code>, <code>docs/pre-sign-checklist-print.html</code>.</p>
+      <h3>7.2. patient.html (B2C «Проверь КЗ»)</h3>
+      <ul>
+        <li>Отдельная PWA: загрузка PDF/фото КЗ, отчёт простым языком, tier-цены, white-label клиники.</li>
+        <li>API: <code>POST /api/patient/review</code>, sanitize без полей B2B; см. <code>docs/architecture-b2c-patient.md</code>.</li>
+      </ul>
+      <p>Подробная архитектура проверки КЗ перед отправкой в Минздрав: <a href="architecture-kravira-fhir-mis-print.html"><strong>architecture-kravira-fhir-mis-print.html</strong></a>. Также: <code>docs/mvp-presentation.html</code>, <code>docs/pre-sign-checklist-print.html</code>, <code>docs/project-docs-maintenance.md</code>.</p>
     </section>
 
     <section class="print-module print-module--accent">

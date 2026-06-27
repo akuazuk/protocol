@@ -485,29 +485,46 @@
         0 0 0 1px rgba(26, 138, 114, 0.15);
     }
 
-    /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
-    .app-shell-brand {
-      display: flex;
-      align-items: center;
-      margin: 0 0 0.65rem;
+    /* Липкая шапка с минилого (как patient.html) + вкладки */
+    .app-chrome {
+      position: sticky;
+      top: 0;
+      z-index: 45;
+      margin: 0 0 1rem;
+      padding: 0 0 0.15rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
     }
 
-    .app-shell-brand__logo {
+    .app-chrome.app-chrome--scrolled {
+      border-bottom-color: rgba(26, 138, 114, 0.14);
+    }
+
+    .app-sticky-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.55rem 0 0.4rem;
+    }
+
+    .app-sticky-bar__brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      line-height: 0;
+    }
+
+    .app-sticky-bar__brand img {
       display: block;
+      height: 1.15rem;
       width: auto;
+      max-width: min(100%, 9rem);
       object-fit: contain;
     }
 
-    .app-shell-brand__logo--full {
-      height: 2.45rem;
-      max-width: min(100%, 17rem);
-    }
-
-    .app-shell-brand__logo--mini {
-      display: none;
-      height: 1.25rem;
-      max-width: min(100%, 9.5rem);
-    }
+    /* Верхние вкладки: поиск ↔ проверка PDF (DOM не уничтожается - данные сохраняются) */
 
     .site-footer-brand {
       margin: 0 0 0.85rem;
@@ -537,7 +554,7 @@
     .app-main-tabs {
       display: flex;
       gap: 0.55rem;
-      margin: 0 0 1.05rem;
+      margin: 0;
       flex-wrap: wrap;
     }
 
@@ -6265,14 +6282,6 @@
         justify-content: center;
       }
 
-      .app-shell-brand__logo--full {
-        display: none;
-      }
-
-      .app-shell-brand__logo--mini {
-        display: block;
-      }
-
       .logo img {
         height: 2.35rem;
         max-width: min(100%, 14rem);
@@ -10909,11 +10918,13 @@
       <span class="methodist-mode-banner__reviewer" id="methodist-mode-banner-reviewer" hidden></span>
       <button type="button" class="btn-methodist-exit" id="methodist-btn-exit">Выйти</button>
     </div>
-    <div class="app-shell-brand consult-hide-print" aria-label="Protocol">
-      <img class="app-shell-brand__logo app-shell-brand__logo--full" src="/protocol-logo-wordmark.svg" width="272" height="48" alt="Protocol" />
-      <img class="app-shell-brand__logo app-shell-brand__logo--mini" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
-    </div>
-    <div class="app-main-tabs" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
+    <div class="app-chrome consult-hide-print" id="app-chrome">
+      <div class="app-sticky-bar">
+        <a class="app-sticky-bar__brand" href="#app-main-tabs" aria-label="Protocol">
+          <img src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+        </a>
+      </div>
+      <div class="app-main-tabs" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
       <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review">
         <span class="app-main-tab-visual" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -10999,6 +11010,7 @@
           <span class="app-main-tab-sub">корпус, качество подбора и метрики КЗ</span>
         </span>
       </button>
+    </div>
     </div>
 
     <div class="demo-cases-bar" id="demo-cases-bar" hidden>
@@ -28019,6 +28031,16 @@
     if (mDash) mDash.hidden = true;
   }
 
+  function initAppStickyChrome() {
+    var chrome = document.getElementById("app-chrome");
+    if (!chrome) return;
+    function syncScrollChrome() {
+      chrome.classList.toggle("app-chrome--scrolled", window.scrollY > 8);
+    }
+    syncScrollChrome();
+    window.addEventListener("scroll", syncScrollChrome, { passive: true });
+  }
+
   function initMainAppTabsAndConsultReview() {
     var ts = document.getElementById("tab-main-search");
     var tc = document.getElementById("tab-consult-review");
@@ -29042,6 +29064,7 @@
   var input = document.getElementById("q");
 
   initRagBaseInput();
+  initAppStickyChrome();
   initMainAppTabsAndConsultReview();
   initPresentationOverlay();
   initDemoCasesBar();

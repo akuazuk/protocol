@@ -312,6 +312,7 @@ pytest tests/test_patient*.py tests/test_lab_result_parser.py -q
 
 ## Связанные документы
 
+- **Архитектура B2C (для LLM и разработки):** [`docs/architecture-b2c-patient.md`](architecture-b2c-patient.md)
 - B2C UX и экономика: `scripts/konkurs_b2c_ux.py`
 - Презентация MVP: `docs/mvp-presentation.html#patient-b2c`
 - Архитектура L0/L1/L2: `docs/architecture-stages-print.html`

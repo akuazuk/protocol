@@ -776,7 +776,14 @@ gate_score = min(клиника по КП, cisz_readiness) · порог учр�
       <li><code>tests/test_respiratory_path_filters.py</code>, <code>test_plan_definition_export.py</code></li>
       <li>Фикстуры FHIR: <code>tests/fixtures/fhir_by/</code></li>
     </ul>
-    <h3>10.2. Нормативные документы в репозитории</h3>
+    <h3>10.3. B2C-контур для пациентов (production)</h3>
+    <p>Отдельный клиентский shell <code>patient.html</code> («Проверь КЗ») использует тот же детерминированный L1-pipeline, но отдаёт пациенту sanitize-отчёт без полей B2B (gate_score, cisz, methodist). White-label клиники, tier-цены, PWA + service worker.</p>
+    <ul>
+      <li>Frontend: <code>patient.html</code>, <code>patient-ui.js</code>, sticky mini logo <code>protocol-logo-mini.svg</code>.</li>
+      <li>API: <code>POST /api/patient/review</code>, <code>/api/patient/payment/session</code>, <code>GET /api/patient/config</code>.</li>
+      <li>Документация: <code>docs/architecture-b2c-patient.md</code>, настройки monetization в кабинете методиста (<code>#b2c-monetization</code>).</li>
+    </ul>
+    <h3>10.4. Нормативные документы в репозитории</h3>
     <ul>
       <li><code>data/Программа испытаний МИС v.1.3-4 - Амбулаторный профиль.pdf</code></li>
       <li><code>data/Протокол информационного взаимодействия МИС ОЗ с ЦИСЗ_v_1.4.pdf</code></li>

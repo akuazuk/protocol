@@ -1,0 +1,23 @@
+---
+description: Синхронизация README, презентации, буклета и архитектурных docs с текущим prod
+globs:
+  - README.md
+  - docs/**
+  - index.html
+  - patient.html
+  - rag_server.py
+alwaysApply: false
+---
+
+# Синхронизация продуктовой документации
+
+При изменениях **UI shell** (вкладки, hash, footer, логотипы, sticky chrome), **patient B2C**, **режима методиста** (`?mode=methodist`), **scoring / блоков КЗ**, **FHIR / send_gate** или **footer-навигации**:
+
+1. Прочитай `docs/project-docs-maintenance.md` и обнови затронутые файлы из §2.
+2. Запусти `python3 scripts/check_project_docs.py` - исправь ERROR; warnings по BUILD_VERSION в audit/b2c - по ситуации.
+3. Подними `BUILD_VERSION` в `rag_server.py` в том же коммите.
+4. Если менялся `docs/architecture-*-print.html` - пересобери PDF: `python3 scripts/build_architecture_pdf.py --all`.
+
+**Не использовать в новых текстах:** `?methodist=1`, «6 блоков» (актуально **8 блоков**), «B2C только в будущем» (есть `patient.html`).
+
+**Логотипы:** favicon/emblem `protocol-logo.svg`; wordmark `protocol-logo-wordmark.svg`; sticky mini `protocol-logo-mini.svg`.
