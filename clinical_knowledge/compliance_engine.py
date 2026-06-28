@@ -515,6 +515,15 @@ def _apply_concurrent_nsaid_score_caps(
     return treat_score, safety_score
 
 
+def _doc_raw_text_len(doc: ConsultationDocument) -> int:
+    """Длина исходного текста КЗ (extraction_quality или fallback на raw_text)."""
+    eq = getattr(doc, "extraction_quality", None)
+    n = int(getattr(eq, "raw_text_length", 0) or 0)
+    if n <= 0:
+        n = len((doc.raw_text or "").strip())
+    return n
+
+
 def build_compliance_report(
     doc: ConsultationDocument,
     matches: list[dict[str, Any]] | None = None,
@@ -586,8 +595,9 @@ def build_compliance_report(
     overall, status = compute_overall(
         breakdown, force_manual_review=force_manual, has_protocol_data=has_protocol,
     )
-    sparse_min = max(0, int(os.environ.get("CONSULT_MIN_TEXT_LEN", "1500")))
-    if sparse_min and doc.raw_text_length > 0 and doc.raw_text_length < sparse_min:
+    sparse_min = max(0, int(os.environ.get("CONSULT_MIN_TEXT_LEN", "0")))
+    text_len = _doc_raw_text_len(doc)
+    if sparse_min and text_len > 0 and text_len < sparse_min:
         status = "insufficient_data"
     _, _, overall = _apply_oncology_priority_score_caps(
         doc, pm_score=None, treat_score=None, overall=overall,

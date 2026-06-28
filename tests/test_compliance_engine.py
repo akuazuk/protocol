@@ -30,6 +30,14 @@ ONCO_KZ = """\
 """
 
 
+def test_sparse_kz_uses_extraction_quality_length(monkeypatch):
+    doc = parse_consultation("Жалобы: головная боль.\nДиагноз: G43.9.", consultation_id="short")
+    doc.extraction_quality.raw_text_length = 800
+    monkeypatch.setenv("CONSULT_MIN_TEXT_LEN", "1500")
+    rep = build_compliance_report(doc, matches=[], rules_check={})
+    assert rep.overall_status == "insufficient_data"
+
+
 def test_red_flag_forces_manual_review():
     doc = parse_consultation(ONCO_KZ, consultation_id="onco")
     safety = run_safety_checks(doc)
