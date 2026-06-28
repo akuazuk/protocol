@@ -3,199 +3,124 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Protocol - архитектура по этапам и интеграция с МИС</title>
+  <title>Protocol - архитектура по этапам</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --green-950: #063d35;
-      --green-800: #0d5c4a;
-      --green-700: #126b5c;
-      --green-600: #1a8a72;
-      --green-soft: #e8f5f1;
-      --ocean: #0c6b94;
-      --violet: #5c3d9e;
-      --amber: #b45309;
-      --text: #1a2e2a;
-      --muted: #5a6f6a;
-      --border: rgba(26, 138, 114, 0.22);
+      --sage: #7a9e8e;
+      --sage-dark: #3d5c52;
+      --sage-pale: #eef5f1;
+      --sage-soft: #d4e8de;
+      --blue-pale: #dce8f0;
+      --lavender: #e8e0f0;
+      --peach: #f5ebe4;
+      --text: #2d3d38;
+      --muted: #5c6f68;
+      --border: rgba(122, 158, 142, 0.22);
     }
     * { box-sizing: border-box; }
-    html {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     body {
       margin: 0;
-      font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
+      font-family: "DM Sans", system-ui, sans-serif;
       color: var(--text);
       font-size: 10.5pt;
-      line-height: 1.52;
-      background: #f4f8f6;
+      line-height: 1.55;
+      background: #f7f5f2;
     }
-    .wrap {
-      max-width: 52rem;
-      margin: 0 auto;
-      padding: 1rem 1.4rem 2rem;
-    }
+    .wrap { max-width: 52rem; margin: 0 auto; padding: 1rem 1.4rem 2rem; }
     .no-print {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding: 0.65rem 0.9rem;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+      margin-bottom: 1rem; padding: 0.65rem 0.9rem; border-radius: 12px;
+      background: #fff; border: 1px solid var(--border);
     }
     .no-print button {
-      font-family: Outfit, sans-serif;
-      font-weight: 700;
-      padding: 0.45rem 1rem;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--green-600), var(--green-700));
-      color: #fff;
+      font-family: Outfit, sans-serif; font-weight: 700; padding: 0.45rem 1rem;
+      border-radius: 999px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--sage), var(--sage-dark)); color: #fff;
     }
-    .no-print button.secondary {
-      background: #fff;
-      color: var(--green-800);
-      border: 2px solid var(--border);
-    }
-    h1, h2, h3, h4 {
-      font-family: Outfit, sans-serif;
-      color: var(--green-950);
-      line-height: 1.25;
-    }
+    .no-print button.secondary { background: #fff; color: var(--sage-dark); border: 2px solid var(--border); }
+    h1, h2, h3, h4 { font-family: Outfit, sans-serif; color: var(--sage-dark); line-height: 1.25; }
     h1 { font-size: 1.65rem; margin: 0 0 0.35rem; }
     h2 {
-      font-size: 1.15rem;
-      margin: 1.35rem 0 0.55rem;
-      padding-bottom: 0.3rem;
-      border-bottom: 2px solid var(--green-soft);
+      font-size: 1.12rem; margin: 1.35rem 0 0.55rem; padding-bottom: 0.3rem;
+      border-bottom: 2px solid var(--sage-soft);
     }
-    h3 { font-size: 0.98rem; margin: 0.75rem 0 0.35rem; color: var(--green-800); }
+    h3 { font-size: 0.98rem; margin: 0.75rem 0 0.35rem; color: var(--sage); }
     h4 { font-size: 0.9rem; margin: 0.55rem 0 0.25rem; }
     p { margin: 0.4rem 0; }
     ul, ol { margin: 0.35rem 0 0.5rem; padding-left: 1.25rem; }
     li { margin-bottom: 0.22rem; }
     .hero {
-      padding: 1.1rem 1.15rem;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #fff 0%, var(--green-soft) 100%);
-      border: 1px solid var(--border);
-      margin-bottom: 1rem;
+      padding: 1.15rem 1.2rem; border-radius: 14px;
+      background: linear-gradient(165deg, #fff 0%, var(--sage-pale) 55%, var(--blue-pale) 100%);
+      border: 1px solid var(--border); margin-bottom: 1rem;
     }
-    .hero-meta {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 0.5rem;
+    .logo-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 0.85rem; flex-wrap: wrap;
     }
-    .doc-brand {
-      margin: 0 0 0.75rem;
-      line-height: 0;
-    }
-    .doc-brand__logo {
-      display: block;
-      height: 2rem;
-      width: auto;
-      max-width: 14rem;
-      object-fit: contain;
-    }
+    .logo-row__wordmark { height: 2.4rem; width: auto; max-width: 16rem; }
+    .logo-row__mini { height: 2.75rem; width: auto; }
+    .hero-meta { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
     .print-module {
-      margin: 0.65rem 0;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 14px rgba(6, 61, 53, 0.05);
+      margin: 0.65rem 0; padding: 0.85rem 1rem; border-radius: 12px;
+      background: #fff; border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(61, 92, 82, 0.05);
     }
-    .print-module--accent {
-      border-left: 4px solid var(--green-600);
+    .print-module--block1 { border-left: 4px solid var(--sage); background: linear-gradient(90deg, var(--sage-pale) 0%, #fff 22%); }
+    .print-module--block2 { border-left: 4px solid #6b8fae; background: linear-gradient(90deg, var(--blue-pale) 0%, #fff 22%); }
+    .print-module--block3 { border-left: 4px solid #8a7aad; background: linear-gradient(90deg, var(--lavender) 0%, #fff 22%); }
+    .print-module--chunks { border-left: 4px solid #c4a882; background: linear-gradient(90deg, var(--peach) 0%, #fff 22%); }
+    .print-module--future { border-left: 4px solid #5a9e8e; }
+    .pillar-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; margin: 0.65rem 0;
     }
-    .print-module--future {
-      border-left: 4px solid var(--ocean);
-      background: linear-gradient(90deg, rgba(12, 107, 148, 0.06) 0%, #fff 28%);
+    .pillar {
+      padding: 0.65rem 0.75rem; border-radius: 10px; font-size: 0.88rem;
+      border: 1px solid var(--border); background: #fff;
     }
-    .print-module--opt {
-      border-left: 4px solid var(--violet);
-      background: linear-gradient(90deg, rgba(92, 61, 158, 0.05) 0%, #fff 28%);
-    }
+    .pillar b { display: block; font-family: Outfit, sans-serif; color: var(--sage-dark); margin-bottom: 0.25rem; }
+    .pillar--1 { background: var(--sage-pale); }
+    .pillar--2 { background: var(--blue-pale); }
+    .pillar--3 { background: var(--lavender); }
     table.data {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
-      margin: 0.45rem 0;
+      width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.45rem 0;
     }
     table.data th, table.data td {
-      border: 1px solid #c5d9d3;
-      padding: 0.35rem 0.5rem;
-      text-align: left;
-      vertical-align: top;
+      border: 1px solid #c5d9d3; padding: 0.35rem 0.5rem; text-align: left; vertical-align: top;
     }
-    table.data th {
-      background: var(--green-soft);
-      font-weight: 700;
-    }
+    table.data th { background: var(--sage-pale); font-weight: 700; }
     .tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.12rem 0.45rem;
-      border-radius: 999px;
-      background: rgba(26, 138, 114, 0.14);
-      color: var(--green-800);
-      margin-right: 0.25rem;
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      padding: 0.12rem 0.45rem; border-radius: 999px;
+      background: rgba(122, 158, 142, 0.14); color: var(--sage-dark); margin-right: 0.25rem;
     }
-    .tag--future { background: rgba(12, 107, 148, 0.14); color: var(--ocean); }
-    .tag--llm { background: rgba(92, 61, 158, 0.12); color: var(--violet); }
+    .tag--model { background: rgba(138, 122, 173, 0.14); color: #5c4a82; }
+    .tag--det { background: rgba(122, 158, 142, 0.2); color: var(--sage-dark); }
     .diagram {
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 0.72rem;
-      line-height: 1.38;
-      background: #f8faf9;
-      border: 1px solid #c5d9d3;
-      border-radius: 10px;
-      padding: 0.65rem 0.75rem;
-      overflow-x: auto;
-      white-space: pre;
-      margin: 0.5rem 0;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.71rem; line-height: 1.38;
+      background: #fafcfb; border: 1px solid #c5d9d3; border-radius: 10px;
+      padding: 0.65rem 0.75rem; overflow-x: auto; white-space: pre; margin: 0.5rem 0;
     }
-    .footnote {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-top: 1rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid var(--border);
-    }
+    .glossary dt { font-weight: 700; color: var(--sage-dark); margin-top: 0.45rem; }
+    .glossary dd { margin: 0.15rem 0 0.35rem 0; color: var(--text); }
     code {
-      font-size: 0.86em;
-      background: rgba(26, 138, 114, 0.1);
-      padding: 0.05rem 0.3rem;
-      border-radius: 4px;
+      font-size: 0.86em; background: rgba(122, 158, 142, 0.1);
+      padding: 0.05rem 0.3rem; border-radius: 4px;
     }
+    .footnote { font-size: 0.8rem; color: var(--muted); margin-top: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border); }
     @media print {
       @page { size: A4; margin: 14mm 12mm 16mm 12mm; }
       body { background: #fff; font-size: 10pt; }
       .wrap { max-width: 100%; padding: 0; }
       .no-print { display: none !important; }
-      .print-module,
-      .hero,
-      table.data tr,
-      .diagram {
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
-      h2, h3, h4 {
-        break-after: avoid !important;
-        page-break-after: avoid !important;
-      }
-      table.data { break-inside: auto; }
-      table.data thead { display: table-header-group; }
-      table.data tr { break-inside: avoid !important; }
+      .print-module, .hero, table.data tr, .diagram, .pillar { break-inside: avoid !important; page-break-inside: avoid !important; }
+      h2, h3, h4 { break-after: avoid !important; }
+      .pillar-grid { grid-template-columns: 1fr 1fr 1fr; }
     }
+    @media (max-width: 640px) { .pillar-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -207,334 +132,326 @@
     </div>
 
     <header class="hero print-module">
-      <div class="doc-brand">
-        <img class="doc-brand__logo" src="../protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
+      <div class="logo-row">
+        <img class="logo-row__wordmark" src="../protocol-logo-wordmark.svg" alt="Protocol wordmark" />
+        <img class="logo-row__mini" src="../protocol-logo-mini.svg" alt="Protocol emblem" />
       </div>
       <h1>Protocol: архитектура по этапам</h1>
       <p><strong>Навигатор клинических протоколов Минздрава РБ и ориентировочная проверка консультативных заключений (КЗ).</strong></p>
-      <p>Документ описывает текущую реализацию (MVP), целевую интеграцию с МИС и Минздравом через стандарт FHIR BY / ЦИСЗ, а также предложения по масштабированию на тысячи КЗ в сутки.</p>
-      <p class="hero-meta">Версия документа: 2026-06-24 · Сборка приложения: <code>GET /api/version</code> · UI: mini-logo + pastel pill tabs; footer 4 карточки (врач) / расширенный набор в <code>?mode=methodist</code>.</p>
+      <p>Документ для методслужбы, разработки и интеграции с МИС: три функциональных блока, конвейер чанков, уровни проверки L0-L2, поиск S0-S2. Развёртывание - <strong>локальные серверы</strong> в контуре клиники или оператора; языковые модели - <strong>доработанные on-prem</strong>, без передачи ПДн во внешние API.</p>
+      <p class="hero-meta">Версия документа: 2026-06-24 · Сборка: <code>GET /api/version</code> · Якорный пилот: МЦ «Кравира» · Бренд продукта: Protocol.</p>
     </header>
 
-    <section class="print-module print-module--accent">
-      <h2>1. Назначение и границы системы</h2>
-      <p><span class="tag">MVP</span> Protocol - веб-сервис и API для двух сценариев:</p>
+    <section class="print-module">
+      <h2>0. Три блока системы (обзор)</h2>
+      <p>Protocol - не «один скрипт», а три связанных блока. Каждый блок можно развивать и масштабировать отдельно; на стыках - JSON/API и общий идентификатор PDF протокола (<code>source_path</code>).</p>
+      <div class="pillar-grid">
+        <div class="pillar pillar--1">
+          <b>Блок I. Корпус и индексы</b>
+          Официальные PDF Минздрава → чанки → каталог правил → индексы поиска. Офлайн-пайплайны, без пациентских данных.
+        </div>
+        <div class="pillar pillar--2">
+          <b>Блок II. clinical_knowledge</b>
+          Детерминированное ядро: парсинг КЗ, 482+ правил, 8 блоков scoring, send_gate, ЦИСЗ readiness, alignment. Решение воспроизводимо.
+        </div>
+        <div class="pillar pillar--3">
+          <b>Блок III. Runtime и интерфейсы</b>
+          API-сервер, lazy-загрузка чанков, оркестрация tier L0/L1/L2, B2B UI и B2C patient. LM-слой - только там, где разрешено политикой.
+        </div>
+      </div>
+      <div class="diagram">┌─────────────────── Блок I: корпус ───────────────────┐
+│ minzdrav PDF → rich_chunks / legacy chunks → catalog │
+└────────────────────────┬─────────────────────────────┘
+                         │ path, chunk_id, tags
+┌────────────────────────▼─────────────────────────────┐
+│ Блок II: clinical_knowledge (правила, gate, alignment) │
+└────────────────────────┬─────────────────────────────┘
+                         │ ComplianceReport, send_gate
+┌────────────────────────▼─────────────────────────────┐
+│ Блок III: API + index.html + patient.html (tier L0-L2) │
+└──────────────────────────────────────────────────────┘</div>
+      <p><span class="tag tag--det">принцип</span> Итоговый <code>gate_score</code> и <code>send_gate</code> определяются <strong>детерминированным слоем</strong>. Нейросетевой слой (embedder, reranker, narrative) ускоряет поиск и поясняет отчёт, но <strong>не подменяет</strong> правила и не меняет gate без явной политики.</p>
+    </section>
+
+    <!-- BLOCK I -->
+    <section class="print-module print-module--block1">
+      <h2>1. Блок I. Корпус протоколов и справочники</h2>
+      <h3>1.1. Источник</h3>
+      <p>Официальный каталог PDF на minzdrav.gov.by (~478 документов, 24 рубрики). Синхронизация: <code>download_minzdrav_protocols.py</code> → каталог <code>minzdrav_protocols/</code>.</p>
+      <h3>1.2. Справочники и метаданные</h3>
+      <ul>
+        <li><code>index.csv</code>, <code>protocols.json</code>, <code>protocol_meta.json</code> - реестр и метаданные файлов.</li>
+        <li><code>data/catalog/</code> - 85 нозологий, 482+ автоизвлечённых правил для rule_checker.</li>
+        <li><code>data/protocol_summaries/</code> - YAML/JSON карточки протоколов для навигации и расширения правил.</li>
+        <li><code>config/</code> - веса 8 блоков scoring, red flags, требования к структуре КЗ.</li>
+      </ul>
+      <h3>1.3. Два конвейера чанков (см. раздел 4 подробно)</h3>
+      <table class="data">
+        <thead><tr><th>Конвейер</th><th>Скрипт</th><th>Назначение</th><th>Выход</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Legacy (скользящее окно)</strong></td><td><code>extract_corpus.py</code> → <code>build_chunks.py</code></td><td>Быстрый полнотекстовый поиск по клинической части PDF</td><td><code>corpus_chunks_parts/*.jsonl</code>, ~55k записей</td></tr>
+          <tr><td><strong>Rich (смысловой)</strong></td><td><code>scripts/build_rich_chunks.py</code></td><td>Разделы, типы, МКБ, сущности, tags - для L1/L2 и rule_checker</td><td><code>output/rich_chunks/rich_chunks.jsonl</code> + паспорт <code>output/rich_meta/{doc_id}.json</code></td></tr>
+          <tr><td><strong>Pipeline v2</strong></td><td><code>corpus_pipeline/run_pipeline</code></td><td>Таблицы, entities, нормализация секций</td><td><code>output/chunks/</code></td></tr>
+        </tbody>
+      </table>
+      <h3>1.4. Индексы поиска (офлайн + lazy при старте)</h3>
+      <p>Path-scoped lex shards, BM25 (<code>retrieval_bm25.py</code>), опционально vector prefilter (<code>vector_index.py</code>) на <strong>предвычисленных эмбеддингах чанков</strong> (локальная embedder-модель). Маршрутизация по симптомам: <code>symptom_routing.json</code>. На production: <strong>lazy chunk store</strong> - manifest <code>corpus_path_manifest.jsonl</code>, чанки с диска по <code>source_path</code>, без загрузки всего корпуса в RAM (<code>RAG_LAZY_CHUNK_STORE=1</code>).</p>
+    </section>
+
+    <!-- BLOCK II -->
+    <section class="print-module print-module--block2">
+      <h2>2. Блок II. clinical_knowledge (детерминированное ядро)</h2>
+      <p>Каталог <code>clinical_knowledge/</code> (~118 модулей). Публичный статус: <code>/api/clinical-knowledge/status</code>.</p>
+      <table class="data">
+        <thead><tr><th>Подблок</th><th>Модули</th><th>Роль в анализе КЗ</th></tr></thead>
+        <tbody>
+          <tr><td>Схемы</td><td><code>consult_schema.py</code></td><td>ConsultationDocument, ComplianceReport, 8 блоков</td></tr>
+          <tr><td>Парсинг</td><td><code>consult_parser.py</code>, <code>text_extract.py</code>, <code>fhir_bundle_adapter.py</code></td><td>PDF / TXT / FHIR Bundle → структура КЗ</td></tr>
+          <tr><td>Подбор КП</td><td><code>protocol_match.py</code>, <code>diagnosis_icd.py</code></td><td>МКБ-10 → список протоколов-кандидатов</td></tr>
+          <tr><td>Правила</td><td><code>rule_checker.py</code>, <code>rules_from_path.py</code></td><td>482+ правил из catalog + PDF</td></tr>
+          <tr><td>Scoring</td><td><code>compliance_engine.py</code>, <code>scoring.py</code>, <code>compliance_gate.py</code></td><td>8 блоков, issues, gate_score, send_gate</td></tr>
+          <tr><td>Alignment</td><td><code>consult_alignment.py</code>, <code>consult_criteria_enrichment.py</code></td><td>Карточки «КЗ ↔ КП ↔ СОП клиники»</td></tr>
+          <tr><td>Evidence</td><td><code>consult_evidence_pack.py</code>, <code>consult_l2_review.py</code></td><td>Выдержки rich chunks только по matched paths</td></tr>
+          <tr><td>ЦИСЗ</td><td><code>cisz_readiness.py</code></td><td>Готовность FHIR Bundle до импорта</td></tr>
+          <tr><td>Поиск КП</td><td><code>search_tiering.py</code>, <code>search_funnel.py</code></td><td>Уровни S0 / S1 / S2</td></tr>
+        </tbody>
+      </table>
+      <p>Оркестратор анализа: <code>consult_analysis.analyze_consultation_text()</code>. Уровни проверки КЗ: <code>consult_tiering.py</code>. Production pipeline с SSE: <code>consult_review_pipeline.py</code>.</p>
+      <h3>2.1. Восемь блоков compliance (scoring КЗ)</h3>
+      <table class="data">
+        <thead><tr><th>Блок</th><th>Что проверяется</th></tr></thead>
+        <tbody>
+          <tr><td>Оформление</td><td>Структура, реквизиты, подписи, даты</td></tr>
+          <tr><td>Диагноз</td><td>МКБ-10, формулировки, соответствие жалобам</td></tr>
+          <tr><td>Обследования</td><td>Назначенные исследования vs протокол</td></tr>
+          <tr><td>Лечение</td><td>Терапия, дозы, длительность</td></tr>
+          <tr><td>Безопасность</td><td>Противопоказания, red flags, взаимодействия</td></tr>
+          <tr><td>Наблюдение</td><td>Диспансеризация, контрольные визиты</td></tr>
+          <tr><td>Маршрутизация</td><td>Направления, уровень помощи</td></tr>
+          <tr><td>Документы</td><td>Полнота секций для ЦИСЗ / МИС</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- BLOCK III -->
+    <section class="print-module print-module--block3">
+      <h2>3. Блок III. Runtime, API и интерфейсы</h2>
+      <h3>3.1. Сервер приложения</h3>
+      <p>Python 3.11+, FastAPI, uvicorn. Размещение: <strong>on-prem</strong> в контуре клиники или частного оператора (Docker). Учётные данные и веса моделей - только в защищённой конфигурации сервера, не в браузере.</p>
+      <h3>3.2. Загрузка при старте</h3>
+      <p>Фоновый поток <code>load_data()</code>: manifest чанков, protocols, meta, summary chunks, lex shards по путям. <code>GET /health/live</code> - liveness; <code>GET /health</code> - готовность индексов и tier-флаги.</p>
+      <h3>3.3. Гибридный retrieve (поиск протоколов)</h3>
+      <p><code>retrieve()</code>: лексика + BM25 + routing boost + фильтр аудитории + опциональный rerank локальной embedder-моделью. Результат - топ фрагментов с цитатами (<code>source_path</code>, страница, chunk_id).</p>
+      <h3>3.4. Интерфейсы</h3>
+      <ul>
+        <li><strong>B2B</strong> <code>index.html</code> - проверка КЗ, поиск протоколов, кабинет методиста (<code>?mode=methodist</code>).</li>
+        <li><strong>B2C</strong> <code>patient.html</code> - загрузка PDF КЗ, отчёт для пациента, tier-цены.</li>
+      </ul>
+      <p>Логотипы: wordmark в шапке документов, mini-emblem в UI вкладок (см. <code>protocol-logo-mini.svg</code>).</p>
+    </section>
+
+    <!-- CHUNKS DEEP DIVE -->
+    <section class="print-module print-module--chunks">
+      <h2>4. Чанки: разметка, нарезка и использование в анализе</h2>
+      <p>Чанк - атомарный фрагмент текста клинического протокола с метаданными. Именно чанки попадают в evidence_map отчёта («цитата из PDF, стр. N») и в retrieval при L1/L2.</p>
+
+      <h3>4.1. Этапы rich-конвейера (<code>build_rich_chunks.py</code>)</h3>
       <ol>
-        <li><strong>Поиск протоколов</strong> - подбор официальных КП Минздрава РБ по диагнозу, МКБ-10, жалобам и рубрикам каталога.</li>
-        <li><strong>Проверка КЗ</strong> - ориентировочная сверка консультативного заключения с фрагментами протоколов и формализованными правилами; отчёт для врача и методслужбы.</li>
+        <li><strong>Извлечение текста</strong> из PDF постранично; фильтр преамбулы постановления МЗ (<code>is_preamble_block</code>, <code>filter_preamble_pages</code>).</li>
+        <li><strong>Разбиение на разделы</strong> (<code>split_into_sections</code>): заголовки ГЛАВА, ДИАГНОСТИКА, ЛЕЧЕНИЕ, нумерация «1.», «1.1.».</li>
+        <li><strong>Нарезка раздела на чанки</strong> (<code>split_section_into_chunks</code>): сначала по нумерованным пунктам (<code>POINT_RE</code>), иначе по абзацам; лимит ~1200 символов, минимум ~80.</li>
+        <li><strong>Классификация типа</strong> (<code>guess_chunk_type</code>) по заголовку секции и тексту.</li>
+        <li><strong>Извлечение сущностей</strong>: МКБ-10, популяции, care_setting, лекарства, анализы, imaging, дозировки, severity, keywords.</li>
+        <li><strong>Таблицы</strong> - отдельные чанки <code>chunk_type=table</code> с caption.</li>
+        <li><strong>Overview-чанк</strong> (<code>protocol_overview</code>) - один на документ: оглавление, counts по типам.</li>
+        <li><strong>Теги</strong> (<code>build_chunk_tags</code> в <code>chunk_tags.py</code>) - см. таблицу 4.3.</li>
+        <li><strong>embedding_ready_text</strong> - нормализованная строка для локальной embedder-модели (заголовок + МКБ + текст).</li>
+        <li><strong>Запись</strong> в <code>rich_chunks.jsonl</code> + паспорт протокола в <code>rich_meta/{doc_id}.json</code>.</li>
       </ol>
-      <p><strong>Не входит:</strong> установление диагноза, замена очного приёма, МЭЭ, юридически обязательная экспертиза, прямая запись в медицинскую карту (на этапе пилота).</p>
-      <p><strong>Два контура intelligence:</strong> (1) <span class="tag tag--llm">LLM</span> - языковая модель для синтеза, уточнения запроса и дополнения ответа; (2) <strong>детерминированный слой</strong> <code>clinical_knowledge/</code> - парсинг, правила из протоколов, scoring без «магии» модели.</p>
-    </section>
 
-    <section class="print-module print-module--accent">
-      <h2>2. Этап 0. Корпус протоколов и справочники</h2>
-      <h3>2.1. Источник данных</h3>
-      <p>Официальный каталог PDF на minzdrav.gov.by (раздел «Стандарты обследования и лечения»). Синхронизация скриптом <code>download_minzdrav_protocols.py</code> в каталог <code>minzdrav_protocols/</code> (~478 PDF, 24 рубрики).</p>
-      <h3>2.2. Индекс каталога</h3>
-      <p><code>index.csv</code> - метаданные: рубрика, год в имени файла, признак постановления МЗ. Используется для UI-бейджей, статистики презентации и фильтрации.</p>
-      <h3>2.3. Справочники</h3>
-      <ul>
-        <li><code>protocols.json</code>, <code>protocol_meta.json</code> - реестр путей и метаданные.</li>
-        <li><code>data/catalog/</code> - 85 нозологий, 482 автоизвлечённых правила, отчёт покрытия 100% PDF.</li>
-        <li><code>data/protocol_summaries/</code> - YAML/JSON карточки протоколов (~465 summaries) для навигации и расширения правил.</li>
-        <li><code>config/</code> - требования к КЗ, веса scoring, red flags.</li>
-      </ul>
-    </section>
-
-    <section class="print-module print-module--accent">
-      <h2>3. Этап 1. Подготовка корпуса для RAG</h2>
-      <h3>3.1. Два пути сборки (legacy и новый)</h3>
+      <h3>4.2. Типы чанков (<code>chunk_type</code>)</h3>
       <table class="data">
-        <thead><tr><th>Путь</th><th>Скрипты</th><th>Результат</th></tr></thead>
+        <thead><tr><th>Тип</th><th>Когда ставится</th><th>Использование</th></tr></thead>
         <tbody>
-          <tr><td>Legacy</td><td><code>extract_corpus.py</code> → <code>build_chunks.py</code> → <code>split_chunks_jsonl.py</code></td><td><code>corpus_chunks_parts/*.jsonl</code></td></tr>
-          <tr><td>Новый</td><td><code>corpus_pipeline/run_pipeline</code></td><td>Секции, таблицы, entities → <code>output/chunks/</code></td></tr>
+          <tr><td><code>protocol_overview</code></td><td>Авто, 1 на PDF</td><td>Карточка протокола, навигация</td></tr>
+          <tr><td><code>diagnostics</code></td><td>Раздел диагностики, обследования</td><td>Блок «Обследования», evidence pack</td></tr>
+          <tr><td><code>treatment</code></td><td>Лечение, терапия</td><td>Блок «Лечение», правила required_exam</td></tr>
+          <tr><td><code>criteria_block</code></td><td>Показания / противопоказания</td><td>rule_checker, alignment</td></tr>
+          <tr><td><code>drug_list</code></td><td>Списки препаратов</td><td>Фармакотерапия, safety</td></tr>
+          <tr><td><code>pharmacotherapy</code></td><td>Фармакотерапия</td><td>Дозы, схемы</td></tr>
+          <tr><td><code>algorithm</code></td><td>Алгоритмы, схемы</td><td>Маршрутизация, L1 cards</td></tr>
+          <tr><td><code>table</code></td><td>Таблицы PDF</td><td>Структурированные критерии</td></tr>
+          <tr><td><code>prevention</code>, <code>rehabilitation</code>, <code>dispensary</code></td><td>Профилактика, реаб., диспансеризация</td><td>Блоки наблюдения / followup</td></tr>
+          <tr><td><code>routing</code></td><td>Маршрутизация, госпитализация</td><td>Уровень помощи</td></tr>
+          <tr><td><code>classification</code></td><td>Классификация, МКБ</td><td>Диагноз, ICD profile</td></tr>
+          <tr><td><code>terms</code>, <code>body</code></td><td>Определения, прочий текст</td><td>Низкий signal, fallback RAG</td></tr>
         </tbody>
       </table>
-      <h3>3.2. Чанки RAG</h3>
-      <p>~55 000 фрагментов текста с разметкой разделов (диагноз, лечение, обследование). Хранятся в <code>corpus_chunks_parts/</code> (JSONL) или на Persistent Disk (<code>RAG_CHUNKS_DIR</code>). На production (Render): <strong>lazy chunk store</strong> - manifest <code>corpus_path_manifest.jsonl</code>, чанки подгружаются с диска по пути PDF, без полной загрузки в RAM при старте (<code>RAG_STARTUP_MODE=manifest</code>, <code>RAG_LAZY_CHUNK_STORE=1</code>).</p>
-      <h3>3.3. Индексы поиска</h3>
-      <p>При загрузке или по требованию: path-scoped lex shards (<code>RAG_PATH_LEX_SHARDS</code>), BM25 (<code>retrieval_bm25.py</code>), опционально vector prefilter (<code>vector_index.py</code>), маршрутизация по симптомам (<code>symptom_routing.json</code>). Полный лексический индекс может откладываться (<code>RAG_LEX_INDEX_DEFER=1</code>) - L2-lite и поиск работают на суженном подмножестве путей.</p>
-    </section>
 
-    <section class="print-module print-module--accent">
-      <h2>4. Этап 2. Слой clinical_knowledge (детерминированный)</h2>
-      <p>Каталог <code>clinical_knowledge/</code> (~118 модулей). Публичный API: <code>clinical_knowledge_status</code>, <code>match_protocol_cards</code>, <code>run_rule_checker</code>, <code>extract_consult_facts_heuristic</code>.</p>
+      <h3>4.3. Метки чанка (<code>tags</code> в <code>chunk_tags.py</code>)</h3>
       <table class="data">
-        <thead><tr><th>Блок</th><th>Модули</th><th>Функция</th></tr></thead>
+        <thead><tr><th>Поле</th><th>Значения</th><th>Смысл</th></tr></thead>
         <tbody>
-          <tr><td>Схемы</td><td><code>consult_schema.py</code></td><td>ConsultationDocument, ComplianceReport, 8 блоков scoring</td></tr>
-          <tr><td>Парсинг КЗ</td><td><code>consult_parser.py</code>, <code>text_extract.py</code>, <code>fhir_bundle_adapter.py</code></td><td>PDF/TXT/DOCX/FHIR Bundle → структура документа</td></tr>
-          <tr><td>Подбор КП</td><td><code>protocol_match.py</code>, <code>diagnosis_icd.py</code>, <code>respiratory_path_filters.py</code></td><td>Сопоставление с протоколами по МКБ, рубрике; фильтры ложных матчей (ОРВИ)</td></tr>
-          <tr><td>Правила</td><td><code>rule_checker.py</code>, <code>rules_from_path.py</code>, <code>semantic_rule_fallback.py</code></td><td>482+ правил из PDF, покрытие по рубрикам, синонимы</td></tr>
-          <tr><td>Compliance</td><td><code>compliance_engine.py</code>, <code>compliance_gate.py</code>, <code>safety_checker.py</code></td><td>Итоговый отчёт, issues, send_gate, source_refs</td></tr>
-          <tr><td>Согласование КЗ</td><td><code>consult_alignment.py</code>, <code>consult_criteria_enrichment.py</code>, <code>kravira_sop_rules.py</code></td><td>Детерминированные карточки «КЗ ↔ КП ↔ СОП Кравира»; primary criteria в L1/L2-lite</td></tr>
-          <tr><td>L2-lite</td><td><code>consult_l2_review.py</code>, <code>consult_evidence_pack.py</code>, <code>consult_memory.py</code></td><td>Evidence pack по matched paths, L2-fast без полного RAG</td></tr>
-          <tr><td>ЦИСЗ</td><td><code>cisz_readiness.py</code>, <code>fhir_mis_test_matrix.py</code></td><td>Чек-лист готовности Bundle до импорта</td></tr>
-          <tr><td>Summaries</td><td><code>protocol_summary/</code>, <code>plan_definition_export.py</code></td><td>Карточки протоколов → rules → RAG; черновик FHIR PlanDefinition</td></tr>
-          <tr><td>Поиск</td><td><code>search_tiering.py</code>, <code>search_retrieval.py</code>, <code>search_funnel.py</code></td><td>Уровни S0/S1/S2, воронка подбора КП</td></tr>
-          <tr><td>Методслужба</td><td><code>feedback_store.py</code>, <code>methodist_ai_review.py</code></td><td>JSONL-разметка, workbench, экспорт для ML</td></tr>
-          <tr><td>Отчёты</td><td><code>consult_report.py</code>, <code>batch_runner.py</code></td><td>HTML/MD для печати, пакетная обработка</td></tr>
+          <tr><td><code>signal</code></td><td>high / medium / low</td><td>Приоритет для retrieval и evidence pack</td></tr>
+          <tr><td><code>obligation</code></td><td>required, recommended, optional, contraindicated</td><td>Сила формулировки в протоколе</td></tr>
+          <tr><td><code>clinical_intent</code></td><td>diagnose, treat, monitor, refer, other</td><td>Зачем фрагмент в клиническом потоке</td></tr>
+          <tr><td><code>care_setting</code></td><td>ambulatory, inpatient, any</td><td>Где применимо</td></tr>
+          <tr><td><code>is_preamble</code></td><td>true / false</td><td>Исключить из scoring</td></tr>
+          <tr><td><code>icd10_weights</code></td><td>0-1 на код</td><td>Усиление релевантности по МКБ</td></tr>
+          <tr><td><code>entities</code></td><td>exam, drug</td><td>Нормализованные сущности для правил</td></tr>
+          <tr><td><code>extractability</code></td><td>rule_ready / narrative</td><td>Готовность к автоматическим правилам</td></tr>
         </tbody>
       </table>
-      <p>Оркестратор: <code>consult_analysis.analyze_consultation_text()</code>. Уровни L0/L1/L2: <code>consult_tiering.py</code>. Production pipeline: <code>consult_review_pipeline.py</code>.</p>
+
+      <h3>4.4. Legacy-чанки (<code>build_chunks.py</code>)</h3>
+      <p>Скользящее окно: <strong>880</strong> символов, перекрытие <strong>120</strong>, только клиническая часть PDF (после <code>clinical_start</code>). Поле <code>kind</code>: <code>diagnostic</code>, <code>treatment</code>, <code>general</code> - по эвристике ключевых слов. Подходит для быстрого BM25; rich-чанки - для L1 alignment и цитат с типом секции.</p>
+
+      <h3>4.5. Как чанки участвуют в анализе КЗ</h3>
+      <div class="diagram">КЗ → МКБ + match_protocol_cards → список source_path (1-5 PDF)
+    → L0: правила catalog (без подгрузки всех чанков)
+    → L1: rich chunks ТОЛЬКО по matched paths (consult_memory / lazy load)
+    → consult_alignment + criteria_enrichment: цитаты + chunk_id + page
+    → L2-lite: consult_evidence_pack фильтрует chunk_type + signal=high
+    → evidence_map в отчёте (пациент / врач)</div>
+      <p><span class="tag tag--det">важно</span> На tier L0 полный обход ~55k чанков <strong>не выполняется</strong>. Это ключ к масштабу 25 000+ КЗ/мес в якорной клинике.</p>
     </section>
 
-    <section class="print-module print-module--accent">
-      <h2>5. Этап 3. Runtime: rag_server.py (FastAPI)</h2>
-      <h3>5.1. Стек</h3>
-      <p>Python 3.11+, FastAPI, uvicorn. Учётные данные для вызова языковой модели задаются только в конфигурации сервера (переменные окружения или защищённое хранилище секретов) и не передаются в браузер.</p>
-      <h3>5.2. Загрузка при старте</h3>
-      <p>Фоновый поток <code>load_data()</code>: manifest/lazy chunks, protocols, meta, summary chunks, path lex shards. <code>GET /health/live</code> - liveness без ожидания полного RAG; <code>GET /health</code> - готовность индексов и флаги consult L2. На Render: Persistent Disk 10 GB (<code>/var/data</code>), plan Standard 2 GiB RAM.</p>
-      <h3>5.3. Гибридный retrieve</h3>
-      <p>Функция <code>retrieve()</code>: лексика + BM25 + routing boost + фильтр аудитории + опциональный embed-rerank через LLM. Результат - топ фрагментов по протоколам.</p>
-      <h3>5.4. Группы API</h3>
+    <!-- LEVELS -->
+    <section class="print-module">
+      <h2>5. Уровни проверки КЗ (L0, L1, L2, L3)</h2>
       <table class="data">
-        <thead><tr><th>Домен</th><th>Endpoints</th></tr></thead>
+        <thead><tr><th>Уровень</th><th>Охват</th><th>Содержание</th><th>Время</th><th>LM / RAG</th></tr></thead>
         <tbody>
-          <tr><td>Health</td><td><code>GET /health</code>, <code>/api/version</code>, <code>/api/corpus-stats</code></td></tr>
-          <tr><td>Поиск</td><td><code>POST /api/assist</code>, <code>/api/search/run</code>, <code>/api/search/funnel</code>, <code>/api/protocol-detail</code>, <code>/api/protocol-practical</code>, tiers S0/S1/S2</td></tr>
-          <tr><td>КЗ</td><td><code>POST /api/consult-review</code>, <code>/api/consult-review/stream</code> (SSE), <code>/api/consult-review/tier</code>, <code>/api/consult-compliance-screen</code></td></tr>
-          <tr><td>Справочники</td><td><code>/api/specialties</code>, <code>/api/icd-suggest</code>, <code>/api/training-cases</code>, <code>/api/protocol-summary-nav</code></td></tr>
-          <tr><td>Методслужба</td><td><code>/api/methodist/*</code>, <code>/api/ml/feedback</code>, <code>/api/pilot-analytics-demo</code></td></tr>
-          <tr><td>Clinical knowledge</td><td><code>/api/clinical-knowledge/status</code>, <code>/build-status</code>, <code>/benchmark</code></td></tr>
+          <tr><td><strong>L0</strong></td><td>100% КЗ в МИС</td><td>Парсинг + 8 блоков + send_gate + cisz_readiness</td><td>&lt; 2 с</td><td>Нет</td></tr>
+          <tr><td><strong>L1</strong></td><td>UI по умолчанию; 10-20% в batch</td><td>L0 + alignment + СОП + rich chunks по matched PDF</td><td>5-15 с</td><td>Нет полного corpus RAG</td></tr>
+          <tr><td><strong>L2-lite</strong></td><td>2-5% / по кнопке</td><td>L1 + evidence pack + narrative (локальная LM)</td><td>15-30 с</td><td>Только matched paths</td></tr>
+          <tr><td><strong>L2 full</strong></td><td>Лаб / методслужба</td><td>Гибридный retrieve по корпусу + synthesize</td><td>30-90 с</td><td>On-prem LM, opt-in</td></tr>
+          <tr><td><strong>L3</strong></td><td>0.5-1%</td><td>Ручной аудит методиста по «красному» списку</td><td>-</td><td>Human-in-the-loop</td></tr>
         </tbody>
       </table>
-    </section>
-
-    <section class="print-module print-module--accent">
-      <h2>6. Этап 4. Проверка КЗ (pipeline)</h2>
-      <p>Модуль <code>consult_review_pipeline.py</code> - оркестрация с SSE-прогрессом для UI. Маршрутизация уровней: <code>consult_tiering.py</code>.</p>
-      <h3>6.1. Уровни L0 / L1 / L2</h3>
-      <table class="data">
-        <thead><tr><th>Уровень</th><th>API</th><th>Содержание</th><th>Production (Render)</th></tr></thead>
-        <tbody>
-          <tr><td><strong>L0</strong></td><td><code>/api/consult-compliance-screen</code>, tier=L0</td><td>Парсинг + 8 блоков + send_gate + cisz_readiness</td><td>&lt; 2 с, без RAG/LLM</td></tr>
-          <tr><td><strong>L1</strong></td><td><code>/api/consult-review/tier</code> L1</td><td>Structured + alignment cards + СОП Кравира + rich chunks по matched PDF</td><td><strong>Рекомендуемый</strong> в UI (~5-15 с)</td></tr>
-          <tr><td><strong>L2</strong></td><td><code>/api/consult-review</code>, stream</td><td><strong>L2-lite:</strong> L1 + evidence pack + L2-fast; опц. L2+ narrative</td><td>~15-30 с, без retrieve по всему корпусу</td></tr>
-          <tr><td><strong>L2 full</strong></td><td>local, <code>CONSULT_RENDER_L2_LITE=0</code></td><td>RAG retrieve + LLM synthesize + hybrid score</td><td>30-90 с (не default на Render)</td></tr>
-        </tbody>
-      </table>
-      <h3>6.2. Конвейер L1 (основной для врача)</h3>
+      <h3>5.1. Конвейер L1 (основной для врача)</h3>
       <div class="diagram">PDF / FHIR Bundle / текст
-    → извлечение и парсинг → ConsultationDocument
-    → МКБ-10 + match_protocol_cards (allowlist)
-    → analyze_consultation_text → 8 блоков + evidence_map
-    → consult_alignment: карточки «КЗ ↔ КП ↔ СОП №2 Кравира»
-    → consult_criteria_enrichment: выдержки и покрытие по блокам
-    → compliance_gate: gate_score = min(гибрид, структурный, cisz)
-    → cisz_readiness + send_gate + HTML/MD отчёт</div>
-      <h3>6.3. Конвейер L2-lite (облако)</h3>
-      <div class="diagram">L1 structured + alignment (skip_alignment=false)
-    → preload чанков только по matched paths (consult_memory)
-    → consult_evidence_pack: выдержки КП с фильтром качества
-    → build_l2_fast_review (CONSULT_L2_FAST=1) ИЛИ LLM synthesize
-    → опц. consult_criteria_narrative (CONSULT_CRITERIA_NARRATIVE)
-    → кэш CONSULT_REVIEW_CACHE, cisz_readiness</div>
-      <p>Флаги Render: <code>CONSULT_RENDER_L2_LITE=1</code>, <code>CONSULT_REVIEW_FORBID_FULL_CORPUS=1</code>, <code>CONSULT_ALIGNMENT_ENABLED=1</code>. При нехватке RAM (<code>CONSULT_RENDER_L2_SKIP_LLM=1</code>) L2 деградирует в L1 с пометкой в ответе.</p>
+  → consult_parser → ConsultationDocument
+  → diagnosis_icd + protocol_match
+  → analyze_consultation_text → 8 блоков + issues
+  → consult_alignment (КЗ ↔ КП ↔ СОП)
+  → consult_criteria_enrichment
+  → compliance_gate: gate_score, send_gate
+  → cisz_readiness + HTML/MD отчёт</div>
+      <h3>5.2. send_gate и gate_score</h3>
+      <p><code>gate_score = min(клинический scoring, cisz_score)</code>. Режимы МИС: <code>inform</code>, <code>soft_gate</code>, <code>hard_gate</code>, <code>critical_only</code> - политика учреждения, не жёсткое требование Protocol.</p>
     </section>
 
-    <section class="print-module print-module--accent">
-      <h2>7. Этап 5. Frontend</h2>
-      <p>Два клиентских shell в production: B2B <code>index.html</code> (~29k строк) и B2C <code>patient.html</code> (~1,1k строк + <code>patient-ui.js</code>). Inline CSS + vanilla JS, без bundler.</p>
-      <h3>7.1. index.html (B2B)</h3>
-      <ul>
-        <li><strong>Липкая шапка:</strong> mini-logo <code>protocol-logo-mini.svg</code> и вкладки «Проверка КЗ» / «Поиск протоколов» в одну строку; pill-стиль с пастельной заливкой.</li>
-        <li><strong>Вкладки:</strong> «Проверка КЗ» (<code>#consult-review</code>), «Поиск протоколов» (<code>#search</code>); «Статистика поиска» - в footer; hash сохраняется при F5.</li>
-        <li><strong>Footer (врач):</strong> четыре карточки - статистика, B2C, презентация MVP, вход в кабинет методиста; буклет, архитектура PDF и чек-лист - только в <code>?mode=methodist</code>.</li>
-        <li><strong>Методслужба:</strong> <code>?mode=methodist</code> + токен - workbench, очередь (<code>#methodist-queue</code>), ML-дашборд (<code>#ml-dashboard</code>), B2C-тарифы (<code>#b2c-monetization</code>).</li>
-        <li><strong>Structured analysis:</strong> 8 блоков compliance, alignment, evidence pack; SSE для потоковой проверки КЗ.</li>
-      </ul>
-      <h3>7.2. patient.html (B2C «Проверь КЗ»)</h3>
-      <ul>
-        <li>Отдельная PWA: загрузка PDF/фото КЗ, отчёт простым языком, tier-цены, white-label клиники.</li>
-        <li>API: <code>POST /api/patient/review</code>, sanitize без полей B2B; см. <code>docs/architecture-b2c-patient.md</code>.</li>
-      </ul>
-      <p>Подробная архитектура проверки КЗ перед отправкой в Минздрав: <a href="architecture-kravira-fhir-mis.pdf"><strong>architecture-kravira-fhir-mis.pdf</strong></a> (HTML-исходник для печати: <code>architecture-kravira-fhir-mis-print.html</code>). Также: <code>docs/mvp-presentation.html</code>, <code>docs/pre-sign-checklist-print.html</code>, <code>docs/project-docs-maintenance.md</code>.</p>
+    <section class="print-module">
+      <h2>6. Уровни поиска протоколов (S0, S1, S2)</h2>
+      <table class="data">
+        <thead><tr><th>Уровень</th><th>Когда</th><th>Механизм</th></tr></thead>
+        <tbody>
+          <tr><td><strong>S0</strong></td><td>Известен МКБ</td><td>Каталог + фильтры, без retrieve</td></tr>
+          <tr><td><strong>S1</strong></td><td>Default в UI</td><td>retrieve (lex + BM25) на lazy index, без narrative LM</td></tr>
+          <tr><td><strong>S2</strong></td><td>Сложный запрос</td><td>S1 + уточнение запроса и пояснение локальной LM</td></tr>
+        </tbody>
+      </table>
     </section>
 
-    <section class="print-module print-module--accent">
-      <h2>8. Сводная схема текущей архитектуры</h2>
-      <div class="diagram">┌─────────────┐     ┌──────────────────┐     ┌─────────────────────┐
-│  Браузер    │────▶│  rag_server.py   │────▶│  LLM API (сервер)   │
-│  index.html │◀────│  FastAPI + RAG   │     └─────────────────────┘
-└─────────────┘     └────────┬─────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                ▼
-     corpus_chunks_parts   clinical_knowledge   minzdrav_protocols/
-     data/catalog           consult_review_pipeline
-     protocol_summaries</div>
-      <h3>8.1. Поток «Поиск протоколов»</h3>
-      <p>Запрос → МКБ (<code>icd_mkb.py</code> + LLM на S2) → retrieve (lazy, allowlist на Render) → список протоколов с confidence → protocol-detail / practical / summary-nav. Уровни S0 (только МКБ), S1 (retrieve без полного assist, default), S2 (полный ответ модели).</p>
-      <h3>8.2. Поток «Проверка КЗ»</h3>
-      <p>Файл или Bundle → L0/L1/L2 → детерминированный compliance + alignment + (на L2-lite) evidence pack → gate_score и send_gate → отчёт с цитатами из официальных PDF. Итог для МИС: <code>gate_score = min(клиника, cisz_score)</code>.</p>
+    <section class="print-module print-module--block3">
+      <h2>7. Семантический слой (локальные модели, 5 фаз)</h2>
+      <p><span class="tag tag--model">on-prem ML</span> Аддитивный контур поверх lex+BM25+rules. Scoring и send_gate <strong>не заменяются</strong>.</p>
+      <table class="data">
+        <thead><tr><th>Фаза</th><th>Артефакт</th><th>Эффект</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Офлайн-эмбеддинги чанков (<code>build_chunk_embeddings.py</code>)</td><td>Один forward pass на запрос вместо пула сотен</td></tr>
+          <tr><td>2</td><td>Vector index (<code>build_vector_index.py</code>)</td><td>Top-K векторов → lex/BM25 → rerank</td></tr>
+          <tr><td>3</td><td>Semantic rule fallback</td><td>Синонимы для required_exam после substring-match</td></tr>
+          <tr><td>4</td><td>consult_tiering L0/L1/L2</td><td>100% КЗ без LM; LM только на L2-lite/full</td></tr>
+          <tr><td>5</td><td>Batch enrichment правил</td><td>LM-assisted извлечение structured rules → rule_checker</td></tr>
+        </tbody>
+      </table>
+      <p>Дообучение: каталог <code>ml/</code>, feedback <code>data/ml/feedback/</code>, экспорт <code>export_training_feedback.py</code>. Embedder fine-tune on-prem; в production - manifest моделей <code>ml/registry/</code>.</p>
     </section>
 
     <section class="print-module print-module--future">
-      <h2>9. Будущая интеграция с МИС и Минздравом</h2>
-      <p><span class="tag tag--future">Этап 2</span> Согласно <a href="https://fhir.by/index.html">FHIR BY</a> и <a href="https://fhir.by/interactionMIS.html">регламенту МИС ОЗ - ЦИСЗ</a> (v1.4, FHIR 5.0.0):</p>
-      <h3>9.1. Разделение ответственности</h3>
+      <h2>8. Интеграция с МИС и ЦИСЗ (целевой этап)</h2>
       <table class="data">
-        <thead><tr><th>Система</th><th>Что проверяет</th></tr></thead>
+        <thead><tr><th>Система</th><th>Роль</th></tr></thead>
         <tbody>
-          <tr><td><strong>ЦИСЗ</strong></td><td>Профили FHIR, структура Bundle, справочники НСИ, OAuth 2.0, импорт пакета</td></tr>
-          <tr><td><strong>Protocol</strong></td><td>Соответствие <em>содержания</em> КЗ клиническим протоколам Минздрава (ориентир, не МЭЭ)</td></tr>
-          <tr><td><strong>МИС</strong></td><td>Формирование Bundle, ЭЦП, UI врача, вызов Protocol до подписи</td></tr>
-          <tr><td><strong>Минздрав</strong></td><td>Владелец корпуса КП, методические требования, пилоты, агрегированная аналитика</td></tr>
+          <tr><td><strong>ЦИСЗ</strong></td><td>FHIR BY, структура Bundle, НСИ, импорт пакета</td></tr>
+          <tr><td><strong>Protocol</strong></td><td>Клиническое соответствие содержания КЗ протоколам (ориентир, не МЭЭ)</td></tr>
+          <tr><td><strong>МИС</strong></td><td>Формирование КЗ, вызов Protocol <em>до ЭЦП</em>, UI врача</td></tr>
         </tbody>
       </table>
-      <h3>9.2. Точка встраивания в МИС</h3>
       <div class="diagram">Врач заполняет КЗ в МИС
-    → МИС собирает FHIR Bundle (Patient, Encounter, Condition, Composition…)
-    → [НОВОЕ] вызов Protocol API (до ЭЦП)
-    → предупреждения / отчёт врачу
-    → врач исправляет (при необходимости)
-    → ЭЦП (ЕСИФЮЛ) → импорт в ЦИСЗ (202 Accepted → poll status)</div>
-      <h3>9.3. Маппинг FHIR → Protocol</h3>
-      <table class="data">
-        <thead><tr><th>FHIR BY</th><th>Protocol</th></tr></thead>
-        <tbody>
-          <tr><td>Patient</td><td>PatientContext (пол, возраст)</td></tr>
-          <tr><td>Condition + МКБ-10</td><td>диагнозы, match_protocol_cards</td></tr>
-          <tr><td>Observation</td><td>витальные показатели в контексте КЗ</td></tr>
-          <tr><td>Encounter</td><td>care_setting, применимость протокола</td></tr>
-          <tr><td>Composition</td><td>секции КЗ → consult_parser</td></tr>
-          <tr><td>DocumentReference / PDF</td><td>текущий POST /api/consult-review</td></tr>
-        </tbody>
-      </table>
-      <h3>9.4. Планируемые фазы</h3>
-      <table class="data">
-        <thead><tr><th>Фаза</th><th>Срок (ориентир)</th><th>Содержание</th></tr></thead>
-        <tbody>
-          <tr><td>A</td><td>3-6 мес.</td><td>REST из МИС: МКБ + текст → <code>/api/consult-review</code>; кнопка «Проверить по протоколу»</td></tr>
-          <tr><td>B</td><td>6-12 мес.</td><td>Адаптер <code>fhir_bundle_to_consult</code>; endpoint <code>POST /api/fhir/consult-compliance</code>; ответ в духе OperationOutcome</td></tr>
-          <tr><td>C</td><td>12+ мес.</td><td>On-premise в контуре РБ; дашборд Минздрава (агрегаты без ПДн); синхронизация корпуса КП</td></tr>
-        </tbody>
-      </table>
-      <h3>9.5. Развёртывание</h3>
-      <p>См. <code>docs/deployment-belarus.md</code>: сервер в контуре оператора/Минздрава, корпус на диске/S3, LLM - разрешённый API или on-premise модель в РБ, ПДн не выносить в публичный интернет.</p>
-    </section>
-
-    <section class="print-module print-module--opt">
-      <h2>10. Масштабирование: тысячи КЗ в сутки</h2>
-      <p>При полной проверке каждого КЗ с LLM + RAG нагрузка растёт линейно. Ниже - меры ускорения и снижения стоимости.</p>
-      <h3>10.1. Технические оптимизации</h3>
-      <table class="data">
-        <thead><tr><th>Мера</th><th>Эффект</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Детерминированный fast path</strong></td><td>Сначала rule_checker + requirement_checker без LLM; LLM только при пограничных баллах или по запросу</td></tr>
-          <tr><td><strong>Кэш consult-review</strong></td><td><code>CONSULT_REVIEW_CACHE</code> - повторные проверки того же текста/хеша</td></tr>
-          <tr><td><strong>Очередь + воркеры</strong></td><td>Celery/RQ: асинхронная обработка пакетов; API возвращает job_id, МИС опрашивает статус (аналог poll ЦИСЗ)</td></tr>
-          <tr><td><strong>Отключение embed-rerank</strong></td><td>На batch-режиме: только lex + BM25 (уже есть флаг в CI)</td></tr>
-          <tr><td><strong>Предварительный digest</strong></td><td>Сокращение текста КЗ до ключевых секций перед LLM (уже частично в pipeline)</td></tr>
-          <tr><td><strong>Горизонтальное масштабирование</strong></td><td>Несколько инстансов API за балансировщиком; корпус read-only на shared disk</td></tr>
-          <tr><td><strong>Инкрементальный corpus</strong></td><td>Не перезагружать весь RAG при деплое - hot-reload index.csv</td></tr>
-        </tbody>
-      </table>
-      <h3>10.2. Ориентиры производительности (пилот)</h3>
-      <ul>
-        <li>Детерминированный разбор одного КЗ (без LLM): секунды.</li>
-        <li>Полная проверка с LLM: десятки секунд - минуты (зависит от длины и fast mode).</li>
-        <li>Целевой batch: 100% КЗ - только детерминированный скоринг; 5-15% - углублённо с LLM.</li>
-      </ul>
-    </section>
-
-    <section class="print-module print-module--opt">
-      <h2>11. Семантический RAG и пять фаз ускорения (реализовано)</h2>
-      <p>Аддитивный контур поверх существующего lex+BM25+rules. Детерминированный scoring не заменяется.</p>
-      <table class="data">
-        <thead><tr><th>Фаза</th><th>Модули / скрипты</th><th>Эффект</th></tr></thead>
-        <tbody>
-          <tr><td><strong>1</strong></td><td><code>scripts/build_chunk_embeddings.py</code>, <code>scripts/corpus_manifest.py</code>, <code>RAG_PRECOMPUTED_CHUNK_EMBED</code></td><td>Офлайн-эмбеддинги чанков; один API-вызов на запрос вместо пула ~44</td></tr>
-          <tr><td><strong>2</strong></td><td><code>clinical_knowledge/vector_index.py</code>, <code>scripts/build_vector_index.py</code>, <code>RAG_VECTOR_INDEX</code></td><td>Vector top-200 → lex/BM25 → embed-rerank top-44; FAISS или numpy</td></tr>
-          <tr><td><strong>3</strong></td><td><code>semantic_rule_fallback.py</code>, <code>RULE_SEMANTIC_FALLBACK</code></td><td>Синонимы/токены для <code>required_exam</code> и <code>keyword_presence</code> после substring</td></tr>
-          <tr><td><strong>4</strong></td><td><code>consult_tiering.py</code>, <code>POST /api/consult-review/tier</code></td><td>L0/L1/L2 для массового потока МИС без полного LLM на 100% КЗ</td></tr>
-          <tr><td><strong>4b</strong></td><td><code>consult_alignment.py</code>, <code>kravira_sop_rules.py</code>, <code>consult_criteria_enrichment.py</code></td><td>Детерминированные карточки согласования; primary criteria в production</td></tr>
-          <tr><td><strong>5</strong></td><td><code>scripts/enrich_protocol_rules_batch.py</code>, <code>data/catalog/enrichment/</code></td><td>Batch LLM → structured rules (<code>required_exam</code>, red flags) в rule_checker</td></tr>
-        </tbody>
-      </table>
-      <h3>11.1. Порядок развёртывания корпуса</h3>
-      <ol>
-        <li>Собрать смысловые чанки: <code>corpus_pipeline/run_pipeline.py</code> → <code>split_chunks_jsonl.py</code></li>
-        <li>Офлайн embeddings: <code>python3 scripts/build_chunk_embeddings.py</code></li>
-        <li>Индекс: <code>python3 scripts/build_vector_index.py</code> (опционально <code>pip install -r requirements-vector.txt</code>)</li>
-        <li>Манифест: <code>python3 scripts/corpus_manifest.py</code></li>
-        <li>Prod env: <code>RAG_PRECOMPUTED_CHUNK_EMBED=1</code>, <code>RAG_VECTOR_INDEX=1</code></li>
-      </ol>
-      <h3>11.2. Eval</h3>
-      <p><code>eval/search_quality_eval.py --embed-on --precomputed-on --vector-on</code> - сравнение с golden queries.</p>
-    </section>
-
-    <section class="print-module print-module--opt">
-      <h2>12. Методика выборочного контроля качества КЗ</h2>
-      <p>Цель: выявить врачей/подразделения с систематически слабыми КЗ без проверки каждого документа LLM.</p>
-      <h3>12.1. Уровни выборки</h3>
-      <table class="data">
-        <thead><tr><th>Уровень</th><th>Охват</th><th>Метод</th></tr></thead>
-        <tbody>
-          <tr><td>L0 - скрининг</td><td>100% КЗ</td><td><code>POST /api/consult-review/tier</code> tier=L0 или <code>/api/consult-compliance-screen</code>. &lt; 1 с, без LLM/RAG.</td></tr>
-          <tr><td>L1 - выборка</td><td>10-20% КЗ</td><td><code>tier=L1</code>: structured + alignment + СОП + rich chunks; без полного corpus RAG.</td></tr>
-          <tr><td>L2 - углублённо</td><td>2-5% КЗ</td><td><code>tier=L2</code>: на Render - L2-lite (evidence pack + L2-fast); локально - full RAG + LLM.</td></tr>
-          <tr><td>L3 - ручной аудит</td><td>0.5-1%</td><td>Эксперт методслужбы по списку «красных» врачей из L0-L2.</td></tr>
-        </tbody>
-      </table>
-      <h3>12.2. Критерии отбора «проблемных» врачей</h3>
-      <ul>
-        <li>Средний балл L0 за месяц &lt; 70% при n ≥ 10 КЗ.</li>
-        <li>Доля КЗ с критическими issues (red flags) &gt; 15%.</li>
-        <li>Тренд: снижение балла 3 месяца подряд.</li>
-        <li>Выбросы: единичные КЗ &lt; 50% при обычно нормальном профиле - в L2, не автоматическая санкция.</li>
-      </ul>
-      <h3>12.3. Агрегаты для Минздрава (без ПДн)</h3>
-      <p>Учреждение, рубрика, период, средний % по блокам, доля «зелёных/жёлтых/красных» зон. Без ФИО пациентов; идентификатор врача - только внутри контура учреждения.</p>
-      <h3>12.4. Хранение результатов</h3>
-      <p>Таблица <code>kz_quality_scores</code>: hash текста, author_id (из токена МИС), timestamp, L0_score, flags, optional L2_job_id. Retention по политике ИБ.</p>
-    </section>
-
-    <section class="print-module print-module--opt">
-      <h2>13. Вариант: блокировка ЭЦП до нормы соответствия</h2>
-      <p><span class="tag tag--future">Опция для МИС</span> Не юридическое требование Protocol, а <strong>настраиваемая политика учреждения</strong>, согласуемая с Минздравом и юристами.</p>
-      <h3>13.1. Режимы (config в МИС)</h3>
-      <table class="data">
-        <thead><tr><th>Режим</th><th>Поведение</th></tr></thead>
-        <tbody>
-          <tr><td><strong>inform</strong></td><td>Только предупреждения; ЭЦП всегда доступна (текущий пилот).</td></tr>
-          <tr><td><strong>soft_gate</strong></td><td>При балле &lt; порога (напр. 70%) - диалог «Подписать всё равно?» + запись override в журнал.</td></tr>
-          <tr><td><strong>hard_gate</strong></td><td>Кнопка ЭЦП неактивна, пока L0 ≥ порога или методист не снял блок (workflow).</td></tr>
-          <tr><td><strong>critical_only</strong></td><td>Блок только при critical red flags (безопасность, противопоказания).</td></tr>
-        </tbody>
-      </table>
-      <h3>13.2. Техническая реализация в МИС</h3>
-      <ol>
-        <li>МИС вызывает <code>POST /api/consult-review?mode=fast</code> или лёгкий <code>POST /api/consult-compliance-screen</code> (только L0).</li>
-        <li>Ответ: <code>overall_compliance_pct</code>, <code>blocks</code>, <code>critical_issues[]</code>, <code>gate_allowed: bool</code>.</li>
-        <li>МИС применяет локальную политику → разрешает/блокирует вызов ЕСИФЮЛ.</li>
-        <li>При override - запись в audit log (врач, время, причина).</li>
-      </ol>
-      <h3>13.3. Риски и смягчение</h3>
-      <ul>
-        <li><strong>Ложные срабатывания</strong> - порог только по L0; спорные случаи - soft_gate.</li>
-        <li><strong>Юридическая нагрузка</strong> - формулировка «ориентир методслужбы», не МЭЭ.</li>
-        <li><strong>Сопротивление врачей</strong> - пилот в одном отделении, обучение, прозрачные критерии из протоколов с цитатами.</li>
-      </ul>
+  → FHIR Bundle
+  → POST /api/consult-review (tier=L0) на локальном Protocol
+  → send_gate / отчёт
+  → ЭЦП → импорт в ЦИСЗ</div>
+      <p>Подробнее: <code>architecture-kravira-fhir-mis-print.html</code> (PDF: <code>architecture-kravira-fhir-mis.pdf</code>).</p>
     </section>
 
     <section class="print-module">
-      <h2>14. Тестирование и качество</h2>
-      <ul>
-        <li><strong>CI:</strong> Ruff + pytest (~70+ модулей), миникорпус <code>tests/fixtures/chunks.mini.jsonl</code>.</li>
-        <li><strong>Eval:</strong> <code>eval/search_quality_eval.py</code>, <code>eval/golden_queries.jsonl</code> → <code>data/quality_benchmark.json</code>.</li>
-        <li><strong>Regression KZ:</strong> <code>tests/test_consult_alignment.py</code>, <code>test_consult_criteria_enrichment.py</code>, <code>test_consult_evidence_quality.py</code>, fixtures в <code>tests/fixtures/consultations/</code>.</li>
-      </ul>
+      <h2>9. B2C patient.html</h2>
+      <p>Отдельный контур для физлиц: загрузка PDF, tier L1, sanitize ответа, ERIP. Тот же scoring и evidence_map, упрощённый язык. См. <code>docs/architecture-b2c-patient.md</code>.</p>
     </section>
 
     <section class="print-module">
-      <h2>15. Заключение</h2>
-      <p>Protocol сегодня - монолитный MVP с тремя контурами оценки КЗ: <strong>детерминированный compliance</strong> (8 блоков + send_gate), <strong>alignment cards</strong> (КЗ ↔ КП ↔ СОП Кравира) и опциональный <strong>LLM</strong> для поиска и углублённого L2. Корпус привязан к официальным PDF Минздрава РБ; на production - lazy chunk store и L2-lite без полного RAG по ~55k чанкам.</p>
-      <p>Интеграция с МИС через FHIR BY логична <em>до подписи ЭЦП</em>: ЦИСЗ проверяет упаковку данных, Protocol - клиническое соответствие протоколам. Масштаб на тысячи КЗ достижим за счёт L0-скрининга, выборочного L2 и очередей; блокировка ЭЦП - опциональная политика учреждения, не обязательная часть MVP.</p>
-      <p class="footnote">Protocol · Kravira · Документ сгенерирован для внутреннего использования и презентаций Минздраву/МИС. Ссылки: fhir.by, minzdrav.gov.by, репозиторий protocol (docs/roadmap-mis.md, deployment-belarus.md).</p>
+      <h2>10. Глоссарий</h2>
+      <dl class="glossary">
+        <dt>Protocol</dt>
+        <dd>Платформа контроля качества КЗ и навигации по КП Минздрава РБ. Бренд продукта; якорный пилот - МЦ «Кравира».</dd>
+        <dt>КЗ (консультативное заключение)</dt>
+        <dd>Текстовый медицинский документ по итогам приёма; объект проверки в B2B/B2C.</dd>
+        <dt>КП (клинический протокол)</dt>
+        <dd>Официальный PDF Минздрава с диагностикой, лечением, критериями.</dd>
+        <dt>Чанк (chunk)</dt>
+        <dd>Фрагмент текста протокола с <code>chunk_id</code>, <code>chunk_type</code>, метками и привязкой к странице PDF.</dd>
+        <dt>Rich chunk</dt>
+        <dd>Смысловой чанк из <code>build_rich_chunks.py</code> с сущностями, tags и embedding_ready_text.</dd>
+        <dt>Legacy chunk</dt>
+        <dd>Скользящее окно 880 символов для BM25; поле <code>kind</code>: diagnostic / treatment / general.</dd>
+        <dt>source_path</dt>
+        <dd>Относительный путь к PDF в <code>minzdrav_protocols/</code> - ключ связи правил, чанков и UI.</dd>
+        <dt>evidence_map</dt>
+        <dd>Набор цитат из протокола в отчёте: текст, страница, chunk_id, блок compliance.</dd>
+        <dt>8 блоков compliance</dt>
+        <dd>Оформление, диагноз, обследования, лечение, безопасность, наблюдение, маршрутизация, документы.</dd>
+        <dt>gate_score</dt>
+        <dd>Итоговый процент соответствия; минимум из клинического scoring и cisz_score.</dd>
+        <dt>send_gate</dt>
+        <dd>Рекомендация: allow / warn / block перед подписью ЭЦП (политика МИС).</dd>
+        <dt>L0 / L1 / L2 / L3</dt>
+        <dd>Уровни глубины проверки КЗ: от мгновенного скрининга до ручного аудита (см. раздел 5).</dd>
+        <dt>L2-lite</dt>
+        <dd>L1 + evidence pack по matched paths + краткий narrative; без полного RAG по всему корпусу.</dd>
+        <dt>S0 / S1 / S2</dt>
+        <dd>Уровни поиска протоколов: каталог → retrieve → retrieve + LM-пояснение.</dd>
+        <dt>alignment card</dt>
+        <dd>Карточка сопоставления факта из КЗ с пунктом КП и чек-листом СОП клиники.</dd>
+        <dt>rule_checker</dt>
+        <dd>Детерминированная проверка 482+ правил из catalog и PDF.</dd>
+        <dt>lazy chunk store</dt>
+        <dd>Чанки читаются с диска по manifest при запросе path, не все в RAM.</dd>
+        <dt>LM-слой (языковая модель)</dt>
+        <dd>Локально развёрнутая доработанная модель для rerank, narrative, enrichment. Не участвует в L0.</dd>
+        <dt>embedder</dt>
+        <dd>Локальная модель векторизации текста; fine-tune на парах «запрос - фрагмент КП» (каталог ml/).</dd>
+        <dt>RAG</dt>
+        <dd>Retrieval-Augmented Generation: поиск чанков + опциональный синтез ответа LM.</dd>
+        <dt>BM25 / lex shard</dt>
+        <dd>Лексический индекс по подмножеству протоколов (path-scoped) для быстрого retrieve.</dd>
+        <dt>ЦИСЗ / FHIR BY</dt>
+        <dd>Государственный контур электронного здравоохранения; Protocol проверяет клинику, ЦИСЗ - упаковку данных.</dd>
+        <dt>patient.html</dt>
+        <dd>B2C витрина «Проверь КЗ» для физлиц.</dd>
+        <dt>Методслужба</dt>
+        <dd>Режим UI с workbench, feedback, ML-отчётами; human-in-the-loop для правил и шаблонов.</dd>
+      </dl>
+    </section>
+
+    <section class="print-module">
+      <h2>11. Заключение</h2>
+      <p>Protocol объединяет <strong>три блока</strong>: подготовленный корпус с размеченными чанками, детерминированное ядро clinical_knowledge и runtime с tier L0-L2. Масштаб на поток 25 000+ КЗ/мес достижим за счёт L0 на каждом сохранении, выборочного L1/L2 и lazy-загрузки чанков только по релевантным протоколам.</p>
+      <p>Развёртывание проектируется <strong>локально</strong>: сервер в контуре клиники, доработанные модели on-prem, без обязательной зависимости от внешних облачных API. Интеграция с МИС - до подписи ЭЦП; ЦИСЗ остаётся контролёром структуры данных, Protocol - ориентиром клинического качества по официальным протоколам.</p>
+      <p class="footnote">Protocol · Документ для внутреннего использования, методслужбы и интеграторов МИС. Связанные файлы: architecture-kravira-fhir-mis.pdf, mvp-presentation.html, docs/project-docs-maintenance.md.</p>
     </section>
   </div>
 </body>
