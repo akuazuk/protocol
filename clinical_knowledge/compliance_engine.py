@@ -10,6 +10,7 @@
 """
 from __future__ import annotations
 
+import os
 import re
 
 from typing import Any
@@ -585,6 +586,9 @@ def build_compliance_report(
     overall, status = compute_overall(
         breakdown, force_manual_review=force_manual, has_protocol_data=has_protocol,
     )
+    sparse_min = max(0, int(os.environ.get("CONSULT_MIN_TEXT_LEN", "1500")))
+    if sparse_min and doc.raw_text_length > 0 and doc.raw_text_length < sparse_min:
+        status = "insufficient_data"
     _, _, overall = _apply_oncology_priority_score_caps(
         doc, pm_score=None, treat_score=None, overall=overall,
     )

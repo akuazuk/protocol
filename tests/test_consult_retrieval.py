@@ -74,3 +74,53 @@ def test_m54_always_has_protocol_pick():
     top = (meta.get("protocol_matches") or [{}])[0]
     assert float(top.get("match_score") or 0) >= 12.0
     assert "nevrologiya-neyrokhirurgiya" in str(paths[0]) or meta.get("icd_coverage_fallback")
+
+
+def test_hiv_protocol_rejected_without_consult_markers():
+    hiv_path = (
+        "minzdrav_protocols/infektsionnye-zabolevaniya/"
+        "КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf"
+    )
+    rules = {
+        "matched_protocols": [
+            {"source_path": hiv_path, "match_score": 80, "title": "ВИЧ-инфекция"},
+        ]
+    }
+    paths, meta = consult_target_protocol_paths(
+        merged_icd=["G43.9"],
+        diag_icd=["G43.9"],
+        clinical_rules=rules,
+        specialty_slugs=["infektsionnye-zabolevaniya"],
+        consult_text="Жалобы: головная боль. Диагноз G43.9 мигрень.",
+        consult_facts={"patient_context": {"adult_or_child": "adult"}},
+    )
+    assert hiv_path not in paths
+    rejected = meta.get("rejected_protocols") or []
+    assert any("wrong_nosology_hiv_without_markers" in (r.get("pick_risk_flags") or []) for r in rejected)
+
+
+def test_adult_consult_rejects_pediatric_protocol():
+    ped_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас_пост_МЗ_12.04.2023_53.pdf"
+    )
+    adult_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_с_заболеваниями_нервной_системы_взр_нас_пост_МЗ_2018_8.pdf"
+    )
+    rules = {
+        "matched_protocols": [
+            {"source_path": ped_path, "match_score": 85, "title": "Нервная система дети"},
+            {"source_path": adult_path, "match_score": 70, "title": "Нервная система взрослые"},
+        ]
+    }
+    paths, meta = consult_target_protocol_paths(
+        merged_icd=["G43.9"],
+        diag_icd=["G43.9"],
+        clinical_rules=rules,
+        specialty_slugs=["nevrologiya-neyrokhirurgiya"],
+        consult_text="Пациент взрослый. Жалобы на головную боль.",
+        consult_facts={"patient_context": {"adult_or_child": "adult"}},
+    )
+    assert ped_path not in paths
+    assert adult_path in paths

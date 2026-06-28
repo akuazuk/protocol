@@ -93,6 +93,65 @@ def _path_spine_domain_mismatch(sp: str, icd_roots: set[str]) -> bool:
     return (bladder or neoplasm) and not spine
 
 
+_HIV_PATH_MARKERS = ("вич", "hiv", "антиретровир", "арт-терап", "иммунодефицит")
+_HIV_CONSULT_MARKERS = (
+    "вич",
+    "hiv",
+    "антиретровир",
+    "арт ",
+    " cd4",
+    "viral load",
+    "иммунодеф",
+    "aids",
+)
+
+
+def _consult_audience_from_context(
+    consult_text: str | None,
+    facts: dict[str, Any] | None,
+) -> str | None:
+    """adult | child | None — из facts и текста КЗ."""
+    patient = ((facts or {}).get("patient_context") or {})
+    aud = str(patient.get("adult_or_child") or "").strip().lower()
+    if aud in ("adult", "child"):
+        return aud
+    blob = (consult_text or "").lower()
+    if any(m in blob for m in ("взросл", "взр.", "взр ", "18 лет", "старше 18")):
+        return "adult"
+    if any(m in blob for m in ("ребен", "детск", "новорожд", "грудн", "лет ", "мес.")):
+        if any(m in blob for m in ("взросл", "взр")):
+            return None
+        return "child"
+    return None
+
+
+def _consult_routing_reject(
+    sp: str,
+    title: str,
+    *,
+    consult_text: str | None,
+    facts: dict[str, Any] | None,
+) -> tuple[bool, str]:
+    """True если протокол не подходит для RAG КЗ (до add в allowlist)."""
+    from .protocol_audience import infer_protocol_audience
+
+    low = f"{sp} {title}".lower()
+    blob = (consult_text or "").lower()
+
+    if any(m in low for m in _HIV_PATH_MARKERS):
+        if not any(m in blob for m in _HIV_CONSULT_MARKERS):
+            return True, "wrong_nosology_hiv_without_markers"
+
+    consult_aud = _consult_audience_from_context(consult_text, facts)
+    proto_aud = infer_protocol_audience(sp, title)
+    if consult_aud == "adult" and proto_aud == "pediatric":
+        return True, "population_mismatch"
+    if consult_aud == "child" and proto_aud == "adult":
+        return True, "population_mismatch"
+
+    return False, ""
+
+
 def consult_target_protocol_paths(
     *,
     merged_icd: list[str] | None,
@@ -134,6 +193,7 @@ def consult_target_protocol_paths(
         "population_mismatch": "Не подходит по возрасту/популяции",
         "wrong_nosology_spine": "Чужая нозология (не позвоночник/ишиас)",
         "wrong_nosology_venous": "Чужая нозология (не венозная)",
+        "wrong_nosology_hiv_without_markers": "ВИЧ-протокол без маркеров ВИЧ в тексте КЗ",
         "inpatient_only": "Только стационарный уход",
         "low_icd_fit": "Слабое соответствие коду МКБ",
     }
@@ -161,9 +221,22 @@ def consult_target_protocol_paths(
             "pick_source": src,
         }
 
-    def add(sp: str, src: str, score: float = 0.0) -> None:
+    def add(sp: str, src: str, score: float = 0.0, *, title: str = "") -> None:
         n = _path_norm(sp)
         if not n or n in seen:
+            return
+        reject, flag = _consult_routing_reject(
+            n, title, consult_text=consult_text, facts=facts,
+        )
+        if reject:
+            rejected_protocols.append({
+                "title": title,
+                "source_path": n,
+                "match_score": score,
+                "pick_risk_flags": [flag],
+                "why_rejected_ru": [_WHY_REJECTED_RU.get(flag, flag)],
+                "pick_source": src,
+            })
             return
         seen.add(n)
         paths.append(n)
