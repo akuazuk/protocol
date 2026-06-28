@@ -8173,7 +8173,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-28-r71-consult-table-columns"
+BUILD_VERSION = "2026-06-28-r72-chunk-qa-tiered-plan"
 
 
 def _app_version() -> str:
