@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from clinical_knowledge.consult_retrieval import (
     consult_target_protocol_paths,
+    filter_consult_protocol_matches,
     filter_retrieval_by_category_slugs,
     filter_retrieval_rows_by_paths,
 )
@@ -124,3 +125,28 @@ def test_adult_consult_rejects_pediatric_protocol():
     )
     assert ped_path not in paths
     assert adult_path in paths
+
+
+def test_filter_consult_protocol_matches_routing():
+    ped_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас_пост_МЗ_12.04.2023_53.pdf"
+    )
+    adult_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_с_заболеваниями_нервной_системы_взр_нас_пост_МЗ_2018_8.pdf"
+    )
+    matches = [
+        {"source_path": ped_path, "title": "дети", "match_score": 85, "applicability": "applicable"},
+        {"source_path": adult_path, "title": "взрослые", "match_score": 70, "applicability": "applicable"},
+    ]
+    facts = {"patient_context": {"adult_or_child": "adult"}}
+    allowed, rejected = filter_consult_protocol_matches(
+        matches,
+        consult_text="Пациент взрослый",
+        consult_facts=facts,
+    )
+    assert len(allowed) == 1
+    assert adult_path in allowed[0]["source_path"]
+    assert len(rejected) == 1
+    assert rejected[0]["applicability"] == "not_applicable"

@@ -152,6 +152,37 @@ def _consult_routing_reject(
     return False, ""
 
 
+def filter_consult_protocol_matches(
+    matches: list[dict[str, Any]],
+    *,
+    consult_text: str | None = None,
+    consult_facts: dict[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Routing gates для списка match_protocol_cards (до scoring/RAG)."""
+    allowed: list[dict[str, Any]] = []
+    rejected: list[dict[str, Any]] = []
+    for m in matches:
+        if not isinstance(m, dict):
+            continue
+        sp = str(m.get("source_path") or "")
+        title = str(m.get("title") or m.get("document_title") or "")
+        reject, flag = _consult_routing_reject(
+            sp, title, consult_text=consult_text, facts=consult_facts,
+        )
+        if reject:
+            row = dict(m)
+            row["applicability"] = "not_applicable"
+            flags = list(row.get("pick_risk_flags") or row.get("mismatch_reasons") or [])
+            if flag and flag not in flags:
+                flags.append(flag)
+            row["pick_risk_flags"] = flags
+            row["mismatch_reasons"] = list(flags)
+            rejected.append(row)
+        else:
+            allowed.append(m)
+    return allowed, rejected
+
+
 def consult_target_protocol_paths(
     *,
     merged_icd: list[str] | None,

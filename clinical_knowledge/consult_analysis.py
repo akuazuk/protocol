@@ -229,6 +229,23 @@ def analyze_consultation_text(
         except Exception:
             matches = []
     matches = annotate_applicability(matches, _patient_dict(doc))
+    from .consult_retrieval import filter_consult_protocol_matches
+
+    matches, routed_reject = filter_consult_protocol_matches(
+        matches,
+        consult_text=raw_text,
+        consult_facts=facts,
+    )
+    if routed_reject:
+        seen_na = {
+            str(x.get("source_path") or x.get("protocol_id") or "")
+            for x in not_applicable
+        }
+        for m in routed_reject:
+            key = str(m.get("source_path") or m.get("protocol_id") or "")
+            if key and key not in seen_na:
+                not_applicable.append(m)
+                seen_na.add(key)
     na_from_matches = [
         m for m in matches if m.get("applicability") == "not_applicable"
     ]
