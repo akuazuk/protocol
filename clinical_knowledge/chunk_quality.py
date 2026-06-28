@@ -28,9 +28,62 @@ _WEAK_TITLES = frozenset({
     "постановляет:",
     "утверждено",
     "согласовано",
+    "document",
     "документ",
     "№ 2435-xii",
+    "глава 1",
+    "глава 2",
+    "глава 3",
+    "глава 4",
+    "глава 5",
+    "глава 6",
+    "глава 7",
 })
+
+
+def is_weak_section_title(title: str) -> bool:
+    st = (title or "").strip()
+    low = st.lower()
+    return not st or low in _WEAK_TITLES or (len(st) < 8 and low not in ("показания",))
+
+
+def build_section_title_map(chunks: list[dict[str, Any]]) -> dict[str, str]:
+    """Лучший section_title по section_number внутри одного doc."""
+    out: dict[str, str] = {}
+    for ch in chunks:
+        sn = str(ch.get("section_number") or "").strip()
+        if not sn:
+            continue
+        candidates: list[str] = []
+        for label in reversed(list(ch.get("section_path") or [])):
+            candidates.append(str(label))
+        candidates.append(str(ch.get("section_title") or ""))
+        for t in candidates:
+            t = t.strip()
+            if t and not is_weak_section_title(t):
+                if sn not in out or len(t) > len(out[sn]):
+                    out[sn] = t
+                break
+    return out
+
+
+def resolve_section_title_with_map(
+    chunk: dict[str, Any],
+    section_map: dict[str, str] | None = None,
+) -> str:
+    st = fix_weak_section_title(chunk)
+    if is_weak_section_title(st) and section_map:
+        sn = str(chunk.get("section_number") or "").strip()
+        if sn and sn in section_map:
+            return section_map[sn]
+    return st
+
+
+def is_truncated_text(text: str) -> bool:
+    t = (text or "").rstrip()
+    if not t:
+        return False
+    return t[-1] in (";", ",", "–", "-", ":") and len(t) < 1100
 
 _NOISE_LINE_RE = re.compile(
     r"^(?:\s*(?:утверждено|согласовано|документ|форма\s+\d+"
@@ -93,7 +146,7 @@ def detect_issues(chunk: dict[str, Any]) -> list[str]:
     issues: list[str] = []
     text = (chunk.get("text") or "").strip()
     ctype = (chunk.get("chunk_type") or "body").strip().lower()
-    st = (chunk.get("section_title") or "").strip().lower()
+    st_raw = (chunk.get("section_title") or "").strip()
 
     if not chunk.get("tags"):
         issues.append(ISSUE_NO_TAGS)
@@ -106,7 +159,7 @@ def detect_issues(chunk: dict[str, Any]) -> list[str]:
     if is_chunk_preamble(text) or chunk.get("tags", {}).get("is_preamble"):
         issues.append(ISSUE_PREAMBLE_LEAK)
 
-    if st in _WEAK_TITLES or (st and len(st) < 8 and st not in ("показания",)):
+    if is_weak_section_title(st_raw):
         issues.append(ISSUE_WEAK_SECTION_TITLE)
 
     if ctype == "body" and _CLINICAL_WORDS.search(text):

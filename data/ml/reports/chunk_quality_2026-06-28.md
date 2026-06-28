@@ -1,46 +1,46 @@
 # Chunk Quality Report (2026-06-28)
 
 ## Summary
-- Chunks read: **62315**
-- Flagged (score < threshold or issues): **29642**
-- Avg quality_score: **0.935**
+- Chunks read: **59148**
+- Flagged (score < threshold or issues): **26808**
+- Avg quality_score: **0.936**
 - Median quality_score: **1.0**
 
 ## Issue counts
 
 | Issue | Count |
 |-------|------:|
-| `weak_section_title` | 12796 |
-| `truncated_list` | 7576 |
-| `too_long` | 5893 |
-| `type_body_but_clinical` | 4451 |
-| `too_short` | 3682 |
-| `empty_entities` | 2531 |
-| `preamble_leak` | 645 |
+| `weak_section_title` | 11850 |
+| `too_long` | 6416 |
+| `truncated_list` | 4909 |
+| `type_body_but_clinical` | 4045 |
+| `too_short` | 3707 |
+| `empty_entities` | 2422 |
+| `preamble_leak` | 644 |
 
 ## Chunk types (top)
 
 | Type | Count |
 |------|------:|
-| `body` | 22180 |
-| `treatment` | 15172 |
-| `drug_list` | 8004 |
-| `diagnostics` | 7638 |
-| `criteria_block` | 2619 |
-| `terms` | 2010 |
-| `pharmacotherapy` | 1331 |
-| `classification` | 1322 |
-| `dispensary` | 620 |
-| `prevention` | 463 |
-| `rehabilitation` | 351 |
-| `routing` | 328 |
-| `algorithm` | 268 |
+| `body` | 20495 |
+| `treatment` | 14585 |
+| `drug_list` | 7906 |
+| `diagnostics` | 7416 |
+| `criteria_block` | 2574 |
+| `terms` | 1797 |
+| `classification` | 1247 |
+| `pharmacotherapy` | 1236 |
+| `dispensary` | 585 |
+| `prevention` | 405 |
+| `rehabilitation` | 336 |
+| `routing` | 303 |
+| `algorithm` | 254 |
 | `appendix` | 9 |
 
 ## Indexable
 
-- `True`: 59975
-- `False`: 2340
+- `True`: 56845
+- `False`: 2303
 
 ## Samples
 
@@ -52,4 +52,4 @@
 ## vs baseline
 
 - Baseline avg score: 0.915
-- Delta avg: 0.02
+- Delta avg: 0.021

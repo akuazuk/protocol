@@ -54,6 +54,19 @@ def test_resolve_weak_section_title() -> None:
     assert title == "1. Диагностика"
 
 
+def test_section_title_map() -> None:
+    chunks = [
+        {"section_number": "10", "section_title": "таблица", "section_path": ["1. Диагностика", "10. Обязательные"]},
+        {"section_number": "10", "section_title": "10. Обязательные", "section_path": ["1. Диагностика", "10. Обязательные"]},
+    ]
+    from clinical_knowledge.chunk_quality import build_section_title_map, resolve_section_title_with_map
+
+    m = build_section_title_map(chunks)
+    assert "10" in m
+    fixed = resolve_section_title_with_map(chunks[0], m)
+    assert "Обязательные" in fixed or "Диагностика" in fixed
+
+
 def test_quality_score_range() -> None:
     good = {
         "chunk_type": "diagnostics",

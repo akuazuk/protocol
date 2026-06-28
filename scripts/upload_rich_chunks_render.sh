@@ -25,7 +25,10 @@ if [[ "$SSH_TARGET" == "ssh" ]]; then
   USE_GZIP="${3:-}"
 fi
 
-SRC_JSONL="$ROOT/output/rich_chunks/rich_chunks.jsonl"
+SRC_JSONL="$ROOT/output/rich_chunks/rich_chunks.v2.jsonl"
+if [[ ! -f "$SRC_JSONL" ]]; then
+  SRC_JSONL="$ROOT/output/rich_chunks/rich_chunks.jsonl"
+fi
 SRC_MANIFEST="$ROOT/output/rich_chunks/_manifest.json"
 REMOTE_DIR="/var/data/output/rich_chunks"
 REMOTE_JSONL="$REMOTE_DIR/rich_chunks.jsonl"

@@ -232,6 +232,8 @@ def build_protocol_tags(
 
 
 def chunk_usable_for_retrieval(chunk: dict[str, Any], *, ambulatory: bool = True) -> bool:
+    if chunk.get("indexable") is False:
+        return False
     tags = chunk.get("tags") or {}
     if tags.get("is_preamble") or tags.get("signal") == "low":
         return False

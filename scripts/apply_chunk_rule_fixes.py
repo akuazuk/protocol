@@ -15,12 +15,13 @@ sys.path.insert(0, str(ROOT))
 from clinical_knowledge.chunk_entities import enrich_chunk_entities
 from clinical_knowledge.chunk_quality import (
     apply_indexable_flags,
-    fix_weak_section_title,
+    build_section_title_map,
+    is_truncated_text,
+    resolve_section_title_with_map,
     strip_noise_lines,
     suggest_chunk_type,
 )
 from clinical_knowledge.chunk_tags import build_chunk_tags
-from clinical_knowledge.chunk_type_infer import resolve_section_title
 
 DEFAULT_IN = ROOT / "output" / "rich_chunks" / "rich_chunks.jsonl"
 DEFAULT_OUT = ROOT / "output" / "rich_chunks" / "rich_chunks.v2.jsonl"
@@ -67,6 +68,7 @@ def apply_rules_to_chunk(
     chunk: dict[str, Any],
     *,
     fixes: list[dict[str, Any]],
+    section_map: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     ch = dict(chunk)
     cid = str(ch.get("chunk_id") or "")
@@ -81,7 +83,7 @@ def apply_rules_to_chunk(
         fixes.append({"chunk_id": cid, "op": "trim_text", "before_len": len(text), "after_len": len(cleaned)})
         ch["text"] = cleaned
 
-    new_title = fix_weak_section_title(ch)
+    new_title = resolve_section_title_with_map(ch, section_map)
     if new_title != ch.get("section_title"):
         fixes.append({
             "chunk_id": cid,
@@ -139,40 +141,59 @@ def apply_rules_to_chunk(
     return ch
 
 
-def merge_short_chunks(chunks: list[dict[str, Any]], fixes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Склеить соседние короткие чанки одного раздела."""
+def _can_merge_adjacent(ch: dict[str, Any], nxt: dict[str, Any]) -> bool:
+    if nxt.get("doc_id") != ch.get("doc_id"):
+        return False
+    if nxt.get("section_number") != ch.get("section_number"):
+        return False
+    t1 = (ch.get("text") or "").strip()
+    t2 = (nxt.get("text") or "").strip()
+    if not t1 or not t2:
+        return False
+    if len(t1) + len(t2) + 1 > 1400:
+        return False
+    return len(t1) < 80 or is_truncated_text(t1)
+
+
+def merge_adjacent_chunks(
+    chunks: list[dict[str, Any]],
+    fixes: list[dict[str, Any]],
+    *,
+    section_map: dict[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """Склеить короткие и обрывки списков с соседним чанком."""
     if not chunks:
         return chunks
     out: list[dict[str, Any]] = []
     i = 0
+    merge_idx = 0
     while i < len(chunks):
         ch = chunks[i]
-        text = (ch.get("text") or "").strip()
-        if (
-            len(text) < 80
-            and i + 1 < len(chunks)
-            and chunks[i + 1].get("doc_id") == ch.get("doc_id")
-            and chunks[i + 1].get("section_number") == ch.get("section_number")
-            and (chunks[i + 1].get("text") or "").strip()
-        ):
+        if i + 1 < len(chunks) and _can_merge_adjacent(ch, chunks[i + 1]):
             nxt = chunks[i + 1]
-            merged_text = text + "\n" + (nxt.get("text") or "").strip()
+            merged_text = (ch.get("text") or "").strip() + "\n" + (nxt.get("text") or "").strip()
             merged = dict(ch)
             merged["text"] = merged_text
-            merged["chunk_id"] = str(ch.get("chunk_id")) + "_m0"
+            merged["chunk_id"] = f"{ch.get('chunk_id')}_m{merge_idx}"
+            merge_idx += 1
             merged["page_to"] = nxt.get("page_to") or ch.get("page_to")
+            op = "merge_truncated" if is_truncated_text((ch.get("text") or "")) else "merge_short_chunks"
             fixes.append({
                 "chunk_id": merged["chunk_id"],
-                "op": "merge_short_chunks",
+                "op": op,
                 "merged_from": [ch.get("chunk_id"), nxt.get("chunk_id")],
             })
-            merged = apply_rules_to_chunk(merged, fixes=fixes)
+            merged = apply_rules_to_chunk(merged, fixes=fixes, section_map=section_map)
             out.append(merged)
             i += 2
             continue
         out.append(ch)
         i += 1
     return out
+
+
+def merge_short_chunks(chunks: list[dict[str, Any]], fixes: list[dict[str, Any]], **kw: Any) -> list[dict[str, Any]]:
+    return merge_adjacent_chunks(chunks, fixes, **kw)
 
 
 def process_file(
@@ -185,6 +206,7 @@ def process_file(
 ) -> dict[str, Any]:
     fixes: list[dict[str, Any]] = []
     by_doc: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    raw_by_doc: dict[str, list[dict[str, Any]]] = defaultdict(list)
     n = 0
 
     with in_path.open(encoding="utf-8") as fh:
@@ -194,15 +216,21 @@ def process_file(
             row = json.loads(line)
             n += 1
             did = str(row.get("doc_id") or "")
-            fixed = apply_rules_to_chunk(row, fixes=fixes)
-            by_doc[did].append(fixed)
+            raw_by_doc[did].append(row)
+
+    for did, raw_chunks in raw_by_doc.items():
+        section_map = build_section_title_map(raw_chunks)
+        doc_chunks = [
+            apply_rules_to_chunk(c, fixes=fixes, section_map=section_map)
+            for c in raw_chunks
+        ]
+        if merge_short:
+            doc_chunks = merge_adjacent_chunks(doc_chunks, fixes, section_map=section_map)
+        by_doc[did] = doc_chunks
 
     out_chunks: list[dict[str, Any]] = []
     for did in sorted(by_doc.keys()):
-        doc_chunks = by_doc[did]
-        if merge_short:
-            doc_chunks = merge_short_chunks(doc_chunks, fixes)
-        out_chunks.extend(doc_chunks)
+        out_chunks.extend(by_doc[did])
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with out_path.open("w", encoding="utf-8") as out:

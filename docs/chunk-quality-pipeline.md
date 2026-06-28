@@ -219,6 +219,12 @@ Cron-обёртка над audit + сравнение с baseline JSON.
 ## 12. Команды быстрого старта
 
 ```bash
+# Полный пайплайн (enrich → apply → audit → queue)
+.venv/bin/python scripts/run_chunk_quality_pipeline.py
+
+# С продвижением v2 в production jsonl
+.venv/bin/python scripts/run_chunk_quality_pipeline.py --promote
+
 # Tags
 .venv/bin/python scripts/enrich_rich_chunk_tags.py
 
@@ -226,7 +232,13 @@ Cron-обёртка над audit + сравнение с baseline JSON.
 .venv/bin/python scripts/apply_chunk_rule_fixes.py
 
 # Audit
-.venv/bin/python scripts/audit_chunk_quality.py
+.venv/bin/python scripts/audit_chunk_quality.py --chunks output/rich_chunks/rich_chunks.v2.jsonl
+
+# Promote v2 для RAG (локально или перед upload на Render)
+.venv/bin/python scripts/promote_rich_chunks_v2.py
+
+# Upload на Render (авто v2 если есть)
+./scripts/upload_rich_chunks_render.sh srv-xxx@ssh.region.render.com --gzip
 
 # LLM queue (offline)
 CHUNK_QA_LLM=1 .venv/bin/python scripts/llm_chunk_qa.py --limit 100
@@ -234,3 +246,5 @@ CHUNK_QA_LLM=1 .venv/bin/python scripts/llm_chunk_qa.py --limit 100
 # Тесты
 .venv/bin/python -m pytest tests/test_chunk_quality.py tests/test_chunk_type_infer.py -q
 ```
+
+Runtime: `rag_server` автоматически предпочитает `rich_chunks.v2.jsonl`, если файл существует.
