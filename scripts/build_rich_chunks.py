@@ -26,6 +26,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from icd_mkb import extract_icd_codes_raw, normalize_icd_code
 
 from clinical_knowledge.chunk_tags import build_chunk_tags, build_protocol_tags
+from clinical_knowledge.chunk_entities import (
+    enrich_chunk_entities,
+    extract_drugs_heuristic as extract_drugs_enriched,
+    extract_imaging_enriched,
+    extract_lab_tests_enriched,
+)
+from clinical_knowledge.chunk_quality import apply_indexable_flags, strip_noise_lines
+from clinical_knowledge.chunk_type_infer import infer_chunk_type, resolve_section_title
 from clinical_knowledge.protocol_catalog import normalize_protocol_title
 
 # ---------------------------------------------------------------------------
@@ -380,6 +388,7 @@ def build_protocol_overview_chunk(
         section_title="Описание протокола",
         chunk_text=text,
         icd_codes=icd,
+        icd_protocol=icd,
         populations=pops,
         chunk_type="protocol_overview",
     )
@@ -458,19 +467,21 @@ def build_chunk_icd10_codes(
     protocol_all: list[str],
     catalog_primary: list[str],
     catalog_all: list[str],
-) -> list[str]:
-    """icd10_codes чанка: метаданные протокола + коды из текста (для диагнозов/показаний)."""
+) -> tuple[list[str], list[str]]:
+    """(icd10_codes чанка из текста, icd10_protocol на уровне документа)."""
     text_codes = extract_icd10(chunk_text)
     doc_primary = merge_icd10_code_lists(catalog_primary, protocol_primary, max_codes=12)
+    protocol_codes = merge_icd10_code_lists(
+        doc_primary,
+        catalog_all,
+        protocol_all,
+        max_codes=28,
+    )
     if chunk_type in _ICD_ENRICH_CHUNK_TYPES:
-        return merge_icd10_code_lists(
-            text_codes,
-            doc_primary,
-            catalog_all,
-            protocol_all,
-            max_codes=28,
-        )
-    return merge_icd10_code_lists(text_codes, doc_primary, max_codes=18)
+        chunk_codes = merge_icd10_code_lists(text_codes, doc_primary, max_codes=18)
+    else:
+        chunk_codes = merge_icd10_code_lists(text_codes, doc_primary, max_codes=12)
+    return chunk_codes, protocol_codes
 
 
 def build_embedding_ready_text(
@@ -478,19 +489,17 @@ def build_embedding_ready_text(
     section_title: str,
     chunk_text: str,
     icd_codes: list[str],
+    icd_protocol: list[str] | None,
     populations: list[str],
     chunk_type: str,
 ) -> str:
-    """Текст для эмбеддинга/лексики; для диагнозов/показаний дублирует МКБ из текста."""
+    """Текст для эмбеддинга; МКБ - из текста чанка, для overview - протокол."""
     emb_text = section_title + "\n" + chunk_text
     if icd_codes:
         icd_line = "МКБ-10: " + ", ".join(icd_codes[:12])
         emb_text = icd_line + "\n" + emb_text
-        if chunk_type in _ICD_ENRICH_CHUNK_TYPES:
-            text_codes = extract_icd10(chunk_text)
-            extra = [c for c in text_codes if c in icd_codes]
-            if extra:
-                emb_text = "МКБ-10: " + ", ".join(extra[:10]) + "\n" + emb_text
+    elif chunk_type == "protocol_overview" and icd_protocol:
+        emb_text = "МКБ-10 (протокол): " + ", ".join(icd_protocol[:12]) + "\n" + emb_text
     if populations:
         emb_text = "Популяция: " + ", ".join(populations) + "\n" + emb_text
     return emb_text
@@ -641,11 +650,7 @@ def keywords_from_text(text: str, max_kw: int = 40) -> list[str]:
 
 
 def guess_chunk_type(section_title: str, text: str) -> str:
-    combined = (section_title + " " + text[:200]).lower()
-    for pattern, ctype in CHUNK_TYPE_MAP:
-        if pattern.search(combined):
-            return ctype
-    return "body"
+    return infer_chunk_type(section_title=section_title, text=text)
 
 
 def is_preamble_block(text: str) -> bool:
@@ -929,7 +934,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                         md_part = md
                     chunk_idx = len(table_chunks)
                     chunk_id = f"{did}_tbl_p{i}_{tidx}_{bi}_{chunk_idx}"
-                    icd = build_chunk_icd10_codes(
+                    icd, icd_proto = build_chunk_icd10_codes(
                         chunk_text=md_part,
                         chunk_type="table",
                         protocol_primary=[],
@@ -956,10 +961,12 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                             section_title=caption or "Таблица",
                             chunk_text=md_part,
                             icd_codes=icd,
+                            icd_protocol=icd_proto,
                             populations=extract_populations(md_part),
                             chunk_type="table",
                         ),
                         "icd10_codes": icd,
+                        "icd10_protocol": icd_proto,
                         "population": extract_populations(md_part),
                         "age_range": extract_age_ranges(md_part),
                         "sex": [],
@@ -1070,11 +1077,18 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             if not chunk_text.strip():
                 continue
             chunk_id = f"{did}_s{sec_idx}_c{ci}"
+            chunk_text = strip_noise_lines(chunk_text.strip())
+            sec_title_resolved = resolve_section_title(sec_title, path_labels)
             pops = extract_populations(chunk_text)
             care = extract_care_settings(chunk_text)
-            ctype = guess_chunk_type(sec_title, chunk_text)
+            ctype = infer_chunk_type(
+                section_title=sec_title_resolved,
+                section_number=sec_number,
+                section_path=path_labels,
+                text=chunk_text,
+            )
             chunk_type_counts[ctype] = chunk_type_counts.get(ctype, 0) + 1
-            icd = build_chunk_icd10_codes(
+            icd, icd_proto = build_chunk_icd10_codes(
                 chunk_text=chunk_text,
                 chunk_type=ctype,
                 protocol_primary=meta.get("icd10_primary") or [],
@@ -1096,14 +1110,15 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                         break
 
             emb_text = build_embedding_ready_text(
-                section_title=sec_title,
+                section_title=sec_title_resolved,
                 chunk_text=chunk_text,
                 icd_codes=icd,
+                icd_protocol=icd_proto,
                 populations=pops,
                 chunk_type=ctype,
             )
 
-            chunks_out.append({
+            chunk_row: dict[str, Any] = {
                 "chunk_id": chunk_id,
                 "doc_id": did,
                 "source_path": rel_path,
@@ -1111,7 +1126,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "specialty_slug": specialty_slug,
                 "specialty_ru": specialty_ru_name,
                 "chunk_type": ctype,
-                "section_title": sec_title,
+                "section_title": sec_title_resolved,
                 "section_path": path_labels,
                 "section_number": sec_number,
                 "page_from": page_from,
@@ -1132,6 +1147,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "language": "ru",
                 # --- Entities ---
                 "icd10_codes": icd,
+                "icd10_protocol": icd_proto,
                 "icd10_weights": icd_weights_for_codes(icd, protocol_icd_weights),
                 "content_tags": meta.get("content_tags") or [],
                 "section_tags": meta.get("section_tags") or [],
@@ -1140,10 +1156,10 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "sex": [],
                 "care_setting": care,
                 "conditions": extract_cross_protocols(chunk_text),
-                "drugs": extract_drugs_heuristic(chunk_text),
+                "drugs": extract_drugs_enriched(chunk_text) or extract_drugs_heuristic(chunk_text),
                 "procedures": [],
-                "lab_tests": extract_lab_tests(chunk_text),
-                "imaging": extract_imaging(chunk_text),
+                "lab_tests": extract_lab_tests_enriched(chunk_text) or extract_lab_tests(chunk_text),
+                "imaging": extract_imaging_enriched(chunk_text) or extract_imaging(chunk_text),
                 "durations": extract_durations(chunk_text),
                 "dosages": extract_dosages(chunk_text),
                 "severity": extract_severity(chunk_text),
@@ -1153,14 +1169,16 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
                 "is_preamble_filtered": preamble_filtered,
                 "chunk_has_table": False,
                 "chunk_is_empty": False,
-            })
+            }
+            enrich_chunk_entities(chunk_row)
+            chunks_out.append(chunk_row)
             chunk_global_idx += 1
 
     # Merge table chunks (re-enrich ICD after protocol-level meta is known)
     for ch in table_chunks:
         md_part = str(ch.get("text") or "")
         caption = str(ch.get("table_caption") or "Таблица")
-        icd = build_chunk_icd10_codes(
+        icd, icd_proto = build_chunk_icd10_codes(
             chunk_text=md_part,
             chunk_type="table",
             protocol_primary=meta.get("icd10_primary") or [],
@@ -1169,11 +1187,13 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             catalog_all=meta.get("icd10_catalog_all") or [],
         )
         ch["icd10_codes"] = icd
+        ch["icd10_protocol"] = icd_proto
         ch["icd10_weights"] = icd_weights_for_codes(icd, meta.get("icd10_weights") or {})
         ch["embedding_ready_text"] = build_embedding_ready_text(
             section_title=caption,
             chunk_text=md_part,
             icd_codes=icd,
+            icd_protocol=icd_proto,
             populations=extract_populations(md_part),
             chunk_type="table",
         )
@@ -1211,6 +1231,7 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
             imaging=list(ch.get("imaging") or []),
             lab_tests=list(ch.get("lab_tests") or []),
         )
+        apply_indexable_flags(ch)
 
     return {"chunks": chunks_out, "meta": meta, "errors": errors}
 

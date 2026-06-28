@@ -20,7 +20,7 @@ def test_merge_icd10_preserves_priority() -> None:
 
 
 def test_build_chunk_icd_includes_catalog_and_text_for_criteria() -> None:
-    icd = _brc.build_chunk_icd10_codes(
+    icd, icd_proto = _brc.build_chunk_icd10_codes(
         chunk_text="Показания при геморрое K64.1 и кровотечении K62.5",
         chunk_type="criteria_block",
         protocol_primary=["K64.9"],
@@ -32,18 +32,21 @@ def test_build_chunk_icd_includes_catalog_and_text_for_criteria() -> None:
     assert "K62.5" in icd
     assert "K64.9" in icd
     assert icd[0] in ("K64.1", "K62.5", "K64.9")
+    assert "K64.9" in icd_proto
 
 
-def test_embedding_ready_text_duplicates_text_icd_for_diagnostics() -> None:
+def test_embedding_ready_text_uses_chunk_icd_for_diagnostics() -> None:
     emb = _brc.build_embedding_ready_text(
         section_title="Диагностика",
         chunk_text="Обследование при K92.2",
-        icd_codes=["K92.2", "K64.9"],
+        icd_codes=["K92.2"],
+        icd_protocol=["K92.2", "K64.9"],
         populations=[],
         chunk_type="diagnostics",
     )
-    assert emb.count("K92.2") >= 2
+    assert "K92.2" in emb
     assert emb.startswith("МКБ-10:")
+    assert "K64.9" not in emb
 
 
 def test_catalog_lookup_loads_primary_codes() -> None:

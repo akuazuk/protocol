@@ -31,6 +31,16 @@ def test_should_skip_short_non_overview_chunk():
     assert should_skip_rich_chunk_row(row) is True
 
 
+def test_should_skip_indexable_false():
+    row = {
+        "doc_id": "abc",
+        "chunk_type": "diagnostics",
+        "text": "Рекомендуется выполнить ОАК при постановке диагноза антифосфолипидного синдрома.",
+        "indexable": False,
+    }
+    assert should_skip_rich_chunk_row(row) is True
+
+
 def test_should_skip_terms_without_icd():
     row = {
         "doc_id": "abc",
