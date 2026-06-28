@@ -36,7 +36,16 @@ def _env_bool(name: str, default: bool = False) -> bool:
 def _parse_json_array(text: str) -> list[dict[str, Any]]:
     if not text:
         return []
-    m = re.search(r"\[[\s\S]*\]", text)
+    stripped = text.strip()
+    try:
+        data = json.loads(stripped)
+        if isinstance(data, list):
+            return [x for x in data if isinstance(x, dict)]
+        if isinstance(data, dict):
+            return [data]
+    except json.JSONDecodeError:
+        pass
+    m = re.search(r"\[[\s\S]*\]", stripped)
     if not m:
         return []
     try:
@@ -75,12 +84,28 @@ def process_batch(
     prompt = build_chunk_qa_prompt(batch, protocol_title=protocol_title)
     key = hashlib.sha256(prompt.encode()).hexdigest()[:16]
     cache = _cache_path(key)
+    raw_items: list[dict[str, Any]] = []
     if cache.is_file():
-        raw_items = json.loads(cache.read_text(encoding="utf-8"))
-    else:
-        raw_text = _run_llm(model, prompt)
-        raw_items = _parse_json_array(raw_text)
-        cache.write_text(json.dumps(raw_items, ensure_ascii=False, indent=2), encoding="utf-8")
+        try:
+            cached = json.loads(cache.read_text(encoding="utf-8"))
+            if isinstance(cached, list) and cached:
+                raw_items = cached
+        except json.JSONDecodeError:
+            cache.unlink(missing_ok=True)
+    if not raw_items:
+        max_retries = int(os.environ.get("CHUNK_QA_LLM_RETRIES", "3"))
+        for attempt in range(max_retries):
+            raw_text = _run_llm(model, prompt)
+            raw_items = _parse_json_array(raw_text)
+            if raw_items:
+                cache.write_text(json.dumps(raw_items, ensure_ascii=False, indent=2), encoding="utf-8")
+                break
+            if attempt + 1 < max_retries:
+                print(json.dumps({
+                    "retry": attempt + 1,
+                    "batch_size": len(batch),
+                    "doc": protocol_title[:60],
+                }, ensure_ascii=False), file=sys.stderr, flush=True)
 
     results: list[ChunkQaResult] = []
     for i, item in enumerate(raw_items):
@@ -186,6 +211,9 @@ def main() -> int:
                 for res in results:
                     out_fh.write(json.dumps(res.model_dump(), ensure_ascii=False) + "\n")
                     n_fixes += 1
+                out_fh.flush()
+                if n_fixes and n_fixes % 50 == 0:
+                    print(json.dumps({"progress": n_fixes}, ensure_ascii=False), flush=True)
 
     print(json.dumps({"fixes_written": n_fixes, "out": str(args.out)}, ensure_ascii=False))
     return 0
