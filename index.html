@@ -1653,10 +1653,31 @@
     }
 
 
+    #consult-evidence-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    #consult-evidence-table col.col-ev-block { width: 7.5rem; }
+    #consult-evidence-table col.col-ev-section { width: 11rem; }
+    #consult-evidence-table col.col-ev-excerpt { width: 46%; }
+    #consult-evidence-table col.col-ev-protocol { width: 28%; }
+
+    #consult-evidence-table th,
+    #consult-evidence-table td {
+      vertical-align: top;
+      text-align: left;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
     #consult-evidence-table .consult-evidence-protocol {
       font-size: 0.8rem;
       line-height: 1.35;
-      max-width: 14rem;
+      max-width: none;
     }
 
     #consult-evidence-table .consult-evidence-excerpt {
@@ -1741,18 +1762,19 @@
 
     table.consult-crit-table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: separate;
       border-spacing: 0 0.45rem;
       font-size: 0.82rem;
       margin-top: 0.75rem;
     }
 
-    table.consult-crit-table col.col-crit-name { width: 13%; }
-    table.consult-crit-table col.col-crit-pct { width: 5.5rem; }
-    table.consult-crit-table col.col-crit-verdict { width: 6.5rem; }
-    table.consult-crit-table col.col-crit-comment { width: 28%; }
-    table.consult-crit-table col.col-crit-kz { width: 24%; }
-    table.consult-crit-table col.col-crit-ref { width: 24%; }
+    table.consult-crit-table col.col-crit-name { width: 10%; }
+    table.consult-crit-table col.col-crit-pct { width: 4.25rem; }
+    table.consult-crit-table col.col-crit-verdict { width: 5.75rem; }
+    table.consult-crit-table col.col-crit-comment { width: 31%; }
+    table.consult-crit-table col.col-crit-kz { width: 26%; }
+    table.consult-crit-table col.col-crit-ref { width: 26%; }
 
     table.consult-crit-table thead th {
       position: sticky;
@@ -1782,6 +1804,9 @@
       padding: 0.62rem 0.68rem;
       vertical-align: top;
       text-align: left;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
 
     table.consult-crit-table tbody td:first-child {
@@ -1810,6 +1835,9 @@
       line-height: 1.45;
       color: #3d524c;
       font-style: normal;
+      white-space: pre-wrap;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
 
     .consult-crit-quote--ref {
@@ -11836,6 +11864,12 @@
             </div>
             <div style="overflow-x: auto">
               <table class="consult-out-table" id="consult-evidence-table">
+                <colgroup>
+                  <col class="col-ev-block" />
+                  <col class="col-ev-section" />
+                  <col class="col-ev-excerpt" />
+                  <col class="col-ev-protocol" />
+                </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">Блок</th>
@@ -27114,7 +27148,7 @@
             escapeHtml(section) +
             pageBit +
             "</td><td class=\"consult-evidence-excerpt\">" +
-            escapeHtml(excerpt.length > 320 ? excerpt.slice(0, 317) + "…" : excerpt) +
+            escapeHtml(excerpt) +
             "</td><td class=\"consult-evidence-protocol\" title=\"" +
             escapeHtml(it.protocol_path || "") +
             "\">" +
