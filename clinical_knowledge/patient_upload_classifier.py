@@ -273,10 +273,110 @@ def _looks_like_minzdrav_protocol(text: str) -> bool:
     )
 
 
+def is_b2c_lab_filename(name: str) -> bool:
+    """Имя/ case_id начинается на A/a - B2C анализы в тестовом наборе и загрузках."""
+    stem = (name or "").strip()
+    if not stem:
+        return False
+    if "/" in stem or "\\" in stem:
+        stem = stem.replace("\\", "/").rsplit("/", 1)[-1]
+    if stem.lower().endswith((".pdf", ".txt", ".docx", ".rtf", ".odt", ".html")):
+        stem = stem.rsplit(".", 1)[0]
+    return stem[0].lower() == "a"
+
+
+def check_consult_document(
+    text: str,
+    *,
+    consultation_id: str = "",
+    filename: str = "",
+) -> UploadGuess | None:
+    """None - можно гонять КЗ pipeline; иначе шутливый ответ как в B2C."""
+    name = (filename or consultation_id or "").strip()
+    blob = (text or "").strip()
+    if is_b2c_lab_filename(name):
+        return UploadGuess(
+            "kz",
+            False,
+            "lab_in_kz",
+            "бланк анализов (имя файла A/a)",
+            _kz_score(blob),
+            _lab_score(blob),
+        )
+    guess = classify_kz_upload(blob, filename=name)
+    if not guess.is_expected and guess.kind in (
+        "lab_in_kz",
+        "recipe",
+        "menu",
+        "receipt",
+        "passport",
+        "homework",
+        "contract",
+        "resume",
+        "ticket",
+        "social",
+        "invoice",
+        "parking",
+        "pet",
+        "protocol_pdf",
+        "empty",
+        "unknown",
+    ):
+        return guess
+    return None
+
+
+def build_consult_upload_mismatch_response(
+    guess: UploadGuess,
+    *,
+    consultation_id: str = "",
+    review_tier: str = "L1",
+) -> dict[str, Any]:
+    """Ответ consult-review при загрузке не-КЗ (анализ, рецепт и т.д.)."""
+    joke_report = build_upload_joke_report(guess)
+    upload_joke = joke_report.get("upload_joke") or {}
+    summary = str(joke_report.get("plain_summary_ru") or upload_joke.get("body_ru") or "")
+    return {
+        "ok": True,
+        "upload_mismatch": True,
+        "wrong_document_kind": guess.kind,
+        "review_tier": review_tier,
+        "consultation_id": consultation_id or None,
+        "overall_score": None,
+        "overall_status": "not_assessed",
+        "confidence_score": None,
+        "matched_protocols_count": 0,
+        "critical_issues_count": 0,
+        "llm_used": False,
+        "rag_used": False,
+        "criteria_source": "upload_classifier",
+        "review": {
+            "summary_ru": summary,
+            "overall_compliance_pct": None,
+            "criteria": [],
+            "limitations_ru": upload_joke.get("hint_ru") or "",
+            "disclaimer_ru": joke_report.get("disclaimer_ru") or "",
+            "upload_joke": upload_joke,
+        },
+        "structured_analysis": None,
+        "patient_report": joke_report,
+    }
+
+
 def classify_kz_upload(text: str, *, filename: str = "") -> UploadGuess:
     blob = (text or "").strip()
     if len(blob) < 40:
         return UploadGuess("kz", False, "empty", "пустой или нечитаемый файл", 0, 0)
+
+    if is_b2c_lab_filename(filename):
+        return UploadGuess(
+            "kz",
+            False,
+            "lab_in_kz",
+            "бланк анализов (имя файла A/a)",
+            _kz_score(blob),
+            _lab_score(blob),
+        )
 
     kz = _kz_score(blob)
     lab = _lab_score(blob)

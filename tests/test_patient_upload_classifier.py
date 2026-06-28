@@ -3,9 +3,11 @@ from __future__ import annotations
 
 from clinical_knowledge.patient_upload_classifier import (
     build_upload_joke_report,
+    check_consult_document,
     check_patient_uploads,
     classify_kz_upload,
     classify_lab_upload,
+    is_b2c_lab_filename,
 )
 
 RECIPE = """
@@ -100,3 +102,31 @@ def test_check_patient_uploads_priority_kz() -> None:
     mismatch = check_patient_uploads(kz_text=RECIPE, lab_text=LAB)
     assert mismatch is not None
     assert mismatch.slot == "kz"
+
+
+def test_b2c_lab_filename_prefix_case_insensitive() -> None:
+    assert is_b2c_lab_filename("a_1")
+    assert is_b2c_lab_filename("A_2.pdf")
+    assert is_b2c_lab_filename("clients_consult/a_3.pdf")
+    assert not is_b2c_lab_filename("report_n_1")
+    assert not is_b2c_lab_filename("gastro_1")
+
+
+def test_consult_document_rejects_a_prefix_without_scoring() -> None:
+    from clinical_knowledge.consult_tiering import run_consult_by_tier
+
+    out = run_consult_by_tier(
+        tier="L1",
+        text=LAB,
+        consultation_id="A_2",
+    )
+    assert out.get("upload_mismatch") is True
+    assert out.get("overall_score") is None
+    assert out.get("wrong_document_kind") == "lab_in_kz"
+    assert out.get("review", {}).get("upload_joke")
+
+
+def test_check_consult_by_filename() -> None:
+    guess = check_consult_document(KZ, consultation_id="a_99")
+    assert guess is not None
+    assert guess.kind == "lab_in_kz"

@@ -180,6 +180,16 @@ def run_consult_by_tier(
     if not raw:
         raise ValueError("Пустой текст заключения")
 
+    from .patient_upload_classifier import check_consult_document, build_consult_upload_mismatch_response
+
+    mismatch = check_consult_document(raw, consultation_id=consultation_id)
+    if mismatch:
+        return build_consult_upload_mismatch_response(
+            mismatch,
+            consultation_id=consultation_id,
+            review_tier=level,
+        )
+
     if level == "L0":
         out = run_compliance_screen(
             text=raw,

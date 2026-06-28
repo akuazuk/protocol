@@ -12,6 +12,8 @@ sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.chunk_quality import detect_issues, quality_score
 
+from clinical_knowledge.patient_upload_classifier import is_b2c_lab_filename
+
 DEFAULT_CHUNKS = ROOT / "output" / "rich_chunks" / "rich_chunks.final.jsonl"
 FALLBACK_CHUNKS = ROOT / "output" / "rich_chunks" / "rich_chunks.v2.jsonl"
 DEFAULT_L2 = ROOT / "ml" / "experiments" / "batch_clients_consult_2026-06-28" / "l2_weak_report.json"
@@ -21,12 +23,9 @@ DEFAULT_REVIEW = ROOT / "data" / "ml" / "chunk_qa_review.jsonl"
 DEFAULT_OUT = ROOT / "data" / "ml" / "chunk_qa_queue_kz_targeted.jsonl"
 DEFAULT_MANIFEST = ROOT / "data" / "ml" / "chunk_qa_queue_kz_targeted_manifest.json"
 
-# clients_consult/a_*.pdf — B2C анализы, не заключения (КЗ)
-B2C_ANALYSIS_PREFIX = "a_"
-
 
 def _is_b2c_analysis_case(case_id: str) -> bool:
-    return str(case_id or "").startswith(B2C_ANALYSIS_PREFIX)
+    return is_b2c_lab_filename(case_id)
 
 
 def _norm_path(p: str) -> str:

@@ -25,13 +25,14 @@ except ImportError:
     pass
 
 CLIENTS = ROOT / "clients_consult"
+from clinical_knowledge.patient_upload_classifier import is_b2c_lab_filename
+
 SUPPORTED = {".pdf", ".txt", ".md", ".docx", ".rtf", ".odt", ".html"}
-B2C_ANALYSIS_PREFIX = "a_"
 
 
 def _is_b2c_lab_analysis(case_id: str) -> bool:
-    """Файлы a_*.pdf — B2C анализы, не заключения (КЗ)."""
-    return str(case_id or "").startswith(B2C_ANALYSIS_PREFIX)
+    """Файлы A/a* - B2C анализы, не заключения (КЗ)."""
+    return is_b2c_lab_filename(case_id)
 
 
 def _ssl_ctx() -> ssl.SSLContext:
@@ -119,6 +120,8 @@ def run_case(
         "file": path.name,
         "case_id": case_id,
         "doc_kind": "b2c_analysis" if _is_b2c_lab_analysis(case_id) else "kz",
+        "upload_mismatch": bool(result.get("upload_mismatch")),
+        "wrong_document_kind": result.get("wrong_document_kind"),
         "review_tier": tier,
         "analysis_id": result.get("analysis_id"),
         "analysis_ms": ms,
@@ -163,7 +166,7 @@ def main() -> int:
     ap.add_argument("--base", default=os.environ.get("RENDER_URL", "https://protocol-bimy.onrender.com"))
     ap.add_argument("--ai-review", choices=("off", "auto", "all"), default="auto")
     ap.add_argument("--tier", choices=("L1", "L2"), default="L1")
-    ap.add_argument("--kz-only", action="store_true", help="Пропустить a_* B2C анализы")
+    ap.add_argument("--kz-only", action="store_true", help="Пропустить A/a* B2C анализы")
     ap.add_argument("--cases", default="", help="Список case_id через запятую")
     ap.add_argument("--out", type=Path, default=ROOT / "ml" / "experiments" / f"batch_clients_consult_{time.strftime('%Y-%m-%d')}")
     ap.add_argument("--limit", type=int, default=0)
@@ -218,7 +221,7 @@ def main() -> int:
         summary["overall_avg"] = round(sum(ovs) / len(ovs), 1) if ovs else None
         summary["failed_ge3"] = sum(1 for r in reports if (r.get("failed_rules_count") or 0) >= 3)
         summary["overall_lt70"] = sum(1 for r in reports if r.get("overall_pct") is not None and float(r["overall_pct"]) < 70)
-        kz = [r for r in reports if r.get("doc_kind") == "kz"]
+        kz = [r for r in reports if r.get("doc_kind") == "kz" and not r.get("upload_mismatch")]
         if kz:
             kz_ovs = [float(r["overall_pct"]) for r in kz if r.get("overall_pct") is not None]
             summary["kz_only"] = {
