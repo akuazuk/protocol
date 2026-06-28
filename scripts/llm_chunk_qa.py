@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from clinical_knowledge.chunk_qa_llm import generate_llm_text, ollama_available
 from clinical_knowledge.chunk_qa_prompt import SYSTEM_CHUNK_QA, build_chunk_qa_prompt
 from clinical_knowledge.chunk_qa_schema import ChunkQaResult, parse_chunk_qa_result
 
@@ -61,9 +62,8 @@ def _load_chunks_index(path: Path) -> dict[str, dict]:
 
 
 def _run_llm(model: Any, prompt: str) -> str:
-    from rag_server import _extract_gemini_text, generate_gemini_consult_review_synthesize
-    resp = generate_gemini_consult_review_synthesize(model, SYSTEM_CHUNK_QA + "\n\n" + prompt, max_out=4000)
-    return _extract_gemini_text(resp)
+    full = SYSTEM_CHUNK_QA + "\n\n" + prompt
+    return generate_llm_text(full, max_out=int(os.environ.get("CHUNK_QA_MAX_OUT", "4000")))
 
 
 def process_batch(
@@ -83,10 +83,15 @@ def process_batch(
         cache.write_text(json.dumps(raw_items, ensure_ascii=False, indent=2), encoding="utf-8")
 
     results: list[ChunkQaResult] = []
-    for item in raw_items:
+    for i, item in enumerate(raw_items):
         parsed = parse_chunk_qa_result(item)
-        if parsed:
-            results.append(parsed)
+        if not parsed:
+            continue
+        if i < len(batch):
+            expected = str(batch[i].get("chunk_id") or "")
+            if expected and parsed.chunk_id != expected:
+                parsed.chunk_id = expected
+        results.append(parsed)
     return results
 
 
@@ -98,6 +103,7 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--batch-size", type=int, default=5)
     parser.add_argument("--doc-id", default="")
+    parser.add_argument("--append", action="store_true", help="Append to out file, skip cached chunk_ids")
     args = parser.parse_args()
 
     if not _env_bool("CHUNK_QA_LLM", False):
@@ -115,9 +121,19 @@ def main() -> int:
     try:
         from rag_server import get_gemini
         model = get_gemini()
-    except Exception as e:
-        print(f"SKIP: LLM недоступен ({e})", file=sys.stderr)
+    except Exception:
+        model = None
+
+    if model is None and not ollama_available():
+        print("SKIP: нет Gemini и Ollama недоступен", file=sys.stderr)
         return 0
+
+    backend = (os.environ.get("CHUNK_QA_LLM_BACKEND") or "auto").strip()
+    print(json.dumps({
+        "backend": backend,
+        "ollama": ollama_available(),
+        "gemini": model is not None,
+    }, ensure_ascii=False), flush=True)
 
     chunk_index = _load_chunks_index(chunks_path)
     queue_ids: list[str] = []
@@ -140,11 +156,22 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     n_fixes = 0
 
-    with args.out.open("w", encoding="utf-8") as out_fh:
+    done_ids: set[str] = set()
+    if args.append and args.out.is_file():
+        for line in args.out.open(encoding="utf-8"):
+            try:
+                done_ids.add(str(json.loads(line).get("chunk_id") or ""))
+            except json.JSONDecodeError:
+                pass
+
+    out_mode = "a" if args.append else "w"
+    with args.out.open(out_mode, encoding="utf-8") as out_fh:
         for doc_id, doc_chunks in by_doc.items():
             title = str(doc_chunks[0].get("protocol_title") or "") if doc_chunks else ""
             for i in range(0, len(doc_chunks), args.batch_size):
                 batch = doc_chunks[i:i + args.batch_size]
+                if done_ids and all(str(c.get("chunk_id") or "") in done_ids for c in batch):
+                    continue
                 try:
                     results = process_batch(batch, model=model, protocol_title=title)
                 except Exception as e:

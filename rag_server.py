@@ -915,6 +915,8 @@ def _jsonl_chunk_files() -> list[Path]:
         return paths
     if env_bool("RAG_USE_RICH_CHUNKS", True):
         for candidate in (
+            base / "output" / "rich_chunks" / "rich_chunks.final.jsonl",
+            ROOT / "output" / "rich_chunks" / "rich_chunks.final.jsonl",
             base / "output" / "rich_chunks" / "rich_chunks.v2.jsonl",
             ROOT / "output" / "rich_chunks" / "rich_chunks.v2.jsonl",
             base / "output" / "rich_chunks" / "rich_chunks.jsonl",
@@ -8171,7 +8173,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-24-r64-chunk-v2-runtime"
+BUILD_VERSION = "2026-06-24-r65-chunk-llm-qa"
 
 
 def _app_version() -> str:

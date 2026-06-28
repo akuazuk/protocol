@@ -240,11 +240,23 @@ Cron-обёртка над audit + сравнение с baseline JSON.
 # Upload на Render (авто v2 если есть)
 ./scripts/upload_rich_chunks_render.sh srv-xxx@ssh.region.render.com --gzip
 
-# LLM queue (offline)
-CHUNK_QA_LLM=1 .venv/bin/python scripts/llm_chunk_qa.py --limit 100
+# LLM queue (offline; Gemini или Ollama)
+CHUNK_QA_LLM=1 CHUNK_QA_LLM_BACKEND=ollama OLLAMA_MODEL=qwen2.5:3b \
+  .venv/bin/python scripts/llm_chunk_qa.py --limit 500
+.venv/bin/python scripts/merge_chunk_qa_fixes.py
+.venv/bin/python scripts/write_chunk_llm_qa_report.py
+.venv/bin/python scripts/promote_rich_chunks_v2.py --source final
 
 # Тесты
 .venv/bin/python -m pytest tests/test_chunk_quality.py tests/test_chunk_type_infer.py -q
 ```
 
-Runtime: `rag_server` автоматически предпочитает `rich_chunks.v2.jsonl`, если файл существует.
+Runtime: `rag_server` автоматически предпочитает `rich_chunks.final.jsonl` → `v2` → `jsonl`.
+
+### LLM-бэкенды (`CHUNK_QA_LLM_BACKEND`)
+
+| Значение | Когда |
+|----------|--------|
+| `auto` | Ollama если доступен, иначе Gemini |
+| `ollama` | Локально: `ollama serve`, модель `qwen2.5:3b` |
+| `gemini` | `GOOGLE_API_KEY` (на Render / без geo-block) |

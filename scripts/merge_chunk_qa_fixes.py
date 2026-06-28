@@ -61,6 +61,7 @@ def apply_fix(ch: dict[str, Any], fix: dict[str, Any]) -> tuple[dict[str, Any], 
         if "llm_drop" not in nf:
             nf.append("llm_drop")
         out["noise_flags"] = nf
+        apply_indexable_flags(out)
         return out, True, "applied"
 
     if fix.get("corrected_chunk_type"):
@@ -122,29 +123,63 @@ def main() -> int:
             if cid:
                 fixes_by_id[cid] = row
 
-    applied = review = skipped = 0
+    applied = review = skipped = dropped = merged = 0
     args.review.parent.mkdir(parents=True, exist_ok=True)
     review_fh = args.review.open("w", encoding="utf-8")
     args.out.parent.mkdir(parents=True, exist_ok=True)
 
+    merge_next: set[str] = set()
+    for cid, fix in fixes_by_id.items():
+        if str(fix.get("verdict") or "") == "merge_with_next" and float(fix.get("confidence") or 0) >= AUTO_CONFIDENCE:
+            merge_next.add(cid)
+
+    skip_ids: set[str] = set()
     with chunks_path.open(encoding="utf-8") as inp, args.out.open("w", encoding="utf-8") as outp:
-        for line in inp:
-            ch = json.loads(line)
+        lines = [json.loads(line) for line in inp]
+        i = 0
+        while i < len(lines):
+            ch = lines[i]
             cid = str(ch.get("chunk_id") or "")
+            if cid in skip_ids:
+                i += 1
+                continue
+            if cid in merge_next and i + 1 < len(lines):
+                nxt = lines[i + 1]
+                if nxt.get("doc_id") == ch.get("doc_id"):
+                    merged_ch = dict(ch)
+                    merged_ch["text"] = (ch.get("text") or "").strip() + "\n" + (nxt.get("text") or "").strip()
+                    merged_ch["chunk_id"] = f"{cid}_llm_m0"
+                    merged_ch["page_to"] = nxt.get("page_to") or ch.get("page_to")
+                    apply_indexable_flags(merged_ch)
+                    _rebuild_embedding(merged_ch)
+                    outp.write(json.dumps(merged_ch, ensure_ascii=False) + "\n")
+                    merged += 1
+                    skip_ids.add(str(nxt.get("chunk_id") or ""))
+                    i += 2
+                    continue
             fix = fixes_by_id.get(cid)
             if fix:
                 ch, ok, disp = apply_fix(ch, fix)
                 if disp == "applied":
                     applied += 1
+                    if str(fix.get("verdict") or "") == "drop":
+                        dropped += 1
                 elif disp == "review":
                     review += 1
                     review_fh.write(json.dumps({"chunk_id": cid, "fix": fix}, ensure_ascii=False) + "\n")
                 else:
                     skipped += 1
             outp.write(json.dumps(ch, ensure_ascii=False) + "\n")
+            i += 1
 
     review_fh.close()
-    print(json.dumps({"applied": applied, "review": review, "skipped": skipped}, ensure_ascii=False))
+    print(json.dumps({
+        "applied": applied,
+        "dropped": dropped,
+        "merged": merged,
+        "review": review,
+        "skipped": skipped,
+    }, ensure_ascii=False))
     return 0
 
 

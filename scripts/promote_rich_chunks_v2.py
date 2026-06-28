@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "output" / "rich_chunks"
 V2 = OUT_DIR / "rich_chunks.v2.jsonl"
+FINAL = OUT_DIR / "rich_chunks.final.jsonl"
 MAIN = OUT_DIR / "rich_chunks.jsonl"
 MANIFEST = OUT_DIR / "_manifest.json"
 
@@ -19,13 +20,25 @@ MANIFEST = OUT_DIR / "_manifest.json"
 def main() -> int:
     parser = argparse.ArgumentParser(description="Promote rich_chunks.v2.jsonl to production jsonl")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--source", choices=("auto", "v2", "final"), default="auto")
     args = parser.parse_args()
 
-    if not V2.is_file():
-        print(f"Нет {V2}", file=sys.stderr)
+    if args.source == "final":
+        src = FINAL
+    elif args.source == "v2":
+        src = V2
+    elif FINAL.is_file():
+        src = FINAL
+    elif V2.is_file():
+        src = V2
+    else:
+        src = V2
+
+    if not src.is_file():
+        print(f"Нет {src}", file=sys.stderr)
         return 1
 
-    n_lines = sum(1 for _ in V2.open(encoding="utf-8"))
+    n_lines = sum(1 for _ in src.open(encoding="utf-8"))
     indexable_false = 0
     for line in V2.open(encoding="utf-8"):
         row = json.loads(line)
@@ -33,7 +46,7 @@ def main() -> int:
             indexable_false += 1
 
     info = {
-        "source": str(V2),
+        "source": str(src),
         "target": str(MAIN),
         "chunks": n_lines,
         "indexable_false": indexable_false,
@@ -50,7 +63,7 @@ def main() -> int:
         shutil.copy2(MAIN, backup)
         print(f"Backup: {backup}")
 
-    shutil.copy2(V2, MAIN)
+    shutil.copy2(src, MAIN)
 
     if MANIFEST.is_file():
         try:
