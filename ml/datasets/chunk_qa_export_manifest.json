@@ -1,0 +1,40 @@
+{
+  "exported_at": "2026-06-29T18:56:32Z",
+  "sources": {
+    "issues": "/Users/pavelkuzauka/Cursor_Folders/Protocol/data/ml/chunk_qa_issues.jsonl",
+    "fixes": "/Users/pavelkuzauka/Cursor_Folders/Protocol/data/ml/chunk_qa_fixes_wave_a.jsonl",
+    "rich_chunks": "/Users/pavelkuzauka/Cursor_Folders/Protocol/output/rich_chunks/rich_chunks.jsonl"
+  },
+  "counts": {
+    "issue_rows": 24988,
+    "fix_rows": 10000,
+    "unique_chunk_ids": 27007,
+    "rich_resolved": 25984,
+    "exported": 25984,
+    "skipped_short_text": 1023
+  },
+  "verdict_distribution": {
+    "fix": 20065,
+    "ok": 5585,
+    "drop": 215,
+    "merge_with_next": 119
+  },
+  "issue_distribution": {
+    "weak_section_title": 11094,
+    "too_long": 6586,
+    "truncated_list": 3970,
+    "too_short": 3223,
+    "type_body_but_clinical": 3053,
+    "empty_entities": 2371,
+    "preamble_leak": 740,
+    "icd_inflation": 47
+  },
+  "p0_issue_counts": {
+    "preamble_leak": 740,
+    "icd_inflation": 47
+  },
+  "outputs": [
+    "ml/datasets/chunk_qa_sft.jsonl",
+    "ml/datasets/chunk_qa_classifier.jsonl"
+  ]
+}

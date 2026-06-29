@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "notes": "Gold chosen/rejected для seed retrieval_fix. query из PDF clients_consult/.",
+  "cases": {
+    "report_n_1": {
+      "chosen_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_с_заболеваниями_нервной_системы_взр_нас_пост_МЗ_2018_8.pdf",
+      "rejected_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас_пост_МЗ_12.04.2023_53.pdf",
+      "tags": ["wrong_protocol", "wrong_population"],
+      "note": "Взрослый невро КП для M53/M54"
+    },
+    "report_n_2": {
+      "chosen_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_с_заболеваниями_нервной_системы_взр_нас_пост_МЗ_2018_8.pdf",
+      "rejected_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас_пост_МЗ_12.04.2023_53.pdf",
+      "tags": ["wrong_protocol", "wrong_population"],
+      "note": "Взрослый невро КП для люмбоишиалгии"
+    },
+    "gastro_1": {
+      "chosen_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевода_желудка_двенадцатиперстной_кишки_пост_МЗ_2025_185.pdf",
+      "tags": ["wrong_protocol", "wrong_population"],
+      "reject_if_substr": ["детс_нас", "дет_нас", "детей"],
+      "note": "K30 диспепсия, взрослый гастро КП"
+    },
+    "kard_1": {
+      "chosen_path": "minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/2КП_Диагностика_и_лечение_пациентов_с_заболеваниями_щитовидной_железы_взр_нас_пост_МЗ_21062021_85.pdf",
+      "rejected_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf",
+      "tags": ["wrong_rubric", "wrong_protocol"],
+      "note": "E55/D щитовидная, не кардио КП"
+    },
+    "report_uril_3": {
+      "chosen_path": "minzdrav_protocols/urologiya/КП диагностики и лечения детей с патологией мочеполовой системы 27.09.2005_549.pdf",
+      "rejected_path": "minzdrav_protocols/urologiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+      "tags": ["wrong_population"],
+      "note": "Q62 гидронефроз, детский урологический КП"
+    },
+    "report_urolofg_2": {
+      "chosen_path": "minzdrav_protocols/urologiya/КП диагностики и лечения пациентов взрослое население с урологическими заболеваниями 22.09.2011 №920.pdf",
+      "rejected_path": "minzdrav_protocols/urologiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+      "tags": ["wrong_protocol"],
+      "note": "N48 баланопостит"
+    },
+    "pediatr_1": {
+      "chosen_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_пациентов_д-нас_с_бронхиальной_астмой_пост_МЗ_2024_176.pdf",
+      "rejected_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Диагностика_и_лечение_взр_население_с_бронхиальной_астмой_пост_МЗ_2024_84.pdf",
+      "tags": ["wrong_population"],
+      "note": "J06 ORI у ребёнka"
+    }
+  }
+}

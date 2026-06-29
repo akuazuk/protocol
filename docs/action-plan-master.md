@@ -202,7 +202,7 @@ nohup bash scripts/telegram_control_loop.sh >> data/ml/reports/telegram_control.
 nohup bash scripts/checklist_push_watchdog.sh loop >> data/ml/reports/checklist_notify.log 2>&1 &
 ```
 
-`.env`: `TELEGRAM_*`, `TELEGRAM_NOTIFY_RENDER=0` (без сообщений про Render).
+`.env`: `TELEGRAM_*`, `TELEGRAM_NOTIFY_RENDER=0`, `TELEGRAM_NOTIFY_GIT=0` (только этапы embed/QA в Telegram, без commit/push).
 
 ---
 

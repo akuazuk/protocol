@@ -1,0 +1,80 @@
+{
+  "dataset": "/Users/pavelkuzauka/Cursor_Folders/Protocol/ml/datasets/chunk_qa_classifier.jsonl",
+  "train_rows": 22027,
+  "test_rows": 3957,
+  "issue_labels": 8,
+  "train_seconds": 2.62,
+  "metrics": {
+    "issues_f1_micro": 0.7715,
+    "issues_f1_macro": 0.6542,
+    "needs_action_accuracy": 0.9944,
+    "needs_action_f1": 0.9972
+  },
+  "per_issue": {
+    "weak_section_title": {
+      "precision": 0.839572192513369,
+      "recall": 0.7796399751707014,
+      "f1": 0.8084969423881557,
+      "support": 1611
+    },
+    "too_long": {
+      "precision": 0.7168918918918918,
+      "recall": 0.9389380530973451,
+      "f1": 0.8130268199233717,
+      "support": 1130
+    },
+    "truncated_list": {
+      "precision": 0.5836627140974967,
+      "recall": 0.7020602218700476,
+      "f1": 0.637410071942446,
+      "support": 631
+    },
+    "too_short": {
+      "precision": 0.8338461538461538,
+      "recall": 0.9626998223801065,
+      "f1": 0.8936521022258862,
+      "support": 563
+    },
+    "type_body_but_clinical": {
+      "precision": 0.5251141552511416,
+      "recall": 0.8823529411764706,
+      "f1": 0.6583969465648855,
+      "support": 391
+    },
+    "empty_entities": {
+      "precision": 0.6798418972332015,
+      "recall": 0.9476584022038568,
+      "f1": 0.7917146144994246,
+      "support": 363
+    },
+    "preamble_leak": {
+      "precision": 0.4649859943977591,
+      "recall": 0.9822485207100592,
+      "f1": 0.6311787072243346,
+      "support": 169
+    },
+    "icd_inflation": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 6
+    }
+  },
+  "p0_gate": {
+    "preamble_leak": {
+      "f1": 0.6311787072243346,
+      "support": 169,
+      "gate_f1": 0.85,
+      "pass": false
+    },
+    "icd_inflation": {
+      "f1": 0.0,
+      "support": 6,
+      "gate_f1": 0.85,
+      "pass": null,
+      "note": "skip gate (need >=30 val positives)"
+    }
+  },
+  "gate_pass": false,
+  "model_path": "/Users/pavelkuzauka/Cursor_Folders/Protocol/ml/registry/checkpoints/chunk_classifier_v1/model.joblib"
+}

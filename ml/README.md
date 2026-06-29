@@ -41,6 +41,8 @@ data/ml/feedback/           # сырые события пилота (JSONL, б�
 ```bash
 python3 scripts/export_training_feedback.py
 python3 scripts/export_training_feedback.py --seed-only   # только bootstrap из golden
+python3 scripts/export_chunk_qa_dataset.py               # chunk QA classifier (Wave A)
+python3 ml/train/train_chunk_classifier.py
 ```
 
 ## Статус (2026)
@@ -52,7 +54,7 @@ python3 scripts/export_training_feedback.py --seed-only   # только bootstr
 | Опциональный LLM API (L2, enrichment) | Production (при наличии ключа) |
 | `data/ml/feedback/`, `POST /api/ml/feedback`, `export_training_feedback.py` | Фаза A: сбор меток методиста |
 | UI `?mode=methodist` + панель оценки | Фаза A MVP |
-| `ml/train/*`, `ml/eval/*` | Заглушки CLI (`--dry-run`) |
+| `ml/train/*`, chunk classifier v1 | export + train; P0 gate pending (see chunk_classifier_v1/REPORT.md) |
 | LoRA fine-tune + деплой local embedder | Roadmap фаза 1 (Q4 2026) |
 
 ## Цикл MLOps (целевой)

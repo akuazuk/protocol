@@ -356,9 +356,12 @@ curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | 
 
 **Сегодняшние** изменения на диске: `find /var/data -type f -newermt 'YYYY-MM-DD'`.
 
-### Telegram: когда push / redeploy (не гадать)
+### Telegram: только этапы фоновых задач
 
 В `.env`: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Auto-push после Wave A **выключен** (`CHECKLIST_AUTO_GIT_PUSH=0`).
+
+**По умолчанию в Telegram:** прогресс embed (25/50/75/100%), завершение embed, ошибки embed, Wave A complete.  
+**Не приходит:** commit/push/ahead, redeploy Render (`TELEGRAM_NOTIFY_GIT=0`, `TELEGRAM_NOTIFY_RENDER=0`).
 
 **Chat ID:** напишите боту `/start`, затем:
 
@@ -366,26 +369,14 @@ curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | 
 python3 scripts/telegram_get_chat_id.py   # скопировать TELEGRAM_CHAT_ID=… в .env
 ```
 
-Не оставляйте `TELEGRAM_CHAT_ID=...` - уведомления молча не работают.
-
 ```bash
-# разовая проверка + одно сообщение при смене фазы
-bash scripts/checklist_push_watchdog.sh once
-
-# фон: статус + вопросы с кнопками (нужен control loop)
+# фон: этапы embed + control loop (кнопки по запросу)
 nohup bash scripts/telegram_control_loop.sh >> data/ml/reports/telegram_control.log 2>&1 &
 nohup bash scripts/checklist_push_watchdog.sh loop >> data/ml/reports/checklist_notify.log 2>&1 &
 ```
 
-**Ответы в Telegram:** кнопки **Да / Нет** или текст `да`/`нет`/`push`/`skip`. Команды: `/status`, `/help`.
-
-| Вопрос | Да | Нет |
-|--------|----|-----|
-| git push | `git push origin HEAD` | пропуск |
-| prod ready | L2 smoke 5 кейсов | пропуск |
-| embed идёт | ок | остановить embed |
-
-Фазы: `wait_embed` → не трогать corpus; `git_push_pending` → push; `redeploy_pending` → redeploy Render; `prod_ready` → smoke.
+**Ответы в Telegram:** кнопки **Да / Нет** или текст `да`/`нет`. Команды: `/status`, `/help`.  
+Push/smoke - только если вы сами нажали кнопку (при `TELEGRAM_NOTIFY_GIT=1`).
 
 ---
 
