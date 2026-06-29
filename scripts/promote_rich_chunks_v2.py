@@ -39,6 +39,9 @@ def main() -> int:
         return 1
 
     n_lines = sum(1 for _ in src.open(encoding="utf-8"))
+    if n_lines < 1:
+        print(f"REFUSE: пустой источник {src} ({n_lines} chunks)", file=sys.stderr)
+        return 1
     indexable_false = 0
     for line in V2.open(encoding="utf-8"):
         row = json.loads(line)

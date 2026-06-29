@@ -29,10 +29,11 @@ export CHUNK_QA_LLM_RETRIES=3
 export CHUNK_QA_BATCH_SIZE=4
 
 PY="$ROOT/.venv/bin/python"
-CHUNKS="$ROOT/output/rich_chunks/rich_chunks.final.jsonl"
-if [ ! -f "$CHUNKS" ]; then
-  CHUNKS="$ROOT/output/rich_chunks/rich_chunks.section_mapped.jsonl"
+CHUNKS_SRC="$ROOT/output/rich_chunks/rich_chunks.section_mapped.jsonl"
+if [ ! -f "$CHUNKS_SRC" ]; then
+  CHUNKS_SRC="$ROOT/output/rich_chunks/rich_chunks.v2.jsonl"
 fi
+CHUNKS="$CHUNKS_SRC"
 SHARD_DIR="$ROOT/data/ml/chunk_qa_shards"
 QUEUE_N=$(wc -l < "$ROOT/data/ml/chunk_qa_queue_tiered.jsonl" | tr -d ' ')
 PILOT_N=$(wc -l < "$ROOT/data/ml/chunk_qa_fixes_pilot.jsonl" 2>/dev/null | tr -d ' ' || echo 0)

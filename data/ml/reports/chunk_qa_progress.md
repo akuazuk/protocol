@@ -1,16 +1,15 @@
 # Chunk QA progress
 
-**Статус: RUNNING (watchdog)**
+**Статус: DEPLOY FIXED**
 
-Updated: 2026-06-29T06:20:59+03:00
+Updated: 2026-06-29T15:38:00+03:00
 
 | | |
 |---|---|
-| Pilot | **698** (done) |
-| Wave A | **10001 / 10000** |
-| Left | **~0** |
-| Speed | **~20 fixes/min** |
+| Wave A | **10 000** fixes |
+| Corpus | **57 852** chunks (`rich_chunks.final.jsonl`) |
+| Merge applied | **3 285** fixes, **671** dropped |
+| Render disk | **337 MB** uploaded, **57 852** lines |
+| BUILD | `2026-06-29-r1-corpus-deploy-fix` (after push + redeploy) |
 
-2 workers auto-restart. Осталось **~0**, ETA **~0 мин**. Queue remain rows: **0**.
-
-Watchdog: `data/ml/reports/chunk_qa_watchdog.log`
+Corpus восстановлен после бага (merge читал пустой `final.jsonl`).
