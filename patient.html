@@ -260,15 +260,31 @@
     .file-chips { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
     .file-chip {
       font-size: 0.72rem;
-      padding: 0.2rem 0.5rem;
+      padding: 0.2rem 0.35rem 0.2rem 0.5rem;
       border-radius: 999px;
       background: var(--gsoft);
       color: var(--g800);
       max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .file-chip__name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      max-width: 14rem;
     }
+    .file-chip__remove {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0 0.15rem;
+    }
+    .file-chip__remove:hover { color: var(--g800); }
 
     .drop-zone--secondary {
       border-style: solid;

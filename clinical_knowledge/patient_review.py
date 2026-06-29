@@ -15,6 +15,7 @@ def run_patient_review(
     specialty_slug: str | None = None,
     lab_text: str | None = None,
     product_tier: str = "P1",
+    catalog_tier_id: str | None = None,
     question_tone: str | None = None,
     kz_filename: str = "",
     lab_filename: str = "",
@@ -110,6 +111,13 @@ def run_patient_review(
             patient_context=patient_ctx,
             question_tone=question_tone,
         )
+
+    from .patient_tier_gating import apply_catalog_tier_limits
+
+    patient_report = apply_catalog_tier_limits(
+        patient_report,
+        catalog_tier_id=catalog_tier_id,
+    )
 
     payload: dict[str, Any] = {
         "ok": True,

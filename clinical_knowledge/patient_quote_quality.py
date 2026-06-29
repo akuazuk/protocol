@@ -65,6 +65,43 @@ def filter_card_excerpts(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
+def scrub_forbidden_from_patient_report(report: dict[str, Any]) -> dict[str, Any]:
+    """Убрать педиатрический/генетический мусор из всех patient-facing полей."""
+    if not isinstance(report, dict):
+        return report
+    out = dict(report)
+    for key in ("plain_summary_ru", "headline_ru", "exams_summary_ru", "medications_summary_ru"):
+        val = out.get(key)
+        if isinstance(val, str) and is_unsafe_quote(val):
+            out[key] = sanitize_patient_text(val.split(".")[0] + ".") if "." in val else ""
+    blocks = []
+    for b in out.get("blocks") or []:
+        if not isinstance(b, dict):
+            continue
+        row = dict(b)
+        for key in ("summary_ru", "why_ru"):
+            val = str(row.get(key) or "")
+            if val and is_unsafe_quote(val):
+                row[key] = "Раздел требует уточнения у врача на приёме."
+        gaps = []
+        for g in row.get("gaps") or []:
+            txt = str(g if isinstance(g, str) else g.get("text_ru") or g.get("text") or "")
+            if txt and not is_unsafe_quote(txt):
+                gaps.append(g)
+        if gaps != row.get("gaps"):
+            row["gaps"] = gaps
+        blocks.append(row)
+    out["blocks"] = blocks
+    out["protocol_citations"] = filter_protocol_citations(list(out.get("protocol_citations") or []))
+    clarify = []
+    for item in out.get("clarification_points") or []:
+        txt = str(item if isinstance(item, str) else item.get("text_ru") or item.get("text") or "")
+        if txt and not is_unsafe_quote(txt):
+            clarify.append(item)
+    out["clarification_points"] = clarify
+    return out
+
+
 def sanitize_patient_text(text: str) -> str:
     """Убрать запрещённые формулировки из patient-facing текста."""
     t = (text or "").strip()

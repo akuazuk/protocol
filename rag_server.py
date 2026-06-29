@@ -8173,7 +8173,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-29-r1-corpus-deploy-fix"
+BUILD_VERSION = "2026-06-29-r2-post-wave-a-checklist"
 
 
 def _app_version() -> str:
@@ -11037,6 +11037,7 @@ def _run_patient_review_core(
     demographics_meta: dict | None = None,
     lab_text: str | None = None,
     product_tier: str = "P1",
+    catalog_tier_id: str | None = None,
     question_tone: str | None = None,
     kz_filename: str = "",
     lab_filename: str = "",
@@ -11050,6 +11051,7 @@ def _run_patient_review_core(
         demographics_meta=demographics_meta,
         lab_text=lab_text,
         product_tier=product_tier,
+        catalog_tier_id=catalog_tier_id,
         question_tone=question_tone,
         kz_filename=kz_filename,
         lab_filename=lab_filename,
@@ -11093,6 +11095,36 @@ def _patient_product_tier_from_catalog(tier_id: str | None) -> str:
 
     tier = resolve_tier(tier_id)
     return str(tier.get("review_tier") or "P1").upper()
+
+
+_patient_idempotency_cache: dict[str, tuple[float, dict]] = {}
+_PATIENT_IDEMPOTENCY_TTL_SEC = 120.0
+
+
+def _patient_idempotency_get(key: str | None) -> dict | None:
+    k = (key or "").strip()
+    if not k:
+        return None
+    row = _patient_idempotency_cache.get(k)
+    if not row:
+        return None
+    ts, payload = row
+    if time.time() - ts > _PATIENT_IDEMPOTENCY_TTL_SEC:
+        _patient_idempotency_cache.pop(k, None)
+        return None
+    return dict(payload)
+
+
+def _patient_idempotency_put(key: str | None, payload: dict) -> None:
+    k = (key or "").strip()
+    if not k or not isinstance(payload, dict):
+        return
+    if len(_patient_idempotency_cache) > 500:
+        cutoff = time.time() - _PATIENT_IDEMPOTENCY_TTL_SEC
+        stale = [kk for kk, (ts, _) in _patient_idempotency_cache.items() if ts < cutoff]
+        for kk in stale:
+            _patient_idempotency_cache.pop(kk, None)
+    _patient_idempotency_cache[k] = (time.time(), dict(payload))
 
 
 def _require_patient_payment(payment_token: str | None, tier_id: str | None) -> None:
@@ -11259,10 +11291,16 @@ def api_patient_account_history(session_token: str = "") -> dict:
 
 
 @app.post("/api/patient/review/json")
-async def api_patient_review_json(body: PatientReviewJsonIn) -> dict:
+async def api_patient_review_json(body: PatientReviewJsonIn, request: "Request") -> dict:
     """B2C: проверка текста КЗ (tier P1) без загрузки файла."""
     if not _patient_review_enabled():
         raise HTTPException(status_code=503, detail="Проверка для пациентов временно недоступна.")
+    idem = (request.headers.get("Idempotency-Key") or "").strip()
+    cached = _patient_idempotency_get(idem)
+    if cached is not None:
+        out = dict(cached)
+        out["idempotent_replay"] = True
+        return out
     from clinical_knowledge.patient_review import patient_demographics_from_form
 
     demo = patient_demographics_from_form(age_years=body.age_years, sex=body.sex)
@@ -11275,9 +11313,11 @@ async def api_patient_review_json(body: PatientReviewJsonIn) -> dict:
         consultation_id="patient-json",
         demographics_meta=demo,
         product_tier=product_tier,
+        catalog_tier_id=(body.tier_id or "").strip() or None,
     )
     result["latency_ms"] = int((time.perf_counter() - t0) * 1000)
     result["build_version"] = BUILD_VERSION
+    _patient_idempotency_put(idem, result)
     return result
 
 
@@ -11308,6 +11348,12 @@ async def api_patient_review(
             status_code=400,
             detail="Нужно согласие на обработку загруженного документа.",
         )
+    idem = (request.headers.get("Idempotency-Key") or "").strip()
+    cached = _patient_idempotency_get(idem)
+    if cached is not None:
+        out = dict(cached)
+        out["idempotent_replay"] = True
+        return out
     if not files:
         raise HTTPException(status_code=400, detail="Загрузите фото или PDF заключения.")
     max_files = env_int("PATIENT_REVIEW_MAX_FILES", 5)
@@ -11337,6 +11383,7 @@ async def api_patient_review(
         demographics_meta=demo,
         lab_text=lab_text or None,
         product_tier=product_tier,
+        catalog_tier_id=(tier_id or "").strip() or None,
         question_tone=(question_tone or "").strip() or None,
         kz_filename=_first_upload_filename(files),
         lab_filename=_first_upload_filename(lab_files),
@@ -11359,6 +11406,7 @@ async def api_patient_review(
         result["clinic_id"] = clinic_id.strip()
     if tier_id.strip():
         result["tier_id"] = tier_id.strip()
+    _patient_idempotency_put(idem, result)
     return result
 
 

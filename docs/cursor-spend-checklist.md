@@ -5,6 +5,31 @@
 
 ---
 
+## 0. Статус (2026-06-29, post-Wave A)
+
+| Артефакт | Факт |
+|----------|------|
+| Wave A | **10 000** fixes, merged **16 577** total |
+| Corpus prod | **57 852** chunks, BUILD `2026-06-29-r1-corpus-deploy-fix` |
+| L1 KZ (30) post-deploy | **84.2%** avg - **без изменений** vs r70 |
+| L2 smoke (5) | **85.6%** avg - без изменений |
+| Search probe (100) | top-1 **100%** |
+| Слабые KZ | `report_n_1` ~60%, `report_n_2` ~62% - **scoring/routing**, не чанки |
+
+**Урок:** Wave A на prod **до** routing B1 дал corpus hygiene, но **не** поднял L1 overall. L1 tier на Render **не использует chunk-RAG** (`rag_used: false`) - chunk QA влияет на **L2, search, B2C crosscheck**, не на L1 batch напрямую.
+
+**Следующий порядок (не откатывать Wave A, дожать эффект):**
+
+1. **$0** - свежий audit 57k + `build_chunk_embeddings.py` + локальный symptom probe
+2. **Cursor Auto** - B1 routing PR (audience + rubric gates)
+3. **Cursor Auto** - B2 три P0 из §17 B2C
+4. **$0** - L2 smoke с проверкой `rag_chunks_n` и preamble в JSON ответа
+5. **GOOGLE** - только retry fix + continuous queue из feedback, **не** Wave B без gate
+
+Подробности: [`data/ml/reports/chunk_qa_progress.md`](../data/ml/reports/chunk_qa_progress.md), batch `ml/experiments/batch_post_deploy_2026-06-29/`.
+
+---
+
 ## 1. Главное за 60 секунд
 
 ### Что дают $70 Cursor (Pro+)
@@ -19,24 +44,27 @@
 
 ### Где реальный прирост качества КZ (весь проект)
 
-| Приоритет | Рычаг | Кошелёк | Ожидаемый эффект |
-|-----------|--------|---------|------------------|
-| **1** | Tiered **chunk pilot → gate → wave A** | **GOOGLE_API_KEY** | ↑ recall, ↓ preamble в цитатах **по всем 24 рубрикам** |
-| **2** | **Routing / retrieval** (универсальный код) | **$0 код + Cursor $** на диагностику | ↑ batch overall, `rag_chunks_n>0` на L2 |
-| **3** | **3 quick wins B2C** в код | **Auto** (реализация) | ↑ конверсия «понял → пришёл с вопросами» |
-| **4** | B2B→B2C sanitization | **Auto** | ↓ риск утечки send_gate/ЦИСЗ |
+| Приоритет | Рычаг | Кошелёк | Что реально двигает |
+|-----------|--------|---------|---------------------|
+| **1** | **Embeddings + audit** после merge corpus | **$0** | RAG/rerank на prod читает новые поля чанков |
+| **2** | **Routing / retrieval** (audience, rubric, sparse) | **$0 код + Cursor $** | ↑ L2, `report_n_*`, wrong PDF path |
+| **3** | Chunk QA (pilot → gate → wave A) | **GOOGLE_API_KEY** | ↑ search, L2 citations, B2C crosscheck; **не L1 overall** |
+| **4** | **3 quick wins B2C** в код | **Auto** | ↑ конверсия «понял → пришёл с вопросами» |
+| **5** | B2B→B2C sanitization | **Auto** | ↓ риск утечки send_gate/ЦИСЗ |
 
-**Вывод:** $70 Cursor **оптимальны**, если **не дублируют п.1**, а тратятся на **п.2–4** (суждение + точечные PR). **Неоптимально:** Opus + «прочитай весь repo».
+**Вывод:** после Wave A $70 Cursor **оптимальны** на **п.2 и п.4–5**, не на повторный bulk Gemini. **Неоптимально:** Opus + «улучши чанки» или Wave B без gate.
 
 ### North star (как понять, что деньги не зря)
 
-| Метрика | Сейчас (ориентир) | Цель месяца |
-|---------|-------------------|-------------|
-| Chunk mean quality | ~0.936 (`audit`) | ≥0.938 после wave A |
-| Batch KZ overall (L1) | ~81–84% (`clients_consult`) | нет регрессии; слабые рубрики ↑ |
-| L2 smoke 5 рубрик | часть с `rag_chunks_n=0` | **все 5:** chunks>0, без preamble |
-| B2C pytest matrix | neuro/derma/phleb pass | +1 новый fixture после fix |
-| Cursor $70 остаток | — | ≥$10 в конце месяца (не сжечь в 1 день) |
+| Метрика | Baseline (r70) | Post-Wave A (29.06) | Цель месяца |
+|---------|----------------|---------------------|-------------|
+| Chunk mean quality | ~0.936 | **пере-audit 57k** (TBD) | ≥0.938 **и** embeddings rebuilt |
+| Batch KZ overall (L1) | ~84.2% | **84.2%** (без регрессии) | слабые рубрики ↑ **после B1** |
+| L2 smoke 5 рубрик | часть с `rag_chunks_n=0` | overall 85.6%; **rag/preamble не в batch JSON** | все 5: `rag_chunks_n>0`, preamble=0 |
+| Search probe top-1 | baseline | **100%** (100/100) | не регрессировать |
+| `report_n_1/2` | ~60–62% | без изменений | **scoring track**, не chunk QA |
+| B2C pytest matrix | neuro/derma/phleb pass | - | +1 fixture после B2 |
+| Cursor $70 остаток | — | — | ≥$10 в конце месяца |
 
 ---
 
@@ -54,31 +82,46 @@
 
 ## 3. План месяца (один лист — отмечай ☐)
 
-### Неделя A — корпус (без Cursor $)
+> **Жёсткое правило (добавлено после 29.06):** prod deploy Wave A **желательно после B1** или явного waiver. Если Wave A уже на prod - **сначала D1–D2**, потом B1, потом приёмка.
+
+### Неделя A — корпус (без Cursor $) — ☑ в основном сделано
 
 | ☐ | Действие | Команда / артеfact |
 |---|----------|-------------------|
-| A1 | Baseline audit | `scripts/audit_chunk_quality.py` → `data/ml/reports/chunk_quality_baseline.json` |
-| A2 | Tier-очередь **24 рубрики** + ICD из всех KZ | `scripts/build_chunk_qa_queue_tiered.py` → manifest `by_rubric`, `kz_icd_protocol_paths` |
-| A3 | Регрессия | `pytest tests/test_consult_retrieval.py tests/test_patient_*case*.py tests/test_patient_sanitization_boundary.py -q` |
+| A0 | **Section map** 478 PDF (если ещё нет) | `scripts/llm_protocol_sections_qa.py` → `data/ml/protocol_section_map/` |
+| A1 | Baseline audit | `scripts/audit_chunk_quality.py` → `chunk_quality_baseline.json` |
+| A2 | Tier-очередь **24 рубрики** + ICD | `scripts/build_chunk_qa_queue_tiered.py` |
+| A3 | Регрессия | `pytest tests/test_consult_retrieval.py tests/test_patient_*case*.py … -q` |
 | A4 | **Pilot 800** | `scripts/llm_chunk_qa.py --limit 800` (GOOGLE) |
-| A5 | **Gate pilot** | merge + audit; см. §4 — **стоп**, если gate fail |
+| A5 | **Gate pilot** | merge + audit; см. §4 |
 
-### Неделя B — Cursor $ (только после A5 или параллельно A3)
+### Неделя B — Cursor $ (**сейчас главный фокус**)
 
 | ☐ | Прогон | Модель | ~$ | Deliverable |
 |---|--------|--------|-----|-------------|
-| B1 | **Routing root-cause** (все рубрики) | Auto → **1× Opus** | 20–25 | Таблица + 1 PR с тестом |
-| B2 | **B2C: 3 quick wins** (не 10 идей) | Auto implement | 10–15 | 3 коммита + pytest |
+| B1 | **Routing root-cause** (все рубрики) | Auto → **1× Opus** | 20–25 | Таблица + 1–2 PR с тестом |
+| B2 | **B2C: 3 quick wins** | Auto implement | 10–15 | 3 коммита + pytest |
 | B3 | Sanitization boundary | Auto | 5–8 | ≤5 рисков или зелёный pytest |
-| — | Резерв | Auto | 10+ | Фиксы после wave A |
+| — | Резерв | Auto | 10+ | Фиксы после smoke |
 
-### Неделя C — корпус на prod (GOOGLE, gate OK)
+### Неделя C — корпус на prod (GOOGLE) — ☑ Wave A + deploy
 
-| ☐ | Wave A P0 + KZ-linked PDFs | `llm_chunk_qa.py --append` |
-| ☐ | promote + upload Render | `scripts/upload_rich_chunks_render.sh … --gzip` |
-| ☐ | L2 smoke **5 рубрик** | gastro, kard, pediatr, lor, uro fixtures |
-| ☐ | Batch snapshot | `scripts/run_clients_consult_render_batch.py` (если есть) |
+| ☐ | Wave A P0 + KZ-linked | `llm_chunk_qa.py --append` |
+| ☐ | merge из **`section_mapped`**, не пустого `final` | `merge_chunk_qa_fixes.py` |
+| ☐ | promote + upload Render | `upload_rich_chunks_render.sh … --gzip` |
+| ☐ | **Embeddings rebuild** | `scripts/build_chunk_embeddings.py` |
+| ☐ | L2 smoke **5 рубрик** + поля в JSON | см. §7 |
+| ☐ | Batch snapshot | `run_clients_consult_render_batch.py` |
+
+### Неделя D — дожать Wave A (**следующие 1–2 дня, $0 + Cursor B**)
+
+| ☐ | Действие | Команда / критерий |
+|---|----------|-------------------|
+| D1 | Post-deploy audit 57k | `audit_chunk_quality.py` на `rich_chunks.final.jsonl` |
+| D2 | Embeddings на prod/local | `build_chunk_embeddings.py`; gate: probe не хуже baseline |
+| D3 | B1 routing PR | audience + rubric gates → merge |
+| D4 | Повтор L2 smoke + 6 слабых KZ | `report_n_*` - отдельный scoring, не отмена chunk QA |
+| D5 | Continuous queue | feedback → `build_chunk_qa_queue_tiered.py --max-total 500` |
 
 ---
 
@@ -97,7 +140,7 @@
 ```bash
 .venv/bin/python scripts/merge_chunk_qa_fixes.py \
   --fixes data/ml/chunk_qa_fixes_pilot.jsonl \
-  --chunks output/rich_chunks/rich_chunks.final.jsonl \
+  --chunks output/rich_chunks/rich_chunks.section_mapped.jsonl \
   --out output/rich_chunks/rich_chunks.pilot.jsonl
 
 .venv/bin/python scripts/audit_chunk_quality.py \
@@ -146,6 +189,27 @@ export CHUNK_QA_LLM=1 CHUNK_QA_LLM_BACKEND=gemini CHUNK_QA_MAX_OUT=16000
 
 Полный план волн: [`ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md`](../ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md).
 
+### D1–D2 — post-Wave A (копипаст)
+
+```bash
+cd protocol
+
+# D1: свежий audit (не доверять отчёту до пустого merge)
+.venv/bin/python scripts/audit_chunk_quality.py \
+  --chunks output/rich_chunks/rich_chunks.final.jsonl \
+  --stats data/ml/reports/chunk_quality_post_deploy.json \
+  --report data/ml/reports/chunk_quality_post_deploy.md \
+  --baseline data/ml/reports/chunk_quality_baseline.json
+
+# D2: RAG index после merge (обязательно, иначе JSONL на диске ≠ rerank)
+.venv/bin/python scripts/build_chunk_embeddings.py
+
+# Gate: локальный probe
+.venv/bin/python scripts/run_symptom_icd_probe.py --local --no-gemini \
+  --fixture tests/fixtures/symptom_icd_probe_100.jsonl \
+  --out data/ml/reports/symptom_icd_probe_post_embed.jsonl
+```
+
 ---
 
 ## 6. Cursor $ — только 2 Opus-сессии + Auto-код
@@ -163,7 +227,7 @@ export CHUNK_QA_LLM=1 CHUNK_QA_LLM_BACKEND=gemini CHUNK_QA_MAX_OUT=16000
 
 ### Прогон B1 — Routing (главный Cursor-$ ROI)
 
-**Почему первый:** batch r70 ~84%, но провалы **скoring vs routing vs chunks** — без классификации chunk wave может не поднять overall. Универсально для **всех** специальностей.
+**Почему первый сейчас:** post-Wave A L1 **84.2%** без изменений - провалы **scoring vs routing vs chunks**. L1 tier **не читает chunk-RAG**; routing B1 двигает L2 и слабые `report_n_*`. Универсально для **всех** специальностей.
 
 **Файлы (@):**  
 `ml/experiments/batch_clients_consult_2026-06-28/ACTION_PLAN.md` ·  
@@ -183,7 +247,7 @@ rag_chunks_n=0, and scoring/sparse rules — NOT chunk quality alone.
 1. Классифицируй типы провалов: routing | chunks | scoring. По 1 примеру из
    РАЗНЫХ рубрик (gastro, kard, pediatr, lor, uro, onko, therapy…) — cite ACTION_PLAN.
 2. Для каждого типа: файл(ы) в коде, минимальный fix, один pytest.
-3. Решение: что MUST fix до wave A chunk deploy vs что wave A alone fixes.
+3. Решение: что fix **после** Wave A (routing/scoring) vs что уже закрыл corpus QA.
 4. L2 smoke matrix: 5 KZ / 5 rubrics, pass = rag_chunks_n>0, no preamble in cite.
 
 НЕ: переписать RAG, full repo review, specialty-specific hacks.
@@ -239,17 +303,26 @@ If tests already cover — say "OK" in 3 lines. Else minimal fix + test. No rag_
 
 ---
 
-## 7. L2 smoke (после wave A на Render)
+## 7. L2 smoke (после wave A + embeddings на Render)
 
 | Fixture | Рубрика | Pass |
 |---------|---------|------|
-| gastro_1 | гастро | `rag_chunks_n>0` |
+| gastro_1 | гастро | `rag_chunks_n>0` в **JSON ответа** |
 | kard_1 | кардио | цитата без preamble |
 | pediatr_1 | педиатрия | overall ≥ batch baseline |
-| report_lor_1 | ЛОР | |
-| report_urolog_1 | урология | |
+| report_lor_1 | ЛОР | `rag_chunks_n>0` |
+| report_urolog_1 | урология | `rag_chunks_n>0` |
 
-Не гонять full batch 29 KZ до green smoke 5.
+```bash
+# batch даёт overall%, но не всегда rag_chunks_n - смотреть report.json:
+.venv/bin/python scripts/run_clients_consult_render_batch.py \
+  --base https://protocol-bimy.onrender.com --tier L2 \
+  --cases gastro_1,kard_1,pediatr_1,report_lor_1,report_urolog_1 \
+  --out ml/experiments/batch_smoke_latest/l2_sample
+# jq '.reports[] | {case_id, overall_pct, rag_chunks_n: .retrieval_top}' report.json
+```
+
+Не гонять full batch 29 KZ до green smoke 5 **и** merged B1 PR.
 
 ---
 
@@ -263,6 +336,9 @@ If tests already cover — say "OK" in 3 lines. Else minimal fix + test. No rag_
 | `build_kz_weak_chunk_qa_queue` (legacy) | `build_chunk_qa_queue_tiered` |
 | Промпт «под неврологию» | Матрица 24 rubrics |
 | L2 batch 29 KZ до routing fix | Smoke 5 rubrics |
+| Deploy corpus без embeddings | D2 `build_chunk_embeddings.py` |
+| Merge из пустого `final.jsonl` | merge из `section_mapped.jsonl` |
+| Wave B 5k без gate | retry + continuous queue only |
 | Opus для pytest/fix typo | Auto |
 
 ---
@@ -271,11 +347,13 @@ If tests already cover — say "OK" in 3 lines. Else minimal fix + test. No rag_
 
 ```bash
 ssh srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com \
-  'ls -lh /var/data/output/rich_chunks/rich_chunks.jsonl; ls -la /var/data/chunk_qa/ | head'
-curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | head -5
+  'wc -l /var/data/output/rich_chunks/rich_chunks.jsonl; ls -lh /var/data/output/rich_chunks/rich_chunks.jsonl'
+curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | head -8
 ```
 
-Ожидаемо после заливки: `rich_chunks.jsonl` + каталог `chunk_qa/` (pilot queue/fixes). **Сегодняшние** изменения — `find /var/data -type f -newermt 'YYYY-MM-DD'`.
+Ожидаемо после заливки: `rich_chunks.jsonl` **~57k строк**, **не 0 байт**. В lazy/manifest режиме `/api/corpus-stats` может показывать `corpus_chunks: 0` - **проверять файл на диске по SSH**, не только API.
+
+**Сегодняшние** изменения на диске: `find /var/data -type f -newermt 'YYYY-MM-DD'`.
 
 ---
 
@@ -292,11 +370,16 @@ curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | 
 
 ## Шпаргалка: оптимально ли тратить $70 так?
 
-**Да**, если месяц выглядит так:
+**Да** (после Wave A), если месяц выглядит так:
 
-1. **GOOGLE** — pilot 800 + gate + (maybe) wave A → **↑ качество для всех специальностей**
-2. **Cursor Opus ×2** — routing diagnosis + (optional) synthesis, не ideation
-3. **Cursor Auto** — 3 B2C shippable fixes + sanitization
-4. **$10+ остаток** — доработки после smoke
+1. **$0** — audit 57k + embeddings + probe gate
+2. **Cursor Auto + 1× Opus** — B1 routing (главный рычаг для слабых KZ)
+3. **Cursor Auto** — B2 три B2C fix + B3 sanitization
+4. **GOOGLE** — только retry/continuous, не blind Wave B
+5. **$10+ остаток** — доработки после smoke
 
-**Нет**, если $70 ушли на «улучши всё» в чате без merge в `main` и без движения north star метрик.
+**Нет**, если $70 ушли на повторный bulk chunk QA, Opus без PR в `main`, или deploy corpus без embeddings.
+
+---
+
+*Версия чек-листа: 2026-06-29 (post-Wave A). Предыдущая логика A→B→C сохранена; добавлены §0, неделя D и уроки deploy.*

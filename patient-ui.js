@@ -226,7 +226,7 @@
     return order.map(function (k) { return map[k]; });
   }
 
-  function renderFileChips(list, containerId, dropId) {
+  function renderFileChips(list, containerId, dropId, onRemove) {
     var el = document.getElementById(containerId);
     var drop = dropId ? document.getElementById(dropId) : null;
     if (!el) return;
@@ -235,7 +235,21 @@
     for (var i = 0; i < list.length; i++) {
       var span = document.createElement("span");
       span.className = "file-chip";
-      span.textContent = list[i].name;
+      var name = document.createElement("span");
+      name.className = "file-chip__name";
+      name.textContent = list[i].name;
+      span.appendChild(name);
+      if (onRemove) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "file-chip__remove";
+        btn.setAttribute("aria-label", "Убрать файл " + list[i].name);
+        btn.textContent = "×";
+        (function (idx) {
+          btn.addEventListener("click", function () { onRemove(idx); });
+        })(i);
+        span.appendChild(btn);
+      }
       el.appendChild(span);
     }
   }
@@ -261,8 +275,17 @@
       if (!input || !input.files || !input.files.length) return;
       var merged = mergeFilesIntoList(getList(), Array.prototype.slice.call(input.files));
       setList(merged);
-      renderFileChips(getList(), chipsId, dropId);
+      renderFileChips(getList(), chipsId, dropId, removeAt);
       clearFileInputs([cameraInput, pickInput]);
+      if (onChange) onChange();
+    }
+
+    function removeAt(idx) {
+      var cur = getList().slice();
+      if (idx < 0 || idx >= cur.length) return;
+      cur.splice(idx, 1);
+      setList(cur);
+      renderFileChips(getList(), chipsId, dropId, removeAt);
       if (onChange) onChange();
     }
 

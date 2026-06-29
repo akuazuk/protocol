@@ -25,7 +25,7 @@ from .patient_plain_language import explain_terms_for_patient
 from .patient_protocol_filter import compute_protocol_match_confidence
 from .patient_question_builder import build_useful_patient_questions
 from .patient_questions import DEFAULT_CALM_TONE
-from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text
+from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text, scrub_forbidden_from_patient_report
 
 _B2B_FORBIDDEN_KEYS = frozenset(
     {
@@ -371,6 +371,7 @@ def enrich_patient_report_v2(
 
     report["blocks"] = blocks
     _consolidate_protocol_display(report)
+    report = scrub_forbidden_from_patient_report(report)
     report["disclaimer_ru"] = (
         "Protocol помогает понять документ и подготовить вопросы для разговора с врачом. "
         "Не ставит диагноз, не отменяет лечение и не оценивает врача. "

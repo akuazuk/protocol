@@ -150,3 +150,30 @@ def test_filter_consult_protocol_matches_routing():
     assert adult_path in allowed[0]["source_path"]
     assert len(rejected) == 1
     assert rejected[0]["applicability"] == "not_applicable"
+
+
+def test_adult_inferred_from_age_years_rejects_pediatric_protocol():
+    ped_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_заболеваниями_нервной_системы_детс_нас_пост_МЗ_12.04.2023_53.pdf"
+    )
+    adult_path = (
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/"
+        "КП_Диагностика_лечение_пациентов_с_заболеваниями_нервной_системы_взр_нас_пост_МЗ_2018_8.pdf"
+    )
+    rules = {
+        "matched_protocols": [
+            {"source_path": ped_path, "match_score": 85, "title": "дети"},
+            {"source_path": adult_path, "match_score": 70, "title": "взрослые"},
+        ]
+    }
+    paths, _meta = consult_target_protocol_paths(
+        merged_icd=["G43.9"],
+        diag_icd=["G43.9"],
+        clinical_rules=rules,
+        specialty_slugs=["nevrologiya-neyrokhirurgiya"],
+        consult_text="Краткое КЗ без маркера взрослого.",
+        consult_facts={"patient_context": {"age_years": 42}},
+    )
+    assert ped_path not in paths
+    assert adult_path in paths

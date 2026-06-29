@@ -115,6 +115,16 @@ def _consult_audience_from_context(
     aud = str(patient.get("adult_or_child") or "").strip().lower()
     if aud in ("adult", "child"):
         return aud
+    age_raw = patient.get("age_years")
+    try:
+        age = int(age_raw) if age_raw is not None and str(age_raw).strip() else None
+    except (TypeError, ValueError):
+        age = None
+    if age is not None:
+        if age >= 18:
+            return "adult"
+        if 0 < age < 18:
+            return "child"
     blob = (consult_text or "").lower()
     if any(m in blob for m in ("взросл", "взр.", "взр ", "18 лет", "старше 18")):
         return "adult"
