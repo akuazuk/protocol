@@ -173,7 +173,7 @@
 
 - `docs/methodist-workbench-tz.md`  
 - `docs/methodist-ml-priority-plan.md` — опора A (RAG)  
-- `docs/ml-backlog-when-kz-ready.md`  
+- `docs/action-plan-master.md` — ML backlog, фазы B–D  
 - `clinical_knowledge/search_analytics_public.py` — публичная аналитика  
 
 ---

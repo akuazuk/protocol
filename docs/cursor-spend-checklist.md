@@ -1,5 +1,6 @@
 # Cursor $70: как тратить с максимальным ROI (Protocol)
 
+> **Общий план работ:** [action-plan-master.md](./action-plan-master.md)  
 > **Продукт:** проверка **любого** КЗ **любой** специальности против **478** протоколов Минздрава РБ (B2B врач + B2C пациент).  
 > **Не путать:** десятки тысяч КЗ в год на рынке ≠ один batch из 30 fixtures — batch **измеряет** pipeline, chunk QA **улучшает** retrieval для всех.
 
@@ -354,6 +355,37 @@ curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | 
 Ожидаемо после заливки: `rich_chunks.jsonl` **~57k строк**, **не 0 байт**. В lazy/manifest режиме `/api/corpus-stats` может показывать `corpus_chunks: 0` - **проверять файл на диске по SSH**, не только API.
 
 **Сегодняшние** изменения на диске: `find /var/data -type f -newermt 'YYYY-MM-DD'`.
+
+### Telegram: когда push / redeploy (не гадать)
+
+В `.env`: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`. Auto-push после Wave A **выключен** (`CHECKLIST_AUTO_GIT_PUSH=0`).
+
+**Chat ID:** напишите боту `/start`, затем:
+
+```bash
+python3 scripts/telegram_get_chat_id.py   # скопировать TELEGRAM_CHAT_ID=… в .env
+```
+
+Не оставляйте `TELEGRAM_CHAT_ID=...` - уведомления молча не работают.
+
+```bash
+# разовая проверка + одно сообщение при смене фазы
+bash scripts/checklist_push_watchdog.sh once
+
+# фон: статус + вопросы с кнопками (нужен control loop)
+nohup bash scripts/telegram_control_loop.sh >> data/ml/reports/telegram_control.log 2>&1 &
+nohup bash scripts/checklist_push_watchdog.sh loop >> data/ml/reports/checklist_notify.log 2>&1 &
+```
+
+**Ответы в Telegram:** кнопки **Да / Нет** или текст `да`/`нет`/`push`/`skip`. Команды: `/status`, `/help`.
+
+| Вопрос | Да | Нет |
+|--------|----|-----|
+| git push | `git push origin HEAD` | пропуск |
+| prod ready | L2 smoke 5 кейсов | пропуск |
+| embed идёт | ок | остановить embed |
+
+Фазы: `wait_embed` → не трогать corpus; `git_push_pending` → push; `redeploy_pending` → redeploy Render; `prod_ready` → smoke.
 
 ---
 

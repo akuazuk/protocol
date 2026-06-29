@@ -1,7 +1,7 @@
 # Аудит проекта Protocol - модуль проверки КЗ (KZ Compliance Checker)
 
-> Обновлено: 2026-06-24 (синхронизация с prod UI и docs).  
-> Версия сборки: `2026-06-24-r51-footer-methodist-docs-logo`.  
+> **Snapshot** (2026-06-24). Актуальный порядок работ: [action-plan-master.md](./action-plan-master.md).  
+> Версия сборки в этом файле может отставать от prod - сверяйте с `BUILD_VERSION` в `rag_server.py`.  
 > См. также: `docs/project-docs-maintenance.md` - чек-лист актуализации документов.
 
 ---
