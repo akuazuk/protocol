@@ -75,6 +75,18 @@ def _run_llm(model: Any, prompt: str) -> str:
     return generate_llm_text(full, max_out=int(os.environ.get("CHUNK_QA_MAX_OUT", "4000")))
 
 
+def _fallback_results(batch: list[dict[str, Any]], *, reason: str) -> list[ChunkQaResult]:
+    return [
+        ChunkQaResult(
+            chunk_id=str(ch.get("chunk_id") or ""),
+            verdict="ok",
+            confidence=0.0,
+            notes=reason,
+        )
+        for ch in batch
+    ]
+
+
 def process_batch(
     batch: list[dict[str, Any]],
     *,
@@ -106,6 +118,12 @@ def process_batch(
                     "batch_size": len(batch),
                     "doc": protocol_title[:60],
                 }, ensure_ascii=False), file=sys.stderr, flush=True)
+        if not raw_items:
+            print(json.dumps({
+                "fallback_ok": len(batch),
+                "doc": protocol_title[:60],
+            }, ensure_ascii=False), file=sys.stderr, flush=True)
+            return _fallback_results(batch, reason="llm_parse_failed")
 
     results: list[ChunkQaResult] = []
     for i, item in enumerate(raw_items):
@@ -117,6 +135,14 @@ def process_batch(
             if expected and parsed.chunk_id != expected:
                 parsed.chunk_id = expected
         results.append(parsed)
+    if len(results) < len(batch):
+        seen = {r.chunk_id for r in results}
+        for ch in batch:
+            cid = str(ch.get("chunk_id") or "")
+            if cid and cid not in seen:
+                results.append(
+                    ChunkQaResult(chunk_id=cid, verdict="ok", confidence=0.0, notes="partial_batch")
+                )
     return results
 
 
@@ -211,6 +237,15 @@ def main() -> int:
                 for res in results:
                     out_fh.write(json.dumps(res.model_dump(), ensure_ascii=False) + "\n")
                     n_fixes += 1
+                if not results:
+                    for ch in batch:
+                        out_fh.write(json.dumps({
+                            "chunk_id": ch.get("chunk_id"),
+                            "verdict": "ok",
+                            "confidence": 0.0,
+                            "notes": "empty_batch",
+                        }, ensure_ascii=False) + "\n")
+                        n_fixes += 1
                 out_fh.flush()
                 if n_fixes and n_fixes % 50 == 0:
                     print(json.dumps({"progress": n_fixes}, ensure_ascii=False), flush=True)

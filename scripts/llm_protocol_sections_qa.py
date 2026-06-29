@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from clinical_knowledge.chunk_qa_llm import generate_llm_text
 from clinical_knowledge.chunk_qa_prompt import SYSTEM_PROTOCOL_SECTIONS, build_protocol_sections_prompt
 from clinical_knowledge.chunk_qa_schema import parse_protocol_sections_result
 
@@ -62,13 +63,6 @@ def main() -> int:
                 continue
             by_doc[did].append(row)
 
-    try:
-        from rag_server import _extract_gemini_text, generate_gemini_consult_review_synthesize, get_gemini
-        model = get_gemini()
-    except Exception as e:
-        print(f"SKIP: LLM недоступен ({e})", file=sys.stderr)
-        return 0
-
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     n = 0
     for did, chunks in sorted(by_doc.items()):
@@ -91,16 +85,24 @@ def main() -> int:
         key = hashlib.sha256(prompt.encode()).hexdigest()[:16]
         out_path = OUT_DIR / f"{did}.json"
         if out_path.is_file():
-            n += 1
-            continue
+            try:
+                prev = json.loads(out_path.read_text(encoding="utf-8"))
+                if prev.get("sections") and not prev.get("error"):
+                    n += 1
+                    continue
+            except json.JSONDecodeError:
+                pass
         try:
-            resp = generate_gemini_consult_review_synthesize(
-                model, SYSTEM_PROTOCOL_SECTIONS + "\n\n" + prompt, max_out=2000,
+            raw_text = generate_llm_text(
+                SYSTEM_PROTOCOL_SECTIONS + "\n\n" + prompt,
+                max_out=int(os.environ.get("CHUNK_QA_MAX_OUT", "4000")),
             )
-            raw = _parse_json_obj(_extract_gemini_text(resp))
+            raw = _parse_json_obj(raw_text)
             parsed = parse_protocol_sections_result(raw or {})
             if parsed:
                 out_path.write_text(json.dumps(parsed.model_dump(), ensure_ascii=False, indent=2), encoding="utf-8")
+            else:
+                out_path.write_text(json.dumps({"doc_id": did, "error": "parse_failed"}, ensure_ascii=False, indent=2), encoding="utf-8")
         except Exception as e:
             out_path.write_text(json.dumps({"doc_id": did, "error": str(e)}, ensure_ascii=False, indent=2), encoding="utf-8")
         n += 1

@@ -21,6 +21,7 @@ DEFAULT_OUT = ROOT / "data" / "ml" / "chunk_qa_queue_tiered.jsonl"
 DEFAULT_MANIFEST = ROOT / "data" / "ml" / "chunk_qa_queue_tiered_manifest.json"
 CLIENTS = ROOT / "clients_consult"
 FEEDBACK_DIR = ROOT / "data" / "ml" / "feedback"
+SECTION_MAP_DIR = ROOT / "data" / "ml" / "protocol_section_map"
 
 P0_ISSUES = frozenset({"preamble_leak", "icd_inflation", "type_body_but_clinical"})
 P1_CLINICAL = frozenset({
@@ -41,6 +42,23 @@ def _load_fixes(path: Path) -> dict[str, dict]:
                 out[cid] = row
         except json.JSONDecodeError:
             pass
+    return out
+
+
+def _section_mapped_doc_ids() -> set[str]:
+    if not SECTION_MAP_DIR.is_dir():
+        return set()
+    out: set[str] = set()
+    for fp in SECTION_MAP_DIR.glob("*.json"):
+        try:
+            row = json.loads(fp.read_text(encoding="utf-8"))
+            if row.get("error"):
+                continue
+            did = str(row.get("doc_id") or fp.stem)
+            if did:
+                out.add(did)
+        except (json.JSONDecodeError, OSError):
+            continue
     return out
 
 
@@ -110,18 +128,38 @@ def _should_skip(row: dict, issues: list[str], score: float, fixes: dict[str, di
     return False
 
 
-def _priority(row: dict, issues: list[str], score: float, *, kz_paths: set[str], feedback: set[str]) -> tuple[int, str]:
+def _priority(
+    row: dict,
+    issues: list[str],
+    score: float,
+    *,
+    kz_paths: set[str],
+    feedback: set[str],
+    section_mapped: set[str],
+) -> tuple[int, str]:
     sp = str(row.get("source_path") or "").replace("\\", "/")
+    doc_id = str(row.get("doc_id") or "")
     ctype = str(row.get("chunk_type") or "body").lower()
     iss = set(issues)
 
     if sp in feedback:
         return 95, "methodist_feedback"
 
+    # B2C crosscheck: diagnostics без entities на протоколах из KZ funnel
+    if (
+        sp in kz_paths
+        and ctype == "diagnostics"
+        and "empty_entities" in iss
+        and score < 0.8
+    ):
+        return 93, "b2c_crosscheck"
+
     if sp in kz_paths and (iss & P0_ISSUES or score < 0.75):
         return 92, "kz_linked_protocol"
 
     if iss & P0_ISSUES:
+        if "type_body_but_clinical" in iss and doc_id and doc_id not in section_mapped:
+            return 100, "p0_body_clinical_no_section_map"
         return 100, "p0_critical"
 
     if "truncated_list" in iss and ctype in P1_CLINICAL:
@@ -143,6 +181,7 @@ def build_tiered_queue(
     fixes: dict[str, dict],
     kz_paths: set[str],
     feedback: set[str],
+    section_mapped: set[str],
     max_total: int = 10000,
     min_per_rubric: int = 5,
 ) -> tuple[list[dict], dict]:
@@ -159,7 +198,14 @@ def build_tiered_queue(
             score = quality_score(row)
             if _should_skip(row, issues, score, fixes):
                 continue
-            pri, reason = _priority(row, issues, score, kz_paths=kz_paths, feedback=feedback)
+            pri, reason = _priority(
+                row,
+                issues,
+                score,
+                kz_paths=kz_paths,
+                feedback=feedback,
+                section_mapped=section_mapped,
+            )
             if pri <= 0:
                 continue
             item = {
@@ -199,6 +245,7 @@ def build_tiered_queue(
         "candidates_before_cap": len(candidates),
         "kz_protocol_paths_n": len(kz_paths),
         "kz_protocol_paths": sorted(kz_paths)[:30],
+        "section_map_docs_n": len(section_mapped),
         "priority_counts": dict(Counter(int(x["priority"]) for x in out)),
         "reason_counts": dict(Counter(x.get("reason") for x in out)),
         "rubric_counts": dict(Counter(x.get("rubric") for x in out)),
@@ -225,15 +272,18 @@ def main() -> int:
 
     fixes = _load_fixes(args.fixes)
     feedback = _feedback_paths()
+    section_mapped = _section_mapped_doc_ids()
     print(f"KZ protocol mapping from {args.kz_folder} ...", flush=True)
     kz_paths = _kz_protocol_paths(args.kz_folder.resolve())
     print(f"  kz-linked protocols: {len(kz_paths)}", flush=True)
+    print(f"  section_map docs: {len(section_mapped)}", flush=True)
 
     queue, manifest = build_tiered_queue(
         chunks_path,
         fixes=fixes,
         kz_paths=kz_paths,
         feedback=feedback,
+        section_mapped=section_mapped,
         max_total=args.max_total,
         min_per_rubric=args.min_per_rubric,
     )
