@@ -187,6 +187,17 @@ def _path_norm(sp: str) -> str:
     return (sp or "").replace("\\", "/").strip()
 
 
+def _order_path_boost(
+    target_paths: list[str],
+    summary_paths: list[str],
+    *,
+    summary_first: bool,
+) -> list[str]:
+    """При явном МКБ ставим summary-кандидаты вперёд (summary-first retrieval)."""
+    ordered = (summary_paths + target_paths) if summary_first else (target_paths + summary_paths)
+    return list(dict.fromkeys(_path_norm(p) for p in ordered if p))
+
+
 def _query_blob(query: str) -> str:
     return re.sub(r"\s+", " ", (query or "").lower()).strip()
 
@@ -671,11 +682,13 @@ def build_protocol_search_context(
             for p in summary_paths
             if not any(m in f"{p} {Path(p).stem}".lower().replace("_", " ") for m in wrong)
         ]
-    path_boost = list(
-        dict.fromkeys(_path_norm(p) for p in (target_paths + summary_paths) if p)
-    )
+    explicit_icd = bool(_extract_icd_from_query(query) or (icd_codes or []))
+    summary_first = bool(explicit_icd and summary_paths)
+    path_boost = _order_path_boost(target_paths, summary_paths, summary_first=summary_first)
     path_allowlist: list[str] | None = None
     search_meta = meta
+    if isinstance(search_meta, dict):
+        search_meta["summary_first"] = summary_first
     audience = search_meta.get("audience")
     if search_meta.get("strict") and target_paths:
         allow_candidates: list[str] = []

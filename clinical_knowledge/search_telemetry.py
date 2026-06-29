@@ -101,6 +101,91 @@ def log_protocol_search_from_payload(
     )
 
 
+_VALID_SEARCH_VERDICTS = ("fit", "miss")
+
+
+def _basename(path: str | None) -> str:
+    p = (path or "").replace("\\", "/").strip()
+    return p.rsplit("/", 1)[-1] if p else ""
+
+
+def log_search_feedback(
+    *,
+    query: str,
+    verdict: str,
+    rejected_path: str | None = None,
+    chosen_path: str | None = None,
+    top_paths: list[str] | None = None,
+    icd_codes: list[str] | None = None,
+    source: str = "doctor_search",
+) -> str:
+    """Лёгкий обезличенный фидбэк врача по подбору протокола (без текста запроса)."""
+    v = (verdict or "").strip().lower()
+    if v not in _VALID_SEARCH_VERDICTS:
+        raise ValueError("verdict должен быть fit или miss")
+    q = (query or "").strip()
+    from clinical_knowledge.feedback_store import append_feedback_event
+
+    event: dict[str, Any] = {
+        "event_type": "search_feedback",
+        "verdict": v,
+        "source": (source or "doctor_search").strip()[:40],
+        "query_len": len(q),
+        "query_hash": hashlib.sha256(q.encode("utf-8")).hexdigest()[:16] if q else "",
+        "rejected_basename": _basename(rejected_path),
+        "chosen_basename": _basename(chosen_path),
+        "top_basenames": [_basename(p) for p in (top_paths or [])[:5] if p],
+        "has_icd": bool(icd_codes),
+    }
+    return append_feedback_event(event)
+
+
+def iter_search_feedback_events(feedback_dir: Path | None = None) -> list[dict[str, Any]]:
+    from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
+    from clinical_knowledge.methodist_stats import iter_feedback_events
+
+    fb = feedback_dir or resolve_feedback_dir()
+    return [e for e in iter_feedback_events(fb) if e.get("event_type") == "search_feedback"]
+
+
+def aggregate_search_feedback(events: list[dict[str, Any]]) -> dict[str, Any]:
+    total = len(events)
+    fit = sum(1 for e in events if str(e.get("verdict") or "").lower() == "fit")
+    miss = total - fit
+    miss_basenames: Counter[str] = Counter()
+    recent: list[dict[str, Any]] = []
+    for ev in events:
+        if str(ev.get("verdict") or "").lower() == "miss":
+            bn = str(ev.get("rejected_basename") or "")
+            if bn:
+                miss_basenames[bn] += 1
+        recent.append(
+            {
+                "ts": ev.get("ts"),
+                "verdict": ev.get("verdict"),
+                "rejected_basename": ev.get("rejected_basename") or "",
+                "chosen_basename": ev.get("chosen_basename") or "",
+                "has_icd": bool(ev.get("has_icd")),
+            }
+        )
+    recent = sorted(recent, key=lambda r: str(r.get("ts") or ""), reverse=True)[:50]
+    return {
+        "total": total,
+        "fit": fit,
+        "miss": miss,
+        "fit_pct": round(100.0 * fit / total, 1) if total else None,
+        "top_miss_protocols": [
+            {"basename": b, "count": c} for b, c in miss_basenames.most_common(10)
+        ],
+        "recent": recent,
+        "readiness": {
+            "have": total,
+            "target_golden": 20,
+            "target_lora": 50,
+        },
+    }
+
+
 def iter_protocol_search_events(feedback_dir: Path | None = None) -> list[dict[str, Any]]:
     from clinical_knowledge.feedback_store import feedback_dir as resolve_feedback_dir
     from clinical_knowledge.methodist_stats import iter_feedback_events
@@ -154,7 +239,7 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
 
     conf_buckets = [
         {"label": "≥85%", "count": sum(1 for c in confs if c >= 85)},
-        {"label": "70–84%", "count": sum(1 for c in confs if 70 <= c < 85)},
+        {"label": "70-84%", "count": sum(1 for c in confs if 70 <= c < 85)},
         {"label": "<70%", "count": sum(1 for c in confs if c < 70)},
     ]
 
@@ -178,7 +263,7 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
             {"label": "с фильтром рубрик", "count": with_rubric},
             {"label": "без фильтра", "count": max(0, total - with_rubric)},
         ]
-        pb = {"0": 0, "1–2": 0, "3–5": 0, "6+": 0}
+        pb = {"0": 0, "1-2": 0, "3-5": 0, "6+": 0}
         for ev in events:
             np = ev.get("n_protocols")
             if not isinstance(np, int):
@@ -186,9 +271,9 @@ def aggregate_protocol_search(events: list[dict[str, Any]]) -> dict[str, Any]:
             if np <= 0:
                 pb["0"] += 1
             elif np <= 2:
-                pb["1–2"] += 1
+                pb["1-2"] += 1
             elif np <= 5:
-                pb["3–5"] += 1
+                pb["3-5"] += 1
             else:
                 pb["6+"] += 1
         protocols_buckets = [{"label": k, "count": v} for k, v in pb.items() if v > 0]

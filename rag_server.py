@@ -7475,6 +7475,7 @@ _RATE_LIMITS: dict[str, int] = {
     "/api/ml/feedback": env_int("RATE_LIMIT_ML_FEEDBACK_PER_MIN", 30),
     "/api/ml/feedback/export": env_int("RATE_LIMIT_ML_FEEDBACK_EXPORT_PER_MIN", 10),
     "/api/protocol-practical": env_int("RATE_LIMIT_PRACTICAL_PER_MIN", 5),
+    "/api/search/feedback": env_int("RATE_LIMIT_SEARCH_FEEDBACK_PER_MIN", 20),
     "/api/search/run": env_int("RATE_LIMIT_SEARCH_RUN_PER_MIN", 15),
     "/api/protocol-detail": env_int("RATE_LIMIT_DETAIL_PER_MIN", 30),
     "/api/consultation-template": env_int("RATE_LIMIT_TEMPLATE_PER_MIN", 20),
@@ -8173,7 +8174,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-29-r5-b2c-patient-value-pack"
+BUILD_VERSION = "2026-06-29-r6-doctor-search-value"
 
 
 def _app_version() -> str:
@@ -10544,6 +10545,41 @@ def api_ml_feedback(request: "Request", body: dict) -> dict:
         return {"ok": True, "event_id": event_id}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@app.post("/api/search/feedback")
+def api_search_feedback(request: "Request", body: dict) -> dict:
+    """Лёгкий фидбэк врача по подбору протокола (подошёл / не тот). Без методист-авторизации."""
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=400, detail="Ожидается JSON-объект")
+    from clinical_knowledge.search_telemetry import log_search_feedback
+
+    try:
+        event_id = log_search_feedback(
+            query=str(body.get("query") or ""),
+            verdict=str(body.get("verdict") or ""),
+            rejected_path=body.get("rejected_path"),
+            chosen_path=body.get("chosen_path"),
+            top_paths=body.get("top_paths") if isinstance(body.get("top_paths"), list) else None,
+            icd_codes=body.get("icd_codes") if isinstance(body.get("icd_codes"), list) else None,
+            source=str(body.get("source") or "doctor_search"),
+        )
+        return {"ok": True, "event_id": event_id}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@app.get("/api/methodist/search-feedback")
+def api_methodist_search_feedback(request: "Request") -> dict:
+    """Очередь разметки: агрегат фидбэка врачей по подбору протоколов (methodist only)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.search_telemetry import (
+        aggregate_search_feedback,
+        iter_search_feedback_events,
+    )
+
+    events = iter_search_feedback_events()
+    return aggregate_search_feedback(events)
 
 
 @app.post("/api/consult-compliance-screen")

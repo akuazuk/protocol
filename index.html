@@ -10097,6 +10097,116 @@
       border-radius: 0 8px 8px 0;
     }
 
+    .proto-snap {
+      margin: 0 0 0.6rem;
+      padding: 0.5rem 0.6rem;
+      background: rgba(240, 249, 245, 0.85);
+      border: 1px solid rgba(125, 211, 192, 0.45);
+      border-radius: 10px;
+    }
+    .proto-snap__head {
+      margin: 0 0 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #0f766e;
+    }
+    .proto-snap__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .proto-snap__item {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: #334155;
+    }
+    .proto-snap__label {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .proto-snap__page {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #0f766e;
+      white-space: nowrap;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(15, 118, 110, 0.6);
+    }
+    .proto-snap__page:hover {
+      color: #115e59;
+    }
+    .assist-catalog-badge--warn {
+      background: #fef3c7 !important;
+      color: #92400e !important;
+      border-color: #fcd34d !important;
+    }
+    .proto-fb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0.5rem 0 0;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    .proto-fb__btn {
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #334155;
+      cursor: pointer;
+    }
+    .proto-fb__btn:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+    .proto-fb__thanks {
+      color: #0f766e;
+      font-weight: 600;
+    }
+    .btn-proto-action--kz {
+      background: #fff;
+      border: 1px solid #0f766e;
+      color: #0f766e;
+    }
+    .btn-proto-action--kz:hover {
+      background: #ecfdf5;
+    }
+    .recent-proto-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0 0 0.6rem;
+      font-size: 0.76rem;
+    }
+    .recent-proto-bar__label {
+      color: #64748b;
+      font-weight: 600;
+    }
+    .recent-proto-chip {
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #334155;
+      text-decoration: none;
+      font-size: 0.74rem;
+    }
+    .recent-proto-chip:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+
     .proto-nav-card__actions {
       display: flex;
       flex-wrap: wrap;
@@ -11706,14 +11816,14 @@
                   <span class="consult-tier-card__time">≈ 10-25 с</span>
                 </span>
                 <span class="consult-tier-card__name">Сверка с протоколом</span>
-                <span class="consult-tier-card__desc">Alignment, evidence pack и выдержки КП — без тяжёлой оценки модели</span>
+                <span class="consult-tier-card__desc">Alignment, evidence pack и выдержки КП - без тяжёлой оценки модели</span>
               </label>
             </div>
             <p class="consult-tier-hint" id="consult-tier-hint" aria-live="polite"></p>
           </div>
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать (L1)</button>
-            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack — быстрее полного RAG">Сверка L2</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack - быстрее полного RAG">Сверка L2</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -16170,6 +16280,190 @@
     return html;
   }
 
+  function structuredExcerptForData(data, path) {
+    if (!data || !path) return null;
+    var map = data.protocol_excerpts || {};
+    var ex = map[path];
+    if (ex && ex.available) return ex;
+    var nk = normalizeProtocolPath(path);
+    if (nk && map[nk] && map[nk].available) return map[nk];
+    return null;
+  }
+
+  function pdfPageHref(path, page) {
+    var href = safeResourceHref(path || "");
+    if (!page || href === "#") return href;
+    var p = parseInt(page, 10);
+    if (!p || p < 1) return href;
+    return href + "#page=" + p;
+  }
+
+  /** P0: компактная выжимка top-1 «Ключевое из протокола» из structured excerpts (без LLM). */
+  function renderProtocolKeySnapshot(data, pr, opts) {
+    opts = opts || {};
+    var ex = structuredExcerptForData(data, pr && pr.path);
+    if (!ex || !ex.sections || !ex.sections.length) return "";
+    var maxSec = opts.maxSections || 3;
+    var maxLen = opts.maxLen || 150;
+    var seen = {};
+    var rows = [];
+    var i;
+    for (i = 0; i < ex.sections.length && rows.length < maxSec; i++) {
+      var s = ex.sections[i];
+      var label = s.label || "Раздел";
+      if (seen[label]) continue;
+      var txt = truncateExcerpt(String(s.text || ""), maxLen);
+      if (!txt) continue;
+      seen[label] = 1;
+      var pageHtml = "";
+      if (s.page_start) {
+        pageHtml =
+          ' <a class="proto-snap__page" href="' +
+          pdfPageHref(pr.path, s.page_start) +
+          '" target="_blank" rel="noopener noreferrer" title="Открыть PDF на этой странице">стр. ' +
+          escapeHtml(String(s.page_start)) +
+          "</a>";
+      }
+      rows.push(
+        '<li class="proto-snap__item"><span class="proto-snap__label">' +
+          escapeHtml(label) +
+          '</span> <span class="proto-snap__text">' +
+          escapeHtml(txt) +
+          "</span>" +
+          pageHtml +
+          "</li>"
+      );
+    }
+    if (!rows.length) return "";
+    return (
+      '<div class="proto-snap"><p class="proto-snap__head">Ключевое из протокола</p><ul class="proto-snap__list">' +
+      rows.join("") +
+      "</ul></div>"
+    );
+  }
+
+  /** P0-3: «Почему в списке» с явным кодом МКБ и разделом протокола. */
+  function protocolWhyEnrichedRu(pr, data) {
+    var base = protocolMatchExplainRu(pr);
+    var bits = [];
+    var codes = (pr && pr.matched_icd_codes) || [];
+    if (codes.length) bits.push("совпал код " + codes.slice(0, 2).join(", "));
+    var ex = structuredExcerptForData(data, pr && pr.path);
+    if (ex && ex.sections && ex.sections.length) {
+      var st = ex.sections[0].section_title || ex.sections[0].label;
+      if (st && String(st).length < 60) bits.push("есть раздел «" + st + "»");
+    }
+    if (!bits.length) return base;
+    var extra = bits.join("; ");
+    if (!base) return extra;
+    if (codes.length && /код/i.test(base)) return base + " · " + (ex && ex.sections && ex.sections.length ? bits[bits.length - 1] : extra);
+    return base + " · " + extra;
+  }
+
+  /** P1-6: предупреждение о несовпадении аудитории протокола и выбранной. */
+  function audienceMismatchChip(data, path, protocolUiMeta) {
+    var want = (data && data.audience_inferred) || "";
+    if (!want) return "";
+    var m = (protocolUiMeta || {})[path] || {};
+    var hint = String(m.audience_hint || "").toLowerCase();
+    if (!hint) return "";
+    var wantChild = want === "child" || want === "pediatric";
+    var wantAdult = want === "adult";
+    var hintChild = /дет|педиатр/.test(hint);
+    var hintAdult = /взросл/.test(hint);
+    var mismatch =
+      (wantChild && hintAdult && !hintChild) || (wantAdult && hintChild && !hintAdult);
+    if (!mismatch) return "";
+    return '<span class="assist-catalog-badge assist-catalog-badge--warn" title="Аудитория протокола может не совпадать с выбранной в фильтре">проверьте аудиторию</span>';
+  }
+
+  function recordRecentProtocol(path, title) {
+    if (!path) return;
+    try {
+      var raw = localStorage.getItem("recent_protocols");
+      var arr = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(arr)) arr = [];
+      arr = arr.filter(function (r) {
+        return r && r.path !== path;
+      });
+      arr.unshift({ path: path, title: title || "", ts: Date.now() });
+      arr = arr.slice(0, 8);
+      localStorage.setItem("recent_protocols", JSON.stringify(arr));
+    } catch (e) {}
+  }
+
+  function renderRecentProtocolsBar() {
+    var arr = [];
+    try {
+      var raw = localStorage.getItem("recent_protocols");
+      arr = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      arr = [];
+    }
+    if (!Array.isArray(arr) || !arr.length) return "";
+    var chips = arr
+      .slice(0, 6)
+      .map(function (r) {
+        var t = formatProtocolDisplayTitle(r.path || "", r.title || "");
+        return (
+          '<a class="recent-proto-chip" href="' +
+          safeResourceHref(r.path || "") +
+          '" target="_blank" rel="noopener noreferrer" title="' +
+          escapeHtmlAttr(t) +
+          '">' +
+          escapeHtml(truncateExcerpt(t, 42)) +
+          "</a>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="recent-proto-bar"><span class="recent-proto-bar__label">Недавно открытые:</span>' +
+      chips +
+      "</div>"
+    );
+  }
+
+  function sendSearchFeedback(verdict, path, data) {
+    try {
+      var llm = (data && data.llm_json) || {};
+      var protos = llm.protocols || [];
+      var top = protos
+        .slice(0, 5)
+        .map(function (p) {
+          return p && p.path;
+        })
+        .filter(Boolean);
+      var bodyObj = {
+        query: (data && data.query) || lastAssistFullQuery || "",
+        verdict: verdict,
+        top_paths: top,
+        icd_codes: icdCodesFromAssistData(data || {}),
+      };
+      if (verdict === "fit") bodyObj.chosen_path = path;
+      else bodyObj.rejected_path = path;
+      return fetch(apiBaseUrl() + "/api/search/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bodyObj),
+      });
+    } catch (e) {
+      return Promise.resolve();
+    }
+  }
+
+  function goToConsultReviewFromProtocol(title) {
+    try {
+      sessionStorage.setItem("kz_prefill_protocol", title || "");
+    } catch (e) {}
+    var tab = document.getElementById("tab-consult-review");
+    if (tab) {
+      tab.click();
+      try {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e2) {}
+    }
+  }
+
   function renderProtocolNavCard(pr, data, opts) {
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
@@ -16179,7 +16473,7 @@
     var href = safeResourceHref(pr.path || "");
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var methodist = !!window.__methodistMode;
-    var explain = protocolMatchExplainRu(pr);
+    var explain = protocolWhyEnrichedRu(pr, data);
     var html =
       '<article class="proto-nav-card' +
       (isTop ? " proto-nav-card--recommended" : "") +
@@ -16202,6 +16496,7 @@
       "</a></h5>";
     html += '<div class="proto-nav-card__badges">';
     html += catalogBadgesHtml(pr.path, protocolUiMeta);
+    html += audienceMismatchChip(data, pr.path, protocolUiMeta);
     html += renderMatchTierBadgeHtml(pr, { methodist: methodist });
     html += "</div></div></div>";
     if (explain) {
@@ -16210,25 +16505,64 @@
         escapeHtml(explain) +
         "</p>";
     }
-    var cit = excerptForProtocol(pr, excerptByPath);
-    if (cit && methodist) {
-      html +=
-        '<p class="proto-nav-card__excerpt">' +
-        escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
-        "</p>";
+    var snapshot = renderProtocolKeySnapshot(data, pr, {
+      maxSections: isTop ? 4 : 2,
+      maxLen: isTop ? 170 : 120,
+    });
+    if (snapshot) {
+      html += snapshot;
+    } else {
+      var cit = excerptForProtocol(pr, excerptByPath);
+      if (cit && methodist) {
+        html +=
+          '<p class="proto-nav-card__excerpt">' +
+          escapeHtml(truncateExcerpt(cit, isTop ? 320 : 240)) +
+          "</p>";
+      }
     }
+    var firstPage = 0;
+    var snapEx = structuredExcerptForData(data, pr.path);
+    if (snapEx && snapEx.sections && snapEx.sections.length && snapEx.sections[0].page_start) {
+      firstPage = parseInt(snapEx.sections[0].page_start, 10) || 0;
+    }
+    var pdfHref = firstPage ? pdfPageHref(pr.path, firstPage) : href;
     html += '<div class="proto-nav-card__actions">';
     html +=
       '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
-      '" title="Разделы протокола: диагностика, лечение">' +
-      (isTop ? "Разделы протокола" : "Разделы протокола") +
-      "</button>";
+      '" data-proto-title="' +
+      escapeHtmlAttr(pr.title || "") +
+      '" title="Разделы протокола: диагностика, лечение">Разделы протокола</button>';
     html +=
-      '<a class="btn-proto-action btn-proto-action--link" href="' +
-      href +
-      '" target="_blank" rel="noopener noreferrer">PDF</a>';
+      '<a class="btn-proto-action btn-proto-action--link btn-proto-pdf" href="' +
+      pdfHref +
+      '" target="_blank" rel="noopener noreferrer" data-proto-path="' +
+      escapeHtmlAttr(pr.path || "") +
+      '" data-proto-title="' +
+      escapeHtmlAttr(pr.title || "") +
+      '">PDF' +
+      (firstPage ? " · стр. " + String(firstPage) : "") +
+      "</a>";
+    if (isTop && !methodist) {
+      html +=
+        '<button type="button" class="btn-proto-action btn-proto-action--kz btn-kz-bridge" data-proto-title="' +
+        escapeHtmlAttr(title) +
+        '" title="Проверить своё заключение на соответствие этому протоколу">Проверить своё КЗ</button>';
+    }
     html += "</div>";
+    if (isTop) {
+      html +=
+        '<div class="proto-fb" data-proto-path="' +
+        escapeHtmlAttr(pr.path || "") +
+        '"><span class="proto-fb__q">Протокол подошёл?</span>' +
+        '<button type="button" class="proto-fb__btn btn-proto-fb" data-verdict="fit" data-proto-path="' +
+        escapeHtmlAttr(pr.path || "") +
+        '" title="Да, релевантный протокол">Да</button>' +
+        '<button type="button" class="proto-fb__btn btn-proto-fb" data-verdict="miss" data-proto-path="' +
+        escapeHtmlAttr(pr.path || "") +
+        '" title="Нет, не тот протокол">Не тот</button>' +
+        '<span class="proto-fb__thanks" hidden>Спасибо, учтём</span></div>';
+    }
     if (isTop) {
       html += renderKzSopHintPanel(title);
     }
@@ -16252,6 +16586,7 @@
     var totalMore = data && data.protocols_total != null ? Number(data.protocols_total) : protos.length;
     var hiddenMore = Math.max(0, totalMore - high.length - (low.length ? Math.min(low.length, 2) : 0));
     var html = '<div class="proto-nav-hub" role="region" aria-label="Клинические протоколы">';
+    html += renderRecentProtocolsBar();
     html +=
       '<div class="proto-nav-top-cta" role="note">' +
       '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. ' +
@@ -16377,6 +16712,47 @@
           applyProtocolNavBadge(pr.path, null);
         });
     });
+    bindDoctorSearchExtras(data);
+  }
+
+  /** P1-7/P2-8/P2-9: мост в проверку КЗ, фидбэк врача, запоминание открытых протоколов. */
+  function bindDoctorSearchExtras(data) {
+    document.querySelectorAll(".btn-kz-bridge").forEach(function (btn) {
+      if (btn.getAttribute("data-wired-kz")) return;
+      btn.setAttribute("data-wired-kz", "1");
+      btn.addEventListener("click", function () {
+        goToConsultReviewFromProtocol(btn.getAttribute("data-proto-title") || "");
+      });
+    });
+    document.querySelectorAll(".btn-proto-fb").forEach(function (btn) {
+      if (btn.getAttribute("data-wired-fb")) return;
+      btn.setAttribute("data-wired-fb", "1");
+      btn.addEventListener("click", function () {
+        var verdict = btn.getAttribute("data-verdict") || "fit";
+        var path = btn.getAttribute("data-proto-path") || "";
+        var wrap = btn.closest(".proto-fb");
+        sendSearchFeedback(verdict, path, data || window.__lastAssistData || {});
+        if (wrap) {
+          wrap.querySelectorAll(".btn-proto-fb, .proto-fb__q").forEach(function (el) {
+            el.setAttribute("hidden", "hidden");
+          });
+          var thanks = wrap.querySelector(".proto-fb__thanks");
+          if (thanks) thanks.removeAttribute("hidden");
+        }
+      });
+    });
+    document
+      .querySelectorAll(".btn-proto-pick[data-proto-path], .btn-proto-pdf[data-proto-path]")
+      .forEach(function (btn) {
+        if (btn.getAttribute("data-wired-recent")) return;
+        btn.setAttribute("data-wired-recent", "1");
+        btn.addEventListener("click", function () {
+          recordRecentProtocol(
+            btn.getAttribute("data-proto-path") || "",
+            btn.getAttribute("data-proto-title") || ""
+          );
+        });
+      });
   }
 
   function renderProtoLi(pr, ragMap, opts) {
@@ -19387,6 +19763,31 @@
         html += "</ul></div></div>";
       }
 
+      if (j.differential && j.differential.length && isDoctorSearchUi()) {
+        html +=
+          '<details class="assist-collapsible assist-diff-doctor"><summary>Похожие состояния для дифдиагностики <span style="font-weight:500;color:var(--muted);font-size:0.85em">(' +
+          String(Math.min(5, j.differential.length)) +
+          ")</span></summary>";
+        html +=
+          '<p class="assist-diff-lead" style="margin:0.4rem 0 0.5rem">Не диагноз - варианты для сверки. Кнопка подставит гипотезу в новый поиск протокола.</p><ul class="assist-diff-list">';
+        var ddi;
+        var ddItems = j.differential.slice(0, 5);
+        for (ddi = 0; ddi < ddItems.length; ddi++) {
+          var ddLine = ddItems[ddi];
+          html +=
+            '<li class="assist-diff-card"><span class="assist-diff-rank' +
+            (ddi === 0 ? " assist-diff-rank--top" : "") +
+            '">' +
+            String(ddi + 1) +
+            '</span><span class="assist-diff-text">' +
+            escapeHtml(ddLine) +
+            '</span><button type="button" class="btn-diff-search" data-q="' +
+            encodeURIComponent(String(ddLine)) +
+            '">Искать протокол</button></li>';
+        }
+        html += "</ul></details>";
+      }
+
       if (
         !uiCompact &&
         j.questions_for_patient &&
@@ -20829,10 +21230,10 @@
         (stats.review_count != null ? stats.review_count : 0) +
         '</strong><span>проверок B2C</span></div>' +
         '<div class="analytics-kpi"><strong>' +
-        (stats.avg_patient_clarity != null ? stats.avg_patient_clarity + "%" : "—") +
+        (stats.avg_patient_clarity != null ? stats.avg_patient_clarity + "%" : " - ") +
         '</strong><span>средняя понятность</span></div>' +
         '<div class="analytics-kpi"><strong>' +
-        (llm.health_score != null ? llm.health_score + "/5" : "—") +
+        (llm.health_score != null ? llm.health_score + "/5" : " - ") +
         '</strong><span>health score</span></div>' +
         '<div class="analytics-kpi"><strong>' +
         flagCount +
@@ -24734,19 +25135,19 @@
     var ragFragments = manifestMode
       ? corpus.manifest_paths != null
         ? corpus.manifest_paths
-        : " — "
+        : " - "
       : corpus.chunks_loaded != null
         ? corpus.chunks_loaded
-        : " — ";
+        : " - ";
     var ragFragmentsLabel = manifestMode ? "PDF в manifest (lazy)" : "фрагментов RAG";
     el.innerHTML =
-      analyticsKpiCell(corpus.protocols_in_index || " — ", "PDF в каталоге", true) +
-      analyticsKpiCell(postMz != null ? postMz : " — ", "постов МЗ") +
-      analyticsKpiCell(corpus.rubrics_in_index || " — ", "рубрик") +
+      analyticsKpiCell(corpus.protocols_in_index || " - ", "PDF в каталоге", true) +
+      analyticsKpiCell(postMz != null ? postMz : " - ", "постов МЗ") +
+      analyticsKpiCell(corpus.rubrics_in_index || " - ", "рубрик") +
       analyticsKpiCell(ragFragments, ragFragmentsLabel, true) +
       analyticsKpiCell(d.rag_ready ? "да" : "нет", "RAG готов") +
       analyticsKpiCell(
-        corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : " — ",
+        corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : " - ",
         "обновление index.csv"
       );
   }
@@ -26879,7 +27280,7 @@
     for (var i = 0; i < limit; i++) {
       var d = missing[i];
       var ref = refs[i] || {};
-      var label = escapeHtml(String(d.text || ref.gap_text || "").replace(/^[—\-–\s]+/, ""));
+      var label = escapeHtml(String(d.text || ref.gap_text || "").replace(/^[ - \--\s]+/, ""));
       html.push('<div class="consult-crit-gap-item">');
       html.push('<div class="consult-crit-gap-item__label">' + label + "</div>");
       if (d.kz_snippet) {
@@ -26992,7 +27393,7 @@
     if (gaps.length) {
       parts.push('<ul class="consult-crit-detail consult-crit-detail--gap">');
       gaps.forEach(function (line) {
-        parts.push("<li>" + escapeHtml(String(line).replace(/^[—\-–\s]+/, "")) + "</li>");
+        parts.push("<li>" + escapeHtml(String(line).replace(/^[ - \--\s]+/, "")) + "</li>");
       });
       parts.push("</ul>");
     }
@@ -27027,7 +27428,7 @@
   function resolveEvidenceProtocolTitle(path, data, item) {
     if (item && item.protocol_title) return String(item.protocol_title);
     var p = String(path || "").trim();
-    if (!p) return "—";
+    if (!p) return " - ";
     var meta = (data && data.protocol_ui_meta && data.protocol_ui_meta[p]) || {};
     var matches =
       (data && data.structured_analysis && data.structured_analysis.matches) || [];
@@ -27072,7 +27473,7 @@
     if (wrap) wrap.hidden = !gaps || !gaps.length;
     if (!gaps || !gaps.length) return;
     gaps.forEach(function (g) {
-      var block = g.name_ru || EVIDENCE_BLOCK_LABELS[g.block_id] || g.block_id || "—";
+      var block = g.name_ru || EVIDENCE_BLOCK_LABELS[g.block_id] || g.block_id || " - ";
       var txt = String(g.gap_ru || "").trim();
       if (!txt && !block) return;
       var sev = consultBlockGapsSeverity(g);
@@ -27086,7 +27487,7 @@
         escapeHtml(block) +
         "</span></td>" +
         '<td class="consult-block-gaps-text">' +
-        escapeHtml(txt || "—") +
+        escapeHtml(txt || " - ") +
         "</td>" +
         '<td><span class="consult-block-gaps-pill ' +
         sev.pillClass +
@@ -27582,10 +27983,10 @@
 
   var CONSULT_TIER_HINTS = {
     L0: "L0: быстрая проверка готовности к подписи - без подбора протоколов и без оценки модели.",
-    L1: "L1: структура, правила и карточки согласования — оптимально для повседневной работы.",
-    L2: "L2: сверка КЗ с протоколом, alignment и evidence pack — без тяжёлой оценки модели (~10-25 с).",
+    L1: "L1: структура, правила и карточки согласования - оптимально для повседневной работы.",
+    L2: "L2: сверка КЗ с протоколом, alignment и evidence pack - без тяжёлой оценки модели (~10-25 с).",
     L2_PLUS: "L2+: к L2 добавлено пояснение модели для методиста (ещё ~5-10 с).",
-    L2_RENDER: "L2 на Render: сверка с протоколом и evidence pack. Пояснение модели — по кнопке L2+.",
+    L2_RENDER: "L2 на Render: сверка с протоколом и evidence pack. Пояснение модели - по кнопке L2+.",
   };
 
   function initConsultTierCaps() {
@@ -27608,7 +28009,7 @@
           var timeEl = card && card.querySelector(".consult-tier-card__time");
           if (desc) {
             desc.textContent =
-              "Сверка с протоколом, alignment и evidence pack. Пояснение модели — кнопка L2+.";
+              "Сверка с протоколом, alignment и evidence pack. Пояснение модели - кнопка L2+.";
           }
           if (timeEl) timeEl.textContent = "≈ 10-25 с";
         } else if (l2input && h.consult_render_l2_skip_llm) {
@@ -28292,6 +28693,18 @@
     window.addEventListener("hashchange", applyMainTabFromHash);
     applyMainTabFromHash();
 
+    window.addEventListener("keydown", function (e) {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      var ae = document.activeElement;
+      if (ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.isContentEditable))
+        return;
+      var qEl = document.getElementById("q");
+      if (qEl && qEl.offsetParent !== null) {
+        e.preventDefault();
+        qEl.focus();
+      }
+    });
+
     var CONSULT_FILE_EXTENSIONS = [
       ".pdf", ".txt", ".text", ".md", ".markdown", ".docx", ".rtf", ".odt",
       ".html", ".htm", ".csv", ".json", ".xml", ".log",
@@ -28443,7 +28856,7 @@
       btnL2Narrative.addEventListener("click", function () {
         var data = window.__consultReviewLastPayload;
         if (!data || !data.evidence_pack) {
-          alert("Сначала выполните L2 — нужен evidence pack.");
+          alert("Сначала выполните L2 - нужен evidence pack.");
           return;
         }
         var baseEl = document.getElementById("rag-base");
