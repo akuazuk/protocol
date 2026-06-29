@@ -235,9 +235,20 @@
     for (var i = 0; i < list.length; i++) {
       var span = document.createElement("span");
       span.className = "file-chip";
+      var f = list[i];
+      if (f && f.type && f.type.indexOf("image/") === 0 && window.URL && URL.createObjectURL) {
+        var thumb = document.createElement("img");
+        thumb.className = "file-chip__thumb";
+        thumb.alt = "";
+        try {
+          thumb.src = URL.createObjectURL(f);
+          thumb.onload = function () { try { URL.revokeObjectURL(this.src); } catch (e) {} };
+        } catch (e) {}
+        span.appendChild(thumb);
+      }
       var name = document.createElement("span");
       name.className = "file-chip__name";
-      name.textContent = list[i].name;
+      name.textContent = f.name;
       span.appendChild(name);
       if (onRemove) {
         var btn = document.createElement("button");
@@ -882,30 +893,126 @@
   }
 
   function renderPlainTerms(report) {
-    var ul = document.getElementById("plain-terms-list");
+    var box = document.getElementById("plain-terms-list");
     var wrap = document.getElementById("plain-terms-wrap");
-    if (!ul || !wrap) return;
-    ul.innerHTML = "";
+    if (!box || !wrap) return;
+    box.innerHTML = "";
     var terms = report.plain_terms || [];
     if (!terms.length) {
-      wrap.hidden = true;
+      wrap.classList.add("hidden");
       return;
     }
-    wrap.hidden = false;
-    terms.forEach(function (t) {
-      var li = document.createElement("li");
-      li.innerHTML = "<strong>" + escapeHtml(t.term || "") + "</strong> - " + escapeHtml(t.explanation_ru || "");
-      ul.appendChild(li);
+    wrap.classList.remove("hidden");
+    terms.forEach(function (t, idx) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "term-chip";
+      chip.setAttribute("aria-expanded", "false");
+      chip.id = "term-chip-" + idx;
+      chip.textContent = t.term || "";
+      var expl = document.createElement("div");
+      expl.className = "term-explanation hidden";
+      expl.textContent = t.explanation_ru || "";
+      chip.addEventListener("click", function () {
+        var open = chip.getAttribute("aria-expanded") === "true";
+        chip.setAttribute("aria-expanded", open ? "false" : "true");
+        expl.classList.toggle("hidden", open);
+        if (!open) track("term_expanded", { term: t.term });
+      });
+      box.appendChild(chip);
+      box.appendChild(expl);
     });
   }
 
+  function splitSentences(text) {
+    var str = String(text || "");
+    var out = [];
+    var buf = "";
+    for (var i = 0; i < str.length; i++) {
+      buf += str[i];
+      if (/[.!?]/.test(str[i]) && (i + 1 >= str.length || str[i + 1] === " ")) {
+        out.push(buf.trim());
+        buf = "";
+      }
+    }
+    if (buf.trim()) out.push(buf.trim());
+    return out.filter(Boolean);
+  }
+
   function renderRedFlags(report) {
-    var el = document.getElementById("red-flags-wrap");
+    var wrap = document.getElementById("red-flags-wrap");
+    var body = document.getElementById("red-flags-body");
+    if (!wrap || !body) return;
+    var text = report.red_flags_ru || "";
+    if (!text) { wrap.classList.add("hidden"); return; }
+    var sentences = splitSentences(text);
+    var disclaimer = "";
+    if (sentences.length > 1 && /справочн|не диагноз/i.test(sentences[sentences.length - 1])) {
+      disclaimer = sentences.pop();
+    }
+    var html = "";
+    if (sentences.length) {
+      html += "<ul>" + sentences.map(function (s) { return "<li>" + escapeHtml(s) + "</li>"; }).join("") + "</ul>";
+    } else {
+      html += "<p>" + escapeHtml(text) + "</p>";
+    }
+    if (disclaimer) {
+      html += '<p class="red-flags-disclaimer" style="font-size:0.74rem;color:var(--muted);margin:0.45rem 0 0">' + escapeHtml(disclaimer) + "</p>";
+    }
+    body.innerHTML = html;
+    wrap.classList.remove("hidden");
+  }
+
+  function renderProtocolSummaryPanel(report) {
+    var wrap = document.getElementById("protocol-summary-wrap");
+    var intro = document.getElementById("protocol-summary-intro");
+    var list = document.getElementById("protocol-summary-list");
+    if (!wrap || !list) return;
+    var panel = report.protocol_summary_panel;
+    if (!panel || !panel.items || !panel.items.length) {
+      wrap.classList.add("hidden");
+      return;
+    }
+    var title = document.getElementById("protocol-summary-title");
+    if (title && panel.title_ru) title.textContent = panel.title_ru;
+    if (intro) intro.textContent = panel.intro_ru || "";
+    list.innerHTML = "";
+    panel.items.forEach(function (it) {
+      var li = document.createElement("li");
+      var yes = !!it.present;
+      li.innerHTML =
+        '<span class="protocol-summary__mark ' + (yes ? "protocol-summary__mark--yes" : "protocol-summary__mark--no") + '" aria-hidden="true">' +
+        (yes ? "✓" : "•") + "</span>" +
+        '<span><strong>' + escapeHtml(it.name_ru || "") + "</strong>" +
+        (it.note_ru ? ' <span class="protocol-summary__note">- ' + escapeHtml(it.note_ru) + "</span>" : "") +
+        "</span>";
+      list.appendChild(li);
+    });
+    wrap.classList.remove("hidden");
+  }
+
+  function renderQuestionsMore(report) {
+    var el = document.getElementById("questions-more");
     if (!el) return;
-    if (report.red_flags_ru) {
-      el.textContent = report.red_flags_ru;
+    var hidden = report.questions_hidden_count || 0;
+    if (report.questions_truncated && hidden > 0) {
+      el.textContent = "Ещё " + hidden + " вопрос(ов) - в полном разборе. Сейчас показаны главные.";
       el.classList.remove("hidden");
-    } else el.classList.add("hidden");
+    } else {
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
+  }
+
+  function renderClinicTrust() {
+    var el = document.getElementById("clinic-trust");
+    if (!el) return;
+    if (clinicConfig && clinicConfig.footer_ru) {
+      el.textContent = clinicConfig.footer_ru;
+      el.classList.remove("hidden");
+    } else {
+      el.classList.add("hidden");
+    }
   }
 
   function copyText(text, eventName) {
@@ -1020,12 +1127,14 @@
     var ps = document.getElementById("plain-summary");
     if (ps && !pr.top_summary) ps.textContent = pr.plain_summary_ru || "";
 
+    renderRedFlags(pr);
+    renderProtocolSummaryPanel(pr);
+    renderClinicTrust();
     renderUnderstoodFromDocument(pr);
     renderClarificationPoints(pr);
     renderMessageToDoctor(pr);
     renderVisitSheet(pr);
     renderPlainTerms(pr);
-    renderRedFlags(pr);
 
     var ns = document.getElementById("next-steps");
     if (ns) {
@@ -1052,6 +1161,7 @@
     } else if (rbw) rbw.classList.add("hidden");
 
     renderQuestionCards(pr.action_checklist || [], pr);
+    renderQuestionsMore(pr);
 
     var pw = document.getElementById("priority-wrap");
     var pl = document.getElementById("priority-list");
@@ -1242,13 +1352,134 @@
     if (useSse) runReviewSse(); else runReviewFetch();
   });
 
+  function buildPrintSheet() {
+    var host = document.getElementById("print-sheet");
+    if (!host) return;
+    var pr = lastReport || {};
+    var parts = ["<h1>Лист на приём</h1>"];
+    var meta = [new Date().toLocaleDateString("ru-RU")];
+    if (clinicConfig && clinicConfig.name_ru) meta.push(clinicConfig.name_ru);
+    parts.push('<p class="print-meta">' + escapeHtml(meta.join(" · ")) + "</p>");
+
+    var top = pr.top_summary || {};
+    var summary = top.plain_summary_ru || pr.plain_summary_ru || "";
+    if (summary) parts.push("<h2>Краткий контекст</h2><p>" + escapeHtml(summary) + "</p>");
+
+    var clarify = pr.clarification_points || [];
+    if (clarify.length) {
+      parts.push("<h2>Что уточнить</h2><ul>" + clarify.map(function (c) {
+        return "<li>" + escapeHtml(c.text_ru || c.topic_ru || "") + "</li>";
+      }).join("") + "</ul>");
+    }
+
+    var qs = (pr.action_checklist && pr.action_checklist.length)
+      ? pr.action_checklist.map(function (q) { return q.text || q.title || ""; })
+      : (pr.questions_for_doctor || []);
+    qs = qs.filter(Boolean);
+    if (qs.length) {
+      parts.push("<h2>Вопросы врачу</h2><ol>" + qs.map(function (q) {
+        return "<li>" + escapeHtml(q) + "</li>";
+      }).join("") + "</ol>");
+    }
+
+    if (pr.red_flags_ru) {
+      parts.push("<h2>Когда обратиться срочно</h2><p>" + escapeHtml(pr.red_flags_ru) + "</p>");
+    }
+
+    parts.push(
+      "<h2>Что взять с собой</h2><ul>" +
+      "<li>Заключение (КЗ)</li>" +
+      "<li>Результаты обследований и анализов, если уже выполнены</li>" +
+      "<li>Список принимаемых препаратов</li></ul>"
+    );
+    parts.push('<p class="print-disclaimer">' + escapeHtml(
+      pr.disclaimer_ru ||
+      "Protocol помогает понять документ и подготовить вопросы. Не является диагнозом и не заменяет врача."
+    ) + "</p>");
+    host.innerHTML = parts.join("");
+  }
+
   var btnPrint = document.getElementById("btn-print");
-  if (btnPrint) btnPrint.addEventListener("click", function () { track("print_tap"); window.print(); });
+  if (btnPrint) btnPrint.addEventListener("click", function () { track("print_tap"); buildPrintSheet(); window.print(); });
   var btnPrintVisit = document.getElementById("btn-print-visit");
   if (btnPrintVisit) btnPrintVisit.addEventListener("click", function () {
     track("visit_sheet_downloaded");
+    buildPrintSheet();
     window.print();
   });
+
+  var speaking = false;
+  function readAloudText() {
+    var pr = lastReport || {};
+    var top = pr.top_summary || {};
+    var bits = [];
+    if (top.headline_ru || pr.headline_ru) bits.push(top.headline_ru || pr.headline_ru);
+    if (top.plain_summary_ru || pr.plain_summary_ru) bits.push(top.plain_summary_ru || pr.plain_summary_ru);
+    var qs = (pr.action_checklist || []).map(function (q) { return q.text || q.title || ""; }).filter(Boolean);
+    if (qs.length) {
+      bits.push("Вопросы врачу.");
+      qs.forEach(function (q, i) { bits.push((i + 1) + ". " + q); });
+    }
+    return bits.join(" ");
+  }
+  var btnRead = document.getElementById("btn-read-aloud");
+  function stopReading() {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    speaking = false;
+    if (btnRead) { btnRead.setAttribute("aria-pressed", "false"); btnRead.textContent = "Прочитать вслух"; }
+  }
+  if (btnRead) {
+    if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+      btnRead.classList.add("hidden");
+    } else {
+      btnRead.addEventListener("click", function () {
+        if (speaking) { stopReading(); return; }
+        var text = readAloudText();
+        if (!text) return;
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = "ru-RU";
+        u.rate = 0.95;
+        u.onend = function () { stopReading(); };
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+        speaking = true;
+        btnRead.setAttribute("aria-pressed", "true");
+        btnRead.textContent = "Остановить";
+        track("read_aloud");
+      });
+    }
+  }
+
+  var FONT_KEY = "protocol_patient_font_larger";
+  function applyFontPref() {
+    var on = localStorage.getItem(FONT_KEY) === "1";
+    document.body.classList.toggle("font-larger", on);
+    var b = document.getElementById("btn-font-larger");
+    if (b) b.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  var btnFont = document.getElementById("btn-font-larger");
+  if (btnFont) btnFont.addEventListener("click", function () {
+    var on = localStorage.getItem(FONT_KEY) === "1";
+    localStorage.setItem(FONT_KEY, on ? "0" : "1");
+    applyFontPref();
+    track("font_larger_toggle", { on: !on });
+  });
+  applyFontPref();
+
+  function checkReminderDue() {
+    try {
+      var raw = localStorage.getItem(REMINDER_KEY);
+      if (!raw) return;
+      var when = parseInt(raw, 10);
+      if (when && Date.now() >= when) {
+        if (statusEl) statusEl.textContent = "Напоминание: не забудьте обсудить вопросы с врачом на приёме.";
+        localStorage.removeItem(REMINDER_KEY);
+        track("reminder_due");
+      }
+    } catch (e) {}
+  }
+  checkReminderDue();
 
   var btnCopyMsg = document.getElementById("btn-copy-message");
   if (btnCopyMsg) btnCopyMsg.addEventListener("click", function () {
@@ -1279,6 +1510,7 @@
 
   var btnAgain = document.getElementById("btn-again");
   if (btnAgain) btnAgain.addEventListener("click", function () {
+    stopReading();
     setAgainButtonVisible(false);
     resultCard.classList.add("hidden");
     formCard.classList.remove("hidden");

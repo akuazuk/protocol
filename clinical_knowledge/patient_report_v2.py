@@ -158,6 +158,48 @@ def _build_top_summary(
     }
 
 
+def _protocol_summary_panel(l1_result: dict[str, Any]) -> dict[str, Any] | None:
+    """Позитивный блок: что протокол обычно учитывает при таком приёме (даже без пробелов)."""
+    sa = l1_result.get("structured_analysis") if isinstance(l1_result.get("structured_analysis"), dict) else {}
+    comp = sa.get("compliance") if isinstance(sa.get("compliance"), dict) else {}
+    assessments = [a for a in (comp.get("exam_assessments") or []) if isinstance(a, dict)]
+
+    items: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for a in assessments:
+        name = str(a.get("exam_name") or "").strip()
+        if not name:
+            continue
+        key = name.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        status = str(a.get("status") or "")
+        present = not status.startswith("missing")
+        items.append(
+            {
+                "name_ru": name[:120],
+                "present": present,
+                "note_ru": "отражено в заключении" if present else "стоит уточнить у врача",
+            }
+        )
+    if not items:
+        return None
+
+    covered = sum(1 for i in items if i["present"])
+    intro = (
+        "По клиническому протоколу Минздрава при таком приёме обычно ориентируются на пункты ниже. "
+        f"В вашем заключении отражено {covered} из {len(items)} - это ориентир для разговора, а не оценка врача."
+    )
+    return {
+        "title_ru": "Что обычно учитывает протокол при таком приёме",
+        "intro_ru": intro,
+        "covered": covered,
+        "total": len(items),
+        "items": items[:10],
+    }
+
+
 def _consolidate_protocol_display(report: dict[str, Any]) -> None:
     """Один блок ссылок на КП; в карточках блоков - только цитата без дубля PDF."""
     links = list(report.get("protocol_links") or [])
@@ -331,6 +373,9 @@ def enrich_patient_report_v2(
             else "Протокол подобран с умеренной уверенностью.",
         ),
     }
+    proto_panel = _protocol_summary_panel(l1_result)
+    if proto_panel:
+        report["protocol_summary_panel"] = proto_panel
     report["protocol_confidence"] = proto_conf
     report["protocol_confidence_bucket"] = proto_bucket
     report["show_single_overall_score"] = False

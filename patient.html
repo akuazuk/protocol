@@ -841,10 +841,135 @@
     .lab-miss-title { font-size: 0.78rem; font-weight: 700; color: var(--g800); margin: 0.65rem 0 0.35rem; }
     .lab-summary { font-size: 0.82rem; line-height: 1.45; color: var(--text); margin: 0 0 0.5rem; }
 
+    /* Result toolbar: read-aloud + large font + clinic trust */
+    .result-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin: 0 0 0.65rem;
+      flex-wrap: wrap;
+    }
+    .result-toolbar__actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+    .tool-btn {
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--g800);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem 0.6rem;
+      cursor: pointer;
+    }
+    .tool-btn:hover { border-color: var(--g600); }
+    .tool-btn[aria-pressed="true"] { background: var(--gsoft); border-color: var(--g600); color: var(--g950); }
+    .tool-btn:focus-visible { outline: 2px solid var(--g600); outline-offset: 2px; }
+    .clinic-trust {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--g800);
+      background: var(--gsoft);
+      border-radius: 999px;
+      padding: 0.3rem 0.6rem;
+    }
+
+    /* Крупный шрифт для пожилых пациентов */
+    body.font-larger { font-size: 1.12rem; }
+    body.font-larger .plain-summary,
+    body.font-larger .question-card__text,
+    body.font-larger #red-flags-body,
+    body.font-larger .protocol-summary__list,
+    body.font-larger .visit-sheet-pre { font-size: 1.02rem; line-height: 1.6; }
+
+    /* Красные флаги - заметная карточка безопасности */
+    .red-flags-card {
+      background: #fff8f0;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      border-left: 4px solid var(--warn);
+    }
+    .section-head--risk h2 { color: #92400e; }
+    .section-dot--risk { background: var(--warn); }
+    .red-flags-body { font-size: 0.85rem; line-height: 1.5; color: #6b3d06; }
+    .red-flags-body ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+    .red-flags-body li { margin-bottom: 0.2rem; }
+
+    /* Позитивный блок протокола */
+    .protocol-summary__intro { font-size: 0.82rem; color: var(--muted); line-height: 1.45; margin: 0 0 0.5rem; }
+    .protocol-summary__list { list-style: none; margin: 0; padding: 0; }
+    .protocol-summary__list li {
+      display: flex; align-items: flex-start; gap: 0.45rem;
+      font-size: 0.82rem; line-height: 1.4; padding: 0.28rem 0; color: var(--text);
+    }
+    .protocol-summary__mark { flex-shrink: 0; font-weight: 800; }
+    .protocol-summary__mark--yes { color: var(--g600); }
+    .protocol-summary__mark--no { color: var(--warn); }
+    .protocol-summary__note { color: var(--muted); font-size: 0.74rem; }
+
+    /* Термины - инлайн-чипы с раскрытием */
+    .plain-terms__hint { font-size: 0.76rem; color: var(--muted); margin: 0 0 0.5rem; }
+    .plain-terms__chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .term-chip {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--g800);
+      background: var(--gsoft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+    }
+    .term-chip[aria-expanded="true"] { background: var(--g600); color: #fff; border-color: var(--g600); }
+    .term-explanation {
+      flex-basis: 100%;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text);
+      background: var(--gsoft2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      margin-top: 0.2rem;
+    }
+
+    .questions-more {
+      margin: 0.55rem 0 0;
+      font-size: 0.8rem;
+      color: var(--g800);
+      background: var(--gsoft);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 0.5rem 0.6rem;
+      line-height: 1.4;
+    }
+
+    .file-chip__thumb {
+      width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 5px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    /* Печатный лист на приём - отдельный чистый одностраничник */
+    .print-sheet { display: none; }
     @media print {
-      .onboard, .loader-overlay, .btn-row, .top-bar, .foot, .faq, #form-card { display: none !important; }
-      .wrap { max-width: none; }
-      body { background: #fff; }
+      body { background: #fff; color: #000; }
+      .page-bg, .wrap, .loader-overlay { display: none !important; }
+      .print-sheet {
+        display: block !important;
+        max-width: 100%;
+        padding: 0;
+        font-family: "DM Sans", system-ui, sans-serif;
+        color: #000;
+      }
+      .print-sheet h1 { font-size: 18pt; margin: 0 0 4pt; }
+      .print-sheet h2 { font-size: 12pt; margin: 12pt 0 4pt; border-bottom: 1px solid #999; padding-bottom: 2pt; }
+      .print-sheet p, .print-sheet li { font-size: 11pt; line-height: 1.45; }
+      .print-sheet ul, .print-sheet ol { margin: 4pt 0; padding-left: 18pt; }
+      .print-sheet .print-meta { font-size: 9pt; color: #555; }
+      .print-sheet .print-disclaimer { font-size: 8.5pt; color: #555; margin-top: 12pt; border-top: 1px solid #ccc; padding-top: 6pt; }
     }
   </style>
 </head>
@@ -971,6 +1096,16 @@
       <div id="upload-joke-card" class="upload-joke hidden" role="status" aria-live="polite"></div>
 
       <div id="result-body">
+      <div class="result-toolbar" id="result-toolbar">
+        <div class="result-toolbar__left">
+          <span class="clinic-trust hidden" id="clinic-trust"></span>
+        </div>
+        <div class="result-toolbar__actions">
+          <button type="button" class="tool-btn" id="btn-read-aloud" aria-pressed="false" title="Прочитать вслух">Прочитать вслух</button>
+          <button type="button" class="tool-btn" id="btn-font-larger" aria-pressed="false" title="Крупный шрифт">A+</button>
+        </div>
+      </div>
+
       <section class="report-panel" id="top-summary-wrap">
         <div class="section-head"><span class="section-dot"></span><h2>Краткий итог</h2></div>
         <p class="headline-ru" id="headline-ru"></p>
@@ -993,6 +1128,17 @@
       <div id="score-cards-wrap" class="score-cards" aria-label="Индексы проверки"></div>
 
       <div id="protocol-strip" class="protocol-strip hidden" aria-label="Протоколы Минздрава"></div>
+
+      <section class="report-panel red-flags-card hidden" id="red-flags-wrap" role="note" aria-label="Когда обратиться срочно">
+        <div class="section-head section-head--risk"><span class="section-dot section-dot--risk"></span><h2 id="red-flags-title">Когда обратиться срочно</h2></div>
+        <div id="red-flags-body" class="red-flags-body"></div>
+      </section>
+
+      <section class="report-panel summary-block protocol-summary-card hidden" id="protocol-summary-wrap">
+        <h3 id="protocol-summary-title">Что обычно учитывает протокол</h3>
+        <p class="protocol-summary__intro" id="protocol-summary-intro"></p>
+        <ul class="protocol-summary__list" id="protocol-summary-list"></ul>
+      </section>
 
       <section class="report-panel summary-block" id="understood-wrap">
         <h3>Что понятно</h3>
@@ -1020,6 +1166,7 @@
         <div class="questions-tone-badge hidden" id="questions-tone-badge"></div>
         <p class="questions-panel__etiquette" id="questions-panel-etiquette"></p>
         <ul class="question-cards" id="action-checklist"></ul>
+        <p class="questions-more hidden" id="questions-more" role="note"></p>
       </section>
 
       <section class="report-panel" id="message-doctor-wrap">
@@ -1040,12 +1187,11 @@
         </div>
       </section>
 
-      <details class="cites-fold" id="plain-terms-wrap">
-        <summary>Непонятные термины</summary>
-        <ul id="plain-terms-list" style="margin:0.45rem 0 0;padding-left:1.1rem"></ul>
-      </details>
-
-      <div id="red-flags-wrap" class="red-flags hidden" role="note"></div>
+      <section class="report-panel plain-terms-card hidden" id="plain-terms-wrap">
+        <h3>Непонятные термины</h3>
+        <p class="plain-terms__hint">Нажмите слово, чтобы увидеть простое объяснение.</p>
+        <div id="plain-terms-list" class="plain-terms__chips"></div>
+      </section>
 
       <section class="report-panel">
         <div class="section-head"><span class="section-dot"></span><h2>Что делать дальше</h2></div>
@@ -1102,6 +1248,8 @@
       <span class="page-footer-brand"><img src="/protocol-logo-mini.svg" width="112" height="13" alt="Protocol" /></span><br />
       <a href="/">Protocol для специалистов</a></p>
   </div>
+
+  <section id="print-sheet" class="print-sheet" aria-hidden="true"></section>
 
   <div class="loader-overlay hidden" id="loader" aria-live="polite" aria-busy="true">
     <div class="loader-ring" role="progressbar"></div>
