@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-30-r7-onco-risk-consult-age-priors"
+BUILD_VERSION = "2026-06-30-r8-onco-risk-methodist-tab"
 
 
 def _app_version() -> str:
@@ -10296,6 +10296,34 @@ def api_methodist_patient_monetization_put(
     reviewer = (request.headers.get("x-methodist-reviewer") or "").strip()
     saved = save_patient_monetization_config(patch, reviewer=reviewer)
     return {"ok": True, "config": monetization_admin_view(), "saved": saved}
+
+
+def _onco_settings_state() -> dict:
+    return {
+        "consult_advisory": _consult_onco_risk_advisory_enabled(),
+        "patient_b2c": env_bool("PATIENT_ONCO_QUESTIONS_ENABLED", False),
+    }
+
+
+@app.get("/api/methodist/onco-settings")
+def api_methodist_onco_settings_get(request: "Request") -> dict:
+    """Текущее состояние тумблеров онконастороженности (рантайм)."""
+    _require_methodist_auth(request)
+    return {"ok": True, "settings": _onco_settings_state()}
+
+
+@app.post("/api/methodist/onco-settings")
+def api_methodist_onco_settings_post(request: "Request", body: dict) -> dict:
+    """Включить/выключить онко-блоки в рантайме (consult B2B-advisory и patient B2C).
+
+    Меняет переменные окружения процесса (не персистентно между рестартами).
+    """
+    _require_methodist_auth(request)
+    if "consult_advisory" in body:
+        os.environ["CONSULT_ONCO_RISK_ADVISORY_ENABLED"] = "1" if body.get("consult_advisory") else "0"
+    if "patient_b2c" in body:
+        os.environ["PATIENT_ONCO_QUESTIONS_ENABLED"] = "1" if body.get("patient_b2c") else "0"
+    return {"ok": True, "settings": _onco_settings_state()}
 
 
 @app.get("/api/methodist/queue")
