@@ -1,0 +1,41 @@
+# Минимально необходимый набор входов для уровней оценки онкориска.
+# Используется data_completeness() и L-Intake (что дозапросить).
+version: "2026-06-30"
+
+# Веса для completeness score (0-1). Сумма весов = 1.0.
+weights:
+  age: 0.20
+  sex: 0.15
+  symptom_present: 0.25
+  symptom_duration: 0.10
+  relevant_labs: 0.15
+  smoking: 0.05
+  family_history: 0.05
+  bmi: 0.05
+
+# Пороги поведения по полноте.
+completeness_bands:
+  qualitative_only: 0.40      # < 0.40 -> только качественный сигнал + L-Intake
+  quantitative_wide_ci: 0.70  # 0.40-0.70 -> оценка с широким CI
+  # >= 0.70 -> оценка с узким CI
+
+# Минимум для запуска количественной оценки (Model A, симптом-уровень).
+minimal_quantitative:
+  required: [age, sex, symptom_present]
+  recommended: [symptom_duration, relevant_labs]
+
+# Для апгрейда до Model B (анализы) и многомерной модели.
+model_b_inputs:
+  required: [age, sex, relevant_labs]
+  recommended: [smoking, family_history, bmi]
+
+# Поля схемы КЗ, откуда берём входы (consult_schema.py).
+field_map:
+  age: ["PatientContext.age_years", "PatientContext.birth_date"]
+  sex: ["PatientContext.sex"]
+  symptom_present: ["sections.complaints", "sections.anamnesis"]
+  symptom_duration: ["sections.complaints", "sections.anamnesis"]
+  relevant_labs: ["ExamItem.result_value", "ExamItem.abnormal_flag"]
+  smoking: ["PatientContext.social_history"]
+  family_history: ["PatientContext.family_history"]
+  bmi: ["PatientContext.bmi", "PatientContext.height_cm", "PatientContext.weight_kg"]

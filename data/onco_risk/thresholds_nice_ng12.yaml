@@ -1,0 +1,37 @@
+# Пороги действия (NICE NG12) для триажа онкориска.
+# Источник: NICE NG12 Suspected cancer: recognition and referral.
+version: "2026-06-30"
+source: {ref: "NICE NG12", url: "https://www.nice.org.uk/guidance/ng12"}
+
+# Основной порог: PPV >= 3% -> путь подозрения на рак (взрослые). Дети - ниже.
+referral_ppv_threshold: 0.03
+pediatric_ppv_threshold: 0.01        # явного значения NICE не задаёт; консервативно ниже
+
+triage_levels:
+  low: {max_ppv: 0.01, label_ru: "низкий"}
+  low_not_no: {max_ppv: 0.03, label_ru: "низкий, но не нулевой"}
+  refer: {min_ppv: 0.03, label_ru: "порог направления достигнут"}
+
+# Возрастные пороги для неспецифичной потери веса (NICE NG12).
+weight_loss:
+  pct_threshold: 5                   # >5% массы за 6 мес
+  months: 6
+  age_min: 60
+  sites: [colorectal, oesophagogastric, lung, prostate, pancreatic, urological]
+
+# CA-125 (яичник), МЕ/мл, по возрасту.
+ca125_thresholds_iu_ml:
+  - {age_min: 40, age_max: 49, threshold: 35}
+  - {age_min: 50, age_max: 59, threshold: 31}
+  - {age_min: 60, age_max: 69, threshold: 24}
+  - {age_min: 70, age_max: 79, threshold: 25}
+
+# PSA - возраст-специфичные пороги (ориентир NICE; уточнить локальные нормы РБ).
+psa_thresholds_ng_ml:
+  - {age_min: 50, age_max: 59, threshold: 3.0}
+  - {age_min: 60, age_max: 69, threshold: 4.0}
+  - {age_min: 70, age_max: 79, threshold: 6.5}
+
+notes:
+  - "Для тестов первичного звена (PSA, рентген ОГК, FIT) NICE допускает действие ниже 3%."
+  - "Желтуха (поджелудочная): PPV 4.1% уже выше порога в 40+."

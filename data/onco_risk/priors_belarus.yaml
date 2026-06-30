@@ -1,0 +1,72 @@
+# Базовая заболеваемость (pre-test priors) для онкориска.
+# Приоритет - Беларусь (РНПЦ ОМР, Белорусский канцер-регистр); fallback - IARC GLOBOCAN 2022.
+# baseline_symptomatic - pre-test вероятность для симптоматического пациента первичного звена.
+#   Для colorectal/lung/prostate взяты фоновые риски из CAPER (контекст симптоматического звена).
+#   Для прочих сайтов - ориентир из crude годовой заболеваемости РБ (пометка approx, уточнить по возрасту CI5).
+version: "2026-06-30"
+
+population_belarus: 9432804           # GLOBOCAN 2022, оба пола
+incidence_year_total: 46402          # GLOBOCAN 2022 (модель); РНПЦ факт 2023 ~57000
+cum_risk_to_75_pct: 28.6             # GLOBOCAN 2022 Belarus
+
+sources:
+  - {ref: "IARC GLOBOCAN 2022 Belarus fact sheet", url: "https://gco.iarc.who.int", accessed: "2026-06-30"}
+  - {ref: "РНПЦ ОМР им. Н.Н. Александрова, Белорусский канцер-регистр", url: "https://omr.by"}
+  - {ref: "CAPER baselines (Hamilton 2009)", doi: "10.1038/sj.bjc.6605396"}
+  - {ref: "IARC CI5-XII (age-specific, TODO)", url: "https://ci5.iarc.who.int"}
+
+sites:
+  colorectal:
+    icd: ["C18", "C19", "C20"]
+    cases_year_total: 6160           # GLOBOCAN 2022 РБ, оба пола
+    cases_by_sex: {male: 3086, female: 3074}
+    baseline_symptomatic: 0.0025     # CAPER colorectal background 0.25%
+    baseline_source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+  lung:
+    icd: ["C34"]
+    cases_year_total: 4599
+    cases_by_sex: {male: 4006, female: 593}
+    baseline_symptomatic: 0.0018     # CAPER lung background 0.18%
+    baseline_source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+  prostate:
+    icd: ["C61"]
+    cases_year_total: 4972
+    cases_by_sex: {male: 4972, female: 0}
+    baseline_symptomatic: 0.0035     # CAPER prostate background 0.35%
+    baseline_source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+  pancreatic:
+    icd: ["C25"]
+    cases_year_total: 1300           # GLOBOCAN approx
+    baseline_symptomatic: 0.0015     # approx, уточнить (CI5/РНПЦ возраст)
+    baseline_source: {ref: "approx from GLOBOCAN crude", note: "TODO age-specific"}
+  oesophagogastric:
+    icd: ["C15", "C16"]
+    cases_year_total: 2804           # GLOBOCAN stomach (C16); пищевод отдельно уточнить
+    baseline_symptomatic: 0.0015     # approx
+    baseline_source: {ref: "approx from GLOBOCAN crude", note: "TODO split C15/C16, age-specific"}
+  brain:
+    icd: ["C71"]
+    cases_year_total: 500            # approx
+    baseline_symptomatic: 0.0002     # CAPER: риск опухоли мозга при головной боли ~1/1000
+    baseline_source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+  breast:
+    icd: ["C50"]
+    cases_year_total: 5183
+    cases_by_sex: {male: 0, female: 5183}
+    baseline_symptomatic: 0.003      # approx; пальпируемое образование -> срочно (NICE)
+    baseline_source: {ref: "approx; NICE NG12 breast lump urgent"}
+  ovarian:
+    icd: ["C56"]
+    cases_year_total: 1000           # approx (РБ структура ~4.7% жен)
+    baseline_symptomatic: 0.0015     # approx; решает CA-125 порог по возрасту
+    baseline_source: {ref: "approx; NICE NG12 ovarian CA-125"}
+  bladder:
+    icd: ["C67"]
+    cases_year_total: 1464
+    baseline_symptomatic: 0.0015     # approx; гематурия - ключевой сигнал
+    baseline_source: {ref: "approx from GLOBOCAN crude"}
+  kidney:
+    icd: ["C64"]
+    cases_year_total: 2276
+    baseline_symptomatic: 0.0015     # approx
+    baseline_source: {ref: "approx from GLOBOCAN crude"}

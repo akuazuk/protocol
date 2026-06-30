@@ -1,0 +1,35 @@
+# Скрининговые ориентиры (возраст/пол) для контекста screening.
+# ВНИМАНИЕ: значения - международный ориентир; точные возрасты/интервалы РБ нужно
+# подтвердить по протоколам МЗ РБ (рубрика novoobrazovaniya / скрининг). Помечено confirm_rb.
+version: "2026-06-30"
+status: draft
+confirm_rb: true
+sources:
+  - {ref: "Протоколы МЗ РБ (скрининг) - подтвердить", url: "https://minzdrav.gov.by"}
+  - {ref: "WHO/IARC screening guidance (ориентир)", url: "https://www.iarc.who.int"}
+
+programs:
+  - id: colorectal
+    label_ru: Колоректальный скрининг (FIT/колоноскопия)
+    sex: any
+    age_min: 50
+    age_max: 74
+    confirm_rb: true
+  - id: cervical
+    label_ru: Цервикальный скрининг
+    sex: female
+    age_min: 21
+    age_max: 65
+    confirm_rb: true
+  - id: breast
+    label_ru: Маммография
+    sex: female
+    age_min: 50
+    age_max: 69
+    confirm_rb: true
+  - id: prostate_discussion
+    label_ru: Обсуждение PSA (по решению врача)
+    sex: male
+    age_min: 50
+    age_max: 70
+    confirm_rb: true

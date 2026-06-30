@@ -1,0 +1,202 @@
+# Likelihood ratios (LR) симптомов и анализов для оценки онкориска.
+# Источники: CAPER (Hamilton 2009, DOI 10.1038/sj.bjc.6605396), NICE NG12.
+# LR переносимы между популяциями лучше PPV; pre-test (priors) - белорусские (priors_belarus.yaml).
+# keywords - подстроки для матчинга по нормализованному русскому тексту КЗ (регистр/падежи учитываются как стемы).
+version: "2026-06-30"
+
+features:
+  # --- Колоректальный (C18-C20) ---
+  - id: rectal_bleeding
+    label_ru: Ректальное кровотечение
+    keywords: ["ректальн", "кровь в кале", "примесь крови", "гематохез", "кровотечение из прямой"]
+    icd: ["K62.5", "R19.5"]
+    cancer_site: colorectal
+    lr: 10
+    ppv_single: 0.024
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: weight_loss
+    label_ru: Необъяснимая потеря веса
+    keywords: ["потеря веса", "снижение веса", "похуд", "потерял вес", "сниж массы"]
+    icd: ["R63.4"]
+    cancer_site: colorectal
+    lr: 5.1
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+    note: "Неспецифичный сигнал; NICE NG12: вес >5% за 6 мес, возраст >=60."
+
+  - id: abdominal_pain
+    label_ru: Боль в животе
+    keywords: ["боль в живот", "абдоминальн", "боли в живот"]
+    icd: ["R10"]
+    cancer_site: colorectal
+    lr: 4.5
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: diarrhoea
+    label_ru: Диарея / изменение стула
+    keywords: ["диаре", "изменение стула", "жидкий стул", "изменения характера стула"]
+    icd: ["R19.4", "K59.1"]
+    cancer_site: colorectal
+    lr: 3.9
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  # --- Лёгкое (C34) ---
+  - id: haemoptysis
+    label_ru: Кровохарканье
+    keywords: ["кровохарк", "кровь в мокрот", "мокрота с кровь"]
+    icd: ["R04.2"]
+    cancer_site: lung
+    lr: 13
+    ppv_single: 0.024
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: dyspnoea
+    label_ru: Одышка
+    keywords: ["одышк", "затруднение дыхан", "нехватка воздух"]
+    icd: ["R06.0"]
+    cancer_site: lung
+    lr: 4
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: chest_pain
+    label_ru: Боль в груди/рёбрах
+    keywords: ["боль в груд", "боль в рёбр", "боль в ребр"]
+    icd: ["R07"]
+    cancer_site: lung
+    lr: 3
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: cough_persistent
+    label_ru: Стойкий кашель
+    keywords: ["кашель", "длительный кашель", "хронический кашель"]
+    icd: ["R05"]
+    cancer_site: lung
+    lr: 2
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  # --- Простата (C61) ---
+  - id: urinary_retention
+    label_ru: Задержка мочи
+    keywords: ["задержка мочи", "затруднение мочеиспуск"]
+    icd: ["R33"]
+    cancer_site: prostate
+    lr: 9
+    strata: {sex: male, age_min: 50}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: urinary_frequency
+    label_ru: Учащённое мочеиспускание
+    keywords: ["частое мочеиспуск", "учащённое мочеиспуск", "учащенное мочеиспуск", "поллакиур"]
+    icd: ["R35"]
+    cancer_site: prostate
+    lr: 7
+    strata: {sex: male, age_min: 50}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: haematuria
+    label_ru: Гематурия
+    keywords: ["гематури", "кровь в моче", "примесь крови в моче"]
+    icd: ["R31"]
+    cancer_site: prostate
+    lr: 3
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+    note: "Гематурия также сигнал рака мочевого пузыря/почки (NICE NG12)."
+
+  # --- Поджелудочная (C25) ---
+  - id: jaundice
+    label_ru: Желтуха
+    keywords: ["желтух", "иктеричн", "желтушн"]
+    icd: ["R17"]
+    cancer_site: pancreatic
+    lr: null
+    ppv_single: 0.041
+    strata: {sex: any, age_min: 40}
+    source: {ref: "NICE NG12; Schmidt-Hansen 2016", url: "https://www.nice.org.uk/guidance/ng12"}
+    note: "PPV 4.1% в 40+, растёт с возрастом. Прямой PPV, без LR."
+
+  # --- Пищевод/желудок (C15-C16) ---
+  - id: dysphagia
+    label_ru: Дисфагия (затруднение глотания)
+    keywords: ["дисфаги", "затруднение глотан", "трудно глотать", "поперхив"]
+    icd: ["R13"]
+    cancer_site: oesophagogastric
+    lr: 5
+    strata: {sex: any, age_min: 40}
+    source: {ref: "NICE NG12; Astin 2015", url: "https://www.nice.org.uk/guidance/ng12"}
+    note: "Специфичность ~92%; один из сильнейших сигналов пищевода. LR ориентировочный, уточнить."
+
+  # --- Мозг (C71) ---
+  - id: new_seizure
+    label_ru: Впервые возникший судорожный приступ
+    keywords: ["судорожн", "впервые приступ", "эпиприступ", "судороги впервые"]
+    icd: ["R56.9"]
+    cancer_site: brain
+    lr: 96
+    strata: {sex: any, age_min: 18}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: motor_deficit
+    label_ru: Очаговый моторный дефицит
+    keywords: ["моторный дефицит", "слабость в конечност", "парез", "паралич"]
+    icd: ["R29"]
+    cancer_site: brain
+    lr: 21
+    strata: {sex: any, age_min: 18}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+lab_features:
+  - id: fob_positive
+    label_ru: Кал на скрытую кровь положительный (FOB/FIT)
+    keywords: ["скрыт кров", "fob", "fit положит", "кал на скрыт"]
+    icd: ["R19.5"]
+    cancer_site: colorectal
+    lr: 31
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: psa_high
+    label_ru: PSA > 4 нг/мл
+    keywords: ["psa", "пса"]
+    icd: ["R97.2"]
+    cancer_site: prostate
+    lr: 29
+    strata: {sex: male, age_min: 50}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+    note: "Использовать с возраст-специфичными порогами NICE (thresholds_nice_ng12.yaml)."
+
+  - id: thrombocytosis
+    label_ru: Тромбоцитоз
+    keywords: ["тромбоцитоз", "повышен тромбоцит"]
+    icd: ["D75.8"]
+    cancer_site: lung
+    lr: 19
+    strata: {sex: any, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: anaemia_male
+    label_ru: Анемия Hb < 10 г/дл (муж)
+    keywords: ["анеми", "низкий гемоглобин", "гемоглобин сниж"]
+    icd: ["D64.9", "D50"]
+    cancer_site: colorectal
+    lr: 10
+    ppv_single: 0.13
+    strata: {sex: male, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
+
+  - id: anaemia_female
+    label_ru: Анемия Hb < 9 г/дл (жен)
+    keywords: ["анеми", "низкий гемоглобин", "гемоглобин сниж"]
+    icd: ["D64.9", "D50"]
+    cancer_site: colorectal
+    lr: 43
+    strata: {sex: female, age_min: 40}
+    source: {ref: "Hamilton 2009 CAPER", doi: "10.1038/sj.bjc.6605396"}
