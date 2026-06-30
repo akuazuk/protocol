@@ -7679,6 +7679,21 @@ class IcdSuggestIn(BaseModel):
     query: str = Field(..., min_length=4, max_length=12000)
 
 
+class OncoRiskIn(BaseModel):
+    """Советующая оценка онконастороженности (decision-support, не диагноз, без send_gate)."""
+
+    text: str = Field(..., min_length=2, max_length=20000)
+    age: int | None = Field(default=None, ge=0, le=120)
+    sex: str = Field(default="unknown", max_length=10)
+    labs_text: str = Field(default="", max_length=8000)
+    smoking: bool | None = None
+    family_history: bool | None = None
+    bmi: float | None = Field(default=None, ge=5.0, le=120.0)
+    symptom_duration_known: bool = False
+    adult_or_child: str = Field(default="adult", max_length=8)
+    audience: str = Field(default="both", max_length=8, description="b2b | b2c | both")
+
+
 class ProtocolDetailIn(BaseModel):
     """Развёрнутая выдержка по протоколу - отдельный запрос (после краткого ответа assist)."""
 
@@ -8174,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-30-r2-onco-risk-engine"
+BUILD_VERSION = "2026-06-30-r3-onco-risk-endpoint"
 
 
 def _app_version() -> str:
@@ -9526,6 +9541,46 @@ def api_icd_suggest(body: IcdSuggestIn) -> dict:
         "append_line": append_line,
         "hint": hint,
     }
+
+
+@app.post("/api/onco-risk")
+def api_onco_risk(body: OncoRiskIn) -> dict:
+    """Советующая онконастороженность: байес LR+priors, полнота данных, B2B/B2C.
+
+    Decision-support, НЕ диагноз и НЕ влияет на send_gate. Рантайм - локальный
+    lookup + арифметика, без внешних вызовов. Числа отдаются только аудитории b2b.
+    """
+    from clinical_knowledge import onco_risk as orisk
+
+    sex = (body.sex or "unknown").strip().lower()
+    if sex not in ("male", "female", "unknown"):
+        sex = "unknown"
+    aoc = (body.adult_or_child or "adult").strip().lower()
+    if aoc not in ("adult", "child"):
+        aoc = "adult"
+    audience = (body.audience or "both").strip().lower()
+    if audience not in ("b2b", "b2c", "both"):
+        audience = "both"
+
+    inp = orisk.OncoInputs(
+        text=body.text.strip(),
+        age=body.age,
+        sex=sex,
+        labs_text=(body.labs_text or "").strip(),
+        smoking=body.smoking,
+        family_history=body.family_history,
+        bmi=body.bmi,
+        symptom_duration_known=bool(body.symptom_duration_known),
+        adult_or_child=aoc,
+    )
+    assessment = orisk.assess(inp)
+
+    out: dict = {"server_version": BUILD_VERSION, "audience": audience}
+    if audience in ("b2b", "both"):
+        out["assessment"] = orisk.to_b2b_payload(assessment)
+    if audience in ("b2c", "both"):
+        out["b2c"] = orisk.to_b2c_payload(assessment)
+    return out
 
 
 @app.post("/api/search/protocols-by-icd")

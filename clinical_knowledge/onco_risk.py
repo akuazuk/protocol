@@ -404,6 +404,144 @@ def b2c_questions(features: list[FeatureHit], context: str,
 # --------------------------------------------------------------------------- #
 # Сборка
 # --------------------------------------------------------------------------- #
+SITE_LABELS_RU = {
+    "colorectal": "толстая кишка (колоректальный)",
+    "lung": "лёгкое",
+    "prostate": "предстательная железа",
+    "pancreatic": "поджелудочная железа",
+    "oesophagogastric": "пищевод/желудок",
+    "brain": "головной мозг",
+    "breast": "молочная железа",
+    "ovarian": "яичник",
+    "bladder": "мочевой пузырь",
+    "kidney": "почка",
+}
+TRIAGE_LABELS_RU = {
+    "refer": "достигнут порог направления (>=3%)",
+    "low_not_no": "низкий, но не нулевой риск",
+    "low": "низкий риск",
+}
+BAND_LABELS_RU = {
+    "qualitative_only": "данных мало - только качественный сигнал",
+    "quantitative_wide_ci": "оценка с широким интервалом (данные неполные)",
+    "quantitative": "оценка с узким интервалом",
+}
+CONTEXT_LABELS_RU = {
+    "symptomatic": "симптоматический",
+    "surveillance": "наблюдение после лечения",
+    "screening": "скрининг",
+    "hereditary": "наследственный риск",
+    "pediatric": "детский",
+    "none": "недостаточно данных",
+}
+MISSING_LABELS_RU = {
+    "age": "возраст",
+    "sex": "пол",
+    "symptom_present": "симптом/жалоба",
+    "symptom_duration": "длительность симптома",
+    "relevant_labs": "релевантные анализы",
+    "smoking": "курение",
+    "family_history": "семейный анамнез",
+    "bmi": "ИМТ",
+}
+
+
+def _pct(x: float) -> str:
+    return f"{x * 100:.1f}%"
+
+
+def _source_str(src: dict[str, Any]) -> str:
+    if not src:
+        return ""
+    ref = str(src.get("ref") or "")
+    extra = src.get("doi") or src.get("url") or src.get("note") or ""
+    return f"{ref} ({extra})".strip() if extra else ref
+
+
+def to_b2b_payload(a: OncoAssessment) -> dict[str, Any]:
+    """Карточка для врача: числа, доверительные интервалы, источники, водопад."""
+    sources: list[str] = []
+    seen_src: set[str] = set()
+
+    def add_src(src: dict[str, Any]) -> None:
+        s = _source_str(src)
+        if s and s not in seen_src:
+            seen_src.add(s)
+            sources.append(s)
+
+    sites_out = []
+    for s in a.sites:
+        contribs = [
+            {
+                "feature": c.feature,
+                "label_ru": c.label_ru,
+                "lr_effective": c.lr_effective,
+                "p_before": c.p_before,
+                "p_after": c.p_after,
+                "p_after_pct": _pct(c.p_after),
+            }
+            for c in s.contributors
+        ]
+        sites_out.append({
+            "site": s.site,
+            "site_label_ru": SITE_LABELS_RU.get(s.site, s.site),
+            "p": s.p,
+            "p_pct": _pct(s.p),
+            "ci": [s.ci_low, s.ci_high],
+            "ci_pct": f"{_pct(s.ci_low)}-{_pct(s.ci_high)}",
+            "contributors": contribs,
+        })
+    for f in a.features:
+        add_src(f.source)
+
+    return {
+        "context": a.context,
+        "context_label_ru": CONTEXT_LABELS_RU.get(a.context, a.context),
+        "triage_level": a.triage_level,
+        "triage_label_ru": TRIAGE_LABELS_RU.get(a.triage_level, a.triage_level),
+        "any_cancer": {
+            "p": a.any_cancer_p,
+            "p_pct": _pct(a.any_cancer_p),
+            "ci": list(a.any_cancer_ci),
+            "ci_pct": f"{_pct(a.any_cancer_ci[0])}-{_pct(a.any_cancer_ci[1])}",
+        },
+        "completeness": {
+            "score": a.completeness.score,
+            "band": a.completeness.band,
+            "band_label_ru": BAND_LABELS_RU.get(a.completeness.band, a.completeness.band),
+            "missing": a.completeness.missing,
+            "missing_labels_ru": [MISSING_LABELS_RU.get(m, m) for m in a.completeness.missing],
+        },
+        "sites": sites_out,
+        "features": [
+            {"id": f.id, "label_ru": f.label_ru, "cancer_site": f.cancer_site,
+             "lr": f.lr, "is_lab": f.is_lab, "source": _source_str(f.source)}
+            for f in a.features
+        ],
+        "advisory_note": a.advisory_note,
+        "method_note_ru": (
+            "Метод: байесовская оценка на отношениях правдоподобия (LR, CAPER) поверх "
+            "базовой заболеваемости Беларуси; зависимые признаки учитываются с поправкой; "
+            "порог направления 3% (NICE NG12). Доверительный интервал отражает полноту данных. "
+            "Это советующая оценка, не диагноз."
+        ),
+        "sources_ru": sources,
+    }
+
+
+def to_b2c_payload(a: OncoAssessment) -> dict[str, Any]:
+    """Чеклист для пациента: только нейтральные вопросы, без чисел и тревожных слов."""
+    return {
+        "intro_ru": "Несколько вопросов, которые полезно задать врачу на приёме:",
+        "questions": list(a.b2c_questions),
+        "disclaimer_ru": (
+            "Это не диагноз и не повод для тревоги - просто список уточнений, "
+            "которые помогут врачу принять решение."
+        ),
+        "show_numbers": False,
+    }
+
+
 def assess(inp: OncoInputs) -> OncoAssessment:
     features = extract_features(inp)
     context = classify_context(inp, features)
