@@ -129,6 +129,12 @@ services:
         value: /var/data/ml/feedback
       - key: CONSULT_ALIGNMENT_ENABLED
         value: "1"
+      # Онконастороженность (decision-support, не gate, не диагноз). Управление - вкладка
+      # "Онко-риск" в кабинете методиста; здесь задаём состояние по умолчанию после рестарта.
+      - key: CONSULT_ONCO_RISK_ADVISORY_ENABLED
+        value: "1"
+      - key: PATIENT_ONCO_QUESTIONS_ENABLED
+        value: "1"
       # Фото КЗ: Tesseract если есть в образе; иначе Gemini Vision (GOOGLE_API_KEY)
       - key: PATIENT_OCR_GEMINI
         value: "1"
