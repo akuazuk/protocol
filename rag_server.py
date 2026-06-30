@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-30-r8-onco-risk-methodist-tab"
+BUILD_VERSION = "2026-06-30-r9-render-port-bind-fix"
 
 
 def _app_version() -> str:
@@ -11788,4 +11788,9 @@ else:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8787)
+    # Render/прод: слушаем 0.0.0.0 и порт из $PORT, иначе деплой не пройдёт port scan.
+    # Локально без $PORT - 127.0.0.1:8787 (можно переопределить HOST/PORT).
+    _port = int(os.environ.get("PORT") or "8787")
+    _host = os.environ.get("HOST") or ("0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
+    print(f"Starting uvicorn on {_host}:{_port}", flush=True)
+    uvicorn.run(app, host=_host, port=_port, log_level="info")
