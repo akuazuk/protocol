@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Онконастороженность - советующая оценка | Protocol</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
+    --line: #e2e8f0; --brand: #2563eb; --brand-ink: #1d4ed8;
+    --green: #16a34a; --amber: #d97706; --red: #dc2626;
+    --soft: #f0f9ff; --warm: #fffaf3; --warm-line: #fde9cf;
+    --radius: 16px; --radius-sm: 10px; --shadow: 0 1px 3px rgba(15,23,42,.08), 0 8px 24px rgba(15,23,42,.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 24px 18px 64px; }
+  header.page { margin-bottom: 18px; }
+  header.page h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -.01em; }
+  header.page p { margin: 0; color: var(--muted); }
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px;
+    background: #eef2ff; color: var(--brand-ink); border: 1px solid #dbe3ff; margin-left: 8px; vertical-align: middle;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px; margin-bottom: 18px;
+  }
+  .card h2 { font-size: 17px; margin: 0 0 14px; }
+  .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  label.field { display: block; font-size: 13px; color: var(--muted); }
+  label.field span { display: block; margin-bottom: 4px; }
+  input[type=text], input[type=number], textarea, select {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+    font: inherit; color: var(--ink); background: #fff;
+  }
+  textarea { resize: vertical; min-height: 76px; }
+  .checks { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
+  .checks label { font-size: 13px; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
+  .row-actions { display: flex; gap: 10px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
+  button.btn {
+    appearance: none; border: 0; border-radius: var(--radius-sm); padding: 10px 18px; font: inherit; font-weight: 600;
+    cursor: pointer; background: var(--brand); color: #fff;
+  }
+  button.btn:hover { background: var(--brand-ink); }
+  button.btn.ghost { background: #eef2ff; color: var(--brand-ink); }
+  button.btn.ghost:hover { background: #e0e7ff; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .seg button { border: 0; background: #fff; padding: 7px 14px; font: inherit; cursor: pointer; color: var(--muted); }
+  .seg button[aria-pressed="true"] { background: var(--brand); color: #fff; }
+  .muted { color: var(--muted); }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  .hidden { display: none !important; }
+
+  /* B2B */
+  .triage { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .triage .pill { padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 14px; }
+  .pill.low { background: #dcfce7; color: #166534; }
+  .pill.low_not_no { background: #fef3c7; color: #92400e; }
+  .pill.refer { background: #fee2e2; color: #991b1b; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-top: 14px; }
+  .kpi { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px; }
+  .kpi .v { font-size: 22px; font-weight: 700; }
+  .kpi .l { font-size: 12px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #f1f5f9; color: #475569; }
+  .site { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; margin-top: 12px; }
+  .site h3 { margin: 0 0 4px; font-size: 15px; }
+  .site .sub { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  table.contrib { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  table.contrib th, table.contrib td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  table.contrib th { color: var(--muted); font-weight: 600; }
+  ul.sources { margin: 6px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--muted); }
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  /* B2C soft */
+  .b2c { background: var(--warm); border-color: var(--warm-line); }
+  .b2c h2 { color: #92400e; }
+  .b2c .intro { font-size: 16px; margin-bottom: 12px; }
+  ul.qlist { list-style: none; margin: 0; padding: 0; }
+  ul.qlist li {
+    display: flex; gap: 10px; align-items: flex-start; padding: 11px 12px; margin-bottom: 8px;
+    background: #fff; border: 1px solid var(--warm-line); border-radius: var(--radius-sm); font-size: 15.5px;
+  }
+  ul.qlist li .ic { flex: 0 0 22px; color: var(--amber); font-size: 18px; line-height: 1.2; }
+  .b2c .disclaimer { font-size: 13px; color: #92400e; margin-top: 12px; }
+  .b2c-actions { display: flex; gap: 10px; margin-top: 12px; }
+  footer.page { color: var(--muted); font-size: 12px; text-align: center; margin-top: 28px; }
+  .err { color: var(--red); font-size: 13px; margin-top: 10px; }
+  @media print {
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .card { box-shadow: none; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <h1>Онконастороженность <span class="badge">советующая оценка, не диагноз</span></h1>
+    <p>Байесовский триаж (LR + базовая заболеваемость РБ), порог направления 3% (NICE NG12). Решение принимает врач.</p>
+  </header>
+
+  <section class="card no-print" id="form-card">
+    <h2>Входные данные</h2>
+    <div class="grid-form">
+      <label class="field" style="grid-column: 1 / -1;">
+        <span>Жалобы / анамнез (текст заключения)</span>
+        <textarea id="f-text" placeholder="Например: ректальное кровотечение, потеря веса за 3 месяца, боль в животе"></textarea>
+      </label>
+      <label class="field">
+        <span>Возраст</span>
+        <input type="number" id="f-age" min="0" max="120" placeholder="62" />
+      </label>
+      <label class="field">
+        <span>Пол</span>
+        <select id="f-sex">
+          <option value="unknown">не указан</option>
+          <option value="male">мужской</option>
+          <option value="female">женский</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Категория</span>
+        <select id="f-aoc">
+          <option value="adult">взрослый</option>
+          <option value="child">ребёнок</option>
+        </select>
+      </label>
+      <label class="field" style="grid-column: 1 / -1;">
+        <span>Анализы (текст, опционально)</span>
+        <input type="text" id="f-labs" placeholder="кал на скрытую кровь положительный; PSA 8" />
+      </label>
+    </div>
+    <div class="checks">
+      <label><input type="checkbox" id="f-dur" /> известна длительность симптома</label>
+      <label><input type="checkbox" id="f-smoke" /> курение</label>
+      <label><input type="checkbox" id="f-fam" /> отягощённый семейный анамнез</label>
+    </div>
+    <div class="row-actions">
+      <button class="btn" id="btn-run">Оценить онконастороженность</button>
+      <span class="seg" role="group" aria-label="Аудитория отображения">
+        <button id="seg-both" aria-pressed="true">Врач + пациент</button>
+        <button id="seg-b2b" aria-pressed="false">Только врач</button>
+        <button id="seg-b2c" aria-pressed="false">Только пациент</button>
+      </span>
+      <span class="muted" id="status"></span>
+    </div>
+    <div class="err hidden" id="err"></div>
+    <p class="hint">Демо-входы. Данные не сохраняются; запрос идёт на /api/onco-risk (локальный расчёт, без внешних вызовов).</p>
+  </section>
+
+  <!-- B2B -->
+  <section class="card hidden" id="b2b-card">
+    <h2>Аналитическая панель (для врача)</h2>
+    <div class="triage">
+      <span class="pill" id="b2b-pill"></span>
+      <span class="muted">Контекст: <b id="b2b-context"></b></span>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="kpi-any"></div><div class="l">общая онконастороженность (CI)</div></div>
+      <div class="kpi"><div class="v" id="kpi-top"></div><div class="l">ведущая локализация</div></div>
+      <div class="kpi">
+        <div class="v" style="display:flex;align-items:center;gap:10px;">
+          <svg id="ring" width="42" height="42" viewBox="0 0 42 42" aria-hidden="true"></svg>
+          <span id="kpi-compl"></span>
+        </div>
+        <div class="l">полнота данных</div>
+      </div>
+    </div>
+    <div class="chips" id="missing-chips"></div>
+    <div id="sites"></div>
+    <div class="note" id="b2b-note"></div>
+  </section>
+
+  <!-- B2C -->
+  <section class="card b2c hidden" id="b2c-card">
+    <h2>Что полезно уточнить у врача (для пациента)</h2>
+    <div class="intro" id="b2c-intro"></div>
+    <ul class="qlist" id="b2c-list"></ul>
+    <div class="disclaimer" id="b2c-disclaimer"></div>
+    <div class="b2c-actions no-print">
+      <button class="btn ghost" id="b2c-print">Печать</button>
+      <button class="btn ghost" id="b2c-copy">Скопировать</button>
+    </div>
+  </section>
+
+  <footer class="page">Protocol - онконастороженность - сборка <span id="ver">__BUILD_VERSION__</span></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var audience = "both";
+
+  function pct(s) { return s; } // сервер уже отдаёт строки с %
+
+  ["both", "b2b", "b2c"].forEach(function (a) {
+    $("seg-" + a).addEventListener("click", function () {
+      audience = a;
+      ["both", "b2b", "b2c"].forEach(function (x) {
+        $("seg-" + x).setAttribute("aria-pressed", String(x === a));
+      });
+    });
+  });
+
+  function ringSvg(score) {
+    var r = 16, c = 2 * Math.PI * r, off = c * (1 - score);
+    var color = score >= 0.7 ? "#16a34a" : (score >= 0.4 ? "#d97706" : "#dc2626");
+    return '<circle cx="21" cy="21" r="16" fill="none" stroke="#e2e8f0" stroke-width="6"/>' +
+      '<circle cx="21" cy="21" r="16" fill="none" stroke="' + color + '" stroke-width="6" ' +
+      'stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" ' +
+      'stroke-linecap="round" transform="rotate(-90 21 21)"/>';
+  }
+
+  function thermo(site) {
+    // Шкала 0..max%, маркер порога 3%, оценка с усами CI.
+    var hi = Math.max(site.ci[1], site.p, 0.05);
+    var maxv = Math.min(Math.max(hi * 1.25, 0.06), 1);
+    function x(v) { return (v / maxv * 100).toFixed(2); }
+    var threshZone = x(0.03);
+    var svg =
+      '<svg width="100%" height="46" viewBox="0 0 100 46" preserveAspectRatio="none" style="margin-top:6px;">' +
+      '<rect x="0" y="16" width="' + threshZone + '" height="12" fill="#dcfce7"/>' +
+      '<rect x="' + threshZone + '" y="16" width="' + (100 - threshZone) + '" height="12" fill="#fee2e2"/>' +
+      '<line x1="' + threshZone + '" y1="10" x2="' + threshZone + '" y2="34" stroke="#dc2626" stroke-width="0.6" stroke-dasharray="2 1.5"/>' +
+      '<line x1="' + x(site.ci[0]) + '" y1="22" x2="' + x(site.ci[1]) + '" y2="22" stroke="#1d4ed8" stroke-width="1.4"/>' +
+      '<circle cx="' + x(site.p) + '" cy="22" r="3.2" fill="#1d4ed8"/>' +
+      '</svg>';
+    return svg;
+  }
+
+  function waterfall(site) {
+    var pts = [];
+    if (site.contributors.length) {
+      pts.push({ label: "База", p: site.contributors[0].p_before, lr: null });
+      site.contributors.forEach(function (c) { pts.push({ label: c.label_ru, p: c.p_after, lr: c.lr_effective }); });
+    }
+    if (!pts.length) return "";
+    var W = 100, H = 60, pad = 4;
+    var maxp = Math.max.apply(null, pts.map(function (p) { return p.p; })) || 0.01;
+    var ymax = Math.min(maxp * 1.2 + 0.01, 1);
+    function X(i) { return (pad + i * (W - 2 * pad) / Math.max(pts.length - 1, 1)).toFixed(2); }
+    function Y(p) { return (H - pad - (p / ymax) * (H - 2 * pad)).toFixed(2); }
+    var poly = pts.map(function (p, i) { return X(i) + "," + Y(p.p); }).join(" ");
+    var threshY = Y(0.03);
+    var dots = pts.map(function (p, i) { return '<circle cx="' + X(i) + '" cy="' + Y(p.p) + '" r="1.6" fill="#1d4ed8"/>'; }).join("");
+    return '<svg width="100%" height="120" viewBox="0 0 100 60" preserveAspectRatio="none" style="margin-top:8px;border:1px solid #eef2f7;border-radius:8px;">' +
+      '<line x1="0" y1="' + threshY + '" x2="100" y2="' + threshY + '" stroke="#dc2626" stroke-width="0.4" stroke-dasharray="2 1.5"/>' +
+      '<polyline points="' + poly + '" fill="none" stroke="#2563eb" stroke-width="1.2"/>' + dots +
+      '</svg>';
+  }
+
+  function renderB2B(a) {
+    $("b2b-card").classList.remove("hidden");
+    var pill = $("b2b-pill");
+    pill.className = "pill " + a.triage_level;
+    pill.textContent = a.triage_label_ru;
+    $("b2b-context").textContent = a.context_label_ru;
+    $("kpi-any").textContent = a.any_cancer.p_pct + " (" + a.any_cancer.ci_pct + ")";
+    $("kpi-top").textContent = a.sites.length ? (a.sites[0].site_label_ru + " - " + a.sites[0].p_pct) : "нет";
+    $("ring").innerHTML = ringSvg(a.completeness.score);
+    $("kpi-compl").textContent = Math.round(a.completeness.score * 100) + "% - " + a.completeness.band_label_ru;
+    var mc = $("missing-chips"); mc.innerHTML = "";
+    (a.completeness.missing_labels_ru || []).forEach(function (m) {
+      var s = document.createElement("span"); s.className = "chip"; s.textContent = "дозаполнить: " + m; mc.appendChild(s);
+    });
+    var box = $("sites"); box.innerHTML = "";
+    if (!a.sites.length) {
+      box.innerHTML = '<p class="muted" style="margin-top:12px;">Количественная оценка не строилась (наблюдение/скрининг или мало данных). См. вопросы для пациента ниже.</p>';
+    }
+    a.sites.forEach(function (s) {
+      var rows = s.contributors.map(function (c) {
+        return "<tr><td>" + c.label_ru + "</td><td>x" + c.lr_effective + "</td><td>" + c.p_after_pct + "</td></tr>";
+      }).join("");
+      var div = document.createElement("div");
+      div.className = "site";
+      div.innerHTML =
+        "<h3>" + s.site_label_ru + " - <b>" + s.p_pct + "</b></h3>" +
+        '<div class="sub">95% интервал ' + s.ci_pct + " - порог направления 3%</div>" +
+        thermo(s) +
+        waterfall(s) +
+        '<table class="contrib"><thead><tr><th>Признак</th><th>LR (эфф.)</th><th>Пост-тест</th></tr></thead><tbody>' + rows + "</tbody></table>";
+      box.appendChild(div);
+    });
+    var srcHtml = (a.sources_ru || []).map(function (x) { return "<li>" + x + "</li>"; }).join("");
+    $("b2b-note").innerHTML = a.method_note_ru + (srcHtml ? '<ul class="sources">' + srcHtml + "</ul>" : "");
+  }
+
+  function renderB2C(b) {
+    $("b2c-card").classList.remove("hidden");
+    $("b2c-intro").textContent = b.intro_ru;
+    var ul = $("b2c-list"); ul.innerHTML = "";
+    (b.questions || []).forEach(function (q) {
+      var li = document.createElement("li");
+      li.innerHTML = '<span class="ic">&#10003;</span><span>' + q + "</span>";
+      ul.appendChild(li);
+    });
+    $("b2c-disclaimer").textContent = b.disclaimer_ru;
+  }
+
+  function run() {
+    $("err").classList.add("hidden");
+    $("status").textContent = "Считаю...";
+    var body = {
+      text: ($("f-text").value || "").trim(),
+      age: $("f-age").value ? parseInt($("f-age").value, 10) : null,
+      sex: $("f-sex").value,
+      labs_text: ($("f-labs").value || "").trim(),
+      smoking: $("f-smoke").checked ? true : null,
+      family_history: $("f-fam").checked ? true : null,
+      symptom_duration_known: $("f-dur").checked,
+      adult_or_child: $("f-aoc").value,
+      audience: audience
+    };
+    if (body.text.length < 2) {
+      $("err").textContent = "Введите жалобы/анамнез.";
+      $("err").classList.remove("hidden"); $("status").textContent = ""; return;
+    }
+    fetch("/api/onco-risk", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error("HTTP " + r.status + ": " + t); });
+      return r.json();
+    }).then(function (data) {
+      $("status").textContent = "";
+      $("b2b-card").classList.toggle("hidden", !data.assessment);
+      $("b2c-card").classList.toggle("hidden", !data.b2c);
+      if (data.assessment) renderB2B(data.assessment);
+      if (data.b2c) renderB2C(data.b2c);
+    }).catch(function (e) {
+      $("status").textContent = "";
+      $("err").textContent = String(e.message || e);
+      $("err").classList.remove("hidden");
+    });
+  }
+
+  $("btn-run").addEventListener("click", run);
+  $("b2c-print").addEventListener("click", function () { window.print(); });
+  $("b2c-copy").addEventListener("click", function () {
+    var lines = [];
+    var intro = $("b2c-intro").textContent; if (intro) lines.push(intro);
+    document.querySelectorAll("#b2c-list li span:last-child").forEach(function (s) { lines.push("- " + s.textContent); });
+    var dis = $("b2c-disclaimer").textContent; if (dis) lines.push("", dis);
+    var txt = lines.join("\n");
+    if (navigator.clipboard) navigator.clipboard.writeText(txt);
+    var btn = $("b2c-copy"); var old = btn.textContent; btn.textContent = "Скопировано";
+    setTimeout(function () { btn.textContent = old; }, 1500);
+  });
+
+  // Демо-предзаполнение для быстрого старта.
+  $("f-text").value = "Жалобы: ректальное кровотечение, потеря веса за 3 месяца, боль в животе.";
+  $("f-age").value = "62"; $("f-sex").value = "male";
+  $("f-labs").value = "кал на скрытую кровь положительный"; $("f-dur").checked = true;
+
+  // Авто-запуск демо по якорю #demo (для презентации и предпросмотра).
+  if ((location.hash || "").toLowerCase() === "#demo") { run(); }
+})();
+</script>
+</body>
+</html>

@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-30-r3-onco-risk-endpoint"
+BUILD_VERSION = "2026-06-30-r4-onco-risk-ui"
 
 
 def _app_version() -> str:
@@ -11669,6 +11669,18 @@ if (ROOT / "index.html").is_file():
         return FileResponse(
             path=str(p),
             media_type="application/javascript; charset=utf-8",
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
+
+    @app.get("/onco-risk.html", include_in_schema=False)
+    def _serve_onco_risk_html() -> Response:
+        p = ROOT / "onco-risk.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница onco-risk.html не найдена")
+        html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
+        return Response(
+            content=html,
+            media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache, must-revalidate"},
         )
 
