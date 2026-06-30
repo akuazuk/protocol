@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-06-30-r6-onco-risk-kb-validate"
+BUILD_VERSION = "2026-06-30-r7-onco-risk-consult-age-priors"
 
 
 def _app_version() -> str:
@@ -8405,6 +8405,60 @@ def _consult_text_from_screen_body(body: "ConsultComplianceScreenIn") -> str:
     return ""
 
 
+def _consult_onco_risk_advisory_enabled() -> bool:
+    """B2B-advisory онконастороженности в ответе consult-review (по умолчанию выкл)."""
+    return env_bool("CONSULT_ONCO_RISK_ADVISORY_ENABLED", False)
+
+
+def _onco_demographics_from_text(text: str) -> tuple[int | None, str, str]:
+    """Возраст/пол/категория из текста КЗ для онко-оценки (best-effort, без падений)."""
+    age: int | None = None
+    try:
+        dob, _ = _consult_extract_date_of_birth(text)
+        if dob:
+            today = date.today()
+            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            age = max(0, age)
+    except Exception:
+        age = None
+    low = (text or "").lower()
+    if age is None:
+        m = re.search(r"(\d{1,3})\s*(?:лет|год[ауы]?)\b", low)
+        if m:
+            try:
+                a = int(m.group(1))
+                if 0 < a < 130:
+                    age = a
+            except Exception:
+                age = None
+    sex = "unknown"
+    if re.search(r"пол[:\s]*ж|женщин|женск|\bfemale\b", low):
+        sex = "female"
+    elif re.search(r"пол[:\s]*м|мужчин|мужск|\bmale\b", low):
+        sex = "male"
+    aoc = "child" if (age is not None and age < 18) else "adult"
+    return age, sex, aoc
+
+
+def _consult_attach_onco_risk(result: dict, full_text: str) -> None:
+    """Добавляет советующий B2B-блок onco_risk в ответ (не gate, не диагноз)."""
+    if not isinstance(result, dict) or not _consult_onco_risk_advisory_enabled():
+        return
+    text = (full_text or "").strip()
+    if len(text) < 2:
+        return
+    try:
+        from clinical_knowledge import onco_risk as orisk
+
+        age, sex, aoc = _onco_demographics_from_text(text)
+        assessment = orisk.assess(
+            orisk.OncoInputs(text=text, age=age, sex=sex, adult_or_child=aoc)
+        )
+        result["onco_risk"] = orisk.to_b2b_payload(assessment)
+    except Exception:
+        pass
+
+
 def _maybe_methodist_autolog(
     request: "Request",
     result: dict,
@@ -8417,6 +8471,7 @@ def _maybe_methodist_autolog(
     body_methodist_mode: bool = False,
     category_slugs: str = "",
 ) -> dict:
+    _consult_attach_onco_risk(result, full_text)
     if not _methodist_request_active(request, body_methodist_mode):
         return result
     from clinical_knowledge.feedback_store import enrich_result_with_methodist_autolog

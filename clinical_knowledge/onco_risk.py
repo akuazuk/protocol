@@ -78,6 +78,33 @@ def _screening() -> dict[str, Any]:
     return _load("screening_belarus.yaml")
 
 
+@lru_cache(maxsize=1)
+def _age_priors() -> dict[str, Any]:
+    """Возраст-специфичные baselines (Фаза 4); {} если файл ещё не сформирован."""
+    path = DATA_DIR / "priors_age_belarus.yaml"
+    if not path.is_file():
+        return {}
+    try:
+        with path.open(encoding="utf-8") as fh:
+            return yaml.safe_load(fh) or {}
+    except Exception:
+        return {}
+
+
+def _pick_age_baseline(site: str, age: int | None) -> float | None:
+    """Baseline по возрастной полосе из priors_age_belarus.yaml; None если нет данных."""
+    if age is None:
+        return None
+    cfg = (_age_priors().get("sites") or {}).get(site) or {}
+    for band in cfg.get("bands") or []:
+        a_min = int(band.get("age_min", 0))
+        a_max = int(band.get("age_max", 200))
+        b = band.get("baseline_symptomatic")
+        if b is not None and a_min <= age <= a_max:
+            return float(b)
+    return None
+
+
 # --------------------------------------------------------------------------- #
 # Модели данных
 # --------------------------------------------------------------------------- #
@@ -255,7 +282,11 @@ def data_completeness(inp: OncoInputs, features: list[FeatureHit]) -> Completene
 # --------------------------------------------------------------------------- #
 # Байес
 # --------------------------------------------------------------------------- #
-def _baseline(site: str) -> float:
+def _baseline(site: str, age: int | None = None) -> float:
+    # Приоритет - возраст-специфичный baseline (Фаза 4), иначе общий из priors_belarus.
+    age_b = _pick_age_baseline(site, age)
+    if age_b is not None:
+        return age_b
     sites = _priors().get("sites") or {}
     cfg = sites.get(site) or {}
     p0 = cfg.get("baseline_symptomatic")
@@ -284,7 +315,9 @@ def _beta_ci(p: float, completeness: float) -> tuple[float, float]:
     return round(lo, 4), round(hi, 4)
 
 
-def posterior_risk(features: list[FeatureHit], completeness: float) -> list[SiteRisk]:
+def posterior_risk(
+    features: list[FeatureHit], completeness: float, age: int | None = None
+) -> list[SiteRisk]:
     by_site: dict[str, list[FeatureHit]] = {}
     for f in features:
         if f.cancer_site and f.cancer_site != "unknown":
@@ -292,7 +325,7 @@ def posterior_risk(features: list[FeatureHit], completeness: float) -> list[Site
 
     out: list[SiteRisk] = []
     for site, feats in by_site.items():
-        p0 = _baseline(site)
+        p0 = _baseline(site, age)
         odds0 = p0 / (1 - p0)
 
         effective: list[tuple[FeatureHit, float]] = []
@@ -579,7 +612,7 @@ def assess(inp: OncoInputs) -> OncoAssessment:
         any_ci = (0.0, 0.0)
         level = "low"
     else:
-        sites = posterior_risk(features, completeness.score)
+        sites = posterior_risk(features, completeness.score, age=inp.age)
         any_p = any_cancer_risk(sites)
         any_ci = _beta_ci(any_p, completeness.score) if any_p else (0.0, 0.0)
         top = max((s.p for s in sites), default=0.0)

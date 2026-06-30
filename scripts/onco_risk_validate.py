@@ -86,6 +86,17 @@ def main() -> int:
         )
     if orisk._screening().get("confirm_rb"):
         warnings.append("screening_belarus.yaml: возрасты помечены confirm_rb (подтвердить по МЗ РБ)")
+    age_p = orisk._age_priors()
+    if age_p.get("sites"):
+        warnings.append(
+            "priors_age_belarus.yaml активен: возрастные baselines для "
+            + ", ".join(sorted((age_p.get("sites") or {}).keys()))
+        )
+    else:
+        warnings.append(
+            "priors_age_belarus.yaml отсутствует: используются общие baselines "
+            "(запустите scripts/onco_priors_recalibrate.py с данными CI5/РНПЦ)"
+        )
 
     print("=== Онкориск: обзор базы знаний ===")
     print(f"признаков (симптомы+анализы): {len(feats)}")

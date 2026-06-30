@@ -51,6 +51,8 @@
 - `POST /api/onco-risk` - советующий ответ (audience b2b|b2c|both).
 - `/onco-risk.html` - демонстрационная панель (B2B) и карточка вопросов (B2C).
 - Patient-флоу: B2C-блок «Что полезно уточнить у врача» за флагом `PATIENT_ONCO_QUESTIONS_ENABLED` (по умолчанию выкл).
+- Consult-review: B2B-блок `onco_risk` в ответе за флагом `CONSULT_ONCO_RISK_ADVISORY_ENABLED` (не gate, по умолчанию выкл).
+- Возрастные priors: `data/onco_risk/priors_age_belarus.yaml` (Фаза 4) подхватываются автоматически, если сформированы скриптом `scripts/onco_priors_recalibrate.py`.
 
 ## Валидация (план)
 
