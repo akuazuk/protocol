@@ -631,6 +631,38 @@
     });
   }
 
+  function renderOncoQuestions(block) {
+    var wrap = document.getElementById("onco-questions-wrap");
+    if (!wrap) return;
+    var list = document.getElementById("onco-questions-list");
+    var qs = (block && block.questions) || [];
+    if (!block || !qs.length) {
+      wrap.classList.add("hidden");
+      if (list) list.innerHTML = "";
+      return;
+    }
+    var intro = document.getElementById("onco-questions-intro");
+    if (intro) intro.textContent = block.intro_ru || "";
+    var note = document.getElementById("onco-questions-note");
+    if (note) note.textContent = block.disclaimer_ru || "";
+    if (list) {
+      list.innerHTML = "";
+      qs.forEach(function (q) {
+        var li = document.createElement("li");
+        var ic = document.createElement("span");
+        ic.className = "onco-ic";
+        ic.setAttribute("aria-hidden", "true");
+        ic.innerHTML = "&#10003;";
+        var span = document.createElement("span");
+        span.textContent = q;
+        li.appendChild(ic);
+        li.appendChild(span);
+        list.appendChild(li);
+      });
+    }
+    wrap.classList.remove("hidden");
+  }
+
   function renderP2Narratives(pr) {
     var wrap = document.getElementById("p2-narratives");
     if (!wrap) return;
@@ -1162,6 +1194,7 @@
 
     renderQuestionCards(pr.action_checklist || [], pr);
     renderQuestionsMore(pr);
+    renderOncoQuestions(pr.onco_questions);
 
     var pw = document.getElementById("priority-wrap");
     var pl = document.getElementById("priority-list");

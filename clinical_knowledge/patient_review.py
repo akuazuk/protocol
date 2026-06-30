@@ -112,6 +112,24 @@ def run_patient_review(
             question_tone=question_tone,
         )
 
+    from .patient_flags import patient_onco_questions_enabled
+
+    if patient_onco_questions_enabled() and isinstance(patient_report, dict):
+        try:
+            from .onco_risk import b2c_block_from_text
+
+            onco_block = b2c_block_from_text(
+                raw,
+                age=patient_ctx.get("age"),
+                sex=(patient_ctx.get("sex") or "unknown"),
+                labs_text=lab_text or "",
+                adult_or_child=(patient_ctx.get("age_group") or "adult"),
+            )
+            if onco_block:
+                patient_report["onco_questions"] = onco_block
+        except Exception:
+            pass
+
     from .patient_tier_gating import apply_catalog_tier_limits
 
     patient_report = apply_catalog_tier_limits(

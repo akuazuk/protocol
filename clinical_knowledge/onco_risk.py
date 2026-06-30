@@ -529,6 +529,30 @@ def to_b2b_payload(a: OncoAssessment) -> dict[str, Any]:
     }
 
 
+def b2c_block_from_text(
+    text: str,
+    *,
+    age: int | None = None,
+    sex: str = "unknown",
+    labs_text: str = "",
+    adult_or_child: str = "adult",
+    family_history: bool | None = None,
+) -> dict[str, Any] | None:
+    """Готовый B2C-блок (вопросы врачу) из текста КЗ; None если вопросов нет.
+
+    Удобная обёртка для patient-флоу: без чисел и «страшных» слов.
+    """
+    inp = OncoInputs(
+        text=text or "", age=age, sex=sex or "unknown",
+        labs_text=labs_text or "", adult_or_child=adult_or_child or "adult",
+        family_history=family_history,
+    )
+    a = assess(inp)
+    if not a.b2c_questions:
+        return None
+    return to_b2c_payload(a)
+
+
 def to_b2c_payload(a: OncoAssessment) -> dict[str, Any]:
     """Чеклист для пациента: только нейтральные вопросы, без чисел и тревожных слов."""
     return {

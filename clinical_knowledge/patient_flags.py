@@ -38,3 +38,8 @@ def patient_no_history_mode_enabled() -> bool:
 
 def patient_show_protocol_technical_block() -> bool:
     return _flag("PATIENT_SHOW_PROTOCOL_TECHNICAL_BLOCK", "0")
+
+
+def patient_onco_questions_enabled() -> bool:
+    """B2C-блок «вопросы врачу» из онконастороженности (по умолчанию выкл)."""
+    return _flag("PATIENT_ONCO_QUESTIONS_ENABLED", "0")
