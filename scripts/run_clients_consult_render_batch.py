@@ -113,8 +113,24 @@ def run_case(
     sa = (result.get("structured_analysis") or {}).get("compliance") or {}
     cr = (result.get("clinical_rules") or {}).get("rules_check") or {}
     failed = [f for f in (cr.get("findings") or []) if not f.get("passed") and not f.get("skipped")]
-    matched = (result.get("clinical_rules") or {}).get("matched_protocols") or []
-    retrieval = result.get("retrieval_top_paths") or result.get("matched_protocol_paths") or []
+
+    def _paths(items: object) -> list[str]:
+        out: list[str] = []
+        for it in items or []:  # type: ignore[union-attr]
+            p = it.get("path") if isinstance(it, dict) else str(it)
+            if p:
+                out.append(str(p))
+        return out
+
+    # Актуальные ключи ответа /api/consult-review/tier (с fallback на старые имена).
+    matched = _paths(result.get("protocol_paths_used")) or _paths(
+        (result.get("clinical_rules") or {}).get("matched_protocols")
+    )
+    retrieval = _paths(result.get("retrieval_paths")) or _paths(
+        result.get("retrieval_top_paths") or result.get("matched_protocol_paths")
+    )
+    fragments = result.get("consult_protocol_fragments")
+    rag_chunks_n = len(fragments) if isinstance(fragments, list) else 0
 
     rep: dict = {
         "file": path.name,
@@ -131,8 +147,9 @@ def run_case(
         "failed_rules_count": len(failed),
         "failed_rule_ids": [str(f.get("rule_id") or "") for f in failed[:10]],
         "failed_rule_titles": [str(f.get("title_ru") or f.get("message_ru") or "")[:80] for f in failed[:5]],
-        "matched_protocols": [(m.get("path") or "")[-70:] for m in matched[:3]],
-        "retrieval_top": [str(p)[-70:] for p in (retrieval[:3] if isinstance(retrieval, list) else [])],
+        "matched_protocols": [p[-70:] for p in matched[:3]],
+        "retrieval_top": [p[-70:] for p in retrieval[:3]],
+        "rag_chunks_n": rag_chunks_n,
         "text_len": len(text),
         "server_version": result.get("server_version"),
     }
@@ -174,7 +191,7 @@ def main() -> int:
 
     token = (os.environ.get("METHODIST_TOKEN") or os.environ.get("METHODIST_PIN") or "").strip()
     if args.ai_review != "off" and not token:
-        print("WARN: нет METHODIST_TOKEN — AI-review пропущен", file=sys.stderr)
+        print("WARN: нет METHODIST_TOKEN - AI-review пропущен", file=sys.stderr)
         args.ai_review = "off"
 
     paths = _discover(args.folder.resolve())
