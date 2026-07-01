@@ -206,6 +206,10 @@ def merge_to_protocol_summary(
     local_path = str(doc.get("path") or "")
     title = str(skeleton.get("title_ru") or doc.get("title") or protocol_id)
     pops = skeleton.get("population") or []
+    if isinstance(pops, str):
+        pops = [pops.strip()] if pops.strip() else []
+    elif not isinstance(pops, list):
+        pops = [str(pops)] if pops else []
     if not pops:
         aud = str(doc.get("audience") or "").lower()
         if aud == "child":
