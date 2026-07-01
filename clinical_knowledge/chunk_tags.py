@@ -19,6 +19,33 @@ _PREAMBLE_MARKERS = (
     "министр здравоохранения",
 )
 
+# Высокоточные маркеры административного текста (не клиника): список утверждаемых
+# протоколов, ссылки на приложения приказа, вступление в силу, подпись министра.
+# Сканируется ВЕСЬ текст (маркеры бывают в конце куска), поэтому набор строгий.
+_ADMIN_MARKERS = (
+    "утвердить:",
+    "(прилагается)",
+    "прилагается);",
+    "вступает в силу",
+    "настоящее постановление",
+    "настоящий приказ",
+    "официального опубликования",
+    "к приказу министерства",
+    "к постановлению министерства",
+    "приложению к приказу",
+    "приложению к постановлению",
+)
+# Подпись министра вида «Министр Д.Л.Пиневич».
+_MINISTER_SIG = re.compile(r"министр\s+[а-яё]\.\s?[а-яё]\.", re.I)
+
+
+def is_administrative_text(text: str) -> bool:
+    """True для явно административных кусков (преамбула/приложение приказа, подпись)."""
+    low = (text or "").lower()
+    if any(m in low for m in _ADMIN_MARKERS):
+        return True
+    return bool(_MINISTER_SIG.search(low))
+
 _OBLIGATION_REQUIRED = re.compile(r"обязательн|must|необходим|минимальн", re.I)
 _OBLIGATION_OPTIONAL = re.compile(r"по\s+показан|при\s+необходим|может\s+быть", re.I)
 _OBLIGATION_CONTRA = re.compile(r"противопоказан|не\s+рекоменду", re.I)
@@ -122,7 +149,7 @@ def icd_weights_for_chunk(
     icd_codes: list[str],
     protocol_weights: dict[str, Any] | None = None,
 ) -> dict[str, float]:
-    """Веса МКБ 0–1 на чанке."""
+    """Веса МКБ 0-1 на чанке."""
     out: dict[str, float] = {}
     pw = protocol_weights or {}
     for raw in icd_codes or []:
@@ -237,7 +264,16 @@ def chunk_usable_for_retrieval(chunk: dict[str, Any], *, ambulatory: bool = True
     tags = chunk.get("tags") or {}
     if tags.get("is_preamble") or tags.get("signal") == "low":
         return False
-    if (chunk.get("chunk_type") or "").lower() == "terms":
+    ctype = (chunk.get("chunk_type") or "").lower()
+    text = chunk.get("text") or chunk.get("lex_text") or ""
+    # Административные куски (список «Утвердить», подпись министра, ссылки на
+    # приложения приказа) не годятся как клинические выдержки - отсекаем даже при
+    # пустых tags (частый случай для appendix/body без обогащения).
+    if is_administrative_text(text):
+        return False
+    if ctype == "appendix" and is_chunk_preamble(text):
+        return False
+    if ctype == "terms":
         return bool(chunk.get("icd10_codes"))
     if ambulatory:
         care = tags.get("care_setting") or chunk.get("care_setting") or []

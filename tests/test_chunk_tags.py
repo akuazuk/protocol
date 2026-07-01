@@ -3,6 +3,7 @@ from clinical_knowledge.chunk_tags import (
     build_chunk_tags,
     build_protocol_tags,
     chunk_usable_for_retrieval,
+    is_administrative_text,
     is_chunk_preamble,
 )
 from clinical_knowledge.kz_chunk_match import match_kp_item_to_kz
@@ -34,6 +35,29 @@ def test_protocol_tags_admin():
     )
     assert tags["admin_order"] is True
     assert tags["usable_for_kz_review"] is False
+
+
+def test_administrative_chunk_not_usable():
+    # Список утверждаемых протоколов (преамбула приказа), мис-типизирован как drug_list.
+    approval = (
+        "клинический протокол «Диагностика и лечение пациентов (взрослое население) "
+        "с папулосквамозными нарушениями» (прилагается);"
+    )
+    assert is_administrative_text(approval) is True
+    assert chunk_usable_for_retrieval({"chunk_type": "drug_list", "text": approval}) is False
+
+    # Подпись министра / ссылка на приложение приказа в конце куска.
+    tail = (
+        "«Дискоидная красная волчанка (L93.0).» приложения 3 к приказу Министерства "
+        "здравоохранения Республики Беларусь. Министр Д.Л.Пиневич"
+    )
+    assert is_administrative_text(tail) is True
+    assert chunk_usable_for_retrieval({"chunk_type": "appendix", "text": tail}) is False
+
+    # Реальная клиника не должна отсекаться.
+    clinical = "Рекомендуется топический кальципотриол/бетаметазон при бляшечном псориазе."
+    assert is_administrative_text(clinical) is False
+    assert chunk_usable_for_retrieval({"chunk_type": "treatment", "text": clinical}) is True
 
 
 def test_kz_match_found():
