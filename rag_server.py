@@ -1336,6 +1336,14 @@ def _run_load_data_background() -> None:
                 prewarm_icd_summary_index()
             except Exception:
                 pass
+        if env_bool("CONSULT_PREWARM_PROTOCOL_SUMMARIES", True):
+            try:
+                from clinical_knowledge.protocol_summary.loader import prewarm_protocol_summaries
+
+                n = prewarm_protocol_summaries()
+                _log.info("Prewarmed %d protocol summaries", n)
+            except Exception:
+                pass
         if env_bool("CONSULT_PREWARM_PROTOCOL_ICD_INDEX", True):
             try:
                 from clinical_knowledge.protocol_icd_index import prewarm_protocol_icd_index
@@ -8189,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-01-r22-l2-excerpt-cleanup"
+BUILD_VERSION = "2026-07-01-r23-phases-2-3-hybrid"
 
 
 def _app_version() -> str:

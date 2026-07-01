@@ -108,9 +108,18 @@ def discover_protocol_summaries(
                 _add_summary(found, diagnostics, s, reason="protocol_id", score=1.0, condition_ids=cids)
                 condition_ids.extend(cids)
 
-    # 2) local_path / sha256 / title / rubric из legacy cards
+    # 2) local_path / sha256 / title / rubric из legacy cards (path-индекс, без O(n) скана)
+    from .loader import load_summary_by_path
+
     for m in matched_protocols:
-        m_path = m.get("source_path") or m.get("local_path") or ""
+        m_path = str(m.get("source_path") or m.get("local_path") or "").replace("\\", "/")
+        if m_path:
+            s = _usable(load_summary_by_path(m_path, usable_only=usable_only))
+            if s and s.protocol_id not in found:
+                cids = [c.condition_id for c in s.conditions]
+                _add_summary(found, diagnostics, s, reason="source_path", score=0.95, condition_ids=cids)
+                condition_ids.extend(cids)
+                continue
         m_sha = m.get("document_sha256") or m.get("sha256")
         m_title = str(m.get("document_title") or m.get("title") or "")
         m_rubric = str(m.get("category_slug") or m.get("specialty_slug") or m.get("rubric_slug") or "")
@@ -118,16 +127,12 @@ def discover_protocol_summaries(
         for summary in load_protocol_summaries(usable_only=usable_only):
             if summary.protocol_id in found:
                 continue
-            # legacy match по path/sha/title/rubric
             reasons: list[str] = []
             score = 0.0
-            if _path_match(summary.source.local_path, m_path):
-                reasons.append("source_path")
-                score = max(score, 0.95)
-            if m_sha and summary.source.document_sha256 and m_sha == summary.source.document_sha256:
+            if m_sha and summary.source and summary.source.document_sha256 and m_sha == summary.source.document_sha256:
                 reasons.append("sha256")
                 score = max(score, 0.98)
-            ts = _title_sim(summary.source.title, m_title)
+            ts = _title_sim(summary.source.title if summary.source else "", m_title)
             if ts >= 0.55:
                 reasons.append(f"title_similarity:{ts:.2f}")
                 score = max(score, ts)

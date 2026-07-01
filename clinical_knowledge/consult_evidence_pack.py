@@ -190,22 +190,18 @@ def _summary_excerpts_by_path(
     if not clean_paths:
         return out
     try:
-        from clinical_knowledge.protocol_summary.summary_resolver import (
-            discover_protocol_summaries,
-        )
+        from clinical_knowledge.protocol_summary.loader import load_summary_by_path
     except ImportError:
         return out
-    matched = [{"source_path": p} for p in clean_paths]
-    try:
-        summaries, _diag, _cids = discover_protocol_summaries(
-            icd_codes=[],
-            diagnosis_texts=[],
-            matched_protocols=matched,
-            usable_only=True,
-        )
-    except Exception:
-        return out
-    for summary in summaries:
+    seen_pids: set[str] = set()
+    for p in clean_paths:
+        try:
+            summary = load_summary_by_path(p, usable_only=True)
+        except Exception:
+            summary = None
+        if summary is None or summary.protocol_id in seen_pids:
+            continue
+        seen_pids.add(summary.protocol_id)
         src_path = _summary_src_path(summary, summary.protocol_id)
         for cond in summary.conditions:
             _emit_condition_excerpts(

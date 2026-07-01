@@ -81,6 +81,54 @@ def clear_protocol_summary_cache() -> None:
     load_summary_by_protocol_id.cache_clear()
     load_summary_rules.cache_clear()
     _summaries_by_condition_id.cache_clear()
+    _path_to_summary.cache_clear()
+
+
+def _norm_catalog_path(p: str) -> str:
+    return (p or "").replace("\\", "/").strip().lower()
+
+
+@lru_cache(maxsize=1)
+def _path_to_summary() -> dict[str, ProtocolSummary]:
+    """Индекс local_path/basename → ProtocolSummary для O(1) резолва по пути."""
+    out: dict[str, ProtocolSummary] = {}
+    for summary in load_protocol_summaries(usable_only=False):
+        src = summary.source
+        if not src:
+            continue
+        for raw in (src.local_path, src.url):
+            if not raw:
+                continue
+            norm = _norm_catalog_path(str(raw))
+            if norm and norm not in out:
+                out[norm] = summary
+            base = Path(str(raw)).name.lower()
+            if base and base not in out:
+                out[base] = summary
+    return out
+
+
+def load_summary_by_path(path: str, *, usable_only: bool = True) -> ProtocolSummary | None:
+    """Быстрый поиск сводки по catalog path (без полного скана 477 карточек)."""
+    if not path:
+        return None
+    norm = _norm_catalog_path(path)
+    base = Path(path).name.lower()
+    m = _path_to_summary()
+    summary = m.get(norm) or m.get(base)
+    if summary is None:
+        return None
+    if usable_only and not summary_is_usable(summary):
+        return None
+    return summary
+
+
+def prewarm_protocol_summaries() -> int:
+    """Прогреть кэш сводок и path-индекс (ускорение L2/hybrid)."""
+    summaries = load_protocol_summaries(usable_only=False)
+    _path_to_summary()
+    _summaries_by_condition_id(usable_only=False)
+    return len(summaries)
 
 
 @lru_cache(maxsize=256)

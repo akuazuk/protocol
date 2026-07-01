@@ -19,7 +19,12 @@ from .structured_fallback import build_structured_summary
 
 
 def _gemini_available() -> bool:
-    return bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    try:
+        from clinical_knowledge.gemini_lite import gemini_available
+
+        return gemini_available()
+    except Exception:
+        return bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
 
 
 def _call_llm(
@@ -29,18 +34,22 @@ def _call_llm(
     generate_fn: Callable | None = None,
     model: Any = None,
 ) -> dict[str, Any] | list[Any] | None:
-    if generate_fn is None or model is None:
-        try:
-            from rag_server import _extract_gemini_text, generate_gemini, get_gemini
-
-            model = model or get_gemini()
-            generate_fn = generate_gemini
-        except Exception:
-            return None
     prompt = f"{system}\n\n{user}"
     try:
-        resp = generate_fn(model, prompt)
-        text = _extract_gemini_text(resp)
+        if generate_fn is not None and model is not None:
+            resp = generate_fn(model, prompt)
+            text = resp if isinstance(resp, str) else str(resp)
+        else:
+            from clinical_knowledge.gemini_lite import (
+                generate_lite_json,
+                gemini_available,
+                get_lite_gemini_model,
+            )
+
+            if not gemini_available():
+                return None
+            model = model or get_lite_gemini_model()
+            text = generate_lite_json(model, prompt)
     except Exception:
         return None
     data = parse_json_loose(text or "")

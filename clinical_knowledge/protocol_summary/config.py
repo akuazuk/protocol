@@ -17,10 +17,10 @@ def _env_bool(name: str, default: bool) -> bool:
 
 
 def _env_mode() -> AnalysisMode:
-    raw = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "legacy").strip().lower()
+    raw = (os.environ.get("PROTOCOL_SUMMARY_MODE") or "hybrid").strip().lower()
     if raw in ("legacy", "summary", "hybrid"):
         return raw  # type: ignore[return-value]
-    return "legacy"
+    return "hybrid"
 
 
 def _env_review_min() -> ReviewStatusMin:
@@ -46,7 +46,7 @@ class ProtocolSummaryConfig:
     def from_env(cls) -> ProtocolSummaryConfig:
         root = os.environ.get("PROTOCOL_SUMMARY_DATA_ROOT") or "data/protocol_summaries"
         return cls(
-            enabled=_env_bool("PROTOCOL_SUMMARY_ENABLED", False),
+            enabled=_env_bool("PROTOCOL_SUMMARY_ENABLED", True),
             mode=_env_mode(),
             strict_validation=_env_bool("PROTOCOL_SUMMARY_STRICT_VALIDATION", True),
             fallback_to_legacy=_env_bool("PROTOCOL_SUMMARY_FALLBACK_TO_LEGACY", True),

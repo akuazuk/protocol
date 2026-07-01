@@ -281,13 +281,16 @@ def analyze_consultation_text(
             summary_to_protocol_rules,
         )
 
-        cfg = ps_cfg.protocol_summary_config
+        cfg = ps_cfg.ProtocolSummaryConfig.from_env()
         if analysis_mode == "legacy":
             enabled = False
         elif analysis_mode in ("summary", "hybrid"):
             enabled = True
         else:
             enabled = cfg.enabled
+            if enabled:
+                effective_mode = cfg.mode
+                summary_meta["analysis_mode"] = cfg.mode
 
         summary_active = enabled or analysis_mode in ("summary", "hybrid")
         if not summary_active:

@@ -83,7 +83,7 @@ def is_truncated_text(text: str) -> bool:
     t = (text or "").rstrip()
     if not t:
         return False
-    return t[-1] in (";", ",", "–", "-", ":") and len(t) < 1100
+    return t[-1] in (";", ",", "-", "-", ":") and len(t) < 1100
 
 _NOISE_LINE_RE = re.compile(
     r"^(?:\s*(?:утверждено|согласовано|документ|форма\s+\d+"
@@ -92,7 +92,7 @@ _NOISE_LINE_RE = re.compile(
 )
 
 _FOOTER_RE = re.compile(
-    r"^(?:\d+\s*/\s*\d+\s*$|стр\.\s*\d+\s*$|–\s*\d+\s*–\s*$)",
+    r"^(?:\d+\s*/\s*\d+\s*$|стр\.\s*\d+\s*$|-\s*\d+\s*-\s*$)",
     re.I,
 )
 
@@ -178,7 +178,7 @@ def detect_issues(chunk: dict[str, Any]) -> list[str]:
         if not has_ent and not _CLINICAL_WORDS.search(text):
             issues.append(ISSUE_EMPTY_ENTITIES)
 
-    if text.endswith(";") or text.endswith(",") or text.endswith("–"):
+    if text.endswith(";") or text.endswith(",") or text.endswith("-"):
         issues.append(ISSUE_TRUNCATED_LIST)
 
     return issues
@@ -221,12 +221,28 @@ def should_index(chunk: dict[str, Any]) -> bool:
         return False
     if is_chunk_preamble(text):
         return False
+    try:
+        from clinical_knowledge.chunk_tags import is_administrative_text
+
+        if is_administrative_text(text):
+            return False
+    except Exception:
+        pass
+    try:
+        from clinical_knowledge.consult_evidence_quality import is_reference_noise
+
+        if is_reference_noise(text):
+            return False
+    except Exception:
+        pass
     tags = chunk.get("tags") or {}
     if tags.get("is_preamble") or tags.get("signal") == "low":
         if ctype in ("body", "terms") and not (chunk.get("icd10_codes") or []):
             return False
     noise = chunk.get("noise_flags") or []
     if "preamble" in noise or "legal_header" in noise:
+        return False
+    if "administrative" in noise or "reference_noise" in noise:
         return False
     return True
 
@@ -240,6 +256,22 @@ def apply_indexable_flags(chunk: dict[str, Any]) -> dict[str, Any]:
     if is_chunk_preamble(text):
         if "preamble" not in noise:
             noise.append("preamble")
+    try:
+        from clinical_knowledge.chunk_tags import is_administrative_text
+
+        if is_administrative_text(text):
+            if "administrative" not in noise:
+                noise.append("administrative")
+    except Exception:
+        pass
+    try:
+        from clinical_knowledge.consult_evidence_quality import is_reference_noise
+
+        if is_reference_noise(text):
+            if "reference_noise" not in noise:
+                noise.append("reference_noise")
+    except Exception:
+        pass
     if st in ("постановляет:", "утверждено", "согласовано"):
         if "legal_header" not in noise:
             noise.append("legal_header")
