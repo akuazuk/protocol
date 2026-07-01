@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from clinical_knowledge.consult_evidence_quality import (
+    clean_clinical_sentences,
     is_usable_evidence_excerpt,
     is_usable_summary_excerpt,
     protocol_title_for_path,
@@ -51,21 +52,6 @@ def _excerpt_item(
     }
 
 
-import re as _re
-
-_CRIT_TAG = _re.compile(r"^\s*\[[a-z_]+\]\s*", _re.I)
-_CRIT_NUM = _re.compile(r"^\s*\d+[.)]\s*")
-_CRIT_PAGE = _re.compile(r"\s*\(?\s*стр\.?\s*\d+\s*\)?\s*$", _re.I)
-
-
-def _clean_criterion_text(text: str) -> str:
-    t = (text or "").strip()
-    t = _CRIT_TAG.sub("", t)
-    t = _CRIT_NUM.sub("", t)
-    t = _CRIT_PAGE.sub("", t)
-    return t.strip(" ,;")
-
-
 def _summary_src_path(summary: Any, protocol_id: str) -> str:
     if summary.source and summary.source.local_path:
         return str(summary.source.local_path)
@@ -81,97 +67,75 @@ def _emit_condition_excerpts(
     cond: Any,
     max_per_block: int,
 ) -> None:
-    """Добавляет чистые блок-выдержки из одной condition сводки в out."""
-    if cond.diagnosis_structure and len(out["diagnosis"]) < max_per_block:
-        parts = [comp.name for comp in (cond.diagnosis_structure.required_components or [])[:3]]
-        parts = [p for p in parts if p and is_usable_summary_excerpt(p)]
-        if parts:
-            out["diagnosis"].append(
-                _excerpt_item(
-                    block_id="diagnosis",
-                    protocol_path=src_path,
-                    section="Диагноз (summary card)",
-                    excerpt="; ".join(parts),
-                    match_status="summary_card",
-                    source="summary_card",
-                )
+    """Добавляет чистые атомарные блок-выдержки из одной condition сводки в out.
+
+    Каждая выдержка - отдельный клинический пункт (не склейка разнородных
+    фрагментов). Тексты предложений чистятся clean_clinical_sentences.
+    """
+    def _add(block_id: str, section: str, excerpt: str) -> None:
+        if len(out[block_id]) >= max_per_block:
+            return
+        out[block_id].append(
+            _excerpt_item(
+                block_id=block_id,
+                protocol_path=src_path,
+                section=section,
+                excerpt=excerpt,
+                match_status="summary_card",
+                source="summary_card",
             )
+        )
+
+    seen: set[tuple[str, str]] = set()
+
+    def _add_unique(block_id: str, section: str, raw: str, *, clean: bool) -> None:
+        if len(out[block_id]) >= max_per_block:
+            return
+        txt = clean_clinical_sentences(raw) if clean else (raw or "").strip()
+        if not txt:
+            return
+        if not clean and not is_usable_summary_excerpt(txt):
+            return
+        key = (block_id, txt[:60].lower())
+        if key in seen:
+            return
+        seen.add(key)
+        _add(block_id, section, txt)
+
+    # Диагноз: структурные компоненты (атомарно) + диагностические критерии (очистка).
+    if cond.diagnosis_structure:
+        for comp in (cond.diagnosis_structure.required_components or [])[:4]:
+            _add_unique("diagnosis", "Диагноз (summary card)", comp.name, clean=False)
     dcrit = getattr(cond, "diagnostic_criteria", None)
     if dcrit is not None:
-        for item in (getattr(dcrit, "required", None) or [])[:4]:
-            if len(out["diagnosis"]) >= max_per_block:
-                break
-            txt = _clean_criterion_text(getattr(item, "text", "") or "")
-            if not is_usable_summary_excerpt(txt) or len(txt) < 12:
-                continue
-            out["diagnosis"].append(
-                _excerpt_item(
-                    block_id="diagnosis",
-                    protocol_path=src_path,
-                    section="Диагноз (summary card)",
-                    excerpt=txt,
-                    match_status="summary_card",
-                    source="summary_card",
-                )
+        for item in (getattr(dcrit, "required", None) or [])[:6]:
+            _add_unique(
+                "diagnosis", "Диагноз (summary card)",
+                getattr(item, "text", "") or "", clean=True,
             )
 
+    # Обследования: короткие клинические названия - атомарно.
     exams = (cond.required_exams or []) + (cond.conditional_exams or [])
-    for ex in exams[:6]:
-        if len(out["exams"]) >= max_per_block:
-            break
+    for ex in exams[:8]:
         txt = ex.name
         if ex.comment:
             txt = f"{txt}. {ex.comment}"
-        if not is_usable_summary_excerpt(txt):
-            continue
-        out["exams"].append(
-            _excerpt_item(
-                block_id="exams",
-                protocol_path=src_path,
-                section="Обследование (summary card)",
-                excerpt=txt,
-                match_status="summary_card",
-                source="summary_card",
-            )
-        )
+        _add_unique("exams", "Обследование (summary card)", txt, clean=False)
 
-    if cond.treatment and len(out["treatment"]) < max_per_block:
-        t_parts: list[str] = []
-        for d in (cond.treatment.drugs or [])[:3]:
-            t_parts.append(d.drug_name or d.active_substance or d.drug_group or "")
-        for nd in (cond.treatment.non_drug or [])[:3]:
-            t_parts.append(nd.text)
-        t_parts = [p for p in t_parts if p and is_usable_summary_excerpt(p)]
-        if t_parts:
-            out["treatment"].append(
-                _excerpt_item(
-                    block_id="treatment",
-                    protocol_path=src_path,
-                    section="Лечение (summary card)",
-                    excerpt="; ".join(t_parts),
-                    match_status="summary_card",
-                    source="summary_card",
-                )
-            )
+    # Лечение: препараты (по названию/веществу) и немедикаментозные пункты - атомарно.
+    if cond.treatment:
+        for d in (cond.treatment.drugs or [])[:6]:
+            name = (d.drug_name or d.active_substance or "").strip()
+            _add_unique("treatment", "Лечение (summary card)", name, clean=False)
+        for nd in (cond.treatment.non_drug or [])[:6]:
+            _add_unique("treatment", "Лечение (summary card)", nd.text, clean=True)
 
-    for fu in (cond.follow_up or [])[:3]:
-        if len(out["followup"]) >= max_per_block:
-            break
+    # Наблюдение.
+    for fu in (cond.follow_up or [])[:4]:
         txt = fu.text
         if fu.timing:
             txt = f"{txt} ({fu.timing})"
-        if not is_usable_summary_excerpt(txt):
-            continue
-        out["followup"].append(
-            _excerpt_item(
-                block_id="followup",
-                protocol_path=src_path,
-                section="Наблюдение (summary card)",
-                excerpt=txt,
-                match_status="summary_card",
-                source="summary_card",
-            )
-        )
+        _add_unique("followup", "Наблюдение (summary card)", txt, clean=False)
 
 
 def _summary_card_excerpts(

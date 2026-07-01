@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-01-r21-compliance-severity-map"
+BUILD_VERSION = "2026-07-01-r22-l2-excerpt-cleanup"
 
 
 def _app_version() -> str:

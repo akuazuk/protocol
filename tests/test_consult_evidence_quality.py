@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 from clinical_knowledge.consult_evidence_quality import (
+    clean_clinical_sentences,
     is_kp_checklist_item,
+    is_reference_noise,
     is_usable_evidence_excerpt,
     is_usable_summary_excerpt,
     normalize_gap_text,
@@ -48,6 +50,37 @@ def test_summary_excerpt_keeps_short_clinical_names() -> None:
     assert not is_usable_summary_excerpt(
         "на консультацию к врачу-ангиохирургу (по медицинским показаниям)."
     )
+
+
+def test_reference_noise_detects_admin_and_normative() -> None:
+    assert is_reference_noise("Национальный правовой Интернет-портал Республики Беларусь")
+    assert is_reference_noise("06.06.2017 № 59 (стр. 2)")
+    assert is_reference_noise("Настоящий клинический протокол устанавливает общие требования")
+    assert is_reference_noise("Гемостатики (Группа № 10)")
+    assert is_reference_noise("[treatment] что-то там")
+    # Клинические названия/фразы - НЕ шум.
+    assert not is_reference_noise("МРТ органов малого таза")
+    assert not is_reference_noise("Антикоагулянтная терапия низкомолекулярными гепаринами")
+
+
+def test_empty_pharma_form_rejected() -> None:
+    # Только слова лекформ без названия ЛС - пустой фрагмент.
+    assert not is_usable_summary_excerpt("таблетки; введения")
+    assert not is_usable_summary_excerpt("капсулы")
+    # С названием вещества - проходит.
+    assert is_usable_summary_excerpt("Эноксапарин, раствор для инъекций")
+
+
+def test_clean_clinical_sentences_drops_midsentence_and_noise() -> None:
+    # Обрезок середины (строчный служебный старт) - отбрасывается.
+    assert clean_clinical_sentences("с указанием лекарственной формы и дозировки") is None
+    assert clean_clinical_sentences("при объеме кровопотери более 15 % ОЦК выделяются") is None
+    # Нормативно-процессное - отбрасывается.
+    assert clean_clinical_sentences("Лечение осуществляется в стационарных условиях") is None
+    # Валидная клиническая фраза (с содержательного слова / Заглавной) - сохраняется.
+    assert clean_clinical_sentences("определение количества плодов при УЗИ") is not None
+    res = clean_clinical_sentences("[classification] 4. При постановке диагноза применяется классификация СЕАР (стр. 4)")
+    assert res and res.startswith("При постановке диагноза")
 
 
 def test_extract_block_gaps_collapses_exams_bullets() -> None:
