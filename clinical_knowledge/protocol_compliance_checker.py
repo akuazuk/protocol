@@ -16,6 +16,24 @@ from .consult_schema import (
 )
 
 _TREATMENT_RULE_TYPES = frozenset({"keyword_presence"})
+
+# Правила сводок используют severity required/recommended/conditional/warning,
+# а ComplianceIssue допускает только info/low/medium/high/critical/warning.
+_ISSUE_SEVERITY_MAP = {
+    "required": "warning",
+    "recommended": "low",
+    "conditional": "low",
+    "warning": "warning",
+    "info": "info",
+    "low": "low",
+    "medium": "medium",
+    "high": "high",
+    "critical": "critical",
+}
+
+
+def _issue_severity(raw: Any) -> str:
+    return _ISSUE_SEVERITY_MAP.get(str(raw or "").strip().lower(), "warning")
 _TREATMENT_KEYWORDS = re.compile(
     r"лечен|препарат|доз|мг|таб|капс|антикоаг|антибиот|ингибитор|терап",
     re.I,
@@ -147,7 +165,7 @@ def enhance_treatment_assessments(
                     issues=[
                         ComplianceIssue(
                             issue_type=str(f.get("rule_id") or "protocol_treatment"),
-                            severity=str(f.get("severity") or "warning"),  # type: ignore[arg-type]
+                            severity=_issue_severity(f.get("severity")),  # type: ignore[arg-type]
                             category="treatment_protocol",
                             message_ru=str(f.get("message_ru") or f"Ожидалось по протоколу: {kw}"),
                             field_target="treatment",
