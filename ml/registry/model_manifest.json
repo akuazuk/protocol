@@ -1,6 +1,76 @@
 {
   "version": 1,
   "active": {},
-  "history": [],
-  "notes": "Заполняется после успешного eval. Пример: {\"embedder\": {\"version\": \"e5-kp-rb-v1\", \"path\": \"ml/registry/checkpoints/e5-kp-rb-v1\", \"metrics\": {\"search_pass_rate\": 0.91}}}"
+  "history": [
+    {
+      "model": "query_router",
+      "version": "query_route_v1",
+      "path": "ml/registry/checkpoints/query_route_v1",
+      "task": "query->specialty/icd_chapter (S2)",
+      "trained": "2026-07-01",
+      "train_rows": 84,
+      "metrics": {
+        "loo_specialty_top1": 0.881,
+        "loo_specialty_ceiling": 0.9762,
+        "loo_icd_chapter_top1": 0.8929,
+        "train_seconds": 2.9
+      },
+      "status": "shadow",
+      "note": "Включается в горячий путь только после shadow-сверки (RAG_QUERY_ROUTER_SHADOW) и gate symptom_icd_probe не хуже baseline."
+    },
+    {
+      "model": "embedder",
+      "version": "embedder-v1",
+      "path": "ml/registry/checkpoints/embedder-v1",
+      "base": "intfloat/multilingual-e5-small",
+      "task": "retrieval_biencoder (S1)",
+      "trained": "2026-07-01",
+      "train_pairs": 229,
+      "metrics": {
+        "holdout_fold": 0,
+        "recall_at_1_base": 0.0351,
+        "recall_at_1_tuned": 0.2329,
+        "train_seconds": 27.7
+      },
+      "status": "offline",
+      "note": "Онлайн dense закрыт по A/B (dense-ab-benchmark.md); ценность - офлайн-пересборка и будущий апгрейд инстанса."
+    },
+    {
+      "model": "reranker",
+      "version": "reranker-v1",
+      "path": "ml/registry/checkpoints/reranker-v1",
+      "base": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+      "task": "retrieval_crossencoder (S5)",
+      "trained": "2026-07-01",
+      "train_pairs_pos": 245,
+      "metrics": {
+        "holdout_fold": 0,
+        "accuracy_at_1_base": 0.1111,
+        "accuracy_at_1_tuned": 0.2381,
+        "mrr_base": 0.306,
+        "mrr_tuned": 0.404,
+        "train_seconds": 43.9,
+        "gate_pass": true
+      },
+      "status": "candidate",
+      "note": "Gate PASS (tuned >= base) на holdout. Включение в rerank после подтверждения на golden_protocol_pairs."
+    },
+    {
+      "model": "chunk_classifier",
+      "version": "chunk_classifier_v1",
+      "path": "ml/registry/checkpoints/chunk_classifier_v1",
+      "task": "chunk-QA skip (S3)",
+      "trained": "2026-07-01",
+      "train_rows": 20787,
+      "metrics": {
+        "preamble_leak_f1": 0.6312,
+        "gate_f1": 0.85,
+        "gate_pass": false,
+        "train_seconds": 6.2
+      },
+      "status": "blocked",
+      "note": "P0 gate FAIL (preamble_leak F1 0.63 < 0.85). Skip-Gemini не включаем до доразметки."
+    }
+  ],
+  "notes": "active пустой: ни одна модель не включена в горячий путь prod. Пороги и gate - см. docs/speed-models-plan.md §6."
 }

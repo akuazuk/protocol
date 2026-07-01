@@ -30,6 +30,7 @@ EXCLUDE_PATH_PREFIXES = (
     "tests/fixtures/protocol_summaries/",
     "ml/experiments/",
     "ml/datasets/",
+    "ml/registry/checkpoints/",
 )
 
 EXCLUDE_FILENAMES = {

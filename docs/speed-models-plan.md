@@ -205,7 +205,7 @@ flowchart LR
 | **S2** query→route (прототип) | 84 анализа (`ml/datasets/query_icd_route.jsonl`) | **2.9 с** (LOO-CV, 168 fit) | специальность top-1 **88.1%** (потолок 97.6%), ICD-глава top-1 **89.3%** (потолок 100%) | прототип готов |
 | **S3** chunk-QA | 25 984 чанка | **6.2 с** | issues F1 micro ~0.7; P0 gate **FAIL** (`preamble_leak` F1 0.63 < 0.85, `icd_inflation` 6 примеров) | skip-Gemini не включаем |
 | **S1** embedder fine-tune | 308 пар (229 train / 79 holdout, fold 0) | **27.7 с train / 40.6 с полный цикл** | recall@1 на holdout **0.035 → 0.233** (e5-small, 2 эпохи) | fine-tune работает |
-| **S5** reranker | - | - | скрипт `ml/train/finetune_reranker.py` - **заглушка** (нужна реализация) | блокер - код |
+| **S5** reranker | 245 pos + негативы (fold 0) | **43.9 с** | reranking holdout: accuracy@1 **0.111 → 0.238**, MRR **0.306 → 0.404**, gate **PASS** | реализован, candidate |
 | **S4** entailment | 0 пар | - | обучать не на чем | блокер - данные |
 
 ### Ключевые выводы прогона
@@ -217,4 +217,10 @@ flowchart LR
 
 ### Зависимости обучения
 
-Для нейросетевого fine-tune (S1) в окружении нужны `datasets` и `accelerate>=1.1.0` (учтено в `requirements-ml.txt`). sklearn-головы (S2/S3) работают без них.
+Для нейросетевого fine-tune (S1/S5) в окружении нужны `datasets` и `accelerate>=1.1.0` (учтено в `requirements-ml.txt`). sklearn-головы (S2/S3) работают без них.
+
+### Интеграция и реестр моделей
+
+- **S2 shadow-режим:** модуль `clinical_knowledge/query_router.py` (ленивая загрузка `query_route_v1`, graceful fallback при отсутствии модели). Хук в `_infer_icd_pipeline_from_full_query` логирует предсказание роутера рядом с фактическим путём Gemini/эвристики, **не влияя на ответ**. Включается флагом `RAG_QUERY_ROUTER_SHADOW=1` (по умолчанию off). Это шаг shadow из §6.3 - копим согласие перед включением в горячий путь.
+- **S5 reranker:** `ml/train/finetune_reranker.py` полностью реализован (CrossEncoder + майнинг негативов + reranking-eval с gate «tuned >= base»).
+- **Реестр:** все обученные версии зафиксированы в `ml/registry/model_manifest.json` с метриками и статусом (`shadow` / `offline` / `candidate` / `blocked`). Поле `active` пустое - **ни одна модель не включена в горячий путь prod**; откат/включение = правка манифеста.

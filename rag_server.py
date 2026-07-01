@@ -8189,7 +8189,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-01-r16-speed-models-trained"
+BUILD_VERSION = "2026-07-01-r17-s5-reranker-s2-shadow"
 
 
 def _app_version() -> str:
@@ -8580,6 +8580,18 @@ def _infer_icd_pipeline_from_full_query(
     from icd_mkb import finalize_icd_analysis_codes
 
     finalize_icd_analysis_codes(icd_analysis, lq_lex)
+    # S2 shadow: локальный роутер query->специальность/ICD-глава логируется рядом с
+    # фактическим путём (Gemini/эвристика), не влияя на ответ. Флаг RAG_QUERY_ROUTER_SHADOW.
+    try:
+        from clinical_knowledge.query_router import log_shadow as _router_log_shadow
+
+        _router_log_shadow(
+            q_rag,
+            gemini_used=bool(should_gemini),
+            detected_codes=[str(c) for c in (icd_analysis.get("codes_for_retrieval") or [])],
+        )
+    except Exception:
+        pass
     return icd_analysis, q, q_rag, query_clinical_refinement, None
 
 
