@@ -11,12 +11,14 @@
       "train_rows": 84,
       "metrics": {
         "loo_specialty_top1": 0.881,
-        "loo_specialty_ceiling": 0.9762,
         "loo_icd_chapter_top1": 0.8929,
-        "train_seconds": 2.9
+        "train_seconds": 2.9,
+        "gate_symptom_icd_probe_top1": 0.17,
+        "baseline_no_gemini_top1": 1.0,
+        "gate_pass": false
       },
-      "status": "shadow",
-      "note": "Включается в горячий путь только после shadow-сверки (RAG_QUERY_ROUTER_SHADOW) и gate symptom_icd_probe не хуже baseline."
+      "status": "rejected",
+      "note": "Gate FAIL: на 100 symptom-запросах роутер даёт 17% top-1 ICD-главы против 100% у существующего no-gemini пайплайна (~150 мс). LOO 88% был in-sample на KZ-выдержках; на коротких симптом-запросах модель вырождается в L/M. В горячий путь НЕ идёт. Shadow-хук оставлен для сбора реальных query->ICD меток (D5) и переобучения."
     },
     {
       "model": "embedder",
