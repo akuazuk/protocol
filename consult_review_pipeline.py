@@ -203,6 +203,18 @@ def _iter_consult_review_render_l2_lite(
             limit_per_path=2,
             max_paths=4,
         )
+    # Fallback: протокол сматчен (match_paths), но строгий per-block отбор evidence pack
+    # (fast) не дал выдержек - берём чанки напрямую по путям, чтобы L2/UI не терял фрагменты.
+    # Строго не-регрессивно: срабатывает только при пустом retrieved.
+    if not retrieved and match_paths:
+        retrieved = _protocol_rows_from_rich_paths(
+            match_paths,
+            query=q_rag,
+            icd_codes=icd_codes,
+            get_chunks=cached_get_chunks,
+            limit_per_path=2,
+            max_paths=align_paths,
+        )
     proto_max = rs._consult_env_int("CONSULT_REVIEW_PROTOCOL_CTX_CHARS", 16500, default_fast=4000)
     protocol_ctx, paths_used = rs._build_review_chunks_context(retrieved, proto_max)
     paths_hint = rs._consult_review_paths_hint(paths_used, retrieved=retrieved, icd_needles=icd_codes[:6])
