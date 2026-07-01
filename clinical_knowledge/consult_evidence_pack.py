@@ -5,12 +5,14 @@ from typing import Any, Callable
 
 from clinical_knowledge.consult_evidence_quality import (
     is_usable_evidence_excerpt,
+    is_usable_summary_excerpt,
     protocol_title_for_path,
 )
 from clinical_knowledge.consult_l2_config import (
     consult_l2_evidence_chunks_per_path,
     consult_l2_evidence_max_chars,
     consult_l2_evidence_max_paths,
+    consult_l2_evidence_summary_only,
 )
 from clinical_knowledge.protocol_practical_lite import _pick_chunks
 
@@ -49,6 +51,129 @@ def _excerpt_item(
     }
 
 
+import re as _re
+
+_CRIT_TAG = _re.compile(r"^\s*\[[a-z_]+\]\s*", _re.I)
+_CRIT_NUM = _re.compile(r"^\s*\d+[.)]\s*")
+_CRIT_PAGE = _re.compile(r"\s*\(?\s*стр\.?\s*\d+\s*\)?\s*$", _re.I)
+
+
+def _clean_criterion_text(text: str) -> str:
+    t = (text or "").strip()
+    t = _CRIT_TAG.sub("", t)
+    t = _CRIT_NUM.sub("", t)
+    t = _CRIT_PAGE.sub("", t)
+    return t.strip(" ,;")
+
+
+def _summary_src_path(summary: Any, protocol_id: str) -> str:
+    if summary.source and summary.source.local_path:
+        return str(summary.source.local_path)
+    if summary.source and summary.source.url:
+        return str(summary.source.url)
+    return protocol_id
+
+
+def _emit_condition_excerpts(
+    out: dict[str, list[dict[str, Any]]],
+    *,
+    src_path: str,
+    cond: Any,
+    max_per_block: int,
+) -> None:
+    """Добавляет чистые блок-выдержки из одной condition сводки в out."""
+    if cond.diagnosis_structure and len(out["diagnosis"]) < max_per_block:
+        parts = [comp.name for comp in (cond.diagnosis_structure.required_components or [])[:3]]
+        parts = [p for p in parts if p and is_usable_summary_excerpt(p)]
+        if parts:
+            out["diagnosis"].append(
+                _excerpt_item(
+                    block_id="diagnosis",
+                    protocol_path=src_path,
+                    section="Диагноз (summary card)",
+                    excerpt="; ".join(parts),
+                    match_status="summary_card",
+                    source="summary_card",
+                )
+            )
+    dcrit = getattr(cond, "diagnostic_criteria", None)
+    if dcrit is not None:
+        for item in (getattr(dcrit, "required", None) or [])[:4]:
+            if len(out["diagnosis"]) >= max_per_block:
+                break
+            txt = _clean_criterion_text(getattr(item, "text", "") or "")
+            if not is_usable_summary_excerpt(txt) or len(txt) < 12:
+                continue
+            out["diagnosis"].append(
+                _excerpt_item(
+                    block_id="diagnosis",
+                    protocol_path=src_path,
+                    section="Диагноз (summary card)",
+                    excerpt=txt,
+                    match_status="summary_card",
+                    source="summary_card",
+                )
+            )
+
+    exams = (cond.required_exams or []) + (cond.conditional_exams or [])
+    for ex in exams[:6]:
+        if len(out["exams"]) >= max_per_block:
+            break
+        txt = ex.name
+        if ex.comment:
+            txt = f"{txt}. {ex.comment}"
+        if not is_usable_summary_excerpt(txt):
+            continue
+        out["exams"].append(
+            _excerpt_item(
+                block_id="exams",
+                protocol_path=src_path,
+                section="Обследование (summary card)",
+                excerpt=txt,
+                match_status="summary_card",
+                source="summary_card",
+            )
+        )
+
+    if cond.treatment and len(out["treatment"]) < max_per_block:
+        t_parts: list[str] = []
+        for d in (cond.treatment.drugs or [])[:3]:
+            t_parts.append(d.drug_name or d.active_substance or d.drug_group or "")
+        for nd in (cond.treatment.non_drug or [])[:3]:
+            t_parts.append(nd.text)
+        t_parts = [p for p in t_parts if p and is_usable_summary_excerpt(p)]
+        if t_parts:
+            out["treatment"].append(
+                _excerpt_item(
+                    block_id="treatment",
+                    protocol_path=src_path,
+                    section="Лечение (summary card)",
+                    excerpt="; ".join(t_parts),
+                    match_status="summary_card",
+                    source="summary_card",
+                )
+            )
+
+    for fu in (cond.follow_up or [])[:3]:
+        if len(out["followup"]) >= max_per_block:
+            break
+        txt = fu.text
+        if fu.timing:
+            txt = f"{txt} ({fu.timing})"
+        if not is_usable_summary_excerpt(txt):
+            continue
+        out["followup"].append(
+            _excerpt_item(
+                block_id="followup",
+                protocol_path=src_path,
+                section="Наблюдение (summary card)",
+                excerpt=txt,
+                match_status="summary_card",
+                source="summary_card",
+            )
+        )
+
+
 def _summary_card_excerpts(
     icd_codes: list[str],
     *,
@@ -77,83 +202,51 @@ def _summary_card_excerpts(
             )
             if cond is None:
                 continue
-            src_path = ""
-            if summary.source and summary.source.local_path:
-                src_path = str(summary.source.local_path)
-            elif summary.source and summary.source.url:
-                src_path = str(summary.source.url)
+            _emit_condition_excerpts(
+                out,
+                src_path=_summary_src_path(summary, protocol_id),
+                cond=cond,
+                max_per_block=max_per_block,
+            )
+    return out
 
-            if cond.diagnosis_structure and len(out["diagnosis"]) < max_per_block:
-                parts = []
-                for comp in (cond.diagnosis_structure.required_components or [])[:3]:
-                    parts.append(comp.name)
-                if parts:
-                    out["diagnosis"].append(
-                        _excerpt_item(
-                            block_id="diagnosis",
-                            protocol_path=src_path or protocol_id,
-                            section="Диагноз (summary card)",
-                            excerpt="; ".join(parts),
-                            match_status="summary_card",
-                            source="summary_card",
-                        )
-                    )
 
-            exams = (cond.required_exams or []) + (cond.conditional_exams or [])
-            for ex in exams[:4]:
-                if len(out["exams"]) >= max_per_block:
-                    break
-                txt = ex.name
-                if ex.comment:
-                    txt = f"{txt}. {ex.comment}"
-                if not is_usable_evidence_excerpt(txt):
-                    continue
-                out["exams"].append(
-                    _excerpt_item(
-                        block_id="exams",
-                        protocol_path=src_path or protocol_id,
-                        section="Обследование (summary card)",
-                        excerpt=txt,
-                        match_status="summary_card",
-                        source="summary_card",
-                    )
-                )
+def _summary_excerpts_by_path(
+    paths: list[str],
+    *,
+    max_per_block: int = 2,
+) -> dict[str, list[dict[str, Any]]]:
+    """Выдержки из сводок по фактически сматченным путям протоколов.
 
-            if cond.treatment and len(out["treatment"]) < max_per_block:
-                t_parts: list[str] = []
-                for d in (cond.treatment.drugs or [])[:2]:
-                    t_parts.append(d.drug_name or d.active_substance or d.drug_group or "")
-                for nd in (cond.treatment.non_drug or [])[:2]:
-                    t_parts.append(nd.text)
-                t_parts = [p for p in t_parts if p and is_usable_evidence_excerpt(p)]
-                if t_parts:
-                    out["treatment"].append(
-                        _excerpt_item(
-                            block_id="treatment",
-                            protocol_path=src_path or protocol_id,
-                            section="Лечение (summary card)",
-                            excerpt="; ".join(t_parts),
-                            match_status="summary_card",
-                            source="summary_card",
-                        )
-                    )
-
-            for fu in (cond.follow_up or [])[:2]:
-                if len(out["followup"]) >= max_per_block:
-                    break
-                txt = fu.text
-                if fu.timing:
-                    txt = f"{txt} ({fu.timing})"
-                out["followup"].append(
-                    _excerpt_item(
-                        block_id="followup",
-                        protocol_path=src_path or protocol_id,
-                        section="Наблюдение (summary card)",
-                        excerpt=txt,
-                        match_status="summary_card",
-                        source="summary_card",
-                    )
-                )
+    Покрывает случаи, когда ICD-индекс сводок не дал совпадений, но валидная
+    сводка для протокола существует (резолв по path/sha/title).
+    """
+    out: dict[str, list[dict[str, Any]]] = {b: [] for b in EVIDENCE_BLOCK_IDS}
+    clean_paths = [str(p).strip() for p in paths if str(p or "").strip()]
+    if not clean_paths:
+        return out
+    try:
+        from clinical_knowledge.protocol_summary.summary_resolver import (
+            discover_protocol_summaries,
+        )
+    except ImportError:
+        return out
+    matched = [{"source_path": p} for p in clean_paths]
+    try:
+        summaries, _diag, _cids = discover_protocol_summaries(
+            icd_codes=[],
+            diagnosis_texts=[],
+            matched_protocols=matched,
+            usable_only=True,
+        )
+    except Exception:
+        return out
+    for summary in summaries:
+        src_path = _summary_src_path(summary, summary.protocol_id)
+        for cond in summary.conditions:
+            _emit_condition_excerpts(
+                out, src_path=src_path, cond=cond, max_per_block=max_per_block
+            )
     return out
 
 
@@ -231,16 +324,25 @@ def build_evidence_pack(
     max_chars = consult_l2_evidence_max_chars()
 
     paths = [str(p).strip() for p in match_paths if p][:max_paths]
+    summary_only = consult_l2_evidence_summary_only()
+
     summary_blocks = _summary_card_excerpts(icd_codes)
-    chunk_blocks = _rich_chunk_excerpts(
-        paths,
-        query=q,
-        icd_codes=icd_codes,
-        get_chunks=get_chunks,
-        max_paths=max_paths,
-        chunks_per_path=chunks_per_path,
-        max_chars=max_chars,
-    )
+    path_summary_blocks = _summary_excerpts_by_path(paths)
+    for block_id in EVIDENCE_BLOCK_IDS:
+        summary_blocks[block_id].extend(path_summary_blocks.get(block_id) or [])
+
+    if summary_only:
+        chunk_blocks = {b: [] for b in EVIDENCE_BLOCK_IDS}
+    else:
+        chunk_blocks = _rich_chunk_excerpts(
+            paths,
+            query=q,
+            icd_codes=icd_codes,
+            get_chunks=get_chunks,
+            max_paths=max_paths,
+            chunks_per_path=chunks_per_path,
+            max_chars=max_chars,
+        )
 
     blocks: dict[str, list[dict[str, Any]]] = {}
     fragment_count = 0
@@ -265,6 +367,7 @@ def build_evidence_pack(
         "blocks": blocks,
         "fragment_count": fragment_count,
         "paths_used": paths,
+        "summary_only": summary_only,
         "limits": {
             "max_paths": max_paths,
             "chunks_per_path": chunks_per_path,

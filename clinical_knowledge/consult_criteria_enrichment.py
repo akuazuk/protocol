@@ -154,7 +154,7 @@ def comment_from_findings_gaps(
     prefix: str = "",
     suffix: str = "",
 ) -> str:
-    """Краткий вывод методисту; детали — в списках ниже."""
+    """Краткий вывод методисту; детали - в списках ниже."""
     clean_g = [_strip_list_prefix(x) for x in (gaps or []) if x]
     clean_f = [_strip_list_prefix(x) for x in (findings or []) if x]
     parts: list[str] = []
@@ -203,7 +203,7 @@ def kp_coverage_comment(
     kind: str = "обследований",
     pick_note: str = "",
 ) -> str:
-    """Вердикт по сверке с КП — без дублирования списков пунктов."""
+    """Вердикт по сверке с КП - без дублирования списков пунктов."""
     from clinical_knowledge.protocol_links import beautify_protocol_title
 
     pretty_kp = beautify_protocol_title(kp_title) if kp_title else ""
@@ -222,18 +222,30 @@ def kp_coverage_comment(
         return ". ".join(parts) + "."
 
     if req_missing:
-        names = [str(d.get("text") or "")[:80] for d in req_missing[:3]]
+        from clinical_knowledge.consult_evidence_quality import is_usable_evidence_excerpt
+
+        names = [
+            str(d.get("text") or "")[:80]
+            for d in req_missing
+            if is_usable_evidence_excerpt(str(d.get("text") or ""))
+        ][:3]
         head = f"«{pretty_kp}»" if pretty_kp else "Протокол"
-        parts.append(
-            f"{head}: в заключении не отражены обязательные {kind}: "
-            + "; ".join(names)
-            + "."
-        )
+        if names:
+            parts.append(
+                f"{head}: в заключении не отражены обязательные {kind}: "
+                + "; ".join(names)
+                + "."
+            )
+        else:
+            parts.append(
+                f"{head}: не отражены обязательные {kind} "
+                f"({len(req_missing)} пункт(ов)) - сверьте формулировки в КЗ."
+            )
     elif missing:
         head = f"«{pretty_kp}»" if pretty_kp else "По протоколу"
         parts.append(
             f"{head}: отражено {len(found)} из {total} {kind}; "
-            f"рекомендуемые без отметки в КЗ — {len(missing)}."
+            f"рекомендуемые без отметки в КЗ - {len(missing)}."
         )
     else:
         head = f"«{pretty_kp}»" if pretty_kp else "Назначения"
@@ -242,7 +254,7 @@ def kp_coverage_comment(
     partial = [d for d in details if d.get("matched") and d.get("kz_match") == "partial"]
     if partial:
         parts.append(
-            f"Частичное совпадение по {len(partial)} пункту(ам) — уточните формулировки в КЗ."
+            f"Частичное совпадение по {len(partial)} пункту(ам) - уточните формулировки в КЗ."
         )
     return " ".join(parts)
 
@@ -414,7 +426,7 @@ def findings_gaps_from_details(
     *,
     limit: int = 6,
 ) -> tuple[list[str], list[str]]:
-    """Списки ✓/— с меткой уверенности."""
+    """Списки ✓/ - с меткой уверенности."""
     findings: list[str] = []
     gaps: list[str] = []
     for d in details[:12]:
@@ -426,7 +438,7 @@ def findings_gaps_from_details(
             findings.append(f"✓ {text} ({label})")
         else:
             obl = "обяз." if d.get("obligation") == "required" else "рек."
-            gaps.append(f"— {text} ({obl})")
+            gaps.append(f" - {text} ({obl})")
     return findings[:limit], gaps[:limit]
 
 
@@ -582,7 +594,7 @@ def diagnosis_assessment_lines(doc: ConsultationDocument) -> tuple[list[str], li
                     pt = _norm_tokens(icd_mkb.ru_title(parent) or "")
                     if dt & pt and match < 0.3:
                         comments.append(
-                            f"Код {code} — неуточнённая рубрика; при возможности укажите более специфичный код."
+                            f"Код {code} - неуточнённая рубрика; при возможности укажите более специфичный код."
                         )
                         scores[-1] = min(scores[-1], 80)
         elif valid:

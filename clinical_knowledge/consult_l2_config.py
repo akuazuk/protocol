@@ -69,6 +69,15 @@ def consult_l2_evidence_max_chars() -> int:
     return consult_l2_env_int("CONSULT_L2_EVIDENCE_MAX_CHARS", 8000)
 
 
+def consult_l2_evidence_summary_only() -> bool:
+    """Выдержки L2 только из структурированных сводок (без сырых чанков PDF).
+
+    По умолчанию включено: где нет валидной сводки по блоку - блок пуст,
+    вместо мусорных фрагментов (колонтитулы, преамбулы, OCR, оргтекст).
+    """
+    return _env_bool("CONSULT_L2_EVIDENCE_SUMMARY_ONLY", True)
+
+
 def resolve_l2_mode(*, narrative: bool = False) -> str:
     if narrative:
         return "narrative"
