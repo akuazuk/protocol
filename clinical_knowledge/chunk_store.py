@@ -30,7 +30,7 @@ def _memory_saver_enabled() -> bool:
 
 
 def _jsonl_row_to_slim(row: dict[str, Any], *, path: str, chunk_index: int) -> dict[str, Any]:
-    """Формат retrieve/gather — совместим с rag_server._load_chunks_from_jsonl."""
+    """Формат retrieve/gather - совместим с rag_server._load_chunks_from_jsonl."""
     text = (row.get("text") or "").strip()
     rec: dict[str, Any] = {
         "path": path,
@@ -110,13 +110,22 @@ class LazyChunkStore:
         if not manifest.entries:
             return None
         corpus = chunks_data_root()
-        parts_dir = corpus / "corpus_chunks_parts"
-        if parts_dir.is_dir():
-            corpus_dir = parts_dir
-        elif corpus.is_dir():
-            corpus_dir = corpus
-        else:
-            return None
+        # Каталог с JSONL-чанками может лежать в corpus_chunks_parts (part-файлы) или
+        # в output/rich_chunks (rich_chunks.jsonl на Render persistent disk). Берём первый
+        # каталог, где реально есть *.jsonl с чанками, иначе fallback на сам corpus.
+        corpus_dir = None
+        for cand in (corpus / "corpus_chunks_parts", corpus / "output" / "rich_chunks", corpus):
+            try:
+                if cand.is_dir() and any(cand.glob("*.jsonl")):
+                    corpus_dir = cand
+                    break
+            except OSError:
+                continue
+        if corpus_dir is None:
+            if corpus.is_dir():
+                corpus_dir = corpus
+            else:
+                return None
         return cls(
             manifest=manifest,
             corpus_dir=corpus_dir,
@@ -201,6 +210,16 @@ class LazyChunkStore:
                     rows.append(row)
         return rows
 
+    def _rows_match_entry(self, rows: list[dict], entry: PathManifestEntry) -> bool:
+        """Проверка, что offset-чтение попало в нужный протокол (защита от устаревшего манифеста)."""
+        norm = _norm_path(entry.path)
+        tail = norm.split("/")[-1]
+        for row in rows:
+            sp = _norm_path(str(row.get("source_path") or ""))
+            if sp:
+                return sp == norm or sp.endswith(tail) or norm.endswith(sp.split("/")[-1])
+        return False
+
     def _load_rows_for_entry(self, entry: PathManifestEntry) -> list[dict]:
         self._stats["disk_reads"] += 1
         part_name = entry.source_part
@@ -208,9 +227,13 @@ class LazyChunkStore:
         raw_rows: list[dict] = []
         if part_file and part_file.is_file() and entry.byte_offsets:
             raw_rows = self._read_offsets(part_file, entry.byte_offsets)
-        elif part_file and part_file.is_file():
+            # Устаревший/рассинхронизированный манифест: offsets указывают не на тот протокол -
+            # откатываемся на скан по source_path, чтобы не терять чанки.
+            if raw_rows and not self._rows_match_entry(raw_rows, entry):
+                raw_rows = []
+        if not raw_rows and part_file and part_file.is_file():
             raw_rows = self._scan_part_for_path(part_file, entry.path)
-        else:
+        if not raw_rows:
             for part in sorted(self.corpus_dir.glob("*.jsonl")):
                 raw_rows = self._scan_part_for_path(part, entry.path)
                 if raw_rows:
