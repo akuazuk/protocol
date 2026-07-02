@@ -145,7 +145,10 @@ def extract_pdf_text_ocr(
         try:
             pix = doc.load_page(i).get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
             png = pix.tobytes("png")
-            txt, _ = ocr_image_bytes(png, f"pdf_page_{i + 1}.png")
+            txt, page_warns = ocr_image_bytes(png, f"pdf_page_{i + 1}.png")
+            for w in page_warns:
+                if w and w not in warnings:
+                    warnings.append(w)
             if txt.strip():
                 parts.append(txt.strip())
         except Exception as e:

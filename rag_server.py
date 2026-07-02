@@ -8197,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-02-r28-consult-pdf-ocr"
+BUILD_VERSION = "2026-07-02-r29-consult-pdf-ocr-hints"
 
 
 def _app_version() -> str:
@@ -10116,12 +10116,19 @@ def _parse_consult_review_uploads_from_items(
             ) from e
         txt = txt.strip()
         if not txt:
+            hint = ""
+            if warns:
+                for w in warns:
+                    ws = (w or "").strip()
+                    if ws:
+                        hint = f" Подсказка: {ws}"
+                        break
             raise HTTPException(
                 status_code=400,
                 detail=(
                     f"Не удалось извлечь текст из «{raw_fn}». "
                     "Для PDF загрузите файл с текстовым слоем или читаемый скан (OCR); "
-                    "для DOCX/TXT - непустой файл."
+                    f"для DOCX/TXT - непустой файл.{hint}"
                 ),
             )
         for w in warns or []:
