@@ -7421,6 +7421,253 @@
     .methodist-b2c-status.is-ok { color: #0d5c4a; }
     .methodist-b2c-status.is-err { color: #b91c1c; }
 
+    /* Кабинет методиста: вкладка «Онко-риск» */
+    .panel-methodist-onco .methodist-onco-panel {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0.5rem 0 2rem;
+    }
+    .methodist-onco-subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.85rem 0 1rem;
+      padding: 0.35rem;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ecfbf4 0%, #f7faf8 100%);
+      border: 1px solid rgba(26, 138, 114, 0.22);
+    }
+    .methodist-onco-subtab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.95rem;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent;
+      color: #3d5c54;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .methodist-onco-subtab svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .methodist-onco-subtab:hover {
+      background: rgba(255, 255, 255, 0.75);
+      border-color: rgba(26, 138, 114, 0.2);
+    }
+    .methodist-onco-subtab[aria-selected="true"] {
+      background: #fff;
+      border-color: rgba(26, 138, 114, 0.35);
+      color: var(--green-800);
+      box-shadow: 0 2px 10px rgba(13, 92, 74, 0.1);
+    }
+    .methodist-onco-subpanel { display: none; }
+    .methodist-onco-subpanel.is-active { display: block; }
+    .methodist-onco-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .methodist-onco-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    .methodist-onco-kpi {
+      padding: 0.8rem 0.9rem;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid rgba(26, 138, 114, 0.18);
+      box-shadow: 0 2px 8px rgba(13, 92, 74, 0.05);
+    }
+    .methodist-onco-kpi__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e8f5f1 0%, #d6f3e8 100%);
+      color: var(--green-800);
+      font-size: 0.72rem;
+      font-weight: 800;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+    .methodist-onco-kpi--accent {
+      border-color: rgba(26, 138, 114, 0.35);
+      background: linear-gradient(180deg, #f3fbf8 0%, #fff 100%);
+    }
+    .methodist-onco-hero-link {
+      color: #fff !important;
+      border-color: rgba(255, 255, 255, 0.45) !important;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .methodist-onco-hero-link:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .methodist-onco-settings-card.is-on {
+      border-color: rgba(26, 138, 114, 0.45);
+      background: linear-gradient(180deg, #f8fdfb 0%, #fff 100%);
+    }
+    .methodist-onco-settings-card .methodist-onco-flag-status {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+    .methodist-onco-settings-card .methodist-onco-flag-status.is-on {
+      background: #e8f5f1;
+      color: var(--green-800);
+    }
+    .methodist-onco-settings-card .methodist-onco-flag-status.is-off {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    .methodist-onco-overview-cta {
+      margin-top: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .methodist-onco-kpi h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.84rem;
+      color: var(--green-900);
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+    }
+    .methodist-onco-kpi p {
+      margin: 0;
+      font-size: 0.76rem;
+      color: #5a6f6a;
+      line-height: 1.45;
+    }
+    .methodist-onco-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+      gap: 0.5rem;
+      margin: 0.75rem 0 0;
+    }
+    .methodist-onco-flow__step {
+      position: relative;
+      padding: 0.65rem 0.7rem;
+      border-radius: 10px;
+      background: #f3fbf8;
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      font-size: 0.74rem;
+      line-height: 1.4;
+      color: #2d4a42;
+    }
+    .methodist-onco-flow__step strong {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--green-700);
+      margin-bottom: 0.2rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+    }
+    .methodist-onco-integr-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .methodist-onco-integr-list li {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      padding: 0.55rem 0;
+      border-bottom: 1px dashed rgba(26, 138, 114, 0.15);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #2d4a42;
+    }
+    .methodist-onco-integr-list li:last-child { border-bottom: 0; }
+    .methodist-onco-integr-list code {
+      font-size: 0.72rem;
+      background: #ecfbf4;
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      color: var(--green-800);
+    }
+    .methodist-onco-integr-tag {
+      flex: 0 0 auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      background: #e8f5f1;
+      color: var(--green-800);
+      margin-top: 0.1rem;
+    }
+    .methodist-onco-integr-tag--b2c {
+      background: #fdebd3;
+      color: #b45309;
+    }
+    .methodist-onco-disclaimer {
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 10px;
+      background: #fff8f0;
+      border: 1px solid rgba(234, 160, 80, 0.35);
+      font-size: 0.76rem;
+      color: #92400e;
+      line-height: 1.45;
+    }
+    .methodist-onco-settings-card {
+      border: 1px solid #dbe7e3;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      background: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .methodist-onco-settings-card h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.88rem;
+      color: var(--green-900);
+    }
+    .methodist-onco-settings-card p {
+      margin: 0 0 0.55rem;
+      font-size: 0.76rem;
+      color: #5a6f6a;
+      line-height: 1.45;
+    }
+    .methodist-onco-frame-wrap {
+      border: 1px solid rgba(26, 138, 114, 0.2);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 4px 18px rgba(13, 92, 74, 0.08);
+    }
+    .methodist-onco-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 1180px;
+      border: 0;
+      background: #fff;
+    }
+    @media (max-width: 640px) {
+      .methodist-onco-subtabs { flex-direction: column; }
+      .methodist-onco-subtab { justify-content: flex-start; }
+    }
+
     .methodist-retrieval-fix-wrap.is-required {
       border: 1px solid #c45a2a;
       border-radius: 10px;
@@ -11211,7 +11458,7 @@
         </span>
         <span class="app-main-tab-text">
           <span class="app-main-tab-title">Онко-риск</span>
-          <span class="app-main-tab-sub">советующий триаж: тумблеры и инструмент</span>
+          <span class="app-main-tab-sub">обзор, настройки B2B/B2C, демо-инструмент</span>
         </span>
       </button>
     </div>
@@ -12605,46 +12852,141 @@
       aria-labelledby="tab-methodist-onco"
       hidden
     >
-      <div id="methodist-onco-root" class="methodist-b2c-panel consult-hide-print">
+      <div id="methodist-onco-root" class="methodist-onco-panel consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>Онконастороженность (советующий триаж)</h2>
+            <h2>Онконастороженность <span class="methodist-onco-badge">советующий триаж</span></h2>
             <p>
-              Управление онко-блоками: B2B-подсказка в проверке КЗ и B2C-вопросы на
-              <a href="patient.html" target="_blank" rel="noopener noreferrer">patient.html</a>.
-              Это decision-support, не диагноз и не влияет на отправку. Полная страница инструмента -
-              <a href="onco-risk.html" target="_blank" rel="noopener noreferrer">onco-risk.html</a>.
+              Байесовская оценка онкориска по тексту КЗ, возрасту и анализам. Помогает врачу решить,
+              нужен ли путь дообследования; пациенту - сформулировать нейтральные вопросы.
+              <strong>Не диагноз, не gate, не влияет на отправку.</strong>
             </p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-onco-refresh">Обновить</button>
+            <a href="onco-risk.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open methodist-onco-hero-link">Открыть в новой вкладке</a>
           </div>
         </div>
+
+        <div class="methodist-onco-subtabs" role="tablist" aria-label="Разделы онко-риска">
+          <button type="button" class="methodist-onco-subtab" id="onco-subtab-overview" role="tab" aria-selected="true" aria-controls="onco-subpanel-overview">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Обзор
+          </button>
+          <button type="button" class="methodist-onco-subtab" id="onco-subtab-settings" role="tab" aria-selected="false" aria-controls="onco-subpanel-settings">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Настройки
+          </button>
+          <button type="button" class="methodist-onco-subtab" id="onco-subtab-tool" role="tab" aria-selected="false" aria-controls="onco-subpanel-tool">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2 6 4-12 2 6h6"/></svg>
+            Инструмент
+          </button>
+        </div>
+
         <div id="methodist-onco-error" class="methodist-ml-error" hidden></div>
-        <div class="methodist-b2c-grid">
-          <div class="methodist-b2c-card">
-            <h3>Включение блоков</h3>
-            <label class="methodist-b2c-toggle"><input type="checkbox" id="onco-consult-advisory" /> B2B-подсказка онко-риска в ответе «Проверка КЗ»</label>
-            <label class="methodist-b2c-toggle"><input type="checkbox" id="onco-patient-b2c" /> B2C-блок «вопросы врачу» на patient.html</label>
-            <div class="methodist-b2c-actions" style="margin-top:0.6rem">
-              <button type="button" class="btn-primary" id="methodist-onco-save">Применить</button>
-              <span id="methodist-onco-status" class="methodist-b2c-status"></span>
+
+        <div id="onco-subpanel-overview" class="methodist-onco-subpanel is-active" role="tabpanel" aria-labelledby="onco-subtab-overview">
+          <div class="methodist-onco-kpi-row">
+            <div class="methodist-onco-kpi methodist-onco-kpi--accent">
+              <div class="methodist-onco-kpi__icon" aria-hidden="true">Зачем</div>
+              <h4>Зачем нужен</h4>
+              <p>Ранний сигнал онконастороженности по жалобам и анамнезу, когда врачу нужна опора на данные CAPER/NICE и заболеваемость РБ, а не только интуиция.</p>
             </div>
-            <p class="methodist-tier-hint" style="margin-top:0.5rem">Применяется в рантайме процесса (до перезапуска сервера).</p>
+            <div class="methodist-onco-kpi">
+              <div class="methodist-onco-kpi__icon" aria-hidden="true">Не</div>
+              <h4>Что это не делает</h4>
+              <p>Не ставит диагноз, не заменяет очный приём, не блокирует отправку КЗ (<code>send_gate</code> не затрагивается).</p>
+            </div>
+            <div class="methodist-onco-kpi">
+              <div class="methodist-onco-kpi__icon" aria-hidden="true">Метод</div>
+              <h4>Метод</h4>
+              <p>Байес: priors РБ (GLOBOCAN) + LR симптомов (CAPER). Порог направления 3% (NICE NG12). Доверительный интервал зависит от полноты данных.</p>
+            </div>
+            <div class="methodist-onco-kpi">
+              <div class="methodist-onco-kpi__icon" aria-hidden="true">B2B</div>
+              <h4>Два контура</h4>
+              <p><strong>B2B</strong> - числа, CI, водопад для врача. <strong>B2C</strong> - только нейтральные вопросы без процентов и «страшных» слов.</p>
+            </div>
           </div>
-          <div class="methodist-b2c-card">
-            <h3>О методе</h3>
-            <p class="methodist-b2c-note" style="min-height:auto">
-              Байес на отношениях правдоподобия (CAPER) поверх базовой заболеваемости РБ,
-              порог направления 3% (NICE NG12), доверительный интервал по полноте данных.
-              B2C - без чисел и «страшных» слов.
-            </p>
+
+          <section class="methodist-ml-section">
+            <h3>Как это работает в проекте</h3>
+            <div class="methodist-onco-flow">
+              <div class="methodist-onco-flow__step"><strong>1. Вход</strong>Текст КЗ, возраст, пол, анализы, флаги (курение, семейный анамнез).</div>
+              <div class="methodist-onco-flow__step"><strong>2. Признаки</strong>Ключевые стемы + страты (пол/возраст). Контекст: симптомы, скрининг, наблюдение, наследственность, дети.</div>
+              <div class="methodist-onco-flow__step"><strong>3. Полнота</strong>Оценка L-Intake: хватает ли данных для количественной оценки или только качественный сигнал.</div>
+              <div class="methodist-onco-flow__step"><strong>4. Байес</strong>Post-test вероятность по локализациям, shrinkage зависимых признаков, Beta CI.</div>
+              <div class="methodist-onco-flow__step"><strong>5. Триаж</strong>Уровень: наблюдение / уточнить / направление (порог 3%).</div>
+              <div class="methodist-onco-flow__step"><strong>6. Выход</strong>B2B-карточка врачу или B2C-вопросы пациенту (вкладка «Настройки»).</div>
+            </div>
+          </section>
+
+          <section class="methodist-ml-section">
+            <h3>Точки интеграции</h3>
+            <ul class="methodist-onco-integr-list">
+              <li>
+                <span class="methodist-onco-integr-tag">B2B</span>
+                <span><code>POST /api/onco-risk</code> и блок <code>onco_risk</code> в ответе «Проверка КЗ» (флаг <code>CONSULT_ONCO_RISK_ADVISORY_ENABLED</code>). Триаж, риск по локализациям, полнота данных.</span>
+              </li>
+              <li>
+                <span class="methodist-onco-integr-tag methodist-onco-integr-tag--b2c">B2C</span>
+                <span>Блок <code>onco_questions</code> на <a href="patient.html" target="_blank" rel="noopener noreferrer">patient.html</a> (флаг <code>PATIENT_ONCO_QUESTIONS_ENABLED</code>). Только вопросы врачу, без чисел.</span>
+              </li>
+              <li>
+                <span class="methodist-onco-integr-tag">Demo</span>
+                <span><a href="onco-risk.html" target="_blank" rel="noopener noreferrer">onco-risk.html</a> - полная панель B2B + B2C для методиста и тестирования кейсов.</span>
+              </li>
+              <li>
+                <span class="methodist-onco-integr-tag">KB</span>
+                <span>База знаний <code>data/onco_risk/</code>: LR, priors РБ, пороги NICE, B2C-шаблоны. Документация: <code>docs/onco-risk-model-card.md</code>.</span>
+              </li>
+            </ul>
+            <p class="methodist-tier-hint" style="margin-top:0.65rem">Расчёт локальный (YAML + арифметика), без внешних API и без выгрузки ПДн.</p>
+          </section>
+
+          <div class="methodist-onco-disclaimer">
+            <strong>Важно для методиста:</strong> инструмент советующий. Решение о направлении и диагнозе принимает врач.
+            При низкой полноте данных показывается широкий интервал и подсказки, что дозаполнить.
+            B2C-тексты проверяются тестами на запрещённые слова («рак», «онколог» и т.п.).
+          </div>
+          <div class="methodist-onco-overview-cta">
+            <button type="button" class="btn-primary" id="methodist-onco-goto-settings">Настройки включения B2B / B2C</button>
+            <button type="button" class="btn-methodist-queue-open" id="methodist-onco-goto-tool">Открыть демо-инструмент</button>
           </div>
         </div>
-        <div class="methodist-b2c-card" style="margin-top:0.9rem">
-          <h3>Инструмент онконастороженности</h3>
-          <iframe id="methodist-onco-frame" title="Онконастороженность" loading="lazy"
-            style="width:100%;height:1200px;border:1px solid var(--border,#e2e8f0);border-radius:14px;background:#fff;"></iframe>
+
+        <div id="onco-subpanel-settings" class="methodist-onco-subpanel" role="tabpanel" aria-labelledby="onco-subtab-settings" hidden>
+          <div class="methodist-onco-settings-card" id="onco-card-consult">
+            <h4>B2B-подсказка в «Проверке КЗ» <span class="methodist-onco-flag-status is-on" id="onco-status-consult">вкл</span></h4>
+            <p>После анализа консультативного заключения в ответ добавляется блок <code>onco_risk</code>: триаж, риск по локализациям, полнота данных, источники. Видно только врачу/методисту, не влияет на оценку соответствия и отправку.</p>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="onco-consult-advisory" checked /> Включить B2B-advisory в consult-review</label>
+          </div>
+          <div class="methodist-onco-settings-card" id="onco-card-patient">
+            <h4>B2C-блок на patient.html <span class="methodist-onco-flag-status is-on" id="onco-status-patient">вкл</span></h4>
+            <p>После проверки выписки пациент видит карточку «Что полезно уточнить у врачу» - нейтральные вопросы без процентов и пугающих формулировок. Помогает не пропустить важные уточнения на приёме.</p>
+            <label class="methodist-b2c-toggle"><input type="checkbox" id="onco-patient-b2c" checked /> Включить B2C-вопросы на patient.html</label>
+          </div>
+          <div class="methodist-b2c-actions">
+            <button type="button" class="btn-primary" id="methodist-onco-save">Применить на сервере</button>
+            <span id="methodist-onco-status" class="methodist-b2c-status"></span>
+          </div>
+          <p class="methodist-tier-hint" style="margin-top:0.5rem">
+            Тумблеры меняют рантайм процесса (до рестарта). Постоянные значения по умолчанию - в <code>render.yaml</code>
+            (<code>CONSULT_ONCO_RISK_ADVISORY_ENABLED</code>, <code>PATIENT_ONCO_QUESTIONS_ENABLED</code>).
+          </p>
+        </div>
+
+        <div id="onco-subpanel-tool" class="methodist-onco-subpanel" role="tabpanel" aria-labelledby="onco-subtab-tool" hidden>
+          <section class="methodist-ml-section" style="margin-bottom:0.75rem">
+            <h3>Интерактивный инструмент</h3>
+            <p class="methodist-tier-hint" style="margin:0">
+              Введите тестовый кейс, переключите аудиторию B2B/B2C и проверьте триаж, водопад вкладов и безопасность пациентских формулировок.
+              Данные не сохраняются; запрос идёт на <code>/api/onco-risk</code>.
+            </p>
+          </section>
+          <div class="methodist-onco-frame-wrap">
+            <iframe id="methodist-onco-frame" title="Онконастороженность - инструмент" loading="lazy"></iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -21199,12 +21541,65 @@
       });
   }
 
-  function loadMethodistOncoPanel() {
-    if (!window.__methodistMode || !window.__methodistToken) return;
+  function syncMethodistOncoToggleVisuals() {
+    var a = document.getElementById("onco-consult-advisory");
+    var b = document.getElementById("onco-patient-b2c");
+    var cardA = document.getElementById("onco-card-consult");
+    var cardB = document.getElementById("onco-card-patient");
+    var stA = document.getElementById("onco-status-consult");
+    var stB = document.getElementById("onco-status-patient");
+    var onA = !!(a && a.checked);
+    var onB = !!(b && b.checked);
+    if (cardA) cardA.classList.toggle("is-on", onA);
+    if (cardB) cardB.classList.toggle("is-on", onB);
+    if (stA) {
+      stA.textContent = onA ? "вкл" : "выкл";
+      stA.className = "methodist-onco-flag-status " + (onA ? "is-on" : "is-off");
+    }
+    if (stB) {
+      stB.textContent = onB ? "вкл" : "выкл";
+      stB.className = "methodist-onco-flag-status " + (onB ? "is-on" : "is-off");
+    }
+  }
+
+  function ensureMethodistOncoFrame() {
     var frame = document.getElementById("methodist-onco-frame");
     if (frame && !frame.getAttribute("src")) {
       frame.setAttribute("src", "onco-risk.html");
     }
+  }
+
+  function switchMethodistOncoSubTab(which) {
+    var tabs = {
+      overview: document.getElementById("onco-subtab-overview"),
+      settings: document.getElementById("onco-subtab-settings"),
+      tool: document.getElementById("onco-subtab-tool"),
+    };
+    var panels = {
+      overview: document.getElementById("onco-subpanel-overview"),
+      settings: document.getElementById("onco-subpanel-settings"),
+      tool: document.getElementById("onco-subpanel-tool"),
+    };
+    var key = which === "settings" || which === "tool" ? which : "overview";
+    Object.keys(tabs).forEach(function (k) {
+      var t = tabs[k];
+      var p = panels[k];
+      var on = k === key;
+      if (t) {
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+      }
+      if (p) {
+        p.classList.toggle("is-active", on);
+        p.hidden = !on;
+      }
+    });
+    if (key === "tool") ensureMethodistOncoFrame();
+  }
+
+  function loadMethodistOncoPanel() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    switchMethodistOncoSubTab("overview");
     var errEl = document.getElementById("methodist-onco-error");
     var st = document.getElementById("methodist-onco-status");
     if (errEl) errEl.hidden = true;
@@ -21225,10 +21620,12 @@
         var s = (data && data.settings) || {};
         var a = document.getElementById("onco-consult-advisory");
         var b = document.getElementById("onco-patient-b2c");
-        if (a) a.checked = !!s.consult_advisory;
-        if (b) b.checked = !!s.patient_b2c;
+        if (a) a.checked = s.consult_advisory !== false;
+        if (b) b.checked = s.patient_b2c !== false;
+        syncMethodistOncoToggleVisuals();
       })
       .catch(function (e) {
+        syncMethodistOncoToggleVisuals();
         if (errEl) {
           errEl.hidden = false;
           errEl.textContent = "Не удалось загрузить настройки онко-риска: " + methodistApiErrorRu(e.message || e);
@@ -21266,6 +21663,7 @@
         var s = (data && data.settings) || {};
         if (a) a.checked = !!s.consult_advisory;
         if (b) b.checked = !!s.patient_b2c;
+        syncMethodistOncoToggleVisuals();
         if (st) { st.textContent = "Применено."; st.className = "methodist-b2c-status is-ok"; }
       })
       .catch(function (e) {
@@ -28780,6 +29178,36 @@
         loadMethodistOncoPanel();
       });
     }
+    ["overview", "settings", "tool"].forEach(function (sub) {
+      var btn = document.getElementById("onco-subtab-" + sub);
+      if (btn && !btn.getAttribute("data-wired")) {
+        btn.setAttribute("data-wired", "1");
+        btn.addEventListener("click", function () {
+          switchMethodistOncoSubTab(sub);
+        });
+      }
+    });
+    var oncoGotoSettings = document.getElementById("methodist-onco-goto-settings");
+    if (oncoGotoSettings && !oncoGotoSettings.getAttribute("data-wired")) {
+      oncoGotoSettings.setAttribute("data-wired", "1");
+      oncoGotoSettings.addEventListener("click", function () {
+        switchMethodistOncoSubTab("settings");
+      });
+    }
+    var oncoGotoTool = document.getElementById("methodist-onco-goto-tool");
+    if (oncoGotoTool && !oncoGotoTool.getAttribute("data-wired")) {
+      oncoGotoTool.setAttribute("data-wired", "1");
+      oncoGotoTool.addEventListener("click", function () {
+        switchMethodistOncoSubTab("tool");
+      });
+    }
+    ["onco-consult-advisory", "onco-patient-b2c"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && !el.getAttribute("data-onco-visual-wired")) {
+        el.setAttribute("data-onco-visual-wired", "1");
+        el.addEventListener("change", syncMethodistOncoToggleVisuals);
+      }
+    });
     var oncoSave = document.getElementById("methodist-onco-save");
     if (oncoSave && !oncoSave.getAttribute("data-wired")) {
       oncoSave.setAttribute("data-wired", "1");

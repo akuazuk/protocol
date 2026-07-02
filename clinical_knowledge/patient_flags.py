@@ -41,5 +41,5 @@ def patient_show_protocol_technical_block() -> bool:
 
 
 def patient_onco_questions_enabled() -> bool:
-    """B2C-блок «вопросы врачу» из онконастороженности (по умолчанию выкл)."""
-    return _flag("PATIENT_ONCO_QUESTIONS_ENABLED", "0")
+    """B2C-блок «вопросы врачу» из онконастороженности (по умолчанию вкл, см. render.yaml)."""
+    return _flag("PATIENT_ONCO_QUESTIONS_ENABLED", "1")

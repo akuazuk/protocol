@@ -27,8 +27,10 @@ def test_b2c_block_none_when_no_signal():
     assert block is None or isinstance(block, dict)
 
 
-def test_patient_onco_flag_default_off(monkeypatch):
+def test_patient_onco_flag_default_on(monkeypatch):
     monkeypatch.delenv("PATIENT_ONCO_QUESTIONS_ENABLED", raising=False)
+    assert patient_onco_questions_enabled() is True
+    monkeypatch.setenv("PATIENT_ONCO_QUESTIONS_ENABLED", "0")
     assert patient_onco_questions_enabled() is False
     monkeypatch.setenv("PATIENT_ONCO_QUESTIONS_ENABLED", "1")
     assert patient_onco_questions_enabled() is True

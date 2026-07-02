@@ -8197,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-02-r25-phase2-reextract"
+BUILD_VERSION = "2026-07-02-r27-methodist-onco-tabs"
 
 
 def _app_version() -> str:
@@ -8414,8 +8414,8 @@ def _consult_text_from_screen_body(body: "ConsultComplianceScreenIn") -> str:
 
 
 def _consult_onco_risk_advisory_enabled() -> bool:
-    """B2B-advisory онконастороженности в ответе consult-review (по умолчанию выкл)."""
-    return env_bool("CONSULT_ONCO_RISK_ADVISORY_ENABLED", False)
+    """B2B-advisory онконастороженности в ответе consult-review (по умолчанию вкл, см. render.yaml)."""
+    return env_bool("CONSULT_ONCO_RISK_ADVISORY_ENABLED", True)
 
 
 def _onco_demographics_from_text(text: str) -> tuple[int | None, str, str]:
@@ -10319,9 +10319,11 @@ def api_methodist_patient_monetization_put(
 
 
 def _onco_settings_state() -> dict:
+    from clinical_knowledge.patient_flags import patient_onco_questions_enabled
+
     return {
         "consult_advisory": _consult_onco_risk_advisory_enabled(),
-        "patient_b2c": env_bool("PATIENT_ONCO_QUESTIONS_ENABLED", False),
+        "patient_b2c": patient_onco_questions_enabled(),
     }
 
 
