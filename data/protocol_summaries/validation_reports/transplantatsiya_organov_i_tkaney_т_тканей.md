@@ -1,9 +1,6 @@
 # Validation: transplantatsiya_organov_i_tkaney_т_тканей
 
-- **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.661535+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
-
-## Warnings
-- `missing_icd10` conditions[т_тканей]: Нет icd10_codes у condition
+- **status:** valid
+- **validated_at:** 2026-07-01T22:46:25.405062+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted

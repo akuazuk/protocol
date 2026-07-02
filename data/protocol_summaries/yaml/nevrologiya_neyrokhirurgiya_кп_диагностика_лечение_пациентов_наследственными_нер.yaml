@@ -1,10 +1,9 @@
 protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов наследственными нервно мышечными заболеваниями
-    вз нас
+  title: Диагностика и лечение наследственных нервно-мышечных заболеваний у взрослых
   url: null
   local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
   document_sha256: null
@@ -27,21 +26,22 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_наследственными_не
-  name: Диагностика лечение пациентов наследственными нервно мышечными заболеваниями
-    вз нас
+- condition_id: hereditary_neuromuscular_diseases
+  name: Наследственные нервно-мышечные заболевания
   synonyms: []
   abbreviations: []
   icd10_codes:
   - G12
   - G60.0
   - G71
+  - E74.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: определение уровня глюкозы крови
+    - text: Алгоритм диагностики дистрофической миотонии установлен согласно приложению
+        3.
       logic_group: null
       operator: unknown
       values: []
@@ -58,95 +58,414 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение уровня глюкозы крови
+        quote: Алгоритм диагностики дистрофической миотонии установлен согласно приложению
+          3.
+    - text: При биаллельной (гомозиготной) делеции 7 или 7 и 8 экзонов гена SMN1 диагноз
+        СМА подтвержден.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При биаллельной (гомозиготной) делеции 7 или 7 и 8 экзонов гена SMN1
+          диагноз СМА подтвержден.
+    - text: 'Диагноз СМА подтвержден при наличии: делеции 7 или 7 и 8 экзонов гена
+        SMN1 в гетерозиготном состоянии и патогенной точковой мутаций в транс положении;
+        биаллельного(ых) патогенной(ых) точковой(ых) мутаций.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагноз СМА подтвержден при наличии: делеции 7 или 7 и 8 экзонов гена
+          SMN1 в гетерозиготном состоянии и патогенной точковой мутаций в транс положении;
+          биаллельного(ых) патогенной(ых) точковой(ых) мута'
+    - text: Дупликация гена PMP22 подтверждает диагноз НМСН 1А типа.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дупликация гена PMP22 подтверждает диагноз НМСН 1А типа.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови;
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи;
+  - name: Биохимический анализ крови (креатинин, мочевина, билирубин, аланинаминотрансфераза,
+      аспартатаминотрансфераза, щелочная фосфатаза, гаммаглютаминтранспептидаза, лактатдегидрогеназа,
+      глюкоза, лактат, кре
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови: креатинин, мочевина, билирубин, аланинаминотрансфераза,
+        аспартатаминотрансфераза, щелочная фосфатаза, гаммаглютаминтранспептидаза,
+        лактатдегидрогеназа, глюкоза, лактат, креатинфосфокиза, С-реактивный, натрий,
+        калий, кальций ионизированный, витамин D;'
+  - name: Определение уровня глюкозы крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня глюкозы крови;
+  - name: Коагулограмма (активированное частичное тромбопластиновое время, международное
+      нормализованное отношение, протромбиновое время, фибриноген)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'коагулограмма: активированное частичное тромбопластиновое время, международное
+        нормализованное отношение, протромбиновое время, фибриноген;'
+  - name: CNBP (ZNF9)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: CNBP (ZNF9).
+  - name: Молекулярно-генетическое исследование генов SMN1/SMN2
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на СМА 5q молекулярно-генетическое исследование генов
+        SMN1/SMN2 включает определение числа копий экзонов 7, 8 гена SMN1, поиск точечных
+        мутаций в гене SMN1 (при необходимости).
+  - name: Определение числа повторов в первом экзоне гена AR
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на бульбоспинальную мышечную атрофию Кеннеди определяется
+        число повторов в первом экзоне гена AR.
+  - name: Выявление дупликации или делеции в гене PMP22
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на НМСН 1А – выявление дупликации или делеции в гене PMP22,
+        расположенном на коротком плече 17 хромосомы.
+  - name: Поиск крупных делеций или дупликаций в гене DMD
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на МД Дюшенна-Беккера проводится поиск крупных делеций
+        или дупликаций в гене DMD.
+  - name: Определение количества CTG и CCTG повторов в генах DMPK и CNBP (ZNF9)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на дистрофическую миотонию определяется количество CTG
+        повторов в 3’-некодируемой области гена DMPK и CCTG повторов в интроне 1 гена
+        CNBP (ZNF9).
+  - name: Определение числа GCG повторов в первом экзоне гена PABPN1
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на окулофарингеальную мышечную дистрофию определяется
+        число GCG повторов в первом экзоне гена PABPN1.
+  - name: Определение активности кислой -глюкозидазы в лимфоцитах крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При подозрении на болезнь Помпе определяется активность кислой -глюкозидазы
+        в лимфоцитах крови.
+  conditional_exams:
+  - name: Поиск точечных мутаций в гене DMD
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии в гене DMD крупных патогенных перестроек выполняется поиск
+        точечных мутаций в гене DMD.
+  - name: Поиск мутаций в гене GAA
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При положительном результате ферментного теста проводится поиск мутаций
+        в гене GAA.
   treatment:
-    non_drug:
-    - text: '[treatment] 5. Для лечения ННМЗ рекомендованы базовые схемы медикаментозного
-        лечения (стр. 2)'
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Для лечения ННМЗ рекомендованы базовые схемы медикаментозного
-          лечения (стр. 2)'
-    - text: заболеваний, включающие основные группы лекарственных препаратов (далее
-        – ЛП).
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: заболеваний, включающие основные группы лекарственных препаратов (далее
-          – ЛП).
-    - text: ЛП представлены в главе 4 настоящего клинического протокола в соответствии
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛП представлены в главе 4 настоящего клинического протокола в соответствии
-    - text: по химическим наименованиям по систематической или заместительной номенклатуре
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: по химическим наименованиям по систематической или заместительной номенклатуре
-    - text: с указанием пути введения, лекарственных форм и дозировок, режима дозирования
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: с указанием пути введения, лекарственных форм и дозировок, режима дозирования
-    - text: и разовой (при необходимости суточной, максимальной разовой) дозы.
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и разовой (при необходимости суточной, максимальной разовой) дозы.
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: интроне
+    - drug_name: Алглюкозидаза альфа
       active_substance: null
       drug_group: null
-      dose_text: 1 г
+      dose_text: Лиофилизат 50 мг, вводится внутривенно капельно 20 мг/кг 1 раз в
+        2 недели.
       frequency_text: null
       duration_text: null
       route: null
@@ -158,20 +477,20 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'интроне 1 гена
-
-
-          [treatment] CNBP (ZNF9)'
-    - drug_name: инфузий
+        quote: Назначается алглюкозидаза альфа, лиофилизат для приготовления концентрата
+          для приготовления раствора для инфузий 50 мг, вводится внутривенно капельно
+          20 мг/кг 1 раз в 2 недели.
+    - drug_name: Этилметилгидроксипиридина сукцинат
       active_substance: null
       drug_group: null
-      dose_text: 50 мг
+      dose_text: Таблетки 125/250 мг, внутрь 250–500 мг/сут в 2–3 приема (макс 600–800
+        мг/сут); раствор для инъекций 50 мг/мл, в/м или в/в 50–400 мг (макс 1200 мг/сут).
       frequency_text: null
       duration_text: null
       route: null
@@ -183,17 +502,21 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: инфузий 50 мг, вводится внутривенно капельно 20 мг/кг
-    - drug_name: оболочкой
+        quote: Этилметилгидроксипиридина сукцинат, таблетки, покрытые оболочкой 125
+          мг, таблетки, покрытые оболочкой 250 мг, внутрь 250–500 мг в сутки в 2–3
+          приема; максимальная суточная доза – 600–800 мг; раствор для инъекций 50
+          мг/мл 2, 5 и 10 мл, при внутримышечно или внутривенно введении разовая доза
+          50–400 мг, максимальная суточная доза – 1200 мг.
+    - drug_name: Метилэтилпиридинола гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: 125 мг
+      dose_text: Раствор для инъекций 10 мг/мл, 5 мл внутримышечно или 10 мл внутривенно.
       frequency_text: null
       duration_text: null
       route: null
@@ -205,17 +528,19 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "оболочкой 125 мг, \nтаблетки, покрытые оболочкой 250 мг, "
-    - drug_name: инъекций
+        quote: Метилэтилпиридинола гидрохлорид, раствор для инъекций 10 мг/мл, 5 мл
+          внутримышечно или 10 мл внутривенно.
+    - drug_name: Глицин
       active_substance: null
       drug_group: null
-      dose_text: 50 мг
+      dose_text: Таблетки подъязычные 100 мг, сублингвально или трансбуккально по
+        100 мг 3 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -227,84 +552,21 @@ conditions:
         protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
         document_url: null
         local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инъекций 50 мг/мл 2, 5 и 10 мл, \nпри внутримышечно или"
-    - drug_name: подъязычные
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: подъязычные 100 мг, сублингвально или трансбуккально по 10
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-        document_url: null
-        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+        quote: Глицин, таблетки подъязычные 100 мг, сублингвально или трансбуккально
+          по 100 мг 3 раза в сутки;
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Первые 3 инфузии алглюкозидазы альфа проводятся в больничной организации
+      с мониторингом витальных функций (частота сердечных сокращений, артериальное
+      давление, сатурация) во время инфузии.
     timing: null
     required_if: []
     expected_actions: []
@@ -318,37 +580,112 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: Первые 3 инфузии алглюкозидазы альфа проводятся в больничной организации
+        с мониторингом витальных функций (частота сердечных сокращений, артериальное
+        давление, сатурация) во время инфузии.
+  - text: В дальнейшем ФЗТ при осложненном течении болезни проводится в условиях круглосуточного
+      пребывания в больничной организации, при стабильном состоянии – в организациях
+      дневного пребывания или амбулаторно-поликлинических организациях 1 раз в 2 недели.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В дальнейшем ФЗТ при осложненном течении болезни проводится в условиях
+        круглосуточного пребывания в больничной организации, при стабильном состоянии
+        – в организациях дневного пребывания или амбулаторн
   hospitalization: []
-  routing: []
+  routing:
+  - text: Госпитализация (для первых 3 инфузий и при осложненном течении болезни)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (для первых 3 инфузий и при осложненном течении болезни)
+  - text: Дневной стационар или амбулаторно-поликлинические организации (при стабильном
+      состоянии пациента)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дневной стационар или амбулаторно-поликлинические организации (при стабильном
+        состоянии пациента)
+  - text: Госпитализация для начала неинвазивной вентиляции легких (НИВЛ) при наличии
+      клинических признаков или лабораторных показателей дыхательной недостаточности,
+      особенно в острых ситуациях (инфекция дыхательных путей).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для начала неинвазивной вентиляции легких (НИВЛ) при наличии
+        клинических признаков или лабораторных показателей дыхательной недостаточности,
+        особенно в острых ситуациях (инфекция дыхате
+  - text: Госпитализация для проведения чрескожной эндоскопической гастростомии при
+      отсутствии медицинских противопоказаний.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для проведения чрескожной эндоскопической гастростомии
+        при отсутствии медицинских противопоказаний.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-    document_url: null
-    local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов наследственными нервно мышечными заболеваниями
-      вз нас
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:43.004750+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:15:22.257712+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:43.007884+00:00'
+  validated_at: '2026-07-01T23:15:22.266122+00:00'

@@ -1,9 +1,9 @@
 protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов детское население дерматитом экземой
+  title: Диагностика и лечение дерматита и экземы у детского населения
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
   document_sha256: null
@@ -19,29 +19,26 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_детское_население_
-  name: Диагностика лечение пациентов детское население дерматитом экземой
+- condition_id: atopic_dermatitis
+  name: Атопический дерматит
   synonyms: []
   abbreviations: []
   icd10_codes:
   - L20
-  - L30
-  - L30.9
-  - O26.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] Диагностические критерии для постановки диагноза атопического
-        дерматита* (стр. 53)'
+    - text: Определение степеней тяжести атопического дерматита согласно приложению
+        2
       logic_group: null
       operator: unknown
       values: []
@@ -58,10 +55,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] Диагностические критерии для постановки диагноза
-          атопического дерматита* (стр. 53)'
-    - text: '| Основные диагностические критерии | Дополнительные диагностические
-        критерии |'
+        quote: Определение степеней тяжести атопического дерматита согласно приложению
+          2
+    - text: Использование индекса SCORAD для оценки степени тяжести атопического дерматита
       logic_group: null
       operator: unknown
       values: []
@@ -78,412 +74,115 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '| Основные диагностические критерии | Дополнительные диагностические
-          критерии |'
-    - text: '[criteria] 10. Определение степеней тяжести атопического дерматита проводится
-        согласно (стр. 4)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[criteria] 10. Определение степеней тяжести атопического дерматита
-          проводится согласно (стр. 4)'
-    - text: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-    - text: анализ крови биохимический (определение уровня креатинина, мочевины, глюкозы,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анализ крови биохимический (определение уровня креатинина, мочевины,
-          глюкозы,
-    - text: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-    - text: анализ крови биохимический (определение уровня креатинина, мочевины, глюкозы,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анализ крови биохимический (определение уровня креатинина, мочевины,
-          глюкозы,
-    - text: определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение антител к бледной трепонеме (Treponema pallidum) методом
-          ИФА
+        quote: Использование индекса SCORAD для оценки степени тяжести атопического
+          дерматита
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: биопсия кожи врачом-дерматовенерологом, врачом – детским хирургом, врачом
-        –
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: биопсия кожи врачом-дерматовенерологом, врачом – детским хирургом,
-          врачом –
-    - text: биопсия слизистых оболочек врачом-стоматологом детским, врачом – детским
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: биопсия слизистых оболочек врачом-стоматологом детским, врачом – детским
-    - text: хирургом, врачом – детским онкологом-гематологом.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: хирургом, врачом – детским онкологом-гематологом.
-    - text: '[treatment] 5. Пациентам с тяжелым течением дерматита и экземы, с осложнениями
-        и (или) при (стр. 3)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Пациентам с тяжелым течением дерматита и экземы, с
-          осложнениями и (или) при (стр. 3)'
-    - text: неэффективности лечения в амбулаторных условиях медицинская помощь оказывается
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: неэффективности лечения в амбулаторных условиях медицинская помощь
-          оказывается
-    - text: в дерматовенерологических отделениях больничных организаций.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: в дерматовенерологических отделениях больничных организаций.
-    drug_groups: []
-    drugs:
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "применения 10 мг/г, \nнаносится тонким слоем на пораженны"
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "капсулы 25 мг, 50 мг, 100 мг, внутрь \nв начальной доз"
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 2,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетки 2,5 мг
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 50 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения 50 мг/мл в преднаполненном \nшприце 7,5 мг/0,1"
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 20 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "более 20 мг в неделю) (длительность \nтерапии определ"
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 30 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций 30 мг/мл, внутривенно (далее – в/венно) или \n"
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 1993 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: через 4 нед
+  required_exams:
+  - name: Общий (клинический) анализ крови (определение уровня гемоглобина, количества
+      эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
+      СОЭ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '81.2. лабораторные исследования в амбулаторных условиях: общий (клинический)
+        анализ крови (определение уровня гемоглобина, количества эритроцитов и лейкоцитов,
+        подсчет лейкоцитарной формулы, уровня тромбоцитов, СОЭ);'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '81.2. лабораторные исследования в амбулаторных условиях: ... общий анализ
+        мочи;'
+  - name: Анализ крови биохимический (определение уровня креатинина, мочевины, глюкозы,
+      общего кальция, общего белка, АЛТ, АСТ, общего билирубина, холестерина, гамма-глютамилтранспептидазы,
+      калия, С-реактивного
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '81.2. лабораторные исследования в амбулаторных условиях: анализ крови
+        биохимический (определение уровня креатинина, мочевины, глюкозы, общего кальция,
+        общего белка, АЛТ, АСТ, общего билирубина, холестерина...)'
+  conditional_exams:
+  - name: Определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
+      в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 24
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '81.3. лабораторные исследования в стационарных условиях: ... определение
+        антител к бледной трепонеме (Treponema pallidum) методом ИФА в сыворотке крови
+        при установлении диагноза однократно у пациентов с 14 лет.'
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
       document_url: null
@@ -494,36 +193,322 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: через 4 нед
-  hospitalization: []
-  routing: []
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
-    document_url: null
-    local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов детское население дерматитом экземой
+  source_refs: []
+- condition_id: dermatitis_ingested_substances
+  name: Дерматит, вызванный веществами, принятыми внутрь
+  synonyms: []
+  abbreviations: []
+  icd10_codes: []
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий (клинический) анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
+        СОЭ)
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, общего кальция, общего белка, АЛТ, АСТ)
+  conditional_exams:
+  - name: Определение антител к Treponema pallidum методом ИФА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 24
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение антител к бледной трепонеме (Treponema pallidum) методом
+        ИФА в сыворотке крови при установлении диагноза однократно у пациентов с 14
+        лет.
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: eczema_and_other_dermatitis
+  name: Экзема и другие дерматиты
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - L30
+  - L30.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий (клинический) анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
+        СОЭ)
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, общего кальция, общего белка, АЛТ, АСТ, общего билирубина, холестерина,
+        гамма-глютамилтранспептидазы, калия, С-реактивного белка)
+  - name: Определение антител к Treponema pallidum методом ИФА
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: 24
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение антител к бледной трепонеме (Treponema pallidum) методом
+        ИФА в сыворотке крови при установлении диагноза однократно у пациентов с 14
+        лет.
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: При наличии медицинских показаний проводится консультация врача-аллерголога-иммунолога.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_дерматитом_экземой
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_дерматитом_экземой_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии медицинских показаний проводится консультация врача-аллерголога-иммунолога.
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.391582+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-02T00:33:38.368211+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=3
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:19.397326+00:00'
+  warnings:
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[dermatitis_ingested_substances]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[dermatitis_ingested_substances].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[eczema_and_other_dermatitis].required_exams[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[eczema_and_other_dermatitis].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[eczema_and_other_dermatitis].required_exams[2]
+  validated_at: '2026-07-02T00:33:38.385393+00:00'

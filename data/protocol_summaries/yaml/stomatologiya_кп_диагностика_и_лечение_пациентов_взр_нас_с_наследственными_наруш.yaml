@@ -1,10 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с наследственными нарушениями
-    структуры зубов
+  title: Диагностика и лечение пациентов с наследственными нарушениями структуры зубов
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -27,22 +26,67 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с наследственными нарушениями
-    структуры зубов
+- condition_id: nasledstvennye_narusheniya_struktury_zubov
+  name: Наследственные нарушения структуры зубов
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.5
+  - K00.50
+  - K00.51
+  - K00.52
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: дифференциальная диагностика нарушения развития зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: дифференциальная диагностика нарушения развития зубов
+    - text: выявление взаимосвязи стоматологического и общего здоровья с наследственными
+        нарушениями структуры зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: выявление взаимосвязи стоматологического и общего здоровья с наследственными
+          нарушениями структуры зубов
+    optional: []
+    exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: ЛЕЧЕНИЕ НАСЛЕДСТВЕННЫХ НАРУШЕНИЙ СТРУКТУРЫ ЗУБОВ
+    - text: Принципами лечения являются выявление факторов, влияющих на возникновение
+        и развитие наследственных нарушений, определение медицинских показаний, выбор
+        метода лечения и тактики врача-специалиста.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -53,9 +97,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛЕЧЕНИЕ НАСЛЕДСТВЕННЫХ НАРУШЕНИЙ СТРУКТУРЫ ЗУБОВ
-    - text: '[treatment] 8. Принципами лечения наследственных нарушений структуры
-        зубов являются (стр. 6)'
+        quote: Принципами лечения являются выявление факторов, влияющих на возникновение
+          и развитие наследственных нарушений, определение медицинских показаний,
+          выбор метода лечения и тактики врача-специалиста.
+    - text: Ортопедическое лечение включает обезболивание по медицинским показаниям
+        с использованием лекарственных средств, согласно приложению.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -66,10 +112,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 8. Принципами лечения наследственных нарушений структуры
-          зубов являются (стр. 6)'
-    - text: выявление факторов, влияющих на возникновение и развитие наследственных
-        нарушений
+        quote: Ортопедическое лечение включает обезболивание по медицинским показаниям
+          с использованием лекарственных средств, согласно приложению.
+    - text: Ортопедическое лечение включает препарирование под искусственные коронки,
+        вкладки, виниры.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -80,10 +126,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: выявление факторов, влияющих на возникновение и развитие наследственных
-          нарушений
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 24.03.2023,
-        8/39541
+        quote: Ортопедическое лечение включает препарирование под искусственные коронки,
+          вкладки, виниры.
+    - text: Ортопедическое лечение включает изготовление временных конструкций (исключение
+        – препарированные зубы под штампованные коронки).
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -94,10 +140,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 24.03.2023,
-          8/39541
-    - text: структуры зубов, а также определение медицинских показаний к лечению,
-        выбор метода
+        quote: Ортопедическое лечение включает изготовление временных конструкций
+          (исключение – препарированные зубы под штампованные коронки).
+    - text: Ортопедическое лечение включает получение аналоговых или оптических (3D)
+        оттисков.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -108,9 +154,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: структуры зубов, а также определение медицинских показаний к лечению,
-          выбор метода
-    - text: лечения и тактики врача-специалиста.
+        quote: Ортопедическое лечение включает получение аналоговых или оптических
+          (3D) оттисков.
+    - text: Ортопедическое лечение включает определение и фиксацию центрального соотношения
+        челюстей или центральной окклюзии при помощи восковых или пластмассовых базисов
+        с окклюзионными валиками или окклюзионных силиконовых материалов.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
@@ -121,13 +169,101 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лечения и тактики врача-специалиста.
+        quote: Ортопедическое лечение включает определение и фиксацию центрального
+          соотношения челюстей или центральной окклюзии при помощи восковых или пластмассовых
+          базисов с окклюзионными валиками или окклюзионны
+    - text: Ортопедическое лечение включает выбор цвета, размера и формы искусственных
+        коронок, вкладок, виниров в соответствии с имеющимися зубами и индивидуальными
+        особенностями пациента.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает выбор цвета, размера и формы искусственных
+          коронок, вкладок, виниров в соответствии с имеющимися зубами и индивидуальными
+          особенностями пациента.
+    - text: Ортопедическое лечение включает наложение и припасовку каркаса коронки.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает наложение и припасовку каркаса коронки.
+    - text: Ортопедическое лечение включает наложение и припасовку готовой коронки,
+        вкладки, винира.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает наложение и припасовку готовой коронки,
+          вкладки, винира.
+    - text: Ортопедическое лечение включает фиксацию коронки на временный материал
+        (по медицинским показаниям).
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает фиксацию коронки на временный материал
+          (по медицинским показаниям).
+    - text: Ортопедическое лечение включает фиксацию коронки, вкладки, винира на постоянный
+        материал.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает фиксацию коронки, вкладки, винира на
+          постоянный материал.
+    - text: Ортопедическое лечение включает рекомендации по гигиеническому уходу за
+        зубным протезом, правилам адаптации и срокам замены конструкций.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортопедическое лечение включает рекомендации по гигиеническому уходу
+          за зубным протезом, правилам адаптации и срокам замены конструкций.
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно так
       frequency_text: null
       duration_text: null
       route: null
@@ -139,17 +275,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения \n100 мг/мл во флаконах 50 мл \nОдну порцию (1–3 "
-    - drug_name: шприцах
+        quote: 'Лидокаин: Спрей 100 мг/мл во флаконах 50 мл. Одну порцию (1–3 нажатия)
+          наносят на слизистую оболочку полости рта или десну. Можно наносить путем
+          смазывания.'
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 12,5 г
+      dose_text: Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии
+        слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией. Разовую
+        дозу врач-специалист назначает индивидуально, учитывая
       frequency_text: null
       duration_text: null
       route: null
@@ -161,17 +301,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "шприцах \n12,5 г \nДля аппликационной анестезии слизистой \n"
-    - drug_name: картриджах
+        quote: 'Лидокаин/Хлоргексидин: Анестезирующий гель 12,5 г. Для аппликационной
+          анестезии слизистой полости рта. Разовую дозу врач назначает индивидуально,
+          учитывая состояние области и общее состояние.'
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
+        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
+        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
       frequency_text: null
       duration_text: null
       route: null
@@ -183,128 +327,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах 1,7 мл \n(1,8 мл), в ампулах 2 мл"
-    - drug_name: соответствует
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "соответствует 12,5 мл раствора \nдля инъекций)\n\n[treatment] Лек"
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: 'Артикаин/Эпинефрин: Раствор для инъекций. Предназначено для инъекционного
+          применения в полости рта. Доза до 7 мг на 1 кг массы тела (до 500 мг) за
+          процедуру.'
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: через 6 мес
+  - text: Медицинское наблюдение за результатами лечения рекомендовано осуществлять
+      путем проведения медицинских осмотров врачом-стоматологом-терапевтом через 6
+      месяцев после завершения терапевтического лечения.
     timing: null
     required_if: []
     expected_actions: []
@@ -318,37 +356,60 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: через 6 мес
+      quote: Медицинское наблюдение за результатами лечения рекомендовано осуществлять
+        путем проведения медицинских осмотров врачом-стоматологом-терапевтом через
+        6 месяцев после завершения терапевтического лечения
+  - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+      (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
+        (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев).
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_наследственными_наруш
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с наследственными нарушениями
-      структуры зубов
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.444483+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:22:32.043248+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.447899+00:00'
+  validated_at: '2026-07-01T23:22:32.044984+00:00'

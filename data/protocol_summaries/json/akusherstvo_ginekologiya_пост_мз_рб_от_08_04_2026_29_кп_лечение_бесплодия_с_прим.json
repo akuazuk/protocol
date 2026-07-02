@@ -1,10 +1,10 @@
 {
   "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "пост. МЗ РБ от 08.04.2026 №29 КП лечение бесплодия с применением ВРТ",
+    "title": "Лечение бесплодия с применением ВРТ",
     "url": null,
     "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия",
-      "name": "пост. МЗ РБ от 08.04.2026 №29 КП лечение бесплодия с применением ВРТ",
+      "condition_id": "infertility_with_art",
+      "name": "Бесплодие с применением ВРТ",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -56,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[criteria] 25. Критерием, указывающим на снижение овариального резерва, который с высокой (стр. 6)",
+            "text": "Снижение овариального резерва (уровень антимюллерова гормона < 0,5 нг/мл и/или < 5 антральных фолликулов в обоих яичниках).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,40 +73,120 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[criteria] 25. Критерием, указывающим на снижение овариального резерва, который с высокой (стр. 6)"
-            }
-          },
-          {
-            "text": "диагностике и не исключает ее проведения для внутриутробного уточнения диагноза",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "диагностике и не исключает ее проведения для внутриутробного уточнения диагноза"
+              "quote": "Снижение овариального резерва (уровень антимюллерова гормона < 0,5 нг/мл и/или < 5 антральных фолликулов в обоих яичниках)."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "ПГТ (Преимплантационное генетическое тестирование)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ПГТ – метод диагностики генетических заболеваний у эмбриона человека до его переноса в полость матки."
+          }
+        },
+        {
+          "name": "Пункция фолликулов яичника",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "пункция фолликулов яичника – медицинская манипуляция с целью получения яйцеклеток (ооцитов) для ЭКО."
+          }
+        },
+        {
+          "name": "Исследование количественного уровня хорионического гонадотропина в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика беременности проводится путем исследования количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов."
+          }
+        },
+        {
+          "name": "Ультразвуковое исследование органов малого таза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ультразвукового исследования органов малого таза через 21–30 дней со дня переноса эмбрионов."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 1. Утвердить (стр. 1)",
+            "text": "Трансплантация (перенос) эмбриона в полость матки (от стадии дробления до бластоцисты).",
             "source_ref": {
               "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
               "document_url": null,
@@ -117,11 +197,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 1. Утвердить (стр. 1)"
+              "quote": "Трансплантация (перенос) эмбриона в полость матки (от стадии дробления до бластоцисты)."
             }
           },
           {
-            "text": "вспомогательных репродуктивных технологий» (прилагается).",
+            "text": "Программа ЭКО с ИКСИ.",
             "source_ref": {
               "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
               "document_url": null,
@@ -132,307 +212,58 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "вспомогательных репродуктивных технологий» (прилагается)."
-            }
-          },
-          {
-            "text": "[treatment] 08.04.2026 № 29 (стр. 1)",
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 08.04.2026 № 29 (стр. 1)"
-            }
-          },
-          {
-            "text": "«Лечение бесплодия с применением вспомогательных репродуктивных технологий»",
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "«Лечение бесплодия с применением вспомогательных репродуктивных технологий»"
-            }
-          },
-          {
-            "text": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 1)",
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 1. Настоящий клинический протокол устанавливает общие требования к объему (стр. 1)"
-            }
-          },
-          {
-            "text": "медицинских услуг, медицинских вмешательств при применении вспомогательных",
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "медицинских услуг, медицинских вмешательств при применении вспомогательных"
+              "quote": "Программа ЭКО с ИКСИ."
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2025 г"
-            }
-          },
-          {
-            "drug_name": "таблетки",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "50 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "таблетки 50 мг), максимальная суточная доза \n150 мг, т"
-            }
-          },
-          {
-            "drug_name": "введения",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "250 мкг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "введения 250 мкг / \n0,5 мл, в дозе 250 мкг"
-            }
-          },
-          {
-            "drug_name": "апреля",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2026 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "апреля 2026 г"
-            }
-          },
-          {
-            "drug_name": "июня",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "июня 1993 г"
-            }
-          },
-          {
-            "drug_name": "декабря",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2020 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "декабря 2020 г"
-            }
-          },
-          {
-            "drug_name": "января",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2012 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "января 2012 г"
-            }
-          },
-          {
-            "drug_name": "трипторелина",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "0,1 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "трипторелина 0,1 мг – \n21 ампула)"
-            }
-          },
-          {
-            "drug_name": "дозе",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "3,75 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "дозе 3,75 мг, внутримышечно (далее – \nв/м) или п/к, "
-            }
-          }
-        ],
+        "drugs": [],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Диагностика беременности: исследование количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика беременности: исследование количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов."
+          }
+        },
+        {
+          "text": "Диагностика беременности: ультразвуковое исследование органов малого таза через 21–30 дней со дня переноса эмбрионов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диагностика беременности: ультразвуковое исследование органов малого таза через 21–30 дней со дня переноса эмбрионов."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "обработки спермы, направленной на выделение фракции подвижных морфологически",
+          "text": "амбулаторно",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -445,46 +276,75 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "обработки спермы, направленной на выделение фракции подвижных морфологически"
+            "quote": "амбулаторно"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Отсутствие эмбрионов после культивирования",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отсутствии эмбрионов (подтверждается протоколом культивирования эмбрионов) женщина исключается из протокола ЭКО."
+          }
+        },
+        {
+          "text": "Снижение овариального резерва, не позволяющее получить собственные яйцеклетки",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Критерием... который с высокой вероятностью не позволит получить собственные яйцеклетки, является уровень антимюллерова гормона в сыворотке крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов..."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "пост. МЗ РБ от 08.04.2026 №29 КП лечение бесплодия с применением ВРТ"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:04.039471+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-01T23:43:42.816797+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:04.043838+00:00"
+    "validated_at": "2026-07-01T23:43:42.819174+00:00"
   }
 }

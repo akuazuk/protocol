@@ -1,6 +1,6 @@
 protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика наследственных тромбофилий и профилактика венозных тромбоэмболических
@@ -20,38 +20,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_наследственных_тромбофилий_и_профила
-  name: Диагностика наследственных тромбофилий и профилактика венозных тромбоэмболических
-    осложнений
+- condition_id: hereditary_thrombophilia
+  name: Наследственная тромбофилия
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - D65
   - D68.5
-  - E11.9
-  - E66.9
-  - I10
-  - L93.0
-  - O26.9
-  - O30
-  - O35
-  - O43.2
-  - O72
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 12. При установлении диагноза «Наследственная тромбофилия»
-        у беременных (стр. 5)'
+    - text: Носительство тромбогенных мутаций (фактор V Лейден, протромбин) или дефицит
+        естественных антикоагулянтов (АТ III, протеины С и S).
       logic_group: null
       operator: unknown
       values: []
@@ -68,10 +57,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 12. При установлении диагноза «Наследственная тромбофилия»
-          у беременных (стр. 5)'
-    - text: дозирования. Рутинное еженедельное или ежемесячное определение анти-Ха
-        во время
+        quote: Носительство тромбогенных мутаций (фактор V Лейден, протромбин) или
+          дефицит естественных антикоагулянтов (АТ III, протеины С и S).
+    - text: Лабораторное снижение активности и (или) концентрации антитромбина III
+        (AT III) подтверждает дефицит AT III.
       logic_group: null
       operator: unknown
       values: []
@@ -88,98 +77,197 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: дозирования. Рутинное еженедельное или ежемесячное определение анти-Ха
-          во время
+        quote: Лабораторное снижение активности и (или) концентрации антитромбина
+          III (AT III) подтверждает дефицит AT III.
+    - text: Лабораторно подтвержденное снижение активности протеина С (ПС) устанавливает
+        дефицит ПС.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лабораторно подтвержденное снижение активности протеина С (ПС) устанавливает
+          дефицит ПС.
+    - text: ВТЭО в анамнезе и (или) при настоящей беременности, родах и послеродовом
+        периоде является медицинским показанием к диагностике наследственных тромбофилий
+        у женщин.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ВТЭО в анамнезе и (или) при настоящей беременности, родах и послеродовом
+          периоде является медицинским показанием к диагностике наследственных тромбофилий
+          у женщин.
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Уровень активности/концентрация естественных антикоагулянтов (АТ III, ПС,
+      ПS)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень активности или концентрация естественных антикоагулянтов (АТ
+        III, ПС, ПS) должны оцениваться до беременности
+  - name: Исследование гемостаза (активированное частичное тромбопластиновое время)
+      у новорожденных
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В первые сутки жизни новорожденным от матерей, получавших на протяжении
+        беременности антикоагулянты, осуществляют... исследование гемостаза (активированное
+        частичное тромбопластиновое время...
+  conditional_exams:
+  - name: Анти-Ха активность
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: корректируются с учетом результатов клинических, лабораторных (анти-Ха
+        активность, коагулограмма + D-димер... тромбоэластометрия) и инструментальных
+        исследований.
+  - name: Коагулограмма + D-димер
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коагулограмма + D-димер (выполняется 1 раз в 28 дней и по медицинским
+        показаниям)
+  - name: Тромбоэластометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тромбоэластометрия
+  - name: Специфическая анти-Ха активность НМГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Регистрацию специфической анти-Ха активности НМГ целесообразно выполнять
+        не менее чем через 72 часа после изменения режима дозирования.
   treatment:
-    non_drug:
-    - text: антикоагулянтной терапии не требуется.
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антикоагулянтной терапии не требуется.
-    - text: вмешательства), назначаются через 8–12 часов в послеродовом (послеоперационном)
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: вмешательства), назначаются через 8–12 часов в послеродовом (послеоперационном)
-    - text: 17. При дефиците АТ III (снижение активности до уровня менее 60 %) во
-        время
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 17. При дефиците АТ III (снижение активности до уровня менее 60 %)
-          во время
-    - text: беременности, при подготовке к родоразрешению, а также в послеродовом
-        периоде
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: беременности, при подготовке к родоразрешению, а также в послеродовом
-          периоде
-    - text: врачебным консилиумом принимается решение о назначении заместительной
-        терапии.
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: врачебным консилиумом принимается решение о назначении заместительной
-          терапии.
-    - text: (промежуточная) доза при массе тела
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: (промежуточная) доза при массе тела
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: апреля
+    - drug_name: НМГ
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: 8000 МЕ анти-Ха/0,8 мл ежедневно
       frequency_text: null
       duration_text: null
       route: null
@@ -191,17 +279,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: апреля 2022 г
-    - drug_name: июня
+        quote: 8000 МЕ анти-Ха/0,8 мл ежедневно**
+    - drug_name: НМГ
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 86 МЕ/кг/сут
       frequency_text: null
       duration_text: null
       route: null
@@ -213,17 +301,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: 86 МЕ/кг/сут
+    - drug_name: НМГ
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 75 МЕ/кг/сут
       frequency_text: null
       duration_text: null
       route: null
@@ -235,17 +323,17 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: ноября
+        quote: 75 МЕ/кг/сут**
+    - drug_name: НМГ
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 0,6 мг/кг/сут
       frequency_text: null
       duration_text: null
       route: null
@@ -257,50 +345,46 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 1993 г
+        quote: 0,6 мг/кг/сут**
+    - drug_name: НМГ
+      active_substance: null
+      drug_group: null
+      dose_text: 'Высокая профилактическая (промежуточная) доза при массе тела 50–90
+        кг: 5700 МЕ каждые 12 ч'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Высокая профилактическая (промежуточная) доза при массе тела 50–90
+          кг 5700 МЕ каждые 12 ч
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
-  - text: Контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 4. Направление (стр. 3)'
+  - text: Направление женщин для консультации и (или) госпитализации в другие организации
+      здравоохранения (областные и республиканские) осуществляется после выполнения
+      обязательных и дополнительных клинических обследований.
     timing: null
     required_if: []
     source_ref:
@@ -313,13 +397,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 4. Направление (стр. 3)'
+      quote: 'Направление женщин для консультации и (или) госпитализации в другие
+        организации здравоохранения (областные и республиканские) осуществляется после
+        выполнения обязательных и дополнительных клинических '
   red_flags:
-  - text: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-      \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-      \ \nклини"
+  - text: Смертность от ВТЭО в молодом возрасте при снижении уровня или активности
+      антитромбина III менее 30 %.
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -327,19 +412,35 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ка \nвенозных \nтромбоэмболических \nосложнений \nу женщин \nво \nвремя\
-        \ \nбеременности, родов, в послеродовом периоде и у их детей» (прилагается);\
-        \ \nклини"
-  - text: "ика \nвенозных тромбоэмболических осложнений у женщин во время беременности,\
-      \  \nродов, в послеродовом периоде и у их детей»\n\n[diagnostics] 1. Настоя"
+      quote: При снижении уровня или активности антитромбина менее 30 % регистрируется
+        смертность в молодом возрасте от ВТЭО.
+  - text: Риск развития ВТЭО при снижении активности АТ III до 70 % и менее.
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Риск развития ВТЭО возникает при снижении в плазме крови уровня активности
+        АТ III до уровня 70 % и менее.
+  - text: Спонтанные ВТЭО при уровне активности АТ III 40–60 %.
+    aliases: []
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -347,131 +448,83 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ика \nвенозных тромбоэмболических осложнений у женщин во время беременности,\
-        \  \nродов, в послеродовом периоде и у их детей»\n\n[diagnostics] 1. Настоя"
-  - text: "ке \nвенозных \nтромбоэмболических \nосложнений \nу женщин, \nявляющихся\
-      \ \nносителями \nтромбогенных мутаций (мутация гена коагуляционного фактора\
-      \ V Лейд"
+      quote: Спонтанные ВТЭО возникают при уровне активности 40–60 %
+  - text: Риск развития тромбоза при снижении активности ПС до 50 % и менее.
     aliases: []
-    red_flag_type: thrombosis
-    severity: high
+    red_flag_type: other
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ке \nвенозных \nтромбоэмболических \nосложнений \nу женщин, \nявляющихся\
-        \ \nносителями \nтромбогенных мутаций (мутация гена коагуляционного фактора\
-        \ V Лейд"
-  - text: "иоде. Риск развития тромбоза возникает при снижении \nв плазме крови активности\
-      \ ПС до уровня 50 % и менее;\n\n[diagnostics] 8. Характеристика дефицита"
+      quote: Риск развития тромбоза возникает при снижении в плазме крови активности
+        ПС до уровня 50 % и менее
+  - text: Рутинное еженедельное или ежемесячное определение анти-Ха активности НМГ
+      во время беременности не рекомендовано.
     aliases: []
-    red_flag_type: thrombosis
-    severity: high
+    red_flag_type: other
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "иоде. Риск развития тромбоза возникает при снижении \nв плазме крови\
-        \ активности ПС до уровня 50 % и менее;\n\n[diagnostics] 8. Характеристика\
-        \ дефицита"
-  - text: 'тика венозных тромбоэмболических осложнений
-
-      Рубрика: Акушерство и гинекология
-
-      Тип: Клинический КП (есть коды МКБ)
-
-      Популяция: новорождённые, дети,'
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'тика венозных тромбоэмболических осложнений
-
-        Рубрика: Акушерство и гинекология
-
-        Тип: Клинический КП (есть коды МКБ)
-
-        Популяция: новорождённые, дети,'
-  - text: "28 \nвенозное тромбоэмболическое осложнение (далее, если не установлено\
-      \ иное – \nВТЭО) – собирательное понятие, объединяющее тромбоз подкожных, глу"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "28 \nвенозное тромбоэмболическое осложнение (далее, если не установлено\
-        \ иное – \nВТЭО) – собирательное понятие, объединяющее тромбоз подкожных,\
-        \ глу"
+      quote: Рутинное еженедельное или ежемесячное определение анти-Ха во время беременности
+        не рекомендовано.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_диагностика_наследственных_тромбофилий_и_профилактик
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_наследственных_тромбофилий_и_профилактика_венозных_тромбоэмболических_осложнений_пост_МЗ_01042022_24.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика наследственных тромбофилий и профилактика венозных тромбоэмболических
-      осложнений
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.457111+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T22:52:06.070249+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:03.458510+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hereditary_thrombophilia].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hereditary_thrombophilia].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hereditary_thrombophilia].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hereditary_thrombophilia].treatment.drugs[4]
+  validated_at: '2026-07-01T22:52:06.075184+00:00'

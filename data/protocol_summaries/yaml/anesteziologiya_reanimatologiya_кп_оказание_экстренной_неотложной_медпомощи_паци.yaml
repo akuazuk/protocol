@@ -1,6 +1,6 @@
 protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Оказание экстренной неотложной медпомощи пациентам дет возраста
@@ -19,36 +19,32 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_экстренной_неотложной_медпомощи_пациент
-  name: Оказание экстренной неотложной медпомощи пациентам дет возраста
+- condition_id: anaphylaxis_anaphylactic_shock
+  name: Анафилаксия и анафилактический шок
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L50
-  - L50.0
-  - L50.1
-  - L50.2
-  - L50.3
-  - L50.4
-  - L50.5
-  - L50.6
-  - L50.8
-  - L50.9
-  - L51.2
-  - B24
+  - T78.0
+  - T78.2
+  - T80.5
+  - T81.1
+  - T88.2
+  - T88.6
+  - T88.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: как критерии для определения приоритетных случаев больше зависимы от местной
+    - text: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+        (генерализованная крапивница, зуд, гиперемия, отек губ, языка, мягкого неба).
       logic_group: null
       operator: unknown
       values: []
@@ -65,16 +61,142 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: как критерии для определения приоритетных случаев больше зависимы от
-          местной
+        quote: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+          (генерализованная крапивница, зуд, гиперемия, отек губ, языка, мягкого неба).
+    - text: Наличие дыхательных нарушений (одышка, бронхоспазм, стридор, снижение
+        пиковой объемной скорости выдоха, гипоксемия).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие дыхательных нарушений (одышка, бронхоспазм, стридор, снижение
+          пиковой объемной скорости выдоха, гипоксемия).
+    - text: Наличие снижения АД или ассоциированных с этим симптомов органной дисфункции
+        (коллапс, синкопе, недержание мочи).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие снижения АД или ассоциированных с этим симптомов органной дисфункции
+          (коллапс, синкопе, недержание мочи).
+    - text: 'Анафилаксия: острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности с быстрым началом, поражением кожи, слизистых,
+        ЖКТ, гемодинамическими и дыхательными нарушениями.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Анафилаксия: острая тяжелая жизнеугрожающая генерализованная или системная
+          реакция гиперчувствительности с быстрым началом, поражением кожи, слизистых,
+          ЖКТ, гемодинамическими и дыхательными нарушениям'
+    - text: 'Анафилактический шок: острая недостаточность кровообращения в результате
+        анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных
+        органов.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Анафилактический шок: острая недостаточность кровообращения в результате
+          анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно
+          важных органов.'
+    - text: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дополнительные лабораторные и (или) инструментальные исследования не
+        рекомендованы (за исключением подозрения на развитие крапивницы вследствие
+        пищевой аллергии у сенсибилизированных пациентов или наличие других провоцирующих
+        развитие крапивницы факторов, таких как ЛП, когда показано проведение аллергологического
+        обследования)
   treatment:
     non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
+    - text: Придать пациенту возвышенное положение тела в постели.
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
@@ -85,10 +207,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
+        quote: Придать пациенту возвышенное положение тела в постели.
+    - text: Начать проведение оксигенотерапии.
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
@@ -99,65 +219,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их
-        определения:'
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и
-          их определения:'
-    - text: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-    - text: реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: реакция гиперчувствительности, характеризующаяся быстрым началом с
-          поражением
-    - text: гемодинамических и дыхательных нарушений. Возможно развитие АФ с поражением
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: гемодинамических и дыхательных нарушений. Возможно развитие АФ с поражением
+        quote: Начать проведение оксигенотерапии.
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Эпинефрин (эпинефрина гидротартрат, эпинефрин гидрохлорид)
       active_substance: null
       drug_group: null
-      dose_text: 2006 г
+      dose_text: Рекомендуемая разовая внутривенная или внутрикостная доза – 10 мкг/кг
+        массы тела, максимальная однократная доза – 1 мг (для пациентов >40 кг). Вводят
+        в разведении 1:10000 (0,1 мл/кг). Повторяют каждые
       frequency_text: null
       duration_text: null
       route: null
@@ -169,17 +239,20 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
+        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
+          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
+          однократная доза – 1 мг.
+    - drug_name: Атропин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Обычная внутривенная доза 20 мкг/кг массы тела. Данную дозу можно
+        повторить через 5 минут.
       frequency_text: null
       duration_text: null
       route: null
@@ -191,17 +264,19 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: раствор
+        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
+          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут.
+    - drug_name: Бикарбонат натрия
       active_substance: null
       drug_group: null
-      dose_text: 1,8 мг
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+        0,5 ммоль/кг. Применяется только при выраженном ацидозе.
       frequency_text: null
       duration_text: null
       route: null
@@ -213,17 +288,19 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: раствор 1,8 мг/мл
-    - drug_name: есть
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг.
+    - drug_name: Кальция хлорид / Кальция глюконат
       active_substance: null
       drug_group: null
-      dose_text: 1 мл
+      dose_text: 'Кальция хлорид: внутривенно или внутрикостно 20 мг/кг (0,2 мл/кг),
+        повторить через 15 мин. Кальция глюконат: внутривенно 0,6–0,8 мл/кг.'
       frequency_text: null
       duration_text: null
       route: null
@@ -235,17 +312,21 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: есть 1 мл (раствор для инъекций 1,82 мг/мл в ампул
-    - drug_name: инъекций
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида... в дозе
+          20 мг/кг (0,2 мл/кг), дозу можно повторить через 15 мин (кальция глюконат...
+          доза – 0,6–0,8 мл/кг).
+    - drug_name: Амиодарон
       active_substance: null
       drug_group: null
-      dose_text: 1 мг
+      dose_text: Внутривенно или внутрикостно 5 мг/кг, повторять до максимальной дозы
+        15 мг/кг. Для пациентов старше 10 лет – 300 мг, разводят только в глюкозе
+        (раствор 50 мг/кг).
       frequency_text: null
       duration_text: null
       route: null
@@ -257,17 +338,19 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инъекций 1 мг/мл в ампулах) эпинефрина \nгидрохлорида "
-    - drug_name: инфузии
+        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг; старше 10 лет – 300 мг, разводят только в глюкозе, раствор
+          50 мг/кг.'
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 9 мг
+      dose_text: Внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг/кг/мин.
       frequency_text: null
       duration_text: null
       route: null
@@ -279,17 +362,19 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инфузии 9 мг/мл), \nдоза 10 мкг/кг – соответствует 0,"
-    - drug_name: доза
+        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
+    - drug_name: Фуросемид
       active_substance: null
       drug_group: null
-      dose_text: 1 мг
+      dose_text: Разовая доза 1 мг/кг внутримышечно или внутривенно струйно медленно.
+        При отсутствии эффекта через 20 минут можно повторить. Максимальная суточная
+        доза не должна превышать 20 мг.
       frequency_text: null
       duration_text: null
       route: null
@@ -301,17 +386,20 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: доза 1 мг (разводится в 10–20 мл раствора натрия х
-    - drug_name: инфузий
+        quote: фуросемид... в разовой дозе 1 мг/кг внутримышечно или внутривенно струйно
+          медленно, при отсутствии эффекта через 20 минут можно повторить введение
+          под контролем АД и диуреза.
+    - drug_name: Преднизолон
       active_substance: null
       drug_group: null
-      dose_text: 84 мг
+      dose_text: При снижении АД менее 10% от нижней границы возрастной нормы ввести
+        2 мг/кг внутривенно струйно.
       frequency_text: null
       duration_text: null
       route: null
@@ -323,109 +411,23 @@ conditions:
         protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
         document_url: null
         local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "инфузий 84 мг/мл или раствор для инфузий 40 мг/мл, \nн"
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг (
-    - drug_name: внутрикостно
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: внутрикостно 5 мг/кг, повторяют до максимальной дозы 15 м
-    - drug_name: струйно
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "струйно 1 мг/кг, далее титрование 20–50 мкг \nна кг/м"
-    - drug_name: превышать
-      active_substance: null
-      drug_group: null
-      dose_text: 20 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: превышать 20 мг)
+        quote: при снижении АД менее 10 % от нижней границы возрастной нормы... ввести
+          преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим контролем
+          АД.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации.
     timing: null
     required_if: []
     source_ref:
@@ -438,61 +440,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации.
   red_flags:
-  - text: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической реакцией\
-      \ на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
+  - text: Дыхательные нарушения (одышка, бронхоспазм, стридор, гипоксемия)
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -500,19 +453,18 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 26
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической\
-        \ реакцией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
-  - text: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-      \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \nили\
-      \ \nп"
+      quote: дыхательные нарушения (одышка, бронхоспазм, стридор, снижение пиковой
+        объемной скорости выдоха, гипоксемия)
+  - text: Снижение АД или ассоциированные симптомы органной дисфункции (коллапс, синкопе,
+      недержание мочи)
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -520,20 +472,17 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 26
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-        \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \n\
-        или \nп"
-  - text: "неуточненный; T80.5 Анафилактический шок, связанный \nс введением \nсыворотки;\
-      \ \nT81.1 \nШок \nво \nвремя \nили \nпосле \nпроцедуры, \nне классифицированный\
-      \ в"
+      quote: снижение АД или ассоциированные с этим симптомы органной дисфункции (коллапс,
+        синкопе, недержание мочи)
+  - text: Брадикардия и/или асистолия вследствие ДН, тяжелой гипоксии/гиперкарбии
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -541,19 +490,18 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "неуточненный; T80.5 Анафилактический шок, связанный \nс введением \n\
-        сыворотки; \nT81.1 \nШок \nво \nвремя \nили \nпосле \nпроцедуры, \nне классифицированный\
-        \ в"
-  - text: "анестезией; T88.6 \nАнафилактический \nшок, \nобусловленный \nпатологической\
-      \ \nреакцией \nна адекватно \nназначенное и правильно примененное лекарственное"
+      quote: брадикардия и (или) асистолия развивается в результате ДН и как следствие
+        тяжелой гипоксии и (или) гиперкарбии и только в небольшом проценте случаев
+        отмечается фибрилляция желудочков
+  - text: Ацидоз
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -561,18 +509,16 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "анестезией; T88.6 \nАнафилактический \nшок, \nобусловленный \nпатологической\
-        \ \nреакцией \nна адекватно \nназначенное и правильно примененное лекарственное"
-  - text: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической реакцией\
-      \ на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
+      quote: ацидоз
+  - text: Электролитные нарушения
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -580,19 +526,16 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической\
-        \ реакцией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
-  - text: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-      \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \nили\
-      \ \nп"
+      quote: электролитные нарушения
+  - text: Тяжелая асфиксия новорожденных (0–3 балла по шкале Апгар)
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -600,41 +543,728 @@ conditions:
       protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
       document_url: null
       local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-        \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \n\
-        или \nп"
+      quote: тяжелая асфиксия новорожденных (0–3 балла по шкале Апгар)
+  - text: Синдром внезапной смерти младенцев
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: синдром внезапной смерти младенцев
+  - text: Обструкция дыхательных путей
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обструкция дыхательных путей
+  - text: Несчастные случаи (тяжелая сочетанная травма, утопление, отравления, ожоги)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: несчастные случаи (тяжелая сочетанная травма, утопление, отравления,
+        ожоги)
+  - text: Инфекции (дыхательных путей, ЦНС, системные)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инфекции (дыхательных путей, ЦНС, системные)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
-    document_url: null
-    local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание экстренной неотложной медпомощи пациентам дет возраста
+  source_refs: []
+- condition_id: urticaria_angioedema
+  name: Крапивница и ангионевротический отек
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - L50
+  - L50.0
+  - L50.1
+  - L50.2
+  - L50.3
+  - L50.4
+  - L50.5
+  - L50.6
+  - L50.8
+  - L50.9
+  - T78.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+        оболочек (генерализованная крапивница, зуд, гиперемия, отек губ, языка, мягкого
+        неба) в сочетании с дыхательными нарушениями
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+          оболочек (генерализованная крапивница, зуд, гиперемия, отек губ, языка,
+          мягкого неба) в сочетании с дыхательными нарушениями
+    - text: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+        оболочек (генерализованная крапивница, зуд, гиперемия, отек губ, языка, мягкого
+        неба) в сочетании со снижением АД или симптомами органной дисфункции
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острое начало заболевания (минуты/часы) с поражением кожи и/или слизистых
+          оболочек (генерализованная крапивница, зуд, гиперемия, отек губ, языка,
+          мягкого неба) в сочетании со снижением АД или симптома
+    - text: 'Дифференциальный диагноз АФ: хроническая рецидивирующая крапивница или
+        ангионевротический отек'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дифференциальный диагноз АФ: хроническая рецидивирующая крапивница
+          или ангионевротический отек'
+    - text: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+        анамнеза и физикального обследования
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+          анамнеза и физикального обследования
+    - text: Анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности с поражением кожи, слизистых, ЖКТ, гемодинамическими
+        и дыхательными нарушениями.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+          реакция гиперчувствительности с поражением кожи, слизистых, ЖКТ, гемодинамическими
+          и дыхательными нарушениями.
+    - text: Анафилактический шок – острая недостаточность кровообращения в результате
+        анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных
+        органов.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Анафилактический шок – острая недостаточность кровообращения в результате
+          анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно
+          важных органов.
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Анализ жалоб пациента, данных анамнеза и физикальное обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: диагностика острой крапивницы основана на анализе жалоб пациента, данных
+        анамнеза и физикального обследования
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: показано проведение аллергологического обследования при подозрении на
+        развитие крапивницы вследствие пищевой аллергии у сенсибилизированных пациентов
+        или наличие других провоцирующих развитие крапивницы факторов, таких как ЛП
+  treatment:
+    non_drug:
+    - text: 'Сердечно-легочная реанимация (СЛР) включает: первичная (базовая) реанимация;
+        восстановление витальных функций; интенсивная терапия постреанимационной болезни.'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Сердечно-легочная реанимация (СЛР) включает: первичная (базовая) реанимация;
+          восстановление витальных функций; интенсивная терапия постреанимационной
+          болезни.'
+    - text: Лекарственная терапия эффективна только на фоне правильно проведенной
+        искусственной вентиляции легких (ИВЛ) и закрытого массажа сердца (ЗМС).
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лекарственная терапия эффективна только на фоне правильно проведенной
+          искусственной вентиляции легких (ИВЛ) и закрытого массажа сердца (ЗМС).
+    - text: 'При острой перегрузке правого желудочка (ОПЖН): придать пациенту возвышенное
+        положение тела в постели.'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'При острой перегрузке правого желудочка (ОПЖН): придать пациенту возвышенное
+          положение тела в постели.'
+    - text: 'При острой перегрузке правого желудочка (ОПЖН): начать проведение оксигенотерапии.'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'При острой перегрузке правого желудочка (ОПЖН): начать проведение
+          оксигенотерапии.'
+    drug_groups: []
+    drugs:
+    - drug_name: Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: 10 мкг/кг массы тела (макс. 1 мг для >40 кг), каждые 3–5 минут; разведение
+        1:10000 (0,1 мл/кг)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
+          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
+          однократная доза – 1 мг (пациенты с массой тела более 40 кг).
+    - drug_name: Атропин
+      active_substance: null
+      drug_group: null
+      dose_text: 20 мкг/кг массы тела внутривенно, можно повторить через 5 минут.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
+          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут;
+    - drug_name: Бикарбонат натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая 1 ммоль/кг (2 мл раствора 40 мг/мл), далее 0,5 ммоль/кг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг. Бикарбонат натрия противопоказан при отсутствии адекватной
+          вентиляции легких.
+    - drug_name: Кальция хлорид / Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: 'Кальция хлорид: 20 мг/кг (0,2 мл/кг) в/в или в/к, повтор через 15
+        мин. Кальция глюконат: 0,6–0,8 мл/кг.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида... в дозе
+          20 мг/кг (0,2 мл/кг), дозу можно повторить через 15 мин (кальция глюконат...
+          доза – 0,6–0,8 мл/кг).
+    - drug_name: Амиодарон
+      active_substance: null
+      drug_group: null
+      dose_text: 5 мг/кг в/в или в/к, до макс. 15 мг/кг; для >10 лет – 300 мг (разводить
+        в глюкозе).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг; старше 10 лет – 300 мг, разводят только в глюкозе, раствор
+          50 мг/кг.'
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: В/в струйно 1 мг/кг, далее титрование 20–50 мкг/кг/мин.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/кг в/м или в/в струйно медленно, повтор через 20 мин при отсутствии
+        эффекта (макс. суточная доза 20 мг).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фуросемид... в разовой дозе 1 мг/кг внутримышечно или внутривенно струйно
+          медленно, при отсутствии эффекта через 20 минут можно повторить введение
+          под контролем АД и диуреза.
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 2 мг/кг внутривенно струйно.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим
+          контролем АД;
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации (при ОПЖН).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации (при ОПЖН).
+  red_flags:
+  - text: Острое начало заболевания с поражением кожи и/или слизистых оболочек (генерализованная
+      крапивница, зуд, гиперемия, отек губ, языка, мягкого неба) в сочетании с дыхательными
+      нарушениями
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'клинические критерии диагностики АФ: острое начало заболевания ... с
+        поражением кожи и (или) слизистых оболочек ... в сочетании с ... дыхательные
+        нарушения'
+  - text: Острое начало заболевания с поражением кожи и/или слизистых оболочек (генерализованная
+      крапивница, зуд, гиперемия, отек губ, языка, мягкого неба) в сочетании со снижением
+      АД или симптомами органной дисфункции
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'клинические критерии диагностики АФ: острое начало заболевания ... с
+        поражением кожи и (или) слизистых оболочек ... в сочетании с ... снижение
+        АД или ассоциированные с этим симптомы органной дисфункции'
+  - text: 'Анафилаксия: острая тяжелая жизнеугрожающая реакция гиперчувствительности
+      с быстрым началом, поражением кожи, слизистых, ЖКТ, гемодинамическими и дыхательными
+      нарушениями.'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
+        кожи, слизистых оболочек, желудочно-кишечного тракта, возникновением гемодинамических
+        и дыхательных нарушений.
+  - text: 'Анафилактический шок: острая недостаточность кровообращения в результате
+      анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных
+      органов.'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анафилактический шок – острая недостаточность кровообращения в результате
+        АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
+        Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+  - text: Анафилактические реакции являются одной из основных причин остановки кровообращения.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Основные причины остановки кровообращения: ... относительная и(или)
+        абсолютная передозировка ЛП и анафилактические реакции.'
+  - text: 'Применение Амиодарона: высокий риск развития полной АВ-блокады. Введение
+      прекращают при увеличении интервала Q–T более чем на 50 % или появлении признаков
+      АВ-блокады.'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_оказание_экстренной_неотложной_медпомощи_паци
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Нежелательная реакция – высокий риск развития полной АВ-блокады, поэтому
+        при увеличении интервала Q–T более чем на 50 % от исходного показателя или
+        появлении признаков АВ-блокады введение амиодарона прекращают.
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:11.916898+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-02T00:18:14.150809+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=2
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:11.928313+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[7]
+  validated_at: '2026-07-02T00:18:14.187495+00:00'

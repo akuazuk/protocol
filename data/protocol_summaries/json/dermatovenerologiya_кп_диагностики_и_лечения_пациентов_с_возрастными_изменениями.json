@@ -1,10 +1,10 @@
 {
   "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 807",
+    "title": "Диагностика и лечение пациентов с возрастными изменениями кожи и с кожными болезнями",
     "url": null,
     "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,34 +32,76 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_пациентов_с_возрастными_из",
-      "name": "диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 807",
+      "condition_id": "acne_vulgaris",
+      "name": "Угревая болезнь (Акне)",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "L70.0",
         "L70.01",
-        "L90.8",
-        "L85",
-        "L85.9",
-        "L81.0",
-        "L81.1",
-        "L81.2",
-        "B24",
-        "K07.9",
-        "L21.0",
-        "L21.9"
+        "L70.83"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Визуальный осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Визуальный осмотр"
+          }
+        },
+        {
+          "name": "Бактериологическое исследование содержимого пустул на флору и чувствительность к антибиотикам",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Бактериологическое исследования содержимого пустул на флору и чувствительность к антибиотикам."
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 4. Признать утратившим силу подпункт 1.5 пункта 1 приказа Министерства (стр. 1)",
+            "text": "Рациональная диета (исключить пищу с большим содержанием углеводов) - постоянно",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -70,11 +112,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 4. Признать утратившим силу подпункт 1.5 пункта 1 приказа Министерства (стр. 1)"
+              "quote": "Рациональная диета (исключить пищу с большим содержанием углеводов) - постоянно"
             }
           },
           {
-            "text": "временных протоколов обследования и лечения больных в системе здравоохранения",
+            "text": "Лекарственный электрофорез (магнитотерапия) с 10% водным раствором ихтиола. Сила тока от 1 до 5 мА, продолжительность воздействия 15-20 минут ежедневно или через день. Курс лечения 10-15 процедур",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -85,11 +127,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "временных протоколов обследования и лечения больных в системе здравоохранения"
+              "quote": "Лекарственный электрофорез (магнитотерапия) с 10% водным раствором ихтиола. Сила тока от 1 до 5 мА, продолжительность воздействия 15-20 минут ежедневно или через день. Курс лечения 10-15 процедур"
             }
           },
           {
-            "text": "Лечение назначает врач-косметолог.",
+            "text": "Лазеротерапия ежедневно или через день. Курс лечения - 10 процедур",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -100,11 +142,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Лечение назначает врач-косметолог."
+              "quote": "Лазеротерапия ежедневно или через день. Курс лечения - 10 процедур"
             }
           },
           {
-            "text": "Процедуры и манипуляции при лечении угрей",
+            "text": "Парафиновые аппликации через день - 10 процедур",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -115,11 +157,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Процедуры и манипуляции при лечении угрей"
+              "quote": "Парафиновые аппликации через день - 10 процедур"
             }
           },
           {
-            "text": "выполняет врач-косметолог, медицинская",
+            "text": "Ультразвуковой пилинг на 0,9% растворе натрия хлорида. Курс лечения от 1 до 5 процедур",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -130,11 +172,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "выполняет врач-косметолог, медицинская"
+              "quote": "Ультразвуковой пилинг на 0,9% растворе натрия хлорида. Курс лечения от 1 до 5 процедур"
             }
           },
           {
-            "text": "сестра, медицинская сестра по физиотерапии.",
+            "text": "Фотолечение с помощью источника импульсного света с длиной волны 500-600 нм",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
@@ -145,17 +187,167 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "сестра, медицинская сестра по физиотерапии."
+              "quote": "Фотолечение с помощью источника импульсного света с длиной волны 500-600 нм"
+            }
+          },
+          {
+            "text": "Криотерапия кожи через день - 10 процедур",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Криотерапия кожи через день - 10 процедур"
+            }
+          },
+          {
+            "text": "Косметологические процедуры",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Косметологические процедуры"
+            }
+          },
+          {
+            "text": "Маска № 2: глина белая 64,7 г, квасцы алюмо-калиевые 2,9 г, крахмал 32,4 г",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Маска № 2: глина белая 64,7 г, квасцы алюмо-калиевые 2,9 г, крахмал 32,4 г"
+            }
+          },
+          {
+            "text": "Маска № 3: глина белая 60 г, крахмал 16 г, тальк 16 г, квасцы алюмо-калиевые 3 г, хлорамфеникол 5 г",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Маска № 3: глина белая 60 г, крахмал 16 г, тальк 16 г, квасцы алюмо-калиевые 3 г, хлорамфеникол 5 г"
+            }
+          },
+          {
+            "text": "Маска 3a: глина белая 60 г, крахмал 16 г, квасцы алюмо-калиевые 3 г, стрептоцид 5, тальк 16 г",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Маска 3a: глина белая 60 г, крахмал 16 г, квасцы алюмо-калиевые 3 г, стрептоцид 5, тальк 16 г"
+            }
+          },
+          {
+            "text": "Маска № 6: магния окись 49,7 г, тальк 12,5 г, крахмал 16 г, глина белая 16 г, кислота борная 1,5 г, квасцы 1,5 г, сера 2,8 г",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Маска № 6: магния окись 49,7 г, тальк 12,5 г, крахмал 16 г, глина белая 16 г, кислота борная 1,5 г, квасцы 1,5 г, сера 2,8 г"
+            }
+          },
+          {
+            "text": "Разведение №1: квасцы алюмо-калиевые 2 г, глицерин 18 мл, спирт этиловый 96,6% - 36 мл, вода очищенная до 200 мл",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Разведение №1: квасцы алюмо-калиевые 2 г, глицерин 18 мл, спирт этиловый 96,6% - 36 мл, вода очищенная до 200 мл"
+            }
+          },
+          {
+            "text": "Разведение № 2: 2% водный раствор кислоты борной - 200 мл",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Разведение № 2: 2% водный раствор кислоты борной - 200 мл"
+            }
+          },
+          {
+            "text": "Снятие масок лосьонами «Зеленый» и «Борно-глицериновый»",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Снятие масок лосьонами «Зеленый» и «Борно-глицериновый»"
+            }
+          },
+          {
+            "text": "Криомассаж жидким азотом кожи лица, нанесение противовоспалительного средства (лосьон «Белый»)",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Криомассаж жидким азотом кожи лица, нанесение противовоспалительного средства (лосьон «Белый»)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "февраля",
+            "drug_name": "Доксициклин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2002 г",
+            "dose_text": "внутрь по 0,1 г 2 раза в сутки в течение 14 дней (1-й день – 0,2 г) в стадии обострения",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -167,20 +359,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "февраля 2002 г"
+              "quote": "Доксициклин внутрь по 0,1 г 2 раза в сутки в течение 14 дней (1-й день – 0,2 г) в стадии обострения."
             }
           },
           {
-            "drug_name": "аскорбиновую",
+            "drug_name": "Лосьон, содержащий комплекс эритромицина и окись цинка, или крем с 20% содержанием азелаиновой кислоты",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,6 г",
+            "dose_text": "протирать 2 раза в сутки воспаленные элементы в течение 3-6 недель",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -192,20 +384,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "аскорбиновую 0,6 г, кам-\nфору 0,8 г, спирт этиловый 96-97%"
+              "quote": "Лосьоном, содержащим комплекс эритромицина и окись цинка, или крем с 20% содержанием азелаиновой кислоты протирать 2 раза в сутки воспаленные элементы в течение 3-6 недель."
             }
           },
           {
-            "drug_name": "календулы",
+            "drug_name": "Лосьон \"Зеленый\" (квасцы алюмо-калиевые, кислота аскорбиновая, камфора, спирт этиловый, настойка мяты/календулы, вода оч",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "17 \nмл",
+            "dose_text": "протирать кожу утром и вечером (для жирной кожи). Длительность применения без ограничения.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -217,20 +409,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "календулы 17 \nмл, воду очищенную до 200 мл (далее-лосьон"
+              "quote": "Лосьоном, содержащим квасцы алюмо-калиевые 0,8 г, кислоту аскорбиновую 0,6 г, камфору 0,8 г, спирт этиловый 96-97% - 70 мл, настойку мяты или настойку календулы 17 мл, воду очищенную до 200 мл (далее-лосьон \"Зеленый\") протирать кожу утром и вечером (для жирной кожи). Длительность применения без ограничения."
             }
           },
           {
-            "drug_name": "борную",
+            "drug_name": "Лосьон борно-глицериновый (кислота борная, натрия тетрабората, глицерина, спирт этиловый, вода очищенная)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1 г",
+            "dose_text": "протирать кожу утром и вечером (для сухой кожи). Длительность применения без ограничения.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -242,20 +434,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "борную 1 г"
+              "quote": "Лосьоном борно-глицериновым, содержащим кислоту борную 1 г; натрия тетрабората 6 г; глицерина 10 мл; спирт этиловый 96,6% - 80 мл, воду очищенную до 120 мл - протирать кожу утром и вечером (для сухой кожи). Длительность применения без ограничения."
             }
           },
           {
-            "drug_name": "тетрабората",
+            "drug_name": "Лосьон «Белый» (стрептоцид, кислота салициловая, окись цинка, спирт этиловый, раствор кислоты борной)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "6 г",
+            "dose_text": "протирать воспаленные элементы на ночь в течение 2-3 недель",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -267,20 +459,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 4,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "тетрабората 6 г"
+              "quote": "Лосьоном, содержащим стрептоцид 16 г; кислоту салициловую 4 г; окись цинка 10 г; спирт этиловый 96-97% - 70 мл; раствор кислоты борной 3% - 70 мл (далее-лосьон «Белый») - протирать воспаленные элементы на ночь в течение 2-3 недель."
             }
           },
           {
-            "drug_name": "глицерина",
+            "drug_name": "Крем питательный (натрия тетраборат, воск пчелиный, масло какао, масло подсолнечное или абрикосовое, ланолин безводный, ",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мл",
+            "dose_text": "курс лечения 10 процедур (в составе витаминизированных питательных масок и для массажа)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -292,163 +484,13 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "глицерина 10 мл"
-            }
-          },
-          {
-            "drug_name": "стрептоцид",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "16 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "стрептоцид 16 г"
-            }
-          },
-          {
-            "drug_name": "салициловую",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "4 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "салициловую 4 г"
-            }
-          },
-          {
-            "drug_name": "цинка",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "10 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "цинка 10 г"
-            }
-          },
-          {
-            "drug_name": "белая",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "64,7 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "белая 64,7 г, квасцы алюмо-\nкалиевые 2,9 г, крахмал "
-            }
-          },
-          {
-            "drug_name": "о-калиевые",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "3 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "о-калиевые 3 г, хло-\nрамфеникол 5 г"
-            }
-          },
-          {
-            "drug_name": "тальк",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "16 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "тальк 16 г"
+              "quote": "витаминизированных питательных (далее-крем питательный), содержащий натрия тетраборат – 0,25 г; воск пчелиный 4,5 г; масло какао 15 г; масло подсолнечное или абрикосовое 40,25 г; ланолин безводный 5 г; вода очищенная 35 мл."
             }
           }
         ],
@@ -458,43 +500,426 @@
       },
       "follow_up": [],
       "hospitalization": [],
+      "routing": [
+        {
+          "text": "Лечение назначает врач-косметолог",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение назначает врач-косметолог"
+          }
+        },
+        {
+          "text": "Процедуры и манипуляции при лечении угрей выполняет врач-косметолог, медицинская сестра, медицинская сестра по физиотерапии",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Процедуры и манипуляции при лечении угрей выполняет врач-косметолог, медицинская сестра, медицинская сестра по физиотерапии"
+          }
+        },
+        {
+          "text": "Консультация врачей: акушера-гинеколога, эндокринолога, гастроэнтеролога",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врачей: акушера-гинеколога, эндокринолога, гастроэнтеролога"
+          }
+        },
+        {
+          "text": "Лазерная дермабразия выполняется врачом-хирургом, врачом челюстно-лицевым хирургом при формировании грубых рубцов",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лазерная дермабразия выполняется врачом-хирургом, врачом челюстно-лицевым хирургом при формировании грубых рубцов"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "hypertrichosis",
+      "name": "Гипертрихоз",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "L68",
+        "L68.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [
+        {
+          "name": "Визуальный осмотр",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Визуальный осмотр"
+          }
+        },
+        {
+          "name": "Консультация эндокринолога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врачей: эндокринолога, акушера-гинеколога."
+          }
+        },
+        {
+          "name": "Консультация акушера-гинеколога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врачей: эндокринолога, акушера-гинеколога."
+          }
+        }
+      ],
+      "conditional_exams": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Электроэпиляция на аппаратах ДКС-2м, ДК-3-1 (сила тока 0,2-0,3 мА, время воздействия 1-2 сек) с антисептической обработкой 70% этиловым спиртом и маской с декспантенолом на 15 мин.",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Электроэпиляция на аппаратах ДКС-2м, ДК-3-1 (сила тока 0,2-0,3 мА, время воздействия 1-2 сек) с антисептической обработкой 70% этиловым спиртом и маской с декспантенолом на 15 мин."
+            }
+          },
+          {
+            "text": "Криомассаж жидким азотом области электроэпиляции (3 мин).",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Криомассаж жидким азотом области электроэпиляции (3 мин)."
+            }
+          },
+          {
+            "text": "Световые методы эпиляции (фотоэпиляция, лазерная эпиляция с использованием источников импульсного света и лазеров с длиной волны, для которой хромофором является пигмент меланин).",
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Световые методы эпиляции (фотоэпиляция, лазерная эпиляция с использованием источников импульсного света и лазеров с длиной волны, для которой хромофором является пигмент меланин)."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Антиандрогенные препараты",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "по рекомендации врача-эндокринолога",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Антиандрогенные препараты назначаются по рекомендации врача-эндокринолога."
+            }
+          },
+          {
+            "drug_name": "Лидаза",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "64 ЕД (электрофорез, длительность воздействия 25-30 минут, с последующим механическим удалением волос и обработкой 70% этиловым спиртом)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Электрофорез с лидазой (64 ЕД). Длительность воздействия 25-30 минут. Через 5-7 мин. после окончания процедуры - механическое удаление волос. До процедуры и после процедуры область воздействия протирают 70% этиловым спиртом."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Наблюдение в течение 6 месяцев – 1 года для оценки уменьшения количества жестких волос, стойкой ремиссии или рецидивов.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наблюдение в течение 6 месяцев – 1 года для оценки уменьшения количества жестких волос, стойкой ремиссии или рецидивов."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "hirsutism",
+      "name": "Гирсутизм",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "L68",
+        "L68.0"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
       "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "dermatovenerologiya_кп_диагностики_и_лечения_пациентов_с_возрастными_изменениями",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 25.10.2006_807.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения пациентов с возрастными изменениями кожи и с кожными болезнями 807"
-        }
-      ]
+      "source_refs": []
+    },
+    {
+      "condition_id": "skin_pigmentation_disorders_tattoos",
+      "name": "Нарушения пигментации кожи (включая татуировки)",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "L81.0",
+        "L81.1",
+        "L81.2",
+        "L81.8"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "seborrhea_scalp",
+      "name": "Себорея головы",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "L21.0",
+        "L21.9"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:15.600264+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-02T00:41:19.662028+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=5"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:15.605168+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[hypertrichosis].required_exams[0]"
+      }
+    ],
+    "validated_at": "2026-07-02T00:41:19.680922+00:00"
   }
 }

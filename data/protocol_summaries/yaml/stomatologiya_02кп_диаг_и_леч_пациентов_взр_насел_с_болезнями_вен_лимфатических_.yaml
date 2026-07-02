@@ -1,10 +1,10 @@
 protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: 02КП Диаг и леч пациентов взр насел с болезнями вен лимфатических сосудов
-    и лимфатических узлов
+  title: Диагностика и лечение пациентов взрослого населения с болезнями вен, лимфатических
+    сосудов и лимфатических узлов
   url: null
   local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
   document_sha256: null
@@ -27,9 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: 02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_
-  name: 02КП Диаг и леч пациентов взр насел с болезнями вен лимфатических сосудов
-    и лимфатических узлов
+- condition_id: diseases_veins_lymphatic_vessels_nodes
+  name: Болезни вен, лимфатических сосудов и лимфатических узлов
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -41,7 +40,10 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)'
+    - text: 'Острый лимфаденит: жалобы на округлые болезненные лимфатические узлы,
+        в анамнезе одонтогенная/соматогенная/тонзиллогенная патология 2–3 дня, определяются
+        1–2 увеличенных подвижных резко болезненных лимфоузла, соответствующих зоне
+        лимфооттока.'
       logic_group: null
       operator: unknown
       values: []
@@ -58,8 +60,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 11. Для постановки диагноза осуществляются: (стр. 5)'
-    - text: '[diagnostics] 16. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: 'Острый лимфаденит: жалобы на округлые болезненные лимфатические узлы,
+          в анамнезе одонтогенная/соматогенная/тонзиллогенная патология 2–3 дня, определяются
+          1–2 увеличенных подвижных резко болезненных ли'
+    - text: 'Хронический лимфаденит: жалобы на увеличенные болезненные лимфатические
+        узлы, после противовоспалительной терапии слабая тенденция к уменьшению размеров
+        узлов, определяются увеличенные безболезненные подвижные не спаянные с окружающими
+        тканями плотные лимфатические узлы.'
       logic_group: null
       operator: unknown
       values: []
@@ -76,96 +83,229 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 16. Для постановки диагноза осуществляются: (стр. 5)'
+        quote: 'Хронический лимфаденит: жалобы на увеличенные болезненные лимфатические
+          узлы, после противовоспалительной терапии слабая тенденция к уменьшению
+          размеров узлов, определяются увеличенные безболезненные '
+    - text: 'Метастазы в лимфатические узлы: жалобы на увеличенные безболезненные
+        лимфоузлы, появление не связано с предшествующим заболеванием, определяются
+        плотные малоподвижные или несмещаемые безболезненные лимфатические узлы с
+        бугристой поверхностью, возможен конгломерат узлов.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Метастазы в лимфатические узлы: жалобы на увеличенные безболезненные
+          лимфоузлы, появление не связано с предшествующим заболеванием, определяются
+          плотные малоподвижные или несмещаемые безболезненные ли'
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Клиническое обследование пациента
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: клиническое обследование пациента;'
+  - name: Обязательные и дополнительные лабораторные и инструментальные исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: обязательные и дополнительные
+        лабораторные и инструментальные исследования;'
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Для постановки диагноза осуществляются: консультации врачей-специалистов.'
+  conditional_exams:
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные диагностические
+        исследования: биохимический анализ крови;'
+  - name: Определение D-димера
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: лабораторные диагностические
+        исследования: определение D-димера;'
+  - name: Диагностическая пункция
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: при остром гнойном лимфадените
+        – диагностическая пункция;'
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: инструментальные диагностические
+        исследования: электрокардиограмма;'
+  - name: Консультация врача-специалиста (невролога, нейрохирурга, офтальмолога, оториноларинголога,
+      физиотерапевта, рефлексотерапевта, эндокринолога, лучевой диагностики, клинической
+      лабораторной диагностики)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями в амбулаторных условиях,
+        осуществляемыми по медицинским показаниям, являются: консультация врача-специалиста
+        (врача-невролога, врача-нейрохирурга, врача-офтальмолога, врача-оториноларинголога,
+        врача-физиотерапевта, врача-рефлексотерапевта, врача-эндокринолога, врача
+        лучевой диагностики, врача клинической лабораторной диагностики, других).'
   treatment:
-    non_drug:
-    - text: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-        к объему (стр. 3)'
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 1. Настоящий клинический протокол определяет общие требования
-          к объему (стр. 3)'
-    - text: оказания стоматологической хирургической медицинской помощи в амбулаторных
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: оказания стоматологической хирургической медицинской помощи в амбулаторных
-    - text: лимфатических сосудов и лимфатических узлов челюстно-лицевой области (шифр
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лимфатических сосудов и лимфатических узлов челюстно-лицевой области
-          (шифр
-    - text: по Международной статистической классификации болезней и проблем, связанных
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: по Международной статистической классификации болезней и проблем, связанных
-    - text: со здоровьем, десятого пересмотра – I80.8 Флебит и тромбофлебит других
-        локализаций
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: со здоровьем, десятого пересмотра – I80.8 Флебит и тромбофлебит других
-          локализаций
-    - text: I88.1 Хронический лимфаденит, кроме брыжеечного).
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: I88.1 Хронический лимфаденит, кроме брыжеечного).
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: метронидазол
+    - drug_name: Амоксициллин/клавулановая кислота
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: 'Таблетки 875 мг/125 мг; 500 мг/125 мг; порошок для в/в введения
+        1000 мг/200 мг; 500 мг/100 мг. Дозу корректировать, исходя из максимальной
+        дозы амоксициллина. При КК>30 мл/мин коррекция не требуется. '
       frequency_text: null
       duration_text: null
       route: null
@@ -177,17 +317,21 @@ conditions:
         protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "метронидазол 500 мг в/в, или \nцефуроксим 1,5 г в/в + метрони"
-    - drug_name: дазол
+        quote: Дозу следует корректировать, исходя из максимальной рекомендуемой дозы
+          амоксициллина. Пациентам с клиренсом креатинина выше 30 мл/мин коррекция
+          дозы не требуется. Продолжительность лечения в зависимости от формы и тяжести
+          заболевания составляет 7–14 дней
+    - drug_name: Нимесулид
       active_substance: null
       drug_group: null
-      dose_text: 500 мг
+      dose_text: Таблетки 100 мг; порошок (гранулы) 100 мг. Внутрь после еды по 100
+        мг 2 раза в сутки. Длительность применения при болевом синдроме 3–5 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -199,17 +343,20 @@ conditions:
         protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 12
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: 'дазол 500 мг в/в, или ампициллин/сульбактам 3 г в/в, '
-    - drug_name: клавуланат
+        quote: Внутрь после еды по 100 мг 2 раза в сутки. Длительность применения
+          при болевом синдроме 3–5 дней
+    - drug_name: Хлоропирамин
       active_substance: null
       drug_group: null
-      dose_text: 1,2 г
+      dose_text: Таблетки 25 мг; раствор для в/в и в/м введения 20 мг/мл. Таблетки
+        во время еды по 25 мг 3–4 раза/сутки (макс. 150 мг/сутки). В/м разовая доза
+        20 мг (1 мл), суточная – 40 мг (2 мл). Средняя длительност
       frequency_text: null
       duration_text: null
       route: null
@@ -221,17 +368,20 @@ conditions:
         protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 13
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: клавуланат 1,2 г в/в или клиндамицин 900 мг в/в
-    - drug_name: июня
+        quote: Таблетки принимают во время еды по 25 мг 3–4 раза/сутки. Максимальная
+          доза не должна превышать 150 мг/сутки. Средняя длительность назначения –
+          5–8 дней.
+    - drug_name: Цетиризин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: Таблетки, покрытые пленочной оболочкой, 10 мг. Назначают по 1 таблетке
+        1 раз в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -243,93 +393,22 @@ conditions:
         protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
+        page_start: 13
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: декабря
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: декабря 2011 г
-    - drug_name: февраля
-      active_substance: null
-      drug_group: null
-      dose_text: 2008 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: февраля 2008 г
+        quote: Назначают по 1 таблетке 1 раз в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "ранств или имеется \nтромбоз кавернозного синуса, катетер обязательно должен\
-      \ быть установлен в наружной \nсонной артерии на уровне позвонков С2–С3 ил"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
       document_url: null
@@ -340,16 +419,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "ранств или имеется \nтромбоз кавернозного синуса, катетер обязательно\
-        \ должен быть установлен в наружной \nсонной артерии на уровне позвонков С2–С3\
-        \ ил"
-  - text: "окружающих тканей с тромбозом; \nлимфаденит – воспаление лимфатического\
-      \ узла, чаще носящее вторичный характер \nи являющееся следствием воспалительно"
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
       document_url: null
@@ -360,35 +433,25 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "окружающих тканей с тромбозом; \nлимфаденит – воспаление лимфатического\
-        \ узла, чаще носящее вторичный характер \nи являющееся следствием воспалительно"
+      quote: госпитализация
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_02кп_диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/02КП_Диаг_и_леч_пациентов_взр_насел_с_болезнями_вен_лимфатических_сосудов_и_лимфатических_узлов_пост_МЗ_02.05.2023_66.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: 02КП Диаг и леч пациентов взр насел с болезнями вен лимфатических сосудов
-      и лимфатических узлов
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:47.628558+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:21:43.969493+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:47.632233+00:00'
+  validated_at: '2026-07-01T23:21:43.973992+00:00'

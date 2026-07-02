@@ -1,31 +1,28 @@
 {
   "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
-  "summary_version": "1.0",
-  "extraction_status": "auto_extracted",
-  "review_status": "not_reviewed",
+  "summary_version": "2.0",
+  "extraction_status": "llm_extracted",
+  "review_status": "needs_review",
   "source": {
-    "title": "Т-печень",
-    "url": "https://minzdrav.gov.by/upload/dadvfiles/CProtokol/Т-печень.pdf",
+    "title": "Трансплантация печени",
+    "url": null,
     "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
-    "document_sha256": "46b7f56a34201a1cada36035f4b29f3033e2e8b2a07dc62e1042904187bd9c69",
-    "approval_date": "2023-01-01",
-    "approval_number": "31",
+    "document_sha256": null,
+    "approval_date": null,
+    "approval_number": null,
     "valid_from": null,
     "valid_to": null,
-    "document_year": 2023,
+    "document_year": null,
     "pages_total": null
   },
   "rubric": {
-    "name": "Трансплантация",
+    "name": "Transplantatsiya-Organov-I-Tkaney",
     "slug": "transplantatsiya-organov-i-tkaney",
-    "specialty_slugs": [
-      "transplantatsiya-organov-i-tkaney"
-    ]
+    "specialty_slugs": []
   },
   "applicability": {
     "population": [
-      "adult",
-      "child"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -35,45 +32,16 @@
   },
   "conditions": [
     {
-      "condition_id": "n18_5_клинический_протокол_устанавливает_требования_к_об",
-      "name": "клинический протокол устанавливает требования к объему оказания",
+      "condition_id": "decompensated_liver_cirrhosis",
+      "name": "Прогрессирующая неострая декомпенсация цирроза печени любой этиологии",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "N18.5"
+        "K74.6"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
-        "required": [
-          {
-            "text": "отражение нозологии клинический протокол устанавливает требования к объему оказания (МКБ N18.5)",
-            "logic_group": null,
-            "operator": "present",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [
-              "diagnosis",
-              "complaints"
-            ],
-            "source_ref": {
-              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
-              "page_start": 56,
-              "page_end": 56,
-              "section_title": "стадия 5 (шифр по Международной статистической классификации болезней и проблем,",
-              "section_type": "classification",
-              "table_index": null,
-              "row_index": null,
-              "quote": "клинический протокол устанавливает требования к объему оказания"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
+      "clinical_criteria": null,
       "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
@@ -86,24 +54,1274 @@
       "complications": [],
       "kz_checklist": null,
       "source_refs": []
+    },
+    {
+      "condition_id": "peripheral_cholangiocarcinoma_with_cirrhosis",
+      "name": "Периферическая холангиокарцинома в сочетании с циррозом печени",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "K74.6"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "diffuse_portal_vein_thrombosis",
+      "name": "Диффузный тромбоз вен портальной системы",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Коронарография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Коронарография показана: в случае наличия высоких кардиоваскулярных рисков по данным клинического и неинвазивного обследования, особенно в случае сахарного диабета, артериальной гипертензии, курения."
+          }
+        },
+        {
+          "name": "Многофазная спиральная КТ органов брюшной полости с внутривенным болюсным контрастированием",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинские показания для многофазной спиральной КТ органов брюшной полости с внутривенным болюсным контрастированием: наличие опухоли, ее КТ-идентификация, оценка эффективности неадъювантного лечения."
+          }
+        },
+        {
+          "name": "Эластометрия и/или биопсия печени",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 25,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Выявление только анти-HBc не является медицинским противопоказанием к донорству, но требует оценки жесткости печени методом эластометрии и (или) биопсии для исключения фиброза."
+          }
+        }
+      ],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Госпитализация для трансплантации печени",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для трансплантации печени"
+          }
+        },
+        {
+          "text": "Госпитализация для ретрансплантации печени",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для ретрансплантации печени"
+          }
+        },
+        {
+          "text": "Госпитализация для симультанной трансплантации поджелудочной железы и почки",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для симультанной трансплантации поджелудочной железы и почки"
+          }
+        },
+        {
+          "text": "Исключение трансплантации печени по абсолютным противопоказаниям",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исключение трансплантации печени по абсолютным противопоказаниям"
+          }
+        },
+        {
+          "text": "Дополнительная оценка донорской печени при выявлении только анти-HBc",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Дополнительная оценка донорской печени при выявлении только анти-HBc"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "severe_hypoxia_hepatopulmonary_syndrome",
+      "name": "Тяжелая гипоксия в результате гепатопульмонального синдрома",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "hiv_infection_without_aids",
+      "name": "Инфицирование вирусом иммунодефицита человека без СПИД",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "B24"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Госпитализация для трансплантации печени показана при острой декомпенсации цирроза любой этиологии, ассоциированной с вновь возникшим асцитом, первым эпизодом или рецидивом острой печеночной энцефалопатии, острым гастроинтестинальным кровотечением в сочетании с бактериальной инфекцией.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для трансплантации печени показана при острой декомпенсации цирроза любой этиологии, ассоциированной с вновь возникшим асцитом, первым эпизодом или рецидивом острой печеночной энцефалоп"
+          }
+        },
+        {
+          "text": "Госпитализация для ретрансплантации печени показана при потере функции трансплантата вследствие первичного нефункционирования, тромбоза печеночной артерии, острого гуморального отторжения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для ретрансплантации печени показана при потере функции трансплантата вследствие первичного нефункционирования, тромбоза печеночной артерии, острого гуморального отторжения."
+          }
+        },
+        {
+          "text": "Госпитализация для ретрансплантации печени показана при развитии фиброза/цирроза или хронической дисфункции трансплантата печени вследствие хронического дуктопенического отторжения, билиарных осложнений, рецидива/de novo вирусных гепатитов, аутоиммунных поражений.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для ретрансплантации печени показана при развитии фиброза/цирроза или хронической дисфункции трансплантата печени вследствие хронического дуктопенического отторжения, билиарных осложнен"
+          }
+        },
+        {
+          "text": "Госпитализация для трансплантации печени показана при кистозном фиброзе печени (муковисцидоз), болезни Неймана-Пика, эритропоэтической протопорфирии, синдроме Криглера-Найяра, I типе гипероксалурии, нарушениях цикла синтеза мочевины.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для трансплантации печени показана при кистозном фиброзе печени (муковисцидоз), болезни Неймана-Пика, эритропоэтической протопорфирии, синдроме Криглера-Найяра, I типе гипероксалурии, н"
+          }
+        },
+        {
+          "text": "Госпитализация для трансплантации печени показана при гемофилии А с гемохроматозом и циррозом печени, постнекротическом фиброзе/циррозе печени, криптогенном циррозе печени, алкогольном циррозе печени (с учетом противопоказаний), циррозе в исходе неалкогольного стеатогепатита.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация для трансплантации печени показана при гемофилии А с гемохроматозом и циррозом печени, постнекротическом фиброзе/циррозе печени, криптогенном циррозе печени, алкогольном циррозе печени "
+          }
+        },
+        {
+          "text": "Трансплантация печени абсолютно противопоказана при тяжелых некурабельных поражениях сердечной (ФВ ЛЖ менее 40%, тяжелая диастолическая дисфункция, некоррегируемая коронарная патология, нестабильные аритмии), сосудистой, дыхательной систем, некоррегируемом сахарном диабете.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Трансплантация печени абсолютно противопоказана при тяжелых некурабельных поражениях сердечной (ФВ ЛЖ менее 40%, тяжелая диастолическая дисфункция, некоррегируемая коронарная патология, нестабильные а"
+          }
+        }
+      ],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "active_biliary_infection",
+      "name": "Активная билиарная инфекция (ПСХ, болезнь Кароли, ишемическая холангиопатия)",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [
+        "K75.9"
+      ],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": null,
+      "required_exams": [],
+      "conditional_exams": [],
+      "treatment": null,
+      "follow_up": [],
+      "hospitalization": [],
+      "routing": [],
+      "red_flags": [],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
+    },
+    {
+      "condition_id": "malignant_tumors_recent_treatment",
+      "name": "Злокачественные опухоли, радикальное лечение которых завершено менее 2 лет",
+      "synonyms": [],
+      "abbreviations": [],
+      "icd10_codes": [],
+      "condition_applicability": null,
+      "diagnosis_structure": null,
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Оценка прогноза выживаемости и показаний к ТП при острой ПН: критерии Kings College, Clichy или совокупность клинико-лабораторных признаков.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка прогноза выживаемости и показаний к ТП при острой ПН: критерии Kings College, Clichy или совокупность клинико-лабораторных признаков."
+            }
+          },
+          {
+            "text": "Критерии парацетамол-ассоциированной ПН: pH <7,3 или МНО >6,5, креатинин сыворотки крови >327 мкмоль/л, ПЭП III-IV степени.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Критерии парацетамол-ассоциированной ПН: pH <7,3 или МНО >6,5, креатинин сыворотки крови >327 мкмоль/л, ПЭП III-IV степени."
+            }
+          },
+          {
+            "text": "Диагностические критерии СБП: количество нейтрофилов в асцитической жидкости более 250 в 1 мл.",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диагностические критерии СБП: количество нейтрофилов в асцитической жидкости более 250 в 1 мл."
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Общий анализ крови (тромбоциты)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В данном случае выполняется трансфузия тромбоцитов из расчета 1 доза на 10 кг массы тела до достижения уровня тромбоцитов в общем анализе крови 50-80 x 109/л."
+          }
+        },
+        {
+          "name": "Уровень билирубина крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализированным пациентам с изнуряющим кожным зудом назначается рифампицин (...) под контролем уровня билирубина (отменяется при прогрессировании гипербилирубинемии), можно в комбинации с УДХК."
+          }
+        },
+        {
+          "name": "Бактериологическое исследование асцитической жидкости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 14,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При бактериологическом исследовании асцита в 60 % случаев выявляются грамотрицательные бактерии (Escherichia coli, Klebsiella pneumoniae, Staphylococcus aureus, Enterococcus faecalis, Enterococcus faecium)."
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Трансплантация печени (ТП) показана при необратимом заболевании печени с прогнозом жизни менее 2-4 лет, отсутствии других методов лечения, хроническом заболевании печени, значительно снижающем качество жизни, или прогрессирующем заболевании печени с ожидаемой продолжительностью жизни меньшей, чем в случае ТП.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Трансплантация печени (ТП) показана при необратимом заболевании печени с прогнозом жизни менее 2-4 лет, отсутствии других методов лечения, хроническом заболевании печени, значительно снижающем качеств"
+            }
+          },
+          {
+            "text": "ТП показана при нерезектабельной гепатобластоме (мультифокальное поражение PRETEXT III, IV), кроме случаев внепеченочных химиорезистентных и нерезектабельных метастазов или сочетания химиорезистентности и прогрессирования после радикального хирургического вмешательства.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ТП показана при нерезектабельной гепатобластоме (мультифокальное поражение PRETEXT III, IV), кроме случаев внепеченочных химиорезистентных и нерезектабельных метастазов или сочетания химиорезистентнос"
+            }
+          },
+          {
+            "text": "Выполнение парацентеза рассматривается для пациентов с рефрактерным асцитом при неэффективности диуретической терапии и трансфузии альбумина, дыхательной недостаточности, потребности в ингаляции кислорода.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выполнение парацентеза рассматривается для пациентов с рефрактерным асцитом при неэффективности диуретической терапии и трансфузии альбумина, дыхательной недостаточности, потребности в ингаляции кисло"
+            }
+          },
+          {
+            "text": "Медицинские показания к установке внутрипеченочного портосистемного шунта (TIPS) рассматривается для пациентов с рефрактерным асцитом при неэффективности диуретической терапии и трансфузии альбумина, дыхательной недостаточности, потребности в ингаляции кислорода.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медицинские показания к установке внутрипеченочного портосистемного шунта (TIPS) рассматривается для пациентов с рефрактерным асцитом при неэффективности диуретической терапии и трансфузии альбумина, "
+            }
+          },
+          {
+            "text": "Пациентам с большим печеночным гидротораксом, сопровождающимся признаками дыхательной недостаточности, выполняется плевральная пункция.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациентам с большим печеночным гидротораксом, сопровождающимся признаками дыхательной недостаточности, выполняется плевральная пункция."
+            }
+          },
+          {
+            "text": "При необходимости многократных повторных плевральных пункций может быть рассмотрена установка TIPS при отсутствии специфических медицинских противопоказаний к нему.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При необходимости многократных повторных плевральных пункций может быть рассмотрена установка TIPS при отсутствии специфических медицинских противопоказаний к нему."
+            }
+          },
+          {
+            "text": "Коррекция тромбоцитопении при гиперспленизме не требуется, за исключением неотложных и экстренных хирургических вмешательств, когда выполняется трансфузия тромбоцитов до достижения 50-80 x 109/л.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Коррекция тромбоцитопении при гиперспленизме не требуется, за исключением неотложных и экстренных хирургических вмешательств, когда выполняется трансфузия тромбоцитов до достижения 50-80 x 109/л."
+            }
+          },
+          {
+            "text": "Пациентам с изнуряющим кожным зудом на фоне ПСХ и наличием доминантной хиларной или стриктурой гепатикохоледоха выполняется эндобилиарная баллонная пластика или стентирование.",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациентам с изнуряющим кожным зудом на фоне ПСХ и наличием доминантной хиларной или стриктурой гепатикохоледоха выполняется эндобилиарная баллонная пластика или стентирование."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Спиронолактон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки, покрытие ободочкой, 25, 50, 100 мг, перорально в суточной дозе 50-400 мг/сут., в один или два приема в 8:00 и 12:00",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При лечении пациентов с асцитом назначается комбинация диуретической терапии, включающей спиронолактон (...) перорально в суточной дозе 50-400 мг/сут., в один или два приема в 8:00 и 12:00"
+            }
+          },
+          {
+            "drug_name": "Фуросемид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 40 мг, перорально в суточной дозе 20-80 мг/сут. в один или два приема в 8:00 и 12:00",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При лечении пациентов с асцитом назначается комбинация диуретической терапии, включающей (...) петлевые диуретики (фуросемид, таблетки 40 мг, перорально в суточной дозе 20-80 мг/сут. в один или два приема в 8:00 и 12:00)"
+            }
+          },
+          {
+            "drug_name": "Торасемид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 5, 10, 20 мг, преорально в суточной дозе 10-40 мг/сут. в один или два приема в 8:00 и 12:00",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При лечении пациентов с асцитом назначается комбинация диуретической терапии, включающей (...) торасемид, таблетки 5, 10, 20 мг, преорально в суточной дозе 10-40 мг/сут. в один или два приема в 8:00 и 12:00)"
+            }
+          },
+          {
+            "drug_name": "Альбумин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор для инфузии, 5 %, 10 %, 20 % по 50, 100, 200 мл, в разовой дозе 100-200 мл раствора.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "У пациентов с рефрактерным асцитом в дополнение к диуретической терапии назначается трансфузия альбумина (раствор для инфузии, 5 %, 10 %, 20 % по 50, 100, 200 мл, в разовой дозе 100-200 мл раствора)."
+            }
+          },
+          {
+            "drug_name": "Цефалоспорины третьего поколения",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "2 г внутривенно каждые 12 часов (эмпирическая антибактериальная терапия первой линии для СБП)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 14,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечение: эмпирическая антибактериальная терапия первой линии - цефалоспорины третьего поколения по 2 г внутривенно каждые 12 часов. Эффективность составляет около 90 %."
+            }
+          },
+          {
+            "drug_name": "Тромбопоэтин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки, покрытые пленочной оболочкой, 25 мг, в дозе 25 мг/сут. один раз в день",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 15,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для коррекции тромбоцитопении менее 10-20 x 109/л (...) назначается тромбопоэтин (таблетки, покрытые пленочной оболочкой, 25 мг) в дозе 25 мг/сут. один раз в день."
+            }
+          },
+          {
+            "drug_name": "УДХК (Урсодезоксихолевая кислота)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "дозы до 18-20 мг/кг/сут. (при кожном зуде на фоне ПБЦ, ПСХ, АИГ)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 18,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациентам с кожным зудом на фоне ПБЦ, ПСХ, АИГ назначается УДХК в дозах до 18-20 мг/кг/сут."
+            }
+          },
+          {
+            "drug_name": "Рифампицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "капсулы 150 мг, в суточной дозе 150-300 мг, длительностью до 1 месяца",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 18,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Госпитализированным пациентам с изнуряющим кожным зудом назначается рифампицин (капсулы 150 мг) в суточной дозе 150-300 мг, длительностью до 1 месяца."
+            }
+          },
+          {
+            "drug_name": "Сертралин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки, покрытые оболочкой 25, 50, 100 мг, в дозе 50-100 мг/сут. в один или два приема",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 18,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Госпитализированным и амбулаторным пациентам с изнуряющим кожным зудом может быть назначен сертралин (таблетки, покрытые оболочкой 25, 50, 100 мг) в дозе 50-100 мг/сут. в один или два приема."
+            }
+          },
+          {
+            "drug_name": "Противовирусная терапия гепатита В (ПВТ)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "с целью элиминации вирусной нагрузки до менее 200 МЕ/мл в предтрансплантационном периоде",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 18,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациентам с циррозом печени в исходе вирусного гепатита В показано (...) назначение противовирусной терапии (далее - ПВТ) гепатита В с целью элиминации вирусной нагрузки до менее 200 МЕ/мл."
+            }
+          },
+          {
+            "drug_name": "Рекомбинантная HBs-Ag-вакцина типа Engerix",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "назначается после ТП при HBs-Ag и anti-HBc-негативном статусе, уровне anti-HBs менее 50 Ед/л и отсутствии признаков рецидива ВГВ в 3-месячный срок",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+              "page_start": 18,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Пациентам HBs-Ag и anti-HBc-негативным, с уровнем anti-HBs менее 50 Ед/л, у которых после ТП нет признаков рецидива вирусного гепатита В в 3-месячный срок (...) назначается рекомбинантная HBs-Ag-вакцина типа Engerix."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Пациентам с изнуряющим кожным зудом, возникшим на фоне высоких доз УДХК, выполняется коррекция дозы до 1/2-1/4 от исходной вплоть до отмены.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с изнуряющим кожным зудом, возникшим на фоне высоких доз УДХК, выполняется коррекция дозы до 1/2-1/4 от исходной вплоть до отмены."
+          }
+        },
+        {
+          "text": "Пациентам с циррозом печени в исходе вирусного гепатита В показано медицинское наблюдение у врача-инфекциониста по месту жительства (месту пребывания).",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с циррозом печени в исходе вирусного гепатита В показано медицинское наблюдение у врача-инфекциониста по месту жительства (месту пребывания)."
+          }
+        },
+        {
+          "text": "Медицинская профилактика реактивации гепатита В проводится в зависимости от статуса донора и реципиента согласно приложению 1.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинская профилактика реактивации гепатита В проводится в зависимости от статуса донора и реципиента согласно приложению 1."
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Трансплантация печени (ТП) подразумевает госпитализацию (проведение в порядке листа ожидания).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Трансплантация печени (ТП) подразумевает госпитализацию (проведение в порядке листа ожидания)."
+          }
+        },
+        {
+          "text": "Пациенты с острым повреждением печени или декомпенсированным циррозом, требующие ТП, могут быть госпитализированы.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациенты с острым повреждением печени или декомпенсированным циррозом, требующие ТП, могут быть госпитализированы."
+          }
+        },
+        {
+          "text": "Лечение осложнений цирроза (асцит, СБП) часто требует стационарного лечения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение осложнений цирроза (асцит, СБП) часто требует стационарного лечения."
+          }
+        },
+        {
+          "text": "Пациенты с СБП в 10% случаев являются стационарными.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациенты с СБП в 10% случаев являются стационарными."
+          }
+        },
+        {
+          "text": "Госпитализированным пациентам с изнуряющим кожным зудом назначается рифампицин.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализированным пациентам с изнуряющим кожным зудом назначается рифампицин."
+          }
+        },
+        {
+          "text": "Госпитализированным и амбулаторным пациентам с изнуряющим кожным зудом может быть назначен сертралин.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализированным и амбулаторным пациентам с изнуряющим кожным зудом может быть назначен сертралин."
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Медицинские противопоказания к ТП: деменция, психические и поведенческие расстройства, острые и обострения хронических инфекций, наркомания, психические/поведенческие расстройства из-за алкоголя/наркотиков, неспособность выдержать 6 мес реабилитации (при алкогольном циррозе), возврат к алкоголю в листе ожидания ТП, СПИД, внепеченочные и метастатические злокачественные опухоли, сепсис и бактериемия",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "10. Медицинскими противопоказаниями к ТП являются: деменция, психические и поведенческие расстройства (...) неподдающиеся специфической терапии острые инфекции (...) наркомания (...) синдром приобретенного иммунодефицита (...) внепеченочные и метастатические злокачественные опухоли (...) сепсис и бактериемия."
+          }
+        },
+        {
+          "text": "Специфические медицинские противопоказания к TIPS: острая и острая на фоне хронической декомпенсация функции печени, наличие энцефалопатии любого генеза, легочной гипертензии более 40 мм.рт.ст., критически тяжелое состояние на фоне интенсивной терапии, полиорганная дисфункция и недостаточность, нестабильная гемодинамика, неконтролируемая системная инфекция и сепсис, опухоли печени, поликистозная б",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Специфические медицинские противопоказания к TIPS: острая и острая на фоне хронической декомпенсация функции печени, наличие энцефалопатии любого генеза, легочной гипертензии более 40 мм.рт.ст., критически тяжелое состояние (...), опухоли печени, поликистозная болезнь печени."
+          }
+        },
+        {
+          "text": "Факторы риска осложнений TIPS: возраст более 60 лет, плохо контролируемый сахарный диабет, гепатопетальный кровоток по ВВ, низкий функциональный статус, тромбоцитопения менее 20.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Факторы риска осложнений TIPS: возраст более 60 лет, плохо контролируемый сахарный диабет, гепатопетальный кровоток по ВВ, низкий функциональный статус, тромбоцитопения менее 20."
+          }
+        },
+        {
+          "text": "Выполнение парацентеза при рефрактерном асците сопровождается риском развития парацентез-индуцированной циркуляторной дисфункции (гипотензии) особенно у пациентов с декомпенсированным циррозом.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Выполнение парацентеза при рефрактерном асците сопровождается риском развития парацентез-индуцированной циркуляторной дисфункции (гипотензии) особенно у пациентов с декомпенсированным циррозом."
+          }
+        },
+        {
+          "text": "При прогрессировании гипербилирубинемии рифампицин отменяется.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 18,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализированным пациентам с изнуряющим кожным зудом назначается рифампицин (...) под контролем уровня билирубина (отменяется при прогрессировании гипербилирубинемии)."
+          }
+        },
+        {
+          "text": "У пациентов высокого риска наличия мультирезистентной микрофлоры (длительно находящиеся на стационарном лечении, пациенты отделений реанимации) эмпирическая антибактериальная терапия назначается согласно превалирующей микрофлоре по данным микробиологического мониторинга.",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_печень",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-печень.pdf",
+            "page_start": 14,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "У пациентов высокого риска наличия мультирезистентной микрофлоры (...) эмпирическая антибактериальная терапия назначается согласно превалирующей микрофлоре по данным микробиологического мониторинга."
+          }
+        }
+      ],
+      "contraindications": [],
+      "complications": [],
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-05-31T18:30:14.115260+00:00",
-    "extractor": "builder.heuristic_v2",
-    "extractor_version": "2.0",
-    "source_document_sha256": "46b7f56a34201a1cada36035f4b29f3033e2e8b2a07dc62e1042904187bd9c69",
+    "extracted_at": "2026-07-01T22:40:35.908220+00:00",
+    "extractor": "llm_extractor",
+    "extractor_version": "1.0",
+    "source_document_sha256": null,
     "notes": [
-      "aggregated from 14 protocol_cards, 426 chunks"
+      "llm_pipeline_v1",
+      "conditions=7"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-05-31T18:30:14.115278+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[diffuse_portal_vein_thrombosis]"
+      },
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[severe_hypoxia_hepatopulmonary_syndrome]"
+      },
+      {
+        "level": "warning",
+        "code": "missing_icd10",
+        "message": "Нет icd10_codes у condition",
+        "path": "conditions[malignant_tumors_recent_treatment]"
+      }
+    ],
+    "validated_at": "2026-07-01T22:40:35.933042+00:00"
   }
 }

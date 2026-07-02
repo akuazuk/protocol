@@ -1,31 +1,28 @@
 {
   "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
-  "summary_version": "1.0",
-  "extraction_status": "auto_extracted",
-  "review_status": "not_reviewed",
+  "summary_version": "2.0",
+  "extraction_status": "llm_extracted",
+  "review_status": "needs_review",
   "source": {
-    "title": "КП15 гранулема слизистой полости рта",
-    "url": "https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП15_гранулема_слизистой_полости_рта.pdf",
+    "title": "гранулема слизистой полости рта",
+    "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
-    "document_sha256": "713f253af086c15b919f9a9bacd7aa46c058923c986de0e45282aa3894b695f8",
-    "approval_date": "2026-01-01",
-    "approval_number": "24",
+    "document_sha256": null,
+    "approval_date": null,
+    "approval_number": null,
     "valid_from": null,
     "valid_to": null,
-    "document_year": 2026,
+    "document_year": null,
     "pages_total": null
   },
   "rubric": {
-    "name": "Стоматология",
+    "name": "Stomatologiya",
     "slug": "stomatologiya",
-    "specialty_slugs": [
-      "stomatologiya"
-    ]
+    "specialty_slugs": []
   },
   "applicability": {
     "population": [
-      "adult",
-      "child"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -35,49 +32,249 @@
   },
   "conditions": [
     {
-      "condition_id": "кп15_гранулема_слизистой_полости_рта",
-      "name": "КП15 гранулема слизистой полости рта",
+      "condition_id": "granuloma_oral_mucosa",
+      "name": "гранулема слизистой полости рта",
       "synonyms": [],
       "abbreviations": [],
-      "icd10_codes": [],
+      "icd10_codes": [
+        "K01.1",
+        "K04.5",
+        "K04.7",
+        "K06.2",
+        "K07.9",
+        "K12.2",
+        "K13.4",
+        "B20.0"
+      ],
       "condition_applicability": null,
       "diagnosis_structure": null,
-      "clinical_criteria": {
+      "clinical_criteria": null,
+      "diagnostic_criteria": {
         "required": [
           {
-            "text": "соответствие протоколу «КП15 гранулема слизистой полости рта»",
+            "text": "Дифференциальная диагностика с туберкулезом, сифилисом, травматической язвой, гемангиомой и меланомой",
             "logic_group": null,
-            "operator": "present",
+            "operator": "unknown",
             "values": [],
             "numeric_value": null,
             "unit": null,
-            "evidence_targets": [
-              "diagnosis"
-            ],
+            "evidence_targets": [],
             "source_ref": {
               "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
               "document_url": null,
-              "local_path": null,
-              "page_start": 1,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": null,
               "page_end": null,
-              "section_title": "Протокол",
+              "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "КП15 гранулема слизистой полости рта"
+              "quote": "Дифференциальная диагностика с туберкулезом, сифилисом, травматической язвой, гемангиомой и меланомой"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "В период лечения следует придерживаться умеренной интенсивности физических нагрузок",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "В период лечения следует придерживаться умеренной интенсивности физических нагрузок"
+            }
+          },
+          {
+            "text": "Радикальное устранение патологического процесса (хирургическая помощь) с целью предупреждения послеоперационных осложнений и рецидива.",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Радикальное устранение патологического процесса (хирургическая помощь) с целью предупреждения послеоперационных осложнений и рецидива."
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Артикаин/Эпинефрин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Местная анестезия (инфильтрационная, проводниковая). Доза артикаина до 7 мг на 1 кг массы тела за одну процедуру. Вводится только в невоспаленные ткани.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ЛП предназначен для инъекционного применения в ротовой полости и может вводиться только в ткани, где отсутствует воспаление. При выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг массы тела"
+            }
+          },
+          {
+            "drug_name": "Лидокаин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Местная анестезия (инфильтрационная, проводниковая). Режим дозирования устанавливают индивидуально, в наименьшей эффективной дозе. Максимальная доза для взрослых не должна превышать 300 мг.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Режим дозирования устанавливают индивидуально, в зависимости от вида анестезии и места введения, размера анестезируемого участка, возраста пациента. ЛП следует вводить в наименьшей концентрации и наименьшей дозе, дающей требуемый эффект."
+            }
+          },
+          {
+            "drug_name": "Амоксициллин/Клавулановая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Внутривенно медленно по 1000 мг/200 мг 3 раза в сутки. Внутрь по 1 таб. 500 мг + 125 мг 3 раза/сут или по 1 таб. 875 мг + 125 мг 2 раза/сут, в начале приема пищи.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Внутривенно медленно (1 г ЛП растворяется в 20,0 мл воды для инъекций) по 1000 мг/200 мг 3 раза в сутки. Взрослые по 1 таб. 500 мг + 125 мг 3 раза/сут или по 1 таб. 875 мг + 125 мг 2 раза/сут."
+            }
+          },
+          {
+            "drug_name": "Хлоргексидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор 0,5 мг/мл. Местно для инстилляции и ирригации ран/лунок – 5–10 мл 2–3 раза в сутки. Для полоскания полости рта – 2–3 раза в сутки (смешивать с равным количеством воды). Длительность применения",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Применяется местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоскания полости рта назначают 2–3 раза в сутки (для полосканий ЛП следует смешивать с равным количеством воды)."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Медицинское наблюдение врачом-стоматологом-хирургом в амбулаторных условиях 1 раз в 6 месяцев в течение 1 года. Далее наблюдение не требуется.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение врачом-стоматологом-хирургом в амбулаторных условиях 1 раз в 6 месяцев в течение 1 года. Далее наблюдение не требуется."
+          }
+        }
+      ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "Госпитализация (стационарные условия) для лечения гранулемы и гранулемоподобных поражений слизистой оболочки полости рта.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация (стационарные условия) для лечения гранулемы и гранулемоподобных поражений слизистой оболочки полости рта."
+          }
+        },
+        {
+          "text": "Амбулаторно для лечения поражений поверхностной локализации размером до 1 см.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп15_гранулема_слизистой_полости_рта",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно для лечения поражений поверхностной локализации размером до 1 см."
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
@@ -89,25 +286,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-05-31T18:30:13.719376+00:00",
-    "extractor": "builder.heuristic_v2",
-    "extractor_version": "2.0",
-    "source_document_sha256": "713f253af086c15b919f9a9bacd7aa46c058923c986de0e45282aa3894b695f8",
+    "extracted_at": "2026-07-01T22:24:09.210420+00:00",
+    "extractor": "llm_extractor",
+    "extractor_version": "1.0",
+    "source_document_sha256": null,
     "notes": [
-      "aggregated from 28 protocol_cards, 83 chunks"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "needs_human_review",
+    "status": "valid",
     "errors": [],
-    "warnings": [
-      {
-        "level": "warning",
-        "code": "missing_icd10",
-        "message": "Нет icd10_codes у condition",
-        "path": "conditions[кп15_гранулема_слизистой_полости_рта]"
-      }
-    ],
-    "validated_at": "2026-05-31T18:30:13.719397+00:00"
+    "warnings": [],
+    "validated_at": "2026-07-01T22:24:09.212846+00:00"
   }
 }

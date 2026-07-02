@@ -1,10 +1,10 @@
 protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
   title: Диагностика и лечение пациентов взрослое население с инфекциями кожи и подкожной
-    клетчатки постановление МЗ 2022 59
+    клетчатки
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
   document_sha256: null
@@ -27,14 +27,11 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население с инфекциями кожи и подкожной
-    клетчатки постановление МЗ 2022 59
+- condition_id: bacterial_skin_subcutaneous_tissue_infections
+  name: Бактериальные инфекции кожи и подкожной клетчатки
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L00
-  - L08
   - L01
   - L08.0
   - L08.01
@@ -45,403 +42,345 @@ conditions:
   - L08.81
   - L10.0
   - L10.8
+  - L11.0
+  - L12
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-    - text: анализ крови биохимический (определение уровня креатинина, мочевины, глюкозы,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анализ крови биохимический (определение уровня креатинина, мочевины,
-          глюкозы,
-    - text: иммуноферментного анализа (далее – ИФА) в сыворотке крови при установлении
-        диагноза,
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: иммуноферментного анализа (далее – ИФА) в сыворотке крови при установлении
-          диагноза,
-    optional: []
-    exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 5. Пациенты с абсцессом кожи, фурункулом и карбункулом, флегмоной,
-        острым (стр. 5)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Пациенты с абсцессом кожи, фурункулом и карбункулом,
-          флегмоной, острым (стр. 5)'
-    - text: лимфаденитом, пилонидальной кистой получают лечение в амбулаторно-поликлинических
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лимфаденитом, пилонидальной кистой получают лечение в амбулаторно-поликлинических
-    - text: организациях и больничных организациях хирургического профиля.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: организациях и больничных организациях хирургического профиля.
-    - text: '[treatment] 6. Медицинские показания к лечению в амбулаторно-поликлинических
-        организациях (стр. 5)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 6. Медицинские показания к лечению в амбулаторно-поликлинических
-          организациях (стр. 5)'
-    - text: 'и больничных организациях хирургического профиля:'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'и больничных организациях хирургического профиля:'
-    - text: гипотензия и (или) увеличение уровня креатинина крови
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: гипотензия и (или) увеличение уровня креатинина крови
-    drug_groups: []
-    drugs:
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 13 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: более 13 мг/л
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 0,5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: применения 0,5 мг/мл – местно в виде орошений и аппликаци
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 250 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетки 250 мг – внутрь по 1 таблетке 4 раза/сутки 7–10
-    - drug_name: таблетке
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетке 500 мг/125 мг 2 раза/сутки 7–10 суток
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 250 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'капсулы 250 мг, 500 мг – внутрь по 1 капсуле 250 мг – '
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 750 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций \n750 мг – \nвнутримышечно (далее – в/мышечно) по "
-    - drug_name: оболочкой
-      active_substance: null
-      drug_group: null
-      dose_text: 250 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "оболочкой 250 мг, 500 мг – внутрь по 1 таблетке \n250–500"
-    - drug_name: порошок
-      active_substance: null
-      drug_group: null
-      dose_text: 500 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "порошок 500 мг/500 мг – 500 мг в/венно \n2 раза/сутки 5"
-    - drug_name: растворимой
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'растворимой 100 мг 2 раза/сутки 7–
-
-          10 суток'
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2022 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
+  diagnostic_criteria: null
+  required_exams:
+  - name: Сбор жалоб и анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор жалоб и анамнеза жизни и заболевания
+  - name: Осмотр с оценкой кожных проявлений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр с оценкой кожных проявлений
+  - name: Общий (клинический) анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
+        скорость оседания эритроцитов (далее – СОЭ))
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, общего белка, АЛТ, АСТ, общего билирубина, С-реактивного белка; АСЛО))
+  - name: Определение антител к Treponema pallidum методом ИФА
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение антител к бледной трепонеме (Treponema pallidum) методом
+        иммуноферментного анализа (далее – ИФА) в сыворотке крови при установлении
+        диагноза, однократно
+  - name: Микроскопическое исследование соскоба кожи с окраской по Граму (для Corynebacterium
+      minutissimum)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микроскопическое исследование соскоба кожи с окраской по Граму для обнаружения
+        возбудителя Corynebacterium minutissimum
+  - name: Микроскопическое исследование соскоба с кожи на грибы (Candida saprofita,
+      Dermatophyton)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микроскопическое исследование соскоба с кожи на грибы рода кандида (Candida
+        saprofita), дерматофиты (Dermatophyton)
+  conditional_exams:
+  - name: Исследование уровня бикарбоната, натрия, калия, хлоридов, креатинфосфокиназы
+      в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня бикарбоната, натрия, калия, хлоридов, креатинфосфокиназы
+        в крови
+  - name: Бактериологическое исследование содержимого пустул с определением чувствительности
+      к антибактериальным ЛП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологическое исследование содержимого пустул с определением чувствительности
+        к антибактериальным ЛП
+  - name: Бактериологическое исследование крови на стерильность
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологическое исследование крови на стерильность
+  - name: Биопсия кожи и морфологическое (гистологическое) исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата
+  - name: Консультация врача общей практики, терапевта, эндокринолога, аллерголога-иммунолога
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача общей практики, врача-терапевта, врача-эндокринолога,
+        врача-аллерголога-иммунолога при наличии сопутствующей патологии
+  - name: Консультация врача-хирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-хирурга пациентам с язвенными дефектами кожи при необходимости
+        хирургической обработки язвенной поверхности
+  treatment: null
+  follow_up:
+  - text: Медицинское наблюдение пациентов с инфекциями кожи и подкожной клетчатки
+      в амбулаторных условиях не осуществляется.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с инфекциями кожи и подкожной клетчатки
+        в амбулаторных условиях не осуществляется.
   hospitalization: []
   routing:
-  - text: в амбулаторных условиях не осуществляется.
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -454,16 +393,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: в амбулаторных условиях не осуществляется.
-  red_flags:
-  - text: "г/л; \nподозрение на тяжелую глубокую инфекцию мягких тканей (при пальпации\
-      \ \nпатологического очага определяется крепитация подкожной клетчатки, низкий\
-      \ болевой поро"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
       document_url: null
@@ -474,36 +407,79 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "г/л; \nподозрение на тяжелую глубокую инфекцию мягких тканей (при пальпации\
-        \ \nпатологического очага определяется крепитация подкожной клетчатки, низкий\
-        \ болевой поро"
+      quote: госпитализация
+  red_flags:
+  - text: Хроническое течение заболевания
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительные диагностические мероприятия (по медицинским показаниям
+        – при хроническом течении, тяжелом течении и (или) неэффективности лечения)
+  - text: Тяжелое течение заболевания
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительные диагностические мероприятия (по медицинским показаниям
+        – при хроническом течении, тяжелом течении и (или) неэффективности лечения)
+  - text: Неэффективность лечения
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительные диагностические мероприятия (по медицинским показаниям
+        – при хроническом течении, тяжелом течении и (или) неэффективности лечения)
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_инфекциям
-    document_url: null
-    local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_инфекциями_кожи_и_подкожной_клетчатки»_постановление_МЗ_2022_59.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население с инфекциями кожи и
-      подкожной клетчатки постановление МЗ 2022 59
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.088616+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-02T00:23:24.102602+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:19.094157+00:00'
+  validated_at: '2026-07-02T00:23:24.113550+00:00'

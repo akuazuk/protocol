@@ -1,10 +1,10 @@
 protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Меднаблюдение и оказание медпомощи женщинам с резус иммунизацией и другими
-    формами изоиммунизации
+  title: Медицинское наблюдение и оказание медицинской помощи женщинам с резус-иммунизацией
+    и другими формами изоиммунизации
   url: null
   local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
   document_sha256: null
@@ -20,32 +20,27 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: меднаблюдение_и_оказание_медпомощи_женщинам_с_ре
-  name: Меднаблюдение и оказание медпомощи женщинам с резус иммунизацией и другими
-    формами изоиммунизации
+- condition_id: rh_isoimmunization
+  name: Резус-иммунизация
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - P55
+  - O36.0
   - P55.0
-  - P55.1
-  - P55.8
-  - P55.9
-  - B24
+  - P55
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[classification] 7. Диагноз «Резус-иммунизация» устанавливается после
-        выявления в крови матери (стр. 3)'
+    - text: Диагностика изоиммунизации включает
       logic_group: null
       operator: unknown
       values: []
@@ -62,10 +57,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 7. Диагноз «Резус-иммунизация» устанавливается после
-          выявления в крови матери (стр. 3)'
-    - text: '[classification] 8. Диагноз «Изоиммунизация по системе АВ0» устанавливается
-        после выявления (стр. 3)'
+        quote: Диагностика изоиммунизации включает
+    - text: Выявление антиэритроцитарных антител в сыворотке крови беременной женщины
       logic_group: null
       operator: unknown
       values: []
@@ -82,10 +75,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 8. Диагноз «Изоиммунизация по системе АВ0» устанавливается
-          после выявления (стр. 3)'
-    - text: '[classification] 9. Диагноз «Изоиммунизация по другим антигенам эритроцитов»
-        устанавливается (стр. 3)'
+        quote: Выявление антиэритроцитарных антител в сыворотке крови беременной женщины
+    - text: Оценка показателей ПССК в СМА плода
       logic_group: null
       operator: unknown
       values: []
@@ -102,9 +93,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 9. Диагноз «Изоиммунизация по другим антигенам эритроцитов»
-          устанавливается (стр. 3)'
-    - text: '[classification] 10. Диагноз (стр. 3)'
+        quote: Оценка показателей ПССК в СМА плода
+    - text: Зона А – увеличение ПССК в СМА плода указывает на снижение гематокрита
+        и концентрации гемоглобина в крови плода
       logic_group: null
       operator: unknown
       values: []
@@ -121,116 +112,229 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[classification] 10. Диагноз (стр. 3)'
-    - text: 16.1. определение иммунологических особенностей крови беременной женщины
-        –
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 16.1. определение иммунологических особенностей крови беременной женщины
-          –
+        quote: Зона А – увеличение ПССК в СМА плода указывает на снижение гематокрита
+          и концентрации гемоглобина в крови плода
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Определение группы крови по системе AB0, резус-принадлежность, наличие антиэритроцитарных
+      антител
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение иммунологических особенностей крови беременной женщины –
+        определение группы крови по системе AB0, резус-принадлежность, наличие антиэритроцитарных
+        антител при первой явке
+  - name: Выявление вариантных антигенов (D weak, D partiale)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'выявление вариантных антигенов: D weak антиген – медицинское наблюдение
+        и оказание медицинской помощи как при резус-положительной; D partiale антиген
+        – как при резус-отрицательной принадлежности крови'
+  - name: Скрининг антиэритроцитарных антител
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 28–29, 34–35 и 37 недель беременности,
+        независимо от резус-принадлежности
+  conditional_exams:
+  - name: Установление специфичности и титра антиэритроцитарных антител
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в случае их выявления – установление специфичности и титра антиэритроцитарных
+        антител
+  - name: Определение фенотипа по системе Резус и Келл
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение фенотипа по системе Резус и Келл при выявлении антиэритроцитарных
+        антител у беременной женщины
+  - name: Скрининг антиэритроцитарных антител (при резус(D)-отрицательной или выявлении
+      специфических антител)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Скрининг антиэритроцитарных антител в 18–21, 28–29, 34–35 и 37 нед. беременности,
+        при резус(D)-отрицательной крови или выявлении антител анти-D, -К, -с, -С,
+        -Е, -Fya, -Jkb при первой явке.
+  - name: Определение группы крови и резус-принадлежности биологического отца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0 и резус-принадлежности биологического
+        отца ребенка при резус(D)-отрицательной принадлежности крови беременной женщины
+  - name: Неинвазивная пренатальная диагностика резус(D)-принадлежности плода методом
+      ПЦР
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: НИПД резус(D)-принадлежности крови плода методом ПЦР с 12 до 32 недель
+        беременности при неизвестной либо резус-положительной принадлежности крови
+        биологического отца ребенка.
+  - name: Диагностика ГБП при кордоцентезе (определение группы крови, резус(D), эритроцитов,
+      гемоглобина, гематокрита, билирубина, белка плода)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика ГБП при кордоцентезе. Определяется группа крови по АВ0 и
+        резус(D)-принадлежность плода, количество эритроцитов, концентрация гемоглобина,
+        гематокрит, концентрация общего билирубина, общего белка.
   treatment:
-    non_drug:
-    - text: 20. Специфического лечения изоиммунизации не существует.
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 20. Специфического лечения изоиммунизации не существует.
-    - text: '[treatment] 21. Лечение ГБП выполняется методом внутриутробной трансфузии
-        компонентов (стр. 5)'
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 21. Лечение ГБП выполняется методом внутриутробной трансфузии
-          компонентов (стр. 5)'
-    - text: крови в РНПЦ «Мать и дитя» в сроках беременности с 18 недель до родоразрешения.
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: крови в РНПЦ «Мать и дитя» в сроках беременности с 18 недель до родоразрешения.
-    - text: '[treatment] 23. Медицинская профилактика резус(D)-иммунизации проводится
-        всем резус(D)- (стр. 6)'
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 23. Медицинская профилактика резус(D)-иммунизации проводится
-          всем резус(D)- (стр. 6)'
-    - text: (амниоцентез, биопсия ворсин хориона, кордоцентез, фетоскопические хирургические
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: (амниоцентез, биопсия ворсин хориона, кордоцентез, фетоскопические
-          хирургические
-    - text: вмешательства, амниодренирование) в случае, если хирургическое вмешательство
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: вмешательства, амниодренирование) в случае, если хирургическое вмешательство
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: декабря
+    - drug_name: Препарат для профилактики резус(D)-иммунизации
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: 'при инвазивных внутриматочных хирургических вмешательствах: в сроке
+        беременности от 5 до 12 недель – в дозе 750 МЕ (не менее 625 МЕ); в сроке
+        беременности более 12 недель – в дозе 1500 МЕ (не менее 12'
       frequency_text: null
       duration_text: null
       route: null
@@ -242,17 +346,20 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: декабря 2022 г
-    - drug_name: июня
+        quote: 'Медицинская профилактика резус(D)-иммунизации при инвазивных внутриматочных
+          вмешательствах: 5-12 недель – 750 МЕ (не менее 625 МЕ); >12 недель – 1500
+          МЕ (не менее 1250 МЕ).'
+    - drug_name: Человеческий анти-D иммуноглобулин
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 1500 МЕ (не менее 1250 МЕ) на 28–32 неделе беременности. Допускается
+        введение до 34 недель.
       frequency_text: null
       duration_text: null
       route: null
@@ -264,17 +371,20 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
+        page_start: 5
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: при нормально протекающей беременности всем женщинам с резус(D)-отрицательной
+          принадлежностью крови на 28–32 неделе беременности – в дозе 1500 МЕ (не
+          менее 1250 МЕ).
+    - drug_name: Человеческий анти-D иммуноглобулин
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 1500 МЕ (не менее 1250 МЕ) после родов не позднее 72 часов. Допускается
+        введение в течение 10 дней после родоразрешения.
       frequency_text: null
       duration_text: null
       route: null
@@ -286,17 +396,21 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
-    - drug_name: апреля
+        quote: после родов не позднее 72 часов при резус(D)-положительной крови новорожденного
+          – 1500 МЕ (не менее 1250 МЕ). Допускается введение в течение 10 дней, если
+          не проведена за 72 часа.
+    - drug_name: Человеческий анти-D иммуноглобулин
       active_substance: null
       drug_group: null
-      dose_text: 2023 г
+      dose_text: 750 МЕ (не менее 625 МЕ) при прерывании беременности (самопроизвольные,
+        медицинские, медикаментозные аборты), эктопической беременности в сроке с
+        5 до 12 недель.
       frequency_text: null
       duration_text: null
       route: null
@@ -308,16 +422,535 @@ conditions:
         protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
         document_url: null
         local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: апреля 2023 г
+        quote: при прерывании беременности (самопроизвольные, медицинские, медикаментозные
+          аборты), эктопической беременности в сроке с 5 до 12 недель – в дозе 750
+          МЕ (не менее 625 МЕ)
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) при прерывании беременности (самопроизвольные,
+        медицинские, медикаментозные аборты), эктопической беременности в сроке после
+        12 недель.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при прерывании беременности (самопроизвольные, медицинские, медикаментозные
+          аборты), эктопической беременности... в сроке после 12 недель – в дозе 1500
+          МЕ (не менее 1250 МЕ)
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) при угрожающем самопроизвольном аборте
+        в сроках беременности более 12 недель, сопровождающемся кровянистыми выделениями.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при угрожающем самопроизвольном аборте в сроках беременности более
+          12 недель, сопровождающихся кровянистыми выделениями – в дозе 1500 МЕ (не
+          менее 1250 МЕ)
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) каждые 6 недель при сохраняющихся кровянистых
+        выделениях при угрожающем самопроизвольном аборте.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При сохраняющихся кровянистых выделениях рекомендуется введение человеческого
+          анти-D иммуноглобулина в такой же дозе каждые 6 недель
     procedures: []
     surgery: []
     source_refs: []
+  follow_up:
+  - text: При выявлении резус(D)-отрицательной принадлежности крови плода дальнейшее
+      медицинское наблюдение и оказание медицинской помощи осуществляется без риска
+      развития резус(D)-иммунизации или ГБП и ГБН.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При выявлении резус(D)-отрицательной принадлежности крови плода дальнейшее
+        медицинское наблюдение и оказание медицинской помощи осуществляется без риска
+        развития резус(D)-иммунизации или ГБП и ГБН.
+  - text: При отсутствии возможности выполнения НИПД резус(D)-принадлежности крови
+      плода медицинское наблюдение и оказание медицинской помощи осуществляется как
+      при беременности резус(D)-положительным плодом.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии возможности выполнения НИПД резус(D)-принадлежности крови
+        плода медицинское наблюдение и оказание медицинской помощи осуществляется
+        как при беременности резус(D)-положительным плодом.
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Возникновение факторов риска развития ГБП и ГБН
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: По мере возникновения факторов риска развития ГБП и ГБН необходимо проводить
+        корректировку диагностики и лечения
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: ab0_isoimmunization
+  name: AB0-изоиммунизация
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O36.1
+  - P55.1
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'D weak антиген: медицинское наблюдение и оказание медицинской помощи
+        как при резус-положительной принадлежности крови.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'D weak антиген: медицинское наблюдение и оказание медицинской помощи
+          как при резус-положительной принадлежности крови.'
+    - text: 'D partiale антиген: медицинское наблюдение и оказание медицинской помощи
+        как при резус-отрицательной принадлежности крови.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'D partiale антиген: медицинское наблюдение и оказание медицинской
+          помощи как при резус-отрицательной принадлежности крови.'
+    - text: При выявлении резус(D)-отрицательной принадлежности крови плода (по НИПД)
+        дальнейшее наблюдение без риска развития резус(D)-иммунизации или ГБП и ГБН.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При выявлении резус(D)-отрицательной принадлежности крови плода (по
+          НИПД) дальнейшее наблюдение без риска развития резус(D)-иммунизации или
+          ГБП и ГБН.
+    - text: При отсутствии возможности выполнения НИПД резус(D)-принадлежности крови
+        плода, медицинское наблюдение и помощь осуществляются как при беременности
+        резус(D)-положительным плодом.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При отсутствии возможности выполнения НИПД резус(D)-принадлежности
+          крови плода, медицинское наблюдение и помощь осуществляются как при беременности
+          резус(D)-положительным плодом.
+    - text: При выявлении антиэритроцитарных антител в сыворотке крови беременной,
+        подбор совместимых донорских эритроцитов проводится в лаборатории службы крови
+        (при необходимости трансфузии).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При выявлении антиэритроцитарных антител в сыворотке крови беременной,
+          подбор совместимых донорских эритроцитов проводится в лаборатории службы
+          крови (при необходимости трансфузии).
+    - text: Зона А (увеличение ПССК в СМА плода) указывает на снижение гематокрита
+        и концентрации гемоглобина в крови плода.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зона А (увеличение ПССК в СМА плода) указывает на снижение гематокрита
+          и концентрации гемоглобина в крови плода.
+    - text: Зона Б (нормальные показатели ПССК).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зона Б (нормальные показатели ПССК).
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Определение группы крови по системе AB0 и резус-принадлежности беременной
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0, резус-принадлежность, наличие
+        антиэритроцитарных антител при первой явке;
+  - name: Наличие антиэритроцитарных антител (с установлением специфичности и титра
+      при выявлении)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие антиэритроцитарных антител (в случае их выявления – установление
+        специфичности и титра антиэритроцитарных антител) при первой явке;
+  - name: Скрининг антиэритроцитарных антител (28–29, 34–35 и 37 нед. Б.)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 28–29, 34–35 и 37 недель беременности,
+        независимо от резус-принадлежности;
+  - name: Кордоцентез с определением показателей крови плода для диагностики ГБП
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика ГБП проводится при взятии образца венозной крови плода при
+        кордоцентезе. Определяется группа крови по АВ0 и резус(D)-принадлежность плода,
+        эритроциты, гемоглобин, гематокрит, билирубин, белок.
+  - name: Оценка показателей пиковой систолической скорости кровотока (ПССК) в средней
+      мозговой артерии (СМА) плода
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка показателей ПССК в СМА плода. Зона А – увеличение ПССК в СМА плода
+        указывает на снижение гематокрита и концентрации гемоглобина в крови плода;
+  conditional_exams:
+  - name: Определение фенотипа по системе Резус и Келл
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение фенотипа по системе Резус и Келл при выявлении антиэритроцитарных
+        антител у беременной женщины;
+  - name: Скрининг антиэритроцитарных антител (18–21, 28–29, 34–35, 37 нед. Б.)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 18–21, 28–29, 34–35 и 37 недель
+        беременности, при резус(D)-отрицательной принадлежности крови, а также при
+        выявлении антиэритроцитарных антител...
+  - name: Определение группы крови по AB0 и резус-принадлежности биологического отца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0 и резус-принадлежности биологического
+        отца ребенка при резус(D)-отрицательной принадлежности крови беременной женщины;
+  - name: Неинвазивная пренатальная диагностика (НИПД) Rh(D)-принадлежности плода
+      методом ПЦР
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выполнение НИПД резус(D)-принадлежности крови плода методом ПЦР в сроке
+        с 12 до 32 недель беременности в случае неизвестной либо резус-положительной
+        принадлежности крови биологического отца.
+  treatment: null
   follow_up: []
   hospitalization: []
   routing: []
@@ -325,30 +958,1105 @@ conditions:
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Меднаблюдение и оказание медпомощи женщинам с резус иммунизацией и другими
-      формами изоиммунизации
+  source_refs: []
+- condition_id: other_erythrocyte_isoimmunization
+  name: Изоиммунизация по другим антигенам эритроцитов
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - O36.1
+  - P55.8
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Выявление антиэритроцитарных антител
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление антиэритроцитарных антител
+    - text: Установление специфичности и титра антиэритроцитарных антител
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установление специфичности и титра антиэритроцитарных антител
+    - text: Выявление вариантных антигенов (D weak, D partiale)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление вариантных антигенов (D weak, D partiale)
+    - text: Снижение гематокрита и концентрации гемоглобина в крови плода
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение гематокрита и концентрации гемоглобина в крови плода
+    - text: Увеличение показателей ПССК в СМА плода (Зона А)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличение показателей ПССК в СМА плода (Зона А)
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Определение группы крови по системе AB0, резус-принадлежности и антиэритроцитарных
+      антител при первой явке
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение иммунологических особенностей крови беременной женщины –
+        определение группы крови по системе AB0, резус-принадлежность, наличие антиэритроцитарных
+        антител (...) при первой явке
+  - name: Выявление вариантных антигенов (D weak, D partiale)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'выявление вариантных антигенов: D weak антиген – медицинское наблюдение
+        и оказание медицинской помощи как при резус-положительной принадлежности крови;
+        D partiale антиген...'
+  - name: Скрининг антиэритроцитарных антител (общий)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 28–29, 34–35 и 37 недель беременности,
+        независимо от резус-принадлежности
+  conditional_exams:
+  - name: Определение фенотипа по системе Резус и Келл
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение фенотипа по системе Резус и Келл при выявлении антиэритроцитарных
+        антител у беременной женщины
+  - name: Скрининг антиэритроцитарных антител (при Rh-отрицательной крови или наличии
+      антител)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 18–21, 28–29, 34–35 и 37 недель
+        беременности, при резус(D)-отрицательной принадлежности крови, а также при
+        выявлении антиэритроцитарных антител...
+  - name: Определение группы крови и резус-принадлежности биологического отца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0 и резус-принадлежности биологического
+        отца ребенка при резус(D)-отрицательной принадлежности крови беременной женщины
+  - name: Неинвазивная пренатальная диагностика резус(D)-принадлежности крови плода
+      (НИПД ПЦР)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выполнение неинвазивной пренатальной диагностики (далее – НИПД) резус(D)-принадлежности
+        крови плода методом полимеразной цепной реакции (далее – ПЦР) в сроке с 12
+        до 32 недель...
+  - name: Кордоцентез с анализом крови плода
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика ГБП проводится при взятии образца венозной крови плода при
+        кордоцентезе. Определяется группа крови (...) плода, количество эритроцитов,
+        концентрация гемоглобина, гематокрит...
+  treatment:
+    non_drug:
+    - text: Специфического лечения изоиммунизации не существует.
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Специфического лечения изоиммунизации не существует.
+    - text: Лечение ГБП выполняется методом внутриутробной трансфузии компонентов
+        крови в РНПЦ «Мать и дитя» в сроках беременности с 18 недель до родоразрешения.
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лечение ГБП выполняется методом внутриутробной трансфузии компонентов
+          крови в РНПЦ «Мать и дитя» в сроках беременности с 18 недель до родоразрешения.
+    drug_groups: []
+    drugs:
+    - drug_name: Анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: в сроке беременности от 5 до 12 недель – в дозе 750 МЕ (не менее
+        625 МЕ), если в сроке беременности более 12 недель – в дозе 1500 МЕ (не менее
+        1250 МЕ)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская профилактика резус(D)-иммунизации проводится всем резус(D)-
+          при инвазивных внутриматочных хирургических вмешательствах ... в сроке беременности
+          от 5 до 12 недель – в дозе 750 МЕ (не менее 625 МЕ), если в сроке беременности
+          более 12 недель – в дозе 1500 МЕ (не менее 1250 МЕ)
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) на 28–32 неделе беременности (допускается
+        до 34 недель) резус(D)-отрицательным несенсибилизированным женщинам при резус(D)-положительной
+        крови отца.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при нормально протекающей беременности всем резус(D)-отрицательным
+          женщинам на 28–32 неделе беременности – в дозе 1500 МЕ (не менее 1250 МЕ).
+          Допускается до 34 недель беременности.
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) после родов не позднее 72 часов при резус(D)-положительной
+        принадлежности крови новорожденного (допускается в течение 10 дней).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: после родов не позднее 72 часов при резус(D)-положительной принадлежности
+          крови новорожденного – в дозе 1500 МЕ (не менее 1250 МЕ). Допускается в
+          течение 10 дней после родоразрешения;
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 750 МЕ (не менее 625 МЕ) при прерывании беременности (самопроизвольные,
+        медицинские, медикаментозные аборты), эктопической беременности в сроке с
+        5 до 12 недель.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при прерывании беременности (самопроизвольные, медицинские, медикаментозные
+          аборты), эктопической беременности в сроке с 5 до 12 недель – в дозе 750
+          МЕ (не менее 625 МЕ);
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) при прерывании беременности (самопроизвольные,
+        медицинские, медикаментозные аборты), эктопической беременности в сроке после
+        12 недель.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при прерывании беременности (...), эктопической беременности в сроке
+          после 12 недель – в дозе 1500 МЕ (не менее 1250 МЕ);
+    - drug_name: Человеческий анти-D иммуноглобулин
+      active_substance: null
+      drug_group: null
+      dose_text: 1500 МЕ (не менее 1250 МЕ) при угрожающем самопроизвольном аборте
+        в сроках беременности более 12 недель, сопровождающемся кровянистыми выделениями.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при угрожающем самопроизвольном аборте в сроках беременности более
+          12 недель, сопровождающихся кровянистыми выделениями – в дозе 1500 МЕ (не
+          менее 1250 МЕ).
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Корректировка диагностики и лечения, а также технологического уровня оказания
+      акушерско-гинекологической и перинатальной помощи при возникновении факторов
+      риска ГБП/ГБН.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Корректировка диагностики и лечения, а также технологического уровня
+        оказания акушерско-гинекологической и перинатальной помощи при возникновении
+        факторов риска ГБП/ГБН.
+  - text: Медицинское наблюдение и оказание медпомощи без риска развития резус(D)-иммунизации
+      или ГБП/ГБН при выявлении резус(D)-отрицательной принадлежности крови плода.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение и оказание медпомощи без риска развития резус(D)-иммунизации
+        или ГБП/ГБН при выявлении резус(D)-отрицательной принадлежности крови плода.
+  - text: Медицинское наблюдение и оказание медпомощи как при беременности резус(D)-положительным
+      плодом, если НИПД резус(D)-принадлежности крови плода невозможна.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение и оказание медпомощи как при беременности резус(D)-положительным
+        плодом, если НИПД резус(D)-принадлежности крови плода невозможна.
+  - text: При сохраняющихся кровянистых выделениях (при угрожающем самопроизвольном
+      аборте в сроках беременности более 12 недель) рекомендуется введение человеческого
+      анти-D иммуноглобулина в такой же дозе каждые 6 недель.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При сохраняющихся кровянистых выделениях (при угрожающем самопроизвольном
+        аборте в сроках беременности более 12 недель) рекомендуется введение человеческого
+        анти-D иммуноглобулина в такой же дозе кажд
+  hospitalization: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  red_flags:
+  - text: Увеличение показателей пиковой систолической скорости кровотока в средней
+      мозговой артерии (ПССК в СМА) плода (Зона А)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Зона А – увеличение ПССК в СМА плода указывает на снижение гематокрита
+        и концентрации гемоглобина в крови плода
+  - text: Возникновение факторов риска развития гемолитической болезни плода (ГБП)
+      и гемолитической болезни новорожденных (ГБН)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: По мере возникновения факторов риска развития ГБП и ГБН необходимо проводить
+        корректировку диагностики и лечения женщины и технологического уровня оказания
+        акушерско-гини...
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: hemolytic_disease_of_fetus_newborn
+  name: Гемолитическая болезнь плода и новорожденного
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - P55
+  - P55.9
+  - P56
+  - P56.0
+  - P56.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Необходимо проводить корректировку диагностики и лечения женщины по мере
+        возникновения факторов риска развития ГБП и ГБН.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Необходимо проводить корректировку диагностики и лечения женщины по
+          мере возникновения факторов риска развития ГБП и ГБН.
+    - text: Выявление D weak антигена ведет к медицинскому наблюдению и оказанию медицинской
+        помощи как при резус-положительной принадлежности крови.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление D weak антигена ведет к медицинскому наблюдению и оказанию
+          медицинской помощи как при резус-положительной принадлежности крови.
+    - text: Выявление D partiale антигена ведет к медицинскому наблюдению и оказанию
+        медицинской помощи как при резус-отрицательной принадлежности крови.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление D partiale антигена ведет к медицинскому наблюдению и оказанию
+          медицинской помощи как при резус-отрицательной принадлежности крови.
+    - text: Резус(D)-отрицательная принадлежность крови плода (по НИПД) исключает
+        риск развития резус(D)-иммунизации или ГБП и ГБН.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Резус(D)-отрицательная принадлежность крови плода (по НИПД) исключает
+          риск развития резус(D)-иммунизации или ГБП и ГБН.
+    - text: При отсутствии возможности выполнения НИПД резус(D)-принадлежности крови
+        плода наблюдение осуществляется как при беременности резус(D)-положительным
+        плодом.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При отсутствии возможности выполнения НИПД резус(D)-принадлежности
+          крови плода наблюдение осуществляется как при беременности резус(D)-положительным
+          плодом.
+    - text: Увеличение ПССК в СМА плода (зона А) указывает на снижение гематокрита
+        и концентрации гемоглобина в крови плода.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличение ПССК в СМА плода (зона А) указывает на снижение гематокрита
+          и концентрации гемоглобина в крови плода.
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Определение группы крови по системе AB0 и резус-принадлежности беременной
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0, резус-принадлежность [...] при
+        первой явке
+  - name: Определение наличия, специфичности и титра антиэритроцитарных антител у
+      беременной
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие антиэритроцитарных антител (в случае их выявления – установление
+        специфичности и титра антиэритроцитарных антител) при первой явке
+  - name: Скрининг антиэритроцитарных антител (независимо от резус-принадлежности)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 28–29, 34–35 и 37 недель беременности,
+        независимо от резус-принадлежности
+  conditional_exams:
+  - name: Определение фенотипа по системе Резус и Келл
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение фенотипа по системе Резус и Келл при выявлении антиэритроцитарных
+        антител у беременной женщины
+  - name: Выявление вариантных антигенов (D weak, D partiale)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'выявление вариантных антигенов: D weak антиген; D partiale антиген'
+  - name: Скрининг антиэритроцитарных антител (при резус(D)-отрицательной принадлежности
+      или выявлении специфических антител)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: скрининг антиэритроцитарных антител в 18–21, 28–29, 34–35 и 37 недель
+        беременности, при резус(D)-отрицательной принадлежности крови, а также при
+        выявлении антиэритроцитарных антител анти-D (система Резус), анти-К (система
+        Келл)
+  - name: Определение группы крови по системе AB0 и резус-принадлежности биологического
+      отца ребенка
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе AB0 и резус-принадлежности биологического
+        отца ребенка при резус(D)-отрицательной принадлежности крови беременной женщины
+  - name: Неинвазивная пренатальная диагностика (НИПД) резус(D)-принадлежности крови
+      плода методом ПЦР
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выполнение неинвазивной пренатальной диагностики (НИПД) резус(D)-принадлежности
+        крови плода методом полимеразной цепной реакции (ПЦР) в сроке с 12 до 32 недель
+        беременности в случае неизвестной либо резус-положительной принадлежности
+        крови биологического отца ребенка.
+  - name: Кордоцентез с определением параметров крови плода (для диагностики ГБП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностика ГБП проводится при взятии образца венозной крови плода при
+        кордоцентезе. Определяется группа крови по системе АВ0 и резус(D)-принадлежность
+        крови плода, количество эритроцитов, концентрация гемоглобина, гематокрит,
+        концентрация общего билирубина, общего белка.
+  - name: Оценка показателей пиковой систолической скорости кровотока (ПССК) в средней
+      мозговой артерии (СМА) плода
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка показателей ПССК в СМА плода [...] Зона А – увеличение ПССК в
+        СМА плода указывает на снижение гематокрита и концентрации гемоглобина в крови
+        плода
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Средство для медицинской профилактики резус(D)-иммунизации
+      active_substance: null
+      drug_group: null
+      dose_text: при инвазивных внутриматочных хирургических вмешательствах в сроке
+        беременности от 5 до 12 недель – в дозе 750 МЕ (не менее 625 МЕ), если в сроке
+        беременности более 12 недель – в дозе 1500 МЕ (не мене
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Медицинская профилактика резус(D)-иммунизации проводится всем резус(D)-
+          при инвазивных внутриматочных хирургических вмешательствах: в 5-12 недель
+          – 750 МЕ (не менее 625 МЕ); более 12 недель – 1500 МЕ (не менее 1250 МЕ);'
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: госпитализация в РНПЦ «Мать и дитя»
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_меднаблюдение_и_оказание_медпомощи_женщинам_с_резус_
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Меднаблюдение_и_оказание_медпомощи_женщинам_с_резус-иммунизацией_и_другими_формами_изоиммунизации_пост_МЗ_2022_128.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация в РНПЦ «Мать и дитя»
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.617175+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:34:20.154751+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=4
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:03.618452+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[rh_isoimmunization].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[rh_isoimmunization].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[rh_isoimmunization].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[rh_isoimmunization].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[rh_isoimmunization].treatment.drugs[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[other_erythrocyte_isoimmunization].required_exams[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[other_erythrocyte_isoimmunization].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[other_erythrocyte_isoimmunization].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[other_erythrocyte_isoimmunization].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[other_erythrocyte_isoimmunization].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[other_erythrocyte_isoimmunization].treatment.drugs[5]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[hemolytic_disease_of_fetus_newborn].required_exams[0]
+  validated_at: '2026-07-01T23:34:20.166374+00:00'

@@ -1,10 +1,10 @@
 {
   "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики и лечения инфаркта миокарда, нестабильной стенокардии",
+    "title": "Диагностика и лечение инфаркта миокарда, нестабильной стенокардии",
     "url": null,
     "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
     "document_sha256": null,
@@ -22,7 +22,8 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "adult",
+      "pregnant"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +33,8 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_и_лечения_инфаркта_миокарда_нестабил",
-      "name": "диагностики и лечения инфаркта миокарда, нестабильной стенокардии",
+      "condition_id": "acute_coronary_syndrome_nstemi",
+      "name": "Острый коронарный синдром без подъема сегмента ST",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -51,7 +52,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Диагноз «острый коронарный синдром» (далее - ОКС) является",
+            "text": "Острый коронарный синдром (ОКС) является предварительным диагнозом, используемым до уточнения окончательного диагноза (острый/повторный инфаркт миокарда, нестабильная стенокардия).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -68,286 +69,19 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Диагноз «острый коронарный синдром» (далее - ОКС) является"
-            }
-          },
-          {
-            "text": "диагноза - острый или повторный инфаркт миокарда (шифр по МКБ-10     I21.-",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "диагноза - острый или повторный инфаркт миокарда (шифр по МКБ-10     I21.-"
-            }
-          },
-          {
-            "text": "Критерии эффективности тромболитической терапии",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Критерии эффективности тромболитической терапии"
+              "quote": "Острый коронарный синдром (ОКС) является предварительным диагнозом, используемым до уточнения окончательного диагноза (острый/повторный инфаркт миокарда, нестабильная стенокардия)."
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [
-        {
-          "name": "ЭКГ",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "левого синдрома, положительная динамика ЭКГ, \nпрофилактика сложных нарушений ритма, развития левожелудочковой недостаточнос"
-          }
-        }
-      ],
+      "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "[treatment] 06.06. 2017  № 59 (стр. 2)",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 06.06. 2017  № 59 (стр. 2)"
-            }
-          },
-          {
-            "text": "(нитроглицерин) 0,5 мг под язык или в виде спрея 1-2 дозы",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "(нитроглицерин) 0,5 мг под язык или в виде спрея 1-2 дозы"
-            }
-          },
-          {
-            "text": "эффекта повторить дважды через 5-7 минут под контролем артериального",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "эффекта повторить дважды через 5-7 минут под контролем артериального"
-            }
-          },
-          {
-            "text": "давления (АД) и частоты сердечных сокращений (ЧСС).",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "давления (АД) и частоты сердечных сокращений (ЧСС)."
-            }
-          },
-          {
-            "text": "[treatment] 06.06. 2017  № 59 (стр. 2)",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] 06.06. 2017  № 59 (стр. 2)"
-            }
-          },
-          {
-            "text": "рекомендуется  использование кишечнорастворимой формы препарата).",
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "рекомендуется  использование кишечнорастворимой формы препарата)."
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "фондапаринукс",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "фондапаринукс 2,5 мг (предпочтителен \nпри ТЛТ стрептокиназой)"
-            }
-          },
-          {
-            "drug_name": "эноксапарин",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "эноксапарин 1 мг/кг, подкожно \n(предпочтителен при плани"
-            }
-          },
-          {
-            "drug_name": "доза",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2,5 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "доза 2,5 мг)"
-            }
-          },
-          {
-            "drug_name": "внутрь",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "300 мг",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "внутрь 300 мг (если возраст \nпациента < 75 лет) или 75"
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+      "treatment": null,
       "follow_up": [
         {
-          "text": "контроль",
+          "text": "Критерии эффективности тромболитической терапии: ангиографические признаки восстановления кровотока.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -361,50 +95,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
-          }
-        },
-        {
-          "text": "контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "контроль"
+            "quote": "Критерии эффективности тромболитической терапии: ангиографические признаки восстановления кровотока."
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "| шоком, в том числе, если симптомы начались >12 часов (ЧКВ спасения).  При неэффективном догоспитальном тромболизисe и/или рецидивирующей ишемии миокарда и/или развитии повторной |  |  |  |",
+          "text": "Догоспитальный этап (фельдшерско-акушерский пункт)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -417,7 +115,75 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "| шоком, в том числе, если симптомы начались >12 часов (ЧКВ спасения).  При неэффективном догоспитальном тромболизисe и/или рецидивирующей ишемии миокарда и/или развитии повторной |  |  |  |"
+            "quote": "Догоспитальный этап (фельдшерско-акушерский пункт)"
+          }
+        },
+        {
+          "text": "Приёмное отделение стационаров",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Приёмное отделение стационаров"
+          }
+        },
+        {
+          "text": "Реанимационные/инфарктные отделения",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Реанимационные/инфарктные отделения"
+          }
+        },
+        {
+          "text": "Выполнение первичного ЧКВ показано пациентам с тяжелой острой сердечно-сосудистой недостаточностью или кардиогенным шоком, в том числе, если симптомы начались >12 часов (ЧКВ спасения).",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Выполнение первичного ЧКВ показано пациентам с тяжелой острой сердечно-сосудистой недостаточностью или кардиогенным шоком, в том числе, если симптомы начались >12 часов (ЧКВ спасения)."
+          }
+        },
+        {
+          "text": "При неэффективном догоспитальном тромболизисe и/или рецидивирующей ишемии миокарда и/или развитии повторной окклюзии после успешно проведенного тромболизиса в максимально ранние сроки показано проведение ЧКВ спасения.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При неэффективном догоспитальном тромболизисe и/или рецидивирующей ишемии миокарда и/или развитии повторной окклюзии после успешно проведенного тромболизиса в максимально ранние сроки показано проведе"
           }
         }
       ],
@@ -425,38 +191,26 @@
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "bolezni_sistemy_krovoobrashcheniya_клинический_протокол_диагностики_и_лечения_ин",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики и лечения инфаркта миокарда, нестабильной стенокардии"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:15.463095+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-01T22:55:12.589165+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-06-23T19:15:15.465191+00:00"
+    "validated_at": "2026-07-01T22:55:12.589278+00:00"
   }
 }

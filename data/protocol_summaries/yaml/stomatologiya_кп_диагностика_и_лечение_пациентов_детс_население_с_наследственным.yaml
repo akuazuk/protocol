@@ -1,9 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детс население с наследственными нарушениями
+  title: Диагностика и лечение пациентов детского населения с наследственными нарушениями
     структуры зубов
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
@@ -20,26 +20,28 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с наследственными нарушениями
-    структуры зубов
+- condition_id: nasledstvennye_narusheniya_struktury_zubov
+  name: Наследственные нарушения структуры зубов
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K00.5
+  - K00.50
+  - K00.51
+  - K00.52
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ НАСЛЕДСТВЕННЫХ
+    - text: Выявление наследственного фактора
       logic_group: null
       operator: unknown
       values: []
@@ -56,14 +58,78 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ НАСЛЕДСТВЕННЫХ
+        quote: Выявление наследственного фактора
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза и выявление наследственного фактора
+  - name: Выявление наследственного фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза и выявление наследственного фактора
+  - name: Дифференциальная диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дифференциальная диагностика наследственных нарушений структуры зубов.
   conditional_exams: []
   treatment:
     non_drug:
-    - text: '[treatment] СТРУКТУРЫ ЗУБОВ (стр. 4)'
+    - text: Своевременная реставрация зубов и (или) протезирование для восстановления
+        эстетической и жевательной функций, профилактики истирания зубов.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
@@ -74,8 +140,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] СТРУКТУРЫ ЗУБОВ (стр. 4)'
-    - text: 10. Общими принципами медицинской профилактики и лечения наследственных
+        quote: Своевременная реставрация зубов и (или) протезирование для восстановления
+          эстетической и жевательной функций, профилактики истирания зубов.
+    - text: Терапевтическое лечение при наличии дефектов твердых тканей зубов и воспаления
+        маргинального периодонта.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
@@ -86,8 +154,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 10. Общими принципами медицинской профилактики и лечения наследственных
-    - text: 'нарушений структуры зубов являются:'
+        quote: Терапевтическое лечение при наличии дефектов твердых тканей зубов и
+          воспаления маргинального периодонта.
+    - text: Ортодонтическое лечение при дефектах зубов, зубочелюстных аномалиях, истирании
+        коронок зубов и при наличии жалоб на эстетический недостаток.
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
@@ -98,51 +168,90 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'нарушений структуры зубов являются:'
-    - text: консервативный метод – своевременное применение лекарственных средств,
+        quote: Ортодонтическое лечение при дефектах зубов, зубочелюстных аномалиях,
+          истирании коронок зубов и при наличии жалоб на эстетический недостаток.
+    drug_groups: []
+    drugs:
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно нан
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лидокаин Спрей для местного применения 100 мг/мл. Одну порцию (1–3
+          нажатия) наносят на слизистую оболочку полости рта или десну, или путем
+          смазывания смоченным ватным тампоном.
+    - drug_name: Лидокаин/Хлоргексидин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах
+        8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также
+        перед инъекционной анестезией. Предназначен для детей с '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г; анестезирующий
+          гель в шприцах 8,5 г. Для аппликационной анестезии слизистой оболочки полости
+          рта, а также перед инъекционной анестезией.
+    - drug_name: Лекарственные средства, повышающие минерализацию твердых тканей зубов
+      active_substance: null
+      drug_group: null
+      dose_text: Своевременное применение.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
         quote: консервативный метод – своевременное применение лекарственных средств,
-    - text: повышающих минерализацию твердых тканей зубов
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: повышающих минерализацию твердых тканей зубов
-    - text: Национальный правовой Интернет-портал Республики Беларусь, 14.02.2023,
-        8/39442
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Национальный правовой Интернет-портал Республики Беларусь, 14.02.2023,
-          8/39442
-    drug_groups: []
-    drugs:
-    - drug_name: превышать
+          повышающих минерализацию твердых тканей зубов;
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 2,9 мг
+      dose_text: Спрей 100 мг/мл. Одну порцию (1–3 нажатия) аэрозоля наносят на слизистую
+        оболочку полости рта или десну. Возможно нанесение смоченным ватным тампоном.
       frequency_text: null
       duration_text: null
       route: null
@@ -154,17 +263,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: превышать 2,9 мг/кг
-    - drug_name: ампулах
+        quote: Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2 мл
+      dose_text: Гель. Для аппликационной анестезии. Предназначен для детей с 2 лет.
+        Для детей 2-11 лет максимально допустимая доза лидокаина гидрохлорида не должна
+        превышать 2,9 мг/кг.
       frequency_text: null
       duration_text: null
       route: null
@@ -176,17 +289,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ампулах 2 мл \n(картриджах 1,7 мл)"
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин Анестезирующий гель... Предназначен для детей
+          с 2 лет. Для детей в возрасте от 2 до 11 лет максимально допустимая доза
+          лидокаина гидрохлорида не должна превышать 2,9 мг/кг.
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Раствор для инъекций. Инъекционная анестезия. Доза не должна превышать
+        7 мг артикаина на 1 кг массы тела. Использовать меньший объем. Разовую дозу
+        врач-специалист назначает индивидуально.
       frequency_text: null
       duration_text: null
       route: null
@@ -198,179 +315,152 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "картриджах \n1,7 мл"
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3
-    - drug_name: шприцах
-      active_substance: null
-      drug_group: null
-      dose_text: 12,5 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: шприцах 12,5 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 2022 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: марта
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: марта 2023 г
+        quote: Артикаин/Эпинефрин Раствор для инъекций... Инъекционная анестезия тканей
+          полости рта... доза лекарственного средства не должна превышать 7 мг артикаина
+          на 1 кг массы тела. Использование у детей до года не изучалось
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение – 1 раз в 6 месяцев.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение – 1 раз в 6 месяцев.
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Применение Лидокаина/Хлоргексидина противопоказано у детей до 2 лет.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У детей до 2 лет применение противопоказано. Предназначен для детей с
+        2 лет.
+  - text: Максимально допустимая доза лидокаина гидрохлорида для детей в возрасте
+      от 2 до 11 лет не должна превышать 2,9 мг/кг.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+        гидрохлорида не должна превышать 2,9 мг/кг.
+  - text: Использование Артикаина/Эпинефрина у детей до года не изучалось.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Использование у детей до года не изучалось
+  - text: Применение Лидокаина/Хлоргексидина у детей до 2 лет противопоказано.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У детей до 2 лет применение противопоказано.
+  - text: Доза артикаина при использовании Артикаина/Эпинефрина не должна превышать
+      7 мг на 1 кг массы тела.
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: доза лекарственного средства не должна превышать 7 мг артикаина на 1
+        кг массы тела.
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_наследственным
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_наследственными_нарушениями_структуры_зубов_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с наследственными нарушениями
-      структуры зубов
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:51.418808+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:24:33.447807+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:51.422157+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[nasledstvennye_narusheniya_struktury_zubov].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[nasledstvennye_narusheniya_struktury_zubov].treatment.drugs[4]
+  validated_at: '2026-07-01T23:24:33.452033+00:00'

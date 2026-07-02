@@ -1,9 +1,9 @@
 protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов детское население буллезными нарушениями
+  title: Диагностика и лечение буллезных нарушений у детского населения
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
   document_sha256: null
@@ -19,28 +19,32 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_лечение_пациентов_детское_население_
-  name: Диагностика лечение пациентов детское население буллезными нарушениями
+- condition_id: bullous_disorders_pediatric
+  name: Буллезные нарушения
   synonyms: []
   abbreviations: []
   icd10_codes:
   - L10
+  - L11
+  - L12
+  - L13
   - L14
-  - L30.9
-  - O26.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: (критерии Mahajan) (стр. 31)
+    - text: 'Вульгарная пузырчатка, легкая степень (1+): Поражение до 10% поверхности
+        тела (или только слизистой оболочки рта). Пациент способен осуществлять повседневную
+        деятельность без дискомфорта. Поражена только слизистая оболочка щек, жевание
+        и глотание не затруднены.'
       logic_group: null
       operator: unknown
       values: []
@@ -57,9 +61,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (критерии Mahajan) (стр. 31)
-    - text: '[diagnostics] 6. Классификация вульгарной пузырчатки по степени тяжести
-        (критерии Mahajan) (стр. 3)'
+        quote: 'Вульгарная пузырчатка, легкая степень (1+): Поражение до 10% поверхности
+          тела (или только слизистой оболочки рта). Пациент способен осуществлять
+          повседневную деятельность без дискомфорта. Поражена тол'
+    - text: 'Вульгарная пузырчатка, умеренная степень (2+): Поражение 10–25% поверхности
+        тела с поражением слизистой оболочки рта. Пациент способен осуществлять повседневную
+        деятельность с дискомфортом. Поражена слизистая оболочка щек, десен, губ,
+        затруднен прием твердой пищи.'
       logic_group: null
       operator: unknown
       values: []
@@ -76,9 +84,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 6. Классификация вульгарной пузырчатки по степени тяжести
-          (критерии Mahajan) (стр. 3)'
-    - text: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        quote: 'Вульгарная пузырчатка, умеренная степень (2+): Поражение 10–25% поверхности
+          тела с поражением слизистой оболочки рта. Пациент способен осуществлять
+          повседневную деятельность с дискомфортом. Поражена с'
+    - text: 'Вульгарная пузырчатка, тяжелая степень (3+): Поражение 25–50% поверхности
+        тела с поражением слизистой оболочки рта. Пациент не способен осуществлять
+        повседневную деятельность. Обширные поражения слизистой оболочки рта, затруднен
+        прием полутвердой пищи.'
       logic_group: null
       operator: unknown
       values: []
@@ -95,8 +107,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
-    - text: анализ крови биохимический (определение уровня креатинина, мочевины, глюкозы,
+        quote: 'Вульгарная пузырчатка, тяжелая степень (3+): Поражение 25–50% поверхности
+          тела с поражением слизистой оболочки рта. Пациент не способен осуществлять
+          повседневную деятельность. Обширные поражения слизи'
+    - text: 'Вульгарная пузырчатка, очень тяжелая степень (4+): Поражение более 50%
+        поверхности тела с поражением слизистой оболочки рта. Постельный режим или
+        осложнения. Обширное поражение слизистой оболочки рта, поражение слизистых
+        оболочек других локализаций, затруднение при приеме жидкости.'
       logic_group: null
       operator: unknown
       values: []
@@ -113,9 +130,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: анализ крови биохимический (определение уровня креатинина, мочевины,
-          глюкозы,
-    - text: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        quote: 'Вульгарная пузырчатка, очень тяжелая степень (4+): Поражение более
+          50% поверхности тела с поражением слизистой оболочки рта. Постельный режим
+          или осложнения. Обширное поражение слизистой оболочки рта,'
+    - text: 'Буллезный пемфигоид, легкая степень: Площадь поражения до 10%, количество
+        новых пузырей в сутки до 3.'
       logic_group: null
       operator: unknown
       values: []
@@ -132,376 +151,92 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        quote: 'Буллезный пемфигоид, легкая степень: Площадь поражения до 10%, количество
+          новых пузырей в сутки до 3.'
+    - text: 'Буллезный пемфигоид, среднетяжелая степень: Площадь поражения 11–30%,
+        количество новых пузырей в сутки 3–10.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Буллезный пемфигоид, среднетяжелая степень: Площадь поражения 11–30%,
+          количество новых пузырей в сутки 3–10.'
+    - text: 'Буллезный пемфигоид, тяжелая степень: Площадь поражения 31% и более,
+        количество новых пузырей в сутки более 10.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Буллезный пемфигоид, тяжелая степень: Площадь поражения 31% и более,
+          количество новых пузырей в сутки более 10.'
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: биопсия кожи врачом-дерматовенерологом, врачом – детским хирургом, врачом
-        –
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: биопсия кожи врачом-дерматовенерологом, врачом – детским хирургом,
-          врачом –
-    - text: биопсия слизистых оболочек врачом-стоматологом детским, врачом – детским
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: биопсия слизистых оболочек врачом-стоматологом детским, врачом – детским
-    - text: хирургом, врачом – детским онкологом-гематологом.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: хирургом, врачом – детским онкологом-гематологом.
-    - text: '[treatment] 5. Пациентам с тяжелым течением буллезных нарушений (пузырчатки,
-        других (стр. 3)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Пациентам с тяжелым течением буллезных нарушений (пузырчатки,
-          других (стр. 3)'
-    - text: акантолитических нарушений, буллезного пемфигоида, других буллезных изменений,
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: акантолитических нарушений, буллезного пемфигоида, других буллезных
-          изменений,
-    - text: буллезных нарушений кожи при болезнях, классифицированных в других рубриках)
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: буллезных нарушений кожи при болезнях, классифицированных в других
-          рубриках)
-    drug_groups: []
-    drugs:
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 50 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "таблетки \n50 мг, \nвнутрь \n1–3 мг/кг \nв сутки \n(в зависи"
-    - drug_name: более
-      active_substance: null
-      drug_group: null
-      dose_text: 2 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "более 2 г \nв сутки), разделенная на 2 приема"
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 1,5 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: доза 1,5 г)
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 50 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "введения 50 мг/мл в преднаполненном \nшприце 7,5 мг/0,1"
-    - drug_name: инфузий
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инфузий \n100 мг/мл, \nвнутривенно (далее – в/венно) капе"
-    - drug_name: дозе
-      active_substance: null
-      drug_group: null
-      dose_text: 2000 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: дозе 2000 мг/кг в сутки 5 суток
-    - drug_name: применения
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "применения \n10 мг/г, наносится тонким слоем на пораженные"
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2024 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2024 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ноября 1993 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
-  - text: контроль
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: контроль
+  treatment: null
+  follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: При наличии медицинских показаний проводятся консультации врача – детского
+      эндокринолога, врача-оториноларинголога, врача-стоматолога детского, врача-акушера-гинеколога,
+      врача-уролога.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии медицинских показаний проводятся консультации врача – детского
+        эндокринолога, врача-оториноларинголога, врача-стоматолога детского, врача-акушера-гинеколога,
+        врача-уролога.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_буллезными_нарушен
-    document_url: null
-    local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_буллезными_нарушениями_пост_МЗ_2024_107.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика лечение пациентов детское население буллезными нарушениями
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.353527+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-02T00:30:06.185148+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:19.361890+00:00'
+  validated_at: '2026-07-02T00:30:06.185884+00:00'

@@ -1,10 +1,10 @@
 {
   "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "диагностики лечения больных с болезнями кожи",
+    "title": "Диагностика и лечение больных с болезнями кожи",
     "url": null,
     "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,34 +32,161 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностики_лечения_больных_с_болезнями_кожи",
-      "name": "диагностики лечения больных с болезнями кожи",
+      "condition_id": "diseases_of_skin",
+      "name": "Болезни кожи",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "Q81.0",
-        "L94.0",
+        "A26.0",
+        "A42",
+        "B00",
+        "B00.0",
+        "B00.9",
+        "B02",
         "B07",
         "B08.1",
-        "L01",
-        "L08.0",
-        "L08.01",
-        "L08.02",
-        "L08.03",
-        "L08.04",
-        "L08.1",
-        "L08.81"
+        "B35.04",
+        "B35.05",
+        "B35.06",
+        "B35.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Исследование уровня глюкозы в крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": 38,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование уровня глюкозы в крови."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Исследование на сифилис",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование на сифилис."
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи."
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови."
+          }
+        },
+        {
+          "name": "Обследование на ИППП (мазки из уретры и цервикального канала на гонорею, трихомоноз)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": 37,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обследование на инфекции, передаваемые половым путем (далее-ИППП): мазки из уретры и цервикального канала на гонорею, трихомоноз."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "3 раза/сут - 7 дней или нимесу-",
+            "text": "При мокнутии, везикуляции, выраженных воспалительных явлениях: примочки с борной кислотой и танином, 0,05% калия перманганатом, 2% раствором протаргола, обработка анилиновыми красителями.",
             "source_ref": {
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
@@ -70,92 +197,17 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "3 раза/сут - 7 дней или нимесу-"
-            }
-          },
-          {
-            "text": "[treatment] (B35.34). (стр. 24)",
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] (B35.34). (стр. 24)"
-            }
-          },
-          {
-            "text": "мг через 12 часов - 7 дней, или",
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "мг через 12 часов - 7 дней, или"
-            }
-          },
-          {
-            "text": "в неделю. Наружно (по выбору): 5-10%",
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "в неделю. Наружно (по выбору): 5-10%"
-            }
-          },
-          {
-            "text": "спиртовой на ногтевые ложа. При наличии мокнутия, везику-",
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "спиртовой на ногтевые ложа. При наличии мокнутия, везику-"
-            }
-          },
-          {
-            "text": "[treatment] (B35.22). (стр. 26)",
-            "source_ref": {
-              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "[treatment] (B35.22). (стр. 26)"
+              "quote": "При мокнутии, везикуляции, выраженных воспалительных явлениях: примочки с борной кислотой и танином, 0,05% калия перманганатом, 2% раствором протаргола, обработка анилиновыми красителями."
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "лоратадин",
+            "drug_name": "Флюконазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 мг",
+            "dose_text": "внутрь 50-100 мг/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -167,20 +219,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "лоратадин \n10 мг 1 раз/сут, клемастин 1 мг  \n2 раза/сут, "
+              "quote": "флюконазол внутрь 50-100 мг/сут"
             }
           },
           {
-            "drug_name": "Метамизол",
+            "drug_name": "Итраконазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "внутрь 100 мг 2 раза/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -192,20 +244,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Метамизол 0,5 г 3 раза/сут \nвнутрь (при болях)"
+              "quote": "итраконазол внутрь 100 мг 2 раза/сут"
             }
           },
           {
-            "drug_name": "Индометацин",
+            "drug_name": "Кетоконазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,25 г",
+            "dose_text": "внутрь 200 мг 2 раза/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -217,20 +269,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Индометацин 0,25 г внутрь  \n3 раза/сут - 7 дней"
+              "quote": "кетоконазол внутрь 200 мг 2 раза/сут"
             }
           },
           {
-            "drug_name": "Ацикловир",
+            "drug_name": "Нистатин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,25 г",
+            "dose_text": "внутрь 500000-1000000 ЕД 4-8 раз/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -242,20 +294,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Ацикловир 0,25 г внутрь  \n4 раза/сут - 5 дней"
+              "quote": "нистатин 500000-1000000 ЕД 4-8 раз/сут внутрь"
             }
           },
           {
-            "drug_name": "Цианокобаламин",
+            "drug_name": "Серно-дегтярная мазь",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мкг",
+            "dose_text": "наружно 5-10%",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -267,20 +319,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Цианокобаламин 500 мкг в/м  \n1 раз/сут №10"
+              "quote": "Наружно (по выбору): 5-10% серно-дегтярная мазь"
             }
           },
           {
-            "drug_name": "Метилурацил",
+            "drug_name": "Серно-салициловая мазь",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5 г",
+            "dose_text": "наружно 2%, 5%",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -292,20 +344,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Метилурацил 0,5 г 3 раза/сут \nвнутрь - 15 дней"
+              "quote": "2%, 5% серно-салициловая мазь"
             }
           },
           {
-            "drug_name": "внутрь",
+            "drug_name": "Клотримазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "250 \nмг",
+            "dose_text": "кремы, мази наружно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -317,20 +369,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "внутрь 250 \nмг/сут или итраконазол внутрь \nпо схеме пу"
+              "quote": "кремы, мази, содержащие клотримазол"
             }
           },
           {
-            "drug_name": "Преднизолон",
+            "drug_name": "Кетоконазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "40 мг",
+            "dose_text": "кремы, мази наружно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -342,20 +394,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Преднизолон 40 мг/сут - 7-14 \nдней"
+              "quote": "кремы, мази, содержащие кетоконазол"
             }
           },
           {
-            "drug_name": "декабря",
+            "drug_name": "Миконазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2020 г",
+            "dose_text": "2% наружно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -367,20 +419,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "декабря 2020 г"
+              "quote": "2% миконазол"
             }
           },
           {
-            "drug_name": "октября",
+            "drug_name": "Бифоназол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2003 г",
+            "dose_text": "1% наружно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -392,20 +444,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "октября 2003 г"
+              "quote": "1% бифоназол"
             }
           },
           {
-            "drug_name": "августа",
+            "drug_name": "Натамицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2000 \nг",
+            "dose_text": "наружно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -417,20 +469,20 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "августа 2000 \nг"
+              "quote": "натамицин"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Йод спиртовой раствор",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1993 г",
+            "dose_text": "2% на очаги поражения кожи",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -442,13 +494,88 @@
               "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
               "document_url": null,
               "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-              "page_start": null,
+              "page_start": 37,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня \n1993 г"
+              "quote": "2% раствор йода спиртовой (на очаги поражения кожи)"
+            }
+          },
+          {
+            "drug_name": "Флюконазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 150 мг 1 раз в неделю",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+              "page_start": 38,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "флюконазол внутрь 150 мг 1 раз в неделю"
+            }
+          },
+          {
+            "drug_name": "Итраконазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "пульс-терапия 200 мг 2 раза в день в течение 7 дней с трехнедельным перерывом",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+              "page_start": 38,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "итраконазол внутрь по схеме пульс-терапии 200 мг 2 раза в день в течение - 7 дней с трехнедельным перерывом."
+            }
+          },
+          {
+            "drug_name": "Натамицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "2% наружно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+              "page_start": 38,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "2% натамицин"
             }
           }
         ],
@@ -458,7 +585,7 @@
       },
       "follow_up": [
         {
-          "text": "через 1 \nмес",
+          "text": "Разрешение кожного процесса, отрицательные результаты микологического исследования.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -472,11 +599,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 1 \nмес"
+            "quote": "Разрешение кожного процесса, отрицательные результаты микологического исследования."
           }
         },
         {
-          "text": "через 10 \nдн",
+          "text": "Разрешение кожного патологического процесса, отрастание здоровых ногтевых пластинок, отрицательные результаты микологического исследования. Клиническое улучшение.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -490,66 +617,79 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 10 \nдн"
-          }
-        },
-        {
-          "text": "Контроль",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль"
+            "quote": "Разрешение кожного патологического процесса, отрастание здоровых ногтевых пластинок, отрицательные результаты микологического исследования. Клиническое улучшение."
           }
         }
       ],
       "hospitalization": [],
-      "routing": [],
+      "routing": [
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        }
+      ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
-      "source_refs": [
-        {
-          "protocol_id": "dermatovenerologiya_кп_диагностики_лечения_больных_с_болезнями_кожи_25_02_2008_1",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/dermatovenerologiya/КП диагностики лечения больных с болезнями кожи 25.02.2008_№142.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "диагностики лечения больных с болезнями кожи"
-        }
-      ]
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-06-23T19:15:15.721113+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-02T00:43:03.235228+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-06-23T19:15:15.727144+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_skin].treatment.drugs[7]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_skin].treatment.drugs[12]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_skin].treatment.drugs[13]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[diseases_of_skin].treatment.drugs[14]"
+      }
+    ],
+    "validated_at": "2026-07-02T00:43:03.254878+00:00"
   }
 }

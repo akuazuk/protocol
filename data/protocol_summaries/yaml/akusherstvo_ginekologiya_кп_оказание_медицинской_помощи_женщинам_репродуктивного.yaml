@@ -1,9 +1,9 @@
 protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Оказание медицинской помощи женщинам репродуктивного возраста с низкорослостью
+  title: Оказание медицинской помощи женщинам репродуктивного возраста с низкорослостью,
     обусловленной генетическими синдромами
   url: null
   local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
@@ -20,16 +20,16 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - adult
+  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_медицинской_помощи_женщинам_репродуктив
-  name: Оказание медицинской помощи женщинам репродуктивного возраста с низкорослостью
-    обусловленной генетическими синдромами
+- condition_id: short_stature_due_to_genetic_syndromes
+  name: Низкорослость, обусловленная генетическими синдромами
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -44,13 +44,12 @@ conditions:
   - Q77.8
   - Q77.9
   - Q78
-  - Q65
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 4. Диагноз (стр. 2)'
+    - text: Микроаномалии развития (стигмы эмбриогенеза)
       logic_group: null
       operator: unknown
       values: []
@@ -67,15 +66,205 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 4. Диагноз (стр. 2)'
+        quote: Микроаномалии развития (стигмы эмбриогенеза)
+    - text: Микроцефалия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Микроцефалия
+    - text: Значение показателя роста менее 3 стандартных отклонений, в ряде случаев
+        менее 2,5 стандартных отклонений
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Значение показателя роста менее 3 стандартных отклонений, в ряде случаев
+          менее 2,5 стандартных отклонений
+    - text: Тяжелый дефицит гонадотропного гормона
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тяжелый дефицит гонадотропного гормона
+    - text: Нечувствительность к гонадотропному гормону
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нечувствительность к гонадотропному гормону
+    - text: Гипопитуитаризм
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гипопитуитаризм
+    - text: Врожденные пороки развития
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Врожденные пороки развития
+    - text: Умственная отсталость (шифры по МКБ-10 F70-F79)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Умственная отсталость (шифры по МКБ-10 F70-F79)
+    - text: Значение показателя роста у одного из родителей менее 2 стандартных отклонений
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Значение показателя роста у одного из родителей менее 2 стандартных
+          отклонений
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Биопсия ворсин хориона (БВХ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: БВХ – в 11–14 недель беременности
+  - name: Амниоцентез
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амниоцентез – в 15–22 недели
   treatment:
     non_drug:
-    - text: '[treatment] 12. Лечение нарушения фертильности при установлении генетического
-        синдрома, (стр. 3)'
+    - text: Лечение нарушения фертильности при установлении генетического синдрома,
+        сопровождающегося бесплодием, выполняется в отделении вспомогательных репродуктивных
+        технологий (ВРТ).
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
         document_url: null
@@ -86,10 +275,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 12. Лечение нарушения фертильности при установлении генетического
-          синдрома, (стр. 3)'
-    - text: репродуктивных технологий (далее – ВРТ). Алгоритм медицинского наблюдения
-        женщин
+        quote: Лечение нарушения фертильности при установлении генетического синдрома,
+          сопровождающегося бесплодием, выполняется в отделении вспомогательных репродуктивных
+          технологий (ВРТ).
+    - text: Генетически обусловленная низкорослость является медицинским показанием
+        для оперативного родоразрешения путем операции кесарево сечение при наличии
+        иных отягощающих медицинских показаний со стороны матери или плода.
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
         document_url: null
@@ -100,116 +291,67 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: репродуктивных технологий (далее – ВРТ). Алгоритм медицинского наблюдения
-          женщин
-    - text: репродуктивного возраста с низкорослостью и подтвержденным генетическим
-        синдромом
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: репродуктивного возраста с низкорослостью и подтвержденным генетическим
-          синдромом
-    - text: установлен согласно приложению 2.
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: установлен согласно приложению 2.
-    - text: '[treatment] 21. Генетически обусловленная низкорослость является медицинским
-        показанием (стр. 4)'
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 21. Генетически обусловленная низкорослость является медицинским
-          показанием (стр. 4)'
-    - text: для оперативного родоразрешения путем операции кесарево сечение при наличии
-        иных
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: для оперативного родоразрешения путем операции кесарево сечение при
-          наличии иных
+        quote: Генетически обусловленная низкорослость является медицинским показанием
+          для оперативного родоразрешения путем операции кесарево сечение при наличии
+          иных отягощающих медицинских показаний со стороны ма
     drug_groups: []
-    drugs:
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 2025 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июня 2025 г
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение врачом-генетиком
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-генетиком
+  - text: Медицинское наблюдение врачом-акушером-гинекологом отделения пренатальной
+      диагностики
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-акушером-гинекологом отделения пренатальной
+        диагностики
+  - text: Алгоритм медицинского наблюдения женщин репродуктивного возраста с низкорослостью
+      и подтвержденным генетическим синдромом установлен согласно приложению 2.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Алгоритм медицинского наблюдения женщин репродуктивного возраста с низкорослостью
+        и подтвержденным генетическим синдромом установлен согласно приложению 2.
   hospitalization: []
   routing:
-  - text: '[routing] 19. Дородовая госпитализация беременной женщины в организацию
-      здравоохранения (стр. 4)'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -222,36 +364,99 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 19. Дородовая госпитализация беременной женщины в организацию
-        здравоохранения (стр. 4)'
+      quote: амбулаторно
+  - text: Госпитализация в отделение вспомогательных репродуктивных технологий.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в отделение вспомогательных репродуктивных технологий.
+  - text: Госпитализация для оперативного родоразрешения (кесарево сечение).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для оперативного родоразрешения (кесарево сечение).
+  - text: Прегравидарная подготовка проводится в соответствии с Клиническим протоколом
+      № 17 при отсутствии медицинских противопоказаний.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Прегравидарная подготовка проводится в соответствии с Клиническим протоколом
+        № 17 при отсутствии медицинских противопоказаний.
+  - text: Дородовая госпитализация беременной женщины проводится в 38–39 недель или
+      по медицинским показаниям.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дородовая госпитализация беременной женщины проводится в 38–39 недель
+        или по медицинским показаниям.
+  - text: Родоразрешение путем кесарева сечения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Родоразрешение путем кесарева сечения.
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: akusherstvo_ginekologiya_кп_оказание_медицинской_помощи_женщинам_репродуктивного
-    document_url: null
-    local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание медицинской помощи женщинам репродуктивного возраста с низкорослостью
-      обусловленной генетическими синдромами
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:03.774988+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:35:15.110871+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:03.775459+00:00'
+  validated_at: '2026-07-01T23:35:15.110992+00:00'

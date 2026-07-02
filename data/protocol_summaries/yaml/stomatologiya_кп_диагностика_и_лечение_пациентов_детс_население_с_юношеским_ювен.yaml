@@ -1,9 +1,10 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детс население с юношеским ювенильным периодонтитом
+  title: Диагностика и лечение пациентов детского населения с юношеским ювенильным
+    периодонтитом
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
   document_sha256: null
@@ -19,26 +20,25 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детс_население_с
-  name: Диагностика и лечение пациентов детс население с юношеским ювенильным периодонтитом
+- condition_id: juvenile_periodontitis
+  name: Юношеский (ювенильный) периодонтит
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
+  - K05.4
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: '[diagnostics] 6. Критерии юношеского (ювенильного) периодонтита: (стр.
-        4)'
+    - text: нарушение целостности зубодесневого прикрепления
       logic_group: null
       operator: unknown
       values: []
@@ -55,10 +55,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 6. Критерии юношеского (ювенильного) периодонтита: (стр.
-          4)'
-    - text: (ювенильного) периодонтита, а также определение медицинских показаний
-        к лечению,
+        quote: нарушение целостности зубодесневого прикрепления
+    - text: глубина десневого зондирования 3 мм и более
       logic_group: null
       operator: unknown
       values: []
@@ -75,15 +73,259 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (ювенильного) периодонтита, а также определение медицинских показаний
-          к лечению,
+        quote: глубина десневого зондирования 3 мм и более
+    - text: наличие зубодесневого кармана
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: наличие зубодесневого кармана
+    - text: рентгенологические признаки деструкции межальвеолярной кости (вертикальный
+        тип резорбции, аркообразная убыль альвеолярной кости от дистальной поверхности
+        2-го премоляра до медиальной поверхности 2-го моляра)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'рентгенологические признаки деструкции межальвеолярной кости (вертикальный
+          тип резорбции, аркообразная убыль альвеолярной кости от дистальной поверхности
+          2-го премоляра до медиальной поверхности 2-го '
+    - text: подвижность зубов I–III степени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: подвижность зубов I–III степени
+    - text: индексная оценка (PI > 4,0)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: индексная оценка (PI > 4,0)
+    - text: несоответствие степени деструкции тканей периодонта степени воздействия
+        местных факторов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: несоответствие степени деструкции тканей периодонта степени воздействия
+          местных факторов
     optional: []
     exclusion: []
-  required_exams: []
+  required_exams:
+  - name: Зондирование десны
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: глубина десневого зондирования 3 мм и более;
+  - name: Рентгенологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенологические признаки деструкции межальвеолярной кости (вертикальный
+        тип резорбции, аркообразная убыль альвеолярной кости от дистальной поверхности
+        2-го премоляра до медиальной поверхности 2-го моляра);
+  - name: Оценка подвижности зубов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подвижность зубов I–III степени;
+  - name: Индексная оценка (PI)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: индексная оценка (PI > 4,0);
+  - name: Повторная оценка состояния тканей периодонта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повторную оценку состояния тканей периодонта
+  - name: Контроль прироста зубного налета
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: контроль прироста зубного налета
+  - name: Мониторинг поддесневых патогенетических бактерий
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: мониторинг поддесневых патогенетических бактерий (Actinobacillus actinomycetemcomitans)
   conditional_exams: []
   treatment:
     non_drug:
-    - text: ЛЕЧЕНИЕ ЮНОШЕСКОГО (ЮВЕНИЛЬНОГО) ПЕРИОДОНТИТА
+    - text: Гидротерапия, гидромассаж, минеральные ротовые ванночки
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -94,9 +336,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛЕЧЕНИЕ ЮНОШЕСКОГО (ЮВЕНИЛЬНОГО) ПЕРИОДОНТИТА
-    - text: '[treatment] 12. Планирование комплексного лечения пациентов с юношеским
-        (ювенильным) (стр. 5)'
+        quote: Гидротерапия, гидромассаж, минеральные ротовые ванночки
+    - text: Дарсонвализация десны (контактная и искровая)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -107,9 +348,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 12. Планирование комплексного лечения пациентов с юношеским
-          (ювенильным) (стр. 5)'
-    - text: 'периодонтитом включает следующие этапы:'
+        quote: Дарсонвализация десны (контактная и искровая)
+    - text: Озонотерапия
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -120,8 +360,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'периодонтитом включает следующие этапы:'
-    - text: подготовительные мероприятия у врача-стоматолога детского включают устранение
+        quote: Озонотерапия
+    - text: Магнитотерапия местная (магнитофорные аппликаторы, магнитная капа)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -132,10 +372,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: подготовительные мероприятия у врача-стоматолога детского включают
-          устранение
-    - text: (ювенильного) периодонтита, повторную оценку состояния тканей периодонта,
-        контроль
+        quote: Магнитотерапия местная (магнитофорные аппликаторы, магнитная капа)
+    - text: Гипо- и гипертермия местная (контрастная термотерапия)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -146,9 +384,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (ювенильного) периодонтита, повторную оценку состояния тканей периодонта,
-          контроль
-    - text: (Actinobacillus actinomycetemcomitans)
+        quote: Гипо- и гипертермия местная (контрастная термотерапия)
+    - text: Лазеротерапия (магнитолазеротерапия)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
@@ -159,13 +396,155 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: (Actinobacillus actinomycetemcomitans)
+        quote: Лазеротерапия (магнитолазеротерапия)
+    - text: Устранение местных предрасполагающих неблагоприятных факторов развития
+        юношеского (ювенильного) периодонтита.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Устранение местных предрасполагающих неблагоприятных факторов развития
+          юношеского (ювенильного) периодонтита.
+    - text: Ортодонтическое лечение при зубочелюстных аномалиях.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортодонтическое лечение при зубочелюстных аномалиях.
+    - text: Хирургическое лечение для восстановления мукогингивальных соотношений,
+        устранения периодонтальных карманов, коррекции контура десны и альвеолярной
+        кости, удаления поддесневых зубных отложений, грануляций, измененного эпителия
+        и цемента.
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое лечение для восстановления мукогингивальных соотношений,
+          устранения периодонтальных карманов, коррекции контура десны и альвеолярной
+          кости, удаления поддесневых зубных отложений, грануля
+    - text: 'Поддерживающая терапия: регулярное механическое удаление зубного налета
+        с помощью гигиенических средств, а также профессиональное удаление зубных
+        отложений.'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Поддерживающая терапия: регулярное механическое удаление зубного налета
+          с помощью гигиенических средств, а также профессиональное удаление зубных
+          отложений.'
+    - text: 'Физиотерапия: Гидротерапия, гидромассаж, минеральные ротовые ванночки
+        (7–10 процедур 2 раза в день).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Гидротерапия, гидромассаж, минеральные ротовые ванночки
+          (7–10 процедур 2 раза в день).'
+    - text: 'Физиотерапия: Дарсонвализация десны (контактная и искровая) (10–12 процедур
+        ежедневно).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Дарсонвализация десны (контактная и искровая) (10–12
+          процедур ежедневно).'
+    - text: 'Физиотерапия: Озонотерапия (5–6 процедур ежедневно).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Озонотерапия (5–6 процедур ежедневно).'
+    - text: 'Физиотерапия: Магнитотерапия местная (магнитофорные аппликаторы, магнитная
+        капа) (20–30 процедур ежедневно).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Магнитотерапия местная (магнитофорные аппликаторы, магнитная
+          капа) (20–30 процедур ежедневно).'
+    - text: 'Физиотерапия: Гипо- и гипертермия местная (контрастная термотерапия)
+        (6 процедур ежедневно).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Гипо- и гипертермия местная (контрастная термотерапия)
+          (6 процедур ежедневно).'
+    - text: 'Физиотерапия: Лазеротерапия (магнитолазеротерапия) (7–10 процедур ежедневно).'
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: Лазеротерапия (магнитолазеротерапия) (7–10 процедур
+          ежедневно).'
     drug_groups: []
     drugs:
-    - drug_name: превышать
+    - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 2,9 мг
+      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        полости рта или десну. Лекарственное средство можно нан
       frequency_text: null
       duration_text: null
       route: null
@@ -177,17 +556,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: превышать 2,9 мг/кг
-    - drug_name: ампулах
+        quote: Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.
+    - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2 мл
+      dose_text: Анестезирующий гель в шприцах 12,5 г; анестезирующий гель в шприцах
+        8,5 г. Для аппликационной анестезии слизистой оболочки полости рта, а также
+        перед инъекционной анестезией. У детей до 2 лет применен
       frequency_text: null
       duration_text: null
       route: null
@@ -199,17 +582,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ампулах 2 мл \n(картриджах 1,7 мл)"
-    - drug_name: картриджах
+        quote: Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г; анестезирующий
+          гель в шприцах 8,5 г Для аппликационной анестезии слизистой оболочки полости
+          рта, а также перед инъекционной анестезией.
+    - drug_name: Лидокаин (спрей)
       active_substance: null
       drug_group: null
-      dose_text: 1,7 мл
+      dose_text: Нанести 1–3 нажатия спрея на слизистую оболочку полости рта или десну.
+        Возможно нанесение ватным тампоном.
       frequency_text: null
       duration_text: null
       route: null
@@ -221,17 +607,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 6
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: картриджах 1,7 мл
-    - drug_name: моногидрат
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну.
+    - drug_name: Лидокаина гидрохлорид (раствор для инъекций)
       active_substance: null
       drug_group: null
-      dose_text: 20,0 мг
+      dose_text: Для детей от 2 до 11 лет максимально допустимая доза не более 2,9
+        мг/кг. Разовая доза индивидуальна.
       frequency_text: null
       duration_text: null
       route: null
@@ -243,17 +631,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "моногидрат 20,0 мг / Ромашки \nаптечной цветков экстракт (1:"
-    - drug_name: тубах
+        quote: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+          гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист
+          назначает индивидуально
+    - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 10 г
+      dose_text: Доза не должна превышать 7 мг артикаина на 1 кг массы тела. Разовая
+        доза индивидуальна.
       frequency_text: null
       duration_text: null
       route: null
@@ -265,17 +656,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "тубах 10 г \nНазначается детям старше 3 лет"
-    - drug_name: флаконах
+        quote: доза лекарственного средства не должна превышать 7 мг артикаина на
+          1 кг массы тела. Разовую дозу врач-специалист назначает индивидуально
+    - drug_name: Биклотимол/Эноксолон/Лизоцима гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: 30 мл
+      dose_text: 'Для детей старше 6 лет: по 1 таблетке каждые 4 часа (максимум 4
+        таблетки в сутки) в течение 5 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -287,17 +680,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "флаконах 30 мл, 50 мл, \n100 мл \nПрименяется у детей с "
-    - drug_name: Флаконы
+        quote: Для детей старше 6 лет. ... Медленно рассасывать до полного растворения
+          по 1 таблетке каждые 4 часа (максимальная суточная доза – 4 таблетки) 5
+          дней
+    - drug_name: Метронидазол/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 55 мл
+      dose_text: 'Для детей старше 6 лет: гель наносится тонким слоем 1–2 раза в сутки
+        на 30 мин. Курс 7–10 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -309,17 +705,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "Флаконы \n55 мл) \nДетям старше 12 лет"
-    - drug_name: спиртовой
+        quote: Для детей старше 6 лет. Гель наносится на пораженные участки слизистой
+          оболочки полости рта или десны тонким слоем 1–2 раза в сутки длительностью
+          до 30 мин.
+    - drug_name: Лидокаина гидрохлорид моногидрат / Ромашки аптечной цветков экстракт
       active_substance: null
       drug_group: null
-      dose_text: 10 мг
+      dose_text: Для детей старше 12 лет.
       frequency_text: null
       duration_text: null
       route: null
@@ -331,17 +729,18 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "спиртовой \n10 мг/мл во флаконах \nДля детей старше 12 лет"
-    - drug_name: применения
+        quote: Для детей старше 12 лет.
+    - drug_name: Холина салицилат/Цеталкония хлорид
       active_substance: null
       drug_group: null
-      dose_text: 100 мг
+      dose_text: 'Для детей старше 3 лет: наносится тонким слоем 2–3 раза в сутки,
+        аппликация до 2 мин. Количество процедур индивидуально.'
       frequency_text: null
       duration_text: null
       route: null
@@ -353,17 +752,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: применения 100 мг/мл во флаконах 50 мл | Одну порцию (1–3
-    - drug_name: ноября
+        quote: Назначается детям старше 3 лет. Наносится на слизистую оболочку полости
+          рта или десну тонким слоем 2–3 раза в сутки, длительность аппликации до
+          2 мин.
+    - drug_name: Депротеинизированный гемодериват крови телят
       active_substance: null
       drug_group: null
-      dose_text: 2022 г
+      dose_text: 'Для детей с 2 лет: наносится тонким слоем 1 раз в сутки на 20 мин.
+        Количество процедур индивидуально.'
       frequency_text: null
       duration_text: null
       route: null
@@ -375,17 +777,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: ноября 2022 г
-    - drug_name: июня
+        quote: Применяется у детей с 2 лет. Наносится на пораженные участки слизистой
+          оболочки полости рта или десны тонким слоем 1 раз в сутки длительностью
+          до 20 мин.
+    - drug_name: Облепихи масло
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: 'Для детей с 12 лет: наносится тампоном тонким слоем 1 раз в сутки
+        на 20 мин. Количество процедур индивидуально.'
       frequency_text: null
       duration_text: null
       route: null
@@ -397,17 +802,20 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
+        quote: Применяется у детей с 12 лет... масло наносится тампоном на пораженные
+          участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки
+    - drug_name: Спиртовое извлечение из цветков ноготков (цветков календулы)
       active_substance: null
       drug_group: null
-      dose_text: 2011 г
+      dose_text: 'Для детей старше 12 лет: полоскание (1 ч.л. на стакан воды) 1–2
+        мин, 2–3 раза в сутки, 2–5 дней. Турунды в карманы (1 ч.л. на стакан воды)
+        на 1 мин через 2 суток, курс индивидуально.'
       frequency_text: null
       duration_text: null
       route: null
@@ -419,18 +827,73 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: октября 2011 г
+        quote: Лекарственное средство не рекомендовано для детей до 12 лет... Полоскание
+          полости рта (1 чайную ложку настойки разводят в стакане теплой кипяченой
+          воды) в течение 1–2 мин 2–3 раза в сутки.
+    - drug_name: Комбинированное средство (ромашки цветков, календулы цветков, тысячелистника
+        травы)
+      active_substance: null
+      drug_group: null
+      dose_text: 'Для детей старше 12 лет: полоскание (1 ч.л. на стакан воды) 1–2
+        мин, 2–3 раза в сутки, 2–5 дней. Турунды в карманы (1 ч.л. на стакан воды)
+        на 1 мин, 1 раз в сутки ежедневно/через день, 4–6 процедур.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Детям старше 12 лет. Местно. Полоскание полости рта (1 чайную ложку
+          настойки разводят в стакане теплой кипяченой воды) в течение 1–2 мин 2–3
+          раза в сутки.
+    - drug_name: Хлорофиллипта экстракт сухой
+      active_substance: null
+      drug_group: null
+      dose_text: 'Для детей старше 12 лет: полоскание (1 ч.л. на стакан воды) 1–2
+        мин, 2–3 раза в сутки, 2–5 дней. Турунды в карманы (1 ч.л. на стакан воды)
+        на 1 мин через 2 суток, курс индивидуально.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для детей старше 12 лет. Полоскание полости рта (орошение) (1 чайную
+          ложку спиртового раствора разводят в стакане теплой кипяченой воды), экспозиция
+          1–2 мин 2–3 раза в сутки
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: контроль
+  - text: Медицинское наблюдение – 1 раз в 3 месяца.
     timing: null
     required_if: []
     expected_actions: []
@@ -444,36 +907,44 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: контроль
+      quote: Медицинское наблюдение – 1 раз в 3 месяца.
+  - text: 'Поддерживающая терапия: регулярное механическое и профессиональное удаление
+      зубного налета.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Поддерживающая терапия: регулярное механическое и профессиональное удаление
+        зубного налета.'
   hospitalization: []
   routing: []
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювен
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_юношеским_ювенильным_периодонтитом_пост_МЗ_30.11.2022_112.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детс население с юношеским ювенильным периодонтитом
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:52.046390+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:25:34.447974+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:52.053469+00:00'
+  validated_at: '2026-07-01T23:25:34.461921+00:00'

@@ -1,70 +1,19 @@
 # Validation: gastroenterologiya_кп_диагностика_лечение_пациентов_вз_нас_заболеваниями_пищевод
 
 - **status:** needs_human_review
-- **validated_at:** 2026-06-23T19:16:26.619343+00:00
-- **review_status:** not_reviewed
-- **extraction_status:** auto_extracted
+- **validated_at:** 2026-07-01T23:10:47.031115+00:00
+- **review_status:** needs_review
+- **extraction_status:** llm_extracted
 
 ## Warnings
-- `required_exam_level` conditions[k29_5_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[k29_5_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[k29_5_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[k29_5_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `required_exam_level` conditions[y40_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y40_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y40_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y40_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y40_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y40_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y40_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y40_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `required_exam_level` conditions[y41_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y41_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y41_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y41_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y41_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y41_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y41_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y41_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `duplicate_drug` conditions[y41_клинический_протокол].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[y41_клинический_протокол].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[y42_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y42_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y42_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y42_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y42_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y42_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y42_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y42_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `duplicate_drug` conditions[y42_клинический_протокол].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[y42_клинический_протокол].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[y43_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y43_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y43_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y43_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y43_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y43_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y43_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y43_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `duplicate_drug` conditions[y43_клинический_протокол].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[y43_клинический_протокол].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[y44_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y44_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y44_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y44_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y44_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y44_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y44_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y44_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `duplicate_drug` conditions[y44_клинический_протокол].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[y44_клинический_протокол].treatment.drugs[1]: Дублирующийся препарат
-- `required_exam_level` conditions[y45_клинический_протокол].required_exams[0]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y45_клинический_протокол].required_exams[0]: Дублирующееся обследование
-- `required_exam_level` conditions[y45_клинический_протокол].required_exams[1]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y45_клинический_протокол].required_exams[1]: Дублирующееся обследование
-- `required_exam_level` conditions[y45_клинический_протокол].required_exams[2]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y45_клинический_протокол].required_exams[2]: Дублирующееся обследование
-- `required_exam_level` conditions[y45_клинический_протокол].required_exams[3]: required_exams содержит элемент не с level=required
-- `duplicate_exam` conditions[y45_клинический_протокол].required_exams[3]: Дублирующееся обследование
-- `duplicate_drug` conditions[y45_клинический_протокол].treatment.drugs[0]: Дублирующийся препарат
-- `duplicate_drug` conditions[y45_клинический_протокол].treatment.drugs[1]: Дублирующийся препарат
+- `duplicate_exam` conditions[peptic_ulcer_unspecified].required_exams[0]: Дублирующееся обследование
+- `duplicate_exam` conditions[gastrojejunal_ulcer].required_exams[0]: Дублирующееся обследование
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[4]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[5]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[6]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[7]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[8]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[10]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[11]: Дублирующийся препарат
+- `duplicate_drug` conditions[gastrojejunal_ulcer].treatment.drugs[12]: Дублирующийся препарат
+- `duplicate_exam` conditions[gastritis_duodenitis].required_exams[0]: Дублирующееся обследование

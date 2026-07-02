@@ -1,10 +1,9 @@
 protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население со стоматитом и родственными
-    поражениями
+  title: Диагностика и лечение пациентов со стоматитом и родственными поражениями
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -27,20 +26,30 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_взрослое_населен
-  name: Диагностика и лечение пациентов взрослое население со стоматитом и родственными
-    поражениями
+- condition_id: stomatiti_rodstvennye_porazheniya
+  name: Стоматит и родственные поражения
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - B24
-  - L03
+  - K12
+  - K12.00
+  - K12.01
+  - K12.02
+  - K12.03
+  - K12.04
+  - K12.08
+  - K12.09
+  - K12.1
+  - K12.10
+  - K12.11
+  - K12.12
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ СТОМАТИТА
+    - text: Выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+        более 103 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов
       logic_group: null
       operator: unknown
       values: []
@@ -57,9 +66,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: КЛАССИФИКАЦИЯ, ПРИЗНАКИ И КРИТЕРИИ СТОМАТИТА
-    - text: '[diagnostics] 6. Микробиологические критерии стоматита и родственных
-        поражений: (стр. 5)'
+        quote: Выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+          более 103 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов
+    - text: Определение чувствительности к противомикробным лекарственным средствам
+        (по медицинским показаниям)
       logic_group: null
       operator: unknown
       values: []
@@ -76,9 +86,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[diagnostics] 6. Микробиологические критерии стоматита и родственных
-          поражений: (стр. 5)'
-    - text: определение чувствительности к противомикробным лекарственным средствам
+        quote: Определение чувствительности к противомикробным лекарственным средствам
+          (по медицинским показаниям)
+    - text: Выявление дисбиоза полости рта
       logic_group: null
       operator: unknown
       values: []
@@ -95,8 +105,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение чувствительности к противомикробным лекарственным средствам
-    - text: определение уровня стоматологического здоровья пациента с использованием
+        quote: Выявление дисбиоза полости рта
+    - text: Выявление местных и общих факторов риска развития стоматита и родственных
+        поражений
       logic_group: null
       operator: unknown
       values: []
@@ -113,92 +124,172 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: определение уровня стоматологического здоровья пациента с использованием
+        quote: Выявление местных и общих факторов риска развития стоматита и родственных
+          поражений
+    - text: Определение взаимосвязи стоматологического и общего здоровья пациента
+        с состоянием слизистой оболочки полости рта
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение взаимосвязи стоматологического и общего здоровья пациента
+          с состоянием слизистой оболочки полости рта
+    - text: Проведение клинической дифференциальной диагностики стоматита и родственных
+        поражений
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение клинической дифференциальной диагностики стоматита и родственных
+          поражений
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
+  required_exams:
+  - name: Клинические и лабораторные методы исследования стоматологического здоровья
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня стоматологического здоровья пациента с использованием
+        клинических и лабораторных методов исследования
+  - name: Микробиологическое исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление грибов рода Candida и других дрожжеподобных грибов в титрах
+        более 103 КОЕ/мл, стрептококков, стафилококков и иных микроорганизмов
+  - name: Выявление дисбиоза полости рта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление дисбиоза полости рта
+  conditional_exams:
+  - name: Определение чувствительности к противомикробным лекарственным средствам
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение чувствительности к противомикробным лекарственным средствам
+        (по медицинским показаниям)
+  - name: Консультации врачей-специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: направление на консультацию и обследование к врачам-специалистам (врачу-инфекционисту,
+        врачу общей практики, врачу-аллергологу-иммунологу и другим) по медицинским
+        показаниям
   treatment:
-    non_drug:
-    - text: ЛЕЧЕНИЕ СТОМАТИТА И РОДСТВЕННЫХ ПОРАЖЕНИЙ
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛЕЧЕНИЕ СТОМАТИТА И РОДСТВЕННЫХ ПОРАЖЕНИЙ
-    - text: '[treatment] 10. Общими (стр. 6)'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 10. Общими (стр. 6)'
-    - text: 'стоматита и родственных поражений являются:'
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'стоматита и родственных поражений являются:'
-    - text: составление персонализированного плана лечения врачом-стоматологом-терапевтом
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: составление персонализированного плана лечения врачом-стоматологом-терапевтом
-    - text: совместно с другими врачами-специалистами
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: совместно с другими врачами-специалистами
-    - text: при составлении плана лечения учитывается стоматологический статус (наличие
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: при составлении плана лечения учитывается стоматологический статус
-          (наличие
+    non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: применения
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 2 мг
+      dose_text: Раствор для местного и наружного применения 0,5 мг/мл. Орошения,
+        полоскания, аппликации – 5–10 мл раствора наносят на пораженную поверхность
+        слизистой оболочки полости рта или на десну с экспозицией 1
       frequency_text: null
       duration_text: null
       route: null
@@ -210,17 +301,22 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "применения  \n2 мг/0,5 мг – 30 мл \n3–5 распылений в полост"
-    - drug_name: рассасывания
+        quote: Хлоргексидин Раствор для местного и наружного применения 0,5 мг/мл...
+          в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную
+          поверхность... 2–3 раза в сутки
+    - drug_name: Календулы цветков экстракт + Ромашки цветков экстракт + Тысячелистника
+        травы экстракт
       active_substance: null
       drug_group: null
-      dose_text: 5,0 мг
+      dose_text: 'Экстракт жидкий (1:1) из лекарственного растительного сырья: ромашки
+        цветков, календулы цветков, тысячелистника травы (2:1:1). Местно. Полоскание
+        полости рта (1 чайную ложку настойки разводят в стакан'
       frequency_text: null
       duration_text: null
       route: null
@@ -232,17 +328,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "рассасывания \n5,0 мг/1,0 мг \nРассасывать по 1 пастилке за пр"
-    - drug_name: тубах
+        quote: Календулы цветков экстракт + Ромашки цветков экстракт + Тысячелистника
+          травы экстракт... Полоскание полости рта (1 чайную ложку настойки разводят
+          в стакане теплой кипяченой воды).
+    - drug_name: Метилурацил
       active_substance: null
       drug_group: null
-      dose_text: 10 г
+      dose_text: Мазь для местного и наружного применения 10 %. Местно. Мазь наносится
+        на пораженные участки слизистой оболочки полости рта или десны тонким слоем
+        1 раз в сутки длительностью до 20 мин. Количество проц
       frequency_text: null
       duration_text: null
       route: null
@@ -254,17 +354,21 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: тубах 10 г | Наносится на слизистую оболочку полост
-    - drug_name: глазная
+        quote: Метилурацил Мазь для местного и наружного применения 10 %... наносится
+          на пораженные участки слизистой оболочки полости рта или десны тонким слоем
+          1 раз в сутки длительностью до 20 мин.
+    - drug_name: Декспантенол/Мирамистин
       active_substance: null
       drug_group: null
-      dose_text: 5 мг
+      dose_text: Гель для местного применения (50 мг + 5 мг)/1 г. Аппликации геля
+        тонким слоем на поверхность десен и пораженные участки слизистой 2–3 раза
+        в сутки в течение 7–10 дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -276,17 +380,19 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: глазная 5 мг/г | Аппликация мази на очаг поражения н
-    - drug_name: Флаконы
+        quote: Декспантенол/Мирамистин Гель для местного применения (50 мг + 5 мг)/1
+          г... Аппликации геля тонким слоем на поверхность десен и пораженные участки
+          слизистой 2–3 раза в сутки в течение 7–10 дней
+    - drug_name: Биен/Диоксидин
       active_substance: null
       drug_group: null
-      dose_text: 55 мл
+      dose_text: Мазь для наружного и местного применения. Местно.
       frequency_text: null
       duration_text: null
       route: null
@@ -298,69 +404,51 @@ conditions:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Флаконы 55 мл | Местно
-    - drug_name: января
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: января 2023 г
+        quote: Биен/Диоксидин Мазь для наружного и местного применения в тубах. Местно.
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родстве
-    document_url: null
-    local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_со_стоматитом_и_родственными_поражениями_пост_МЗ_11.01.2023_4.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов взрослое население со стоматитом и родственными
-      поражениями
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:50.991183+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:23:44.788827+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:50.995541+00:00'
+  validated_at: '2026-07-01T23:23:44.795154+00:00'

@@ -1,9 +1,9 @@
 protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детское население с крапивницей и ангионевротическим
+  title: Диагностика и лечение пациентов (детское население) с крапивницей и ангионевротическим
     отеком
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
@@ -20,16 +20,15 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: диагностика_и_лечение_пациентов_детское_населени
-  name: Диагностика и лечение пациентов детское население с крапивницей и ангионевротическим
-    отеком
+- condition_id: urticaria_angioedema
+  name: Крапивница и ангионевротический отек
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -43,12 +42,14 @@ conditions:
   - L50.6
   - L50.8
   - L50.9
+  - T78.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'Примеры формулировок диагноза:'
+    - text: Диагноз крапивницы и АО устанавливается на основании характера клинических
+        симптомов.
       logic_group: null
       operator: unknown
       values: []
@@ -65,8 +66,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировок диагноза:'
-    - text: 'Примеры формулировок диагноза:'
+        quote: Диагноз крапивницы и АО устанавливается на основании характера клинических
+          симптомов.
+    - text: 'Волдыри при крапивнице: центральная выпуклая часть, зона эритемы, зуд/жжение,
+        обратимость (1-24 часа).'
       logic_group: null
       operator: unknown
       values: []
@@ -83,8 +86,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировок диагноза:'
-    - text: 'Примеры формулировок диагноза:'
+        quote: 'Волдыри при крапивнице: центральная выпуклая часть, зона эритемы,
+          зуд/жжение, обратимость (1-24 часа).'
+    - text: 'Ангионевротический отек (АО): внезапное появление отека нижних слоев
+        дермы/клетчатки/слизистых, болезненность/покалывание, разрешается медленнее
+        волдырей (до 72 часов).'
       logic_group: null
       operator: unknown
       values: []
@@ -101,399 +107,328 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Примеры формулировок диагноза:'
-    - text: '[diagnostics] 9. Диагноз крапивницы и АО устанавливается на основании
-        характера клинических (стр. 3)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[diagnostics] 9. Диагноз крапивницы и АО устанавливается на основании
-          характера клинических (стр. 3)'
-    - text: определение аллергенспецифических IgE-антител при клинических данных в
-        пользу
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: определение аллергенспецифических IgE-антител при клинических данных
-          в пользу
+        quote: 'Ангионевротический отек (АО): внезапное появление отека нижних слоев
+          дермы/клетчатки/слизистых, болезненность/покалывание, разрешается медленнее
+          волдырей (до 72 часов).'
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        термины и их (стр. 2)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          термины и их (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: 1993 г. № 2570-XII «О правах ребенка», клиническим протоколом «Оказание
-        экстренной
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 1993 г. № 2570-XII «О правах ребенка», клиническим протоколом «Оказание
-          экстренной
-    - text: и неотложной медицинской помощи пациентам детского возраста», утвержденным
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: и неотложной медицинской помощи пациентам детского возраста», утвержденным
-    - text: постановлением Министерства здравоохранения Республики Беларусь от 17
-        августа
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: постановлением Министерства здравоохранения Республики Беларусь от
-          17 августа
-    - text: '[treatment] 5. Фармакотерапия (стр. 2)'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: '[treatment] 5. Фармакотерапия (стр. 2)'
-    drug_groups: []
-    drugs:
-    - drug_name: июля
-      active_substance: null
-      drug_group: null
-      dose_text: 2006 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: августа
-      active_substance: null
-      drug_group: null
-      dose_text: 2023 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "августа \n2023 г"
-    - drug_name: внутрь
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "внутрь 10 мг/мл, таблетки 10 мг, \nкапсулы 5 мг, 10 м"
-    - drug_name: сироп
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: сироп 5 мг/5 мл, таблетки 10 мг) – внутрь у пациен
-    - drug_name: таблетки
-      active_substance: null
-      drug_group: null
-      dose_text: 20 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: таблетки 20 мг – внутрь у пациентов в возрасте 12 лет и
-    - drug_name: капсулы
-      active_substance: null
-      drug_group: null
-      dose_text: 25 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "капсулы 25 мг, 50 мг, \n100 мг) – внутрь в начальной д"
-    - drug_name: апреля
-      active_substance: null
-      drug_group: null
-      dose_text: 2025 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: апреля 2025 г
-    - drug_name: июня
-      active_substance: null
-      drug_group: null
-      dose_text: 1993 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "июня \n1993 г"
-    - drug_name: октября
-      active_substance: null
-      drug_group: null
-      dose_text: 2011 г
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: октября 2011 г
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: через 4 нед
-    timing: null
+  required_exams:
+  - name: Сбор жалоб и анамнеза жизни и заболевания
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
     required_if: []
-    expected_actions: []
+    timing: null
+    comment: null
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: через 4 нед
-  - text: через 4 нед
-    timing: null
+      quote: сбор жалоб и анамнеза жизни и заболевания;
+  - name: Медицинский осмотр с оценкой кожных проявлений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
     required_if: []
-    expected_actions: []
+    timing: null
+    comment: null
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: через 4 нед
+      quote: 'медицинский осмотр с оценкой кожных проявлений:'
+  - name: Общий анализ крови (эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула,
+      тромбоциты, СОЭ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная
+        формула, тромбоциты, скорость оседания эритроцитов;'
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи;
+  - name: Биохимический анализ крови (креатинин, мочевина, глюкоза, общий белок, АЛТ,
+      АСТ, общий билирубин, холестерин, С-реактивный белок)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок,
+        аланинаминотрансфераза, аспартатаминотрансфераза, общий билибирин, холестерин,
+        С-реактивный белок;'
+  - name: Обследование на сифилитическую инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обследование на сифилитическую инфекцию при установлении диагноза, однократно
+        у пациентов с 14 лет.
+  conditional_exams:
+  - name: Исследование уровня общего иммуноглобулина E (IgE) в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня общего иммуноглобулина E (IgE) в крови;
+  - name: Исследование уровня антител к тиреоидной пероксидазе
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня антител к тиреоидной пероксидазе;
+  - name: Анализ кала на яйца гельминтов, цисты простейших
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ кала на яйца гельминтов, цисты простейших;
+  - name: Исследование на энтеробиоз
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование на энтеробиоз;
+  - name: Аллергологическое обследование методом кожных проб
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: аллергологическое обследование методом кожных проб в период ремиссии
+        при клинических данных в пользу аллергической крапивницы;
+  - name: Проведение специальных провокационных проб
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проведение специальных провокационных проб (тепловая, холодовая, вибрационная,
+        штриховая, проба с физической нагрузкой и другие);
+  - name: Определение аллергенспецифических IgE-антител
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение аллергенспецифических IgE-антител при клинических данных
+        в пользу аллергической крапивницы;
+  - name: Биопсия кожи и морфологическое (гистологическое) / иммуногистохимическое
+      исследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата,
+        иммуногистохимическое исследование материала.
+  treatment: null
+  follow_up: []
   hospitalization: []
-  routing: []
-  red_flags:
-  - text: "азание экстренной и неотложной медицинской помощи пациентам детского возраста».\
-      \ \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+  routing:
+  - text: Показана элиминация возможного этиологического фактора (индивидуальная элиминационная
+      диета при наличии пищевой аллергии, уменьшение воздействия физических провоцирующих
+      факторов – температура окружающей среды, инсоляция, давление, физическая нагрузка
+      и другие, прекращение приема ЛП, провоцирующих крапивницу, лечение инфекций).
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
       document_url: null
@@ -504,130 +439,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: "азание экстренной и неотложной медицинской помощи пациентам детского\
-        \ возраста». \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-  - text: "азание экстренной и неотложной медицинской помощи пациентам детского возраста».\
-      \ \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "азание экстренной и неотложной медицинской помощи пациентам детского\
-        \ возраста». \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-  - text: "азание экстренной и неотложной медицинской помощи пациентам детского возраста».\
-      \ \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "азание экстренной и неотложной медицинской помощи пациентам детского\
-        \ возраста». \nПримеры формулировок диагноза: \n«Хроническая спонтанная крапивница,"
-  - text: "зание экстренной \nи неотложной медицинской помощи пациентам детского возраста»,\
-      \ утвержденным \nпостановлением Министерства здравоохранения Республики"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "зание экстренной \nи неотложной медицинской помощи пациентам детского\
-        \ возраста», утвержденным \nпостановлением Министерства здравоохранения Республики"
-  - text: "зание экстренной \nи неотложной медицинской помощи пациентам детского возраста»,\
-      \ утвержденным \nпостановлением Министерства здравоохранения Республики"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "зание экстренной \nи неотложной медицинской помощи пациентам детского\
-        \ возраста», утвержденным \nпостановлением Министерства здравоохранения Республики"
-  - text: "ание \nэкстренной \nи неотложной \nмедицинской помощи пациентам детского\
-      \ возраста», утвержденный постановлением \nМинистерства здравоохранения Республик"
-    aliases: []
-    red_flag_type: urgent_referral
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ание \nэкстренной \nи неотложной \nмедицинской помощи пациентам детского\
-        \ возраста», утвержденный постановлением \nМинистерства здравоохранения Республик"
+      quote: Показана элиминация возможного этиологического фактора (индивидуальная
+        элиминационная диета при наличии пищевой аллергии, уменьшение воздействия
+        физических провоцирующих факторов – температура окружаю
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивницей_и_анг
-    document_url: null
-    local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Диагностика и лечение пациентов детское население с крапивницей и ангионевротическим
-      отеком
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:19.251449+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-02T00:25:59.129861+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-06-23T19:15:19.257269+00:00'
+  validated_at: '2026-07-02T00:25:59.142003+00:00'

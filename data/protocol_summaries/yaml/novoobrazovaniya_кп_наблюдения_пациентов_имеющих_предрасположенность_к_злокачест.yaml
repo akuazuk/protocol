@@ -1,223 +1,152 @@
 protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП наблюдения пациентов
-    имеющих предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+  title: наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
+  url: null
   local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
     предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-  document_sha256: 097e7bff79823e260f41a813f4a444747fb4d207f482989a4a18bcca33a232e5
-  approval_date: '2007-12-27'
-  approval_number: '1018'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2007
+  document_year: null
   pages_total: null
 rubric:
-  name: Онкология
+  name: Novoobrazovaniya
   slug: novoobrazovaniya
-  specialty_slugs:
-  - novoobrazovaniya
+  specialty_slugs: []
 applicability:
   population:
-  - adult
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: d30_3_кп_наблюдения_пациентов_имеющих_предрасположенност
-  name: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
+- condition_id: hereditary_breast_ovarian_cancer
+  name: Наследственный рак молочной железы и яичников
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - D30.3
+  - C18
+  - C25
+  - C35
+  - C40
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
+  clinical_criteria: null
+  diagnostic_criteria:
     required:
-    - text: отражение нозологии КП наблюдения пациентов имеющих предрасположенность
-        к злокачественным новообразованиям 27.12.2007 1018 (МКБ D30.3)
+    - text: Повышенный наследственно детерминированный риск онкологических заболеваний
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
           предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 43
-        page_end: 46
-        section_title: лечение в усло-
-        section_type: treatment
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: КП наблюдения пациентов имеющих предрасположенность к злокачественным
-          новообразованиям 27.12.2007 1018
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams:
-  - name: УЗИ
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 43
-      page_end: 46
-      section_title: лечение в усло-
-      section_type: treatment
-      table_index: null
-      row_index: null
-      quote: УЗИ
-  - name: ЭГДС
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 43
-      page_end: 46
-      section_title: лечение в усло-
-      section_type: treatment
-      table_index: null
-      row_index: null
-      quote: ФГДС
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 43
-        page_end: 46
-        section_title: лечение в усло-
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs:
-    - drug_name: 'усло-
-
-        виях
-
-        хирургического
-
-        стационара с'
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 43
-        page_end: 46
-        section_title: лечение в усло-
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: 'усло-
-
-          виях
-
-          хирургического
-
-          стационара с'
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: p25_кп_наблюдения_пациентов_имеющих_предрасположенность_
-  name: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - P25
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП наблюдения пациентов имеющих предрасположенность
-        к злокачественным новообразованиям 27.12.2007 1018 (МКБ P25)
+        quote: Повышенный наследственно детерминированный риск онкологических заболеваний
+    - text: Результаты клинико-генеалогического и молекулярно-генетического анализов
       logic_group: null
-      operator: present
+      operator: unknown
       values: []
       numeric_value: null
       unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
+      evidence_targets: []
       source_ref:
         protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
           предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 65
-        page_end: 65
-        section_title: ского лечения в
-        section_type: treatment
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: КП наблюдения пациентов имеющих предрасположенность к злокачественным
-          новообразованиям 27.12.2007 1018
+        quote: Результаты клинико-генеалогического и молекулярно-генетического анализов
+    - text: Выявление мутаций BRCA1/2
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление мутаций BRCA1/2
+    - text: В ткани молочных желез определяются постоянные, четко отграниченные очаги,
+        уплотнения.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В ткани молочных желез определяются постоянные, четко отграниченные
+          очаги, уплотнения.
+    - text: Боли в области промежности, затрудненное мочеиспускание, вялая струя мочи,
+        ранняя импотенция.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Боли в области промежности, затрудненное мочеиспускание, вялая струя
+          мочи, ранняя импотенция.
     optional: []
     exclusion: []
-  diagnostic_criteria: null
   required_exams:
-  - name: ЭГДС
+  - name: Молекулярно-генетическое исследование на мутации BRCA1/2
     aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -229,17 +158,18 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: ФГДС
-  - name: УЗИ
+      quote: BRCA1/2 (стр. 6) ... с использованием молекулярно-генетических методов
+        исследования, направленных на выявление рака на самых ранних стадиях заболевания
+  - name: Генетическое консультирование в онкологии
     aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
+    exam_type: unknown
+    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -251,36 +181,496 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: УЗИ
-  conditional_exams: []
+      quote: Генетическое консультирование в онкологии – новый вид медицинской помощи
+        населению, который дает возможность для доклинического диагностирования семей
+        и лиц с повышенным наследственно детерминированным риском возникновения онкологических
+        заболеваний
+  - name: Обучение самообследованию молочных желез
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обучение самообследованию молочных желез.
+  - name: Регулярное самообследование молочных желез
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Регулярное самообследование молочных желез. ежемесячно
+  - name: Клиническое обследование молочных желез и периферических лимфоузлов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Клиническое обследование молочных желез и периферических лимфоузлов.
+        с 25 лет 1 раз в год
+  - name: Ультразвуковое исследование молочных желез
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее – УЗИ) молочных желез. с 25 лет 1
+        раз в год
+  - name: Маммография
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Маммография. с 25 лет 1 раз в год
+  - name: Клиническое обследование органов малого таза и наружных половых органов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Клиническое обследование органов малого таза и наружных половых органов.
+        с 25 лет 1 раз в год
+  - name: Трансвагинальное и трансабдоминальное УЗИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Трансвагинальное и трансабдоминальное УЗИ. с 25 лет 1 раз в год
+  - name: Цитологическое исследование мазка из шейки матки на атипичные клетки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Цитологическое исследование мазка из шейки матки на атипичные клетки.
+        1 раз в год с момента начала половой жизни
+  - name: Обследование методом ПЦР на генитальную папилломавирусную инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обследование методом ПЦР на генитальную папилломавирусную инфекцию. любой,
+        в котором пациент впервые обратился к врачу
+  conditional_exams:
+  - name: Кольпоскопия с прицельной биопсией и выскабливанием цервикального канала
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Кольпоскопия с прицельной биопсией и выскабливанием цервикального канала
+        при наличии дисплазии шейки матки в цитологическом заключении.
+  - name: Аспирационная биопсия эндометрия и выскабливание цервикального канала
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Аспирационная биопсия эндометрия с учетом данных УЗИ (толщина М-ЭХО)
+        и выскабливание цервикального канала.
+  - name: Пункционная биопсия узловых образований молочной железы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пункционная биопсия узловых образований молочной железы. по назначению
+        врача-онколога
+  - name: Маммография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Маммография. по назначению врача-онколога
+  - name: УЗИ молочных желез
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ молочных желез. по назначению врача-онколога
+  - name: Трансректальное УЗИ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 44
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Трансректальное УЗИ. врач-уролог
+  - name: Анализ крови на ПСА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 44
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Анализ крови на ПСА. врач-уролог
+  - name: Пальцевое исследование прямой кишки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 44
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пальцевое исследование прямой кишки. врач-уролог
+  - name: Клиническое обследование грудных желез и периферических лимфоузлов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 44
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Клиническое обследование грудных желез и периферических лимфоузлов. врач-уролог,
+        при необходимости консультация врача-онколога
+  - name: Физикальное исследование органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: 48
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Физикальное исследование органов брюшной полости. по назначению врача-хирурга
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: Секторальная резекция молочной железы со срочным гистологическим исследованием.
       source_ref:
         protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
         document_url: null
         local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
           предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 65
-        page_end: 65
-        section_title: ского лечения в
-        section_type: treatment
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: Секторальная резекция молочной железы со срочным гистологическим исследованием.
+    - text: Своевременное лечение диффузных мастопатий и других заболеваний, играющих
+        роль в возникновении дисгормональных процессов в молочных железах.
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Своевременное лечение диффузных мастопатий и других заболеваний, играющих
+          роль в возникновении дисгормональных процессов в молочных железах.
+    - text: Удаление доброкачественного новообразования в условиях хирургического
+        стационара с гистологическим исследованием удаленного препарата.
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление доброкачественного новообразования в условиях хирургического
+          стационара с гистологическим исследованием удаленного препарата.
     drug_groups: []
     drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль
+  - text: Регулярное самообследование молочных желез ежемесячно.
     timing: null
     required_if: []
     expected_actions: []
@@ -289,145 +679,15 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: злокачествен
-    aliases: []
-    red_flag_type: possible_malignancy
-    severity: critical
-    expected_actions:
-    - дообследование
-    - маршрутизация
-    cap_if_unhandled: 45
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: злокачествен
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q13_3_кп_наблюдения_пациентов_имеющих_предрасположенност
-  name: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q13.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП наблюдения пациентов имеющих предрасположенность
-        к злокачественным новообразованиям 27.12.2007 1018 (МКБ Q13.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 65
-        page_end: 65
-        section_title: ского лечения в
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: КП наблюдения пациентов имеющих предрасположенность к злокачественным
-          новообразованиям 27.12.2007 1018
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams:
-  - name: УЗИ
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: УЗИ
-  - name: ЭГДС
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: ФГДС
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 65
-        page_end: 65
-        section_title: ского лечения в
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: Контроль
+      quote: Регулярное самообследование молочных желез ежемесячно.
+  - text: Клиническое обследование молочных желез и периферических лимфоузлов 1 раз
+      в год (с 25 лет).
     timing: null
     required_if: []
     expected_actions: []
@@ -436,145 +696,15 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: злокачествен
-    aliases: []
-    red_flag_type: possible_malignancy
-    severity: critical
-    expected_actions:
-    - дообследование
-    - маршрутизация
-    cap_if_unhandled: 45
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: злокачествен
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q22_3_кп_наблюдения_пациентов_имеющих_предрасположенност
-  name: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q22.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП наблюдения пациентов имеющих предрасположенность
-        к злокачественным новообразованиям 27.12.2007 1018 (МКБ Q22.3)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 63
-        page_end: 63
-        section_title: ского лечения в
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: КП наблюдения пациентов имеющих предрасположенность к злокачественным
-          новообразованиям 27.12.2007 1018
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams:
-  - name: УЗИ
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: УЗИ
-  - name: ЭГДС
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: ФГДС
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 63
-        page_end: 63
-        section_title: ского лечения в
-        section_type: treatment
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: Контроль
+      quote: Клиническое обследование молочных желез и периферических лимфоузлов 1
+        раз в год (с 25 лет).
+  - text: УЗИ молочных желез 1 раз в год (с 25 лет).
     timing: null
     required_if: []
     expected_actions: []
@@ -583,124 +713,161 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: Контроль
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: злокачествен
-    aliases: []
-    red_flag_type: possible_malignancy
-    severity: critical
-    expected_actions:
-    - дообследование
-    - маршрутизация
-    cap_if_unhandled: 45
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
-      table_index: null
-      row_index: null
-      quote: злокачествен
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: q24_13_кп_наблюдения_пациентов_имеющих_предрасположеннос
-  name: КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям
-    27.12.2007 1018
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - Q24.13
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии КП наблюдения пациентов имеющих предрасположенность
-        к злокачественным новообразованиям 27.12.2007 1018 (МКБ Q24.13)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 45
-        page_end: 69
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: КП наблюдения пациентов имеющих предрасположенность к злокачественным
-          новообразованиям 27.12.2007 1018
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams:
-  - name: УЗИ
-    aliases: []
-    exam_type: instrumental
-    requirement_level: recommended
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
+      quote: УЗИ молочных желез 1 раз в год (с 25 лет).
+  - text: Маммография 1 раз в год (с 25 лет).
     timing: null
-    comment: null
+    required_if: []
+    expected_actions: []
     source_ref:
       protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
       document_url: null
       local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
         предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-      page_start: 45
-      page_end: 69
-      section_title: Таблицы
-      section_type: table_block
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: УЗИ
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
-          предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
-        page_start: 45
-        page_end: 69
-        section_title: Таблицы
-        section_type: table_block
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
+      quote: Маммография 1 раз в год (с 25 лет).
+  - text: Клиническое обследование органов малого таза и наружных половых органов
+      1 раз в год (с 25 лет).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Клиническое обследование органов малого таза и наружных половых органов
+        1 раз в год (с 25 лет).
+  - text: Трансвагинальное и трансабдоминальное УЗИ 1 раз в год (с 25 лет).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Трансвагинальное и трансабдоминальное УЗИ 1 раз в год (с 25 лет).
+  - text: Цитологическое исследование мазка из шейки матки на атипичные клетки 1 раз
+      в год (с момента начала половой жизни).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Цитологическое исследование мазка из шейки матки на атипичные клетки
+        1 раз в год (с момента начала половой жизни).
+  - text: 'Маммография: 1 раз в 6 мес.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Маммография: 1 раз в 6 мес.'
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: Госпитализация (для секторальной резекции молочной железы)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (для секторальной резекции молочной железы)
+  - text: Госпитализация (для удаления доброкачественного новообразования в условиях
+      хирургического стационара)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация (для удаления доброкачественного новообразования в условиях
+        хирургического стационара)
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_наблюдения_пациентов_имеющих_предрасположенность_к_злокачест
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих
+        предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags: []
   contraindications: []
   complications: []
@@ -710,78 +877,19 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:09.087641+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: 097e7bff79823e260f41a813f4a444747fb4d207f482989a4a18bcca33a232e5
+  extracted_at: '2026-07-01T23:19:18.496530+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 1 protocol_cards, 225 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: needs_human_review
   errors: []
   warnings:
   - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[d30_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[0]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[d30_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[1]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[p25_кп_наблюдения_пациентов_имеющих_предрасположенность_].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[p25_кп_наблюдения_пациентов_имеющих_предрасположенность_].required_exams[0]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[p25_кп_наблюдения_пациентов_имеющих_предрасположенность_].required_exams[1]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[p25_кп_наблюдения_пациентов_имеющих_предрасположенность_].required_exams[1]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[q13_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[q13_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[0]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[q13_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[1]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[q13_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[1]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[q22_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[q22_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[0]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[q22_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[1]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[q22_3_кп_наблюдения_пациентов_имеющих_предрасположенност].required_exams[1]
-  - level: warning
-    code: required_exam_level
-    message: required_exams содержит элемент не с level=required
-    path: conditions[q24_13_кп_наблюдения_пациентов_имеющих_предрасположеннос].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[q24_13_кп_наблюдения_пациентов_имеющих_предрасположеннос].required_exams[0]
-  validated_at: '2026-05-31T18:30:09.087699+00:00'
+    code: quote_not_in_source
+    message: Цитата не найдена в исходном тексте
+    path: conditions[hereditary_breast_ovarian_cancer].required_exams[8]
+  validated_at: '2026-07-01T23:19:18.504612+00:00'

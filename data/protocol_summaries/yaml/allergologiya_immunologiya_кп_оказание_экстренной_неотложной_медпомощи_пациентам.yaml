@@ -1,9 +1,9 @@
 protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
 summary_version: '2.0'
-extraction_status: auto_extracted
+extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Оказание экстренной неотложной медпомощи пациентам дет возраста
+  title: Оказание экстренной неотложной медицинской помощи пациентам детского возраста
   url: null
   local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
   document_sha256: null
@@ -19,36 +19,32 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - unknown
+  - child
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: оказание_экстренной_неотложной_медпомощи_пациент
-  name: Оказание экстренной неотложной медпомощи пациентам дет возраста
+- condition_id: anaphylaxis_and_anaphylactic_shock
+  name: Анафилаксия и анафилактический шок
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L50
-  - L50.0
-  - L50.1
-  - L50.2
-  - L50.3
-  - L50.4
-  - L50.5
-  - L50.6
-  - L50.8
-  - L50.9
-  - L51.2
-  - B24
+  - T78.0
+  - T78.2
+  - T80.5
+  - T81.1
+  - T88.2
+  - T88.6
+  - T88.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: как критерии для определения приоритетных случаев больше зависимы от местной
+    - text: Острое начало заболевания с поражением кожи и (или) слизистых оболочек
+        в сочетании с дыхательными нарушениями или снижением АД.
       logic_group: null
       operator: unknown
       values: []
@@ -65,16 +61,86 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: как критерии для определения приоритетных случаев больше зависимы от
-          местной
+        quote: Острое начало заболевания с поражением кожи и (или) слизистых оболочек
+          в сочетании с дыхательными нарушениями или снижением АД.
+    - text: Анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
+        кожи, слизистых оболочек, желудочно-кишечного тракта, возникновением гемодинамических
+        и дыхательных нарушений. Возможно развитие АФ с поражением кожи, слизистых
+        оболочек или желудочно-кишечного тракта без гемодинамических и (или) дыхательных
+        нарушений.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Анафилаксия – острая тяжелая жизнеугрожающая генерализованная или
+          системная реакция гиперчувствительности, характеризующаяся быстрым началом
+          с поражением кожи, слизистых оболочек, желудочно-кишечного '
+    - text: Анафилактический шок – острая недостаточность кровообращения в результате
+        АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
+        Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Анафилактический шок – острая недостаточность кровообращения в результате
+          АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
+          Гипотензия определяется как снижение систоличес
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительные лабораторные/инструментальные исследования не рекомендованы,
+        за исключением подозрения на крапивницу вследствие пищевой аллергии или ЛП,
+        когда показано аллергологическое обследование.
   treatment:
     non_drug:
-    - text: '[treatment] 3. Для целей настоящего клинического протокола используются
-        основные термины (стр. 2)'
+    - text: ИВЛ (искусственная вентиляция легких) – необходима для эффективности лекарственной
+        терапии.
       source_ref:
         protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
         document_url: null
@@ -85,10 +151,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '[treatment] 3. Для целей настоящего клинического протокола используются
-          основные термины (стр. 2)'
-    - text: «Об обращении лекарственных средств», Законом Республики Беларусь от 19
-        ноября
+        quote: ИВЛ (искусственная вентиляция легких) – необходима для эффективности
+          лекарственной терапии.
+    - text: ЗМС (закрытый массаж сердца) – необходим для эффективности лекарственной
+        терапии.
       source_ref:
         protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
         document_url: null
@@ -99,10 +165,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: «Об обращении лекарственных средств», Законом Республики Беларусь от
-          19 ноября
-    - text: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и их
-        определения:'
+        quote: ЗМС (закрытый массаж сердца) – необходим для эффективности лекарственной
+          терапии.
+    - text: Начать проведение оксигенотерапии.
       source_ref:
         protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
         document_url: null
@@ -113,51 +178,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '1993 г. № 2570-XII «О правах ребенка», а также следующие термины и
-          их определения:'
-    - text: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-    - text: реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: реакция гиперчувствительности, характеризующаяся быстрым началом с
-          поражением
-    - text: гемодинамических и дыхательных нарушений. Возможно развитие АФ с поражением
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: гемодинамических и дыхательных нарушений. Возможно развитие АФ с поражением
+        quote: Начать проведение оксигенотерапии.
     drug_groups: []
     drugs:
-    - drug_name: июля
+    - drug_name: Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 2006 г
+      dose_text: Разовая внутривенная или внутрикостная доза 10 мкг/кг массы тела,
+        максимальная 1 мг (для пациентов >40 кг). Вводится в разведении 1:10000 (0,1
+        мл/кг). Повторять каждые 3–5 минут.
       frequency_text: null
       duration_text: null
       route: null
@@ -169,17 +198,22 @@ conditions:
         protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
         document_url: null
         local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 8
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: июля 2006 г
-    - drug_name: ноября
+        quote: Эпинефрин МНН (эпинефрина гидротартрат, раствор 1,8 мг/мл; эпинефрин
+          гидрохлорид, раствор 1 мг/мл), играет центральную роль в алгоритме терапии
+          и должен вводиться как можно быстрее. Рекомендуемая разовая внутривенная
+          или внутрикостная доза эпинефрина для первого и последующих введений – 10
+          мкг/кг массы тела, максимальная однократная доза – 1 мг (пациенты с массой
+          тела более 40 кг).
+    - drug_name: Преднизолон
       active_substance: null
       drug_group: null
-      dose_text: 1993 г
+      dose_text: При снижении АД <10% от возрастной нормы — 2 мг/кг внутривенно струйно.
       frequency_text: null
       duration_text: null
       route: null
@@ -191,241 +225,25 @@ conditions:
         protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
         document_url: null
         local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
+        page_start: 10
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: "ноября \n1993 г"
-    - drug_name: раствор
-      active_substance: null
-      drug_group: null
-      dose_text: 1,8 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: раствор 1,8 мг/мл
-    - drug_name: есть
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: есть 1 мл (раствор для инъекций 1,82 мг/мл в ампул
-    - drug_name: инъекций
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инъекций 1 мг/мл в ампулах) эпинефрина \nгидрохлорида "
-    - drug_name: инфузии
-      active_substance: null
-      drug_group: null
-      dose_text: 9 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инфузии 9 мг/мл), \nдоза 10 мкг/кг – соответствует 0,"
-    - drug_name: доза
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: доза 1 мг (разводится в 10–20 мл раствора натрия х
-    - drug_name: инфузий
-      active_substance: null
-      drug_group: null
-      dose_text: 84 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "инфузий 84 мг/мл или раствор для инфузий 40 мг/мл, \nн"
-    - drug_name: введения
-      active_substance: null
-      drug_group: null
-      dose_text: 100 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг (
-    - drug_name: внутрикостно
-      active_substance: null
-      drug_group: null
-      dose_text: 5 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: внутрикостно 5 мг/кг, повторяют до максимальной дозы 15 м
-    - drug_name: струйно
-      active_substance: null
-      drug_group: null
-      dose_text: 1 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: "струйно 1 мг/кг, далее титрование 20–50 мкг \nна кг/м"
-    - drug_name: превышать
-      active_substance: null
-      drug_group: null
-      dose_text: 20 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: превышать 20 мг)
+        quote: при снижении АД менее 10 % от нижней границы возрастной нормы (менее
+          10-го процентиля для данного пола, возраста пациента) – ввести преднизолон,
+          раствор для внутривенного и внутримышечного введения (для инъекций) 30 (25)
+          мг/мл в ампулах 1 мл из расчета 2 мг/кг внутривенно струйно с последующим
+          контролем АД;
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
+  - text: срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации
     timing: null
     required_if: []
     source_ref:
@@ -438,61 +256,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
-  - text: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-      от перегрузки (стр. 9)'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '[routing] 23. ОСН протекает по двум основным направлениям в зависимости
-        от перегрузки (стр. 9)'
+      quote: срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации
   red_flags:
-  - text: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической реакцией\
-      \ на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
+  - text: Анафилактические реакции могут быть причиной остановки кровообращения.
     aliases: []
-    red_flag_type: severe_infection
+    red_flag_type: other
     severity: high
     expected_actions: []
     cap_if_unhandled: null
@@ -500,141 +269,1004 @@ conditions:
       protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
       document_url: null
       local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической\
-        \ реакцией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
-  - text: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-      \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \nили\
-      \ \nп"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-        \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \n\
-        или \nп"
-  - text: "неуточненный; T80.5 Анафилактический шок, связанный \nс введением \nсыворотки;\
-      \ \nT81.1 \nШок \nво \nвремя \nили \nпосле \nпроцедуры, \nне классифицированный\
-      \ в"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "неуточненный; T80.5 Анафилактический шок, связанный \nс введением \n\
-        сыворотки; \nT81.1 \nШок \nво \nвремя \nили \nпосле \nпроцедуры, \nне классифицированный\
-        \ в"
-  - text: "анестезией; T88.6 \nАнафилактический \nшок, \nобусловленный \nпатологической\
-      \ \nреакцией \nна адекватно \nназначенное и правильно примененное лекарственное"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "анестезией; T88.6 \nАнафилактический \nшок, \nобусловленный \nпатологической\
-        \ \nреакцией \nна адекватно \nназначенное и правильно примененное лекарственное"
-  - text: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической реакцией\
-      \ на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: ")\nпо МКБ-10 – T78.0 Анафилактический шок, вызванный патологической\
-        \ реакцией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактически"
-  - text: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-      \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \nили\
-      \ \nп"
-    aliases: []
-    red_flag_type: severe_infection
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: "ией на пищу; \nT78.2 Анафилактический шок неуточненный; T80.5 Анафилактический\
-        \ шок, связанный \nс введением \nсыворотки; \nT81.1 \nШок \nво \nвремя \n\
-        или \nп"
+      quote: 'Основные причины остановки кровообращения: ... относительная и(или)
+        абсолютная передозировка ЛП и анафилактические реакции.'
   contraindications: []
   complications: []
   kz_checklist: null
-  source_refs:
-  - protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
-    document_url: null
-    local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-    page_start: null
-    page_end: null
-    section_title: null
-    section_type: null
-    table_index: null
-    row_index: null
-    quote: Оказание экстренной неотложной медпомощи пациентам дет возраста
+  source_refs: []
+- condition_id: urticaria_and_angioedema
+  name: Крапивница и ангионевротический отек
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - L50
+  - L50.0
+  - L50.1
+  - L50.2
+  - L50.3
+  - L50.4
+  - L50.5
+  - L50.6
+  - L50.8
+  - L50.9
+  - T78.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Диагностика остановки кровообращения проводится на основании основных
+        и дополнительных признаков: отсутствие сознания, остановка дыхания (апноэ),
+        отсутствие пульса на крупных артериях.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагностика остановки кровообращения проводится на основании основных
+          и дополнительных признаков: отсутствие сознания, остановка дыхания (апноэ),
+          отсутствие пульса на крупных артериях.'
+    - text: Сочетания отсутствия сознания и апноэ достаточно для установления диагноза
+        «клиническая смерть» и начала проведения СЛР.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сочетания отсутствия сознания и апноэ достаточно для установления диагноза
+          «клиническая смерть» и начала проведения СЛР.
+    - text: 'Дополнительные признаки остановки кровообращения: расширение зрачков,
+        судороги, характерные цианоз или бледность кожных покровов.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дополнительные признаки остановки кровообращения: расширение зрачков,
+          судороги, характерные цианоз или бледность кожных покровов.'
+    - text: 'Критерии эффективности ИВЛ и ЗМС: наличие пульсовой волны на сонных артериях
+        в такт компрессии грудины; уменьшение степени цианоза кожи и слизистых; сужение
+        зрачков и появление реакции на свет.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Критерии эффективности ИВЛ и ЗМС: наличие пульсовой волны на сонных
+          артериях в такт компрессии грудины; уменьшение степени цианоза кожи и слизистых;
+          сужение зрачков и появление реакции на свет.'
+    - text: 'Диагноз ЧМТ легкой степени: указание на факт травмы и хотя бы один из
+        симптомов: кратковременная потеря сознания; ретроградная амнезия; рвота (1–2-кратная);
+        головная боль.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагноз ЧМТ легкой степени: указание на факт травмы и хотя бы один
+          из симптомов: кратковременная потеря сознания; ретроградная амнезия; рвота
+          (1–2-кратная); головная боль.'
+    - text: 'Диагноз ЧМТ средней степени тяжести: указание на факт травмы и хотя бы
+        один из симптомов: потеря сознания более 30 минут; нарушение сознания в момент
+        осмотра; очаговая симптоматика; видимые переломы черепа.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагноз ЧМТ средней степени тяжести: указание на факт травмы и хотя
+          бы один из симптомов: потеря сознания более 30 минут; нарушение сознания
+          в момент осмотра; очаговая симптоматика; видимые переломы ч'
+    - text: 'Диагноз ЧМТ тяжелой степени: указание на факт травмы и хотя бы один из
+        симптомов: парезы конечностей; анизокория; брадикардия; наличие «светлого»
+        промежутка.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагноз ЧМТ тяжелой степени: указание на факт травмы и хотя бы один
+          из симптомов: парезы конечностей; анизокория; брадикардия; наличие «светлого»
+          промежутка.'
+    - text: 'Кризы при миастении: нарушение глотания, слюнотечение; гнусавый оттенок
+        голоса; слабость мимической мускулатуры; слабость дыхательных мышц и невозможность
+        откашляться; слабость мышц конечностей; психомоторное возбуждение.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Кризы при миастении: нарушение глотания, слюнотечение; гнусавый оттенок
+          голоса; слабость мимической мускулатуры; слабость дыхательных мышц и невозможность
+          откашляться; слабость мышц конечностей; психо'
+    - text: 'Клинические критерии диагностики анафилактического шока: острое начало
+        заболевания (минуты/часы) с поражением кожи и (или) слизистых (крапивница,
+        отек губ, языка) в сочетании с дыхательными нарушениями или снижением АД.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Клинические критерии диагностики анафилактического шока: острое начало
+          заболевания (минуты/часы) с поражением кожи и (или) слизистых (крапивница,
+          отек губ, языка) в сочетании с дыхательными нарушениям'
+    - text: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+        анамнеза и физикального обследования.
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+          анамнеза и физикального обследования.
+    - text: 'Ранняя диагностика менингита: острое развитие; общемозговая симптоматика
+        (интенсивная головная боль, рвота, нарушения сознания, судороги); менингеальная
+        симптоматика; у пациентов до 1 года – родничковая триада; общеинфекционная
+        симптоматика.'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Ранняя диагностика менингита: острое развитие; общемозговая симптоматика
+          (интенсивная головная боль, рвота, нарушения сознания, судороги); менингеальная
+          симптоматика; у пациентов до 1 года – родничков'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Первичное неврологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проводится первичное неврологическое обследование для выявления очаговой
+        симптоматики
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дополнительные лабораторные и (или) инструментальные исследования не
+        рекомендованы (за исключением подозрения на развитие крапивницы вследствие
+        пищевой аллергии у сенсибилизированных пациентов)
+  treatment:
+    non_drug:
+    - text: Туалет раны и перевязка при ранах головы.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Туалет раны и перевязка при ранах головы.
+    - text: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+        воздуховода или интубации трахеи при бессознательном состоянии пациента.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+          воздуховода или интубации трахеи при бессознательном состоянии пациента.
+    - text: Тугая тампонада при обнаружении ран, кровоточащих трещин или дефектов
+        ткани в полости рта (применение перекиси водорода при бессознательном состоянии
+        пациента противопоказано).
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тугая тампонада при обнаружении ран, кровоточащих трещин или дефектов
+          ткани в полости рта (применение перекиси водорода при бессознательном состоянии
+          пациента противопоказано).
+    - text: При первых признаках гипогликемии необходим прием легкоусвояемых углеводов
+        – таблеток (порошков) глюкозы из расчета до 0,3 г/кг массы тела или сладкого
+        питья (100 мл сока, колы, лимонада, сладкий чай с 1–2 кусочками сахара).
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'При первых признаках гипогликемии необходим прием легкоусвояемых углеводов
+          – таблеток (порошков) глюкозы из расчета до 0,3 г/кг массы тела или сладкого
+          питья (100 мл сока, колы, лимонада, сладкий чай '
+    - text: При отсутствии положительной динамики уровня глюкозы крови через 10–15
+        минут – повторный прием легкоусвояемых углеводов.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При отсутствии положительной динамики уровня глюкозы крови через 10–15
+          минут – повторный прием легкоусвояемых углеводов.
+    - text: При улучшении состояния (нормализация гликемии) – прием сложных углеводов
+        (фрукты, хлеб, молоко, каши) для профилактики рецидива гипогликемии.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При улучшении состояния (нормализация гликемии) – прием сложных углеводов
+          (фрукты, хлеб, молоко, каши) для профилактики рецидива гипогликемии.
+    - text: Если установить внутривенную систему невозможно, обеспечить подачу раствора
+        глюкозы 100 мг/мл через назогастральный зонд.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Если установить внутривенную систему невозможно, обеспечить подачу
+          раствора глюкозы 100 мг/мл через назогастральный зонд.
+    - text: Первичная (базовая) реанимация, восстановление витальных функций, интенсивная
+        терапия постреанимационной болезни.
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Первичная (базовая) реанимация, восстановление витальных функций, интенсивная
+          терапия постреанимационной болезни.
+    - text: Проведение искусственной вентиляции легких (ИВЛ) и закрытого массажа сердца
+        (ЗМС).
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение искусственной вентиляции легких (ИВЛ) и закрытого массажа
+          сердца (ЗМС).
+    - text: Придать пациенту возвышенное положение тела в постели (при острой перегрузке
+        правого желудочка).
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Придать пациенту возвышенное положение тела в постели (при острой перегрузке
+          правого желудочка).
+    - text: Начать проведение оксигенотерапии (при острой перегрузке правого желудочка).
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Начать проведение оксигенотерапии (при острой перегрузке правого желудочка).
+    drug_groups: []
+    drugs:
+    - drug_name: Глюкоза
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор глюкозы 100 мг/мл в дозе 2 мл/кг внутривенно струйно медленно
+        до полного восстановления сознания (при тяжелой гипогликемии).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 31
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при тяжелой гипогликемии ввести раствор глюкозы 100 мг/мл в дозе 2
+          мл/кг внутривенно струйно медленно до полного восстановления сознания
+    - drug_name: Эпинефрин (эпинефрина гидротартрат, эпинефрин гидрохлорид)
+      active_substance: null
+      drug_group: null
+      dose_text: 'Разовая внутривенная или внутрикостная доза: 10 мкг/кг массы тела
+        (макс. 1 мг для пациентов >40 кг). Разведение 1:10000, 10 мкг/кг = 0,1 мл/кг.
+        Повторять каждые 3–5 минут.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
+          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
+          однократная доза – 1 мг (пациенты с массой тела более 40 кг).
+    - drug_name: Атропин
+      active_substance: null
+      drug_group: null
+      dose_text: Обычная внутривенная доза 20 мкг/кг массы тела. Можно повторить через
+        5 минут. Показан при брадикардии, вызванной ваготонией, холинергической токсичности
+        ЛП, отравлениях фосфорорганическими соединения
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
+          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут;
+          рекомендован только при брадикардии.
+    - drug_name: Бикарбонат натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл раствора 40 мг/мл), далее 0,5 ммоль/кг.
+        Не рекомендуется при СЛР, только при выраженном ацидозе. Противопоказан при
+        отсутствии адекватной вентиляции легких.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг. Бикарбонат натрия противопоказан при отсутствии адекватной
+          вентиляции легких.
+    - drug_name: Кальция хлорид / Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: 'Кальция хлорид: внутривенно или внутрикостно 20 мг/кг (0,2 мл/кг),
+        повторить через 15 мин. Кальция глюконат: 0,6–0,8 мл/кг. Показания: гипокальциемия,
+        гиперкалиемия/гипермагниемия, интоксикация блокат'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида (...) в
+          дозе 20 мг/кг (0,2 мл/кг), дозу можно повторить через 15 мин (кальция глюконат
+          (...) доза – 0,6–0,8 мл/кг).
+    - drug_name: Амиодарон
+      active_substance: null
+      drug_group: null
+      dose_text: ЛП выбора для купирования желудочковых тахиаритмий во время СЛР.
+        Внутривенно или внутрикостно 5 мг/кг, повторять до макс. 15 мг/кг. Для пациентов
+        >10 лет – 300 мг, разводить только в глюкозе 50 мг/кг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Амиодарон МНН (...) – ЛП выбора для купирования желудочковых тахиаритмий
+          во время СЛР. Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг.'
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: Для купирования фибрилляции желудочков/желудочковой тахиаритмии без
+        пульса. Внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг/кг/мин. Одинаково
+        приемлем с амиодароном.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Лидокаин МНН (...) возможно применение для купирования фибрилляции
+          желудочков/желудочковой тахиаритмии без пульса. Дозы: внутривенно струйно
+          1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: Для снижения ОЦК. Разовая доза 1 мг/кг внутримышечно или внутривенно
+        струйно медленно. При отсутствии эффекта через 20 минут можно повторить. Максимальная
+        суточная доза не более 20 мг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фуросемид (...) в разовой дозе 1 мг/кг внутримышечно или внутривенно
+          струйно медленно, при отсутствии эффекта через 20 минут можно повторить
+          введение под контролем АД.
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: Применяется при снижении АД менее 10% от нижней границы возрастной
+        нормы. Ввести из расчета 2 мг/кг внутривенно струйно с последующим контролем
+        АД.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при снижении АД менее 10 % от нижней границы возрастной нормы (...)
+          – ввести преднизолон (...) из расчета 2 мг/кг внутривенно струйно с последующим
+          контролем АД.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: При улучшении состояния (нормализация гликемии) – прием сложных углеводов
+      (фрукты, хлеб, молоко, каши) для профилактики рецидива гипогликемии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При улучшении состояния (нормализация гликемии) – прием сложных углеводов
+        (фрукты, хлеб, молоко, каши) для профилактики рецидива гипогликемии.
+  hospitalization: []
+  routing:
+  - text: Госпитализация обязательна при ранах головы.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация обязательна при ранах головы.
+  - text: При отсутствии сознания из-за гипогликемии – срочная госпитализация.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии сознания из-за гипогликемии – срочная госпитализация.
+  - text: Транспортировка пациента в приемное отделение ближайшей больничной организации
+      (при гипогликемии, с поддержанием витальных функций).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Транспортировка пациента в приемное отделение ближайшей больничной организации
+        (при гипогликемии, с поддержанием витальных функций).
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации при острой перегрузке правого желудочка (ОПЖН).
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации при острой перегрузке правого желудочка (ОПЖН).
+  red_flags:
+  - text: Отсутствие сознания – главный симптом, отражающий нарастающую гипоксию мозга,
+      развивается в первые 10 сек от момента остановки кровообращения.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие сознания – главный симптом, отражающий нарастающую гипоксию
+        мозга, развивается в первые 10 сек от момента остановки кровообращения
+  - text: Остановка дыхания (апноэ) – у пациентов старше 10 лет развивается позже
+      остальных симптомов на 10–15 сек.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: остановка дыхания (апноэ) – у пациентов старше 10 лет развивается позже
+        остальных симптомов на 10–15 сек
+  - text: Отсутствие пульса на крупных артериях.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие пульса на крупных артериях
+  - text: Расширение зрачков (может развиться более чем через 40–60 сек после прекращения
+      кровообращения).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: расширение зрачков (считается дополнительным признаком остановки кровообращения,
+        так как может развиться более чем через 40–60 сек после прекращения кровообращения)
+  - text: Судороги – обычно проявляются в момент потери сознания.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: судороги – обычно проявляются в момент потери сознания
+  - text: Характерные цианоз или бледность кожных покровов.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: характерные цианоз или бледность кожных покровов
+  - text: Потеря сознания более 30 минут; нарушение сознания в момент медицинского
+      осмотра; очаговая симптоматика; видимые переломы черепа (при ЧМТ средней степени
+      тяжести).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: потеря сознания более 30 минут; нарушение сознания в момент медицинского
+        осмотра; очаговая симптоматика; видимые переломы черепа
+  - text: Парезы конечностей; анизокория; брадикардия; наличие «светлого» промежутка
+      (при ЧМТ тяжелой степени).
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: парезы конечностей; анизокория; брадикардия; наличие «светлого» промежутка
+  - text: Изменение сознания (от ясного до глубоких расстройств) свидетельствуют о
+      прогрессирующем нарастании внутричерепного давления.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Изменение сознания (от ясного до глубоких расстройств) свидетельствуют
+        о прогрессирующем нарастании внутричерепного давления
+  - text: Острое возникновение комы сразу после травмы является результатом ушиба
+      мозга.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: allergologiya_immunologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам
+      document_url: null
+      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Острое возникновение комы сразу после травмы является результатом ушиба
+        мозга
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-06-23T19:15:04.663362+00:00'
-  extractor: structured_fallback
+  extracted_at: '2026-07-01T23:53:02.864521+00:00'
+  extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
-  - source_text_sections
+  - llm_pipeline_v1
+  - conditions=2
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-06-23T19:15:04.674457+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[8]
+  validated_at: '2026-07-01T23:53:02.877341+00:00'

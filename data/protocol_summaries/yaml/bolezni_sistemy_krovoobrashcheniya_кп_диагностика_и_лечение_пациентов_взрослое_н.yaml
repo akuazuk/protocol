@@ -1,24 +1,22 @@
 protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
-summary_version: '1.0'
-extraction_status: auto_extracted
-review_status: not_reviewed
+summary_version: '2.0'
+extraction_status: llm_extracted
+review_status: needs_review
 source:
-  title: КП Диагностика и лечение пациентов (взрослое население) с тромбозом глубоких
-    вен пост МЗ от 22 03 2022 №17
-  url: https://minzdrav.gov.by/upload/dadvfiles/CProtokol/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+  title: Диагностика и лечение пациентов с тромбозом глубоких вен
+  url: null
   local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-  document_sha256: e197000ad6653b098f8a4f0798833838c80e681655176272f2dead3943b5c337
-  approval_date: '2022-01-01'
-  approval_number: '17'
+  document_sha256: null
+  approval_date: null
+  approval_number: null
   valid_from: null
   valid_to: null
-  document_year: 2022
+  document_year: null
   pages_total: null
 rubric:
-  name: Болезни системы кровообращения
+  name: Bolezni-Sistemy-Krovoobrashcheniya
   slug: bolezni-sistemy-krovoobrashcheniya
-  specialty_slugs:
-  - bolezni-sistemy-krovoobrashcheniya
+  specialty_slugs: []
 applicability:
   population:
   - adult
@@ -28,172 +26,135 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: i80_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
+- condition_id: tromboz_glubokih_ven
+  name: Тромбоз глубоких вен
   synonyms: []
   abbreviations: []
   icd10_codes:
   - I80
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ I80)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-        page_start: 2
-        page_end: 2
-        section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-          классификации
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-        page_start: 2
-        page_end: 2
-        section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-          классификации
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: диета, режим
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: Эмболи
-    aliases: []
-    red_flag_type: thrombosis
-    severity: high
-    expected_actions:
-    - дообследование
-    - маршрутизация
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-      page_start: 2
-      page_end: 2
-      section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-        классификации
-      section_type: classification
-      table_index: null
-      row_index: null
-      quote: Эмболи
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: i82_клинический_протокол_устанавливает_общие_требования_
-  name: клинический протокол устанавливает общие требования к объему
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
   - I82
   condition_applicability: null
   diagnosis_structure: null
-  clinical_criteria:
-    required:
-    - text: отражение нозологии клинический протокол устанавливает общие требования
-        к объему (МКБ I82)
-      logic_group: null
-      operator: present
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets:
-      - diagnosis
-      - complaints
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-        page_start: 2
-        page_end: 2
-        section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-          классификации
-        section_type: classification
-        table_index: null
-        row_index: null
-        quote: клинический протокол устанавливает общие требования к объему
-    optional: []
-    exclusion: []
+  clinical_criteria: null
   diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: УЗДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС является основным методом визуализации при подозрении на ТГВ, выполняется
+        врачом ультразвуковой диагностики. В обязательный объем УЗДС входит осмотр
+        глубоких, подкожных вен обеих нижних конечностей, общей, наружной и внутренней
+        подвздошных вен, нижней полой вены
   conditional_exams: []
   treatment:
     non_drug:
-    - text: немедикаментозные рекомендации (диета, режим)
+    - text: Активный двигательный режим
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
         document_url: null
         local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-        page_start: 2
-        page_end: 2
-        section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-          классификации
-        section_type: classification
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
         table_index: null
         row_index: null
-        quote: диета, режим
+        quote: Активный двигательный режим
     drug_groups: []
     drugs: []
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Периодическая (не реже 1 раза в год) оценка польза – риск при лечении антикоагулянтами
+      впервые возникшего идиопатического ТГВ
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Периодическая (не реже 1 раза в год) оценка польза – риск при лечении
+        антикоагулянтами впервые возникшего идиопатического ТГВ
   hospitalization: []
-  routing: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
   red_flags:
-  - text: Эмболи
+  - text: Визуализация обтекания головки тромба кровью в поперечной плоскости сканирования
+      в режиме цветового допплеровского картирования с четырех сторон
     aliases: []
-    red_flag_type: thrombosis
+    red_flag_type: other
     severity: high
-    expected_actions:
-    - дообследование
-    - маршрутизация
+    expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
       document_url: null
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
-      page_start: 2
-      page_end: 2
-      section_title: глубоких вен (далее – ТГВ) (шифры по Международной статистической
-        классификации
-      section_type: classification
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
       table_index: null
       row_index: null
-      quote: Эмболи
+      quote: 'Критериями эмболоопасности являются: визуализация обтекания головки
+        тромба кровью в поперечной плоскости сканирования в режиме цветового допплеровского
+        картирования с четырех сторон'
+  - text: Длина флотирующей (омываемой с четырех сторон) части тромба более 5 см
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Критериями эмболоопасности являются: длина флотирующей (омываемой с
+        четырех сторон) части тромба более 5 см.'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -202,14 +163,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-05-31T18:30:01.423076+00:00'
-  extractor: builder.heuristic_v2
-  extractor_version: '2.0'
-  source_document_sha256: e197000ad6653b098f8a4f0798833838c80e681655176272f2dead3943b5c337
+  extracted_at: '2026-07-01T22:56:20.361423+00:00'
+  extractor: llm_extractor
+  extractor_version: '1.0'
+  source_document_sha256: null
   notes:
-  - aggregated from 5 protocol_cards, 110 chunks
+  - llm_pipeline_v1
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-05-31T18:30:01.423100+00:00'
+  validated_at: '2026-07-01T22:56:20.362307+00:00'
