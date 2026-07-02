@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
@@ -101,6 +102,65 @@ def extract_pdf_text_pymupdf(data: bytes, *, max_pages: int = 200) -> tuple[str,
     return "\n\n".join(parts).strip(), warnings
 
 
+def _pdf_ocr_enabled() -> bool:
+    return (os.environ.get("CONSULT_PDF_OCR") or "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    )
+
+
+def extract_pdf_text_ocr(
+    data: bytes,
+    *,
+    max_pages: int = 6,
+) -> tuple[str, list[str]]:
+    """OCR fallback для PDF без текстового слоя: рендер страниц -> OCR изображения."""
+    warnings: list[str] = []
+    if max_pages <= 0:
+        return "", warnings
+    try:
+        import fitz  # PyMuPDF
+    except ImportError:
+        return "", warnings
+    try:
+        from clinical_knowledge.image_ocr import ocr_image_bytes
+    except Exception:
+        return "", warnings
+
+    try:
+        doc = fitz.open(stream=data, filetype="pdf")
+    except Exception as e:
+        warnings.append(f"PDF OCR: PyMuPDF ({e!s})")
+        return "", warnings
+
+    parts: list[str] = []
+    n_pages = doc.page_count
+    limit = min(n_pages, max_pages)
+    if n_pages > max_pages:
+        warnings.append(f"PDF OCR: обработаны только первые {max_pages} стр. из {n_pages}.")
+
+    for i in range(limit):
+        try:
+            pix = doc.load_page(i).get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+            png = pix.tobytes("png")
+            txt, _ = ocr_image_bytes(png, f"pdf_page_{i + 1}.png")
+            if txt.strip():
+                parts.append(txt.strip())
+        except Exception as e:
+            warnings.append(f"PDF OCR: стр. {i + 1} ({e!s})")
+    try:
+        doc.close()
+    except Exception:
+        pass
+
+    full = "\n\n".join(parts).strip()
+    if full:
+        warnings.append("текст извлечён через OCR для сканированного PDF.")
+    return full, warnings
+
+
 def extract_pdf_text_bytes(
     data: bytes,
     *,
@@ -124,6 +184,13 @@ def extract_pdf_text_bytes(
     if txt2.strip():
         warnings.append("текст извлечён через PyMuPDF (pypdf вернул пусто).")
         return txt2, warnings, None
+
+    if _pdf_ocr_enabled():
+        ocr_pages = int(os.environ.get("CONSULT_PDF_OCR_MAX_PAGES", "6") or "6")
+        txt3, w3 = extract_pdf_text_ocr(pdf_data, max_pages=max(1, ocr_pages))
+        warnings.extend(w3)
+        if txt3.strip():
+            return txt3, warnings, None
 
     if err == "unreadable":
         return "", warnings, "unreadable"

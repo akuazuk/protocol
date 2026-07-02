@@ -191,6 +191,29 @@ def test_pypdf_empty_pymupdf_fallback(monkeypatch) -> None:
     assert any("PyMuPDF" in w for w in warns)
 
 
+def test_pdf_ocr_fallback_when_text_layers_empty(monkeypatch) -> None:
+    import rag_server as rs
+    from clinical_knowledge import text_extract as te
+
+    def fake_pypdf(_data: bytes, *, max_pages: int = 200):
+        return "", [], None
+
+    def fake_mupdf(_data: bytes, *, max_pages: int = 200):
+        return "", []
+
+    def fake_ocr(_data: bytes, *, max_pages: int = 6):
+        return "Скан КЗ: диагноз M54.1", ["текст извлечён через OCR для сканированного PDF."]
+
+    monkeypatch.setattr(te, "extract_pdf_text_pypdf", fake_pypdf)
+    monkeypatch.setattr(te, "extract_pdf_text_pymupdf", fake_mupdf)
+    monkeypatch.setattr(te, "extract_pdf_text_ocr", fake_ocr)
+    monkeypatch.setenv("CONSULT_PDF_OCR", "1")
+
+    txt, warns = rs.extract_pdf_text_from_bytes(b"%PDF-1.4 fake")
+    assert "M54.1" in txt
+    assert any("OCR" in w for w in warns)
+
+
 @pytest.fixture(scope="module")
 def client() -> TestClient:
     import rag_server as rs
