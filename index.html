@@ -10031,6 +10031,29 @@
       font-size: 0.68rem;
     }
 
+    .protocol-src-item__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      padding: 0.1rem 0.48rem 0.4rem 2.35rem;
+    }
+
+    .protocol-src-chip {
+      display: inline-block;
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      background: var(--green-50, #eef7f1);
+      border: 1px solid var(--green-200, #cde8d8);
+      font-size: 0.66rem;
+      line-height: 1.35;
+      color: var(--ink-700, #2f3d36);
+    }
+
+    .protocol-src-chip__label {
+      font-weight: 700;
+      color: var(--green-700, #1f7a4d);
+    }
+
     .protocol-src-item__meta a {
       color: var(--green-700);
       font-weight: 650;
@@ -24965,10 +24988,31 @@
     }
   }
 
+  function renderProtocolSourceEntitiesHtml(entities) {
+    if (!entities || !entities.length) return "";
+    var html = '<div class="protocol-src-item__chips">';
+    var i;
+    for (i = 0; i < entities.length; i++) {
+      var chip = entities[i] || {};
+      var items = chip.items || [];
+      if (!items.length) continue;
+      html +=
+        '<span class="protocol-src-chip"><span class="protocol-src-chip__label">' +
+        escapeHtml(String(chip.label || "")) +
+        "</span> " +
+        escapeHtml(items.join(", ")) +
+        "</span>";
+    }
+    html += "</div>";
+    return html;
+  }
+
   function renderProtocolSourceItemHtml(path, item, highlight, openFirst) {
     var page = item.page;
     var pdfHref = page ? pdfPageHref(path, page) : safeResourceHref(path);
     var openAttr = openFirst ? " open" : "";
+    var hasBody = item.body && item.body !== item.lead;
+    var chips = renderProtocolSourceEntitiesHtml(item.entities);
     return (
       '<details class="protocol-src-item"' +
       openAttr +
@@ -24981,9 +25025,12 @@
       '<span class="protocol-src-item__lead">' +
       highlightPlainTextHtml(item.lead || "", highlight) +
       "</span></summary>" +
-      '<p class="protocol-src-item__body">' +
-      highlightPlainTextHtml(item.body || "", highlight) +
-      "</p>" +
+      (hasBody
+        ? '<p class="protocol-src-item__body">' +
+          highlightPlainTextHtml(item.body || "", highlight) +
+          "</p>"
+        : "") +
+      chips +
       (page
         ? '<p class="protocol-src-item__meta"><a href="' +
           escapeHtmlAttr(pdfHref) +

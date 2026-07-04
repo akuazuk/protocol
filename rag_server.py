@@ -8197,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-04-r31-proto-viewer-compact"
+BUILD_VERSION = "2026-07-04-r32-proto-view-rich"
 
 
 def _app_version() -> str:
@@ -10470,7 +10470,14 @@ def api_protocol_source_text(
         full.relative_to((ROOT / "minzdrav_protocols").resolve())
     except ValueError as exc:
         raise HTTPException(status_code=404, detail="Протокол не найден") from exc
-    out = resolve_protocol_source_text(pth)
+    # rich-чанки дают настоящий chunk_type и списки сущностей -> качественнее view.
+    rich_chunks: list[dict] = []
+    try:
+        _require_rag_loaded(max_wait_sec=max(3.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 28.0)))
+        rich_chunks = get_rich_chunks_for_path(pth)
+    except Exception:
+        rich_chunks = []
+    out = resolve_protocol_source_text(pth, rich_chunks=rich_chunks or None)
     out["build_version"] = BUILD_VERSION
     return out
 

@@ -190,6 +190,23 @@
       font-size: 0.68rem;
     }
     .protocol-src-item__meta a { color: var(--green-700); font-weight: 650; text-decoration: none; }
+    .protocol-src-item__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      padding: 0.1rem 0.48rem 0.4rem 2.35rem;
+    }
+    .protocol-src-chip {
+      display: inline-block;
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      background: #eef7f1;
+      border: 1px solid #cde8d8;
+      font-size: 0.66rem;
+      line-height: 1.35;
+      color: #2f3d36;
+    }
+    .protocol-src-chip__label { font-weight: 700; color: var(--green-700); }
     .proto-src-mark { background: rgba(250,204,21,0.55); border-radius: 3px; }
     .proto-src-mark.is-current { background: rgba(251,146,60,0.75); }
     .protocol-src-empty, .protocol-src-loading { color: var(--muted); font-size: 0.82rem; padding: 0.75rem 0.2rem; }
@@ -228,14 +245,27 @@
       var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
       return page ? u + "#page=" + page : u;
     }
+    function chipsHtml(entities) {
+      if (!entities || !entities.length) return "";
+      var out = '<div class="protocol-src-item__chips">';
+      entities.forEach(function (chip) {
+        var items = (chip && chip.items) || [];
+        if (!items.length) return;
+        out += '<span class="protocol-src-chip"><span class="protocol-src-chip__label">' +
+          esc(chip.label || "") + "</span> " + esc(items.join(", ")) + "</span>";
+      });
+      return out + "</div>";
+    }
     function itemHtml(path, item, q, open) {
       var page = item.page;
+      var hasBody = item.body && item.body !== item.lead;
       return (
         '<details class="protocol-src-item"' + (open ? " open" : "") + ">" +
         "<summary>" +
         (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
         '<span class="protocol-src-item__lead">' + hl(item.lead, q) + "</span></summary>" +
-        '<p class="protocol-src-item__body">' + hl(item.body, q) + "</p>" +
+        (hasBody ? '<p class="protocol-src-item__body">' + hl(item.body, q) + "</p>" : "") +
+        chipsHtml(item.entities) +
         (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) +
           '" target="_blank" rel="noopener">PDF · стр. ' + esc(page) + "</a></p>" : "") +
         "</details>"

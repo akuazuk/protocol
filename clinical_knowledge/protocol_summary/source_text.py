@@ -219,16 +219,83 @@ def _resolve_protocol_source_text_raw(catalog_path: str) -> dict[str, Any]:
     }
 
 
-def resolve_protocol_source_text(catalog_path: str, *, clinical_view: bool = True) -> dict[str, Any]:
-    """Полный текст протокола + опционально компактное клиническое представление."""
-    base = _resolve_protocol_source_text_raw(catalog_path)
-    if not base.get("available"):
-        return base
-    if clinical_view:
-        from clinical_knowledge.protocol_source_view import prepare_protocol_source_view
+def _doc_from_rich_chunks(chunks: list[dict[str, Any]], *, path: str) -> dict[str, Any] | None:
+    """Синтетический doc из rich-чанков: сохраняет chunk_type и сущности для view."""
+    if not chunks:
+        return None
+    blocks: list[dict[str, Any]] = []
+    title = ""
+    protocol_id = ""
+    for ch in chunks:
+        text = str(ch.get("text") or "").strip()
+        if not text:
+            continue
+        title = title or str(ch.get("protocol_title_normalized") or ch.get("protocol_title") or "")
+        protocol_id = protocol_id or str(ch.get("doc_id") or "")
+        blocks.append(
+            {
+                "chunk_type": ch.get("chunk_type") or ch.get("kind"),
+                "section_title": ch.get("section_title") or ch.get("title"),
+                "text": text,
+                "page_from": ch.get("page_from") or ch.get("page"),
+                "page_to": ch.get("page_to"),
+                "drugs": ch.get("drugs") or [],
+                "imaging": ch.get("imaging") or [],
+                "lab_tests": ch.get("lab_tests") or [],
+                "procedures": ch.get("procedures") or [],
+            }
+        )
+    if not blocks:
+        return None
+    return {
+        "path": path,
+        "protocol_id": protocol_id,
+        "title": title,
+        "sections": {"rich": blocks},
+    }
 
-        base["view"] = prepare_protocol_source_view(base)
-        base["view_available"] = bool((base["view"].get("toc") or []))
+
+def resolve_protocol_source_text(
+    catalog_path: str,
+    *,
+    clinical_view: bool = True,
+    rich_chunks: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Полный текст протокола + компактное клиническое представление.
+
+    Если переданы rich_chunks (из RAG-индекса), клинический view строится на
+    них - у чанков есть настоящий chunk_type и списки сущностей. Иначе
+    используются пред-собранные блоки source_text с диска.
+    """
+    base = _resolve_protocol_source_text_raw(catalog_path)
+    if not base.get("available") and not rich_chunks:
+        return base
+    if not clinical_view:
+        return base
+    from clinical_knowledge.protocol_source_view import prepare_protocol_source_view
+
+    view = None
+    rich_doc = _doc_from_rich_chunks(rich_chunks or [], path=base.get("path") or catalog_path)
+    if rich_doc is not None:
+        view = prepare_protocol_source_view(rich_doc)
+        if not (view.get("toc") or []):
+            view = None
+        elif not base.get("available"):
+            base.update(
+                {
+                    "available": True,
+                    "path": rich_doc["path"],
+                    "protocol_id": base.get("protocol_id") or rich_doc.get("protocol_id"),
+                    "title": base.get("title") or rich_doc.get("title") or "",
+                }
+            )
+    if view is None:
+        if not base.get("available"):
+            return base
+        view = prepare_protocol_source_view(base)
+    base["view"] = view
+    base["view_available"] = bool((view.get("toc") or []))
+    base["view_source"] = "rich_chunks" if rich_doc is not None and view is not None else "source_text"
     return base
 
 
