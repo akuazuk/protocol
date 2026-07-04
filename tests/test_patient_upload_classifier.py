@@ -108,6 +108,8 @@ def test_b2c_lab_filename_prefix_case_insensitive() -> None:
     assert is_b2c_lab_filename("a_1")
     assert is_b2c_lab_filename("A_2.pdf")
     assert is_b2c_lab_filename("clients_consult/a_3.pdf")
+    assert is_b2c_lab_filename("А_1")
+    assert is_b2c_lab_filename("а_2.pdf")
     assert not is_b2c_lab_filename("report_n_1")
     assert not is_b2c_lab_filename("gastro_1")
 

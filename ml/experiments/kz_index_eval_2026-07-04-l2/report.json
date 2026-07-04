@@ -1,0 +1,535 @@
+{
+  "summary": {
+    "base": "https://protocol-bimy.onrender.com",
+    "folder": "/Users/pavelkuzauka/Cursor_Folders/Protocol/clients_consult",
+    "generated_at": "2026-07-04T15:49:47Z",
+    "server_version": "2026-07-04-r37-proto-semantic-lazy",
+    "tier": "L2",
+    "vector_index": {
+      "enabled": true,
+      "loaded": false,
+      "indexed": 0,
+      "dim": 0,
+      "path": "/var/data/corpus_vector_index"
+    },
+    "total": 36,
+    "ok": 7,
+    "errors": 29,
+    "kz_count": 7,
+    "b2c_analysis_count": 0,
+    "kz_overall_avg": 79.1,
+    "kz_overall_lt70": 1,
+    "kz_no_rag": 0,
+    "kz_no_retrieval": 0,
+    "kz_semantic_lexical": 0,
+    "kz_semantic_semantic": 0,
+    "analysis_mismatch_ok": 0,
+    "improvement_plan": [
+      "P0: vector index enabled но не в RAM - при первом запросе грузится ~1GB; на Render Standard возможен 502/OOM. Решение: mmap/lazy load или plan Pro.",
+      "P2: semantic probe failed для 7 КЗ - F_1_p, gastro_1, ja_1, ja_4",
+      "P2: overall<70% у 1 КЗ - ручной разбор: ja_4"
+    ]
+  },
+  "reports": [
+    {
+      "file": "F_1_p.pdf",
+      "case_id": "F_1_p",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 8479,
+      "overall_pct": 92,
+      "rules_pct": null,
+      "status": "compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "слое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf",
+        "тов_с_хроническими_заболеваниями_вен_взр_население-пост_МЗ_2022_55.pdf",
+        "ечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf",
+        "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_с_хроническими_заболеваниями_вен_взр_население-пост_МЗ_2022_55.pdf",
+        "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf"
+      ],
+      "retrieval_top": [
+        "ечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+        "тов_с_хроническими_заболеваниями_вен_взр_население-пост_МЗ_2022_55.pdf",
+        "слое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Клинический протокол диагностики и лечения инфаркта миокарда, нестабильной стенокардии 06.06.2017 № 59.pdf",
+        "minzdrav_protocols/akusherstvo-ginekologiya/КП_Диагностика_и_лечение_пациентов_с_хроническими_заболеваниями_вен_взр_население-пост_МЗ_2022_55.pdf",
+        "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf"
+      ],
+      "rag_chunks_n": 3,
+      "text_len": 3505,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы пациента: отек правой голени в течение месяца, начало тоека совпало по",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf"
+    },
+    {
+      "file": "gastro_1.pdf",
+      "case_id": "gastro_1",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 106086,
+      "overall_pct": 75,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+        "_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf",
+        "Б_от_25.04.2026_№32_КП_ЗНО_гепатобилиарной_системы_(взрослые)_офиц.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf",
+        "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_кишечника_пост_МЗ_2025_185.pdf",
+        "minzdrav_protocols/gastroenterologiya/пост._МЗ_РБ_от_25.04.2026_№32_КП_ЗНО_гепатобилиарной_системы_(взрослые)_офиц.pdf"
+      ],
+      "retrieval_top": [
+        "ой эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+        "_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Организация кетогенной диеты для лечения фармакорезистентной эпилепсии у пациентов детского возраста_пост_МЗ_31_12_2021_№135.pdf",
+        "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf"
+      ],
+      "rag_chunks_n": 2,
+      "text_len": 4318,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: периодически тяжесть после еды, бурление и вздутие живота, метеоризм, иногда",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_вз_нас_заболеваниями_желчного_пузыря_желчевыводящих_путей_поджелудочной_железы_пост_МЗ_2025_185.pdf"
+    },
+    {
+      "file": "ja_1.pdf",
+      "case_id": "ja_1",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 111661,
+      "overall_pct": 83,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "вмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf",
+        "ентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf",
+        "rav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/khirurgiya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf",
+        "minzdrav_protocols/khirurgiya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf",
+        "minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf"
+      ],
+      "retrieval_top": [
+        "вмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf",
+        "rav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/khirurgiya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf",
+        "minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf"
+      ],
+      "rag_chunks_n": 2,
+      "text_len": 1836,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: на образование красной каймы нижней губы",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/khirurgiya/02КП_Диагностика_лечение_пациентов_взр_нас_травмами_опорно-двигательного_аппарата_стац_условиях_пост_МЗ_2024_109.pdf"
+    },
+    {
+      "file": "ja_4.pdf",
+      "case_id": "ja_4",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 37302,
+      "overall_pct": 55,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf",
+        "и_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf",
+        "ными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf",
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf",
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf"
+      ],
+      "retrieval_top": [
+        "ными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf",
+        "rav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf",
+        "пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf",
+        "minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf",
+        "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+      ],
+      "rag_chunks_n": 3,
+      "text_len": 1754,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: Жалобы на наличие образования в области нижней губы. Было удаление лазером",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+    },
+    {
+      "file": "l_28_1.pdf",
+      "case_id": "l_28_1",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 106865,
+      "overall_pct": 85,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+        "/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/otorinolaringologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+        "minzdrav_protocols/otorinolaringologiya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf"
+      ],
+      "retrieval_top": [
+        "_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/otorinolaringologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf"
+      ],
+      "rag_chunks_n": 1,
+      "text_len": 1852,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: Жалобы на момент консультации : боль в горле, налеты на миндалинах,",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/otorinolaringologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf"
+    },
+    {
+      "file": "report_g_1.pdf",
+      "case_id": "report_g_1",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 98125,
+      "overall_pct": 88,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "помощи_женщинам_в_акушерстве_и_гинекологии_пост_МЗ_19.02.2018_№_17.pdf",
+        "ой_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf",
+        "корослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/akusherstvo-ginekologiya/КП_Медицинское_наблюдение_и_оказание_медицинской_помощи_женщинам_в_акушерстве_и_гинекологии_пост_МЗ_19.02.2018_№_17.pdf",
+        "minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_послеоперационным_рубцом_матки_пост_МЗ_2024_161.pdf",
+        "minzdrav_protocols/akusherstvo-ginekologiya/КП_Оказание_медицинской_помощи_женщинам_репродуктивного_возраста_с_низкорослостью_обусловленной_генетическими_синдромами_пост_МЗ_2025_60.pdf"
+      ],
+      "retrieval_top": [
+        "помощи_женщинам_в_акушерстве_и_гинекологии_пост_МЗ_19.02.2018_№_17.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/akusherstvo-ginekologiya/КП_Медицинское_наблюдение_и_оказание_медицинской_помощи_женщинам_в_акушерстве_и_гинекологии_пост_МЗ_19.02.2018_№_17.pdf"
+      ],
+      "rag_chunks_n": 1,
+      "text_len": 1332,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Диагноз: D25.2. Субсерозная лейомиома матки;",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/akusherstvo-ginekologiya/КП_Медицинское_наблюдение_и_оказание_медицинской_помощи_женщинам_в_акушерстве_и_гинекологии_пост_МЗ_19.02.2018_№_17.pdf"
+    },
+    {
+      "file": "report_procy_g_1.pdf",
+      "case_id": "report_procy_g_1",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 95900,
+      "overall_pct": 76,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "расположенность к злокачественным новообразованиям 27.12.2007_1018.pdf",
+        "нной миеломой с помощью высокодозной химиотерапии_31.05.2012 № 662.pdf",
+        " новообразований органов желудочно-кишечного тракта04.08.2011 №789.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf",
+        "minzdrav_protocols/novoobrazovaniya/КП лечения пациентов множественной миеломой с помощью высокодозной химиотерапии_31.05.2012 № 662.pdf",
+        "minzdrav_protocols/novoobrazovaniya/КП медицинской реабилитации пациентов после хирургического лечения новообразований органов желудочно-кишечного тракта04.08.2011 №789.pdf"
+      ],
+      "retrieval_top": [
+        "расположенность к злокачественным новообразованиям 27.12.2007_1018.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf"
+      ],
+      "rag_chunks_n": 1,
+      "text_len": 4990,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: На периодически выделения алой крови после стула, на бумаге, после плотного",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/novoobrazovaniya/КП наблюдения пациентов имеющих предрасположенность к злокачественным новообразованиям 27.12.2007_1018.pdf"
+    }
+  ],
+  "errors": [
+    {
+      "file": "g_28_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "gyn_28_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "ja_2.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "ja_3.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "ja_5.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "ja_6.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "k_28_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "kard_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "mg_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pediatr_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pl_1_d.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pl_1_f.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pl_2_d_s.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pl_2_d_s_2.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "pl_2_d_s_3.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_aler_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_g_11.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_g_12.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_lor_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_lor_jarov_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_n_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_n_2.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_oftal_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_proc_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_ter_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_uril_3.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_urolofg_2.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "report_urolog_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    },
+    {
+      "file": "t_28_1.pdf",
+      "doc_kind": "kz",
+      "error": "HTTP Error 502: Bad Gateway"
+    }
+  ],
+  "weak_kz": [
+    {
+      "file": "ja_4.pdf",
+      "case_id": "ja_4",
+      "doc_kind": "kz",
+      "upload_mismatch": false,
+      "wrong_document_kind": null,
+      "review_tier": "L2",
+      "analysis_id": null,
+      "analysis_ms": 37302,
+      "overall_pct": 55,
+      "rules_pct": null,
+      "status": "mostly_compliant",
+      "failed_rules_count": 0,
+      "failed_rule_ids": [],
+      "failed_rule_titles": [],
+      "matched_protocols": [
+        "пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf",
+        "и_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf",
+        "ными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf"
+      ],
+      "matched_protocols_full": [
+        "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf",
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf",
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf"
+      ],
+      "retrieval_top": [
+        "ными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf",
+        "rav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf",
+        "пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+      ],
+      "retrieval_top_full": [
+        "minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf",
+        "minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf",
+        "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+      ],
+      "rag_chunks_n": 3,
+      "text_len": 1754,
+      "server_version": "2026-07-04-r37-proto-semantic-lazy",
+      "expected_doc_kind": "kz",
+      "probe_query": "Жалобы: Жалобы на наличие образования в области нижней губы. Было удаление лазером",
+      "semantic_ok": false,
+      "semantic_mode": null,
+      "semantic_match_count": null,
+      "semantic_vector_enabled": null,
+      "semantic_path": "minzdrav_protocols/khirurgiya/Диагностика и лечение пациентов с заболеваниями челюстно-лицевой области 04.08.2017 № 80.pdf"
+    }
+  ],
+  "analysis_reports": []
+}

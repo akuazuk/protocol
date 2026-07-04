@@ -8198,7 +8198,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-04-r37-proto-semantic-lazy"
+BUILD_VERSION = "2026-07-04-r38-kz-index-eval"
 
 
 def _app_version() -> str:

@@ -274,7 +274,7 @@ def _looks_like_minzdrav_protocol(text: str) -> bool:
 
 
 def is_b2c_lab_filename(name: str) -> bool:
-    """Имя/ case_id начинается на A/a - B2C анализы в тестовом наборе и загрузках."""
+    """Имя/case_id начинается на A/a/А/а - B2C анализы в тестовом наборе и загрузках."""
     stem = (name or "").strip()
     if not stem:
         return False
@@ -282,7 +282,8 @@ def is_b2c_lab_filename(name: str) -> bool:
         stem = stem.replace("\\", "/").rsplit("/", 1)[-1]
     if stem.lower().endswith((".pdf", ".txt", ".docx", ".rtf", ".odt", ".html")):
         stem = stem.rsplit(".", 1)[0]
-    return stem[0].lower() == "a"
+    first = stem[0]
+    return first.lower() == "a" or first in ("А", "а")
 
 
 def check_consult_document(
