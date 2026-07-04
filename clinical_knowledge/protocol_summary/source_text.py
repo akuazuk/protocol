@@ -144,6 +144,81 @@ def load_source_text(protocol_id: str) -> dict[str, Any] | None:
         return None
 
 
+_SECTION_LABELS_RU: dict[str, str] = {
+    "classification": "Классификация",
+    "diagnostics": "Диагностика и обследования",
+    "treatment": "Лечение",
+    "prevention": "Профилактика и наблюдение",
+    "routing": "Госпитализация и маршрут",
+    "criteria": "Критерии",
+    "other": "Прочее",
+}
+
+_SECTION_ORDER: tuple[str, ...] = (
+    "classification",
+    "criteria",
+    "diagnostics",
+    "treatment",
+    "prevention",
+    "routing",
+    "other",
+)
+
+
+def load_source_text_by_path(catalog_path: str) -> dict[str, Any] | None:
+    """Загрузка sectioned source text по пути PDF в каталоге."""
+    norm = (catalog_path or "").replace("\\", "/").strip()
+    if not norm:
+        return None
+    doc = load_source_text(_protocol_id_from_path(norm))
+    if doc and str(doc.get("path") or "").replace("\\", "/") == norm:
+        return doc
+    if not SOURCE_DIR.is_dir():
+        return None
+    for fp in SOURCE_DIR.glob("*.json"):
+        try:
+            row = json.loads(fp.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if str(row.get("path") or "").replace("\\", "/") == norm:
+            return row
+    return None
+
+
+def resolve_protocol_source_text(catalog_path: str) -> dict[str, Any]:
+    """Полный текст протокола по разделам для интерактивного viewer в UI."""
+    norm = (catalog_path or "").replace("\\", "/").strip()
+    doc = load_source_text_by_path(norm)
+    if not doc:
+        return {"available": False, "path": norm, "llm_used": False}
+    sections = doc.get("sections") or {}
+    toc: list[dict[str, Any]] = []
+    block_count = 0
+    for key in _SECTION_ORDER:
+        blocks = sections.get(key) or []
+        if not blocks:
+            continue
+        block_count += len(blocks)
+        toc.append(
+            {
+                "id": key,
+                "label": _SECTION_LABELS_RU.get(key, key),
+                "count": len(blocks),
+            }
+        )
+    return {
+        "available": block_count > 0,
+        "path": str(doc.get("path") or norm),
+        "protocol_id": doc.get("protocol_id"),
+        "title": doc.get("title") or "",
+        "sections": sections,
+        "toc": toc,
+        "block_count": block_count,
+        "section_labels": dict(_SECTION_LABELS_RU),
+        "llm_used": False,
+    }
+
+
 def section_text_blob(doc: dict[str, Any], section_keys: list[str], *, max_chars: int = 12000) -> str:
     parts: list[str] = []
     sections = doc.get("sections") or {}

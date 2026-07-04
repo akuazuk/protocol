@@ -8197,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-02-r29-consult-pdf-ocr-hints"
+BUILD_VERSION = "2026-07-04-r30-proto-text-viewer"
 
 
 def _app_version() -> str:
@@ -10452,6 +10452,27 @@ def api_protocol_summary_excerpt(
     if sid not in allowed:
         raise HTTPException(status_code=400, detail=f"section_id must be one of: {', '.join(sorted(allowed))}")
     return build_section_excerpt(path.strip(), condition_id=condition_id.strip(), section_id=sid)
+
+
+@app.get("/api/protocol-source-text")
+def api_protocol_source_text(
+    path: str = Query(..., min_length=3, max_length=512),
+) -> dict:
+    """Полный текст протокола по разделам (source_text) для viewer с поиском и подсветкой."""
+    from clinical_knowledge.protocol_links import normalize_protocol_path
+    from clinical_knowledge.protocol_summary.source_text import resolve_protocol_source_text
+
+    pth = normalize_protocol_path(path.strip())
+    if not pth:
+        raise HTTPException(status_code=404, detail="Протокол не найден")
+    full = (ROOT / pth).resolve()
+    try:
+        full.relative_to((ROOT / "minzdrav_protocols").resolve())
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail="Протокол не найден") from exc
+    out = resolve_protocol_source_text(pth)
+    out["build_version"] = BUILD_VERSION
+    return out
 
 
 @app.get("/api/protocol-brief-bundle")

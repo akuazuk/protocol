@@ -9805,6 +9805,193 @@
       cursor: pointer;
     }
 
+    /* Phase B: текстовый viewer протокола */
+    .protocol-src-viewer {
+      display: grid;
+      grid-template-columns: minmax(9.5rem, 11.5rem) 1fr;
+      gap: 0.65rem;
+      min-height: 14rem;
+      max-height: min(62vh, 34rem);
+    }
+
+    @media (max-width: 720px) {
+      .protocol-src-viewer {
+        grid-template-columns: 1fr;
+        max-height: none;
+      }
+    }
+
+    .protocol-src-toolbar {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 0.15rem;
+    }
+
+    .protocol-src-search {
+      flex: 1 1 12rem;
+      min-width: 10rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      padding: 0.42rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid rgba(203, 213, 225, 0.85);
+      background: #fff;
+    }
+
+    .protocol-src-search:focus {
+      outline: 2px solid rgba(26, 138, 114, 0.35);
+      border-color: var(--green-700);
+    }
+
+    .protocol-src-hint {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .protocol-src-toc {
+      overflow: auto;
+      padding: 0.35rem;
+      border-radius: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.55);
+      background: rgba(248, 250, 252, 0.9);
+      max-height: min(58vh, 32rem);
+    }
+
+    .protocol-src-toc__title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin: 0 0 0.35rem 0.15rem;
+    }
+
+    .protocol-src-toc__btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 0.2rem 0;
+      padding: 0.38rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.74rem;
+      line-height: 1.25;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .protocol-src-toc__btn:hover,
+    .protocol-src-toc__btn.is-active {
+      border-color: rgba(26, 138, 114, 0.35);
+      background: rgba(232, 245, 241, 0.95);
+      color: var(--green-800);
+    }
+
+    .protocol-src-toc__count {
+      opacity: 0.65;
+      font-size: 0.68rem;
+    }
+
+    .protocol-src-body {
+      overflow: auto;
+      padding: 0.45rem 0.55rem;
+      border-radius: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.55);
+      background: #fff;
+      max-height: min(58vh, 32rem);
+    }
+
+    .protocol-src-section {
+      margin-bottom: 0.85rem;
+      scroll-margin-top: 0.5rem;
+    }
+
+    .protocol-src-section__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .protocol-src-section__label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+
+    .protocol-src-block {
+      margin: 0.45rem 0;
+      padding: 0.45rem 0.5rem;
+      border-radius: 10px;
+      background: rgba(248, 250, 252, 0.65);
+      scroll-margin-top: 0.5rem;
+    }
+
+    .protocol-src-block__title {
+      font-size: 0.74rem;
+      font-weight: 650;
+      color: #475569;
+      margin: 0 0 0.25rem;
+    }
+
+    .protocol-src-block__text {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #1e293b;
+      white-space: pre-wrap;
+      margin: 0;
+    }
+
+    .protocol-src-block__meta {
+      margin-top: 0.3rem;
+      font-size: 0.7rem;
+    }
+
+    .protocol-src-block__meta a {
+      color: var(--green-700);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .protocol-src-mark {
+      background: rgba(250, 204, 21, 0.55);
+      color: inherit;
+      padding: 0 0.12rem;
+      border-radius: 3px;
+    }
+
+    .protocol-src-mark.is-current {
+      background: rgba(251, 146, 60, 0.75);
+      outline: 1px solid rgba(234, 88, 12, 0.45);
+    }
+
+    .protocol-src-empty,
+    .protocol-src-loading {
+      font-size: 0.82rem;
+      color: #64748b;
+      padding: 0.75rem 0.35rem;
+    }
+
+    .protocol-brief-item__text--link {
+      cursor: pointer;
+      text-decoration: underline dotted rgba(26, 138, 114, 0.45);
+    }
+
+    .protocol-brief-block__btn--text {
+      margin-left: 0.35rem;
+      border-color: rgba(100, 116, 139, 0.35);
+      background: rgba(241, 245, 249, 0.9);
+      color: #475569;
+    }
+
     .protocol-brief-conditions {
       margin: 0 0 0.75rem;
       font-size: 0.8rem;
@@ -24624,6 +24811,318 @@
       });
   }
 
+  var PROTO_SOURCE_SECTION_ORDER = [
+    "classification",
+    "criteria",
+    "diagnostics",
+    "treatment",
+    "prevention",
+    "routing",
+    "other",
+  ];
+
+  var PROTO_SOURCE_SECTION_LABELS = {
+    classification: "Классификация",
+    diagnostics: "Диагностика и обследования",
+    treatment: "Лечение",
+    prevention: "Профилактика и наблюдение",
+    routing: "Госпитализация и маршрут",
+    criteria: "Критерии",
+    other: "Прочее",
+  };
+
+  var BRIEF_SECTION_TO_SOURCE = {
+    criteria: ["criteria", "classification", "diagnostics"],
+    exams: ["diagnostics"],
+    treatment: ["treatment"],
+    red_flags: ["routing", "other"],
+    follow_up: ["prevention", "routing"],
+  };
+
+  var __protocolSourceTextCache = {};
+
+  function protocolSourceTextCacheKey(path) {
+    return normalizeProtocolPath(path) || path || "";
+  }
+
+  function getProtocolSourceTextFromCache(path) {
+    return __protocolSourceTextCache[protocolSourceTextCacheKey(path)] || null;
+  }
+
+  function storeProtocolSourceTextInCache(path, doc) {
+    if (!path || !doc) return;
+    __protocolSourceTextCache[protocolSourceTextCacheKey(path)] = doc;
+  }
+
+  function fetchProtocolSourceText(path) {
+    var cached = getProtocolSourceTextFromCache(path);
+    if (cached) return Promise.resolve(cached);
+    var url =
+      apiBaseUrl() +
+      "/api/protocol-source-text?path=" +
+      encodeURIComponent(path || "");
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (doc) {
+        if (doc && doc.available) storeProtocolSourceTextInCache(path, doc);
+        return doc;
+      });
+  }
+
+  function escapeRegexForHighlight(s) {
+    return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function highlightPlainTextHtml(text, query) {
+    var escaped = escapeHtml(String(text || ""));
+    var q = String(query || "").trim();
+    if (!q || q.length < 2) return escaped;
+    try {
+      var re = new RegExp("(" + escapeRegexForHighlight(q) + ")", "gi");
+      return escaped.replace(re, '<mark class="proto-src-mark">$1</mark>');
+    } catch (eRe) {
+      return escaped;
+    }
+  }
+
+  function renderProtocolSourceViewerBody(path, doc, opts) {
+    opts = opts || {};
+    var highlight = opts.highlight || "";
+    var activeSection = opts.activeSection || "";
+    var sections = (doc && doc.sections) || {};
+    var html = "";
+    var si;
+    for (si = 0; si < PROTO_SOURCE_SECTION_ORDER.length; si++) {
+      var secKey = PROTO_SOURCE_SECTION_ORDER[si];
+      var blocks = sections[secKey] || [];
+      if (!blocks.length) continue;
+      var secLabel = PROTO_SOURCE_SECTION_LABELS[secKey] || secKey;
+      var secCls = "protocol-src-section";
+      if (activeSection && activeSection === secKey) secCls += " is-active";
+      html +=
+        '<section class="' +
+        secCls +
+        '" id="proto-src-sec-' +
+        escapeHtmlAttr(secKey) +
+        '" data-src-section="' +
+        escapeHtmlAttr(secKey) +
+        '">';
+      html += '<div class="protocol-src-section__head">';
+      html +=
+        '<h4 class="protocol-src-section__label">' + escapeHtml(secLabel) + "</h4>";
+      html +=
+        '<span class="protocol-src-hint">' +
+        String(blocks.length) +
+        " фрагм.</span>";
+      html += "</div>";
+      var bi;
+      for (bi = 0; bi < blocks.length; bi++) {
+        var blk = blocks[bi] || {};
+        var page = blk.page_from || blk.page;
+        var pdfHref = page ? pdfPageHref(path, page) : safeResourceHref(path);
+        html +=
+          '<article class="protocol-src-block" data-src-block="' +
+          String(bi) +
+          '">';
+        if (blk.section_title) {
+          html +=
+            '<p class="protocol-src-block__title">' +
+            escapeHtml(String(blk.section_title)) +
+            "</p>";
+        }
+        html +=
+          '<p class="protocol-src-block__text">' +
+          highlightPlainTextHtml(blk.text || "", highlight) +
+          "</p>";
+        if (page) {
+          html +=
+            '<p class="protocol-src-block__meta"><a href="' +
+            escapeHtmlAttr(pdfHref) +
+            '" target="_blank" rel="noopener noreferrer">PDF · стр. ' +
+            escapeHtml(String(page)) +
+            "</a></p>";
+        }
+        html += "</article>";
+      }
+      html += "</section>";
+    }
+    return html || '<p class="protocol-src-empty">Текст протокола пуст.</p>';
+  }
+
+  function renderProtocolSourceViewerShell(path) {
+    return (
+      '<div class="protocol-src-viewer" data-proto-src-path="' +
+      escapeHtmlAttr(path) +
+      '">' +
+      '<div class="protocol-src-toolbar">' +
+      '<input type="search" class="protocol-src-search" placeholder="Поиск по тексту протокола…" aria-label="Поиск по тексту протокола" autocomplete="off" />' +
+      '<span class="protocol-src-hint">Enter - следующее совпадение</span>' +
+      "</div>" +
+      '<nav class="protocol-src-toc" aria-label="Разделы протокола"><p class="protocol-src-toc__title">Разделы</p><p class="protocol-src-loading">Загрузка…</p></nav>' +
+      '<div class="protocol-src-body"><p class="protocol-src-loading">Загрузка текста протокола…</p></div>' +
+      "</div>"
+    );
+  }
+
+  function wireProtocolSourceViewer(root, path, doc, opts) {
+    opts = opts || {};
+    var viewer = root.querySelector(".protocol-src-viewer");
+    if (!viewer || !doc) return;
+    var highlight = opts.highlight || "";
+    var ctx = window.__funnelContext || {};
+    var briefSection = opts.briefSection || ctx.section_id || "";
+    var activeSection = opts.activeSection || "";
+    if (!activeSection && briefSection && BRIEF_SECTION_TO_SOURCE[briefSection]) {
+      activeSection = BRIEF_SECTION_TO_SOURCE[briefSection][0] || "";
+    }
+    var toc = viewer.querySelector(".protocol-src-toc");
+    var body = viewer.querySelector(".protocol-src-body");
+    var searchInput = viewer.querySelector(".protocol-src-search");
+    if (!toc || !body) return;
+
+    var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
+    var ti;
+    var tocItems = doc.toc || [];
+    for (ti = 0; ti < tocItems.length; ti++) {
+      var t = tocItems[ti];
+      var tcls = "protocol-src-toc__btn";
+      if (activeSection && t.id === activeSection) tcls += " is-active";
+      tocHtml +=
+        '<button type="button" class="' +
+        tcls +
+        '" data-src-toc="' +
+        escapeHtmlAttr(t.id || "") +
+        '">' +
+        escapeHtml(t.label || t.id || "Раздел") +
+        ' <span class="protocol-src-toc__count">(' +
+        String(t.count || 0) +
+        ")</span></button>";
+    }
+    toc.innerHTML = tocHtml;
+
+    body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+      highlight: highlight,
+      activeSection: activeSection,
+    });
+
+    function scrollToSourceSection(secId) {
+      if (!secId || !body) return;
+      var el = body.querySelector("#proto-src-sec-" + secId);
+      if (!el) return;
+      toc.querySelectorAll(".protocol-src-toc__btn").forEach(function (btn) {
+        btn.classList.toggle("is-active", btn.getAttribute("data-src-toc") === secId);
+      });
+      try {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (eScroll) {
+        el.scrollIntoView(true);
+      }
+    }
+
+    toc.querySelectorAll("[data-src-toc]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        scrollToSourceSection(btn.getAttribute("data-src-toc") || "");
+      });
+    });
+
+    var markIndex = 0;
+    function focusMarkAt(idx) {
+      var marks = body.querySelectorAll(".proto-src-mark");
+      if (!marks.length) return;
+      markIndex = ((idx % marks.length) + marks.length) % marks.length;
+      marks.forEach(function (m, i) {
+        m.classList.toggle("is-current", i === markIndex);
+      });
+      try {
+        marks[markIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (eScroll2) {
+        marks[markIndex].scrollIntoView(true);
+      }
+    }
+
+    function applySourceSearch(query) {
+      body.innerHTML = renderProtocolSourceViewerBody(path, doc, { highlight: query });
+      markIndex = 0;
+      if (query && query.trim().length >= 2) {
+        setTimeout(function () {
+          focusMarkAt(0);
+        }, 30);
+      }
+    }
+
+    if (searchInput) {
+      if (highlight) searchInput.value = highlight;
+      var searchTimer = null;
+      searchInput.addEventListener("input", function () {
+        if (searchTimer) clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+          applySourceSearch(searchInput.value || "");
+        }, 180);
+      });
+      searchInput.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          focusMarkAt(markIndex + 1);
+        }
+      });
+    }
+
+    if (activeSection) {
+      setTimeout(function () {
+        scrollToSourceSection(activeSection);
+      }, 60);
+    } else if (highlight && highlight.trim().length >= 2) {
+      setTimeout(function () {
+        focusMarkAt(0);
+      }, 80);
+    }
+  }
+
+  function ensureProtocolSourceTextLoaded(root, path, opts) {
+    opts = opts || {};
+    var panel = root.querySelector('[data-brief-panel="text"]');
+    if (!panel) return;
+    if (panel.getAttribute("data-src-loaded") === "1") {
+      if (opts.forceHighlight) {
+        var viewer = panel.querySelector(".protocol-src-viewer");
+        var doc = getProtocolSourceTextFromCache(path);
+        if (viewer && doc) wireProtocolSourceViewer(root, path, doc, opts);
+      }
+      return;
+    }
+    panel.innerHTML = renderProtocolSourceViewerShell(path);
+    fetchProtocolSourceText(path)
+      .then(function (doc) {
+        if (!doc || !doc.available) {
+          panel.innerHTML =
+            '<p class="protocol-src-empty">Текст протокола недоступен. Используйте вкладку «Сводка» или откройте PDF.</p>';
+          return;
+        }
+        panel.setAttribute("data-src-loaded", "1");
+        wireProtocolSourceViewer(root, path, doc, opts);
+      })
+      .catch(function () {
+        panel.innerHTML =
+          '<p class="protocol-src-empty">Не удалось загрузить текст протокола.</p>';
+      });
+  }
+
+  function openProtocolTextTab(root, path, opts) {
+    opts = opts || {};
+    var tab = root.querySelector('.protocol-brief-tab[data-brief-tab="text"]');
+    if (tab) {
+      root.querySelectorAll(".protocol-brief-tab").forEach(function (t) {
+        t.classList.toggle("is-active", t === tab);
+      });
+      root.querySelectorAll(".protocol-brief-panel").forEach(function (panel) {
+        panel.hidden = panel.getAttribute("data-brief-panel") !== "text";
+      });
+    }
+    ensureProtocolSourceTextLoaded(root, path, opts);
+  }
+
   function sendBriefFeedback(path, conditionId, blockId, rating) {
     fetch(apiBaseUrl() + "/api/brief-feedback", {
       method: "POST",
@@ -24642,8 +25141,13 @@
     var html = '<div class="protocol-brief-item">';
     html += '<div class="protocol-brief-item__head">';
     html += obligationBadgeHtml(it.obligation);
+    var hl = (it.quote && it.quote !== it.text ? it.quote : it.text) || "";
     html +=
-      '<span class="protocol-brief-item__text">' + escapeHtml(String(it.text)) + "</span>";
+      '<span class="protocol-brief-item__text protocol-brief-item__text--link" data-brief-highlight="' +
+      escapeHtmlAttr(String(hl).slice(0, 120)) +
+      '" title="Показать в тексте протокола">' +
+      escapeHtml(String(it.text)) +
+      "</span>";
     html += "</div>";
     var meta = [];
     if (it.page_start) meta.push("стр. " + String(it.page_start));
@@ -24752,6 +25256,8 @@
       '<button type="button" class="protocol-brief-tab' +
       (defaultTab === "summary" ? " is-active" : "") +
       '" data-brief-tab="summary" role="tab">Сводка</button>';
+    html +=
+      '<button type="button" class="protocol-brief-tab" data-brief-tab="text" role="tab">Текст протокола</button>';
     if (pdfExcerpt || (structEx && structEx.sections && structEx.sections.length)) {
       html +=
         '<button type="button" class="protocol-brief-tab" data-brief-tab="pdf" role="tab">PDF-фрагмент</button>';
@@ -24848,6 +25354,10 @@
         for (ei = 0; ei < eitems.length; ei++) {
           html += renderBriefItemHtml(eitems[ei]);
         }
+        html +=
+          '<button type="button" class="protocol-brief-block__btn protocol-brief-block__btn--text" data-brief-open-text="' +
+          escapeHtmlAttr(esec.id || "") +
+          '">В тексте протокола</button>';
         if (esec.has_more) {
           html +=
             '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
@@ -24889,6 +25399,10 @@
           '" data-brief-section-label="' +
           escapeHtmlAttr(sec.label || "") +
           '">Цитаты из раздела</button>';
+        html +=
+          '<button type="button" class="protocol-brief-block__btn protocol-brief-block__btn--text" data-brief-open-text="' +
+          escapeHtmlAttr(sec.id || "") +
+          '">В тексте протокола</button>';
         html += "</article>";
       }
       if (!sections.length) {
@@ -24897,6 +25411,11 @@
       }
     }
     html += "</div></div>";
+
+    html +=
+      '<div class="protocol-brief-panel" data-brief-panel="text" hidden role="tabpanel">' +
+      renderProtocolSourceViewerShell(path) +
+      "</div>";
 
     if (pdfExcerpt || (structEx && structEx.sections)) {
       html += '<div class="protocol-brief-panel" data-brief-panel="pdf" hidden role="tabpanel">';
@@ -24977,6 +25496,21 @@
         root.querySelectorAll(".protocol-brief-panel").forEach(function (panel) {
           panel.hidden = panel.getAttribute("data-brief-panel") !== id;
         });
+        if (id === "text") {
+          ensureProtocolSourceTextLoaded(root, path, {});
+        }
+      });
+    });
+    root.querySelectorAll("[data-brief-open-text]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var sid = btn.getAttribute("data-brief-open-text") || "";
+        openProtocolTextTab(root, path, { briefSection: sid });
+      });
+    });
+    root.querySelectorAll("[data-brief-highlight]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var hl = el.getAttribute("data-brief-highlight") || "";
+        openProtocolTextTab(root, path, { highlight: hl, forceHighlight: true });
       });
     });
     root.querySelectorAll("[data-brief-section]").forEach(function (btn) {
