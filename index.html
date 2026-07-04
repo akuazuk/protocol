@@ -116,7 +116,10 @@
       margin: 0;
       font-family: "DM Sans", system-ui, sans-serif;
       color: var(--text);
-      background: linear-gradient(180deg, #f0f7f4 0%, #e8f3ef 38%, #dceae4 100%);
+      background:
+        radial-gradient(ellipse 90% 55% at 0% 0%, rgba(219, 238, 254, 0.55), transparent 52%),
+        radial-gradient(ellipse 80% 50% at 100% 0%, rgba(216, 245, 234, 0.65), transparent 48%),
+        linear-gradient(180deg, #f4fbf7 0%, #eaf6f1 42%, #e2f0ea 100%);
       min-height: 100vh;
     }
 
@@ -3007,24 +3010,32 @@
     }
 
     .btn-voice {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       font-family: inherit;
-      font-weight: 800;
-      font-size: 0.93rem;
-      padding: 0.7rem 1.15rem;
-      border-radius: 14px;
-      border: 2px solid transparent;
-      background:
-        linear-gradient(180deg, #fff 0%, var(--green-100) 100%) padding-box,
-        linear-gradient(135deg, var(--green-400), var(--green-600), var(--green-800)) border-box;
-      color: var(--green-900);
+      font-weight: 600;
+      font-size: 0.78rem;
+      padding: 0.38rem 0.72rem;
+      border-radius: 10px;
+      border: 1px solid var(--pastel-mint-border);
+      background: linear-gradient(180deg, #fff 0%, var(--pastel-mint-soft) 100%);
+      color: var(--pastel-mint-text);
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(13, 92, 74, 0.12);
+      box-shadow: 0 2px 8px rgba(13, 92, 74, 0.08);
       transition: transform 0.12s, box-shadow 0.12s;
     }
 
+    .btn-voice svg {
+      width: 0.95rem;
+      height: 0.95rem;
+      flex-shrink: 0;
+    }
+
     .btn-voice:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(13, 92, 74, 0.18);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 92, 74, 0.12);
+      background: linear-gradient(180deg, #fff 0%, var(--pastel-mint) 100%);
     }
 
     .btn-voice:disabled {
@@ -9886,16 +9897,15 @@
     /* Текстовый viewer протокола (компактный клинический вид) */
     .protocol-src-viewer {
       display: grid;
-      grid-template-columns: minmax(10.5rem, 12.5rem) 1fr;
-      gap: 0.55rem;
-      min-height: 12rem;
-      max-height: min(64vh, 36rem);
+      grid-template-columns: minmax(9.5rem, 11.5rem) minmax(0, 1fr);
+      gap: 0.65rem;
+      align-items: start;
+      min-height: 14rem;
     }
 
     @media (max-width: 720px) {
       .protocol-src-viewer {
         grid-template-columns: 1fr;
-        max-height: none;
       }
     }
 
@@ -9903,28 +9913,95 @@
       grid-column: 1 / -1;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
+      gap: 0.45rem;
       align-items: center;
-      padding: 0.45rem 0.55rem;
-      border-radius: 12px;
-      border: 1px solid rgba(203, 213, 225, 0.55);
-      background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), #fff);
+      padding: 0.55rem 0.65rem;
+      border-radius: 14px;
+      border: 1px solid var(--pastel-mint-border);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98), var(--pastel-mint-soft));
+      box-shadow: 0 8px 24px rgba(13, 92, 74, 0.08);
+    }
+
+    .protocol-src-back {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.34rem 0.58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: #fff;
+      color: var(--green-800);
+      font-size: 0.72rem;
+      font-weight: 650;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .protocol-src-back:hover {
+      background: var(--pastel-mint-soft);
+    }
+
+    .protocol-src-search-wrap {
+      flex: 1 1 14rem;
+      min-width: 0;
+      display: flex;
+      align-items: stretch;
+      gap: 0.35rem;
     }
 
     .protocol-src-search {
-      flex: 1 1 11rem;
-      min-width: 9rem;
+      flex: 1 1 auto;
+      min-width: 0;
       font-family: inherit;
       font-size: 0.8rem;
-      padding: 0.4rem 0.62rem;
-      border-radius: 9px;
+      padding: 0.42rem 0.62rem;
+      border-radius: 10px;
       border: 1px solid rgba(203, 213, 225, 0.85);
       background: #fff;
     }
 
     .protocol-src-search:focus {
-      outline: 2px solid rgba(26, 138, 114, 0.35);
+      outline: 2px solid rgba(26, 138, 114, 0.28);
       border-color: var(--green-700);
+    }
+
+    .protocol-src-search-actions {
+      display: flex;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    .protocol-src-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.05rem;
+      height: 2.05rem;
+      padding: 0;
+      border-radius: 10px;
+      border: 1px solid rgba(203, 213, 225, 0.85);
+      background: #fff;
+      color: var(--green-800);
+      cursor: pointer;
+    }
+
+    .protocol-src-icon-btn svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .protocol-src-icon-btn--go {
+      background: linear-gradient(180deg, #fff, var(--pastel-mint-soft));
+      border-color: rgba(26, 138, 114, 0.35);
+    }
+
+    .protocol-src-icon-btn--reset {
+      color: #64748b;
+    }
+
+    .protocol-src-icon-btn:hover {
+      transform: translateY(-1px);
     }
 
     .protocol-src-hint,
@@ -9946,12 +10023,28 @@
       font-family: inherit;
       font-size: 0.7rem;
       font-weight: 650;
-      padding: 0.2rem 0.55rem;
+      padding: 0.24rem 0.62rem;
       border-radius: 999px;
       border: 1px solid rgba(203, 213, 225, 0.9);
-      background: #f8fafc;
+      background: #fff;
       color: #334155;
       cursor: pointer;
+    }
+
+    .protocol-src-intent-chip[data-src-intent="treatment"] {
+      background: var(--pastel-mint-soft);
+    }
+
+    .protocol-src-intent-chip[data-src-intent="diagnostics"] {
+      background: var(--pastel-sky);
+    }
+
+    .protocol-src-intent-chip[data-src-intent="diagnosis"] {
+      background: var(--pastel-lavender);
+    }
+
+    .protocol-src-intent-chip[data-src-intent="followup"] {
+      background: var(--pastel-peach);
     }
 
     .protocol-src-intent-chip:hover {
@@ -10029,11 +10122,13 @@
 
     .protocol-src-toc {
       overflow: auto;
-      padding: 0.4rem;
-      border-radius: 12px;
-      border: 1px solid rgba(203, 213, 225, 0.55);
-      background: rgba(248, 250, 252, 0.92);
-      max-height: min(58vh, 32rem);
+      padding: 0.45rem;
+      border-radius: 14px;
+      border: 1px solid var(--pastel-mint-border);
+      background: rgba(255, 255, 255, 0.96);
+      min-height: 14rem;
+      max-height: min(70vh, 36rem);
+      box-shadow: 0 8px 24px rgba(13, 92, 74, 0.06);
     }
 
     .protocol-src-toc__title {
@@ -10089,13 +10184,21 @@
       color: var(--green-800);
     }
 
+    .protocol-src-toc__btn span:first-child {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
     .protocol-src-body {
       overflow: auto;
-      padding: 0.35rem 0.4rem;
-      border-radius: 12px;
-      border: 1px solid rgba(203, 213, 225, 0.55);
+      padding: 0.4rem 0.45rem;
+      border-radius: 14px;
+      border: 1px solid var(--pastel-mint-border);
       background: #fff;
-      max-height: min(58vh, 32rem);
+      min-height: 14rem;
+      max-height: min(70vh, 36rem);
+      box-shadow: 0 8px 24px rgba(13, 92, 74, 0.06);
     }
 
     .protocol-src-section {
@@ -10171,9 +10274,17 @@
       color: #475569;
     }
 
+    .protocol-src-section > summary span:first-child {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
     .protocol-src-item__lead {
       flex: 1;
       min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .protocol-src-item__body {
@@ -10182,6 +10293,7 @@
       font-size: 0.74rem;
       line-height: 1.42;
       color: #475569;
+      overflow-wrap: anywhere;
     }
 
     .protocol-src-item__meta {
@@ -10757,9 +10869,9 @@
     .proto-nav-card {
       padding: 0.85rem 0.95rem;
       border-radius: 14px;
-      border: 1px solid rgba(203, 213, 225, 0.65);
-      background: #fff;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+      border: 1px solid var(--pastel-mint-border);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98), var(--pastel-mint-soft));
+      box-shadow: 0 4px 16px rgba(52, 168, 130, 0.1);
     }
 
     .proto-nav-card--recommended {
@@ -12188,7 +12300,8 @@
                       title="Речь превращается в текст в поле выше (Chrome, Edge, Safari)"
                       aria-describedby="voice-hint"
                     >
-                      Надиктовать в поле
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+                      <span class="btn-voice__label">Надиктовать</span>
                     </button>
                     <p class="query-toolbar__hint" id="voice-hint">
                       Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
@@ -12267,7 +12380,7 @@
             <span class="hero-chip">кашель 3 дня → Найти → коды МКБ</span>
           </div>
           <p class="hero-help-footnote">
-            <strong>Совет:</strong> на телефоне можно надиктовать в поле кнопкой <strong>«Надиктовать в поле»</strong> (слева под
+            <strong>Совет:</strong> на телефоне можно надиктовать в поле кнопкой <strong>«Надиктовать»</strong> (слева под
             полем) - аудио на сервер не уходит.
           </p>
         </div>
@@ -14304,6 +14417,12 @@
     rec.continuous = true;
     var busy = false;
     var hideTimer = null;
+    var voiceLabel = btn.querySelector(".btn-voice__label");
+
+    function setVoiceBtnLabel(text) {
+      if (voiceLabel) voiceLabel.textContent = text;
+      else btn.textContent = text;
+    }
 
     function clearHideTimer() {
       if (hideTimer) {
@@ -14360,7 +14479,7 @@
       busy = true;
       clearHideTimer();
       btn.classList.add("recording");
-      btn.textContent = "Стоп";
+      setVoiceBtnLabel("Стоп");
       showVoicePanel(
         "recording",
         "Идёт запись голоса. Говорите в микрофон - речь распознаётся в браузере и переводится в текст (аудио на сервер не отправляется)."
@@ -14371,10 +14490,10 @@
       } catch (e) {
         busy = false;
         btn.classList.remove("recording");
-        btn.textContent = "Надиктовать в поле";
+        setVoiceBtnLabel("Надиктовать");
         showVoicePanel(
           "processing",
-          "Не удалось запустить запись. Разрешите доступ к микрофону и нажмите «Надиктовать в поле» снова."
+          "Не удалось запустить запись. Разрешите доступ к микрофону и нажмите «Надиктовать» снова."
         );
         scheduleHidePanel(5000);
       }
@@ -14419,7 +14538,7 @@
     rec.onend = function () {
       busy = false;
       btn.classList.remove("recording");
-      btn.textContent = "Надиктовать в поле";
+      setVoiceBtnLabel("Надиктовать");
       setInterim("");
       if (statusText) {
         statusText.textContent =
@@ -14436,7 +14555,7 @@
     rec.onerror = function (ev) {
       busy = false;
       btn.classList.remove("recording");
-      btn.textContent = "Надиктовать в поле";
+      setVoiceBtnLabel("Надиктовать");
       var err = ev && ev.error ? String(ev.error) : "";
       showVoicePanel(
         "processing",
@@ -25724,15 +25843,30 @@
     return html;
   }
 
+  var PROTO_SRC_SEARCH_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
+  var PROTO_SRC_RESET_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
   function renderProtocolSourceViewerShell(path) {
     return (
       '<div class="protocol-src-viewer" data-proto-src-path="' +
       escapeHtmlAttr(path) +
       '">' +
       '<div class="protocol-src-toolbar">' +
+      '<button type="button" class="protocol-src-back" data-protocol-src-back title="К результатам поиска">← К поиску</button>' +
+      '<div class="protocol-src-search-wrap">' +
       '<input type="search" class="protocol-src-search" placeholder="Лекарства, обследования, диагноз…" aria-label="Поиск по протоколу" autocomplete="off" />' +
+      '<div class="protocol-src-search-actions">' +
+      '<button type="button" class="protocol-src-icon-btn protocol-src-icon-btn--reset" title="Сбросить" aria-label="Сбросить поиск">' +
+      PROTO_SRC_RESET_SVG +
+      "</button>" +
+      '<button type="button" class="protocol-src-icon-btn protocol-src-icon-btn--go" title="Найти" aria-label="Найти в протоколе">' +
+      PROTO_SRC_SEARCH_SVG +
+      "</button>" +
+      "</div></div>" +
       '<button type="button" class="protocol-src-open-tab">Открыть в новой вкладке</button>' +
-      '<span class="protocol-src-hint">Enter - следующее</span>' +
+      '<span class="protocol-src-hint">Нажмите лупу для поиска · Enter - следующее совпадение</span>' +
       '<span class="protocol-src-stats" hidden></span>' +
       "</div>" +
       '<div class="protocol-src-overview is-empty" aria-live="polite"></div>' +
@@ -25766,6 +25900,10 @@
     var searchInput = viewer.querySelector(".protocol-src-search");
     var statsEl = viewer.querySelector(".protocol-src-stats");
     var openTabBtn = viewer.querySelector(".protocol-src-open-tab");
+    var btnGo = viewer.querySelector(".protocol-src-icon-btn--go");
+    var btnReset = viewer.querySelector(".protocol-src-icon-btn--reset");
+    var backBtn = viewer.querySelector("[data-protocol-src-back]");
+    var activeQuery = "";
     if (!toc || !body || !baseView) return;
 
     function renderToc(viewForToc, currentQuery, tocOpts) {
@@ -25857,6 +25995,7 @@
 
     function applySourceSearch(query) {
       var q = String(query || "").trim();
+      activeQuery = q;
       var overviewEl = viewer.querySelector(".protocol-src-overview");
       if (q.length < 2) {
         if (overviewEl) {
@@ -25925,6 +26064,7 @@
     }
 
     if (highlight && highlight.trim().length >= 2) {
+      if (searchInput) searchInput.value = highlight;
       applySourceSearch(highlight);
     } else {
       renderToc(baseView, highlight);
@@ -25934,19 +26074,48 @@
       });
     }
 
+    function runSourceSearch() {
+      if (searchInput) applySourceSearch(searchInput.value || "");
+    }
+
+    function runSourceReset() {
+      if (!searchInput) return;
+      searchInput.value = "";
+      applySourceSearch("");
+      searchInput.focus();
+    }
+
     if (searchInput) {
-      if (highlight) searchInput.value = highlight;
-      var searchTimer = null;
-      searchInput.addEventListener("input", function () {
-        if (searchTimer) clearTimeout(searchTimer);
-        searchTimer = setTimeout(function () {
-          applySourceSearch(searchInput.value || "");
-        }, 180);
-      });
+      if (btnGo) btnGo.addEventListener("click", runSourceSearch);
+      if (btnReset) btnReset.addEventListener("click", runSourceReset);
       searchInput.addEventListener("keydown", function (ev) {
         if (ev.key === "Enter") {
           ev.preventDefault();
-          focusMarkAt(markIndex + 1);
+          var cur = String(searchInput.value || "").trim();
+          if (activeQuery && cur === activeQuery) focusMarkAt(markIndex + 1);
+          else runSourceSearch();
+        }
+      });
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", function () {
+        var briefRoot = root.closest(".assist-card-inner");
+        var visitTab = briefRoot && briefRoot.querySelector('.protocol-brief-tab[data-brief-tab="visit"]');
+        if (visitTab) {
+          visitTab.click();
+          return;
+        }
+        var results = document.getElementById("section-results");
+        if (results) {
+          results.hidden = false;
+          try {
+            results.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (eBack) {
+            results.scrollIntoView(true);
+          }
+        } else {
+          window.location.href = "/";
         }
       });
     }
@@ -25957,13 +26126,12 @@
         var intent = PROTO_SEARCH_INTENTS[key];
         if (!intent || !searchInput) return;
         var next = intent.phrases[0] || intent.label || "";
-        if (searchInput.value === next) {
-          searchInput.value = "";
-          applySourceSearch("");
+        if (searchInput.value === next && activeQuery === next) {
+          runSourceReset();
           return;
         }
         searchInput.value = next;
-        applySourceSearch(next);
+        runSourceSearch();
       });
     });
 
