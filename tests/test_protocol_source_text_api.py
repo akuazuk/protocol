@@ -13,7 +13,11 @@ def test_resolve_protocol_source_text_venous() -> None:
     assert out["available"] is True
     assert out["block_count"] > 0
     assert out["toc"]
-    assert "diagnostics" in (out.get("sections") or {})
+    view = out.get("view") or {}
+    assert view.get("toc")
+    assert view["stats"]["shown_blocks"] > 0
+    assert view["stats"]["shown_blocks"] < view["stats"]["raw_blocks"]
+    assert "diagnosis" in (view.get("sections") or {})
 
 
 def test_resolve_protocol_source_text_missing() -> None:

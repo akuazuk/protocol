@@ -185,8 +185,8 @@ def load_source_text_by_path(catalog_path: str) -> dict[str, Any] | None:
     return None
 
 
-def resolve_protocol_source_text(catalog_path: str) -> dict[str, Any]:
-    """Полный текст протокола по разделам для интерактивного viewer в UI."""
+def _resolve_protocol_source_text_raw(catalog_path: str) -> dict[str, Any]:
+    """Сырой source_text по разделам (без клинической фильтрации)."""
     norm = (catalog_path or "").replace("\\", "/").strip()
     doc = load_source_text_by_path(norm)
     if not doc:
@@ -217,6 +217,19 @@ def resolve_protocol_source_text(catalog_path: str) -> dict[str, Any]:
         "section_labels": dict(_SECTION_LABELS_RU),
         "llm_used": False,
     }
+
+
+def resolve_protocol_source_text(catalog_path: str, *, clinical_view: bool = True) -> dict[str, Any]:
+    """Полный текст протокола + опционально компактное клиническое представление."""
+    base = _resolve_protocol_source_text_raw(catalog_path)
+    if not base.get("available"):
+        return base
+    if clinical_view:
+        from clinical_knowledge.protocol_source_view import prepare_protocol_source_view
+
+        base["view"] = prepare_protocol_source_view(base)
+        base["view_available"] = bool((base["view"].get("toc") or []))
+    return base
 
 
 def section_text_blob(doc: dict[str, Any], section_keys: list[str], *, max_chars: int = 12000) -> str:

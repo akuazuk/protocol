@@ -8197,7 +8197,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-04-r30-proto-text-viewer"
+BUILD_VERSION = "2026-07-04-r31-proto-viewer-compact"
 
 
 def _app_version() -> str:
@@ -11781,6 +11781,17 @@ if (ROOT / "index.html").is_file():
         return FileResponse(
             path=str(p),
             media_type="application/javascript; charset=utf-8",
+            headers={"Cache-Control": "no-cache"},
+        )
+
+    @app.get("/proto-viewer.html", include_in_schema=False)
+    def _serve_proto_viewer_html() -> FileResponse:
+        p = ROOT / "proto-viewer.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница proto-viewer.html не найдена")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache"},
         )
 

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Навигация по протоколу</title>
+  <style>
+    :root {
+      --green-700: #1a8a72;
+      --green-800: #146b59;
+      --bg: #f4f7f6;
+      --card: #fff;
+      --line: rgba(203, 213, 225, 0.75);
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .pv-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(255,255,255,0.96);
+      border-bottom: 1px solid var(--line);
+      padding: 0.65rem 1rem;
+      backdrop-filter: blur(6px);
+    }
+    .pv-title {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+    .pv-sub {
+      margin: 0.2rem 0 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .pv-main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.75rem 0.85rem 1.25rem;
+    }
+    .protocol-src-viewer {
+      display: grid;
+      grid-template-columns: minmax(11rem, 13rem) 1fr;
+      gap: 0.55rem;
+      min-height: calc(100vh - 5.5rem);
+    }
+    @media (max-width: 760px) {
+      .protocol-src-viewer { grid-template-columns: 1fr; }
+    }
+    .protocol-src-toolbar {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+      padding: 0.45rem 0.55rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .protocol-src-search {
+      flex: 1 1 12rem;
+      font: inherit;
+      font-size: 0.82rem;
+      padding: 0.42rem 0.62rem;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+    }
+    .protocol-src-open-tab, .pv-pdf-btn {
+      font: inherit;
+      font-size: 0.72rem;
+      font-weight: 650;
+      padding: 0.34rem 0.58rem;
+      border-radius: 8px;
+      border: 1px solid rgba(26,138,114,0.35);
+      background: rgba(232,245,241,0.95);
+      color: var(--green-800);
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .protocol-src-hint, .protocol-src-stats { font-size: 0.7rem; color: var(--muted); }
+    .protocol-src-toc, .protocol-src-body {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card);
+      overflow: auto;
+      padding: 0.4rem;
+    }
+    .protocol-src-toc__title {
+      margin: 0 0 0.35rem 0.12rem;
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .protocol-src-toc__btn {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.35rem;
+      width: 100%;
+      margin: 0.18rem 0;
+      padding: 0.42rem 0.48rem;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      font: inherit;
+      font-size: 0.74rem;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .protocol-src-toc__btn.is-active,
+    .protocol-src-toc__btn:hover {
+      border-color: rgba(26,138,114,0.38);
+      background: rgba(232,245,241,0.98);
+      color: var(--green-800);
+    }
+    .protocol-src-toc__count {
+      min-width: 1.15rem;
+      text-align: center;
+      font-size: 0.66rem;
+      font-weight: 700;
+      padding: 0.08rem 0.28rem;
+      border-radius: 999px;
+      background: rgba(226,232,240,0.85);
+    }
+    .protocol-src-section {
+      margin-bottom: 0.45rem;
+      border: 1px solid rgba(226,232,240,0.95);
+      border-radius: 11px;
+      overflow: hidden;
+    }
+    .protocol-src-section.is-active { border-color: rgba(26,138,114,0.35); }
+    .protocol-src-section > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.45rem;
+      padding: 0.48rem 0.58rem;
+      background: rgba(248,250,252,0.9);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+    .protocol-src-section > summary::-webkit-details-marker { display: none; }
+    .protocol-src-section__items { padding: 0.25rem 0.35rem 0.4rem; }
+    .protocol-src-item {
+      margin: 0.28rem 0;
+      border-radius: 9px;
+      border: 1px solid rgba(241,245,249,0.95);
+    }
+    .protocol-src-item > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      gap: 0.42rem;
+      padding: 0.42rem 0.48rem;
+      font-size: 0.76rem;
+    }
+    .protocol-src-item > summary::-webkit-details-marker { display: none; }
+    .protocol-src-item__page {
+      flex-shrink: 0;
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 0.14rem 0.38rem;
+      border-radius: 999px;
+      background: rgba(226,232,240,0.85);
+      color: #475569;
+    }
+    .protocol-src-item__body {
+      margin: 0;
+      padding: 0 0.48rem 0.42rem 2.35rem;
+      font-size: 0.74rem;
+      color: #475569;
+    }
+    .protocol-src-item__meta {
+      padding: 0 0.48rem 0.42rem 2.35rem;
+      font-size: 0.68rem;
+    }
+    .protocol-src-item__meta a { color: var(--green-700); font-weight: 650; text-decoration: none; }
+    .proto-src-mark { background: rgba(250,204,21,0.55); border-radius: 3px; }
+    .proto-src-mark.is-current { background: rgba(251,146,60,0.75); }
+    .protocol-src-empty, .protocol-src-loading { color: var(--muted); font-size: 0.82rem; padding: 0.75rem 0.2rem; }
+  </style>
+</head>
+<body>
+  <header class="pv-header">
+    <h1 class="pv-title" id="pv-title">Навигация по протоколу</h1>
+    <p class="pv-sub" id="pv-sub">Загрузка…</p>
+  </header>
+  <main class="pv-main" id="pv-root"></main>
+  <script>
+  (function () {
+    var ORDER = ["diagnosis", "diagnostics", "treatment", "followup"];
+    function qp(name) {
+      return new URLSearchParams(location.search).get(name) || "";
+    }
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function escAttr(s) { return esc(s); }
+    function escRx(s) { return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+    function hl(text, q) {
+      var e = esc(text);
+      q = String(q || "").trim();
+      if (!q || q.length < 2) return e;
+      try {
+        return e.replace(new RegExp("(" + escRx(q) + ")", "gi"), '<mark class="proto-src-mark">$1</mark>');
+      } catch (err) { return e; }
+    }
+    function pdfHref(path, page) {
+      var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
+      return page ? u + "#page=" + page : u;
+    }
+    function itemHtml(path, item, q, open) {
+      var page = item.page;
+      return (
+        '<details class="protocol-src-item"' + (open ? " open" : "") + ">" +
+        "<summary>" +
+        (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
+        '<span class="protocol-src-item__lead">' + hl(item.lead, q) + "</span></summary>" +
+        '<p class="protocol-src-item__body">' + hl(item.body, q) + "</p>" +
+        (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) +
+          '" target="_blank" rel="noopener">PDF · стр. ' + esc(page) + "</a></p>" : "") +
+        "</details>"
+      );
+    }
+    function bodyHtml(path, view, q, active) {
+      var labels = view.section_labels || {};
+      var html = "";
+      ORDER.forEach(function (sec) {
+        var items = (view.sections || {})[sec] || [];
+        if (!items.length) return;
+        var open = !active || active === sec;
+        html += '<details class="protocol-src-section' + (active === sec ? " is-active" : "") +
+          '" id="proto-src-sec-' + escAttr(sec) + '" data-src-section="' + escAttr(sec) + '"' +
+          (open ? " open" : "") + "><summary><span>" + esc(labels[sec] || sec) +
+          '</span><span class="protocol-src-toc__count">' + items.length + "</span></summary>" +
+          '<div class="protocol-src-section__items">';
+        items.forEach(function (it, i) { html += itemHtml(path, it, q, i === 0 && open); });
+        html += "</div></details>";
+      });
+      return html || '<p class="protocol-src-empty">Клинические пункты не найдены.</p>';
+    }
+    function wire(path, doc, q, active) {
+      var view = doc.view;
+      var root = document.getElementById("pv-root");
+      var shell =
+        '<div class="protocol-src-viewer">' +
+        '<div class="protocol-src-toolbar">' +
+        '<input class="protocol-src-search" type="search" placeholder="Поиск…" value="' + escAttr(q) + '" />' +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">PDF</a>' +
+        '<span class="protocol-src-hint">Enter - следующее</span>' +
+        '<span class="protocol-src-stats">Показано ' + (view.stats.shown_blocks || 0) +
+        " · скрыто " + (view.stats.filtered_blocks || 0) + "</span></div>" +
+        '<nav class="protocol-src-toc" id="pv-toc"></nav>' +
+        '<div class="protocol-src-body" id="pv-body"></div></div>';
+      root.innerHTML = shell;
+      var toc = document.getElementById("pv-toc");
+      var body = document.getElementById("pv-body");
+      var search = root.querySelector(".protocol-src-search");
+      var tocHtml = '<p class="protocol-src-toc__title">Навигация</p>';
+      (view.toc || []).forEach(function (t) {
+        tocHtml += '<button type="button" class="protocol-src-toc__btn' +
+          (active === t.id ? " is-active" : "") + '" data-src-toc="' + escAttr(t.id) + '"><span>' +
+          esc(t.label) + '</span><span class="protocol-src-toc__count">' + t.count + "</span></button>";
+      });
+      toc.innerHTML = tocHtml;
+      body.innerHTML = bodyHtml(path, view, q, active);
+      function jump(sec) {
+        var el = body.querySelector("#proto-src-sec-" + sec);
+        if (!el) return;
+        el.open = true;
+        toc.querySelectorAll("[data-src-toc]").forEach(function (b) {
+          b.classList.toggle("is-active", b.getAttribute("data-src-toc") === sec);
+        });
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      toc.querySelectorAll("[data-src-toc]").forEach(function (b) {
+        b.addEventListener("click", function () { jump(b.getAttribute("data-src-toc") || ""); });
+      });
+      var mi = 0;
+      function focusMark(n) {
+        var marks = body.querySelectorAll(".proto-src-mark");
+        if (!marks.length) return;
+        mi = ((n % marks.length) + marks.length) % marks.length;
+        marks.forEach(function (m, i) { m.classList.toggle("is-current", i === mi); });
+        marks[mi].scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      var timer;
+      search.addEventListener("input", function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          body.innerHTML = bodyHtml(path, view, search.value, active);
+          mi = 0;
+        }, 180);
+      });
+      search.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") { ev.preventDefault(); focusMark(mi + 1); }
+      });
+      if (active) jump(active);
+      else if (q) setTimeout(function () { focusMark(0); }, 80);
+    }
+    var path = qp("path");
+    var section = qp("section");
+    var q = qp("q");
+    if (!path) {
+      document.getElementById("pv-sub").textContent = "Не указан параметр path.";
+      return;
+    }
+    fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (doc) {
+        if (!doc || !doc.view || !doc.view.toc || !doc.view.toc.length) {
+          document.getElementById("pv-sub").textContent = "Навигация недоступна для этого протокола.";
+          return;
+        }
+        document.getElementById("pv-title").textContent = doc.title || "Протокол Минздрава";
+        document.getElementById("pv-sub").textContent = "Клинические пункты без служебного шума PDF";
+        document.title = (doc.title || "Протокол") + " - навигация";
+        wire(path, doc, q, section);
+      })
+      .catch(function () {
+        document.getElementById("pv-sub").textContent = "Ошибка загрузки.";
+      });
+  })();
+  </script>
+</body>
+</html>
