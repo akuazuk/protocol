@@ -29,7 +29,14 @@ def _memory_saver_enabled() -> bool:
     return False
 
 
-def _jsonl_row_to_slim(row: dict[str, Any], *, path: str, chunk_index: int) -> dict[str, Any]:
+def _jsonl_row_to_slim(
+    row: dict[str, Any],
+    *,
+    path: str,
+    chunk_index: int,
+    include_embedding: bool = False,
+    include_entities: bool = False,
+) -> dict[str, Any]:
     """Формат retrieve/gather - совместим с rag_server._load_chunks_from_jsonl."""
     text = (row.get("text") or "").strip()
     rec: dict[str, Any] = {
@@ -56,10 +63,14 @@ def _jsonl_row_to_slim(row: dict[str, Any], *, path: str, chunk_index: int) -> d
         rec["page_from"] = int(row.get("page_from") or 0)
     if row.get("page_to"):
         rec["page_to"] = int(row.get("page_to") or 0)
-    if not _memory_saver_enabled():
+    if row.get("page_to"):
+        rec["page_to"] = int(row.get("page_to") or 0)
+    keep_emb = include_embedding or not _memory_saver_enabled()
+    if keep_emb:
         ert = (row.get("embedding_ready_text") or "").strip()
         if ert and ert != text:
             rec["lex_text"] = ert
+            rec["embedding_ready_text"] = ert
         emb = row.get("embedding")
         if isinstance(emb, list) and len(emb) >= 8:
             rec["embedding"] = [float(x) for x in emb]
@@ -69,6 +80,12 @@ def _jsonl_row_to_slim(row: dict[str, Any], *, path: str, chunk_index: int) -> d
         lex_cap = int(os.environ.get("RAG_LEXICAL_MAX_CHARS", "0") or "0")
         if lex_cap > 0 and len(text) > lex_cap:
             rec["lex_text"] = text[:lex_cap]
+    if include_entities:
+        rec["chunk_type"] = (row.get("chunk_type") or rec.get("kind") or "body").strip() or "body"
+        for fld in ("drugs", "imaging", "lab_tests", "procedures", "dosages"):
+            vals = row.get(fld)
+            if isinstance(vals, list) and vals:
+                rec[fld] = vals
     return rec
 
 
@@ -220,15 +237,13 @@ class LazyChunkStore:
                 return sp == norm or sp.endswith(tail) or norm.endswith(sp.split("/")[-1])
         return False
 
-    def _load_rows_for_entry(self, entry: PathManifestEntry) -> list[dict]:
+    def _load_rows_for_entry(self, entry: PathManifestEntry, *, semantic: bool = False) -> list[dict]:
         self._stats["disk_reads"] += 1
         part_name = entry.source_part
         part_file = self.corpus_dir / part_name if part_name else None
         raw_rows: list[dict] = []
         if part_file and part_file.is_file() and entry.byte_offsets:
             raw_rows = self._read_offsets(part_file, entry.byte_offsets)
-            # Устаревший/рассинхронизированный манифест: offsets указывают не на тот протокол -
-            # откатываемся на скан по source_path, чтобы не терять чанки.
             if raw_rows and not self._rows_match_entry(raw_rows, entry):
                 raw_rows = []
         if not raw_rows and part_file and part_file.is_file():
@@ -240,7 +255,13 @@ class LazyChunkStore:
                     break
         out: list[dict] = []
         for i, row in enumerate(raw_rows):
-            ch = _jsonl_row_to_slim(row, path=entry.path, chunk_index=i)
+            ch = _jsonl_row_to_slim(
+                row,
+                path=entry.path,
+                chunk_index=i,
+                include_embedding=semantic,
+                include_entities=semantic,
+            )
             self._enrich_chunk(ch)
             out.append(ch)
         out.sort(key=lambda r: (r.get("page_from") or 0, r.get("chunk_index") or 0))
@@ -254,15 +275,17 @@ class LazyChunkStore:
         *,
         max_chunks: int = 64,
         chunk_types: set[str] | None = None,
+        semantic: bool = False,
     ) -> list[dict]:
         norm = _norm_path(path)
         if not norm:
             return []
+        cache_key = f"{norm}:semantic" if semantic else norm
         with self._lock:
-            if norm in self._cache:
+            if cache_key in self._cache:
                 self._stats["hits"] += 1
-                self._cache.move_to_end(norm)
-                cached = list(self._cache[norm])
+                self._cache.move_to_end(cache_key)
+                cached = list(self._cache[cache_key])
             else:
                 cached = None
         if cached is None:
@@ -270,8 +293,8 @@ class LazyChunkStore:
             entry = self.manifest.get(norm)
             if entry is None:
                 return []
-            loaded = self._load_rows_for_entry(entry)
-            cached = self._put_cache(norm, loaded)
+            loaded = self._load_rows_for_entry(entry, semantic=semantic)
+            cached = self._put_cache(cache_key, loaded)
         if chunk_types:
             cached = [c for c in cached if str(c.get("kind") or "body") in chunk_types]
         return cached[: max(1, max_chunks)]

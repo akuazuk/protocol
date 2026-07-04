@@ -17,11 +17,13 @@ _faiss_index: Any = None
 
 
 def vector_index_enabled() -> bool:
-    return os.environ.get("RAG_VECTOR_INDEX", "0").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
+    raw = os.environ.get("RAG_VECTOR_INDEX", "").strip().lower()
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    if raw in ("0", "false", "no", "off"):
+        return False
+    idx = default_index_path()
+    return (idx / "meta.json").is_file() and (idx / "vectors.npy").is_file()
 
 
 def default_index_path() -> Path:

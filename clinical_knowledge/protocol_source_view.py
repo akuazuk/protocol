@@ -326,7 +326,7 @@ def _iter_blocks(doc: dict[str, Any]) -> list[dict[str, Any]]:
 
 def format_rich_chunk_nav_item(block: dict[str, Any]) -> dict[str, Any] | None:
     """Один rich-чанк -> элемент навигатора (или None если шум)."""
-    ctype = str(block.get("chunk_type") or "").strip().lower()
+    ctype = str(block.get("chunk_type") or block.get("kind") or "").strip().lower()
     if ctype in _DROP_TYPES or ctype not in _TYPE_TO_GROUP:
         return None
     group_id = _TYPE_TO_GROUP[ctype]
