@@ -29,6 +29,14 @@ def _memory_saver_enabled() -> bool:
     return False
 
 
+def _protocol_semantic_embed_enabled() -> bool:
+    """Per-path embeddings для protocol semantic даже при RAG_MEMORY_SAVER=1."""
+    import os
+
+    v = (os.environ.get("RAG_PROTOCOL_SEMANTIC_EMBED") or "1").strip().lower()
+    return v not in ("0", "false", "no")
+
+
 def _jsonl_row_to_slim(
     row: dict[str, Any],
     *,
@@ -65,7 +73,9 @@ def _jsonl_row_to_slim(
         rec["page_to"] = int(row.get("page_to") or 0)
     if row.get("page_to"):
         rec["page_to"] = int(row.get("page_to") or 0)
-    keep_emb = include_embedding or not _memory_saver_enabled()
+    keep_emb = include_embedding and (
+        not _memory_saver_enabled() or _protocol_semantic_embed_enabled()
+    )
     if keep_emb:
         ert = (row.get("embedding_ready_text") or "").strip()
         if ert and ert != text:

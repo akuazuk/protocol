@@ -241,10 +241,10 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--tier", choices=("L1", "L2"), default="L1")
     ap.add_argument("--semantic-probe", action="store_true", default=True)
-    ap.add_argument("--warm-index", action="store_true", default=True)
+    ap.add_argument("--warm-index", action="store_true", default=False)
     ap.add_argument("--no-warm-index", action="store_false", dest="warm_index")
     ap.add_argument("--no-semantic-probe", action="store_false", dest="semantic_probe")
-    ap.add_argument("--pause-sec", type=float, default=3.0, help="Пауза между КЗ (снижает OOM на Render)")
+    ap.add_argument("--pause-sec", type=float, default=20.0, help="Пауза между КЗ (снижает OOM на Render)")
     args = ap.parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)

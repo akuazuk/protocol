@@ -151,6 +151,7 @@ def run_case(
         "matched_protocols_full": matched[:3],
         "retrieval_top": [p[-70:] for p in retrieval[:3]],
         "retrieval_top_full": retrieval[:3],
+        "retrieval_paths_count": result.get("retrieval_paths_count") or len(retrieval),
         "rag_chunks_n": rag_chunks_n,
         "text_len": len(text),
         "server_version": result.get("server_version"),

@@ -29,6 +29,8 @@ def test_l1_tier_structured():
     assert out["review_tier"] == "L1"
     assert out.get("structured_analysis")
     assert out.get("llm_used") is False
+    assert "retrieval_paths_count" in out
+    assert isinstance(out.get("retrieval_paths_count"), int)
 
 
 def test_l2_delegates_pipeline():

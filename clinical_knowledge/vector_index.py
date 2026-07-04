@@ -1,4 +1,4 @@
-"""Векторный индекс для precomputed embeddings чанков (FAISS или numpy fallback)."""
+"""Векторный индекс для precomputed embeddings чанков (FAISS или numpy/mmap fallback)."""
 from __future__ import annotations
 
 import json
@@ -14,6 +14,8 @@ _index_vectors: np.ndarray | None = None
 _index_chunk_indices: list[int] | None = None
 _index_dim: int = 0
 _faiss_index: Any = None
+_index_mmap: bool = False
+_index_backend: str = ""
 
 
 def vector_index_enabled() -> bool:
@@ -24,6 +26,16 @@ def vector_index_enabled() -> bool:
         return False
     idx = default_index_path()
     return (idx / "meta.json").is_file() and (idx / "vectors.npy").is_file()
+
+
+def vector_mmap_enabled() -> bool:
+    """mmap vectors.npy вместо полной загрузки в heap (Render Standard 2 GiB)."""
+    raw = os.environ.get("RAG_VECTOR_MMAP", "").strip().lower()
+    if raw in ("0", "false", "no", "off"):
+        return False
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    return True
 
 
 def default_index_path() -> Path:
@@ -46,9 +58,33 @@ def _normalize_rows(matrix: np.ndarray) -> np.ndarray:
     return matrix / norms
 
 
+def _set_index_state(
+    matrix: np.ndarray,
+    idx_map: list[int],
+    *,
+    mmap: bool = False,
+    backend: str = "",
+) -> None:
+    global _index_vectors, _index_chunk_indices, _index_dim, _faiss_index, _index_mmap, _index_backend
+    _index_vectors = matrix
+    _index_chunk_indices = idx_map
+    _index_dim = int(matrix.shape[1]) if matrix.ndim == 2 else 0
+    _index_mmap = mmap
+    _index_backend = backend
+    _faiss_index = None
+    if not mmap and _index_dim > 0:
+        try:
+            import faiss  # type: ignore
+
+            _faiss_index = faiss.IndexFlatIP(_index_dim)
+            _faiss_index.add(np.asarray(matrix, dtype=np.float32))
+            _index_backend = backend or "faiss"
+        except ImportError:
+            _index_backend = backend or "numpy"
+
+
 def build_index_from_chunks(chunks: list[dict]) -> dict[str, Any]:
     """Построить индекс из чанков с полем embedding. Возвращает статистику."""
-    global _index_vectors, _index_chunk_indices, _index_dim, _faiss_index
     rows: list[list[float]] = []
     idx_map: list[int] = []
     for i, ch in enumerate(chunks):
@@ -57,26 +93,15 @@ def build_index_from_chunks(chunks: list[dict]) -> dict[str, Any]:
         rows.append([float(x) for x in ch["embedding"]])
         idx_map.append(i)
     if not rows:
-        _index_vectors = None
-        _index_chunk_indices = None
-        _faiss_index = None
+        _set_index_state(np.empty((0, 0), dtype=np.float32), [], mmap=False, backend="")
         return {"ok": False, "reason": "no_embeddings", "indexed": 0}
 
-    matrix = np.asarray(rows, dtype=np.float32)
-    _index_dim = int(matrix.shape[1])
-    matrix = _normalize_rows(matrix)
-    _index_vectors = matrix
-    _index_chunk_indices = idx_map
-
-    try:
-        import faiss  # type: ignore
-
-        _faiss_index = faiss.IndexFlatIP(_index_dim)
-        _faiss_index.add(matrix)
+    matrix = _normalize_rows(np.asarray(rows, dtype=np.float32))
+    backend = "numpy"
+    _set_index_state(matrix, idx_map, mmap=False, backend=backend)
+    if _faiss_index is not None:
         backend = "faiss"
-    except ImportError:
-        _faiss_index = None
-        backend = "numpy"
+        _index_backend = backend
 
     return {
         "ok": True,
@@ -94,7 +119,7 @@ def save_index(index_dir: Path, chunks: list[dict], *, model: str = "") -> dict[
     index_dir.mkdir(parents=True, exist_ok=True)
     assert _index_vectors is not None
     assert _index_chunk_indices is not None
-    np.save(str(index_dir / "vectors.npy"), _index_vectors)
+    np.save(str(index_dir / "vectors.npy"), np.asarray(_index_vectors, dtype=np.float32))
     meta = {
         "chunk_indices": _index_chunk_indices,
         "dim": _index_dim,
@@ -111,32 +136,29 @@ def save_index(index_dir: Path, chunks: list[dict], *, model: str = "") -> dict[
 
 
 def load_index(index_dir: Path) -> dict[str, Any]:
-    """Загрузить индекс с диска в память."""
-    global _index_vectors, _index_chunk_indices, _index_dim, _faiss_index
+    """Загрузить индекс с диска (mmap по умолчанию - без копии ~1GB в heap)."""
     meta_path = index_dir / "meta.json"
     vec_path = index_dir / "vectors.npy"
     if not meta_path.is_file() or not vec_path.is_file():
         return {"ok": False, "reason": "missing_files"}
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
-    matrix = np.load(str(vec_path))
-    _index_vectors = matrix.astype(np.float32, copy=False)
-    _index_chunk_indices = [int(x) for x in (meta.get("chunk_indices") or [])]
-    _index_dim = int(meta.get("dim") or matrix.shape[1])
-    _faiss_index = None
-    backend = "numpy"
-    try:
-        import faiss  # type: ignore
-
-        _faiss_index = faiss.IndexFlatIP(_index_dim)
-        _faiss_index.add(_index_vectors)
-        backend = "faiss"
-    except ImportError:
-        pass
+    idx_map = [int(x) for x in (meta.get("chunk_indices") or [])]
+    dim = int(meta.get("dim") or 0)
+    use_mmap = vector_mmap_enabled()
+    if use_mmap:
+        matrix = np.load(str(vec_path), mmap_mode="r")
+        if matrix.dtype != np.float32:
+            matrix = matrix.astype(np.float32, copy=False)
+        _set_index_state(matrix, idx_map, mmap=True, backend="numpy_mmap")
+    else:
+        matrix = np.load(str(vec_path)).astype(np.float32, copy=False)
+        _set_index_state(matrix, idx_map, mmap=False, backend="numpy")
     return {
         "ok": True,
-        "indexed": len(_index_chunk_indices),
-        "dim": _index_dim,
-        "backend": backend,
+        "indexed": len(idx_map),
+        "dim": dim or (_index_dim if _index_dim else int(matrix.shape[1])),
+        "backend": _index_backend,
+        "mmap": use_mmap,
         "path": str(index_dir),
     }
 
@@ -145,12 +167,30 @@ def load_index_from_env(chunks: list[dict] | None = None) -> dict[str, Any]:
     """Загрузить с диска или построить из chunks при старте."""
     if not vector_index_enabled():
         return {"ok": False, "reason": "disabled"}
+    if _index_chunk_indices is not None:
+        return {
+            "ok": True,
+            "indexed": len(_index_chunk_indices),
+            "dim": _index_dim,
+            "backend": _index_backend,
+            "mmap": _index_mmap,
+            "cached": True,
+        }
     index_dir = default_index_path()
     if (index_dir / "meta.json").is_file():
         return load_index(index_dir)
     if chunks:
         return build_index_from_chunks(chunks)
     return {"ok": False, "reason": "not_built"}
+
+
+def ensure_index_loaded(chunks: list[dict] | None = None) -> dict[str, Any]:
+    """Ленивая загрузка индекса перед vector search."""
+    if not vector_index_enabled():
+        return {"ok": False, "reason": "disabled"}
+    if _index_chunk_indices is not None:
+        return {"ok": True, "loaded": True, "indexed": len(_index_chunk_indices)}
+    return load_index_from_env(chunks)
 
 
 def _normalize_query_vec(query_vec: list[float]) -> np.ndarray | None:
@@ -166,7 +206,7 @@ def _search_local_ids(q: np.ndarray, k: int) -> list[tuple[int, float]]:
     if _index_vectors is None or not _index_chunk_indices:
         return []
     k = min(k, len(_index_chunk_indices))
-    if _faiss_index is not None:
+    if _faiss_index is not None and not _index_mmap:
         scores, ids = _faiss_index.search(q.reshape(1, -1), k)
         out: list[tuple[int, float]] = []
         for local_i, score in zip(ids[0], scores[0]):
@@ -183,6 +223,7 @@ def search_with_scores(
     top_k: int | None = None,
 ) -> list[tuple[int, float]]:
     """Top-K глобальных индексов чанков с cosine score."""
+    ensure_index_loaded()
     q = _normalize_query_vec(query_vec)
     if q is None or _index_chunk_indices is None:
         return []
@@ -202,6 +243,7 @@ def search_scoped_with_scores(
     """Top-K чанков только из allowed_global_indices с cosine score."""
     if not allowed_global_indices:
         return []
+    ensure_index_loaded()
     q = _normalize_query_vec(query_vec)
     if q is None or _index_vectors is None or not _index_chunk_indices:
         return []
@@ -213,7 +255,7 @@ def search_scoped_with_scores(
         return []
     k = top_k or int(os.environ.get("PROTOCOL_SEMANTIC_TOP_K", "24"))
     k = min(k, len(allowed_local))
-    local_matrix = _index_vectors[allowed_local]
+    local_matrix = np.asarray(_index_vectors[allowed_local], dtype=np.float32)
     scores = local_matrix @ q
     order = np.argsort(-scores)[:k]
     out: list[tuple[int, float]] = []
@@ -234,5 +276,7 @@ def index_stats() -> dict[str, Any]:
         "loaded": _index_chunk_indices is not None,
         "indexed": len(_index_chunk_indices or []),
         "dim": _index_dim,
+        "mmap": _index_mmap,
+        "backend": _index_backend or None,
         "path": str(default_index_path()),
     }

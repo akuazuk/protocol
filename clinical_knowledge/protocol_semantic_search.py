@@ -251,8 +251,8 @@ def search_protocol_semantic(
     """Семантический поиск по чанкам одного протокола."""
     from clinical_knowledge.protocol_links import normalize_protocol_path
     from clinical_knowledge.vector_index import (
+        ensure_index_loaded,
         index_stats,
-        load_index_from_env,
         search_scoped_with_scores,
         vector_index_enabled,
     )
@@ -266,11 +266,8 @@ def search_protocol_semantic(
 
     rs._require_rag_loaded(max_wait_sec=max(3.0, float(os.environ.get("RAG_LOAD_WAIT_LITE_SEC", "28"))))
 
-    if vector_index_enabled() and not index_stats().get("loaded"):
-        load_index_from_env(rs._chunks)
-
-    if vector_index_enabled() and not index_stats().get("loaded"):
-        load_index_from_env(rs._chunks)
+    if vector_index_enabled():
+        ensure_index_loaded(rs._chunks)
 
     protocol_chunks = _load_protocol_chunks(pth)
     if not protocol_chunks:

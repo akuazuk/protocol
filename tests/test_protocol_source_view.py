@@ -88,6 +88,26 @@ def test_treatment_items_searchable_by_drug_intent() -> None:
     assert "treatment" in (items[0].get("intent_tags") or [])
 
 
+def test_short_treatment_chunk_not_filtered_as_noise() -> None:
+    """Короткие treatment-фрагменты PDF (варикоз и др.) остаются в навигаторе."""
+    doc = {
+        "sections": {
+            "any": [
+                {
+                    "chunk_type": "treatment",
+                    "section_title": "Склеротерапия пеной",
+                    "page_from": 12,
+                    "text": "применяется при варикозном расширении вен.",
+                    "drugs": ["полидоканол"],
+                }
+            ]
+        }
+    }
+    view = prepare_protocol_source_view(doc)
+    items = (view["sections"] or {}).get("treatment") or []
+    assert items, "short treatment chunk should pass relaxed noise filter"
+
+
 def test_prepare_view_drops_administrative_only() -> None:
     doc = {
         "sections": {

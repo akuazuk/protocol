@@ -82,6 +82,7 @@ def run_l1_structured_review(
         "disclaimer_ru": "Оценка ориентировочная; не замена МЭЭ и очной экспертизы.",
     }
     alignment_result = None
+    alignment_paths: list[str] = []
     chunk_fn = get_chunks if get_chunks is not None else _l1_get_chunks
 
     if (
@@ -140,6 +141,15 @@ def run_l1_structured_review(
                 review["limitations_ru"] = alignment_result["limitations_ru"]
         except Exception:
             alignment_result = None
+            alignment_paths = []
+
+    retrieval_paths = list(alignment_paths)
+    if not retrieval_paths:
+        retrieval_paths = [
+            str(m.get("source_path") or "")
+            for m in (sa.get("matches") or [])
+            if isinstance(m, dict) and m.get("source_path")
+        ]
 
     return {
         "ok": True,
@@ -155,6 +165,8 @@ def run_l1_structured_review(
         "report_markdown": sa.get("report_markdown"),
         "report_html": sa.get("report_html"),
         "matched_protocols_count": len(sa.get("matches") or []),
+        "retrieval_paths_count": len(retrieval_paths),
+        "retrieval_paths": retrieval_paths[:8],
         "critical_issues_count": len(comp.get("critical_issues") or []),
         "llm_used": False,
         "rag_used": False,

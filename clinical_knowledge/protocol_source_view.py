@@ -177,9 +177,16 @@ def _fingerprint(text: str) -> str:
     return re.sub(r"\s+", " ", text.lower())[:180]
 
 
+# Типы лечения - короткие фрагменты PDF часто клинически значимы.
+_TREATMENT_CHUNK_TYPES = frozenset({"treatment", "drug_list", "pharmacotherapy"})
+
+
 def _is_noise(text: str, chunk_type: str) -> bool:
     t = (text or "").strip()
-    if len(t) < 28:
+    is_treatment = chunk_type in _TREATMENT_CHUNK_TYPES
+    min_len = 20 if is_treatment else 28
+    min_alpha = 14 if is_treatment else 20
+    if len(t) < min_len:
         return True
     if _TABLE_MARK.search(t) or t.count("|") >= 6:
         return True
@@ -196,12 +203,13 @@ def _is_noise(text: str, chunk_type: str) -> bool:
         if is_administrative_text(t):
             return True
         if is_reference_noise(t):
-            if chunk_type not in _TYPE_TO_GROUP or len(t) < 60:
+            ref_min = 48 if is_treatment else 60
+            if chunk_type not in _TYPE_TO_GROUP or len(t) < ref_min:
                 return True
     except Exception:
         pass
     alpha = sum(1 for c in t if c.isalpha())
-    return alpha < 20
+    return alpha < min_alpha
 
 
 def _title_case_lead(lead: str) -> str:
