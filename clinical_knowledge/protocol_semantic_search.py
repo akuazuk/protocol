@@ -212,6 +212,71 @@ def _cosine_score(chunk: dict[str, Any], q_vec: list[float]) -> float:
         return 0.0
 
 
+def _attach_global_indices(chunks: list[dict[str, Any]]) -> None:
+    from clinical_knowledge.vector_index import global_index_for_chunk_id
+
+    for ch in chunks:
+        if ch.get("_global_index") is not None:
+            continue
+        gid = global_index_for_chunk_id(ch.get("chunk_id"))
+        if gid is not None:
+            ch["_global_index"] = gid
+
+
+def _build_vector_hits(
+    protocol_chunks: list[dict[str, Any]],
+    q_vec: list[float] | None,
+    *,
+    top_k: int,
+) -> dict[int, float]:
+    from clinical_knowledge.vector_index import (
+        cosine_for_global_index,
+        index_stats,
+        search_scoped_with_scores,
+    )
+
+    vector_hits: dict[int, float] = {}
+    if not q_vec:
+        return vector_hits
+
+    for i, ch in enumerate(protocol_chunks):
+        cos = 0.0
+        if isinstance(ch.get("embedding"), list):
+            cos = _cosine_score(ch, q_vec)
+        elif ch.get("_global_index") is not None:
+            got = cosine_for_global_index(int(ch["_global_index"]), q_vec)
+            if got is not None:
+                cos = got
+        if cos > 0:
+            vector_hits[i] = max(vector_hits.get(i, 0.0), cos)
+
+    if vector_hits or not index_stats().get("loaded"):
+        return vector_hits
+
+    allowed = {
+        int(ch["_global_index"])
+        for ch in protocol_chunks
+        if ch.get("_global_index") is not None
+    }
+    if not allowed:
+        return vector_hits
+
+    global_to_local = {
+        int(ch["_global_index"]): i
+        for i, ch in enumerate(protocol_chunks)
+        if ch.get("_global_index") is not None
+    }
+    for global_i, score in search_scoped_with_scores(
+        q_vec,
+        allowed,
+        top_k=max(top_k * 3, 24),
+    ):
+        local_i = global_to_local.get(global_i)
+        if local_i is not None:
+            vector_hits[local_i] = max(vector_hits.get(local_i, 0.0), score)
+    return vector_hits
+
+
 def _load_protocol_chunks(path: str) -> list[dict[str, Any]]:
     """Чанки одного протокола: lazy store (semantic) или RAM."""
     import rag_server as rs
@@ -224,10 +289,13 @@ def _load_protocol_chunks(path: str) -> list[dict[str, Any]]:
         if store:
             rows = store.get_chunks_for_path(norm, max_chunks=max_c, semantic=True)
             if rows:
+                _attach_global_indices(rows)
                 return rows
     rows = rs.get_rich_chunks_for_path(norm)
     if rows:
-        return rows[:max_c]
+        out = rows[:max_c]
+        _attach_global_indices(out)
+        return out
     if rs._chunks:
         allowed = rs._chunk_indices_for_path_allowlist(frozenset({norm}))
         out: list[dict[str, Any]] = []
@@ -253,7 +321,6 @@ def search_protocol_semantic(
     from clinical_knowledge.vector_index import (
         ensure_index_loaded,
         index_stats,
-        search_scoped_with_scores,
         vector_index_enabled,
     )
 
@@ -285,38 +352,14 @@ def search_protocol_semantic(
 
     q_vec: list[float] | None = None
     has_inline_emb = any(isinstance(c.get("embedding"), list) for c in protocol_chunks)
-    use_vector = vector_index_enabled() and (has_inline_emb or index_stats().get("loaded"))
+    mapped_n = sum(1 for c in protocol_chunks if c.get("_global_index") is not None)
+    use_vector = vector_index_enabled() and (
+        has_inline_emb or mapped_n > 0 or index_stats().get("loaded")
+    )
     if use_vector:
         q_vec = _embed_query(q)
 
-    vector_hits: dict[int, float] = {}
-    if q_vec and has_inline_emb:
-        for i, ch in enumerate(protocol_chunks):
-            cos = _cosine_score(ch, q_vec)
-            if cos > 0:
-                vector_hits[i] = cos
-    elif q_vec and index_stats().get("loaded"):
-        allowed = {
-            int(ch["_global_index"])
-            for ch in protocol_chunks
-            if ch.get("_global_index") is not None
-        }
-        if not allowed:
-            allowed = rs._chunk_indices_for_path_allowlist(frozenset({pth}))
-        if allowed:
-            global_to_local = {
-                int(ch["_global_index"]): i
-                for i, ch in enumerate(protocol_chunks)
-                if ch.get("_global_index") is not None
-            }
-            for global_i, score in search_scoped_with_scores(
-                q_vec,
-                allowed,
-                top_k=max(k * 3, 24),
-            ):
-                local_i = global_to_local.get(global_i)
-                if local_i is not None:
-                    vector_hits[local_i] = max(vector_hits.get(local_i, 0.0), score)
+    vector_hits = _build_vector_hits(protocol_chunks, q_vec, top_k=k)
 
     ranked: list[tuple[float, dict[str, Any]]] = []
     seen_fp: set[str] = set()
@@ -350,8 +393,10 @@ def search_protocol_semantic(
         "ok": True,
         "path": pth,
         "query": q,
-        "mode": "semantic" if vector_hits else "lexical",
-        "vector_enabled": bool(use_vector and (vector_hits or index_stats().get("loaded"))),
+        "mode": "semantic" if any(s > 0 for s in vector_hits.values()) else "lexical",
+        "vector_enabled": bool(use_vector and index_stats().get("loaded")),
+        "mapped_chunks": mapped_n,
+        "has_inline_emb": has_inline_emb,
         "intents": intents,
         "match_count": len(items),
         "items": items,

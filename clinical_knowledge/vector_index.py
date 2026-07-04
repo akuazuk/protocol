@@ -16,6 +16,8 @@ _index_dim: int = 0
 _faiss_index: Any = None
 _index_mmap: bool = False
 _index_backend: str = ""
+_chunk_id_to_global: dict[str, int] | None = None
+_global_to_local: dict[int, int] | None = None
 
 
 def vector_index_enabled() -> bool:
@@ -66,12 +68,14 @@ def _set_index_state(
     backend: str = "",
 ) -> None:
     global _index_vectors, _index_chunk_indices, _index_dim, _faiss_index, _index_mmap, _index_backend
+    global _chunk_id_to_global, _global_to_local
     _index_vectors = matrix
     _index_chunk_indices = idx_map
     _index_dim = int(matrix.shape[1]) if matrix.ndim == 2 else 0
     _index_mmap = mmap
     _index_backend = backend
     _faiss_index = None
+    _refresh_global_local_maps()
     if not mmap and _index_dim > 0:
         try:
             import faiss  # type: ignore
@@ -111,6 +115,70 @@ def build_index_from_chunks(chunks: list[dict]) -> dict[str, Any]:
     }
 
 
+def _refresh_global_local_maps() -> None:
+    global _global_to_local
+    if _index_chunk_indices is None:
+        _global_to_local = None
+        return
+    _global_to_local = {int(g): i for i, g in enumerate(_index_chunk_indices)}
+
+
+def _write_chunk_id_sidecar(index_dir: Path, chunks: list[dict]) -> int:
+    """chunk_id → глобальный индекс корпуса (для lazy/manifest protocol semantic)."""
+    assert _index_chunk_indices is not None
+    mp: dict[str, int] = {}
+    for global_i in _index_chunk_indices:
+        if not (0 <= int(global_i) < len(chunks)):
+            continue
+        cid = chunks[int(global_i)].get("chunk_id")
+        if cid:
+            mp[str(cid)] = int(global_i)
+    (index_dir / "chunk_id_global.json").write_text(
+        json.dumps(mp, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    return len(mp)
+
+
+def _load_chunk_id_sidecar(index_dir: Path) -> int:
+    global _chunk_id_to_global
+    p = index_dir / "chunk_id_global.json"
+    if not p.is_file():
+        _chunk_id_to_global = {}
+        return 0
+    raw = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        _chunk_id_to_global = {}
+        return 0
+    _chunk_id_to_global = {str(k): int(v) for k, v in raw.items()}
+    return len(_chunk_id_to_global)
+
+
+def global_index_for_chunk_id(chunk_id: str | None) -> int | None:
+    if not chunk_id or not _chunk_id_to_global:
+        return None
+    val = _chunk_id_to_global.get(str(chunk_id))
+    return int(val) if val is not None else None
+
+
+def cosine_for_global_index(global_i: int, query_vec: list[float]) -> float | None:
+    """Cosine по строке vectors.npy (векторы уже L2-нормализованы при сборке индекса)."""
+    ensure_index_loaded()
+    if _index_vectors is None or _global_to_local is None:
+        return None
+    local_i = _global_to_local.get(int(global_i))
+    if local_i is None:
+        return None
+    q = _normalize_query_vec(query_vec)
+    if q is None:
+        return None
+    try:
+        v = np.asarray(_index_vectors[int(local_i)], dtype=np.float32)
+        return float(np.dot(q, v))
+    except Exception:
+        return None
+
+
 def save_index(index_dir: Path, chunks: list[dict], *, model: str = "") -> dict[str, Any]:
     """Сохранить индекс на диск (vectors.npy + meta.json)."""
     stats = build_index_from_chunks(chunks)
@@ -131,6 +199,8 @@ def save_index(index_dir: Path, chunks: list[dict], *, model: str = "") -> dict[
         json.dumps(meta, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+    sidecar_n = _write_chunk_id_sidecar(index_dir, chunks)
+    stats["chunk_id_map"] = sidecar_n
     stats["path"] = str(index_dir)
     return stats
 
@@ -153,12 +223,14 @@ def load_index(index_dir: Path) -> dict[str, Any]:
     else:
         matrix = np.load(str(vec_path)).astype(np.float32, copy=False)
         _set_index_state(matrix, idx_map, mmap=False, backend="numpy")
+    sidecar_n = _load_chunk_id_sidecar(index_dir)
     return {
         "ok": True,
         "indexed": len(idx_map),
         "dim": dim or (_index_dim if _index_dim else int(matrix.shape[1])),
         "backend": _index_backend,
         "mmap": use_mmap,
+        "chunk_id_map": sidecar_n,
         "path": str(index_dir),
     }
 
@@ -278,5 +350,6 @@ def index_stats() -> dict[str, Any]:
         "dim": _index_dim,
         "mmap": _index_mmap,
         "backend": _index_backend or None,
+        "chunk_id_map": len(_chunk_id_to_global or {}),
         "path": str(default_index_path()),
     }
