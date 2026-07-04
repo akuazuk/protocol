@@ -324,6 +324,75 @@ def _iter_blocks(doc: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
+def format_rich_chunk_nav_item(block: dict[str, Any]) -> dict[str, Any] | None:
+    """Один rich-чанк -> элемент навигатора (или None если шум)."""
+    ctype = str(block.get("chunk_type") or "").strip().lower()
+    if ctype in _DROP_TYPES or ctype not in _TYPE_TO_GROUP:
+        return None
+    group_id = _TYPE_TO_GROUP[ctype]
+    combined = _combine_title_text(block.get("section_title"), str(block.get("text") or ""))
+    if not combined or _is_noise(combined, ctype):
+        return None
+    lead, body = _split_lead_body(combined)
+    lead = _TRAILING_COLON_DOT.sub(":", lead).strip()
+    if len(lead) < 16 or _MIDSENTENCE_LEAD.match(lead):
+        return None
+    page = block.get("page_from") or block.get("page")
+    entities = _entity_chips(block)
+    search_fields = _item_search_fields(
+        lead=lead,
+        body=body,
+        chunk_type=ctype,
+        block=block,
+        entities=entities,
+    )
+    return {
+        "id": f"{group_id}-{ctype}-{page or 0}",
+        "section_id": group_id,
+        "lead": lead,
+        "body": body,
+        "page": page,
+        "chunk_type": ctype,
+        "entities": entities,
+        "intent_tags": search_fields["intent_tags"],
+        "search_blob": search_fields["search_blob"],
+        "entity_terms": search_fields["entity_terms"],
+        "chunk_index": block.get("chunk_index"),
+        "global_index": block.get("_global_index"),
+    }
+
+
+def build_view_from_items(
+    items: list[dict[str, Any]],
+    *,
+    max_per_group: int = 16,
+) -> dict[str, Any]:
+    """Собрать view (toc/sections) из уже отранжированных элементов."""
+    groups: dict[str, list[dict[str, Any]]] = {gid: [] for gid, _ in _GROUP_ORDER}
+    for item in items:
+        gid = str(item.get("section_id") or "").strip()
+        if gid not in groups:
+            continue
+        if len(groups[gid]) >= max_per_group:
+            continue
+        groups[gid].append(item)
+    toc: list[dict[str, Any]] = []
+    view_sections: dict[str, list[dict[str, Any]]] = {}
+    labels: dict[str, str] = {}
+    for gid, label in _GROUP_ORDER:
+        labels[gid] = label
+        sec_items = groups[gid]
+        if sec_items:
+            view_sections[gid] = sec_items
+            toc.append({"id": gid, "label": label, "count": len(sec_items)})
+    return {
+        "toc": toc,
+        "sections": view_sections,
+        "section_labels": labels,
+        "stats": {"shown_blocks": sum(len(v) for v in view_sections.values())},
+    }
+
+
 def prepare_protocol_source_view(doc: dict[str, Any], *, max_per_group: int = 12) -> dict[str, Any]:
     """Строит компактную клиническую навигацию из блоков source_text/rich."""
     groups: dict[str, list[dict[str, Any]]] = {gid: [] for gid, _ in _GROUP_ORDER}

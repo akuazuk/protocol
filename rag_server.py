@@ -8198,7 +8198,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-04-r35-proto-nav-links"
+BUILD_VERSION = "2026-07-04-r36-proto-ai-overview"
 
 
 def _app_version() -> str:
@@ -10479,6 +10479,40 @@ def api_protocol_source_text(
     except Exception:
         rich_chunks = []
     out = resolve_protocol_source_text(pth, rich_chunks=rich_chunks or None)
+    out["build_version"] = BUILD_VERSION
+    return out
+
+
+@app.get("/api/protocol-semantic-search")
+def api_protocol_semantic_search(
+    path: str = Query(..., min_length=3, max_length=512),
+    q: str = Query(..., min_length=2, max_length=1200),
+    top_k: int = Query(12, ge=1, le=24),
+) -> dict:
+    """Семантический поиск внутри одного протокола (vector + intent + lex)."""
+    from clinical_knowledge.protocol_semantic_search import search_protocol_semantic
+
+    out = search_protocol_semantic(path.strip(), q.strip(), top_k=top_k)
+    out["build_version"] = BUILD_VERSION
+    return out
+
+
+class ProtocolOverviewIn(BaseModel):
+    path: str = Field(min_length=3, max_length=512)
+    q: str = Field(min_length=2, max_length=1200)
+    title: str = Field(default="", max_length=512)
+
+
+@app.post("/api/protocol-overview")
+def api_protocol_overview(body: ProtocolOverviewIn) -> dict:
+    """AI Overview по протоколу: краткий ответ + цитаты из top-K чанков."""
+    from clinical_knowledge.protocol_semantic_search import build_protocol_overview
+
+    out = build_protocol_overview(
+        body.path.strip(),
+        body.q.strip(),
+        title=(body.title or "").strip(),
+    )
     out["build_version"] = BUILD_VERSION
     return out
 

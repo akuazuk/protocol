@@ -151,28 +151,79 @@ def load_index_from_env(chunks: list[dict] | None = None) -> dict[str, Any]:
     return {"ok": False, "reason": "not_built"}
 
 
-def search(query_vec: list[float], top_k: int | None = None) -> set[int]:
-    """Top-K глобальных индексов чанков по cosine (IP на нормализованных векторах)."""
-    if _index_vectors is None or not _index_chunk_indices:
-        return set()
-    k = top_k or int(os.environ.get("RAG_VECTOR_TOP_K", "200"))
-    k = min(k, len(_index_chunk_indices))
+def _normalize_query_vec(query_vec: list[float]) -> np.ndarray | None:
     q = np.asarray([float(x) for x in query_vec], dtype=np.float32)
     norm = float(np.linalg.norm(q))
     if norm < 1e-9:
-        return set()
-    q = q / norm
+        return None
+    return q / norm
+
+
+def _search_local_ids(q: np.ndarray, k: int) -> list[tuple[int, float]]:
+    """Top-K локальных позиций индекса с cosine score."""
+    if _index_vectors is None or not _index_chunk_indices:
+        return []
+    k = min(k, len(_index_chunk_indices))
     if _faiss_index is not None:
         scores, ids = _faiss_index.search(q.reshape(1, -1), k)
-        hit_ids = [int(i) for i in ids[0] if i >= 0]
-    else:
-        scores = _index_vectors @ q
-        hit_ids = np.argsort(-scores)[:k].tolist()
-    out: set[int] = set()
-    for local_i in hit_ids:
+        out: list[tuple[int, float]] = []
+        for local_i, score in zip(ids[0], scores[0]):
+            if int(local_i) >= 0:
+                out.append((int(local_i), float(score)))
+        return out
+    scores = _index_vectors @ q
+    hit_ids = np.argsort(-scores)[:k]
+    return [(int(local_i), float(scores[local_i])) for local_i in hit_ids]
+
+
+def search_with_scores(
+    query_vec: list[float],
+    top_k: int | None = None,
+) -> list[tuple[int, float]]:
+    """Top-K глобальных индексов чанков с cosine score."""
+    q = _normalize_query_vec(query_vec)
+    if q is None or _index_chunk_indices is None:
+        return []
+    k = top_k or int(os.environ.get("RAG_VECTOR_TOP_K", "200"))
+    hits: list[tuple[int, float]] = []
+    for local_i, score in _search_local_ids(q, k):
         if 0 <= local_i < len(_index_chunk_indices):
-            out.add(_index_chunk_indices[local_i])
+            hits.append((_index_chunk_indices[local_i], score))
+    return hits
+
+
+def search_scoped_with_scores(
+    query_vec: list[float],
+    allowed_global_indices: set[int],
+    top_k: int | None = None,
+) -> list[tuple[int, float]]:
+    """Top-K чанков только из allowed_global_indices с cosine score."""
+    if not allowed_global_indices:
+        return []
+    q = _normalize_query_vec(query_vec)
+    if q is None or _index_vectors is None or not _index_chunk_indices:
+        return []
+    allowed_local: list[int] = []
+    for local_i, global_i in enumerate(_index_chunk_indices):
+        if global_i in allowed_global_indices:
+            allowed_local.append(local_i)
+    if not allowed_local:
+        return []
+    k = top_k or int(os.environ.get("PROTOCOL_SEMANTIC_TOP_K", "24"))
+    k = min(k, len(allowed_local))
+    local_matrix = _index_vectors[allowed_local]
+    scores = local_matrix @ q
+    order = np.argsort(-scores)[:k]
+    out: list[tuple[int, float]] = []
+    for pos in order:
+        local_i = allowed_local[int(pos)]
+        out.append((_index_chunk_indices[local_i], float(scores[pos])))
     return out
+
+
+def search(query_vec: list[float], top_k: int | None = None) -> set[int]:
+    """Top-K глобальных индексов чанков по cosine (IP на нормализованных векторах)."""
+    return {idx for idx, _ in search_with_scores(query_vec, top_k=top_k)}
 
 
 def index_stats() -> dict[str, Any]:

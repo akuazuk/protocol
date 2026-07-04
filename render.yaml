@@ -35,6 +35,12 @@ services:
         value: /var/data
       - key: RAG_PRECOMPUTED_CHUNK_EMBED
         value: "1"
+      - key: RAG_VECTOR_INDEX
+        value: "1"
+      - key: RAG_VECTOR_INDEX_PATH
+        value: /var/data/corpus_vector_index
+      - key: PROTOCOL_OVERVIEW_CACHE_DIR
+        value: /var/data/ml/protocol_overview_cache
       - key: RATE_LIMIT_CONSULT_PER_MIN
         value: "2"
       - key: RATE_LIMIT_ASSIST_PER_MIN

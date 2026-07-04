@@ -9966,6 +9966,54 @@
       color: #034a3c;
     }
 
+    .protocol-src-overview {
+      grid-column: 1 / -1;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.82), #fff);
+      padding: 0.62rem 0.72rem;
+    }
+
+    .protocol-src-overview.is-empty {
+      display: none;
+    }
+
+    .protocol-src-overview.is-loading {
+      opacity: 0.82;
+    }
+
+    .protocol-src-overview__title {
+      margin: 0 0 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+
+    .protocol-src-overview__summary {
+      margin: 0;
+      font-size: 0.78rem;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+
+    .protocol-src-overview__points {
+      margin: 0.42rem 0 0;
+      padding-left: 1.05rem;
+      font-size: 0.76rem;
+      color: #334155;
+    }
+
+    .protocol-src-overview__point {
+      margin: 0.22rem 0;
+    }
+
+    .protocol-src-overview__cite {
+      display: inline-block;
+      margin-left: 0.25rem;
+      font-size: 0.67rem;
+      color: #64748b;
+    }
+
     .protocol-src-open-tab {
       font-family: inherit;
       font-size: 0.72rem;
@@ -25560,7 +25608,14 @@
     if (!baseView) {
       return '<p class="protocol-src-empty">Нет данных по этому протоколу. Откройте PDF.</p>';
     }
-    var filtered = filterProtocolClinicalView(baseView, highlight);
+    var filtered = opts.semanticView
+      ? {
+          view: opts.semanticView,
+          highlightTerms: opts.highlightTerms || (highlight ? [highlight] : []),
+          matchCount: opts.matchCount || 0,
+          intents: opts.intents || [],
+        }
+      : filterProtocolClinicalView(baseView, highlight);
     var view = filtered.view;
     var highlightTerms = filtered.highlightTerms.length
       ? filtered.highlightTerms
@@ -25606,6 +25661,69 @@
     return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
   }
 
+  function fetchProtocolSemanticSearch(path, query) {
+    var url =
+      "/api/protocol-semantic-search?path=" +
+      encodeURIComponent(path || "") +
+      "&q=" +
+      encodeURIComponent(query || "");
+    return fetch(url, { cache: "no-store" }).then(function (resp) {
+      return resp.ok ? resp.json() : null;
+    });
+  }
+
+  function fetchProtocolOverview(path, query, title) {
+    return fetch("/api/protocol-overview", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path: path || "",
+        q: query || "",
+        title: title || "",
+      }),
+    }).then(function (resp) {
+      return resp.ok ? resp.json() : null;
+    });
+  }
+
+  function renderProtocolOverviewPanel(overview, path) {
+    if (!overview || !overview.ok) {
+      return "";
+    }
+    var html =
+      '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p>';
+    if (overview.summary) {
+      html +=
+        '<p class="protocol-src-overview__summary">' +
+        escapeHtml(overview.summary) +
+        "</p>";
+    }
+    var points = overview.points || [];
+    if (points.length) {
+      html += '<ul class="protocol-src-overview__points">';
+      var pi;
+      for (pi = 0; pi < points.length; pi++) {
+        var pt = points[pi] || {};
+        var cite = "";
+        if (pt.page) {
+          cite =
+            '<a class="protocol-src-overview__cite" href="' +
+            escapeHtmlAttr(pdfPageHref(path, pt.page)) +
+            '" target="_blank" rel="noopener">стр. ' +
+            escapeHtml(String(pt.page)) +
+            "</a>";
+        }
+        html +=
+          '<li class="protocol-src-overview__point">' +
+          escapeHtml(pt.text || "") +
+          cite +
+          "</li>";
+      }
+      html += "</ul>";
+    }
+    return html;
+  }
+
   function renderProtocolSourceViewerShell(path) {
     return (
       '<div class="protocol-src-viewer" data-proto-src-path="' +
@@ -25617,6 +25735,7 @@
       '<span class="protocol-src-hint">Enter - следующее</span>' +
       '<span class="protocol-src-stats" hidden></span>' +
       "</div>" +
+      '<div class="protocol-src-overview is-empty" aria-live="polite"></div>' +
       '<div class="protocol-src-intent-chips" role="group" aria-label="Быстрый поиск">' +
       '<button type="button" class="protocol-src-intent-chip" data-src-intent="treatment">Лечение</button>' +
       '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnostics">Обследования</button>' +
@@ -25649,8 +25768,15 @@
     var openTabBtn = viewer.querySelector(".protocol-src-open-tab");
     if (!toc || !body || !baseView) return;
 
-    function renderToc(viewForToc, currentQuery) {
-      var filtered = filterProtocolClinicalView(viewForToc, currentQuery);
+    function renderToc(viewForToc, currentQuery, tocOpts) {
+      tocOpts = tocOpts || {};
+      var filtered = tocOpts.skipFilter
+        ? {
+            view: viewForToc,
+            matchCount: tocOpts.matchCount || 0,
+            intents: tocOpts.intents || [],
+          }
+        : filterProtocolClinicalView(viewForToc, currentQuery);
       var tocItems = filtered.view.toc || viewForToc.toc || [];
       var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
       var ti;
@@ -25727,25 +25853,86 @@
       }
     }
 
+    var semanticReqId = 0;
+
     function applySourceSearch(query) {
-      renderToc(baseView, query);
-      body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
-        highlight: query,
-        activeSection: activeSection,
-      });
-      markIndex = 0;
-      if (query && query.trim().length >= 2) {
+      var q = String(query || "").trim();
+      var overviewEl = viewer.querySelector(".protocol-src-overview");
+      if (q.length < 2) {
+        if (overviewEl) {
+          overviewEl.innerHTML = "";
+          overviewEl.classList.add("is-empty");
+          overviewEl.classList.remove("is-loading");
+        }
+        renderToc(baseView, q);
+        body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+          highlight: q,
+          activeSection: activeSection,
+        });
+        markIndex = 0;
+        return;
+      }
+      if (overviewEl) {
+        overviewEl.classList.remove("is-empty");
+        overviewEl.classList.add("is-loading");
+        overviewEl.innerHTML =
+          '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p>' +
+          '<p class="protocol-src-overview__summary">Загрузка…</p>';
+      }
+      var reqId = ++semanticReqId;
+      fetchProtocolSemanticSearch(path, q).then(function (sem) {
+        if (reqId !== semanticReqId) return;
+        if (sem && sem.ok && sem.view) {
+          renderToc(sem.view, q, {
+            skipFilter: true,
+            matchCount: sem.match_count || 0,
+            intents: sem.intents || [],
+          });
+          body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+            highlight: q,
+            activeSection: activeSection,
+            semanticView: sem.view,
+            highlightTerms: [q],
+            matchCount: sem.match_count || 0,
+            intents: sem.intents || [],
+          });
+          if (statsEl) {
+            statsEl.hidden = false;
+            statsEl.textContent =
+              (sem.match_count || 0) > 0
+                ? "Найдено: " + String(sem.match_count) + " · семантика"
+                : "Ничего не найдено";
+          }
+        } else {
+          renderToc(baseView, q);
+          body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+            highlight: q,
+            activeSection: activeSection,
+          });
+        }
+        markIndex = 0;
         setTimeout(function () {
           focusMarkAt(0);
         }, 30);
-      }
+      });
+      fetchProtocolOverview(path, q, doc.title || "").then(function (overview) {
+        if (reqId !== semanticReqId || !overviewEl) return;
+        overviewEl.classList.remove("is-loading");
+        var html = renderProtocolOverviewPanel(overview, path);
+        overviewEl.innerHTML = html;
+        if (!html) overviewEl.classList.add("is-empty");
+      });
     }
 
-    renderToc(baseView, highlight);
-    body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
-      highlight: highlight,
-      activeSection: activeSection,
-    });
+    if (highlight && highlight.trim().length >= 2) {
+      applySourceSearch(highlight);
+    } else {
+      renderToc(baseView, highlight);
+      body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+        highlight: highlight,
+        activeSection: activeSection,
+      });
+    }
 
     if (searchInput) {
       if (highlight) searchInput.value = highlight;

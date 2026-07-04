@@ -65,6 +65,40 @@
       background: rgba(214,243,232,0.95);
       color: #034a3c;
     }
+    .protocol-src-overview {
+      grid-column: 1 / -1;
+      border-radius: 12px;
+      border: 1px solid rgba(26, 138, 114, 0.28);
+      background: linear-gradient(180deg, rgba(232, 245, 241, 0.82), #fff);
+      padding: 0.62rem 0.72rem;
+    }
+    .protocol-src-overview.is-empty { display: none; }
+    .protocol-src-overview.is-loading { opacity: 0.82; }
+    .protocol-src-overview__title {
+      margin: 0 0 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--green-800);
+    }
+    .protocol-src-overview__summary {
+      margin: 0;
+      font-size: 0.78rem;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+    .protocol-src-overview__points {
+      margin: 0.42rem 0 0;
+      padding-left: 1.05rem;
+      font-size: 0.76rem;
+      color: #334155;
+    }
+    .protocol-src-overview__point { margin: 0.22rem 0; }
+    .protocol-src-overview__cite {
+      display: inline-block;
+      margin-left: 0.25rem;
+      font-size: 0.67rem;
+      color: #64748b;
+    }
     .pv-main {
       max-width: 1100px;
       margin: 0 auto;
@@ -418,8 +452,11 @@
         "</details>"
       );
     }
-    function bodyHtml(path, baseView, q, active) {
-      var filtered = filterView(baseView, q);
+    function bodyHtml(path, baseView, q, active, renderOpts) {
+      renderOpts = renderOpts || {};
+      var filtered = renderOpts.semanticView
+        ? { view: renderOpts.semanticView, terms: renderOpts.terms || [q], matchCount: renderOpts.matchCount || 0, intents: renderOpts.intents || [] }
+        : filterView(baseView, q);
       var view = filtered.view;
       var terms = filtered.terms.length ? filtered.terms : q;
       var labels = view.section_labels || {};
@@ -442,6 +479,34 @@
       }
       return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
     }
+    function fetchSemantic(path, query) {
+      return fetch("/api/protocol-semantic-search?path=" + encodeURIComponent(path) + "&q=" + encodeURIComponent(query), { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; });
+    }
+    function fetchOverview(path, query, title) {
+      return fetch("/api/protocol-overview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: path, q: query, title: title || "" })
+      }).then(function (r) { return r.ok ? r.json() : null; });
+    }
+    function overviewHtml(overview, path) {
+      if (!overview || !overview.ok) return "";
+      var html = '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p>';
+      if (overview.summary) html += '<p class="protocol-src-overview__summary">' + esc(overview.summary) + "</p>";
+      var points = overview.points || [];
+      if (points.length) {
+        html += '<ul class="protocol-src-overview__points">';
+        points.forEach(function (pt) {
+          var cite = pt.page
+            ? '<a class="protocol-src-overview__cite" href="' + escAttr(pdfHref(path, pt.page)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page) + "</a>"
+            : "";
+          html += '<li class="protocol-src-overview__point">' + esc(pt.text || "") + cite + "</li>";
+        });
+        html += "</ul>";
+      }
+      return html;
+    }
     function wire(path, doc, q, active) {
       var baseView = doc.view;
       var root = document.getElementById("pv-root");
@@ -452,6 +517,7 @@
         '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">PDF</a>' +
         '<span class="protocol-src-hint">Enter - следующее</span>' +
         '<span class="protocol-src-stats" hidden></span></div>' +
+        '<div class="protocol-src-overview is-empty" aria-live="polite"></div>' +
         '<div class="protocol-src-intent-chips">' +
         '<button type="button" class="protocol-src-intent-chip" data-src-intent="treatment">Лечение</button>' +
         '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnostics">Обследования</button>' +
@@ -466,8 +532,13 @@
       var body = document.getElementById("pv-body");
       var search = root.querySelector(".protocol-src-search");
       var stats = root.querySelector(".protocol-src-stats");
-      function renderToc(query) {
-        var filtered = filterView(baseView, query);
+      var overview = root.querySelector(".protocol-src-overview");
+      var semanticReqId = 0;
+      function renderToc(query, tocView, tocOpts) {
+        tocOpts = tocOpts || {};
+        var filtered = tocOpts.skipFilter
+          ? { view: tocView, matchCount: tocOpts.matchCount || 0, intents: tocOpts.intents || [] }
+          : filterView(baseView, query);
         var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
         (filtered.view.toc || baseView.toc || []).forEach(function (t) {
           tocHtml += '<button type="button" class="protocol-src-toc__btn' +
@@ -481,14 +552,15 @@
         if (stats) {
           if (query && query.trim().length >= 2) {
             stats.hidden = false;
-            stats.textContent = filtered.matchCount > 0 ? "Найдено: " + filtered.matchCount : "Ничего не найдено";
+            var cnt = tocOpts.matchCount != null ? tocOpts.matchCount : filtered.matchCount;
+            stats.textContent = cnt > 0 ? "Найдено: " + cnt + (tocOpts.skipFilter ? " · семантика" : "") : "Ничего не найдено";
           } else {
             stats.hidden = true;
             stats.textContent = "";
           }
         }
         root.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
-          chip.classList.toggle("is-active", filtered.intents.indexOf(chip.getAttribute("data-src-intent") || "") >= 0);
+          chip.classList.toggle("is-active", (tocOpts.intents || filtered.intents).indexOf(chip.getAttribute("data-src-intent") || "") >= 0);
         });
       }
       function jump(sec) {
@@ -509,10 +581,48 @@
         marks[mi].scrollIntoView({ behavior: "smooth", block: "center" });
       }
       function apply(query) {
-        renderToc(query);
-        body.innerHTML = bodyHtml(path, baseView, query, active);
-        mi = 0;
-        if (query && query.trim().length >= 2) setTimeout(function () { focusMark(0); }, 30);
+        var qstr = String(query || "").trim();
+        if (qstr.length < 2) {
+          if (overview) {
+            overview.innerHTML = "";
+            overview.classList.add("is-empty");
+            overview.classList.remove("is-loading");
+          }
+          renderToc(qstr);
+          body.innerHTML = bodyHtml(path, baseView, qstr, active);
+          mi = 0;
+          return;
+        }
+        if (overview) {
+          overview.classList.remove("is-empty");
+          overview.classList.add("is-loading");
+          overview.innerHTML = '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p><p class="protocol-src-overview__summary">Загрузка…</p>';
+        }
+        var reqId = ++semanticReqId;
+        fetchSemantic(path, qstr).then(function (sem) {
+          if (reqId !== semanticReqId) return;
+          if (sem && sem.ok && sem.view) {
+            renderToc(qstr, sem.view, { skipFilter: true, matchCount: sem.match_count || 0, intents: sem.intents || [] });
+            body.innerHTML = bodyHtml(path, baseView, qstr, active, {
+              semanticView: sem.view,
+              terms: [qstr],
+              matchCount: sem.match_count || 0,
+              intents: sem.intents || []
+            });
+          } else {
+            renderToc(qstr);
+            body.innerHTML = bodyHtml(path, baseView, qstr, active);
+          }
+          mi = 0;
+          setTimeout(function () { focusMark(0); }, 30);
+        });
+        fetchOverview(path, qstr, doc.title || "").then(function (ov) {
+          if (reqId !== semanticReqId || !overview) return;
+          overview.classList.remove("is-loading");
+          var html = overviewHtml(ov, path);
+          overview.innerHTML = html;
+          if (!html) overview.classList.add("is-empty");
+        });
       }
       apply(q);
       var timer;
