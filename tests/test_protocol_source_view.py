@@ -55,11 +55,37 @@ def test_prepare_view_groups_by_chunk_type_and_dedupes() -> None:
     assert view["stats"]["filtered_blocks"] >= 2
     diagnosis = view["sections"].get("diagnosis") or []
     assert diagnosis and "СЕАР" in diagnosis[0]["lead"]
+    assert "diagnosis" in (diagnosis[0].get("intent_tags") or [])
+    assert "классификация" in (diagnosis[0].get("search_blob") or "")
     diagnostics = view["sections"].get("diagnostics") or []
     assert diagnostics
+    assert "diagnostics" in (diagnostics[0].get("intent_tags") or [])
     chips = {c["label"]: c["items"] for c in diagnostics[0]["entities"]}
     assert "Анализы" in chips
     assert "УЗДС" in chips.get("Визуализация", [])
+
+
+def test_treatment_items_searchable_by_drug_intent() -> None:
+    doc = {
+        "sections": {
+            "any": [
+                {
+                    "chunk_type": "treatment",
+                    "section_title": "При хроническом венозном отеке ФЛП назначаются курсами",
+                    "page_from": 8,
+                    "text": "на 3-6 месяцев и более не реже 2 раз в год.",
+                    "drugs": ["диосмин", "гесперидин"],
+                }
+            ]
+        }
+    }
+    view = prepare_protocol_source_view(doc)
+    items = (view["sections"] or {}).get("treatment") or []
+    assert items
+    blob = items[0].get("search_blob") or ""
+    assert "лекарства" in blob
+    assert "диосмин" in blob
+    assert "treatment" in (items[0].get("intent_tags") or [])
 
 
 def test_prepare_view_drops_administrative_only() -> None:

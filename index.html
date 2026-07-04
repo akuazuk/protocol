@@ -9934,6 +9934,38 @@
       line-height: 1.3;
     }
 
+    .protocol-src-intent-chips {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin: -0.15rem 0 0.15rem;
+    }
+
+    .protocol-src-intent-chip {
+      font-family: inherit;
+      font-size: 0.7rem;
+      font-weight: 650;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(203, 213, 225, 0.9);
+      background: #f8fafc;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    .protocol-src-intent-chip:hover {
+      border-color: rgba(26, 138, 114, 0.45);
+      background: rgba(232, 245, 241, 0.9);
+      color: #055a47;
+    }
+
+    .protocol-src-intent-chip.is-active {
+      border-color: rgba(26, 138, 114, 0.55);
+      background: rgba(214, 243, 232, 0.95);
+      color: #034a3c;
+    }
+
     .protocol-src-open-tab {
       font-family: inherit;
       font-size: 0.72rem;
@@ -25122,14 +25154,296 @@
 
   function highlightPlainTextHtml(text, query) {
     var escaped = escapeHtml(String(text || ""));
-    var q = String(query || "").trim();
-    if (!q || q.length < 2) return escaped;
+    var terms = [];
+    if (Array.isArray(query)) {
+      terms = query;
+    } else {
+      var q = String(query || "").trim();
+      if (q.length >= 2) terms = [q];
+    }
+    terms = terms
+      .map(function (t) {
+        return String(t || "").trim();
+      })
+      .filter(function (t) {
+        return t.length >= 2;
+      })
+      .slice(0, 12);
+    if (!terms.length) return escaped;
+    terms.sort(function (a, b) {
+      return b.length - a.length;
+    });
     try {
-      var re = new RegExp("(" + escapeRegexForHighlight(q) + ")", "gi");
+      var re = new RegExp(
+        "(" + terms.map(escapeRegexForHighlight).join("|") + ")",
+        "gi"
+      );
       return escaped.replace(re, '<mark class="proto-src-mark">$1</mark>');
     } catch (eRe) {
       return escaped;
     }
+  }
+
+  var PROTO_SEARCH_INTENTS = {
+    treatment: {
+      sections: ["treatment"],
+      tags: ["treatment", "drugs"],
+      label: "Лечение",
+      terms: [
+        "лекарств",
+        "препарат",
+        "назнач",
+        "терапи",
+        "дозиров",
+        "флп",
+        "таблет",
+        "инъекц",
+        "компрессион",
+        "склеротерап",
+        "хирург",
+        "операц",
+        "лечени",
+        "фармакотерап",
+        "монотерап",
+        "схем",
+      ],
+      phrases: [
+        "какие лекарства",
+        "что назначить",
+        "чем лечить",
+        "схема лечения",
+        "какие препараты",
+        "назначение препаратов",
+      ],
+    },
+    diagnostics: {
+      sections: ["diagnostics"],
+      tags: ["diagnostics", "exams"],
+      label: "Обследования",
+      terms: [
+        "обследован",
+        "анализ",
+        "уздс",
+        "узи",
+        "диагност",
+        "лаборатор",
+        "инструментал",
+        "мрт",
+        "кт",
+        "экг",
+        "оак",
+        "бак",
+        "исследован",
+      ],
+      phrases: [
+        "какие обследования",
+        "что сдать",
+        "какие анализы",
+        "как диагностировать",
+        "какие исследования",
+      ],
+    },
+    diagnosis: {
+      sections: ["diagnosis"],
+      tags: ["diagnosis", "criteria"],
+      label: "Диагноз",
+      terms: ["диагноз", "классификац", "критери", "мкб", "нозолог", "стади", "степень"],
+      phrases: ["как ставить диагноз", "критерии диагноза", "классификация"],
+    },
+    followup: {
+      sections: ["followup"],
+      tags: ["followup", "prevention", "routing"],
+      label: "Наблюдение",
+      terms: [
+        "наблюден",
+        "диспансер",
+        "контроль",
+        "профилактик",
+        "маршрут",
+        "направлен",
+        "госпитализац",
+        "консультац",
+      ],
+      phrases: ["как наблюдать", "куда направлять", "когда госпитализировать"],
+    },
+    contraindications: {
+      sections: ["treatment", "diagnosis", "diagnostics"],
+      tags: ["treatment", "criteria", "diagnosis"],
+      label: "Противопоказания",
+      terms: ["противопоказан", "нельзя", "не применя", "абсолютн", "относительн"],
+      phrases: ["противопоказания", "когда нельзя"],
+    },
+  };
+
+  function detectProtocolSearchIntents(query) {
+    var q = String(query || "")
+      .toLowerCase()
+      .replace(/ё/g, "е")
+      .trim();
+    if (!q) return [];
+    var found = [];
+    var key;
+    for (key in PROTO_SEARCH_INTENTS) {
+      if (!Object.prototype.hasOwnProperty.call(PROTO_SEARCH_INTENTS, key)) continue;
+      var intent = PROTO_SEARCH_INTENTS[key];
+      var hit = false;
+      var pi;
+      for (pi = 0; pi < intent.phrases.length; pi++) {
+        if (q.indexOf(intent.phrases[pi]) >= 0) {
+          hit = true;
+          break;
+        }
+      }
+      if (!hit) {
+        var ti;
+        for (ti = 0; ti < intent.terms.length; ti++) {
+          if (q.indexOf(intent.terms[ti]) >= 0) {
+            hit = true;
+            break;
+          }
+        }
+      }
+      if (hit) found.push(key);
+    }
+    return found;
+  }
+
+  function protocolSearchExpandTerms(query, intents) {
+    var q = String(query || "")
+      .toLowerCase()
+      .replace(/ё/g, "е")
+      .trim();
+    var terms = [];
+    var seen = {};
+    function add(t) {
+      var s = String(t || "")
+        .toLowerCase()
+        .replace(/ё/g, "е")
+        .trim();
+      if (s.length < 2 || seen[s]) return;
+      seen[s] = true;
+      terms.push(s);
+    }
+    q.split(/[^a-zа-я0-9.]+/i).forEach(function (tok) {
+      if (tok.length >= 3) add(tok);
+    });
+    if (q.length >= 2) add(q);
+    (intents || []).forEach(function (key) {
+      var intent = PROTO_SEARCH_INTENTS[key];
+      if (!intent) return;
+      intent.terms.slice(0, 8).forEach(add);
+    });
+    return terms;
+  }
+
+  function scoreProtocolSourceItem(item, sectionId, query, intents, expandTerms) {
+    var blob = String(item.search_blob || "")
+      .toLowerCase()
+      .replace(/ё/g, "е");
+    var lead = String(item.lead || "")
+      .toLowerCase()
+      .replace(/ё/g, "е");
+    var body = String(item.body || "")
+      .toLowerCase()
+      .replace(/ё/g, "е");
+    var text = lead + " " + body;
+    var q = String(query || "")
+      .toLowerCase()
+      .replace(/ё/g, "е")
+      .trim();
+    var score = 0;
+    if (q.length >= 2 && (text.indexOf(q) >= 0 || blob.indexOf(q) >= 0)) score += 12;
+    var tags = item.intent_tags || [];
+    var ii;
+    for (ii = 0; ii < (intents || []).length; ii++) {
+      var intent = PROTO_SEARCH_INTENTS[intents[ii]];
+      if (!intent) continue;
+      if (intent.sections.indexOf(sectionId) >= 0) score += 10;
+      var ti;
+      for (ti = 0; ti < (intent.tags || []).length; ti++) {
+        if (tags.indexOf(intent.tags[ti]) >= 0) score += 6;
+      }
+    }
+    var ei;
+    for (ei = 0; ei < (expandTerms || []).length; ei++) {
+      var term = expandTerms[ei];
+      if (term.length < 3) continue;
+      if (blob.indexOf(term) >= 0 || text.indexOf(term) >= 0) score += term.length >= 5 ? 3 : 2;
+    }
+    var et = item.entity_terms || [];
+    for (ei = 0; ei < et.length; ei++) {
+      var ent = String(et[ei] || "")
+        .toLowerCase()
+        .replace(/ё/g, "е");
+      if (q && ent.indexOf(q) >= 0) score += 8;
+      for (ii = 0; ii < (expandTerms || []).length; ii++) {
+        if (ent.indexOf(expandTerms[ii]) >= 0) score += 4;
+      }
+    }
+    return score;
+  }
+
+  function filterProtocolClinicalView(view, query) {
+    var q = String(query || "").trim();
+    if (!q || q.length < 2) {
+      return { view: view, highlightTerms: [], matchCount: 0, intents: [] };
+    }
+    var intents = detectProtocolSearchIntents(q);
+    var expandTerms = protocolSearchExpandTerms(q, intents);
+    var hasIntent = intents.length > 0;
+    var sections = {};
+    var toc = [];
+    var matchCount = 0;
+    var labels = (view && view.section_labels) || {};
+    var si;
+    for (si = 0; si < PROTO_VIEW_SECTION_ORDER.length; si++) {
+      var secKey = PROTO_VIEW_SECTION_ORDER[si];
+      var items = ((view && view.sections) || {})[secKey] || [];
+      var scored = [];
+      var ii;
+      for (ii = 0; ii < items.length; ii++) {
+        var item = items[ii];
+        var sc = scoreProtocolSourceItem(item, secKey, q, intents, expandTerms);
+        if (sc > 0) scored.push({ item: item, score: sc });
+      }
+      scored.sort(function (a, b) {
+        return b.score - a.score;
+      });
+      if (!scored.length) continue;
+      // при явном намерении оставляем только релевантные разделы
+      if (hasIntent) {
+        var intentOk = false;
+        for (ii = 0; ii < intents.length; ii++) {
+          var intent = PROTO_SEARCH_INTENTS[intents[ii]];
+          if (intent && intent.sections.indexOf(secKey) >= 0) intentOk = true;
+        }
+        if (!intentOk && scored[0].score < 8) continue;
+      }
+      sections[secKey] = scored.map(function (row) {
+        return row.item;
+      });
+      matchCount += sections[secKey].length;
+      toc.push({
+        id: secKey,
+        label: labels[secKey] || secKey,
+        count: sections[secKey].length,
+      });
+    }
+    var highlightTerms = expandTerms.filter(function (t) {
+      return t.length >= 3 && t.length <= 24;
+    });
+    if (q.length >= 2 && q.length <= 40) highlightTerms.unshift(q);
+    return {
+      view: {
+        toc: toc,
+        sections: sections,
+        section_labels: labels,
+        stats: (view && view.stats) || {},
+      },
+      highlightTerms: highlightTerms.slice(0, 10),
+      matchCount: matchCount,
+      intents: intents,
+    };
   }
 
   function renderProtocolSourceEntitiesHtml(entities) {
@@ -25190,19 +25504,25 @@
     opts = opts || {};
     var highlight = opts.highlight || "";
     var activeSection = opts.activeSection || "";
-    var view = getProtocolClinicalView(doc);
-    if (!view) {
-      return '<p class="protocol-src-empty">Клинические пункты не найдены. Откройте PDF или вкладку «Сводка».</p>';
+    var baseView = getProtocolClinicalView(doc);
+    if (!baseView) {
+      return '<p class="protocol-src-empty">Нет данных по этому протоколу. Откройте PDF.</p>';
     }
+    var filtered = filterProtocolClinicalView(baseView, highlight);
+    var view = filtered.view;
+    var highlightTerms = filtered.highlightTerms.length
+      ? filtered.highlightTerms
+      : highlight;
     var labels = view.section_labels || {};
     var html = "";
     var si;
+    var openAll = !!(highlight && String(highlight).trim().length >= 2);
     for (si = 0; si < PROTO_VIEW_SECTION_ORDER.length; si++) {
       var secKey = PROTO_VIEW_SECTION_ORDER[si];
       var items = (view.sections || {})[secKey] || [];
       if (!items.length) continue;
       var secLabel = labels[secKey] || secKey;
-      var isActive = !activeSection || activeSection === secKey;
+      var isActive = openAll || !activeSection || activeSection === secKey;
       html +=
         '<details class="protocol-src-section' +
         (activeSection === secKey ? " is-active" : "") +
@@ -25219,11 +25539,19 @@
         "</span></summary><div class=\"protocol-src-section__items\">";
       var ii;
       for (ii = 0; ii < items.length; ii++) {
-        html += renderProtocolSourceItemHtml(path, items[ii], highlight, ii === 0 && isActive);
+        html += renderProtocolSourceItemHtml(
+          path,
+          items[ii],
+          highlightTerms,
+          ii === 0 && isActive
+        );
       }
       html += "</div></details>";
     }
-    return html || '<p class="protocol-src-empty">Клинические пункты не найдены.</p>';
+    if (!html && highlight && String(highlight).trim().length >= 2) {
+      return '<p class="protocol-src-empty">Ничего не найдено по запросу.</p>';
+    }
+    return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
   }
 
   function renderProtocolSourceViewerShell(path) {
@@ -25232,13 +25560,20 @@
       escapeHtmlAttr(path) +
       '">' +
       '<div class="protocol-src-toolbar">' +
-      '<input type="search" class="protocol-src-search" placeholder="Поиск по клиническим пунктам…" aria-label="Поиск по протоколу" autocomplete="off" />' +
+      '<input type="search" class="protocol-src-search" placeholder="Лекарства, обследования, диагноз…" aria-label="Поиск по протоколу" autocomplete="off" />' +
       '<button type="button" class="protocol-src-open-tab">Открыть в новой вкладке</button>' +
       '<span class="protocol-src-hint">Enter - следующее</span>' +
       '<span class="protocol-src-stats" hidden></span>' +
       "</div>" +
-      '<nav class="protocol-src-toc" aria-label="Разделы протокола"><p class="protocol-src-toc__title">Навигация</p><p class="protocol-src-loading">Загрузка…</p></nav>' +
-      '<div class="protocol-src-body"><p class="protocol-src-loading">Загрузка клинических пунктов…</p></div>' +
+      '<div class="protocol-src-intent-chips" role="group" aria-label="Быстрый поиск">' +
+      '<button type="button" class="protocol-src-intent-chip" data-src-intent="treatment">Лечение</button>' +
+      '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnostics">Обследования</button>' +
+      '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnosis">Диагноз</button>' +
+      '<button type="button" class="protocol-src-intent-chip" data-src-intent="followup">Наблюдение</button>' +
+      '<button type="button" class="protocol-src-intent-chip" data-src-intent="contraindications">Противопоказания</button>' +
+      "</div>" +
+      '<nav class="protocol-src-toc" aria-label="Разделы протокола"><p class="protocol-src-toc__title">Разделы</p><p class="protocol-src-loading">Загрузка…</p></nav>' +
+      '<div class="protocol-src-body"><p class="protocol-src-loading">Загрузка…</p></div>' +
       "</div>"
     );
   }
@@ -25254,47 +25589,58 @@
     if (!activeSection && briefSection && BRIEF_SECTION_TO_SOURCE[briefSection]) {
       activeSection = BRIEF_SECTION_TO_SOURCE[briefSection][0] || "";
     }
-    var view = getProtocolClinicalView(doc);
+    var baseView = getProtocolClinicalView(doc);
     var toc = viewer.querySelector(".protocol-src-toc");
     var body = viewer.querySelector(".protocol-src-body");
     var searchInput = viewer.querySelector(".protocol-src-search");
     var statsEl = viewer.querySelector(".protocol-src-stats");
     var openTabBtn = viewer.querySelector(".protocol-src-open-tab");
-    if (!toc || !body || !view) return;
+    if (!toc || !body || !baseView) return;
 
-    if (statsEl && view.stats) {
-      statsEl.hidden = false;
-      statsEl.textContent =
-        "Показано " +
-        String(view.stats.shown_blocks || 0) +
-        " клинических пунктов · скрыто служебного: " +
-        String(view.stats.filtered_blocks || 0);
+    function renderToc(viewForToc, currentQuery) {
+      var filtered = filterProtocolClinicalView(viewForToc, currentQuery);
+      var tocItems = filtered.view.toc || viewForToc.toc || [];
+      var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
+      var ti;
+      for (ti = 0; ti < tocItems.length; ti++) {
+        var t = tocItems[ti];
+        var tcls = "protocol-src-toc__btn";
+        if (activeSection && t.id === activeSection) tcls += " is-active";
+        tocHtml +=
+          '<button type="button" class="' +
+          tcls +
+          '" data-src-toc="' +
+          escapeHtmlAttr(t.id || "") +
+          '"><span>' +
+          escapeHtml(t.label || t.id || "Раздел") +
+          '</span><span class="protocol-src-toc__count">' +
+          String(t.count || 0) +
+          "</span></button>";
+      }
+      toc.innerHTML = tocHtml;
+      toc.querySelectorAll("[data-src-toc]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          scrollToSourceSection(btn.getAttribute("data-src-toc") || "");
+        });
+      });
+      if (statsEl) {
+        if (currentQuery && currentQuery.trim().length >= 2) {
+          statsEl.hidden = false;
+          statsEl.textContent =
+            filtered.matchCount > 0
+              ? "Найдено: " + String(filtered.matchCount)
+              : "Ничего не найдено";
+        } else {
+          statsEl.hidden = true;
+          statsEl.textContent = "";
+        }
+      }
+      viewer.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
+        var key = chip.getAttribute("data-src-intent") || "";
+        var active = filtered.intents.indexOf(key) >= 0;
+        chip.classList.toggle("is-active", active);
+      });
     }
-
-    var tocHtml = '<p class="protocol-src-toc__title">Навигация</p>';
-    var ti;
-    var tocItems = view.toc || [];
-    for (ti = 0; ti < tocItems.length; ti++) {
-      var t = tocItems[ti];
-      var tcls = "protocol-src-toc__btn";
-      if (activeSection && t.id === activeSection) tcls += " is-active";
-      tocHtml +=
-        '<button type="button" class="' +
-        tcls +
-        '" data-src-toc="' +
-        escapeHtmlAttr(t.id || "") +
-        '"><span>' +
-        escapeHtml(t.label || t.id || "Раздел") +
-        '</span><span class="protocol-src-toc__count">' +
-        String(t.count || 0) +
-        "</span></button>";
-    }
-    toc.innerHTML = tocHtml;
-
-    body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
-      highlight: highlight,
-      activeSection: activeSection,
-    });
 
     function scrollToSourceSection(secId) {
       if (!secId || !body) return;
@@ -25314,12 +25660,6 @@
       }
     }
 
-    toc.querySelectorAll("[data-src-toc]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        scrollToSourceSection(btn.getAttribute("data-src-toc") || "");
-      });
-    });
-
     var markIndex = 0;
     function focusMarkAt(idx) {
       var marks = body.querySelectorAll(".proto-src-mark");
@@ -25336,6 +25676,7 @@
     }
 
     function applySourceSearch(query) {
+      renderToc(baseView, query);
       body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
         highlight: query,
         activeSection: activeSection,
@@ -25347,6 +25688,12 @@
         }, 30);
       }
     }
+
+    renderToc(baseView, highlight);
+    body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
+      highlight: highlight,
+      activeSection: activeSection,
+    });
 
     if (searchInput) {
       if (highlight) searchInput.value = highlight;
@@ -25364,6 +25711,22 @@
         }
       });
     }
+
+    viewer.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var key = chip.getAttribute("data-src-intent") || "";
+        var intent = PROTO_SEARCH_INTENTS[key];
+        if (!intent || !searchInput) return;
+        var next = intent.phrases[0] || intent.label || "";
+        if (searchInput.value === next) {
+          searchInput.value = "";
+          applySourceSearch("");
+          return;
+        }
+        searchInput.value = next;
+        applySourceSearch(next);
+      });
+    });
 
     if (openTabBtn) {
       openTabBtn.addEventListener("click", function () {
@@ -25406,7 +25769,7 @@
       .then(function (doc) {
         if (!doc || !doc.available || !getProtocolClinicalView(doc)) {
           panel.innerHTML =
-            '<p class="protocol-src-empty">Клиническая навигация недоступна для этого протокола. Используйте «Сводка» или PDF.</p>';
+            '<p class="protocol-src-empty">Нет данных по этому протоколу. Откройте PDF.</p>';
           return;
         }
         panel.setAttribute("data-src-loaded", "1");

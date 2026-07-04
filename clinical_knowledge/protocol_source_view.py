@@ -48,6 +48,50 @@ _ENTITY_FIELDS: tuple[tuple[str, str], ...] = (
     ("procedures", "Процедуры"),
 )
 
+# Теги намерения для смыслового поиска внутри протокола.
+_TYPE_INTENT_TAGS: dict[str, tuple[str, ...]] = {
+    "classification": ("diagnosis",),
+    "criteria_block": ("diagnosis", "criteria"),
+    "diagnostics": ("diagnostics", "exams"),
+    "treatment": ("treatment", "drugs"),
+    "drug_list": ("treatment", "drugs"),
+    "pharmacotherapy": ("treatment", "drugs"),
+    "prevention": ("followup", "prevention"),
+    "dispensary": ("followup",),
+    "rehabilitation": ("followup",),
+    "routing": ("followup", "routing"),
+}
+
+# Синонимы типа - попадают в search_blob, чтобы «какие лекарства» находило treatment.
+_TYPE_SEARCH_TERMS: dict[str, tuple[str, ...]] = {
+    "classification": ("диагноз", "классификация", "критерии", "мкб"),
+    "criteria_block": ("критерии", "показания", "противопоказания", "диагноз"),
+    "diagnostics": (
+        "обследование",
+        "диагностика",
+        "анализы",
+        "лабораторные",
+        "инструментальные",
+        "узи",
+        "уздс",
+    ),
+    "treatment": (
+        "лечение",
+        "препараты",
+        "лекарства",
+        "назначение",
+        "терапия",
+        "дозировка",
+        "фармакотерапия",
+    ),
+    "drug_list": ("лекарства", "препараты", "фармакотерапия", "дозировка", "назначение"),
+    "pharmacotherapy": ("фармакотерапия", "препараты", "лекарства", "дозировка"),
+    "prevention": ("профилактика", "наблюдение"),
+    "dispensary": ("диспансерное", "наблюдение", "контроль"),
+    "rehabilitation": ("реабилитация",),
+    "routing": ("маршрут", "направление", "консультация", "госпитализация"),
+}
+
 # Обрывок середины фразы: начинается со строчной буквы или с «сироты» «АЧТВ)» / «ЛПИ) -».
 _MIDSENTENCE_LEAD = re.compile(r"^(?:[а-яё]|[А-ЯЁA-Z]{2,}\s*[)\]])")
 _TRAILING_COLON_DOT = re.compile(r"\s*:\s*\.\s*$")
@@ -223,6 +267,54 @@ def _entity_chips(block: dict[str, Any]) -> list[dict[str, Any]]:
     return chips
 
 
+def _entity_search_terms(block: dict[str, Any], entities: list[dict[str, Any]]) -> list[str]:
+    """Термины для поиска: чипы + сырые сущности (в т.ч. drugs, даже если чип скрыт)."""
+    terms: list[str] = []
+    seen: set[str] = set()
+
+    def add(raw: Any) -> None:
+        s = re.sub(r"\s+", " ", str(raw or "")).strip(" .,;·—-")
+        key = s.lower()
+        if len(s) < 3 or len(s) > 80 or key in seen:
+            return
+        if key.startswith(("пациент", "население")):
+            return
+        seen.add(key)
+        terms.append(s)
+
+    for chip in entities:
+        add(chip.get("label"))
+        for item in chip.get("items") or []:
+            add(item)
+    for field in ("drugs", "imaging", "lab_tests", "procedures", "dosages"):
+        vals = block.get(field) or []
+        if isinstance(vals, list):
+            for v in vals[:10]:
+                add(v)
+    return terms
+
+
+def _item_search_fields(
+    *,
+    lead: str,
+    body: str | None,
+    chunk_type: str,
+    block: dict[str, Any],
+    entities: list[dict[str, Any]],
+) -> dict[str, Any]:
+    intent_tags = list(_TYPE_INTENT_TAGS.get(chunk_type, ()))
+    parts: list[str] = [lead, body or ""]
+    parts.extend(_TYPE_SEARCH_TERMS.get(chunk_type, ()))
+    entity_terms = _entity_search_terms(block, entities)
+    parts.extend(entity_terms)
+    blob = re.sub(r"\s+", " ", " ".join(p for p in parts if p)).strip().lower()
+    return {
+        "intent_tags": intent_tags,
+        "search_blob": blob[:1200],
+        "entity_terms": entity_terms[:12],
+    }
+
+
 def _iter_blocks(doc: dict[str, Any]) -> list[dict[str, Any]]:
     sections = doc.get("sections") or {}
     out: list[dict[str, Any]] = []
@@ -261,6 +353,14 @@ def prepare_protocol_source_view(doc: dict[str, Any], *, max_per_group: int = 12
             filtered += 1
             continue
         page = block.get("page_from") or block.get("page")
+        entities = _entity_chips(block)
+        search_fields = _item_search_fields(
+            lead=lead,
+            body=body,
+            chunk_type=ctype,
+            block=block,
+            entities=entities,
+        )
         items = groups[group_id]
         items.append(
             {
@@ -269,7 +369,10 @@ def prepare_protocol_source_view(doc: dict[str, Any], *, max_per_group: int = 12
                 "body": body,
                 "page": page,
                 "chunk_type": ctype,
-                "entities": _entity_chips(block),
+                "entities": entities,
+                "intent_tags": search_fields["intent_tags"],
+                "search_blob": search_fields["search_blob"],
+                "entity_terms": search_fields["entity_terms"],
             }
         )
 

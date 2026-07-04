@@ -42,6 +42,29 @@
       font-size: 0.72rem;
       color: var(--muted);
     }
+    .pv-sub:empty { display: none; }
+    .protocol-src-intent-chips {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .protocol-src-intent-chip {
+      font: inherit;
+      font-size: 0.7rem;
+      font-weight: 650;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: #334155;
+      cursor: pointer;
+    }
+    .protocol-src-intent-chip.is-active {
+      border-color: rgba(26,138,114,0.55);
+      background: rgba(214,243,232,0.95);
+      color: #034a3c;
+    }
     .pv-main {
       max-width: 1100px;
       margin: 0 auto;
@@ -221,6 +244,33 @@
   <script>
   (function () {
     var ORDER = ["diagnosis", "diagnostics", "treatment", "followup"];
+    var INTENTS = {
+      treatment: {
+        sections: ["treatment"], tags: ["treatment", "drugs"], label: "Лечение",
+        terms: ["лекарств", "препарат", "назнач", "терапи", "дозиров", "флп", "лечени", "фармакотерап", "хирург", "склеротерап", "компрессион"],
+        phrases: ["какие лекарства", "что назначить", "чем лечить", "схема лечения", "какие препараты"]
+      },
+      diagnostics: {
+        sections: ["diagnostics"], tags: ["diagnostics", "exams"], label: "Обследования",
+        terms: ["обследован", "анализ", "уздс", "узи", "диагност", "лаборатор", "мрт", "кт", "экг", "оак"],
+        phrases: ["какие обследования", "что сдать", "какие анализы", "какие исследования"]
+      },
+      diagnosis: {
+        sections: ["diagnosis"], tags: ["diagnosis", "criteria"], label: "Диагноз",
+        terms: ["диагноз", "классификац", "критери", "мкб", "стади"],
+        phrases: ["критерии диагноза", "классификация"]
+      },
+      followup: {
+        sections: ["followup"], tags: ["followup", "prevention", "routing"], label: "Наблюдение",
+        terms: ["наблюден", "диспансер", "контроль", "профилактик", "маршрут", "направлен", "госпитализац"],
+        phrases: ["как наблюдать", "куда направлять"]
+      },
+      contraindications: {
+        sections: ["treatment", "diagnosis", "diagnostics"], tags: ["treatment", "criteria"], label: "Противопоказания",
+        terms: ["противопоказан", "нельзя", "не применя", "абсолютн"],
+        phrases: ["противопоказания", "когда нельзя"]
+      }
+    };
     function qp(name) {
       return new URLSearchParams(location.search).get(name) || "";
     }
@@ -233,13 +283,110 @@
     }
     function escAttr(s) { return esc(s); }
     function escRx(s) { return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-    function hl(text, q) {
+    function norm(s) {
+      return String(s || "").toLowerCase().replace(/ё/g, "е");
+    }
+    function hl(text, terms) {
       var e = esc(text);
-      q = String(q || "").trim();
-      if (!q || q.length < 2) return e;
+      var list = Array.isArray(terms) ? terms : [terms];
+      list = list.map(function (t) { return String(t || "").trim(); }).filter(function (t) { return t.length >= 2; });
+      if (!list.length) return e;
+      list.sort(function (a, b) { return b.length - a.length; });
       try {
-        return e.replace(new RegExp("(" + escRx(q) + ")", "gi"), '<mark class="proto-src-mark">$1</mark>');
+        return e.replace(new RegExp("(" + list.map(escRx).join("|") + ")", "gi"), '<mark class="proto-src-mark">$1</mark>');
       } catch (err) { return e; }
+    }
+    function detectIntents(q) {
+      q = norm(q);
+      var found = [];
+      Object.keys(INTENTS).forEach(function (key) {
+        var intent = INTENTS[key];
+        var hit = intent.phrases.some(function (p) { return q.indexOf(p) >= 0; });
+        if (!hit) hit = intent.terms.some(function (t) { return q.indexOf(t) >= 0; });
+        if (hit) found.push(key);
+      });
+      return found;
+    }
+    function expandTerms(q, intents) {
+      var terms = [];
+      var seen = {};
+      function add(t) {
+        t = norm(t);
+        if (t.length < 2 || seen[t]) return;
+        seen[t] = true;
+        terms.push(t);
+      }
+      norm(q).split(/[^a-zа-я0-9.]+/i).forEach(function (tok) { if (tok.length >= 3) add(tok); });
+      if (norm(q).length >= 2) add(q);
+      (intents || []).forEach(function (key) {
+        (INTENTS[key].terms || []).slice(0, 8).forEach(add);
+      });
+      return terms;
+    }
+    function scoreItem(item, sectionId, q, intents, terms) {
+      var blob = norm(item.search_blob || "");
+      var text = norm((item.lead || "") + " " + (item.body || ""));
+      var score = 0;
+      q = norm(q);
+      if (q.length >= 2 && (text.indexOf(q) >= 0 || blob.indexOf(q) >= 0)) score += 12;
+      (intents || []).forEach(function (key) {
+        var intent = INTENTS[key];
+        if (!intent) return;
+        if (intent.sections.indexOf(sectionId) >= 0) score += 10;
+        (intent.tags || []).forEach(function (tag) {
+          if ((item.intent_tags || []).indexOf(tag) >= 0) score += 6;
+        });
+      });
+      (terms || []).forEach(function (term) {
+        if (term.length < 3) return;
+        if (blob.indexOf(term) >= 0 || text.indexOf(term) >= 0) score += term.length >= 5 ? 3 : 2;
+      });
+      (item.entity_terms || []).forEach(function (ent) {
+        ent = norm(ent);
+        if (q && ent.indexOf(q) >= 0) score += 8;
+        (terms || []).forEach(function (term) {
+          if (ent.indexOf(term) >= 0) score += 4;
+        });
+      });
+      return score;
+    }
+    function filterView(view, q) {
+      q = String(q || "").trim();
+      if (!q || q.length < 2) {
+        return { view: view, terms: [], matchCount: 0, intents: [] };
+      }
+      var intents = detectIntents(q);
+      var terms = expandTerms(q, intents);
+      var sections = {};
+      var toc = [];
+      var matchCount = 0;
+      var labels = view.section_labels || {};
+      ORDER.forEach(function (sec) {
+        var scored = [];
+        ((view.sections || {})[sec] || []).forEach(function (item) {
+          var sc = scoreItem(item, sec, q, intents, terms);
+          if (sc > 0) scored.push({ item: item, score: sc });
+        });
+        scored.sort(function (a, b) { return b.score - a.score; });
+        if (!scored.length) return;
+        if (intents.length) {
+          var ok = intents.some(function (key) {
+            return INTENTS[key] && INTENTS[key].sections.indexOf(sec) >= 0;
+          });
+          if (!ok && scored[0].score < 8) return;
+        }
+        sections[sec] = scored.map(function (row) { return row.item; });
+        matchCount += sections[sec].length;
+        toc.push({ id: sec, label: labels[sec] || sec, count: sections[sec].length });
+      });
+      var hlTerms = terms.filter(function (t) { return t.length >= 3 && t.length <= 24; });
+      if (q.length >= 2 && q.length <= 40) hlTerms.unshift(q);
+      return {
+        view: { toc: toc, sections: sections, section_labels: labels, stats: view.stats || {} },
+        terms: hlTerms.slice(0, 10),
+        matchCount: matchCount,
+        intents: intents
+      };
     }
     function pdfHref(path, page) {
       var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
@@ -256,63 +403,94 @@
       });
       return out + "</div>";
     }
-    function itemHtml(path, item, q, open) {
+    function itemHtml(path, item, terms, open) {
       var page = item.page;
       var hasBody = item.body && item.body !== item.lead;
       return (
         '<details class="protocol-src-item"' + (open ? " open" : "") + ">" +
         "<summary>" +
         (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
-        '<span class="protocol-src-item__lead">' + hl(item.lead, q) + "</span></summary>" +
-        (hasBody ? '<p class="protocol-src-item__body">' + hl(item.body, q) + "</p>" : "") +
+        '<span class="protocol-src-item__lead">' + hl(item.lead, terms) + "</span></summary>" +
+        (hasBody ? '<p class="protocol-src-item__body">' + hl(item.body, terms) + "</p>" : "") +
         chipsHtml(item.entities) +
         (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) +
           '" target="_blank" rel="noopener">PDF · стр. ' + esc(page) + "</a></p>" : "") +
         "</details>"
       );
     }
-    function bodyHtml(path, view, q, active) {
+    function bodyHtml(path, baseView, q, active) {
+      var filtered = filterView(baseView, q);
+      var view = filtered.view;
+      var terms = filtered.terms.length ? filtered.terms : q;
       var labels = view.section_labels || {};
+      var openAll = !!(q && String(q).trim().length >= 2);
       var html = "";
       ORDER.forEach(function (sec) {
         var items = (view.sections || {})[sec] || [];
         if (!items.length) return;
-        var open = !active || active === sec;
+        var open = openAll || !active || active === sec;
         html += '<details class="protocol-src-section' + (active === sec ? " is-active" : "") +
           '" id="proto-src-sec-' + escAttr(sec) + '" data-src-section="' + escAttr(sec) + '"' +
           (open ? " open" : "") + "><summary><span>" + esc(labels[sec] || sec) +
           '</span><span class="protocol-src-toc__count">' + items.length + "</span></summary>" +
           '<div class="protocol-src-section__items">';
-        items.forEach(function (it, i) { html += itemHtml(path, it, q, i === 0 && open); });
+        items.forEach(function (it, i) { html += itemHtml(path, it, terms, i === 0 && open); });
         html += "</div></details>";
       });
-      return html || '<p class="protocol-src-empty">Клинические пункты не найдены.</p>';
+      if (!html && q && String(q).trim().length >= 2) {
+        return '<p class="protocol-src-empty">Ничего не найдено по запросу.</p>';
+      }
+      return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
     }
     function wire(path, doc, q, active) {
-      var view = doc.view;
+      var baseView = doc.view;
       var root = document.getElementById("pv-root");
       var shell =
         '<div class="protocol-src-viewer">' +
         '<div class="protocol-src-toolbar">' +
-        '<input class="protocol-src-search" type="search" placeholder="Поиск…" value="' + escAttr(q) + '" />' +
+        '<input class="protocol-src-search" type="search" placeholder="Лекарства, обследования, диагноз…" value="' + escAttr(q) + '" />' +
         '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">PDF</a>' +
         '<span class="protocol-src-hint">Enter - следующее</span>' +
-        '<span class="protocol-src-stats">Показано ' + (view.stats.shown_blocks || 0) +
-        " · скрыто " + (view.stats.filtered_blocks || 0) + "</span></div>" +
+        '<span class="protocol-src-stats" hidden></span></div>' +
+        '<div class="protocol-src-intent-chips">' +
+        '<button type="button" class="protocol-src-intent-chip" data-src-intent="treatment">Лечение</button>' +
+        '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnostics">Обследования</button>' +
+        '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnosis">Диагноз</button>' +
+        '<button type="button" class="protocol-src-intent-chip" data-src-intent="followup">Наблюдение</button>' +
+        '<button type="button" class="protocol-src-intent-chip" data-src-intent="contraindications">Противопоказания</button>' +
+        "</div>" +
         '<nav class="protocol-src-toc" id="pv-toc"></nav>' +
         '<div class="protocol-src-body" id="pv-body"></div></div>';
       root.innerHTML = shell;
       var toc = document.getElementById("pv-toc");
       var body = document.getElementById("pv-body");
       var search = root.querySelector(".protocol-src-search");
-      var tocHtml = '<p class="protocol-src-toc__title">Навигация</p>';
-      (view.toc || []).forEach(function (t) {
-        tocHtml += '<button type="button" class="protocol-src-toc__btn' +
-          (active === t.id ? " is-active" : "") + '" data-src-toc="' + escAttr(t.id) + '"><span>' +
-          esc(t.label) + '</span><span class="protocol-src-toc__count">' + t.count + "</span></button>";
-      });
-      toc.innerHTML = tocHtml;
-      body.innerHTML = bodyHtml(path, view, q, active);
+      var stats = root.querySelector(".protocol-src-stats");
+      function renderToc(query) {
+        var filtered = filterView(baseView, query);
+        var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
+        (filtered.view.toc || baseView.toc || []).forEach(function (t) {
+          tocHtml += '<button type="button" class="protocol-src-toc__btn' +
+            (active === t.id ? " is-active" : "") + '" data-src-toc="' + escAttr(t.id) + '"><span>' +
+            esc(t.label) + '</span><span class="protocol-src-toc__count">' + t.count + "</span></button>";
+        });
+        toc.innerHTML = tocHtml;
+        toc.querySelectorAll("[data-src-toc]").forEach(function (b) {
+          b.addEventListener("click", function () { jump(b.getAttribute("data-src-toc") || ""); });
+        });
+        if (stats) {
+          if (query && query.trim().length >= 2) {
+            stats.hidden = false;
+            stats.textContent = filtered.matchCount > 0 ? "Найдено: " + filtered.matchCount : "Ничего не найдено";
+          } else {
+            stats.hidden = true;
+            stats.textContent = "";
+          }
+        }
+        root.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
+          chip.classList.toggle("is-active", filtered.intents.indexOf(chip.getAttribute("data-src-intent") || "") >= 0);
+        });
+      }
       function jump(sec) {
         var el = body.querySelector("#proto-src-sec-" + sec);
         if (!el) return;
@@ -322,9 +500,6 @@
         });
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-      toc.querySelectorAll("[data-src-toc]").forEach(function (b) {
-        b.addEventListener("click", function () { jump(b.getAttribute("data-src-toc") || ""); });
-      });
       var mi = 0;
       function focusMark(n) {
         var marks = body.querySelectorAll(".proto-src-mark");
@@ -333,16 +508,35 @@
         marks.forEach(function (m, i) { m.classList.toggle("is-current", i === mi); });
         marks[mi].scrollIntoView({ behavior: "smooth", block: "center" });
       }
+      function apply(query) {
+        renderToc(query);
+        body.innerHTML = bodyHtml(path, baseView, query, active);
+        mi = 0;
+        if (query && query.trim().length >= 2) setTimeout(function () { focusMark(0); }, 30);
+      }
+      apply(q);
       var timer;
       search.addEventListener("input", function () {
         clearTimeout(timer);
-        timer = setTimeout(function () {
-          body.innerHTML = bodyHtml(path, view, search.value, active);
-          mi = 0;
-        }, 180);
+        timer = setTimeout(function () { apply(search.value); }, 180);
       });
       search.addEventListener("keydown", function (ev) {
         if (ev.key === "Enter") { ev.preventDefault(); focusMark(mi + 1); }
+      });
+      root.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var key = chip.getAttribute("data-src-intent") || "";
+          var intent = INTENTS[key];
+          if (!intent) return;
+          var next = intent.phrases[0] || intent.label;
+          if (search.value === next) {
+            search.value = "";
+            apply("");
+            return;
+          }
+          search.value = next;
+          apply(next);
+        });
       });
       if (active) jump(active);
       else if (q) setTimeout(function () { focusMark(0); }, 80);
@@ -351,18 +545,18 @@
     var section = qp("section");
     var q = qp("q");
     if (!path) {
-      document.getElementById("pv-sub").textContent = "Не указан параметр path.";
+      document.getElementById("pv-sub").textContent = "Не указан протокол.";
       return;
     }
     fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (doc) {
         if (!doc || !doc.view || !doc.view.toc || !doc.view.toc.length) {
-          document.getElementById("pv-sub").textContent = "Навигация недоступна для этого протокола.";
+          document.getElementById("pv-sub").textContent = "Нет данных по этому протоколу.";
           return;
         }
         document.getElementById("pv-title").textContent = doc.title || "Протокол Минздрава";
-        document.getElementById("pv-sub").textContent = "Клинические пункты без служебного шума PDF";
+        document.getElementById("pv-sub").textContent = "";
         document.title = (doc.title || "Протокол") + " - навигация";
         wire(path, doc, q, section);
       })
