@@ -9708,28 +9708,106 @@
       border-color: rgba(26, 138, 114, 0.35);
     }
 
+    .assist-card--brief .assist-card-inner {
+      padding: 0.85rem 0.9rem 1rem;
+    }
+
     .protocol-brief-header {
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
 
     .protocol-brief-title {
-      margin: 0 0 0.35rem;
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.35;
+      margin: 0 0 0.4rem;
+      font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+      font-size: 1.08rem;
+      font-weight: 750;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
       color: var(--green-950);
     }
 
     .protocol-brief-match {
-      margin: 0;
+      margin: 0.2rem 0 0;
       font-size: 0.8rem;
       color: #475569;
+      line-height: 1.4;
     }
 
     .protocol-brief-meta {
       margin: 0.25rem 0 0;
       font-size: 0.74rem;
       color: #64748b;
+    }
+
+    .protocol-brief-icd-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin: 0.35rem 0 0.15rem;
+    }
+
+    .protocol-brief-icd-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.12rem 0.48rem;
+      border-radius: 999px;
+      background: rgba(14, 116, 144, 0.1);
+      border: 1px solid rgba(14, 116, 144, 0.28);
+      color: #0e4f63;
+      font-size: 0.72rem;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+    }
+
+    .protocol-brief-icd-chip--hit {
+      background: rgba(22, 163, 74, 0.12);
+      border-color: rgba(22, 163, 74, 0.4);
+      color: #14532d;
+    }
+
+    .protocol-brief-actions--top {
+      margin-top: 0.55rem;
+      margin-bottom: 0.55rem;
+      padding-top: 0;
+      border-top: none;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: linear-gradient(180deg, #fff 70%, rgba(255, 255, 255, 0.92));
+      padding-bottom: 0.35rem;
+    }
+
+    .protocol-brief-jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin: 0 0 0.7rem;
+    }
+
+    .protocol-brief-jump a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.7rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(203, 213, 225, 0.85);
+      background: #f8fafc;
+      color: #334155;
+      font-size: 0.72rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .protocol-brief-jump a:hover {
+      border-color: rgba(26, 138, 114, 0.45);
+      background: rgba(232, 245, 241, 0.9);
+      color: #055a47;
+    }
+
+    .protocol-brief-jump a.is-alert {
+      border-color: rgba(220, 38, 38, 0.35);
+      background: rgba(254, 242, 242, 0.95);
+      color: #991b1b;
     }
 
     .protocol-brief-tabs {
@@ -10135,23 +10213,28 @@
     }
 
     .protocol-brief-red-flags {
-      margin: 0 0 14px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(220, 38, 38, 0.35);
-      background: rgba(254, 242, 242, 0.85);
+      margin: 0 0 0.75rem;
+      padding: 0.7rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid rgba(220, 38, 38, 0.32);
+      background: linear-gradient(165deg, #fff7f7 0%, #fef2f2 100%);
     }
 
     .protocol-brief-red-flags h4 {
-      margin: 0 0 8px;
-      font-size: 0.92rem;
+      margin: 0 0 0.45rem;
+      font-size: 0.86rem;
+      font-weight: 750;
       color: #991b1b;
+    }
+
+    .protocol-brief-red-flags .protocol-brief-item {
+      padding: 0.35rem 0;
     }
 
     .protocol-brief-item {
       display: block;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 0.42rem 0;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.05);
     }
 
     .protocol-brief-item:last-child {
@@ -10160,20 +10243,80 @@
 
     .protocol-brief-item__head {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: flex-start;
-      gap: 6px 8px;
+      gap: 0.4rem 0.5rem;
     }
 
     .protocol-brief-item__text {
-      flex: 1 1 200px;
-      font-size: 0.92rem;
-      line-height: 1.45;
+      flex: 1 1 auto;
+      min-width: 0;
+      font-size: 0.86rem;
+      line-height: 1.42;
+      color: #1e293b;
+    }
+
+    .protocol-brief-item__page {
+      flex: 0 0 auto;
+      margin-left: auto;
+      padding: 0.08rem 0.38rem;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-size: 0.68rem;
+      font-weight: 650;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .protocol-brief-item__page:hover {
+      background: rgba(232, 245, 241, 0.95);
+      color: #055a47;
     }
 
     .protocol-brief-item__meta {
-      font-size: 0.78rem;
-      color: var(--muted, #64748b);
+      display: none;
+    }
+
+    .protocol-brief-item-quote {
+      display: none;
+    }
+
+    .protocol-brief-visit-section {
+      margin: 0 0 0.7rem;
+      padding: 0.7rem 0.8rem;
+      border-radius: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.55);
+      background: #fff;
+      scroll-margin-top: 3.2rem;
+    }
+
+    .protocol-brief-visit-section__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .protocol-brief-visit-section__head h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 750;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+
+    .protocol-brief-visit-section__count {
+      font-size: 0.7rem;
+      font-weight: 650;
+      color: #64748b;
+    }
+
+    .protocol-brief-visit-section__more {
+      margin: 0.35rem 0 0;
+      font-size: 0.74rem;
+      color: #64748b;
     }
 
     .protocol-brief-kz-section {
@@ -10186,33 +10329,34 @@
     }
 
     .protocol-brief-sop-hint {
-      margin: 0 0 8px;
-      font-size: 0.82rem;
-      color: var(--muted, #64748b);
-      line-height: 1.4;
+      display: none;
     }
 
-    .protocol-brief-coverage {
-      margin: 0 0 12px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: rgba(59, 130, 246, 0.08);
+    .protocol-brief-empty {
+      margin: 0.4rem 0;
       font-size: 0.84rem;
+      color: #64748b;
+      line-height: 1.45;
     }
 
     .protocol-brief-feedback {
+      margin-top: 0.65rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid rgba(203, 213, 225, 0.4);
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      align-items: center;
+      gap: 0.35rem;
     }
 
     .protocol-brief-feedback__label {
-      width: 100%;
-      font-size: 0.8rem;
-      color: var(--muted, #64748b);
+      font-size: 0.74rem;
+      color: #64748b;
+      margin-right: 0.15rem;
+    }
+
+    .protocol-brief-coverage {
+      display: none;
     }
 
     .btn-brief-feedback {
@@ -16451,7 +16595,7 @@
     var steps = [
       { id: "pick", label: "Выбор КП" },
       { id: "condition", label: "Нозология" },
-      { id: "section", label: "Раздел PDF" },
+      { id: "section", label: "Карточка" },
       { id: "excerpt", label: "Цитата" },
     ];
     var order = ["pick", "condition", "section", "excerpt"];
@@ -16481,13 +16625,13 @@
     { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза - по нему ищем протокол в каталоге МЗ", uiPhase: "funnel" },
     { id: "rubric", label: "Рубрики", hint: "Отметьте раздел каталога или ищите по всем", uiPhase: "funnel" },
     { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка", uiPhase: "protocols" },
-    { id: "brief", label: "Раздел PDF", hint: "Диагностика, лечение, госпитализация - выдержки из протокола", uiPhase: "sections" },
+    { id: "brief", label: "На приёме", hint: "Диагноз, обследования, лечение и настороженность по протоколу", uiPhase: "sections" },
   ];
 
   var SEARCH_WIZARD_UI_PHASES = [
     { id: "funnel", label: "Запрос", stepIds: ["population", "icd", "rubric"] },
     { id: "protocols", label: "Протоколы", stepIds: ["protocols"] },
-    { id: "sections", label: "Раздел PDF", stepIds: ["brief", "condition", "section", "excerpt"] },
+    { id: "sections", label: "На приёме", stepIds: ["brief", "condition", "section", "excerpt"] },
   ];
 
   function wizardUiPhaseForStep(stepId) {
@@ -25301,33 +25445,85 @@
     }).catch(function () {});
   }
 
-  function renderBriefItemHtml(it) {
+  function renderBriefItemHtml(it, path, opts) {
+    opts = opts || {};
     if (!it || !it.text) return "";
-    var html = '<div class="protocol-brief-item">';
-    html += '<div class="protocol-brief-item__head">';
-    html += obligationBadgeHtml(it.obligation);
-    var hl = (it.quote && it.quote !== it.text ? it.quote : it.text) || "";
+    var page = it.page_start || it.page || "";
+    var hl = String(it.text || "").slice(0, 120);
+    var html = '<div class="protocol-brief-item"><div class="protocol-brief-item__head">';
+    if (!opts.hideObligation) html += obligationBadgeHtml(it.obligation);
     html +=
       '<span class="protocol-brief-item__text protocol-brief-item__text--link" data-brief-highlight="' +
-      escapeHtmlAttr(String(hl).slice(0, 120)) +
-      '" title="Показать в тексте протокола">' +
+      escapeHtmlAttr(hl) +
+      '" title="Найти в протоколе">' +
       escapeHtml(String(it.text)) +
       "</span>";
-    html += "</div>";
-    var meta = [];
-    if (it.page_start) meta.push("стр. " + String(it.page_start));
-    if (it.section_title) meta.push(String(it.section_title));
-    if (meta.length) {
+    if (page) {
+      var pageHref = path ? pdfPageHref(path, page) : "#";
       html +=
-        '<p class="protocol-brief-item__meta">' + escapeHtml(meta.join(" · ")) + "</p>";
+        '<a class="protocol-brief-item__page" href="' +
+        escapeHtmlAttr(pageHref) +
+        '" target="_blank" rel="noopener noreferrer" title="PDF, стр. ' +
+        escapeHtmlAttr(String(page)) +
+        '">стр. ' +
+        escapeHtml(String(page)) +
+        "</a>";
     }
-    if (it.quote && it.quote !== it.text) {
+    html += "</div></div>";
+    return html;
+  }
+
+  function briefIcdChipsHtml(protocolCodes, queryCodes) {
+    var codes = protocolCodes || [];
+    if (!codes.length) return "";
+    var hit = {};
+    var qi;
+    for (qi = 0; qi < (queryCodes || []).length; qi++) {
+      hit[String(queryCodes[qi] || "").toUpperCase()] = true;
+    }
+    var html = '<div class="protocol-brief-icd-row">';
+    var i;
+    for (i = 0; i < Math.min(codes.length, 8); i++) {
+      var code = String(codes[i] || "").toUpperCase();
+      if (!code) continue;
+      var isHit = !!(hit[code] || hit[code.split(".")[0]]);
       html +=
-        '<details class="protocol-brief-item-quote"><summary>Цитата из PDF</summary><p class="assist-proto-excerpt">' +
-        escapeHtml(String(it.quote)) +
-        "</p></details>";
+        '<span class="protocol-brief-icd-chip' +
+        (isHit ? " protocol-brief-icd-chip--hit" : "") +
+        '">' +
+        escapeHtml(code) +
+        "</span>";
     }
     html += "</div>";
+    return html;
+  }
+
+  function briefVisitSectionHtml(secId, label, items, path, totalCount) {
+    items = items || [];
+    if (!items.length) return "";
+    var html =
+      '<section class="protocol-brief-visit-section" id="brief-visit-' +
+      escapeHtmlAttr(secId) +
+      '">';
+    html += '<div class="protocol-brief-visit-section__head">';
+    html += "<h4>" + escapeHtml(label) + "</h4>";
+    html +=
+      '<span class="protocol-brief-visit-section__count">' +
+      String(items.length) +
+      (totalCount && totalCount > items.length ? " из " + String(totalCount) : "") +
+      "</span>";
+    html += "</div>";
+    var i;
+    for (i = 0; i < items.length; i++) {
+      html += renderBriefItemHtml(items[i], path);
+    }
+    if (totalCount && totalCount > items.length) {
+      html +=
+        '<p class="protocol-brief-visit-section__more">Ещё ' +
+        String(totalCount - items.length) +
+        " в полном тексте протокола</p>";
+    }
+    html += "</section>";
     return html;
   }
 
@@ -25352,125 +25548,95 @@
     var expanded = (bundle && bundle.expanded) || {};
     var kzBrief = (bundle && bundle.kz_brief) || {};
     var title = (nav && nav.title) || expanded.title || formatProtocolDisplayTitle(path, "");
-    var excerptMap = ragExcerptByPath((data && data.retrieval) || []);
-    var structEx = ((data && data.protocol_excerpts) || {})[path] || null;
-    var pdfExcerpt = (structEx && structEx.text) || excerptMap[path] || "";
     var href = safeResourceHref(path);
     var meta = ((data && data.protocol_ui_meta) || {})[path] || {};
+    var queryIcd = icdCodesFromAssistData(data || {});
+    var protocolIcd = expanded.icd10_codes || (kzBrief.icd10_codes) || (cond && cond.icd10_codes) || [];
     var hasKz = !!(kzBrief.available && kzBrief.sections && kzBrief.sections.length);
-    var defaultTab = hasKz ? "kz" : "summary";
-    var html =
-      '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner" data-brief-path="' +
-      escapeHtmlAttr(path) +
-      '">';
-    html += '<div class="protocol-brief-header">';
-    html += '<h3 class="protocol-brief-title">' + escapeHtml(title) + "</h3>";
-    if (cond && cond.match_reason) {
-      html += '<p class="protocol-brief-match">' + escapeHtml(String(cond.match_reason)) + "</p>";
-    }
-    if (kzBrief.summary_ru) {
-      html +=
-        '<p class="protocol-brief-match">' + escapeHtml(String(kzBrief.summary_ru)) + "</p>";
-    }
-    var metaParts = [];
-    if (meta.post_mz) metaParts.push("пост МЗ");
-    if (meta.year) metaParts.push(String(meta.year));
-    if (bundle && bundle.cache_hit) metaParts.push("кэш brief");
-    if (bundle && bundle.brief_ms != null) metaParts.push(String(bundle.brief_ms) + " ms");
-    if (nav && nav.cache_hit) metaParts.push("nav кэш");
-    if (metaParts.length) {
-      html += '<p class="protocol-brief-meta">' + escapeHtml(metaParts.join(" · ")) + "</p>";
-    }
-    if (kzBrief.coverage) {
-      html +=
-        '<p class="protocol-brief-coverage">Для КЗ: ' +
-        String(kzBrief.coverage.blocks_filled || 0) +
-        " из " +
-        String(kzBrief.coverage.blocks_total || 7) +
-        " блоков · " +
-        String(kzBrief.coverage.matrix_items || 0) +
-        " пункт(ов) из протокола" +
-        (kzBrief.coverage.required_total
-          ? " · обязательных: " +
-            String(kzBrief.coverage.required_shown || 0) +
-            "/" +
-            String(kzBrief.coverage.required_total)
-          : "") +
-        "</p>";
-    }
-    html += "</div>";
+    var redFlags = (expanded.red_flags || []).slice(0, 6);
+    var redFlagsTotal = (expanded.red_flags || []).length;
 
-    var redFlags = expanded.red_flags || [];
-    if (redFlags.length) {
-      html += '<div class="protocol-brief-red-flags"><h4>Красные флаги и срочные действия</h4>';
-      var ri;
-      for (ri = 0; ri < redFlags.length; ri++) {
-        html += renderBriefItemHtml(redFlags[ri]);
-      }
-      html += "</div>";
-    }
-
-    html += '<div class="protocol-brief-tabs" role="tablist">';
+    var visitSections = [];
     if (hasKz) {
-      html +=
-        '<button type="button" class="protocol-brief-tab' +
-        (defaultTab === "kz" ? " is-active" : "") +
-        '" data-brief-tab="kz" role="tab">Для КЗ</button>';
-    }
-    html +=
-      '<button type="button" class="protocol-brief-tab' +
-      (defaultTab === "summary" ? " is-active" : "") +
-      '" data-brief-tab="summary" role="tab">Сводка</button>';
-    html +=
-      '<button type="button" class="protocol-brief-tab" data-brief-tab="text" role="tab">Навигация по протоколу</button>';
-    if (pdfExcerpt || (structEx && structEx.sections && structEx.sections.length)) {
-      html +=
-        '<button type="button" class="protocol-brief-tab" data-brief-tab="pdf" role="tab">PDF-фрагмент</button>';
-    }
-    html += "</div>";
-
-    if (hasKz) {
-      html +=
-        '<div class="protocol-brief-panel" data-brief-panel="kz"' +
-        (defaultTab === "kz" ? "" : " hidden") +
-        ' role="tabpanel">';
       var ksi;
       for (ksi = 0; ksi < kzBrief.sections.length; ksi++) {
         var ksec = kzBrief.sections[ksi];
         var kitems = ksec.items || [];
-        html += '<section class="protocol-brief-kz-section">';
-        html += "<h4>" + escapeHtml(String(ksec.kz_section || "")) + "</h4>";
-        if (ksec.sop_hint) {
-          html +=
-            '<p class="protocol-brief-sop-hint">' + escapeHtml(String(ksec.sop_hint)) + "</p>";
-        }
-        if (kitems.length) {
-          var kii;
-          for (kii = 0; kii < kitems.length; kii++) {
-            html += renderBriefItemHtml(kitems[kii]);
-          }
-          if (ksec.total_count && ksec.total_count > kitems.length) {
-            html +=
-              '<p class="protocol-brief-sop-hint">Ещё ' +
-              String(ksec.total_count - kitems.length) +
-              " пункт(ов) - см. PDF или «Цитаты из раздела».</p>";
-          }
-        } else {
-          html +=
-            '<p class="protocol-brief-sop-hint">В карточке Summary нет готовых пунктов - заполните по СОП и осмотру.</p>';
-        }
-        html += "</section>";
+        if (!kitems.length) continue;
+        visitSections.push({
+          id: "kz-" + String(ksi),
+          label: ksec.kz_section || "Раздел",
+          items: kitems,
+          total: ksec.total_count || kitems.length,
+        });
       }
-      html += "</div>";
+    }
+    if (!visitSections.length) {
+      var expSections = expanded.sections || [];
+      var bi;
+      for (bi = 0; bi < expSections.length; bi++) {
+        var esec = expSections[bi];
+        if (!esec.items || !esec.items.length) continue;
+        visitSections.push({
+          id: esec.id || "sec-" + String(bi),
+          label: esec.label || esec.id || "Раздел",
+          items: esec.items,
+          total: esec.total_count || esec.items.length,
+        });
+      }
     }
 
+    var html =
+      '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner" data-brief-path="' +
+      escapeHtmlAttr(path) +
+      '">';
+
+    html += '<div class="protocol-brief-header">';
+    html += '<h3 class="protocol-brief-title">' + escapeHtml(title) + "</h3>";
+    html += briefIcdChipsHtml(protocolIcd, queryIcd);
+    if (cond && cond.match_reason) {
+      html += '<p class="protocol-brief-match">' + escapeHtml(String(cond.match_reason)) + "</p>";
+    } else if (kzBrief.condition_name) {
+      html +=
+        '<p class="protocol-brief-match">' +
+        escapeHtml("Нозология: " + String(kzBrief.condition_name)) +
+        "</p>";
+    }
+    var metaParts = [];
+    if (meta.year) metaParts.push(String(meta.year));
+    if (meta.post_mz) metaParts.push("пост МЗ");
+    if (metaParts.length) {
+      html += '<p class="protocol-brief-meta">' + escapeHtml(metaParts.join(" · ")) + "</p>";
+    }
+    html += "</div>";
+
+    html += '<div class="protocol-brief-actions protocol-brief-actions--top">';
     html +=
-      '<div class="protocol-brief-panel" data-brief-panel="summary"' +
-      (defaultTab === "summary" ? "" : " hidden") +
-      ' role="tabpanel">';
+      '<a class="btn-proto-action btn-proto-action--primary" href="' +
+      href +
+      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>';
+    html +=
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить КЗ</button>';
+    if (window.__methodistMode) {
+      html +=
+        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-matrix" data-proto-path="' +
+        escapeHtmlAttr(path) +
+        '">Матрица КЗ</button>';
+    }
+    html += "</div>";
+
+    html += '<div class="protocol-brief-tabs" role="tablist">';
+    html +=
+      '<button type="button" class="protocol-brief-tab is-active" data-brief-tab="visit" role="tab">На приёме</button>';
+    html +=
+      '<button type="button" class="protocol-brief-tab" data-brief-tab="text" role="tab">Весь протокол</button>';
+    html += "</div>";
+
+    html += '<div class="protocol-brief-panel" data-brief-panel="visit" role="tabpanel">';
+
     if (nav && nav.conditions && nav.conditions.length > 1) {
       html +=
-        '<details class="protocol-brief-conditions"><summary>Другая нозология (' +
+        '<details class="protocol-brief-conditions"><summary>Другая нозология в этом КП (' +
         String(nav.conditions.length) +
         ")</summary>";
       var ni;
@@ -25488,141 +25654,67 @@
           escapeHtmlAttr(nc.condition_id || "") +
           '">' +
           escapeHtml(nlabel) +
-          (nc.match_reason ? " - " + escapeHtml(String(nc.match_reason)) : "") +
           "</button>";
       }
       html += "</details>";
     }
-    html += '<div class="protocol-brief-blocks">';
-    var expSections = expanded.sections || [];
-    var bi;
-    if (expSections.length) {
-      for (bi = 0; bi < expSections.length; bi++) {
-        var esec = expSections[bi];
-        var blockCls = "protocol-brief-block";
-        if (esec.id === "red_flags") blockCls += " protocol-brief-block--alert";
-        html += '<article class="' + blockCls + '">';
-        html += '<div class="protocol-brief-block__head">';
+
+    if (redFlags.length || visitSections.length) {
+      html += '<nav class="protocol-brief-jump" aria-label="Разделы карточки">';
+      if (redFlags.length) {
+        html += '<a class="is-alert" href="#brief-visit-flags">Настороженность</a>';
+      }
+      var ji;
+      for (ji = 0; ji < visitSections.length; ji++) {
         html +=
-          '<span class="protocol-brief-block__label">' +
-          escapeHtml(esec.label || esec.id || "Раздел") +
-          "</span>";
-        if (esec.total_count != null) {
-          html +=
-            '<span class="protocol-brief-block__count">' +
-            String(esec.total_count) +
-            " пункт(ов)</span>";
-        }
-        html += "</div>";
-        var eitems = esec.items || [];
-        var ei;
-        for (ei = 0; ei < eitems.length; ei++) {
-          html += renderBriefItemHtml(eitems[ei]);
-        }
+          '<a href="#brief-visit-' +
+          escapeHtmlAttr(visitSections[ji].id) +
+          '">' +
+          escapeHtml(visitSections[ji].label) +
+          "</a>";
+      }
+      html += "</nav>";
+    }
+
+    if (redFlags.length) {
+      html +=
+        '<div class="protocol-brief-red-flags" id="brief-visit-flags">' +
+        "<h4>Настороженность и противопоказания</h4>";
+      var ri;
+      for (ri = 0; ri < redFlags.length; ri++) {
+        html += renderBriefItemHtml(redFlags[ri], path, { hideObligation: true });
+      }
+      if (redFlagsTotal > redFlags.length) {
         html +=
-          '<button type="button" class="protocol-brief-block__btn protocol-brief-block__btn--text" data-brief-open-text="' +
-          escapeHtmlAttr(esec.id || "") +
-          '">В тексте протокола</button>';
-        if (esec.has_more) {
-          html +=
-            '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
-            escapeHtmlAttr(esec.id || "") +
-            '" data-brief-section-label="' +
-            escapeHtmlAttr(esec.label || "") +
-            '">Все цитаты раздела</button>';
-        }
-        html += "</article>";
+          '<p class="protocol-brief-visit-section__more">Ещё ' +
+          String(redFlagsTotal - redFlags.length) +
+          " - в полном тексте протокола</p>";
+      }
+      html += "</div>";
+    }
+
+    if (visitSections.length) {
+      var vi;
+      for (vi = 0; vi < visitSections.length; vi++) {
+        var vs = visitSections[vi];
+        html += briefVisitSectionHtml(vs.id, vs.label, vs.items, path, vs.total);
       }
     } else {
-      var sections = (cond && cond.sections) || [];
-      for (bi = 0; bi < sections.length; bi++) {
-        var sec = sections[bi];
-        var blockCls2 = "protocol-brief-block";
-        if (sec.id === "red_flags") blockCls2 += " protocol-brief-block--alert";
-        html += '<article class="' + blockCls2 + '">';
-        html += '<div class="protocol-brief-block__head">';
-        html +=
-          '<span class="protocol-brief-block__label">' +
-          escapeHtml(sec.label || sec.id || "Раздел") +
-          "</span>";
-        if (sec.count != null) {
-          html +=
-            '<span class="protocol-brief-block__count">' +
-            String(sec.count) +
-            " пункт(ов)</span>";
-        }
-        html += "</div>";
-        if (sec.preview) {
-          html +=
-            '<p class="protocol-brief-block__preview">' +
-            escapeHtml(String(sec.preview)) +
-            "</p>";
-        }
-        html +=
-          '<button type="button" class="protocol-brief-block__btn" data-brief-section="' +
-          escapeHtmlAttr(sec.id || "") +
-          '" data-brief-section-label="' +
-          escapeHtmlAttr(sec.label || "") +
-          '">Цитаты из раздела</button>';
-        html +=
-          '<button type="button" class="protocol-brief-block__btn protocol-brief-block__btn--text" data-brief-open-text="' +
-          escapeHtmlAttr(sec.id || "") +
-          '">В тексте протокола</button>';
-        html += "</article>";
-      }
-      if (!sections.length) {
-        html +=
-          '<p class="assist-ai-eval-lead">Карточка Summary без разделов - используйте PDF-фрагмент и матрицу КЗ.</p>';
-      }
+      html +=
+        '<p class="protocol-brief-empty">Краткой карточки по этому протоколу пока нет. Откройте PDF или вкладку «Весь протокол».</p>';
     }
-    html += "</div></div>";
+
+    html += "</div>";
 
     html +=
       '<div class="protocol-brief-panel" data-brief-panel="text" hidden role="tabpanel">' +
       renderProtocolSourceViewerShell(path) +
       "</div>";
 
-    if (pdfExcerpt || (structEx && structEx.sections)) {
-      html += '<div class="protocol-brief-panel" data-brief-panel="pdf" hidden role="tabpanel">';
-      if (structEx && structEx.sections && structEx.sections.length) {
-        var psi;
-        for (psi = 0; psi < structEx.sections.length; psi++) {
-          var psec = structEx.sections[psi];
-          html += '<div class="protocol-brief-pdf-section">';
-          html += "<h5>" + escapeHtml(String(psec.label || psec.section_title || "")) + "</h5>";
-          html +=
-            '<p class="assist-proto-excerpt">' + escapeHtml(String(psec.text || "")) + "</p>";
-          html += "</div>";
-        }
-      } else {
-        html += '<details open class="protocol-brief-pdf-full">';
-        html += "<summary>Выдержка из поиска (RAG)</summary>";
-        html +=
-          '<p class="assist-proto-excerpt">' + escapeHtml(String(pdfExcerpt)) + "</p>";
-        html += "</details>";
-      }
-      html += "</div>";
-    }
-
-    html += '<div class="protocol-brief-actions">';
-    html +=
-      '<a class="btn-proto-action btn-proto-action--primary" href="' +
-      href +
-      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>';
-    html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>';
-    if (window.__methodistMode) {
-      html +=
-        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-matrix" data-proto-path="' +
-        escapeHtmlAttr(path) +
-        '">Матрица КЗ</button>';
-    }
-    html += "</div>";
-
     html += '<div class="protocol-brief-feedback" data-brief-feedback-root>';
-    html += '<span class="protocol-brief-feedback__label">Полезность сводки:</span>';
+    html += '<span class="protocol-brief-feedback__label">Карточка полезна?</span>';
     html +=
-      '<button type="button" class="btn-brief-feedback" data-brief-rating="useful">Достаточно</button>';
+      '<button type="button" class="btn-brief-feedback" data-brief-rating="useful">Да</button>';
     html +=
       '<button type="button" class="btn-brief-feedback" data-brief-rating="insufficient">Мало данных</button>';
     html +=
@@ -25639,7 +25731,7 @@
       html += '<div class="protocol-brief-matrix-slot" id="brief-kz-matrix-slot">';
       html += renderKzMatrixColumn(bundle.kz_matrix);
       html +=
-        '<p class="assist-detail-note">Чек-лист сформирован из карточки Summary. Отметьте пункты и нажмите «Черновик КЗ».</p>';
+        '<p class="assist-detail-note">Чек-лист из карточки Summary. Отметьте пункты и нажмите «Черновик КЗ».</p>';
       html += "</div>";
     }
 
@@ -25654,7 +25746,7 @@
     if (!root) return;
     root.querySelectorAll(".protocol-brief-tab").forEach(function (tab) {
       tab.addEventListener("click", function () {
-        var id = tab.getAttribute("data-brief-tab") || "summary";
+        var id = tab.getAttribute("data-brief-tab") || "visit";
         root.querySelectorAll(".protocol-brief-tab").forEach(function (t) {
           t.classList.toggle("is-active", t === tab);
         });
@@ -25664,6 +25756,18 @@
         if (id === "text") {
           ensureProtocolSourceTextLoaded(root, path, {});
         }
+      });
+    });
+    root.querySelectorAll(".protocol-brief-jump a").forEach(function (a) {
+      a.addEventListener("click", function (ev) {
+        var href = a.getAttribute("href") || "";
+        if (href.charAt(0) !== "#") return;
+        var el = root.querySelector(href);
+        if (!el) return;
+        ev.preventDefault();
+        try {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (eJump) {}
       });
     });
     root.querySelectorAll("[data-brief-open-text]").forEach(function (btn) {
@@ -25798,15 +25902,7 @@
         });
       return;
     }
-    if (nav && nav.nav_ms != null) {
-      setSearchQueryStatus(
-        "Сводка по КП" +
-          (nav.cache_hit ? " (кэш nav)" : "") +
-          (bundle && bundle.brief_ms != null ? " · brief " + String(bundle.brief_ms) + " ms" : "") +
-          (nav.nav_ms != null ? " · nav " + String(nav.nav_ms) + " ms" : ""),
-        false
-      );
-    }
+    setSearchQueryStatus("Карточка протокола готова", false);
     out.innerHTML = renderProtocolBriefHtml(nav, data, path, bundle);
     wireProtocolBrief(nav, path, data);
     hideSearchWizardBarProgress();
@@ -25822,17 +25918,17 @@
     if (!out) return;
     if (excerptMap[path]) {
       out.innerHTML =
-        '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
-        '<p class="assist-sec-label">Выдержка из PDF</p>' +
-        '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Карточка Summary недоступна - показан фрагмент из поиска. Сверьте с полным PDF.</p>' +
+        '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner">' +
+        '<p class="assist-sec-label">Карточка протокола</p>' +
+        '<p class="protocol-brief-empty">Краткой сводки пока нет - ниже фрагмент из поиска. Сверьте с полным PDF.</p>' +
         '<p class="assist-proto-excerpt">' +
         escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
         "</p>" +
-        '<div class="protocol-brief-actions">' +
+        '<div class="protocol-brief-actions protocol-brief-actions--top">' +
         '<a class="btn-proto-action btn-proto-action--primary" href="' +
         escapeHtmlAttr(safeResourceHref(path)) +
         '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
-        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить заключение</button>' +
+        '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить КЗ</button>' +
         "</div>" +
         '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div></div></div>';
       bindProtocolNavHub(data);
@@ -25852,10 +25948,10 @@
       return;
     }
     out.innerHTML =
-      '<div class="assist-card assist-card--stepped"><div class="assist-card-inner">' +
-      '<p class="assist-sec-label">Раздел PDF</p>' +
-      '<p class="assist-note">Для этого протокола нет готовой сводки. Откройте PDF на сайте Минздрава.</p>' +
-      '<div class="protocol-brief-actions">' +
+      '<div class="assist-card assist-card--stepped assist-card--brief"><div class="assist-card-inner">' +
+      '<p class="assist-sec-label">Карточка протокола</p>' +
+      '<p class="protocol-brief-empty">Для этого протокола нет готовой сводки. Откройте PDF на сайте Минздрава.</p>' +
+      '<div class="protocol-brief-actions protocol-brief-actions--top">' +
       '<a class="btn-proto-action btn-proto-action--primary" href="' +
       escapeHtmlAttr(safeResourceHref(path)) +
       '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
@@ -26103,7 +26199,7 @@
           '<a class="proto-link" href="' +
           escapeHtmlAttr(safeResourceHref(path)) +
           '" target="_blank" rel="noopener">Открыть PDF</a> · ' +
-          '<button type="button" class="btn-assist btn-search-draft-kz">Оформить заключение</button>' +
+          '<button type="button" class="btn-assist btn-search-draft-kz">Оформить КЗ</button>' +
           (window.__methodistMode
             ? ' · <button type="button" class="btn-assist btn-proto-matrix" data-proto-path="' +
               escapeHtmlAttr(path) +

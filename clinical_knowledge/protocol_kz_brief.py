@@ -44,11 +44,11 @@ _BRIEF_CACHE_TTL_SEC = 3600
 _BRIEF_CACHE_MAX = 48
 
 _SECTION_LABELS: dict[str, str] = {
-    "criteria": "Критерии и диагностика",
+    "criteria": "Диагноз и критерии",
     "exams": "Обследования",
     "treatment": "Лечение",
-    "red_flags": "Красные флаги",
-    "follow_up": "Наблюдение и маршрутизация",
+    "red_flags": "Настороженность и противопоказания",
+    "follow_up": "Наблюдение и маршрут",
 }
 
 
@@ -365,22 +365,15 @@ def build_kz_brief(
     follow_items = _collect_expanded_items(cond, "follow_up", limit=items_per_section)
     push_kz("Наблюдение и контроль", follow_items)
 
-    # Направления + red flags
+    # Направления / госпитализация (red flags - отдельно в expanded, не дублируем)
     route_items: list[dict[str, Any]] = []
-    for raw in _collect_expanded_items(cond, "red_flags", limit=6):
-        if raw.get("obligation") == "required":
-            required_total += 1
-            required_shown += 1
-        route_items.append(raw)
     for raw in _collect_expanded_items(cond, "follow_up", limit=items_per_section):
         lbl = (raw.get("label") or "").lower()
         if lbl in ("госпитализация", "маршрут"):
             route_items.append(raw)
     push_kz("Направления и консультации специалистов", route_items[:items_per_section])
 
-    # Жалобы / статус - подсказки СОП (данных в Summary обычно нет)
-    push_kz("Жалобы и анамнез", [])
-    push_kz("Объективный статус", [])
+    # Жалобы / статус - в Summary обычно пусто; не засоряем карточку пустыми блоками.
 
     order = {s: i for i, s in enumerate(KZ_SECTIONS)}
     kz_sections.sort(key=lambda s: order.get(s["kz_section"], 99))
@@ -392,8 +385,7 @@ def build_kz_brief(
     if cond.name:
         summary_ru = f"Нозология: {cond.name}."
         if cond.icd10_codes:
-            summary_ru += f" Коды протокола: {', '.join(cond.icd10_codes[:4])}."
-        summary_ru += " Ниже - пункты для оформления КЗ по карточке Summary."
+            summary_ru += f" МКБ: {', '.join(cond.icd10_codes[:4])}."
 
     return {
         "available": blocks_filled > 0,
@@ -538,7 +530,7 @@ def attach_protocol_brief_map(
     icd_codes: list[str] | None = None,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Вложить protocol_brief для top-N протоколов. Не вызывать из /api/assist на Render — только on-demand API."""
+    """Вложить protocol_brief для top-N протоколов. Не вызывать из /api/assist на Render - только on-demand API."""
     from clinical_knowledge.protocol_nav_cache import resolve_protocol_nav_cached
 
     protos: list[dict[str, Any]] = []
