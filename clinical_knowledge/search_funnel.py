@@ -1,4 +1,4 @@
-"""POST /api/search/funnel — единый контракт шагов 0–7 (C5)."""
+"""POST /api/search/funnel - единый контракт шагов 0-7 (C5)."""
 from __future__ import annotations
 
 import re
@@ -442,7 +442,14 @@ def handle_search_funnel(
                 out["nav_source"] = "summary"
                 if excerpt.get("items"):
                     out["source_ref"] = excerpt["items"][0]
-        out["pdf_href"] = f"/api/protocol-pdf?path={path}" if path else None
+        if path:
+            from clinical_knowledge.protocol_links import protocol_nav_api_path, protocol_pdf_api_path
+
+            out["nav_href"] = protocol_nav_api_path(path)
+            out["pdf_href"] = protocol_pdf_api_path(path)
+        else:
+            out["nav_href"] = None
+            out["pdf_href"] = None
         return out
 
     out["step"] = step

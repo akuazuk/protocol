@@ -148,6 +148,104 @@ def protocol_pdf_api_path(local_path: str | None) -> str | None:
     return f"/api/protocol-pdf?path={quote(p, safe='')}"
 
 
+def protocol_nav_api_path(
+    local_path: str | None,
+    *,
+    section: str | None = None,
+    q: str | None = None,
+) -> str | None:
+    """Относительный URL навигатора протокола `/proto-viewer.html?path=…`."""
+    p = normalize_protocol_path(local_path)
+    if not p:
+        return None
+    url = f"/proto-viewer.html?path={quote(p, safe='')}"
+    if section and str(section).strip():
+        url += f"&section={quote(str(section).strip(), safe='')}"
+    if q and str(q).strip():
+        url += f"&q={quote(str(q).strip()[:120], safe='')}"
+    return url
+
+
+def protocol_basename_key(local_path: str | None) -> str:
+    """Ключ дедупа: имя PDF без рубрики (один КП может лежать в нескольких папках)."""
+    norm = normalize_protocol_path(local_path)
+    if not norm:
+        return ""
+    return norm.rsplit("/", 1)[-1].lower()
+
+
+def protocol_title_key(title: str | None) -> str:
+    t = beautify_protocol_title(title or "")
+    if not t:
+        return ""
+    t = t.lower().replace("ё", "е")
+    t = re.sub(r"\d{2}\.\d{2}\.\d{4}", " ", t)
+    t = re.sub(r"№\s*\d+", " ", t)
+    t = re.sub(r"пост\.?\s*мз", " ", t, flags=re.I)
+    t = re.sub(r"[^a-zа-я0-9]+", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def dedupe_protocol_rows(
+    rows: list[dict] | None,
+    *,
+    path_key: str = "path",
+    score_key: str = "confidence_score",
+) -> list[dict]:
+    """Убирает дубли одного КП (тот же файл / то же название) - оставляет лучший score."""
+    if not rows:
+        return []
+
+    def _score(row: dict) -> float:
+        try:
+            return float(row.get(score_key) or row.get("score") or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    by_path: dict[str, dict] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        path = normalize_protocol_path(str(row.get(path_key) or ""))
+        if not path:
+            continue
+        entry = dict(row)
+        entry[path_key] = path
+        prev = by_path.get(path)
+        if prev is None or _score(entry) > _score(prev):
+            by_path[path] = entry
+
+    by_base: dict[str, dict] = {}
+    for row in by_path.values():
+        path = str(row.get(path_key) or "")
+        bk = protocol_basename_key(path) or f"path:{path}"
+        prev = by_base.get(bk)
+        if prev is None or _score(row) > _score(prev):
+            by_base[bk] = row
+        elif prev is not None:
+            dups = list(prev.get("duplicate_catalog_paths") or [])
+            other = str(row.get(path_key) or "")
+            if other and other not in dups and other != prev.get(path_key):
+                dups.append(other)
+            if dups:
+                prev = dict(prev)
+                prev["duplicate_catalog_paths"] = dups
+                by_base[bk] = prev
+
+    by_title: dict[str, dict] = {}
+    for row in by_base.values():
+        tk = protocol_title_key(str(row.get("title") or row.get("registry_title") or ""))
+        if not tk:
+            tk = f"path:{row.get(path_key) or ''}"
+        prev = by_title.get(tk)
+        if prev is None or _score(row) > _score(prev):
+            by_title[tk] = row
+
+    out = list(by_title.values())
+    out.sort(key=lambda r: (-_score(r), str(r.get(path_key) or "")))
+    return out
+
+
 def content_disposition_inline(filename: str) -> str:
     """Content-Disposition с поддержкой кириллицы (RFC 5987)."""
     safe = (filename or "protocol.pdf").replace('"', "")
@@ -164,19 +262,27 @@ def protocol_link_payload(
     section: str | None = None,
     pages: str | None = None,
     icd_verified: bool = False,
+    q: str | None = None,
 ) -> dict | None:
-    """Единый объект ссылки для API/UI."""
+    """Единый объект ссылки для API/UI.
+
+    Основная ссылка - навигатор протокола (`nav_url` / `url`).
+    `pdf_url` остаётся для точечного открытия PDF (страница, скачивание).
+    """
     norm = normalize_protocol_path(local_path)
     if not norm:
         return None
-    url = protocol_pdf_api_path(norm)
-    if not url:
+    pdf_url = protocol_pdf_api_path(norm)
+    nav_url = protocol_nav_api_path(norm, section=section, q=q)
+    if not pdf_url or not nav_url:
         return None
     display = protocol_display_name(norm, registry_title=title)
     rubric = protocol_rubric_label(norm)
     out: dict = {
         "path": norm,
-        "pdf_url": url,
+        "nav_url": nav_url,
+        "url": nav_url,
+        "pdf_url": pdf_url,
         "title": display,
         "rubric": rubric,
     }

@@ -12259,7 +12259,7 @@
         <div id="llm-out" class="llm-out"></div>
         <div id="search-mobile-actions" class="search-mobile-actions" hidden aria-label="Быстрые действия">
           <button type="button" class="btn btn-consult-outline" id="search-mobile-back">← Назад</button>
-          <button type="button" class="btn btn-submit-row" id="search-mobile-primary">Открыть PDF</button>
+          <button type="button" class="btn btn-submit-row" id="search-mobile-primary">Открыть протокол</button>
         </div>
 
         </section>
@@ -17274,8 +17274,8 @@
       .map(function (r) {
         var t = formatProtocolDisplayTitle(r.path || "", r.title || "");
         return (
-          '<a class="recent-proto-chip" href="' +
-          safeResourceHref(r.path || "") +
+          '<a class="recent-proto-chip proto-link" href="' +
+          protocolPrimaryHref(r.path || "") +
           '" target="_blank" rel="noopener noreferrer" title="' +
           escapeHtmlAttr(t) +
           '">' +
@@ -17338,7 +17338,7 @@
     var protocolUiMeta = opts.protocolUiMeta || {};
     var isTop = !!opts.isTop;
     var rank = opts.rank != null ? Number(opts.rank) : 0;
-    var href = safeResourceHref(pr.path || "");
+    var href = protocolPrimaryHref(pr.path || "");
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var methodist = !!window.__methodistMode;
     var explain = protocolWhyEnrichedRu(pr, data);
@@ -17357,9 +17357,9 @@
     }
     html += '<div class="proto-nav-card__head">';
     html +=
-      '<h5 class="proto-nav-card__title"><a href="' +
+      '<h5 class="proto-nav-card__title"><a class="proto-link" href="' +
       href +
-      '" target="_blank" rel="noopener noreferrer">' +
+      '" target="_blank" rel="noopener noreferrer" title="Открыть навигацию по протоколу">' +
       escapeHtml(title) +
       "</a></h5>";
     html += '<div class="proto-nav-card__badges">';
@@ -17393,18 +17393,22 @@
     if (snapEx && snapEx.sections && snapEx.sections.length && snapEx.sections[0].page_start) {
       firstPage = parseInt(snapEx.sections[0].page_start, 10) || 0;
     }
-    var pdfHref = firstPage ? pdfPageHref(pr.path, firstPage) : href;
+    var pdfHref = firstPage ? pdfPageHref(pr.path, firstPage) : safeResourceHref(pr.path || "");
     html += '<div class="proto-nav-card__actions">';
     html +=
-      '<button type="button" class="btn-proto-action btn-proto-action--primary btn-proto-pick btn-proto-pick--primary" data-proto-path="' +
+      '<a class="btn-proto-action btn-proto-action--primary proto-link" href="' +
+      href +
+      '" target="_blank" rel="noopener noreferrer" title="Навигация по протоколу">Открыть протокол</a>';
+    html +=
+      '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-proto-pick" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '" data-proto-title="' +
       escapeHtmlAttr(pr.title || "") +
-      '" title="Разделы протокола: диагностика, лечение">Разделы протокола</button>';
+      '" title="Карточка на приёме">На приёме</button>';
     html +=
       '<a class="btn-proto-action btn-proto-action--link btn-proto-pdf" href="' +
       pdfHref +
-      '" target="_blank" rel="noopener noreferrer" data-proto-path="' +
+      '" target="_blank" rel="noopener noreferrer" data-proto-pdf="1" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '" data-proto-title="' +
       escapeHtmlAttr(pr.title || "") +
@@ -17627,7 +17631,7 @@
     opts = opts || {};
     var excerptByPath = opts.excerptByPath || {};
     var protocolIcdMentions = opts.protocolIcdMentions || {};
-    var href = safeResourceHref(pr.path || "");
+    var href = protocolPrimaryHref(pr.path || "");
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var mScore = confidenceFromProtocol(pr);
     var ragN = ragMap[pr.path] != null ? ragMap[pr.path] : 0;
@@ -17640,7 +17644,7 @@
     html +=
       '<a class="proto-link" href="' +
       href +
-      '" target="_blank" rel="noopener noreferrer">' +
+      '" target="_blank" rel="noopener noreferrer" title="Открыть навигацию по протоколу">' +
       escapeHtml(title) +
       "</a>";
     html += catalogBadgesHtml(pr.path, opts.protocolUiMeta);
@@ -20874,32 +20878,58 @@
     return encodeURI(p);
   }
 
-  /** Починить ссылки на PDF внутри вставленного HTML-отчёта. */
+  /** Починить ссылки на протоколы: основная цель - навигатор, не сырой PDF. */
   function fixProtocolLinksInContainer(container) {
     if (!container) return;
     var links = container.querySelectorAll("a[href]");
     links.forEach(function (a) {
       var href = a.getAttribute("href") || "";
-      if (/^\/api\/protocol-pdf/i.test(href) || /minzdrav_protocols\/.+\.pdf/i.test(href)) {
-        var fixed = safeResourceHref(href.indexOf("path=") >= 0 ? href : href);
-        if (fixed && fixed !== "#") a.setAttribute("href", fixed);
-        if (!a.getAttribute("target")) {
-          a.setAttribute("target", "_blank");
-          a.setAttribute("rel", "noopener noreferrer");
+      var isPdfApi = /^\/api\/protocol-pdf/i.test(href) || /[?&]path=.*minzdrav_protocols/i.test(href);
+      var isRawPdf = /minzdrav_protocols\/.+\.pdf/i.test(href) && href.indexOf("proto-viewer") < 0;
+      var isViewer = /proto-viewer\.html/i.test(href);
+      if (!isPdfApi && !isRawPdf && !isViewer) return;
+      var pathFromHref = "";
+      try {
+        var u = new URL(href, window.location.origin);
+        pathFromHref = u.searchParams.get("path") || "";
+      } catch (e0) {
+        var m = href.match(/[?&]path=([^&]+)/);
+        if (m) {
+          try {
+            pathFromHref = decodeURIComponent(m[1]);
+          } catch (e1) {
+            pathFromHref = m[1];
+          }
+        } else if (isRawPdf) {
+          pathFromHref = href.replace(/^.*?(minzdrav_protocols\/)/i, "minzdrav_protocols/");
         }
-        if (!a.classList.contains("proto-link")) a.classList.add("proto-link");
-        var pathFromHref = "";
-        try {
-          var u = new URL(fixed, window.location.origin);
-          pathFromHref = u.searchParams.get("path") || "";
-        } catch (e0) {
-          var m = href.match(/[?&]path=([^&]+)/);
-          if (m) pathFromHref = decodeURIComponent(m[1]);
+      }
+      if (!pathFromHref && isRawPdf) {
+        pathFromHref = href;
+      }
+      // Явные ссылки на страницу PDF (data-proto-pdf / class btn-proto-pdf) не трогаем.
+      var keepPdf =
+        a.classList.contains("btn-proto-pdf") ||
+        a.getAttribute("data-proto-pdf") === "1" ||
+        /#page=\d+/i.test(href);
+      if (pathFromHref && !keepPdf) {
+        var nav = protocolPrimaryHref(pathFromHref);
+        if (nav && nav !== "#") a.setAttribute("href", nav);
+      } else if (pathFromHref && keepPdf) {
+        var fixedPdf = safeResourceHref(pathFromHref);
+        if (fixedPdf && fixedPdf !== "#") {
+          var pageM = href.match(/#page=(\d+)/i);
+          a.setAttribute("href", pageM ? fixedPdf + "#page=" + pageM[1] : fixedPdf);
         }
-        var label = (a.textContent || "").trim();
-        if (pathFromHref && (label.indexOf("_") >= 0 || /\.pdf$/i.test(label) || label.length < 8)) {
-          a.textContent = formatProtocolDisplayTitle(pathFromHref, label);
-        }
+      }
+      if (!a.getAttribute("target")) {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      }
+      if (!a.classList.contains("proto-link")) a.classList.add("proto-link");
+      var label = (a.textContent || "").trim();
+      if (pathFromHref && (label.indexOf("_") >= 0 || /\.pdf$/i.test(label) || label.length < 8)) {
+        a.textContent = formatProtocolDisplayTitle(pathFromHref, label);
       }
     });
   }
@@ -25130,17 +25160,39 @@
 
   function protocolViewerPageUrl(path, opts) {
     opts = opts || {};
-    var url =
-      "/proto-viewer.html?path=" + encodeURIComponent(path || "");
+    var norm = "";
+    try {
+      norm = normalizeProtocolPathForLink(path || "") || path || "";
+    } catch (eNorm) {
+      norm = path || "";
+    }
+    if (!norm) return "#";
+    var base = "";
+    try {
+      base = apiBaseUrl() || "";
+    } catch (eBase) {
+      base = "";
+    }
+    var url = base + "/proto-viewer.html?path=" + encodeURIComponent(norm);
     if (opts.activeSection) {
       url += "&section=" + encodeURIComponent(opts.activeSection);
     } else if (opts.briefSection && BRIEF_SECTION_TO_SOURCE[opts.briefSection]) {
-      url += "&section=" + encodeURIComponent(BRIEF_SECTION_TO_SOURCE[opts.briefSection][0] || "");
+      url +=
+        "&section=" +
+        encodeURIComponent(BRIEF_SECTION_TO_SOURCE[opts.briefSection][0] || "");
+    }
+    if (opts.page) {
+      url += "&page=" + encodeURIComponent(String(opts.page));
     }
     if (opts.highlight) {
       url += "&q=" + encodeURIComponent(String(opts.highlight).slice(0, 120));
     }
     return url;
+  }
+
+  /** Основная ссылка на протокол - навигатор, не сырой PDF. */
+  function protocolPrimaryHref(path, opts) {
+    return protocolViewerPageUrl(path, opts);
   }
 
   function getProtocolClinicalView(doc) {
@@ -25975,9 +26027,13 @@
 
     html += '<div class="protocol-brief-actions protocol-brief-actions--top">';
     html +=
-      '<a class="btn-proto-action btn-proto-action--primary" href="' +
+      '<a class="btn-proto-action btn-proto-action--primary proto-link" href="' +
+      protocolPrimaryHref(path) +
+      '" target="_blank" rel="noopener noreferrer">Открыть протокол</a>';
+    html +=
+      '<a class="btn-proto-action btn-proto-action--link btn-proto-pdf" href="' +
       href +
-      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>';
+      '" target="_blank" rel="noopener noreferrer" data-proto-pdf="1">PDF</a>';
     html +=
       '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить КЗ</button>';
     if (window.__methodistMode) {
@@ -26288,9 +26344,12 @@
         escapeHtml(truncateExcerpt(excerptMap[path], 480)) +
         "</p>" +
         '<div class="protocol-brief-actions protocol-brief-actions--top">' +
-        '<a class="btn-proto-action btn-proto-action--primary" href="' +
+        '<a class="btn-proto-action btn-proto-action--primary proto-link" href="' +
+        escapeHtmlAttr(protocolPrimaryHref(path)) +
+        '" target="_blank" rel="noopener noreferrer">Открыть протокол</a>' +
+        '<a class="btn-proto-action btn-proto-action--link btn-proto-pdf" href="' +
         escapeHtmlAttr(safeResourceHref(path)) +
-        '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
+        '" target="_blank" rel="noopener noreferrer" data-proto-pdf="1">PDF</a>' +
         '<button type="button" class="btn-proto-action btn-proto-action--secondary btn-search-draft-kz-brief">Оформить КЗ</button>' +
         "</div>" +
         '<div id="practical-review-panel" class="practical-review-panel" hidden aria-live="polite"></div></div></div>';
@@ -26315,9 +26374,12 @@
       '<p class="assist-sec-label">Карточка протокола</p>' +
       '<p class="protocol-brief-empty">Для этого протокола нет готовой сводки. Откройте PDF на сайте Минздрава.</p>' +
       '<div class="protocol-brief-actions protocol-brief-actions--top">' +
-      '<a class="btn-proto-action btn-proto-action--primary" href="' +
+      '<a class="btn-proto-action btn-proto-action--primary proto-link" href="' +
+      escapeHtmlAttr(protocolPrimaryHref(path)) +
+      '" target="_blank" rel="noopener noreferrer">Открыть протокол</a>' +
+      '<a class="btn-proto-action btn-proto-action--link btn-proto-pdf" href="' +
       escapeHtmlAttr(safeResourceHref(path)) +
-      '" target="_blank" rel="noopener noreferrer">Открыть PDF</a>' +
+      '" target="_blank" rel="noopener noreferrer" data-proto-pdf="1">PDF</a>' +
       '<button type="button" class="btn-link-nav" id="btn-fallback-to-protocols">← К списку протоколов</button>' +
       "</div></div></div>";
     var backProtos = out.querySelector("#btn-fallback-to-protocols");
@@ -26560,8 +26622,11 @@
         html +=
           '<p class="assist-proto-actions">' +
           '<a class="proto-link" href="' +
+          escapeHtmlAttr(protocolPrimaryHref(path)) +
+          '" target="_blank" rel="noopener">Открыть протокол</a> · ' +
+          '<a class="proto-link btn-proto-pdf" href="' +
           escapeHtmlAttr(safeResourceHref(path)) +
-          '" target="_blank" rel="noopener">Открыть PDF</a> · ' +
+          '" target="_blank" rel="noopener" data-proto-pdf="1">PDF</a> · ' +
           '<button type="button" class="btn-assist btn-search-draft-kz">Оформить КЗ</button>' +
           (window.__methodistMode
             ? ' · <button type="button" class="btn-assist btn-proto-matrix" data-proto-path="' +
@@ -27377,15 +27442,17 @@
     bar.classList.add("is-visible");
     var ctx = window.__funnelContext || {};
     var path = ctx.protocol_path || (window.__searchWizard && window.__searchWizard.selectedProto) || "";
-    var href = path ? safeResourceHref(path) : "";
+    var href = path ? protocolPrimaryHref(path) : "";
     if (step === "protocols") {
       primary.textContent = "Далее";
       primary.onclick = function () {
-        var card = document.querySelector(".proto-nav-card--recommended .btn-proto-pick");
+        var card =
+          document.querySelector(".proto-nav-card--recommended .btn-proto-pick") ||
+          document.querySelector(".proto-nav-card--recommended .proto-link");
         if (card) card.click();
       };
     } else if (href) {
-      primary.textContent = "Открыть PDF";
+      primary.textContent = "Открыть протокол";
       primary.onclick = function () {
         window.open(href, "_blank", "noopener,noreferrer");
       };
@@ -28458,10 +28525,16 @@
       );
       parts.push('<ul class="consult-onco-list">');
       flags.protocol_items.forEach(function (it) {
-        var t = escapeHtml(
-          formatProtocolDisplayTitle((it && it.path) || "", (it && it.title) || "")
-        );
-        parts.push("<li><strong>" + t + "</strong>");
+        var pth = (it && it.path) || "";
+        var t = formatProtocolDisplayTitle(pth, (it && it.title) || "");
+        var link = pth
+          ? '<a class="proto-link" href="' +
+            escapeHtmlAttr(protocolPrimaryHref(pth)) +
+            '" target="_blank" rel="noopener noreferrer">' +
+            escapeHtml(t) +
+            "</a>"
+          : "<strong>" + escapeHtml(t) + "</strong>";
+        parts.push("<li>" + link);
         var basis =
           (Array.isArray(it && it.basis_ru) && it.basis_ru) ||
           (Array.isArray(it && it.hints_ru) && it.hints_ru) ||
@@ -28517,6 +28590,8 @@
           (prev && prev.matched_icd_codes) ||
           [],
         icd_verified: !!(opts.icd_verified || (prev && prev.icd_verified)),
+        nav_url: row.nav_url || row.url || protocolPrimaryHref(key),
+        url: row.nav_url || row.url || protocolPrimaryHref(key),
         pdf_url: row.pdf_url || safeResourceHref(key),
       };
       if (row.matched_icd_codes && row.matched_icd_codes.length) {
@@ -28593,16 +28668,17 @@
         var icon = document.createElement("span");
         icon.className = "consult-proto-chip__icon";
         icon.setAttribute("aria-hidden", "true");
-        icon.textContent = "PDF";
+        icon.textContent = "КП";
 
         var body = document.createElement("div");
         body.className = "consult-proto-chip__body";
 
         var a = document.createElement("a");
-        a.href = row.pdf_url || safeResourceHref(pth || "#");
+        a.href = row.nav_url || row.url || protocolPrimaryHref(pth || "");
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.className = "consult-proto-chip__link proto-link";
+        a.title = "Открыть навигацию по протоколу";
         a.textContent = formatProtocolDisplayTitle(pth, row.title || row.registry_title || "");
 
         var meta = document.createElement("div");
@@ -28717,9 +28793,11 @@
     }
 
     var unified = buildUnifiedProtocolMap(data, rev);
-    var rows = Object.keys(unified).map(function (k) {
-      return unified[k];
-    });
+    var rows = dedupeProtocolsByPath(
+      Object.keys(unified).map(function (k) {
+        return unified[k];
+      })
+    );
     rows.sort(function (a, b) {
       var av = a.icd_verified ? 1 : 0;
       var bv = b.icd_verified ? 1 : 0;
@@ -28730,7 +28808,7 @@
     var protoSummary = document.getElementById("consult-protocols-summary");
     if (protoSummary) {
       protoSummary.textContent =
-        "Протоколы · " + (rows.length ? rows.length + " PDF" : "нет отбора");
+        "Протоколы · " + (rows.length ? rows.length + " КП" : "нет отбора");
     }
 
     var ht = document.createElement("p");

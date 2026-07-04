@@ -4,9 +4,11 @@ from __future__ import annotations
 from clinical_knowledge.protocol_links import (
     beautify_protocol_title,
     content_disposition_inline,
+    dedupe_protocol_rows,
     normalize_protocol_path,
     protocol_display_name,
     protocol_link_payload,
+    protocol_nav_api_path,
     protocol_pdf_api_path,
 )
 
@@ -73,8 +75,41 @@ def test_protocol_link_payload():
     )
     assert row is not None
     assert row["pdf_url"].startswith("/api/protocol-pdf")
+    assert row["nav_url"].startswith("/proto-viewer.html?path=")
+    assert row["url"] == row["nav_url"]
     assert row["icd_verified"] is True
     assert row["matched_icd_codes"] == ["K29"]
+
+
+def test_protocol_nav_api_path():
+    url = protocol_nav_api_path("minzdrav_protocols/gastroenterologiya/foo.pdf", section="treatment")
+    assert url is not None
+    assert url.startswith("/proto-viewer.html?path=")
+    assert "section=treatment" in url
+
+
+def test_dedupe_protocol_rows_by_basename_and_title():
+    rows = [
+        {
+            "path": "minzdrav_protocols/akusherstvo-ginekologiya/КП_вены.pdf",
+            "title": "Диагностика и лечение ХЗВ",
+            "confidence_score": 0.7,
+        },
+        {
+            "path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_вены.pdf",
+            "title": "Диагностика и лечение ХЗВ",
+            "confidence_score": 0.9,
+        },
+        {
+            "path": "minzdrav_protocols/khirurgiya/other.pdf",
+            "title": "Другой протокол",
+            "confidence_score": 0.5,
+        },
+    ]
+    out = dedupe_protocol_rows(rows)
+    assert len(out) == 2
+    assert out[0]["path"].endswith("КП_вены.pdf")
+    assert "bolezni-sistemy-krovoobrashcheniya" in out[0]["path"]
 
 
 def test_protocol_pdf_api_cyrillic_file(tmp_path, monkeypatch):

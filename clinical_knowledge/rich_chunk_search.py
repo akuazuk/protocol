@@ -325,8 +325,9 @@ def hybrid_merge_protocols(
             elif rag_sc:
                 pr["confidence_score"] = round(rag_sc, 4)
 
-    out.sort(key=lambda x: -float(x.get("confidence_score") or 0))
-    return out
+    from clinical_knowledge.protocol_links import dedupe_protocol_rows
+
+    return dedupe_protocol_rows(out)
 
 
 def hybrid_pin_trusted_icd_top1(

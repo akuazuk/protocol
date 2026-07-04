@@ -4588,7 +4588,7 @@ def _consult_precise_links_for_icd_in_fragments(
             )
         )
     rows_list.sort(key=lambda x: x[0])
-    from clinical_knowledge.protocol_links import protocol_link_payload
+    from clinical_knowledge.protocol_links import dedupe_protocol_rows, protocol_link_payload
 
     slim: list[dict] = []
     for r in rows_list:
@@ -4603,6 +4603,7 @@ def _consult_precise_links_for_icd_in_fragments(
             slim.append(payload)
         else:
             slim.append(row)
+    slim = dedupe_protocol_rows(slim)
     if slim:
         return slim, ""
 
@@ -8197,7 +8198,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-04-r34-proto-semantic-search"
+BUILD_VERSION = "2026-07-04-r35-proto-nav-links"
 
 
 def _app_version() -> str:

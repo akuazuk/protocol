@@ -95,7 +95,7 @@
   }
 
   function resolveProtocolLink(link, fallbackTitle, fallbackPath) {
-    if (link && link.pdf_url) return link;
+    if (link && (link.nav_url || link.url || link.pdf_url || link.path)) return link;
     var path = (link && link.path) || fallbackPath || "";
     var title = (link && link.title) || fallbackTitle || "";
     var i;
@@ -108,17 +108,29 @@
     return link || null;
   }
 
+  function protocolNavHref(path) {
+    var p = String(path || "").trim();
+    if (!p) return "";
+    return "/proto-viewer.html?path=" + encodeURIComponent(p);
+  }
+
   function renderProtocolLink(link, fallbackTitle, fallbackPath) {
     var resolved = resolveProtocolLink(link, fallbackTitle, fallbackPath);
-    if (!resolved || !resolved.pdf_url) {
+    var path = (resolved && resolved.path) || fallbackPath || "";
+    var href =
+      (resolved && (resolved.nav_url || resolved.url)) ||
+      protocolNavHref(path) ||
+      (resolved && resolved.pdf_url) ||
+      "";
+    if (!href) {
       return fallbackTitle ? escapeHtml(fallbackTitle) : "";
     }
-    var title = resolved.title || fallbackTitle || "Клинический протокол Минздрава";
+    var title = (resolved && resolved.title) || fallbackTitle || "Клинический протокол Минздрава";
     return (
       '<a class="proto-link" href="' +
-      escapeHtml(resolved.pdf_url) +
-      '" target="_blank" rel="noopener noreferrer" title="Открыть PDF протокола Минздрава">' +
-      '<span class="proto-link__icon" aria-hidden="true">PDF</span>' +
+      escapeHtml(href) +
+      '" target="_blank" rel="noopener noreferrer" title="Открыть навигацию по протоколу">' +
+      '<span class="proto-link__icon" aria-hidden="true">КП</span>' +
       '<span class="proto-link__text">' +
       escapeHtml(title) +
       "</span></a>"
@@ -127,7 +139,7 @@
 
   function renderProtocolChip(link) {
     var resolved = resolveProtocolLink(link);
-    if (!resolved || !resolved.pdf_url) return "";
+    if (!resolved || !(resolved.nav_url || resolved.url || resolved.pdf_url || resolved.path)) return "";
     var rubric = resolved.rubric ? '<span class="proto-chip__rubric">' + escapeHtml(resolved.rubric) + "</span>" : "";
     return (
       '<li class="proto-chip">' +
