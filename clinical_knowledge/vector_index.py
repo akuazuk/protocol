@@ -18,6 +18,7 @@ _index_mmap: bool = False
 _index_backend: str = ""
 _chunk_id_to_global: dict[str, int] | None = None
 _global_to_local: dict[int, int] | None = None
+_sidecar_mtime: float = 0.0
 
 
 def vector_index_enabled() -> bool:
@@ -141,20 +142,40 @@ def _write_chunk_id_sidecar(index_dir: Path, chunks: list[dict]) -> int:
 
 
 def _load_chunk_id_sidecar(index_dir: Path) -> int:
-    global _chunk_id_to_global
+    global _chunk_id_to_global, _sidecar_mtime
     p = index_dir / "chunk_id_global.json"
     if not p.is_file():
         _chunk_id_to_global = {}
+        _sidecar_mtime = 0.0
         return 0
     raw = json.loads(p.read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         _chunk_id_to_global = {}
+        _sidecar_mtime = 0.0
         return 0
     _chunk_id_to_global = {str(k): int(v) for k, v in raw.items()}
+    try:
+        _sidecar_mtime = p.stat().st_mtime
+    except OSError:
+        _sidecar_mtime = 0.0
     return len(_chunk_id_to_global)
 
 
+def _maybe_reload_chunk_id_sidecar() -> None:
+    index_dir = default_index_path()
+    p = index_dir / "chunk_id_global.json"
+    if not p.is_file():
+        return
+    try:
+        mt = p.stat().st_mtime
+    except OSError:
+        return
+    if _chunk_id_to_global is None or mt != _sidecar_mtime:
+        _load_chunk_id_sidecar(index_dir)
+
+
 def global_index_for_chunk_id(chunk_id: str | None) -> int | None:
+    _maybe_reload_chunk_id_sidecar()
     if not chunk_id or not _chunk_id_to_global:
         return None
     val = _chunk_id_to_global.get(str(chunk_id))
