@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/protocol-chrome-tabs.css?v=__BUILD_VERSION__" />
   <style>
     :root {
       --green-800: #0d5c4a;
@@ -38,36 +39,11 @@
       min-height: 100vh;
     }
     .pv-header {
-      position: sticky;
-      top: 0;
-      z-index: 4;
-      display: flex;
-      align-items: flex-start;
-      gap: 0.65rem;
-      padding: 0.55rem 0.85rem;
-      background: rgba(255, 255, 255, 0.92);
+      display: block;
+      padding: 0.65rem 0.85rem 0.55rem;
+      background: rgba(255, 255, 255, 0.72);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 2px 16px rgba(13, 92, 74, 0.06);
     }
-    .pv-back {
-      flex-shrink: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-top: 0.15rem;
-      padding: 0.32rem 0.55rem;
-      border-radius: 999px;
-      border: 1px solid rgba(26, 138, 114, 0.28);
-      background: var(--mint-soft);
-      color: var(--green-800);
-      font-size: 0.72rem;
-      font-weight: 650;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .pv-back:hover { background: var(--mint); }
-    .pv-header__main { flex: 1; min-width: 0; }
     .pv-title {
       margin: 0;
       font-family: Outfit, "DM Sans", sans-serif;
@@ -392,9 +368,29 @@
     .protocol-src-empty, .protocol-src-loading { color: var(--muted); font-size: 0.82rem; padding: 0.75rem 0.2rem; }
   </style>
 </head>
-<body>
+<body class="app-tab-search">
+  <div class="app-chrome" id="app-chrome">
+    <div class="app-chrome__masthead">
+      <a class="app-chrome__brand" href="/" aria-label="Protocol - на главную">
+        <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+      </a>
+      <p class="app-chrome__tagline">Протоколы Минздрава РБ</p>
+    </div>
+    <div class="app-chrome__journal">
+      <nav class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" aria-label="Раздел приложения">
+        <a href="/#consult-review" class="app-main-tab" id="tab-consult-review" title="Проверка консультативного заключения">
+          <span class="app-main-tab-title">Проверка</span>
+        </a>
+        <a href="/#search" class="app-main-tab" id="tab-main-search" aria-current="page" title="Поиск клинических протоколов">
+          <span class="app-main-tab-title">Поиск</span>
+        </a>
+        <a href="/patient.html" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="После приема - понять своё заключение">
+          <span class="app-main-tab-title">После приема</span>
+        </a>
+      </nav>
+    </div>
+  </div>
   <header class="pv-header">
-    <a class="pv-back" href="/" title="Вернуться к поиску протоколов">← К поиску</a>
     <div class="pv-header__main">
       <h1 class="pv-title" id="pv-title">Навигация по протоколу</h1>
       <p class="pv-sub" id="pv-sub">Загрузка…</p>

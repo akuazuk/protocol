@@ -10,6 +10,7 @@
   <link rel="icon" href="/protocol-logo.svg" type="image/svg+xml" />
   <meta name="protocol-patient-build" content="__BUILD_VERSION__" />
   <link rel="stylesheet" href="/patient-tokens.css?v=__BUILD_VERSION__" />
+  <link rel="stylesheet" href="/protocol-chrome-tabs.css?v=__BUILD_VERSION__" />
   <title>Проверь КЗ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -47,30 +48,13 @@
     }
     .wrap { max-width: 26rem; margin: 0 auto; padding: 0 1rem 2.5rem; }
 
-    .top-bar {
+    .patient-actions {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      margin: 0 -1rem;
-      padding: 0.75rem 1rem 0.55rem;
-      background: rgba(248, 251, 250, 0.94);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s ease;
+      justify-content: flex-end;
+      margin-bottom: 0.35rem;
     }
-    .top-bar.top-bar--result {
-      border-bottom-color: var(--border);
-    }
-    .top-bar__actions {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      flex-shrink: 0;
+    .patient-actions.top-bar--result {
+      margin-bottom: 0.5rem;
     }
     .top-bar__again {
       font-family: inherit;
@@ -96,18 +80,7 @@
       outline-offset: 2px;
     }
     .brand-lockup {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      text-align: left;
-      min-width: 0;
-    }
-    .brand-lockup__wordmark {
-      height: 1.15rem;
-      width: auto;
-      max-width: 8.25rem;
-      display: block;
-      flex-shrink: 1;
+      display: none;
     }
     .brand {
       font-family: Outfit, sans-serif;
@@ -117,12 +90,8 @@
       letter-spacing: -0.02em;
     }
     .top-link {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--g600);
-      text-decoration: none;
+      display: none;
     }
-    .top-link:hover { text-decoration: underline; }
 
     .hero {
       text-align: center;
@@ -965,7 +934,7 @@
     .print-sheet { display: none; }
     @media print {
       body { background: #fff; color: #000; }
-      .page-bg, .wrap, .loader-overlay { display: none !important; }
+      .page-bg, .wrap, .loader-overlay, .app-chrome { display: none !important; }
       .print-sheet {
         display: block !important;
         max-width: 100%;
@@ -982,17 +951,32 @@
     }
   </style>
 </head>
-<body>
+<body class="app-tab-patient">
   <div class="page-bg" aria-hidden="true"></div>
+  <div class="app-chrome" id="app-chrome">
+    <div class="app-chrome__masthead">
+      <a class="app-chrome__brand" href="/" aria-label="Protocol - на главную">
+        <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
+      </a>
+      <p class="app-chrome__tagline">Протоколы Минздрава РБ</p>
+    </div>
+    <div class="app-chrome__journal">
+      <nav class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" aria-label="Раздел приложения">
+        <a href="/#consult-review" class="app-main-tab" id="tab-consult-review" title="Проверка консультативного заключения">
+          <span class="app-main-tab-title">Проверка</span>
+        </a>
+        <a href="/#search" class="app-main-tab" id="tab-main-search" title="Поиск клинических протоколов">
+          <span class="app-main-tab-title">Поиск</span>
+        </a>
+        <a href="/patient.html" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" aria-current="page" title="После приема - понять своё заключение">
+          <span class="app-main-tab-title">После приема</span>
+        </a>
+      </nav>
+    </div>
+  </div>
   <div class="wrap">
-    <div class="top-bar" id="top-bar">
-      <div class="brand-lockup brand" aria-label="Protocol">
-        <img class="brand-lockup__wordmark" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
-      </div>
-      <div class="top-bar__actions">
-        <button type="button" class="top-bar__again hidden" id="btn-again" hidden>Проверить другой документ</button>
-        <a class="top-link" href="/">Врачам</a>
-      </div>
+    <div class="patient-actions" id="top-bar">
+      <button type="button" class="top-bar__again hidden" id="btn-again" hidden>Проверить другой документ</button>
     </div>
     <div id="clinic-banner" class="clinic-banner hidden" role="status"></div>
 

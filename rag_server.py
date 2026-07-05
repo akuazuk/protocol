@@ -8200,7 +8200,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-05-r49-pastel-notebook-tabs"
+BUILD_VERSION = "2026-07-05-r50-chrome-tabs-satellite"
 
 
 def _app_version() -> str:
@@ -11837,14 +11837,15 @@ if (ROOT / "index.html").is_file():
         )
 
     @app.get("/proto-viewer.html", include_in_schema=False)
-    def _serve_proto_viewer_html() -> FileResponse:
+    def _serve_proto_viewer_html() -> Response:
         p = ROOT / "proto-viewer.html"
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница proto-viewer.html не найдена")
-        return FileResponse(
-            path=str(p),
+        html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
+        return Response(
+            content=html,
             media_type="text/html; charset=utf-8",
-            headers={"Cache-Control": "no-cache"},
+            headers={"Cache-Control": "no-cache, must-revalidate"},
         )
 
     @app.get("/patient.html", include_in_schema=False)
