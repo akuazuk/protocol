@@ -80,6 +80,7 @@ def test_html_report_has_structure():
     assert "<script" not in html.lower()
     assert "cr-sign-decision" in html
     assert "Решение о подписи" in html
+    assert "/proto-viewer.html?path=" in html
 
 
 def test_html_report_sign_gate_uses_headline_score():

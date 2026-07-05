@@ -9,7 +9,7 @@ from typing import Any
 
 from .consult_schema import ComplianceReport, ConsultationDocument, SourceRef
 from .privacy import name_to_initials
-from .protocol_links import protocol_display_name, protocol_pdf_api_path, protocol_rubric_label
+from .protocol_links import protocol_display_name, protocol_nav_api_path, protocol_rubric_label
 from .rule_labels_ru import decision_ru, rule_title_ru, rule_type_ru
 
 # Русские подписи статусов/значений для человекочитаемого отчёта.
@@ -261,12 +261,12 @@ def _src_line(ref: SourceRef) -> str:
 def _src_line_html(ref: SourceRef) -> str:
     parts: list[str] = []
     if ref.local_path:
-        url = protocol_pdf_api_path(ref.local_path)
-        name = _e(protocol_display_name(ref.local_path, ref.protocol_id or ""))
+        url = protocol_nav_api_path(ref.local_path, section=ref.section_title)
+        name = protocol_display_name(ref.local_path, ref.protocol_id or "")
         if url:
             parts.append(
-                f'<a class="cr-src-link" href="{url}" target="_blank" '
-                f'rel="noopener noreferrer">{name}</a>'
+                f'<a class="cr-src-link proto-nav-link--compact" href="{url}" target="_blank" '
+                f'rel="noopener noreferrer" title="{_e(name)}">Протокол</a>'
             )
         else:
             parts.append(_e(ref.local_path))
@@ -521,12 +521,12 @@ def report_to_html(
         title = _e(
             protocol_display_name(sp, m.protocol_id or "", registry_title=m.document_title)
         )
-        url = protocol_pdf_api_path(sp)
+        url = protocol_nav_api_path(sp)
         rub = protocol_rubric_label(sp)
         if url:
             inner = (
                 f'<a class="cr-src-link" href="{url}" target="_blank" '
-                f'rel="noopener noreferrer">{title}</a>'
+                f'rel="noopener noreferrer" title="Открыть навигацию по протоколу">{title}</a>'
             )
             if rub:
                 inner += f' <span class="cr-proto-rubric">{_e(rub)}</span>'
@@ -550,13 +550,13 @@ def report_to_html(
             title = _e(
                 protocol_display_name(sp, m.protocol_id or "", registry_title=m.document_title)
             )
-            url = protocol_pdf_api_path(sp)
+            url = protocol_nav_api_path(sp)
             rub = protocol_rubric_label(sp)
             proto_inner.append('<li class="cr-proto-card">')
             if url:
                 proto_inner.append(
                     f'<a class="cr-src-link cr-proto-card__link" href="{url}" target="_blank" '
-                    f'rel="noopener noreferrer">{title}</a>'
+                    f'rel="noopener noreferrer" title="Открыть навигацию по протоколу">{title}</a>'
                 )
             else:
                 proto_inner.append(f'<span class="cr-proto-card__link">{title}</span>')

@@ -1217,6 +1217,16 @@
       color: var(--green-950, #0a5544);
       border-bottom-color: currentColor;
     }
+    .consult-report-html a.proto-nav-link--compact {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 0.1rem 0.4rem;
+      border-radius: 7px;
+      background: rgba(26, 138, 114, 0.1);
+      border-bottom: none;
+    }
     .consult-report-html .cr-muted-li {
       list-style: none;
       margin-left: 0.5rem;
@@ -2327,6 +2337,99 @@
       font-size: 0.68rem;
       background: rgba(220, 38, 38, 0.12);
       color: #b91c1c;
+    }
+
+    a.proto-nav-link--compact {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 0.12rem 0.42rem;
+      border-radius: 7px;
+      background: rgba(26, 138, 114, 0.1);
+      border-bottom: none;
+      text-decoration: none;
+    }
+
+    a.proto-nav-link--compact:hover,
+    a.proto-nav-link--compact:focus-visible {
+      background: rgba(26, 138, 114, 0.18);
+      text-decoration: underline;
+    }
+
+    .consult-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media (max-width: 720px) {
+      .consult-table-scroll {
+        overflow-x: visible;
+      }
+
+      table.consult-table-stack {
+        display: block;
+        width: 100%;
+        table-layout: auto;
+      }
+
+      table.consult-table-stack thead {
+        display: none;
+      }
+
+      table.consult-table-stack tbody {
+        display: block;
+      }
+
+      table.consult-table-stack tbody tr {
+        display: block;
+        margin-bottom: 0.75rem;
+        padding: 0.62rem 0.72rem;
+        border: 1px solid rgba(26, 138, 114, 0.2);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(6, 61, 53, 0.06);
+      }
+
+      table.consult-table-stack tbody td {
+        display: block;
+        width: 100% !important;
+        max-width: none !important;
+        border: none !important;
+        padding: 0.32rem 0 !important;
+        border-radius: 0 !important;
+      }
+
+      table.consult-table-stack tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #5a7a70;
+        margin-bottom: 0.18rem;
+      }
+
+      table.consult-table-stack tbody td:empty {
+        display: none;
+      }
+
+      table.consult-table-stack tbody tr.consult-crit-row--good,
+      table.consult-table-stack tbody tr.consult-crit-row--mid,
+      table.consult-table-stack tbody tr.consult-crit-row--low {
+        background: #fff;
+      }
+
+      table.consult-table-stack tbody tr.consult-crit-row--good td,
+      table.consult-table-stack tbody tr.consult-crit-row--mid td,
+      table.consult-table-stack tbody tr.consult-crit-row--low td {
+        background: transparent !important;
+      }
+
+      #consult-evidence-table .consult-evidence-protocol {
+        text-align: left;
+      }
     }
 
     .consult-proto-chip__badge--icd {
@@ -12898,7 +13001,7 @@
             <p class="consult-hint-small" id="consult-evidence-meta" style="margin: 0.35rem 0"></p>
             <p class="consult-evidence-gaps-title" id="consult-evidence-gaps-title" hidden>Замечания по блокам</p>
             <div class="consult-block-gaps-wrap" id="consult-block-gaps-wrap" hidden>
-              <table class="consult-block-gaps-table" id="consult-block-gaps-table">
+              <table class="consult-block-gaps-table consult-table-stack" id="consult-block-gaps-table">
                 <thead>
                   <tr>
                     <th scope="col">Блок</th>
@@ -12909,8 +13012,8 @@
                 <tbody id="consult-block-gaps-tbody"></tbody>
               </table>
             </div>
-            <div style="overflow-x: auto">
-              <table class="consult-out-table" id="consult-evidence-table">
+            <div class="consult-table-scroll">
+              <table class="consult-out-table consult-table-stack" id="consult-evidence-table">
                 <colgroup>
                   <col class="col-ev-block" />
                   <col class="col-ev-section" />
@@ -13131,8 +13234,8 @@
           <details class="consult-spoiler consult-hide-print" id="consult-criteria-spoiler" open>
             <summary id="consult-criteria-summary">Подробные комментарии и цитаты</summary>
             <div id="consult-crit-kz-link" class="consult-crit-kz-link-wrap" hidden></div>
-            <div style="overflow-x: auto; padding: 0 0.5rem 0.55rem">
-              <table class="consult-crit-table" id="consult-out-table">
+            <div class="consult-table-scroll" style="padding: 0 0.5rem 0.55rem">
+              <table class="consult-crit-table consult-table-stack" id="consult-out-table">
                 <colgroup>
                   <col class="col-crit-name" />
                   <col class="col-crit-pct" />
@@ -21149,7 +21252,12 @@
       }
       if (!a.classList.contains("proto-link")) a.classList.add("proto-link");
       var label = (a.textContent || "").trim();
-      if (pathFromHref && (label.indexOf("_") >= 0 || /\.pdf$/i.test(label) || label.length < 8)) {
+      var inTableCell = !!(a.closest && a.closest("td"));
+      if (pathFromHref && inTableCell && label.length > 16 && !a.classList.contains("proto-nav-link--compact")) {
+        a.textContent = "Протокол";
+        a.classList.add("proto-nav-link--compact");
+        a.setAttribute("title", formatProtocolDisplayTitle(pathFromHref, label));
+      } else if (pathFromHref && (label.indexOf("_") >= 0 || /\.pdf$/i.test(label) || label.length < 8)) {
         a.textContent = formatProtocolDisplayTitle(pathFromHref, label);
       }
     });
@@ -21723,9 +21831,10 @@
       if (!tb) return;
       if (!rows || !rows.length) {
         tb.innerHTML = '<tr><td colspan="' + cols + '">Нет данных</td></tr>';
-        return;
+      } else {
+        tb.innerHTML = rows;
       }
-      tb.innerHTML = rows;
+      enhanceConsultTableForMobile(document.getElementById(id));
     }
 
     fillTableBody(
@@ -22733,6 +22842,7 @@
             })
             .join("")
         : '<tr><td colspan="2">Пока нет накопленных AI-рекомендаций</td></tr>';
+      enhanceConsultTableForMobile(document.getElementById("methodist-search-table-improvements"));
     }
     var recTb = document.querySelector("#methodist-search-table-recent tbody");
     if (recTb) {
@@ -22762,6 +22872,7 @@
             })
             .join("")
         : '<tr><td colspan="6">Разметок поиска пока нет - выполните поиск на вкладке «Поиск протоколов»</td></tr>';
+      enhanceConsultTableForMobile(document.getElementById("methodist-search-table-recent"));
     }
     renderMethodistSearchArtifacts(stats);
     if (typeof Chart !== "undefined") {
@@ -25414,6 +25525,68 @@
   /** Основная ссылка на протокол - навигатор, не сырой PDF. */
   function protocolPrimaryHref(path, opts) {
     return protocolViewerPageUrl(path, opts);
+  }
+
+  /** HTML-ссылка на навигацию по протоколу; в таблицах - компактная подпись «Протокол». */
+  function buildProtocolNavLinkHtml(path, opts) {
+    opts = opts || {};
+    var raw = String(path || "").trim();
+    if (!raw) return "";
+    var norm = "";
+    try {
+      norm = normalizeProtocolPathForLink(raw) || raw;
+    } catch (eNorm) {
+      norm = raw;
+    }
+    var displayTitle =
+      opts.title ||
+      formatProtocolDisplayTitle(norm, opts.displayTitle || opts.registryTitle || "");
+    var hrefOpts = {};
+    if (opts.section) hrefOpts.activeSection = opts.section;
+    else if (opts.activeSection) hrefOpts.activeSection = opts.activeSection;
+    if (opts.page) hrefOpts.page = opts.page;
+    if (opts.q || opts.highlight) hrefOpts.highlight = opts.q || opts.highlight;
+    var href = protocolPrimaryHref(norm, hrefOpts);
+    if (!href || href === "#") return escapeHtml(displayTitle);
+    var compact = !!opts.compact;
+    var label = compact ? opts.label || "Протокол" : displayTitle;
+    var linkTitle =
+      opts.linkTitle || (compact ? displayTitle : "Открыть навигацию по протоколу");
+    var cls = "proto-link";
+    if (compact) cls += " proto-nav-link--compact";
+    if (opts.asButton) cls += " btn-proto-action btn-proto-action--compact";
+    return (
+      '<a class="' +
+      cls +
+      '" href="' +
+      escapeHtmlAttr(href) +
+      '" target="_blank" rel="noopener noreferrer" title="' +
+      escapeHtmlAttr(linkTitle) +
+      '">' +
+      escapeHtml(label) +
+      "</a>"
+    );
+  }
+
+  /** Подписи колонок для карточной вёрстки таблиц на узком экране. */
+  function enhanceConsultTableForMobile(table) {
+    if (!table || !table.querySelector) return;
+    table.classList.add("consult-table-stack");
+    var headers = [];
+    var ths = table.querySelectorAll("thead th");
+    for (var i = 0; i < ths.length; i++) {
+      headers.push((ths[i].textContent || "").trim());
+    }
+    if (!headers.length) return;
+    var rows = table.querySelectorAll("tbody tr");
+    for (var r = 0; r < rows.length; r++) {
+      var tds = rows[r].querySelectorAll("td");
+      for (var c = 0; c < tds.length && c < headers.length; c++) {
+        if (headers[c] && !tds[c].getAttribute("data-label")) {
+          tds[c].setAttribute("data-label", headers[c]);
+        }
+      }
+    }
   }
 
   function getProtocolClinicalView(doc) {
@@ -29316,7 +29489,7 @@
       wrap.appendChild(help);
 
       var tbl = document.createElement("table");
-      tbl.className = "consult-proto-match-table";
+      tbl.className = "consult-proto-match-table consult-table-stack";
       var thead = document.createElement("thead");
       thead.innerHTML =
         "<tr><th>КП</th><th>Балл</th><th>МКБ</th><th>Причина / флаги</th></tr>";
@@ -29326,10 +29499,15 @@
       function addRow(m, isRejected) {
         var tr = document.createElement("tr");
         var titleTd = document.createElement("td");
-        titleTd.textContent = formatProtocolDisplayTitle(
-          m.source_path || "",
-          m.title || ""
-        );
+        var srcPath = m.source_path || "";
+        if (srcPath) {
+          titleTd.innerHTML = buildProtocolNavLinkHtml(srcPath, {
+            compact: true,
+            displayTitle: m.title || "",
+          });
+        } else {
+          titleTd.textContent = formatProtocolDisplayTitle("", m.title || "");
+        }
         var scoreTd = document.createElement("td");
         scoreTd.textContent =
           m.match_score != null ? String(Math.round(Number(m.match_score))) : " - ";
@@ -29367,6 +29545,7 @@
       }
       tbl.appendChild(tbody);
       wrap.appendChild(tbl);
+      enhanceConsultTableForMobile(tbl);
       return wrap;
     }
 
@@ -29393,7 +29572,7 @@
     ht.className = "consult-hint-small";
     ht.style.margin = "0 0 0.45rem";
     ht.textContent =
-      "Для оценки соответствия используются PDF из автоматического отбора (RAG) ниже; ссылки открывают документ на сервере.";
+      "Для оценки соответствия используются PDF из автоматического отбора (RAG) ниже; ссылки открывают навигацию по протоколу.";
     pw.appendChild(ht);
 
     var catalog = data && data.clinical_rules && data.clinical_rules.matched_protocols;
@@ -29716,7 +29895,16 @@
     if (section) {
       parts.push('<span class="consult-crit-ref-head">' + escapeHtml(section) + "</span>");
     }
-    if (path) {
+    if (pathRaw) {
+      parts.push(
+        buildProtocolNavLinkHtml(pathRaw, {
+          compact: true,
+          displayTitle: regTitle || path,
+          section: section,
+          page: page,
+        })
+      );
+    } else if (path) {
       parts.push('<span class="consult-crit-ref-file">' + escapeHtml(path) + "</span>");
     }
     var body = proto || ref;
@@ -29856,16 +30044,16 @@
       var tr = document.createElement("tr");
       tr.className = sev.rowClass;
       tr.innerHTML =
-        '<td><span class="consult-block-gaps-block">' +
+        '<td data-label="Блок"><span class="consult-block-gaps-block">' +
         '<span class="consult-block-gaps-block-dot ' +
         consultBlockGapsDotClass(g.block_id) +
         '" aria-hidden="true"></span>' +
         escapeHtml(block) +
         "</span></td>" +
-        '<td class="consult-block-gaps-text">' +
+        '<td class="consult-block-gaps-text" data-label="Замечание">' +
         escapeHtml(txt || " - ") +
         "</td>" +
-        '<td><span class="consult-block-gaps-pill ' +
+        '<td data-label="Важность"><span class="consult-block-gaps-pill ' +
         sev.pillClass +
         '">' +
         escapeHtml(sev.label) +
@@ -29918,18 +30106,24 @@
             it.page != null && it.page !== ""
               ? ' <span class="consult-evidence-page">стр. ' + escapeHtml(String(it.page)) + "</span>"
               : "";
+          var protoCell = it.protocol_path
+            ? buildProtocolNavLinkHtml(it.protocol_path, {
+                compact: true,
+                displayTitle: protoTitle,
+                section: section,
+                page: it.page,
+              })
+            : escapeHtml(protoTitle);
           tr.innerHTML =
-            "<td class=\"consult-evidence-block\">" +
+            '<td class="consult-evidence-block" data-label="Блок">' +
             escapeHtml(EVIDENCE_BLOCK_LABELS[bid] || bid) +
-            "</td><td class=\"consult-evidence-section\">" +
+            '</td><td class="consult-evidence-section" data-label="Секция">' +
             escapeHtml(section) +
             pageBit +
-            "</td><td class=\"consult-evidence-excerpt\">" +
+            '</td><td class="consult-evidence-excerpt" data-label="Выдержка">' +
             escapeHtml(excerpt) +
-            "</td><td class=\"consult-evidence-protocol\" title=\"" +
-            escapeHtml(it.protocol_path || "") +
-            "\">" +
-            escapeHtml(protoTitle) +
+            '</td><td class="consult-evidence-protocol" data-label="Протокол">' +
+            protoCell +
             "</td>";
           tb.appendChild(tr);
         });
@@ -29948,6 +30142,8 @@
     if (narBtn) {
       narBtn.hidden = !(pack && l2mode !== "narrative" && data && data.review_tier === "L2");
     }
+    enhanceConsultTableForMobile(document.getElementById("consult-evidence-table"));
+    enhanceConsultTableForMobile(document.getElementById("consult-block-gaps-table"));
   }
 
   function renderConsultReviewResult(data, res, st) {
@@ -30108,6 +30304,7 @@
         }
         var tdName = document.createElement("td");
         tdName.className = "consult-crit-name-cell";
+        tdName.setAttribute("data-label", "Критерий");
         tdName.innerHTML =
           '<span class="consult-crit-name">' +
           escapeHtml(c.name_ru || c.name || "") +
@@ -30116,21 +30313,26 @@
           renderConsultCriteriaBasis(c);
         var tdPct = document.createElement("td");
         tdPct.className = "consult-crit-pct-cell";
+        tdPct.setAttribute("data-label", "%");
         if (score != null && !isNaN(score)) {
           tdPct.innerHTML = renderMiniDonutSvg(score, 44);
         }
         var tdVer = document.createElement("td");
         tdVer.className = "consult-crit-verdict-cell";
+        tdVer.setAttribute("data-label", "Итог");
         if (score != null && !isNaN(score)) {
           var ver = consultScoreVerdict(score);
           tdVer.innerHTML =
             '<span class="consult-verdict ' + ver.cls + '">' + escapeHtml(ver.label) + "</span>";
         }
         var tdComment = document.createElement("td");
+        tdComment.setAttribute("data-label", "Комментарий");
         tdComment.innerHTML = renderConsultCriteriaComment(c);
         var tdKz = document.createElement("td");
+        tdKz.setAttribute("data-label", "Фрагмент КЗ");
         tdKz.innerHTML = renderConsultCriteriaKzCell(c);
         var tdProto = document.createElement("td");
+        tdProto.setAttribute("data-label", "Эталон / источник");
         tdProto.innerHTML = renderConsultReferenceCell(c);
         tr.appendChild(tdName);
         tr.appendChild(tdPct);
@@ -30140,6 +30342,7 @@
         tr.appendChild(tdProto);
         tb.appendChild(tr);
       });
+      enhanceConsultTableForMobile(document.getElementById("consult-out-table"));
     }
 
     if (res) {
