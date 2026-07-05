@@ -30,6 +30,16 @@
     skipped: "Без уточнения",
   };
 
+  var POP_PLACEHOLDERS = {
+    adult: "Жалоба, диагноз или МКБ-10 для взрослого пациента (J20.9, I10…)",
+    pediatric: "Жалоба, диагноз или МКБ-10 для ребёнка…",
+    pregnant: "Жалоба, диагноз или МКБ-10 для беременной…",
+    emergency: "Неотложная ситуация: кратко симптомы или код МКБ-10…",
+  };
+
+  var DEFAULT_QUERY_PLACEHOLDER =
+    "Сначала выберите аудиторию выше или сразу введите диагноз, МКБ-10 (J20.9, I10) или жалобы.";
+
   var hooks = {};
   var historyPushing = false;
 
@@ -338,17 +348,6 @@
     var drawer = document.getElementById("search-settings-drawer");
     var closeBtn = document.getElementById("btn-search-settings-close");
     if (!trigger || !drawer) return;
-    var tierPanel = document.getElementById("search-tier-panel");
-    var modeToolbar = document.querySelector(".search-mode-toolbar");
-    var drawerBody = document.getElementById("search-settings-drawer-body");
-    if (drawerBody) {
-      if (modeToolbar && modeToolbar.parentNode !== drawerBody) {
-        drawerBody.appendChild(modeToolbar);
-      }
-      if (tierPanel && tierPanel.parentNode !== drawerBody) {
-        drawerBody.appendChild(tierPanel);
-      }
-    }
     trigger.addEventListener("click", function () {
       drawer.hidden = !drawer.hidden;
       trigger.setAttribute("aria-expanded", drawer.hidden ? "false" : "true");
@@ -358,6 +357,34 @@
         drawer.hidden = true;
         trigger.setAttribute("aria-expanded", "false");
       });
+    }
+  }
+
+  function syncAudienceContinueUi(ctx, pop, on) {
+    var hint = document.getElementById("search-audience-continue");
+    var compose = document.getElementById("search-entry-compose");
+    var qInput = document.getElementById("q");
+    if (compose) compose.classList.toggle("has-audience", !!on);
+    if (hint) {
+      hint.hidden = !on;
+      if (on && pop) {
+        var label = POP_LABELS[pop] || pop;
+        var esc = hooks.escapeHtml || function (s) {
+          return String(s || "");
+        };
+        hint.innerHTML =
+          'Аудитория: <strong>' +
+          esc(label) +
+          "</strong>. Теперь введите жалобу, диагноз или код МКБ-10 в поле ниже.";
+      } else if (hint.innerHTML) {
+        hint.textContent = "";
+      }
+    }
+    if (qInput) {
+      qInput.placeholder =
+        on && pop && POP_PLACEHOLDERS[pop]
+          ? POP_PLACEHOLDERS[pop]
+          : DEFAULT_QUERY_PLACEHOLDER;
     }
   }
 
@@ -372,6 +399,7 @@
       b.classList.toggle("is-selected", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    syncAudienceContinueUi(ctx, pop, !!pop && !!ctx.populationConfirmed);
     var settingsBtn = document.getElementById("btn-search-settings");
     var drawer = document.getElementById("search-settings-drawer");
     if (settingsBtn && drawer) {

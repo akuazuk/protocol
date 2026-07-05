@@ -2306,6 +2306,19 @@
       border-bottom-color: currentColor;
     }
 
+    a.btn-proto-action.proto-link {
+      border-bottom: none;
+      text-decoration: none;
+    }
+
+    .proto-nav-card__actions a.btn-proto-action--primary.proto-link:hover,
+    .proto-nav-card__actions a.btn-proto-action--primary.proto-link:focus-visible,
+    .protocol-brief-actions a.btn-proto-action--primary.proto-link:hover,
+    .protocol-brief-actions a.btn-proto-action--primary.proto-link:focus-visible {
+      color: #fff;
+      border-bottom-color: transparent;
+    }
+
     .assist-proto-list a.proto-link {
       display: inline;
     }
@@ -12392,31 +12405,154 @@
         <h2 id="search-title">Жалоба, диагноз или код МКБ-10</h2>
       </div>
 
-      <div class="search-entry-actions">
-        <div class="search-entry-actions__audience">
-          <span class="search-entry-actions__label" id="search-audience-label">Аудитория</span>
-          <div class="search-inline-population" id="search-inline-population" role="group" aria-labelledby="search-audience-label">
-            <button type="button" class="search-inline-population__btn" data-inline-pop="adult" aria-pressed="false">Взрослые</button>
-            <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric" aria-pressed="false">Дети</button>
-            <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant" aria-pressed="false">Беременные</button>
-            <button type="button" class="search-inline-population__btn" data-inline-pop="emergency" aria-pressed="false">Неотложно</button>
+      <div class="search-entry-compose" id="search-entry-compose">
+        <div class="search-entry-actions">
+          <div class="search-entry-actions__audience">
+            <span class="search-entry-actions__label" id="search-audience-label">Аудитория</span>
+            <div class="search-inline-population" id="search-inline-population" role="group" aria-labelledby="search-audience-label">
+              <button type="button" class="search-inline-population__btn" data-inline-pop="adult" aria-pressed="false">Взрослые</button>
+              <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric" aria-pressed="false">Дети</button>
+              <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant" aria-pressed="false">Беременные</button>
+              <button type="button" class="search-inline-population__btn" data-inline-pop="emergency" aria-pressed="false">Неотложно</button>
+            </div>
           </div>
+          <button
+            type="button"
+            class="search-settings-trigger"
+            id="btn-search-settings"
+            aria-expanded="false"
+            aria-controls="search-settings-drawer"
+          >
+            <span class="search-settings-trigger__text">Дополнительно</span>
+          </button>
         </div>
-        <button
-          type="button"
-          class="search-settings-trigger"
-          id="btn-search-settings"
-          aria-expanded="false"
-          aria-controls="search-settings-drawer"
-        >
-          <span class="search-settings-trigger__text">Дополнительно</span>
-        </button>
+        <p class="search-audience-continue" id="search-audience-continue" hidden role="status" aria-live="polite"></p>
+        <div id="section-query" class="section-anchor section-block--query search-entry-compose__query">
+          <form class="search-row" id="search-form" action="#" method="get">
+            <div class="query-stack">
+              <label for="q" class="visually-hidden">Диагноз, код МКБ-10 или жалобы для подбора протокола</label>
+              <textarea
+                id="q"
+                name="q"
+                rows="5"
+                autocomplete="off"
+                maxlength="12000"
+                placeholder="Сначала выберите аудиторию выше или сразу введите диагноз, МКБ-10 (J20.9, I10) или жалобы."
+                aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
+              ></textarea>
+              <p class="query-form-hint" id="query-form-hint">
+                Поиск ведётся по диагнозу и МКБ-10 в текстах протоколов. Если указаны только симптомы, нажмите
+                <strong>«Найти протоколы»</strong> - на следующем шаге отметьте подходящие коды МКБ (цветом: зелёный - лучшее совпадение).
+              </p>
+              <div
+                class="query-toolbar query-toolbar--voice-only"
+                role="group"
+                aria-label="Голосовой ввод под полем запроса"
+              >
+                <div class="query-toolbar__main">
+                  <div class="query-toolbar__col query-toolbar__col--full">
+                    <p class="query-toolbar__label" id="query-toolbar-voice-label">Голосовой ввод</p>
+                    <button
+                      type="button"
+                      class="btn-voice"
+                      id="btn-voice"
+                      title="Речь превращается в текст в поле выше (Chrome, Edge, Safari)"
+                      aria-describedby="voice-hint"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+                      <span class="btn-voice__label">Надиктовать</span>
+                    </button>
+                    <p class="query-toolbar__hint" id="voice-hint">
+                      Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
+                    </p>
+                  </div>
+                </div>
+                <div class="query-toolbar__full">
+                  <div class="voice-status-wrap" id="voice-status-wrap" hidden>
+                    <div class="voice-status voice-status--recording" id="voice-status" role="status" aria-live="polite">
+                      <span class="voice-status__dot" aria-hidden="true"></span>
+                      <span class="voice-status__text" id="voice-status-text"></span>
+                    </div>
+                    <div class="voice-interim" id="voice-interim" hidden>
+                      <span class="voice-interim-label">Распознавание в текст (предпросмотр)</span>
+                      <span id="voice-interim-body"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="search-form-actions consult-hide-print">
+              <button type="submit" class="btn btn-submit-row" id="btn-search-submit">
+                Найти протоколы
+              </button>
+              <button
+                type="button"
+                class="btn-assist btn-toolbar-clear btn-toolbar-clear--inline"
+                id="btn-new-search-full"
+                title="Очистить поле запроса, контекст пациента, рубрики и результаты подбора"
+              >
+                <span class="btn-toolbar-clear__main">Очистить всё</span>
+                <span class="btn-toolbar-clear__sub">запрос, рубрики, контекст и результаты</span>
+              </button>
+            </div>
+          </form>
+          <p class="hint search-query-status" id="search-query-status" aria-live="polite" hidden></p>
+        </div>
       </div>
       <div class="search-settings-drawer" id="search-settings-drawer" hidden>
         <div class="search-settings-drawer__head">
           <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close">Закрыть</button>
         </div>
-        <div id="search-settings-drawer-body"></div>
+        <div id="search-settings-drawer-body">
+          <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
+            <label class="search-mode-toolbar__citations-only">
+              <input type="checkbox" id="citations-only-mode" />
+              Только цитаты из протоколов (без краткого ответа модели)
+            </label>
+            <span class="info-panel-note" style="margin: 0">Пошаговый подбор включён: после «Найти» - уточнение кодов МКБ при необходимости.</span>
+          </div>
+          <div class="consult-tier-panel consult-hide-print search-tier-panel" id="search-tier-panel" role="group" aria-labelledby="search-tier-title">
+            <div class="consult-tier-panel__head">
+              <h3 class="consult-tier-panel__title" id="search-tier-title">Уровень поиска</h3>
+              <p class="consult-tier-panel__lead">Как глубоко подбирать протоколы</p>
+            </div>
+            <div class="consult-tier-cards" id="search-tier-cards">
+              <label class="consult-tier-card">
+                <input type="radio" name="search-tier" value="S1" checked data-user-tier="1" />
+                <span class="consult-tier-card__rec">рекомендуется</span>
+                <span class="consult-tier-card__top">
+                  <span class="consult-tier-card__badge">S1</span>
+                  <span class="consult-tier-card__time">≈ 1-5 с</span>
+                </span>
+                <span class="consult-tier-card__name">Индекс + PDF</span>
+                <span class="consult-tier-card__desc">Подбор фрагментов по МКБ и тексту без оценки модели</span>
+              </label>
+              <label class="consult-tier-card">
+                <input type="radio" name="search-tier" value="S0" />
+                <span class="consult-tier-card__top">
+                  <span class="consult-tier-card__badge">S0</span>
+                  <span class="consult-tier-card__time">≈ 0.3-1 с</span>
+                </span>
+                <span class="consult-tier-card__name">Только МКБ → PDF</span>
+                <span class="consult-tier-card__desc">Мгновенный список по коду МКБ-10 (нужен код в запросе)</span>
+              </label>
+              <label class="consult-tier-card">
+                <input type="radio" name="search-tier" value="S2" />
+                <span class="consult-tier-card__top">
+                  <span class="consult-tier-card__badge">S2</span>
+                  <span class="consult-tier-card__time">≈ 5-20 с</span>
+                </span>
+                <span class="consult-tier-card__name">С оценкой ИИ</span>
+                <span class="consult-tier-card__desc">Полный ответ модели с match_reason и дифференциалом</span>
+              </label>
+            </div>
+            <p class="consult-tier-hint" id="search-tier-hint" aria-live="polite"></p>
+            <label class="search-skip-population" style="display:block;margin-top:0.5rem;font-size:0.85rem">
+              <input type="checkbox" id="search-skip-population-gate" />
+              Не спрашивать аудиторию при каждом поиске (если не указана в тексте)
+            </label>
+          </div>
+        </div>
       </div>
 
       <div class="search-onboarding" id="search-onboarding" hidden role="region" aria-label="Подсказки по поиску">
@@ -12433,7 +12569,7 @@
         <p class="search-quick-start__label">Быстрый старт</p>
         <div class="demo-cases-chips" id="search-quick-chips"></div>
         <p class="search-quick-start__hint">
-          Нажмите пример - запрос подставится и запустится пошаговый подбор (аудитория → коды МКБ → протоколы).
+          Нажмите пример - запрос подставится и запустится пошаговый подбор (коды МКБ → протоколы).
         </p>
       </div>
 
@@ -12502,134 +12638,6 @@
             <p style="margin:0;font-size:0.85rem;color:var(--muted)">Загрузка списка рубрик…</p>
           </div>
         </details>
-      </div>
-
-      <div class="search-panel">
-        <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
-          <label class="search-mode-toolbar__citations-only">
-            <input type="checkbox" id="citations-only-mode" />
-            Только цитаты из протоколов (без краткого ответа модели)
-          </label>
-          <span class="info-panel-note" style="margin: 0">Пошаговый подбор включён: после «Найти» - уточнение аудитории и кодов МКБ при необходимости.</span>
-        </div>
-        <div class="consult-tier-panel consult-hide-print search-tier-panel" id="search-tier-panel" role="group" aria-labelledby="search-tier-title">
-          <div class="consult-tier-panel__head">
-            <h3 class="consult-tier-panel__title" id="search-tier-title">Уровень поиска</h3>
-            <p class="consult-tier-panel__lead">Как глубоко подбирать протоколы</p>
-          </div>
-          <div class="consult-tier-cards" id="search-tier-cards">
-            <label class="consult-tier-card">
-              <input type="radio" name="search-tier" value="S1" checked data-user-tier="1" />
-              <span class="consult-tier-card__rec">рекомендуется</span>
-              <span class="consult-tier-card__top">
-                <span class="consult-tier-card__badge">S1</span>
-                <span class="consult-tier-card__time">≈ 1-5 с</span>
-              </span>
-              <span class="consult-tier-card__name">Индекс + PDF</span>
-              <span class="consult-tier-card__desc">Подбор фрагментов по МКБ и тексту без оценки модели</span>
-            </label>
-            <label class="consult-tier-card">
-              <input type="radio" name="search-tier" value="S0" />
-              <span class="consult-tier-card__top">
-                <span class="consult-tier-card__badge">S0</span>
-                <span class="consult-tier-card__time">≈ 0.3-1 с</span>
-              </span>
-              <span class="consult-tier-card__name">Только МКБ → PDF</span>
-              <span class="consult-tier-card__desc">Мгновенный список по коду МКБ-10 (нужен код в запросе)</span>
-            </label>
-            <label class="consult-tier-card">
-              <input type="radio" name="search-tier" value="S2" />
-              <span class="consult-tier-card__top">
-                <span class="consult-tier-card__badge">S2</span>
-                <span class="consult-tier-card__time">≈ 5-20 с</span>
-              </span>
-              <span class="consult-tier-card__name">С оценкой ИИ</span>
-              <span class="consult-tier-card__desc">Полный ответ модели с match_reason и дифференциалом</span>
-            </label>
-          </div>
-          <p class="consult-tier-hint" id="search-tier-hint" aria-live="polite"></p>
-          <label class="search-skip-population" style="display:block;margin-top:0.5rem;font-size:0.85rem">
-            <input type="checkbox" id="search-skip-population-gate" />
-            Не спрашивать аудиторию при каждом поиске (если не указана в тексте)
-          </label>
-        </div>
-        <div class="search-panel__head">
-          <span class="search-panel__badge">Поиск протоколов</span>
-          <p class="search-panel__hint">
-            Введите жалобу, диагноз или МКБ-10 и нажмите <strong>«Найти протоколы»</strong> - система предложит код при необходимости и покажет 1-3 подходящих КП.
-          </p>
-        </div>
-        <div id="section-query" class="section-anchor section-block--query">
-          <form class="search-row" id="search-form" action="#" method="get">
-            <div class="query-stack">
-              <label for="q" class="visually-hidden">Диагноз, код МКБ-10 или жалобы для подбора протокола</label>
-              <textarea
-                id="q"
-                name="q"
-                rows="6"
-                autocomplete="off"
-                maxlength="12000"
-                placeholder="Диагноз и/или МКБ-10 (J20.9, I10) или кратко жалобы - после «Найти» система предложит уточнения."
-                aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
-              ></textarea>
-              <p class="query-form-hint" id="query-form-hint">
-                Поиск ведётся по диагнозу и МКБ-10 в текстах протоколов. Если указаны только симптомы, нажмите
-                <strong>«Найти протоколы»</strong> - на следующем шаге отметьте подходящие коды МКБ (цветом: зелёный - лучшее совпадение).
-              </p>
-              <div
-                class="query-toolbar query-toolbar--voice-only"
-                role="group"
-                aria-label="Голосовой ввод под полем запроса"
-              >
-                <div class="query-toolbar__main">
-                  <div class="query-toolbar__col query-toolbar__col--full">
-                    <p class="query-toolbar__label" id="query-toolbar-voice-label">Голосовой ввод</p>
-                    <button
-                      type="button"
-                      class="btn-voice"
-                      id="btn-voice"
-                      title="Речь превращается в текст в поле выше (Chrome, Edge, Safari)"
-                      aria-describedby="voice-hint"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
-                      <span class="btn-voice__label">Надиктовать</span>
-                    </button>
-                    <p class="query-toolbar__hint" id="voice-hint">
-                      Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
-                    </p>
-                  </div>
-                </div>
-                <div class="query-toolbar__full">
-                  <div class="voice-status-wrap" id="voice-status-wrap" hidden>
-                    <div class="voice-status voice-status--recording" id="voice-status" role="status" aria-live="polite">
-                      <span class="voice-status__dot" aria-hidden="true"></span>
-                      <span class="voice-status__text" id="voice-status-text"></span>
-                    </div>
-                    <div class="voice-interim" id="voice-interim" hidden>
-                      <span class="voice-interim-label">Распознавание в текст (предпросмотр)</span>
-                      <span id="voice-interim-body"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="search-form-actions consult-hide-print">
-              <button type="submit" class="btn btn-submit-row" id="btn-search-submit">
-                Найти протоколы
-              </button>
-              <button
-                type="button"
-                class="btn-assist btn-toolbar-clear btn-toolbar-clear--inline"
-                id="btn-new-search-full"
-                title="Очистить поле запроса, контекст пациента, рубрики и результаты подбора"
-              >
-                <span class="btn-toolbar-clear__main">Очистить всё</span>
-                <span class="btn-toolbar-clear__sub">запрос, рубрики, контекст и результаты</span>
-              </button>
-            </div>
-          </form>
-          <p class="hint search-query-status" id="search-query-status" aria-live="polite" hidden></p>
-        </div>
       </div>
 
       <details class="hero-help section-anchor" id="section-help">
@@ -25080,8 +25088,25 @@
     };
     var line = map[populationId] || "";
     if (!line) return qRaw;
-    var base = stripPopulationContextFromQuery(stripToClinicalOnly(qRaw || ""));
-    return base ? base + "\n" + line : line;
+    var base = stripPopulationContextFromQuery(stripToClinicalOnly(qRaw || "")).trim();
+    if (!base) return line + "\n";
+    return base + "\n" + line + "\n";
+  }
+
+  function focusQueryInputAtEnd(qInput) {
+    if (!qInput) return;
+    window.setTimeout(function () {
+      var len = (qInput.value || "").length;
+      qInput.focus({ preventScroll: true });
+      if (typeof qInput.setSelectionRange === "function") {
+        qInput.setSelectionRange(len, len);
+      }
+      try {
+        qInput.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      } catch (e) {
+        qInput.scrollIntoView(true);
+      }
+    }, 0);
   }
 
   function ensureFunnelSessionId() {
@@ -25214,6 +25239,7 @@
             stripPopulationContextFromQuery(qInput.value || clinicalQ),
             pop
           );
+          focusQueryInputAtEnd(qInput);
         }
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
           console.error(err);
@@ -32457,6 +32483,7 @@
           stripPopulationContextFromQuery(qInput.value || ""),
           pop
         );
+        focusQueryInputAtEnd(qInput);
       },
     });
     ProtocolSearchFlow.syncInlinePopulationUi();
