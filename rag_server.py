@@ -8200,7 +8200,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-05-r46-body-tab-class"
+BUILD_VERSION = "2026-07-05-r47-patient-tab-header-trim"
 
 
 def _app_version() -> str:

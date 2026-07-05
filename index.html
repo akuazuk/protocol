@@ -561,7 +561,9 @@
     }
 
     .app-main-tabs--journal button,
-    .app-main-tabs--primary button {
+    .app-main-tabs--primary button,
+    .app-main-tabs--journal a.app-main-tab,
+    .app-main-tabs--primary a.app-main-tab {
       position: relative;
       flex: 0 0 auto;
       min-height: 2.7rem;
@@ -581,7 +583,9 @@
     }
 
     .app-main-tabs--journal button:hover,
-    .app-main-tabs--primary button:hover {
+    .app-main-tabs--primary button:hover,
+    .app-main-tabs--journal a.app-main-tab:hover,
+    .app-main-tabs--primary a.app-main-tab:hover {
       background: linear-gradient(180deg, #f6fcf9 0%, #e9f5ef 100%);
       color: var(--green-800);
       transform: translateY(1px);
@@ -640,6 +644,31 @@
       white-space: nowrap;
     }
 
+    a.app-main-tab.app-main-tab--patient {
+      text-decoration: none;
+      color: #7a4a2a;
+      background: linear-gradient(180deg, rgba(253, 244, 232, 0.95) 0%, rgba(245, 230, 210, 0.82) 100%);
+      border-color: rgba(217, 140, 70, 0.28);
+    }
+
+    a.app-main-tab.app-main-tab--patient:hover {
+      color: #8a4518;
+      background: linear-gradient(180deg, #fff9f2 0%, #faefe0 100%);
+      border-color: rgba(217, 140, 70, 0.42);
+    }
+
+    a.app-main-tab.app-main-tab--patient .app-main-tab-visual {
+      color: #c27830;
+    }
+
+    .app-main-tab-title .tab-title-short {
+      display: none;
+    }
+
+    body.methodist-mode #tab-patient-b2c {
+      display: none !important;
+    }
+
     body.app-tab-search #panel-main-search .site-header {
       border-top-left-radius: 4px;
       margin-top: 0.15rem;
@@ -672,6 +701,14 @@
       .app-main-tabs--journal .app-main-tab-title,
       .app-main-tabs--primary .app-main-tab-title {
         font-size: 0.78rem;
+      }
+
+      #tab-patient-b2c .tab-title-full {
+        display: none;
+      }
+
+      #tab-patient-b2c .tab-title-short {
+        display: inline;
       }
     }
 
@@ -857,6 +894,8 @@
     /* Вкладки еженедельника - перекрывают pill-стиль выше */
     .app-main-tabs--journal button,
     .app-main-tabs--primary button,
+    .app-main-tabs--journal a.app-main-tab,
+    .app-main-tabs--primary a.app-main-tab,
     .methodist-workspace-tabs button {
       min-height: 2.7rem;
       padding: 0.46rem 1rem 0.54rem;
@@ -878,6 +917,8 @@
 
     .app-main-tabs--journal button:hover,
     .app-main-tabs--primary button:hover,
+    .app-main-tabs--journal a.app-main-tab:hover,
+    .app-main-tabs--primary a.app-main-tab:hover,
     .methodist-workspace-tabs button:hover {
       background: linear-gradient(180deg, #f6fcf9 0%, #e9f5ef 100%);
       color: var(--green-800);
@@ -9262,6 +9303,17 @@
       color: var(--muted);
     }
 
+    .site-footer-disclaimer {
+      margin: 0 0 0.55rem;
+      padding: 0.55rem 0.68rem;
+      border-radius: 12px;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: #5a726c;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(26, 138, 114, 0.14);
+    }
+
     .site-footer-source a {
       color: var(--green-800);
       font-weight: 650;
@@ -12495,7 +12547,7 @@
         <a class="app-chrome__brand" href="#" aria-label="Protocol - на главную">
           <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
-        <p class="app-chrome__tagline">Навигатор клинических протоколов · Минздрава РБ</p>
+        <p class="app-chrome__tagline">Протоколы Минздрава РБ</p>
       </div>
       <div class="app-chrome__journal">
         <div class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
@@ -12524,6 +12576,18 @@
           <span class="app-main-tab-sub">запрос, МКБ-10 и рубрики каталога</span>
         </span>
       </button>
+      <a href="patient.html" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="Для пациентов: понять своё заключение">
+        <span class="app-main-tab-visual" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </span>
+        <span class="app-main-tab-text">
+          <span class="app-main-tab-title"><span class="tab-title-full">Проверь своё заключение</span><span class="tab-title-short">Своё КЗ</span></span>
+          <span class="app-main-tab-sub">для пациентов</span>
+        </span>
+      </a>
         </div>
       </div>
     </div>
@@ -12608,24 +12672,9 @@
           </h1>
           <div class="tagline tagline--rich">
             <p class="tagline-lead"
-              ><span class="hl">Поддержка врача</span> при оказании помощи по протоколам и
-              <span class="hl">контроль консультативных заключений</span> для методслужбы - по официальным PDF
+              ><span class="hl">Поддержка врача</span> и <span class="hl">контроль КЗ</span> по официальным PDF
               <span class="hl-doc">Минздрава РБ</span>.</p>
-            <p class="tagline-sub"
-              >Поиск по <strong>диагнозу и МКБ-10</strong>; жалобы можно уточнить до кодов МКБ. Не замена очного приёма и
-              не установление диагноза.</p>
           </div>
-        </div>
-      </div>
-      <div class="site-header__bottom">
-        <div class="site-header__legal-note" id="site-legal-note">
-          <span class="site-header__legal-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </span>
-          <span>Информация из опубликованных протоколов; решение принимает врач. Персональные данные в PDF КЗ - только в
-          защищённом контуре учреждения.</span>
         </div>
       </div>
     </header>
@@ -12638,7 +12687,6 @@
       <div class="hero-intro">
         <p class="hero-eyebrow">Поиск протоколов · основной режим</p>
         <h2 id="search-title">Жалоба, диагноз или код МКБ-10</h2>
-        <p class="search-doctor-disclaimer">Подбор по официальным клиническим протоколам МЗ РБ. Не заменяет очный приём и не устанавливает диагноз.</p>
       </div>
 
       <div class="search-onboarding" id="search-onboarding" hidden role="region" aria-label="Подсказки по поиску">
@@ -14185,7 +14233,7 @@
           </span>
           <span class="site-footer-card__text">
             <span class="site-footer-card__title">Проверь своё заключение</span>
-            <span class="site-footer-card__sub">B2C для пациентов: фото КЗ и анализы</span>
+            <span class="site-footer-card__sub">B2C: загрузка КЗ и вопросы врачу</span>
           </span>
         </a>
         <a href="docs/mvp-presentation.html" class="site-footer-card site-footer-card--presentation" target="_blank" rel="noopener noreferrer">
@@ -14236,6 +14284,10 @@
         <div class="site-footer-brand">
           <img class="site-footer-brand__logo" src="/protocol-logo-wordmark.svg" width="240" height="42" alt="Protocol" />
         </div>
+        <p class="site-footer-disclaimer" id="site-legal-note">
+          Поиск по диагнозу и МКБ-10; жалобы можно уточнить до кодов МКБ. Информация из опубликованных протоколов - решение принимает врач.
+          Не замена очного приёма и не установление диагноза. Персональные данные в PDF КЗ - только в защищённом контуре учреждения.
+        </p>
         <p class="site-footer-source">
           Источник PDF:
           <a href="https://minzdrav.gov.by/ru/dlya-spetsialistov/standarty-obsledovaniya-i-lecheniya/" target="_blank" rel="noopener noreferrer">клинические протоколы Минздрава РБ</a>.
