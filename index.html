@@ -10342,6 +10342,60 @@
       outline: 1px solid rgba(234, 88, 12, 0.45);
     }
 
+    .protocol-src-viewer.is-search-active .protocol-src-item > summary {
+      font-size: 0.9rem;
+      line-height: 1.48;
+    }
+
+    .protocol-src-viewer.is-search-active .protocol-src-item__body,
+    .protocol-src-viewer.is-search-active .protocol-src-item__bullets {
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .protocol-src-viewer.is-search-active--drugs .protocol-src-overview {
+      border-width: 2px;
+      border-color: rgba(26, 138, 114, 0.45);
+      box-shadow: 0 4px 14px rgba(26, 138, 114, 0.12);
+    }
+
+    .protocol-src-viewer.is-search-active--drugs .protocol-src-overview__title,
+    .protocol-src-viewer.is-search-active--drugs .protocol-src-overview__summary {
+      font-size: 0.88rem;
+    }
+
+    .protocol-src-item__bullets {
+      margin: 0;
+      padding: 0.15rem 0.48rem 0.42rem 2.35rem;
+      list-style: disc;
+      color: #334155;
+    }
+
+    .protocol-src-item__bullets li {
+      margin: 0.28rem 0;
+      overflow-wrap: anywhere;
+    }
+
+    .protocol-src-chip--drugs {
+      background: rgba(214, 243, 232, 0.95);
+      border-color: rgba(26, 138, 114, 0.35);
+    }
+
+    .protocol-src-show-more {
+      display: block;
+      width: calc(100% - 0.7rem);
+      margin: 0.35rem auto 0.15rem;
+      font: inherit;
+      font-size: 0.74rem;
+      font-weight: 650;
+      padding: 0.35rem 0.55rem;
+      border-radius: 8px;
+      border: 1px dashed rgba(26, 138, 114, 0.35);
+      background: rgba(232, 245, 241, 0.65);
+      color: var(--green-800);
+      cursor: pointer;
+    }
+
     .protocol-src-empty,
     .protocol-src-loading {
       font-size: 0.8rem;
@@ -25403,6 +25457,8 @@
     }
   }
 
+  var PROTO_SEARCH_MAX_VISIBLE = 5;
+
   var PROTO_SEARCH_INTENTS = {
     treatment: {
       sections: ["treatment"],
@@ -25416,7 +25472,18 @@
         "дозиров",
         "флп",
         "таблет",
+        "капсул",
+        "сироп",
+        "суспенз",
         "инъекц",
+        "укол",
+        "мг",
+        "внутрь",
+        "пероральн",
+        "муколитик",
+        "антибиотик",
+        "ингаляц",
+        "небулайз",
         "компрессион",
         "склеротерап",
         "хирург",
@@ -25555,6 +25622,62 @@
     return terms;
   }
 
+  function protocolSearchHighlightTerms(query, intents, items) {
+    var expand = protocolSearchExpandTerms(query, intents || []);
+    var terms = expand.filter(function (t) {
+      return t.length >= 3 && t.length <= 32;
+    });
+    var q = String(query || "").trim();
+    if (q.length >= 2 && q.length <= 40) terms.unshift(q);
+    var seen = {};
+    terms.forEach(function (t) {
+      seen[String(t).toLowerCase()] = true;
+    });
+    (items || []).forEach(function (item) {
+      (item.entity_terms || []).forEach(function (ent) {
+        var e = String(ent || "").trim();
+        if (e.length >= 3 && e.length <= 48 && !seen[e.toLowerCase()]) {
+          seen[e.toLowerCase()] = true;
+          terms.push(e);
+        }
+      });
+      (item.entities || []).forEach(function (chip) {
+        (chip.items || []).forEach(function (drug) {
+          var d = String(drug || "").trim();
+          if (d.length >= 3 && d.length <= 48 && !seen[d.toLowerCase()]) {
+            seen[d.toLowerCase()] = true;
+            terms.push(d);
+          }
+        });
+      });
+    });
+    return terms.slice(0, 16);
+  }
+
+  function isDrugFocusQuery(query, intents) {
+    if ((intents || []).indexOf("treatment") < 0) return false;
+    var q = String(query || "")
+      .toLowerCase()
+      .replace(/ё/g, "е");
+    var drugTerms = [
+      "таблет",
+      "капсул",
+      "препарат",
+      "лекарств",
+      "мг",
+      "внутрь",
+      "сироп",
+      "антибиотик",
+      "муколитик",
+      "фармакотерап",
+    ];
+    var i;
+    for (i = 0; i < drugTerms.length; i++) {
+      if (q.indexOf(drugTerms[i]) >= 0) return true;
+    }
+    return false;
+  }
+
   function scoreProtocolSourceItem(item, sectionId, query, intents, expandTerms) {
     var blob = String(item.search_blob || "")
       .toLowerCase()
@@ -25673,8 +25796,14 @@
       var chip = entities[i] || {};
       var items = chip.items || [];
       if (!items.length) continue;
+      var chipCls =
+        chip.label === "Препараты"
+          ? "protocol-src-chip protocol-src-chip--drugs"
+          : "protocol-src-chip";
       html +=
-        '<span class="protocol-src-chip"><span class="protocol-src-chip__label">' +
+        '<span class="' +
+        chipCls +
+        '"><span class="protocol-src-chip__label">' +
         escapeHtml(String(chip.label || "")) +
         "</span> " +
         escapeHtml(items.join(", ")) +
@@ -25689,7 +25818,23 @@
     var pdfHref = page ? pdfPageHref(path, page) : safeResourceHref(path);
     var openAttr = openFirst ? " open" : "";
     var hasBody = item.body && item.body !== item.lead;
+    var bullets = item.body_bullets || [];
     var chips = renderProtocolSourceEntitiesHtml(item.entities);
+    var bodyHtml = "";
+    if (bullets.length) {
+      bodyHtml += '<ul class="protocol-src-item__bullets">';
+      var bi;
+      for (bi = 0; bi < bullets.length; bi++) {
+        bodyHtml +=
+          "<li>" + highlightPlainTextHtml(bullets[bi], highlight) + "</li>";
+      }
+      bodyHtml += "</ul>";
+    } else if (hasBody) {
+      bodyHtml +=
+        '<p class="protocol-src-item__body">' +
+        highlightPlainTextHtml(item.body || "", highlight) +
+        "</p>";
+    }
     return (
       '<details class="protocol-src-item"' +
       openAttr +
@@ -25702,11 +25847,7 @@
       '<span class="protocol-src-item__lead">' +
       highlightPlainTextHtml(item.lead || "", highlight) +
       "</span></summary>" +
-      (hasBody
-        ? '<p class="protocol-src-item__body">' +
-          highlightPlainTextHtml(item.body || "", highlight) +
-          "</p>"
-        : "") +
+      bodyHtml +
       chips +
       (page
         ? '<p class="protocol-src-item__meta"><a href="' +
@@ -25728,30 +25869,47 @@
       return '<p class="protocol-src-empty">Нет данных по этому протоколу. Откройте PDF.</p>';
     }
     var filtered = opts.semanticView
-      ? {
-          view: opts.semanticView,
-          highlightTerms: opts.highlightTerms || (highlight ? [highlight] : []),
-          matchCount: opts.matchCount || 0,
-          intents: opts.intents || [],
-        }
+      ? filterProtocolClinicalView(opts.semanticView, highlight)
       : filterProtocolClinicalView(baseView, highlight);
+    if (opts.semanticView && filtered.matchCount === 0) {
+      filtered = {
+        view: opts.semanticView,
+        highlightTerms: protocolSearchHighlightTerms(
+          highlight,
+          opts.intents || [],
+          collectProtocolViewItems(opts.semanticView)
+        ),
+        matchCount: opts.matchCount || 0,
+        intents: opts.intents || [],
+      };
+    }
     var view = filtered.view;
-    var highlightTerms = filtered.highlightTerms.length
-      ? filtered.highlightTerms
-      : highlight;
+    var highlightTerms =
+      filtered.highlightTerms && filtered.highlightTerms.length
+        ? filtered.highlightTerms
+        : protocolSearchHighlightTerms(highlight, filtered.intents, collectProtocolViewItems(view));
     var labels = view.section_labels || {};
     var html = "";
     var si;
+    var drugFocus = isDrugFocusQuery(highlight, filtered.intents);
+    var focusSection = drugFocus
+      ? "treatment"
+      : filtered.intents && filtered.intents.length === 1
+        ? (PROTO_SEARCH_INTENTS[filtered.intents[0]] || {}).sections
+          ? PROTO_SEARCH_INTENTS[filtered.intents[0]].sections[0]
+          : ""
+        : activeSection;
     var openAll = !!(highlight && String(highlight).trim().length >= 2);
     for (si = 0; si < PROTO_VIEW_SECTION_ORDER.length; si++) {
       var secKey = PROTO_VIEW_SECTION_ORDER[si];
       var items = (view.sections || {})[secKey] || [];
       if (!items.length) continue;
+      if (drugFocus && secKey !== "treatment") continue;
       var secLabel = labels[secKey] || secKey;
-      var isActive = openAll || !activeSection || activeSection === secKey;
+      var isActive = openAll || !focusSection || focusSection === secKey;
       html +=
         '<details class="protocol-src-section' +
-        (activeSection === secKey ? " is-active" : "") +
+        (focusSection === secKey ? " is-active" : "") +
         '" id="proto-src-sec-' +
         escapeHtmlAttr(secKey) +
         '" data-src-section="' +
@@ -25763,14 +25921,32 @@
         '</span><span class="protocol-src-toc__count">' +
         String(items.length) +
         "</span></summary><div class=\"protocol-src-section__items\">";
+      var visible = items.slice(0, PROTO_SEARCH_MAX_VISIBLE);
+      var hiddenN = items.length - visible.length;
       var ii;
-      for (ii = 0; ii < items.length; ii++) {
+      for (ii = 0; ii < visible.length; ii++) {
         html += renderProtocolSourceItemHtml(
           path,
-          items[ii],
+          visible[ii],
           highlightTerms,
           ii === 0 && isActive
         );
+      }
+      if (hiddenN > 0) {
+        html +=
+          '<button type="button" class="protocol-src-show-more" data-src-show-more="' +
+          escapeHtmlAttr(secKey) +
+          '">Показать ещё ' +
+          String(hiddenN) +
+          "</button>";
+        for (ii = PROTO_SEARCH_MAX_VISIBLE; ii < items.length; ii++) {
+          html +=
+            '<div class="protocol-src-item--extra" hidden data-src-extra="' +
+            escapeHtmlAttr(secKey) +
+            '">' +
+            renderProtocolSourceItemHtml(path, items[ii], highlightTerms, false) +
+            "</div>";
+        }
       }
       html += "</div></details>";
     }
@@ -25778,6 +25954,17 @@
       return '<p class="protocol-src-empty">Ничего не найдено по запросу.</p>';
     }
     return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
+  }
+
+  function collectProtocolViewItems(view) {
+    var out = [];
+    var sec;
+    var sections = (view && view.sections) || {};
+    for (sec in sections) {
+      if (!Object.prototype.hasOwnProperty.call(sections, sec)) continue;
+      out = out.concat(sections[sec] || []);
+    }
+    return out;
   }
 
   function fetchProtocolSemanticSearch(path, query) {
@@ -25908,13 +26095,31 @@
 
     function renderToc(viewForToc, currentQuery, tocOpts) {
       tocOpts = tocOpts || {};
-      var filtered = tocOpts.skipFilter
-        ? {
-            view: viewForToc,
-            matchCount: tocOpts.matchCount || 0,
-            intents: tocOpts.intents || [],
-          }
-        : filterProtocolClinicalView(viewForToc, currentQuery);
+      var filtered = filterProtocolClinicalView(viewForToc, currentQuery);
+      if (tocOpts.matchCount != null && filtered.matchCount === 0) {
+        filtered = {
+          view: viewForToc,
+          matchCount: tocOpts.matchCount || 0,
+          intents: tocOpts.intents || detectProtocolSearchIntents(currentQuery),
+          highlightTerms: protocolSearchHighlightTerms(
+            currentQuery,
+            tocOpts.intents || [],
+            collectProtocolViewItems(viewForToc)
+          ),
+        };
+      }
+      if (isDrugFocusQuery(currentQuery, filtered.intents)) {
+        var treatmentOnly = (filtered.view.sections || {}).treatment || [];
+        filtered.view = {
+          toc: treatmentOnly.length
+            ? [{ id: "treatment", label: (filtered.view.section_labels || {}).treatment || "Лечение", count: treatmentOnly.length }]
+            : [],
+          sections: { treatment: treatmentOnly },
+          section_labels: filtered.view.section_labels || {},
+          stats: filtered.view.stats || {},
+        };
+        filtered.matchCount = treatmentOnly.length;
+      }
       var tocItems = filtered.view.toc || viewForToc.toc || [];
       var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
       var ti;
@@ -25942,9 +26147,13 @@
       if (statsEl) {
         if (currentQuery && currentQuery.trim().length >= 2) {
           statsEl.hidden = false;
+          var modeLabel = tocOpts.semantic ? " · семантика" : "";
+          var focusLabel = isDrugFocusQuery(currentQuery, filtered.intents)
+            ? " · препараты"
+            : "";
           statsEl.textContent =
             filtered.matchCount > 0
-              ? "Найдено: " + String(filtered.matchCount)
+              ? "Найдено: " + String(filtered.matchCount) + modeLabel + focusLabel
               : "Ничего не найдено";
         } else {
           statsEl.hidden = true;
@@ -25993,11 +26202,25 @@
 
     var semanticReqId = 0;
 
+    function wireShowMoreButtons() {
+      body.querySelectorAll("[data-src-show-more]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var sec = btn.getAttribute("data-src-show-more") || "";
+          body.querySelectorAll('[data-src-extra="' + sec + '"]').forEach(function (el) {
+            el.hidden = false;
+          });
+          btn.remove();
+        });
+      });
+    }
+
     function applySourceSearch(query) {
       var q = String(query || "").trim();
       activeQuery = q;
       var overviewEl = viewer.querySelector(".protocol-src-overview");
+      viewer.classList.toggle("is-search-active", q.length >= 2);
       if (q.length < 2) {
+        viewer.classList.remove("is-search-active--drugs");
         if (overviewEl) {
           overviewEl.innerHTML = "";
           overviewEl.classList.add("is-empty");
@@ -26008,6 +26231,7 @@
           highlight: q,
           activeSection: activeSection,
         });
+        wireShowMoreButtons();
         markIndex = 0;
         return;
       }
@@ -26021,34 +26245,33 @@
       var reqId = ++semanticReqId;
       fetchProtocolSemanticSearch(path, q).then(function (sem) {
         if (reqId !== semanticReqId) return;
+        var intents = (sem && sem.intents) || detectProtocolSearchIntents(q);
+        viewer.classList.toggle(
+          "is-search-active--drugs",
+          isDrugFocusQuery(q, intents) || (sem && sem.focus === "drugs")
+        );
         if (sem && sem.ok && sem.view) {
           renderToc(sem.view, q, {
-            skipFilter: true,
+            semantic: true,
             matchCount: sem.match_count || 0,
-            intents: sem.intents || [],
+            intents: intents,
           });
           body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
             highlight: q,
             activeSection: activeSection,
             semanticView: sem.view,
-            highlightTerms: [q],
             matchCount: sem.match_count || 0,
-            intents: sem.intents || [],
+            intents: intents,
           });
-          if (statsEl) {
-            statsEl.hidden = false;
-            statsEl.textContent =
-              (sem.match_count || 0) > 0
-                ? "Найдено: " + String(sem.match_count) + " · семантика"
-                : "Ничего не найдено";
-          }
         } else {
+          viewer.classList.remove("is-search-active--drugs");
           renderToc(baseView, q);
           body.innerHTML = renderProtocolSourceViewerBody(path, doc, {
             highlight: q,
             activeSection: activeSection,
           });
         }
+        wireShowMoreButtons();
         markIndex = 0;
         setTimeout(function () {
           focusMarkAt(0);

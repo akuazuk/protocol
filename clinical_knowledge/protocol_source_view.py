@@ -15,6 +15,12 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from clinical_knowledge.protocol_search_intents import (
+    is_drug_focus_query,
+    is_table_noise_text,
+    sentence_drug_score,
+)
+
 # Клинический тип чанка -> группа навигатора.
 _TYPE_TO_GROUP: dict[str, str] = {
     "classification": "diagnosis",
@@ -225,6 +231,113 @@ def _title_case_lead(lead: str) -> str:
     return lead
 
 
+def _pick_query_aware_lead(
+    text: str,
+    *,
+    query: str = "",
+    intents: list[str] | None = None,
+    chunk_type: str = "",
+) -> tuple[str, str | None, list[str]]:
+    """Lead/body с учётом запроса: для drug-intent - предложение с дозировкой."""
+    intents = intents or []
+    drug_focus = is_drug_focus_query(query, intents)
+    is_treatment = chunk_type in _TREATMENT_CHUNK_TYPES
+    lead_max = 240 if (drug_focus or is_treatment) else 160
+    body_max = 1000 if (drug_focus or is_treatment) else 640
+
+    sentences = [s.strip() for s in _SENT_SPLIT.split(text) if s.strip()]
+    if not sentences:
+        lead, body = _split_lead_body(text, lead_max=lead_max, body_max=body_max)
+        return lead, body, []
+
+    if drug_focus or (is_treatment and "treatment" in intents):
+        best_i = 0
+        best_score = sentence_drug_score(sentences[0])
+        if is_table_noise_text(sentences[0]) or best_score < 2.0:
+            for i, sent in enumerate(sentences):
+                sc = sentence_drug_score(sent)
+                if is_table_noise_text(sent):
+                    continue
+                if sc > best_score:
+                    best_score = sc
+                    best_i = i
+        if best_score >= 2.0 or is_table_noise_text(sentences[0]):
+            lead = _title_case_lead(sentences[best_i])
+            if len(lead) > lead_max:
+                lead = lead[: lead_max - 1].rstrip() + "…"
+            rest = " ".join(sentences[:best_i] + sentences[best_i + 1 :]).strip()
+            body = _clip(rest, body_max) if rest else None
+            bullets = _treatment_body_bullets(rest or text, query=query) if rest else []
+            return lead, body, bullets
+
+    lead, body = _split_lead_body(text, lead_max=lead_max, body_max=body_max)
+    bullets = _treatment_body_bullets(body or text, query=query) if is_treatment else []
+    return lead, body, bullets
+
+
+def _treatment_body_bullets(text: str, *, query: str = "", max_items: int = 6) -> list[str]:
+    t = re.sub(r"\s+", " ", (text or "").strip())
+    if len(t) < 40:
+        return []
+    parts = re.split(r"(?<=[.;])\s+", t)
+    bullets: list[str] = []
+    seen: set[str] = set()
+    for part in parts:
+        p = part.strip(" .;")
+        if len(p) < 20:
+            continue
+        if is_table_noise_text(p):
+            continue
+        if sentence_drug_score(p) < 1.5 and "таблет" not in (query or "").lower():
+            if not re.search(r"\d+[\.,]?\d*\s*(?:мг|г|мл|мкг)", p, re.I):
+                continue
+        key = p.lower()[:120]
+        if key in seen:
+            continue
+        seen.add(key)
+        bullets.append(p if len(p) <= 220 else p[:219].rstrip() + "…")
+        if len(bullets) >= max_items:
+            break
+    return bullets
+
+
+def _drug_entity_chips(block: dict[str, Any], combined_text: str) -> list[dict[str, Any]]:
+    chips = _entity_chips(block)
+    drugs: list[str] = []
+    seen: set[str] = set()
+    for raw in (block.get("drugs") or []):
+        s = re.sub(r"\s+", " ", str(raw or "")).strip(" .,;")
+        key = s.lower()
+        if len(s) >= 3 and key not in seen and not key.startswith(("пациент", "население")):
+            seen.add(key)
+            drugs.append(s)
+    try:
+        from clinical_knowledge.chunk_entities import extract_drugs_heuristic
+
+        for s in extract_drugs_heuristic(combined_text):
+            key = s.lower()
+            if key not in seen:
+                seen.add(key)
+                drugs.append(s)
+    except Exception:
+        pass
+    for m in re.finditer(
+        r"([А-ЯЁ][а-яё\-]{3,}(?:\s+[а-яё\-]{2,}){0,2})\s+(?:внутрь|перорально|\d+[\.,]?\d*\s*(?:мг|г))",
+        combined_text,
+        re.I,
+    ):
+        s = m.group(1).strip()
+        key = s.lower()
+        if len(s) >= 4 and key not in seen:
+            seen.add(key)
+            drugs.append(s)
+        if len(drugs) >= 8:
+            break
+    if drugs:
+        chips = [{"label": "Препараты", "items": drugs[:8]}] + chips
+    return chips
+
+
 def _split_lead_body(text: str, *, lead_max: int = 160, body_max: int = 640) -> tuple[str, str | None]:
     sentences = [s.strip() for s in _SENT_SPLIT.split(text) if s.strip()]
     if not sentences:
@@ -332,7 +445,12 @@ def _iter_blocks(doc: dict[str, Any]) -> list[dict[str, Any]]:
     return out
 
 
-def format_rich_chunk_nav_item(block: dict[str, Any]) -> dict[str, Any] | None:
+def format_rich_chunk_nav_item(
+    block: dict[str, Any],
+    *,
+    query: str = "",
+    intents: list[str] | None = None,
+) -> dict[str, Any] | None:
     """Один rich-чанк -> элемент навигатора (или None если шум)."""
     ctype = str(block.get("chunk_type") or block.get("kind") or "").strip().lower()
     if ctype in _DROP_TYPES or ctype not in _TYPE_TO_GROUP:
@@ -341,12 +459,16 @@ def format_rich_chunk_nav_item(block: dict[str, Any]) -> dict[str, Any] | None:
     combined = _combine_title_text(block.get("section_title"), str(block.get("text") or ""))
     if not combined or _is_noise(combined, ctype):
         return None
-    lead, body = _split_lead_body(combined)
+    if is_table_noise_text(combined) and ctype not in _TREATMENT_CHUNK_TYPES:
+        return None
+    lead, body, bullets = _pick_query_aware_lead(
+        combined, query=query, intents=intents, chunk_type=ctype
+    )
     lead = _TRAILING_COLON_DOT.sub(":", lead).strip()
     if len(lead) < 16 or _MIDSENTENCE_LEAD.match(lead):
         return None
     page = block.get("page_from") or block.get("page")
-    entities = _entity_chips(block)
+    entities = _drug_entity_chips(block, combined)
     search_fields = _item_search_fields(
         lead=lead,
         body=body,
@@ -359,6 +481,7 @@ def format_rich_chunk_nav_item(block: dict[str, Any]) -> dict[str, Any] | None:
         "section_id": group_id,
         "lead": lead,
         "body": body,
+        "body_bullets": bullets,
         "page": page,
         "chunk_type": ctype,
         "entities": entities,

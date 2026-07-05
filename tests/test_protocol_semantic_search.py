@@ -4,8 +4,8 @@ from __future__ import annotations
 from clinical_knowledge.protocol_semantic_search import (
     _merge_score,
     _parse_overview_json,
-    detect_query_intents,
 )
+from clinical_knowledge.protocol_search_intents import detect_query_intents
 from clinical_knowledge.protocol_source_view import format_rich_chunk_nav_item
 from clinical_knowledge.vector_index import build_index_from_chunks, search_scoped_with_scores
 
@@ -37,6 +37,11 @@ def _diagnostics_chunk() -> dict:
 
 def test_detect_query_intents_drugs():
     intents = detect_query_intents("какие лекарства назначить при варикозе")
+    assert "treatment" in intents
+
+
+def test_detect_query_intents_tabletki():
+    intents = detect_query_intents("таблетки")
     assert "treatment" in intents
 
 

@@ -9,6 +9,16 @@ import time
 from pathlib import Path
 from typing import Any
 
+from clinical_knowledge.protocol_search_intents import (
+    DRUG_CHUNK_TYPES,
+    INTENT_SPECS,
+    allowed_sections_for_intents,
+    detect_query_intents,
+    expand_terms_for_intents,
+    intent_result_limits,
+    is_drug_focus_query,
+    is_table_noise_text,
+)
 from clinical_knowledge.protocol_source_view import (
     _GROUP_ORDER,
     _TYPE_INTENT_TAGS,
@@ -19,81 +29,6 @@ from clinical_knowledge.protocol_source_view import (
 
 ROOT = Path(__file__).resolve().parent.parent
 
-_INTENT_SPECS: dict[str, dict[str, Any]] = {
-    "treatment": {
-        "sections": ("treatment",),
-        "tags": ("treatment", "drugs"),
-        "terms": (
-            "лекарств",
-            "препарат",
-            "назнач",
-            "терапи",
-            "дозиров",
-            "флп",
-            "лечени",
-            "фармакотерап",
-            "хирург",
-            "склеротерап",
-            "компрессион",
-        ),
-        "phrases": (
-            "какие лекарства",
-            "что назначить",
-            "чем лечить",
-            "схема лечения",
-            "какие препараты",
-        ),
-    },
-    "diagnostics": {
-        "sections": ("diagnostics",),
-        "tags": ("diagnostics", "exams"),
-        "terms": (
-            "обследован",
-            "анализ",
-            "уздс",
-            "узи",
-            "диагност",
-            "лаборатор",
-            "мрт",
-            "кт",
-            "экг",
-            "оак",
-        ),
-        "phrases": (
-            "какие обследования",
-            "что сдать",
-            "какие анализы",
-            "какие исследования",
-        ),
-    },
-    "diagnosis": {
-        "sections": ("diagnosis",),
-        "tags": ("diagnosis", "criteria"),
-        "terms": ("диагноз", "классификац", "критери", "мкб", "стади"),
-        "phrases": ("критерии диагноза", "классификация"),
-    },
-    "followup": {
-        "sections": ("followup",),
-        "tags": ("followup", "prevention", "routing"),
-        "terms": (
-            "наблюден",
-            "диспансер",
-            "контроль",
-            "профилактик",
-            "маршрут",
-            "направлен",
-            "госпитализац",
-        ),
-        "phrases": ("как наблюдать", "куда направлять"),
-    },
-    "contraindications": {
-        "sections": ("treatment", "diagnosis", "diagnostics"),
-        "tags": ("treatment", "criteria"),
-        "terms": ("противопоказан", "нельзя", "не применя", "абсолютн"),
-        "phrases": ("противопоказания", "когда нельзя"),
-    },
-}
-
 _OVERVIEW_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 _OVERVIEW_CACHE_TTL_SEC = int(os.environ.get("PROTOCOL_OVERVIEW_CACHE_TTL_SEC", "3600"))
 
@@ -102,31 +37,9 @@ def _norm_q(q: str) -> str:
     return (q or "").lower().replace("ё", "е").strip()
 
 
-def detect_query_intents(query: str) -> list[str]:
-    q = _norm_q(query)
-    if len(q) < 2:
-        return []
-    found: list[str] = []
-    for key, spec in _INTENT_SPECS.items():
-        hit = any(p in q for p in spec.get("phrases") or ())
-        if not hit:
-            hit = any(t in q for t in spec.get("terms") or ())
-        if hit:
-            found.append(key)
-    return found
-
-
-def _query_tokens(query: str) -> set[str]:
-    q = _norm_q(query)
-    toks = {t for t in re.split(r"[^a-zа-я0-9.]+", q) if len(t) >= 3}
-    if len(q) >= 2:
-        toks.add(q)
-    intents = detect_query_intents(query)
-    for key in intents:
-        for t in _INTENT_SPECS[key].get("terms") or ():
-            if len(t) >= 3:
-                toks.add(t)
-    return toks
+def _query_tokens(query: str, intents: list[str] | None = None) -> set[str]:
+    intents = intents if intents is not None else detect_query_intents(query)
+    return set(expand_terms_for_intents(query, intents))
 
 
 def _lex_score(chunk: dict[str, Any], query: str, tokens: set[str]) -> float:
@@ -158,7 +71,7 @@ def _intent_boost(chunk: dict[str, Any], intents: list[str]) -> float:
     tags = set(_TYPE_INTENT_TAGS.get(ctype, ()))
     boost = 0.0
     for key in intents:
-        spec = _INTENT_SPECS.get(key) or {}
+        spec = INTENT_SPECS.get(key) or {}
         if group in (spec.get("sections") or ()):
             boost = max(boost, 0.55)
         if tags.intersection(spec.get("tags") or ()):
@@ -310,6 +223,31 @@ def _load_protocol_chunks(path: str) -> list[dict[str, Any]]:
     return []
 
 
+def _chunk_type_boost(chunk_type: str, intents: list[str], *, query: str = "") -> float:
+    ctype = str(chunk_type or "").strip().lower()
+    boost = 0.0
+    if is_drug_focus_query(query, intents) and ctype in DRUG_CHUNK_TYPES:
+        boost += 0.22
+    elif "treatment" in intents and ctype in DRUG_CHUNK_TYPES:
+        boost += 0.12
+    return boost
+
+
+def _should_drop_nav_item(item: dict[str, Any], *, query: str, intents: list[str]) -> bool:
+    lead = str(item.get("lead") or "")
+    body = str(item.get("body") or "")
+    combined = f"{lead} {body}".strip()
+    if is_table_noise_text(combined):
+        return True
+    if is_drug_focus_query(query, intents) and str(item.get("section_id") or "") != "treatment":
+        return True
+    if intents and not is_drug_focus_query(query, intents):
+        allowed = allowed_sections_for_intents(intents, query=query)
+        if allowed and str(item.get("section_id") or "") not in allowed:
+            return True
+    return False
+
+
 def search_protocol_semantic(
     path: str,
     query: str,
@@ -348,7 +286,10 @@ def search_protocol_semantic(
 
     k = top_k or int(os.environ.get("PROTOCOL_SEMANTIC_TOP_K", "12"))
     intents = detect_query_intents(q)
-    tokens = _query_tokens(q)
+    intent_k, max_per_group = intent_result_limits(intents, query=q)
+    if top_k is None:
+        k = intent_k
+    tokens = _query_tokens(q, intents)
 
     q_vec: list[float] | None = None
     has_inline_emb = any(isinstance(c.get("embedding"), list) for c in protocol_chunks)
@@ -366,12 +307,16 @@ def search_protocol_semantic(
     for i, ch in enumerate(protocol_chunks):
         cosine = vector_hits.get(i, 0.0)
         lex = _lex_score(ch, q, tokens)
-        intent = _intent_boost(ch, intents)
+        intent = _intent_boost(ch, intents) + _chunk_type_boost(
+            str(ch.get("chunk_type") or ch.get("kind") or ""), intents, query=q
+        )
         if cosine <= 0 and lex <= 0 and intent <= 0:
             continue
         score = _merge_score(cosine=cosine, lex=lex, intent=intent)
-        item = format_rich_chunk_nav_item(ch)
+        item = format_rich_chunk_nav_item(ch, query=q, intents=intents)
         if not item:
+            continue
+        if _should_drop_nav_item(item, query=q, intents=intents):
             continue
         fp = re.sub(r"\s+", " ", (item.get("lead") or "").lower())[:160]
         if fp in seen_fp:
@@ -387,8 +332,9 @@ def search_protocol_semantic(
 
     ranked.sort(key=lambda row: row[0], reverse=True)
     items = [item for _, item in ranked[:k]]
-    view = build_view_from_items(items, max_per_group=k)
+    view = build_view_from_items(items, max_per_group=max_per_group)
     labels = {gid: label for gid, label in _GROUP_ORDER}
+    focus = "drugs" if is_drug_focus_query(q, intents) else (intents[0] if intents else "")
     return {
         "ok": True,
         "path": pth,
@@ -398,6 +344,7 @@ def search_protocol_semantic(
         "mapped_chunks": mapped_n,
         "has_inline_emb": has_inline_emb,
         "intents": intents,
+        "focus": focus,
         "match_count": len(items),
         "items": items,
         "view": {**view, "section_labels": labels},

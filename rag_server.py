@@ -8200,7 +8200,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-05-r42-rich-chunk-sidecar"
+BUILD_VERSION = "2026-07-05-r43-proto-nav-drug-search"
 
 
 def _app_version() -> str:
@@ -10483,6 +10483,14 @@ def api_protocol_source_text(
     out = resolve_protocol_source_text(pth, rich_chunks=rich_chunks or None)
     out["build_version"] = BUILD_VERSION
     return out
+
+
+@app.get("/api/protocol-search-intents")
+def api_protocol_search_intents() -> dict:
+    """Спеки intent для навигации (синхрон с clinical_knowledge/protocol_search_intents.py)."""
+    from clinical_knowledge.protocol_search_intents import specs_for_api
+
+    return {"ok": True, "intents": specs_for_api(), "build_version": BUILD_VERSION}
 
 
 @app.get("/api/protocol-semantic-search")
