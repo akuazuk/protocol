@@ -540,24 +540,20 @@
     .app-main-tabs--primary {
       flex: 1;
       min-width: 0;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       align-items: flex-end;
-      justify-content: flex-start;
-      gap: 0.12rem;
+      gap: 0.1rem;
       margin: 0;
-      padding: 0 0.2rem;
+      padding: 0;
       position: relative;
       z-index: 1;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+      width: 100%;
+      overflow: visible;
     }
 
-    .app-main-tabs--journal::-webkit-scrollbar,
-    .app-main-tabs--primary::-webkit-scrollbar {
-      display: none;
+    body.methodist-mode .app-main-tabs--primary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .app-main-tabs--journal button,
@@ -565,46 +561,69 @@
     .app-main-tabs--journal a.app-main-tab,
     .app-main-tabs--primary a.app-main-tab {
       position: relative;
-      flex: 0 0 auto;
-      min-height: 2.7rem;
+      flex: none;
+      width: 100%;
       min-width: 0;
-      padding: 0.46rem 1rem 0.54rem;
+      min-height: 2.35rem;
+      padding: 0.4rem 0.35rem 0.46rem;
       align-items: center;
-      gap: 0.42rem;
-      border-radius: 13px 13px 0 0;
-      border: 1px solid rgba(26, 138, 114, 0.22);
+      justify-content: center;
+      gap: 0;
+      border-radius: 11px 11px 0 0;
+      border: 1px solid rgba(26, 138, 114, 0.18);
       border-bottom: none;
-      background: linear-gradient(180deg, rgba(238, 251, 246, 0.95) 0%, rgba(222, 241, 234, 0.82) 100%);
-      color: #3a6459;
+      background: rgba(228, 240, 234, 0.65);
+      color: #6b8f85;
       box-shadow: none;
-      transform: translateY(3px);
-      font-weight: 650;
-      transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+      transform: translateY(4px);
+      font-weight: 600;
+      opacity: 0.92;
+      transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+    }
+
+    .app-main-tabs--primary .app-main-tab-visual {
+      display: none;
     }
 
     .app-main-tabs--journal button:hover,
     .app-main-tabs--primary button:hover,
     .app-main-tabs--journal a.app-main-tab:hover,
     .app-main-tabs--primary a.app-main-tab:hover {
-      background: linear-gradient(180deg, #f6fcf9 0%, #e9f5ef 100%);
+      background: rgba(236, 248, 244, 0.9);
       color: var(--green-800);
-      transform: translateY(1px);
-      border-color: rgba(26, 138, 114, 0.3);
+      transform: translateY(2px);
+      border-color: rgba(26, 138, 114, 0.28);
+      opacity: 1;
     }
 
     .app-main-tabs--journal button[aria-selected="true"],
     .app-main-tabs--primary button[aria-selected="true"] {
       background: #fff;
       color: var(--green-950);
-      border-color: rgba(26, 138, 114, 0.34);
+      border-color: rgba(26, 138, 114, 0.48);
+      border-top: 3px solid var(--green-600);
       box-shadow:
-        0 -3px 14px rgba(6, 61, 53, 0.07),
-        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        0 -4px 18px rgba(6, 61, 53, 0.11),
+        inset 0 1px 0 rgba(255, 255, 255, 0.98);
       transform: translateY(0);
       z-index: 3;
-      padding-bottom: calc(0.54rem + 2px);
+      padding-top: calc(0.4rem - 2px);
+      padding-bottom: calc(0.46rem + 2px);
       margin-bottom: -2px;
-      font-weight: 750;
+      font-weight: 800;
+      opacity: 1;
+    }
+
+    .app-main-tabs--journal button[aria-selected="true"]::after,
+    .app-main-tabs--primary button[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      left: 0.65rem;
+      right: 0.65rem;
+      bottom: -1px;
+      height: 2px;
+      background: #fff;
+      z-index: 4;
     }
 
     .app-main-tabs--journal .app-main-tab-visual,
@@ -637,32 +656,25 @@
 
     .app-main-tabs--journal .app-main-tab-title,
     .app-main-tabs--primary .app-main-tab-title {
-      font-size: 0.84rem;
+      font-size: 0.78rem;
       font-weight: inherit;
-      letter-spacing: -0.015em;
-      line-height: 1.2;
-      white-space: nowrap;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      white-space: normal;
+      text-align: center;
     }
 
     a.app-main-tab.app-main-tab--patient {
       text-decoration: none;
-      color: #7a4a2a;
-      background: linear-gradient(180deg, rgba(253, 244, 232, 0.95) 0%, rgba(245, 230, 210, 0.82) 100%);
-      border-color: rgba(217, 140, 70, 0.28);
+      color: #7a5e48;
+      background: rgba(245, 236, 226, 0.72);
+      border-color: rgba(200, 150, 100, 0.22);
     }
 
     a.app-main-tab.app-main-tab--patient:hover {
       color: #8a4518;
-      background: linear-gradient(180deg, #fff9f2 0%, #faefe0 100%);
-      border-color: rgba(217, 140, 70, 0.42);
-    }
-
-    a.app-main-tab.app-main-tab--patient .app-main-tab-visual {
-      color: #c27830;
-    }
-
-    .app-main-tab-title .tab-title-short {
-      display: none;
+      background: rgba(252, 244, 234, 0.95);
+      border-color: rgba(200, 150, 100, 0.35);
     }
 
     body.methodist-mode #tab-patient-b2c {
@@ -688,27 +700,19 @@
 
       .app-chrome__journal {
         width: 100%;
-        margin: 0 -0.15rem;
-        padding: 0 0.15rem;
       }
 
       .app-main-tabs--journal button,
-      .app-main-tabs--primary button {
-        padding: 0.42rem 0.78rem 0.48rem;
-        min-height: 2.45rem;
+      .app-main-tabs--primary button,
+      .app-main-tabs--journal a.app-main-tab,
+      .app-main-tabs--primary a.app-main-tab {
+        min-height: 2.2rem;
+        padding: 0.36rem 0.22rem 0.42rem;
       }
 
       .app-main-tabs--journal .app-main-tab-title,
       .app-main-tabs--primary .app-main-tab-title {
-        font-size: 0.78rem;
-      }
-
-      #tab-patient-b2c .tab-title-full {
-        display: none;
-      }
-
-      #tab-patient-b2c .tab-title-short {
-        display: inline;
+        font-size: 0.7rem;
       }
     }
 
@@ -897,16 +901,23 @@
     .app-main-tabs--journal a.app-main-tab,
     .app-main-tabs--primary a.app-main-tab,
     .methodist-workspace-tabs button {
-      min-height: 2.7rem;
-      padding: 0.46rem 1rem 0.54rem;
-      border-radius: 13px 13px 0 0;
-      border: 1px solid rgba(26, 138, 114, 0.22);
+      min-height: 2.35rem;
+      padding: 0.4rem 0.35rem 0.46rem;
+      border-radius: 11px 11px 0 0;
+      border: 1px solid rgba(26, 138, 114, 0.18);
       border-bottom: none;
-      background: linear-gradient(180deg, rgba(238, 251, 246, 0.95) 0%, rgba(222, 241, 234, 0.82) 100%);
-      color: #3a6459;
-      transform: translateY(3px);
-      font-weight: 650;
-      gap: 0.42rem;
+      background: rgba(228, 240, 234, 0.65);
+      color: #6b8f85;
+      transform: translateY(4px);
+      font-weight: 600;
+      gap: 0;
+      justify-content: center;
+      width: 100%;
+      opacity: 0.92;
+    }
+
+    .app-main-tabs--primary .app-main-tab-visual {
+      display: none;
     }
 
     .methodist-workspace-tabs button {
@@ -4275,6 +4286,7 @@
     body.methodist-mode #panel-main-search #btn-new-search-full,
     body.methodist-mode #panel-main-search .site-header__top,
     body.methodist-mode #panel-main-search .site-header__legal-note,
+    body.methodist-mode #panel-main-search .site-footer-disclaimer,
     body.methodist-mode #panel-main-search .hero-intro,
     body.methodist-mode #panel-main-search .search-quick-start,
     body.methodist-mode #panel-main-search .search-stats-promo,
