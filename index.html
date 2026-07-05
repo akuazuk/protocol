@@ -12392,16 +12392,28 @@
         <h2 id="search-title">Жалоба, диагноз или код МКБ-10</h2>
       </div>
 
-      <div class="search-inline-population" id="search-inline-population" role="group" aria-label="Аудитория пациента">
-        <button type="button" class="search-inline-population__btn" data-inline-pop="adult">Взрослые</button>
-        <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric">Дети</button>
-        <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant">Беременные</button>
-        <button type="button" class="search-inline-population__btn" data-inline-pop="emergency">Неотложно</button>
+      <div class="search-entry-actions">
+        <div class="search-entry-actions__audience">
+          <span class="search-entry-actions__label" id="search-audience-label">Аудитория</span>
+          <div class="search-inline-population" id="search-inline-population" role="group" aria-labelledby="search-audience-label">
+            <button type="button" class="search-inline-population__btn" data-inline-pop="adult" aria-pressed="false">Взрослые</button>
+            <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric" aria-pressed="false">Дети</button>
+            <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant" aria-pressed="false">Беременные</button>
+            <button type="button" class="search-inline-population__btn" data-inline-pop="emergency" aria-pressed="false">Неотложно</button>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="search-settings-trigger"
+          id="btn-search-settings"
+          aria-expanded="false"
+          aria-controls="search-settings-drawer"
+        >
+          <span class="search-settings-trigger__text">Дополнительно</span>
+        </button>
       </div>
-      <button type="button" class="search-settings-trigger" id="btn-search-settings">Настройки поиска</button>
       <div class="search-settings-drawer" id="search-settings-drawer" hidden>
         <div class="search-settings-drawer__head">
-          <h3 class="search-settings-drawer__title">Настройки поиска</h3>
           <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close">Закрыть</button>
         </div>
         <div id="search-settings-drawer-body"></div>
@@ -15164,7 +15176,10 @@
     window.__icdAppendLine = "";
     window.__funnelContext = {};
     window.__searchWizard = { step: "query" };
-    if (window.ProtocolSearchFlow) ProtocolSearchFlow.clearSession();
+    if (window.ProtocolSearchFlow) {
+      ProtocolSearchFlow.clearSession();
+      ProtocolSearchFlow.syncInlinePopulationUi();
+    }
     updateSearchWizardBar(null);
   }
 
@@ -24499,8 +24514,14 @@
     var clinicalKey = clinicalQueryKeyForPopulation(qRaw);
     if (window.__funnelContext._populationClinicalKey !== clinicalKey) {
       window.__funnelContext._populationClinicalKey = clinicalKey;
-      window.__funnelContext.populationConfirmed = false;
-      delete window.__funnelContext.population;
+      var inlinePop = window.__funnelContext._inlinePopulationChoice;
+      if (inlinePop) {
+        window.__funnelContext.population = inlinePop;
+        window.__funnelContext.populationConfirmed = true;
+      } else {
+        window.__funnelContext.populationConfirmed = false;
+        delete window.__funnelContext.population;
+      }
       delete window.__funnelContext.rubric;
       delete window.__funnelContext.rubricSkipped;
       delete window.__funnelContext.rubric_slugs;
@@ -32429,7 +32450,16 @@
       escapeHtmlAttr: escapeHtmlAttr,
       formatProtocolDisplayTitle: formatProtocolDisplayTitle,
       stripPopulationContextFromQuery: stripPopulationContextFromQuery,
+      applyPopulationToQuery: function (pop) {
+        var qInput = document.getElementById("q");
+        if (!qInput || !pop) return;
+        qInput.value = appendPopulationContextToQuery(
+          stripPopulationContextFromQuery(qInput.value || ""),
+          pop
+        );
+      },
     });
+    ProtocolSearchFlow.syncInlinePopulationUi();
   }
 
   if (isPresentationMode()) {
