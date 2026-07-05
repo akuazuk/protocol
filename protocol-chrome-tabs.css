@@ -1,33 +1,32 @@
-/* Общая шапка Protocol: вкладки-блокнот (index, patient, proto-viewer) */
+/* Общая шапка Protocol: вкладки (index, patient, proto-viewer) */
 :root {
   --pastel-mint: #d6f3e8;
   --pastel-mint-soft: #ecfbf4;
-  --pastel-mint-border: rgba(52, 168, 130, 0.42);
   --pastel-mint-text: #0a7058;
   --pastel-sky: #dbeefe;
-  --pastel-sky-border: rgba(96, 165, 220, 0.38);
+  --pastel-sky-text: #2d5f8a;
   --pastel-peach: #fdebd3;
-  --pastel-peach-border: rgba(234, 160, 80, 0.35);
+  --pastel-peach-text: #9a5a20;
 }
 
 .app-chrome {
   position: sticky;
   top: 0;
   z-index: 45;
-  margin: 0 0 0.35rem;
-  padding: 0.55rem clamp(0.85rem, 4vw, 1.25rem) 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, var(--pastel-mint-soft) 100%);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: none;
-  box-shadow: 0 1px 0 rgba(52, 168, 130, 0.12);
+  margin: 0 0 0.2rem;
+  padding: 0.48rem clamp(0.85rem, 4vw, 1.25rem) 0;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(52, 168, 130, 0.08);
+  box-shadow: none;
 }
 
 .app-chrome__masthead {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0.1rem 0 0.38rem;
+  padding: 0.08rem 0 0.32rem;
   min-width: 0;
 }
 
@@ -38,52 +37,38 @@
   max-width: 100%;
   text-decoration: none;
   line-height: 0;
-  padding: 0.08rem 0;
+  padding: 0.06rem 0;
 }
 
 .app-sticky-bar__logo {
   display: block;
   width: auto;
-  height: 1.28rem;
+  height: 1.26rem;
   max-width: min(100%, 9.5rem);
   object-fit: contain;
 }
 
 .app-chrome__journal {
   position: relative;
-  padding: 0.45rem 0.5rem 0;
-  margin: 0 -0.15rem;
-  background: linear-gradient(180deg, var(--pastel-mint-soft) 0%, rgba(255, 255, 255, 0.55) 100%);
-  border: 1px solid var(--pastel-mint-border);
-  border-bottom: none;
-  border-radius: 16px 16px 0 0;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  padding: 0.12rem 0 0.08rem;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .app-chrome__journal::after {
-  content: "";
-  position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(52, 168, 130, 0.2) 0%,
-    rgba(52, 168, 130, 0.45) 50%,
-    rgba(52, 168, 130, 0.2) 100%
-  );
-  z-index: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .app-main-tabs--journal,
 .app-main-tabs--primary {
   display: flex;
-  align-items: flex-end;
-  gap: 0;
+  align-items: stretch;
+  gap: 0.28rem;
   margin: 0;
-  padding: 0 0 0 0.15rem;
+  padding: 0;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -98,35 +83,34 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.5rem;
-  margin-right: -5px;
-  padding: 0.5rem 0.4rem 0.56rem;
-  border-radius: 14px 14px 0 0;
-  border: 1.5px solid var(--pastel-mint-border);
-  border-bottom: none;
-  background: rgba(255, 255, 255, 0.42);
-  color: #6b9085;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-  transform: translateY(6px) scale(0.98);
+  min-height: 2.38rem;
+  margin: 0;
+  padding: 0.44rem 0.32rem 0.46rem;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  background: rgba(255, 255, 255, 0.55);
+  color: #6b8f85;
+  box-shadow: none;
+  transform: none;
   font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 650;
+  font-size: 0.78rem;
+  font-weight: 600;
   line-height: 1.15;
   text-align: center;
   cursor: pointer;
-  opacity: 0.9;
+  opacity: 1;
   text-decoration: none;
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: background 0.16s ease, color 0.16s ease;
   z-index: 1;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-consult-review { z-index: 2; }
 .app-main-tabs.app-main-tabs--primary > #tab-main-search { z-index: 3; }
-.app-main-tabs.app-main-tabs--primary > #tab-patient-b2c { z-index: 4; margin-right: 0; }
+.app-main-tabs.app-main-tabs--primary > #tab-patient-b2c { z-index: 4; }
 
 .app-main-tabs.app-main-tabs--primary .app-main-tab-title {
   display: block;
-  font-size: 0.8rem;
+  font-size: inherit;
   font-weight: inherit;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -137,64 +121,49 @@
 
 .app-main-tabs.app-main-tabs--primary > button:hover,
 .app-main-tabs.app-main-tabs--primary > a.app-main-tab:hover {
-  transform: translateY(3px) scale(0.99);
+  transform: none;
   opacity: 1;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-consult-review:not([aria-selected="true"]):not([aria-current="page"]) {
-  background: rgba(214, 243, 232, 0.35);
-  border-color: rgba(52, 168, 130, 0.28);
+  background: rgba(214, 243, 232, 0.32);
   color: #5a8f7a;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-main-search:not([aria-selected="true"]):not([aria-current="page"]) {
-  background: rgba(219, 238, 254, 0.4);
-  border-color: rgba(96, 165, 220, 0.3);
+  background: rgba(219, 238, 254, 0.38);
   color: #5a7fa8;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-patient-b2c:not([aria-current="page"]) {
-  background: rgba(253, 235, 211, 0.45);
-  border-color: rgba(234, 160, 80, 0.32);
+  background: rgba(253, 235, 211, 0.42);
   color: #9a6b42;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-consult-review[aria-selected="true"],
 body.app-tab-consult .app-main-tabs.app-main-tabs--primary > #tab-consult-review,
 .app-main-tabs.app-main-tabs--primary > #tab-consult-review[aria-current="page"] {
-  background: linear-gradient(180deg, var(--pastel-mint) 0%, #fff 88%);
-  border-color: var(--pastel-mint-border);
+  background: var(--pastel-mint);
   color: var(--pastel-mint-text);
-  box-shadow: 0 -3px 16px rgba(52, 168, 130, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.85);
-  transform: translateY(0) scale(1);
+  font-weight: 700;
   z-index: 12;
-  font-weight: 800;
-  opacity: 1;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-main-search[aria-selected="true"],
 body.app-tab-search .app-main-tabs.app-main-tabs--primary > #tab-main-search,
 .app-main-tabs.app-main-tabs--primary > #tab-main-search[aria-current="page"] {
-  background: linear-gradient(180deg, var(--pastel-sky) 0%, #fff 88%);
-  border-color: var(--pastel-sky-border);
-  color: #2d5f8a;
-  box-shadow: 0 -3px 16px rgba(96, 165, 220, 0.2), inset 0 2px 0 rgba(255, 255, 255, 0.85);
-  transform: translateY(0) scale(1);
+  background: var(--pastel-sky);
+  color: var(--pastel-sky-text);
+  font-weight: 700;
   z-index: 12;
-  font-weight: 800;
-  opacity: 1;
 }
 
 body.app-tab-patient .app-main-tabs.app-main-tabs--primary > #tab-patient-b2c,
 .app-main-tabs.app-main-tabs--primary > #tab-patient-b2c[aria-current="page"] {
-  background: linear-gradient(180deg, var(--pastel-peach) 0%, #fff 88%);
-  border-color: var(--pastel-peach-border);
-  color: #9a5a20;
-  box-shadow: 0 -3px 16px rgba(234, 160, 80, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.85);
-  transform: translateY(0) scale(1);
+  background: var(--pastel-peach);
+  color: var(--pastel-peach-text);
+  font-weight: 700;
   z-index: 12;
-  font-weight: 800;
-  opacity: 1;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-consult-review[aria-selected="true"]::after,
@@ -205,18 +174,19 @@ body.app-tab-patient .app-main-tabs.app-main-tabs--primary > #tab-patient-b2c::a
 .app-main-tabs.app-main-tabs--primary > a.app-main-tab[aria-current="page"]::after {
   content: "";
   position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: -1px;
-  height: 3px;
-  background: inherit;
+  left: 22%;
+  right: 22%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.28;
   z-index: 13;
 }
 
 .app-main-tabs.app-main-tabs--primary > #tab-patient-b2c:hover {
-  background: linear-gradient(180deg, var(--pastel-peach) 0%, #fff 90%);
-  border-color: var(--pastel-peach-border);
-  color: #9a5a20;
+  background: rgba(253, 235, 211, 0.72);
+  color: var(--pastel-peach-text);
 }
 
 body.methodist-mode #tab-patient-b2c {
@@ -225,24 +195,31 @@ body.methodist-mode #tab-patient-b2c {
 
 @media (max-width: 540px) {
   .app-chrome {
-    padding: 0.5rem clamp(0.75rem, 3.5vw, 1rem) 0;
+    padding: 0.44rem clamp(0.75rem, 3.5vw, 1rem) 0;
   }
 
-  .app-chrome__journal {
-    width: calc(100% + 0.3rem);
-    margin: 0 -0.15rem;
-    padding: 0.38rem 0.28rem 0;
+  .app-main-tabs.app-main-tabs--primary {
+    gap: 0.2rem;
   }
 
   .app-main-tabs.app-main-tabs--primary > button,
   .app-main-tabs.app-main-tabs--primary > a.app-main-tab {
-    min-height: 2.35rem;
-    margin-right: -4px;
-    padding: 0.44rem 0.18rem 0.5rem;
+    min-height: 2.48rem;
+    padding: 0.42rem 0.14rem 0.44rem;
   }
 
   .app-main-tabs.app-main-tabs--primary .app-main-tab-title {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     white-space: normal;
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 900px) {
+  .app-main-tabs.app-main-tabs--primary > button,
+  .app-main-tabs.app-main-tabs--primary > a.app-main-tab {
+    font-size: 0.82rem;
+    min-height: 2.42rem;
+    padding: 0.46rem 0.5rem 0.48rem;
   }
 }
