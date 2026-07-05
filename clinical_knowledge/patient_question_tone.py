@@ -1,4 +1,4 @@
-"""Тон формулировок «вопросов врачу» для B2C — три чётко различимых стиля."""
+"""Тон формулировок «вопросов врачу» для B2C - три чётко различимых стиля."""
 from __future__ import annotations
 
 import re
@@ -21,6 +21,8 @@ _TONE_ALIASES: dict[str, QuestionTone] = {
     "официально": "official",
     "formal": "official",
     "деловой": "official",
+    "calm_respectful": "serious",
+    "спокойно": "serious",
     "serious": "serious",
     "серьёзно": "serious",
     "серьезно": "serious",

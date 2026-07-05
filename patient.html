@@ -930,6 +930,56 @@
       flex-shrink: 0;
     }
 
+    .upload-fit-guide {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.45rem;
+      margin: 0.65rem 0 0.5rem;
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+    .upload-fit-guide__col {
+      padding: 0.5rem 0.6rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .upload-fit-guide__col--ok { border-color: rgba(26, 138, 114, 0.25); background: var(--gsoft); }
+    .upload-fit-guide__col--no { border-color: rgba(220, 38, 38, 0.18); background: #fffafa; }
+    .upload-fit-guide__title { font-weight: 700; margin: 0 0 0.25rem; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .upload-fit-guide ul { margin: 0; padding-left: 1rem; }
+    .upload-lead { margin: 0 0 0.35rem; font-size: 0.86rem; line-height: 1.45; color: var(--text); }
+    .upload-check-hint { margin: 0.45rem 0 0; font-size: 0.78rem; color: var(--muted); }
+    .drop-zone__status { margin-top: 0.45rem; font-size: 0.8rem; font-weight: 600; color: var(--g800); }
+
+    .result-fold { margin-top: 0.65rem; }
+    .result-fold > summary {
+      cursor: pointer;
+      font-weight: 650;
+      font-size: 0.86rem;
+      color: var(--g800);
+      padding: 0.4rem 0;
+    }
+    .question-card__context {
+      display: block;
+      margin-top: 0.28rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .message-doctor-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+    .result-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.65rem 0 0.25rem;
+    }
+
     /* Печатный лист на приём - отдельный чистый одностраничник */
     .print-sheet { display: none; }
     @media print {
@@ -993,7 +1043,7 @@
       <div class="onboard-grid">
         <div class="onboard-item">
           <span class="onboard-item__num" aria-hidden="true">1</span>
-          <div class="onboard-item__body"><strong>Загрузите КЗ</strong>Фото или PDF из поликлиники - можно несколько страниц.</div>
+          <div class="onboard-item__body"><strong>Загрузите КЗ</strong>Один файл: PDF из поликлиники или чёткое фото всех страниц.</div>
         </div>
         <div class="onboard-item">
           <span class="onboard-item__num" aria-hidden="true">2</span>
@@ -1012,22 +1062,42 @@
       <p class="card-title">Документы</p>
       <div class="drop-zone" id="kz-drop">
         <input type="file" id="kz-files-camera" accept="image/*" capture="environment" hidden />
-        <input type="file" id="kz-files-pick" accept="__PATIENT_FILE_ACCEPT__" multiple hidden />
+        <input type="file" id="kz-files-pick" accept="__PATIENT_FILE_ACCEPT__" hidden />
         <div class="drop-zone__icon" aria-hidden="true"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
         <div class="drop-zone__title">Консультативное заключение</div>
+        <p class="upload-lead">Документ, который вы получили после приёма у врача (выписка, консультативное заключение).</p>
         <div class="drop-zone__hint" id="kz-formats-hint">__PATIENT_FORMATS_HINT__</div>
+        <div class="upload-fit-guide" aria-label="Что подойдёт для проверки">
+          <div class="upload-fit-guide__col upload-fit-guide__col--ok">
+            <p class="upload-fit-guide__title">Подойдёт</p>
+            <ul>
+              <li>выписка после приёма</li>
+              <li>консультативное заключение</li>
+              <li>многостраничный PDF из клиники</li>
+            </ul>
+          </div>
+          <div class="upload-fit-guide__col upload-fit-guide__col--no">
+            <p class="upload-fit-guide__title">Не подойдёт</p>
+            <ul>
+              <li>только рецепт или направление</li>
+              <li>справка без диагноза</li>
+              <li>клинический протокол Минздрава</li>
+            </ul>
+          </div>
+        </div>
         <div class="upload-actions">
           <button type="button" class="upload-btn upload-btn--primary" id="kz-btn-camera">Сделать фото</button>
-          <button type="button" class="upload-btn" id="kz-btn-file">Загрузить файл</button>
+          <button type="button" class="upload-btn" id="kz-btn-file">Загрузить PDF или файл</button>
         </div>
         <div class="file-chips" id="kz-chips"></div>
+        <p class="drop-zone__status hidden" id="kz-upload-status" role="status"></p>
       </div>
 
       <div class="drop-zone drop-zone--secondary" id="lab-drop">
         <input type="file" id="lab-files-camera" accept="image/*" capture="environment" hidden />
         <input type="file" id="lab-files-pick" accept="__PATIENT_FILE_ACCEPT__" multiple hidden />
         <div class="drop-zone__title">Анализы (необязательно)</div>
-        <div class="drop-zone__hint" id="lab-formats-hint">Те же форматы: PDF, Word, фото бланка</div>
+        <div class="drop-zone__hint" id="lab-formats-hint">До 3 файлов: PDF, Word или фото бланка анализов</div>
         <div class="upload-actions">
           <button type="button" class="upload-btn upload-btn--primary" id="lab-btn-camera">Сделать фото</button>
           <button type="button" class="upload-btn" id="lab-btn-file">Загрузить файл</button>
@@ -1037,7 +1107,7 @@
 
       <details class="photo-tips">
         <summary>Как сфотографировать документ</summary>
-        <p style="margin:0.35rem 0 0">Можно сфотографировать, загрузить PDF или файл из клиники (Word, ODT). Положите лист ровно, без бликов, все страницы целиком.</p>
+        <p style="margin:0.35rem 0 0">Положите лист ровно, без бликов, все страницы целиком. Если текст плохо читается - попросите PDF в регистратуре клиники.</p>
       </details>
 
       <div class="row">
@@ -1074,6 +1144,7 @@
       </label>
 
       <button type="button" class="btn-primary" id="btn-check" disabled style="margin-top:0.55rem">Проверить заключение</button>
+      <p class="upload-check-hint">Займёт около минуты. Это не диагноз и не оценка врача - помощь для разговора на следующем приёме.</p>
       <p class="status" id="status" aria-live="polite"></p>
 
       <details class="history hidden" id="history-wrap">
@@ -1104,9 +1175,13 @@
         <p class="plain-summary" id="plain-summary"></p>
         <p class="plain-summary hidden" id="main-takeaway"></p>
         <p class="plain-summary hidden" id="protocol-confidence-note"></p>
+        <div class="result-cta-row">
+          <button type="button" class="btn-secondary" id="btn-jump-questions">Вопросы на приём</button>
+          <button type="button" class="btn-secondary" id="btn-jump-visit">Лист на приём</button>
+        </div>
       </section>
 
-      <div class="result-hero">
+      <div class="result-hero hidden" id="result-hero-wrap">
         <div class="result-hero__copy">
           <span class="traffic-pill traffic-pill--yellow" id="traffic-pill" role="status"></span>
           <span class="matched-badge hidden" id="matched-badge" aria-hidden="true"></span>
@@ -1117,7 +1192,10 @@
         </div>
       </div>
 
-      <div id="score-cards-wrap" class="score-cards" aria-label="Индексы проверки"></div>
+      <details class="result-fold" id="score-fold">
+        <summary>Подробнее о проверке (индексы)</summary>
+        <div id="score-cards-wrap" class="score-cards" aria-label="Индексы проверки"></div>
+      </details>
 
       <div id="protocol-strip" class="protocol-strip hidden" aria-label="Протоколы Минздрава"></div>
 
@@ -1170,7 +1248,8 @@
 
       <section class="report-panel" id="message-doctor-wrap">
         <div class="section-head"><span class="section-dot"></span><h2>Короткое сообщение врачу</h2></div>
-        <p id="message-doctor-text"></p>
+        <ul class="message-doctor-list" id="message-doctor-list"></ul>
+        <p class="hidden" id="message-doctor-text"></p>
         <div class="action-row">
           <button type="button" class="btn-secondary" id="btn-copy-message">Скопировать сообщение</button>
           <button type="button" class="btn-secondary" id="btn-share-message">Поделиться</button>
@@ -1179,6 +1258,7 @@
 
       <section class="report-panel" id="visit-sheet-wrap">
         <div class="section-head"><span class="section-dot"></span><h2>Лист на приём</h2></div>
+        <p class="upload-lead" style="margin-bottom:0.45rem">Возьмите с собой на следующий визит - можно распечатать или скопировать.</p>
         <pre id="visit-sheet-text" class="visit-sheet-pre" style="white-space:pre-wrap;font-family:inherit;font-size:0.82rem;margin:0"></pre>
         <div class="action-row">
           <button type="button" class="btn-secondary" id="btn-copy-visit">Скопировать лист</button>
@@ -1204,11 +1284,13 @@
 
       <div id="p2-narratives" class="p2-narratives hidden"></div>
 
-      <section class="report-panel report-panel--blocks" id="blocks-panel">
-        <div class="section-head"><span class="section-dot"></span><h2>Замечания по разделам</h2></div>
-        <div class="blocks-grid-head" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
-        <div class="blocks-grid" id="block-cards"></div>
-      </section>
+      <details class="result-fold" id="blocks-fold">
+        <summary>Замечания по разделам (для любознательных)</summary>
+        <section class="report-panel report-panel--blocks" id="blocks-panel">
+          <div class="blocks-grid-head" aria-hidden="true"><span>Блок</span><span>Оценка</span></div>
+          <div class="blocks-grid" id="block-cards"></div>
+        </section>
+      </details>
 
       <div id="lab-result" class="hidden"></div>
       <div id="protocol-result" class="hidden"></div>

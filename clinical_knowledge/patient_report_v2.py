@@ -25,6 +25,7 @@ from .patient_plain_language import explain_terms_for_patient
 from .patient_protocol_filter import compute_protocol_match_confidence
 from .patient_question_builder import build_useful_patient_questions
 from .patient_questions import DEFAULT_CALM_TONE
+from .patient_question_tone import questions_etiquette_ru, questions_panel_intro_ru
 from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text, scrub_forbidden_from_patient_report
 
 _B2B_FORBIDDEN_KEYS = frozenset(
@@ -312,6 +313,7 @@ def enrich_patient_report_v2(
             "tone": q.get("tone") or DEFAULT_CALM_TONE,
             "emoji": q.get("emoji") or "💬",
             "why_ru": q.get("why_ru") or "",
+            "plain_context": q.get("plain_context") or "",
             "checked": False,
         }
         for i, q in enumerate(structured)
@@ -384,10 +386,8 @@ def enrich_patient_report_v2(
     report["exams_summary_ru"] = exams_patient_summary(exams)
     report["medications_summary_ru"] = medications_patient_summary(meds)
 
-    report["questions_intro_ru"] = (
-        "Короткие вопросы по вашему заключению - отметьте обсуждённые на приёме."
-    )
-    report["questions_etiquette_ru"] = "Нажмите галочку после разговора с врачом - список сохранится на устройстве."
+    report["questions_intro_ru"] = questions_panel_intro_ru(tone)
+    report["questions_etiquette_ru"] = questions_etiquette_ru(tone)
 
     if patient_safe_quotes_enabled():
         report["protocol_citations"] = filter_protocol_citations(list(report.get("protocol_citations") or []))

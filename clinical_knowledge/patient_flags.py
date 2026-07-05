@@ -43,3 +43,8 @@ def patient_show_protocol_technical_block() -> bool:
 def patient_onco_questions_enabled() -> bool:
     """B2C-блок «вопросы врачу» из онконастороженности (по умолчанию вкл, см. render.yaml)."""
     return _flag("PATIENT_ONCO_QUESTIONS_ENABLED", "1")
+
+
+def patient_rag_retrieval_enabled() -> bool:
+    """B2C: RAG + vector index для подбора протоколов (corpus_chunks_parts + embeddings)."""
+    return _flag("PATIENT_RAG_RETRIEVAL_ENABLED", "1")

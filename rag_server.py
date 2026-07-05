@@ -5031,8 +5031,13 @@ def consult_review_file_accept_attr() -> str:
     return ",".join(out)
 
 
-def consult_review_formats_hint_ru(*, max_files: int = 5) -> str:
+def consult_review_formats_hint_ru(*, max_files: int = 1) -> str:
     """Краткая подсказка для UI загрузки документов."""
+    if max_files <= 1:
+        return (
+            "Один файл: PDF из клиники, Word (DOCX), ODT, RTF, HTML, текст (TXT, MD) "
+            "или чёткое фото (JPG, PNG, HEIC). Несколько страниц - в одном PDF."
+        )
     return (
         f"PDF, Word (DOCX), ODT, RTF, HTML, текст (TXT, MD), "
         f"фото (JPG, PNG, HEIC) - до {max_files} файлов"
@@ -8200,7 +8205,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-05-r57-population-query-cursor"
+BUILD_VERSION = "2026-07-05-r58-patient-upload-rag"
 
 
 def _app_version() -> str:
@@ -11298,7 +11303,7 @@ def _patient_html_response() -> "Response":
         raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
     html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
     html = html.replace("__PATIENT_FILE_ACCEPT__", consult_review_file_accept_attr())
-    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 5)
+    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 1)
     html = html.replace("__PATIENT_FORMATS_HINT__", consult_review_formats_hint_ru(max_files=max_files))
     return Response(
         content=html,
@@ -11457,6 +11462,7 @@ def api_patient_status() -> dict:
         patient_no_history_mode_enabled,
         patient_plain_terms_enabled,
         patient_protocol_age_filter_enabled,
+        patient_rag_retrieval_enabled,
         patient_question_safety_enabled,
         patient_report_v2_enabled,
         patient_safe_quotes_enabled,
@@ -11480,7 +11486,8 @@ def api_patient_status() -> dict:
         "lab_upload": "optional lab_files in multipart",
         "question_tone_field": "question_tone",
         "question_tones": question_tones_for_api(),
-        "default_question_tone": "calm_respectful",
+        "default_question_tone": "serious",
+        "patient_rag_retrieval": patient_rag_retrieval_enabled(),
         "feature_flags": {
             "PATIENT_REPORT_V2_ENABLED": patient_report_v2_enabled(),
             "PATIENT_PROTOCOL_AGE_FILTER_ENABLED": patient_protocol_age_filter_enabled(),
@@ -11490,12 +11497,14 @@ def api_patient_status() -> dict:
             "PATIENT_VISIT_SHEET_PDF_ENABLED": patient_visit_sheet_pdf_enabled(),
             "PATIENT_NO_HISTORY_MODE_ENABLED": patient_no_history_mode_enabled(),
             "PATIENT_SHOW_PROTOCOL_TECHNICAL_BLOCK": patient_show_protocol_technical_block(),
+            "PATIENT_RAG_RETRIEVAL_ENABLED": patient_rag_retrieval_enabled(),
         },
         "upload_formats": {
             "extensions": list(consult_review_allowed_extensions()),
             "accept": consult_review_file_accept_attr(),
+            "max_files": env_int("PATIENT_REVIEW_MAX_FILES", 1),
             "hint_ru": consult_review_formats_hint_ru(
-                max_files=env_int("PATIENT_REVIEW_MAX_FILES", 5),
+                max_files=env_int("PATIENT_REVIEW_MAX_FILES", 1),
             ),
         },
         "payment_required": payment_required(),
@@ -11603,7 +11612,7 @@ async def api_patient_review(
     request: "Request",
     files: Annotated[
         list[UploadFile],
-        File(description="Фото или PDF консультативного заключения (1-5 файлов)"),
+        File(description="Один файл консультативного заключения (PDF, фото или Word)"),
     ],
     lab_files: Annotated[
         list[UploadFile] | None,
@@ -11633,7 +11642,7 @@ async def api_patient_review(
         return out
     if not files:
         raise HTTPException(status_code=400, detail="Загрузите фото или PDF заключения.")
-    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 5)
+    max_files = env_int("PATIENT_REVIEW_MAX_FILES", 1)
     if len(files) > max_files:
         raise HTTPException(
             status_code=400,

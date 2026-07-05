@@ -44,6 +44,7 @@ def _question_row(
     severity: str = "medium",
     intent: str = "",
     priority: int = 50,
+    plain_context: str = "",
 ) -> dict[str, Any]:
     text = sanitize_question_text(_norm_q(text))
     if not text:
@@ -53,6 +54,7 @@ def _question_row(
         "text": text,
         "title": text.split("?")[0].strip()[:72] + "?",
         "why_ru": why_ru.strip(),
+        "plain_context": (plain_context or "").strip()[:220],
         "severity": severity,
         "category_ru": category_ru,
         "block_id": block_id,
@@ -100,6 +102,7 @@ def build_useful_patient_questions(
                     qid="q-labs",
                     text=f"В {panel.lower()} есть показатели ({sample}) - учли ли вы их при назначении лечения?",
                     why_ru="Результаты анализов не отражены в тексте заключения.",
+                    plain_context=sample,
                     category_ru="Анализы",
                     block_id="labs",
                     severity="high",

@@ -42,6 +42,7 @@ def run_l1_structured_review(
     skip_alignment: bool = False,
     max_alignment_paths: int | None = None,
     get_chunks: Any | None = None,
+    rag_paths: list[str] | None = None,
 ) -> dict[str, Any]:
     """L1: structured + alignment, без RAG и без LLM-критериев."""
     mode = analysis_mode or (
@@ -112,7 +113,7 @@ def run_l1_structured_review(
             alignment_paths = unify_consult_protocol_paths(
                 target_paths=match_paths,
                 rules_paths=match_paths,
-                rag_paths=[],
+                rag_paths=list(rag_paths or []),
             )
             if max_alignment_paths is not None and max_alignment_paths > 0:
                 alignment_paths = alignment_paths[:max_alignment_paths]
@@ -169,7 +170,7 @@ def run_l1_structured_review(
         "retrieval_paths": retrieval_paths[:8],
         "critical_issues_count": len(comp.get("critical_issues") or []),
         "llm_used": False,
-        "rag_used": False,
+        "rag_used": bool(rag_paths),
         "criteria_source": review.get("criteria_source"),
     }
 

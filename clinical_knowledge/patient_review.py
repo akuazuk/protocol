@@ -52,6 +52,17 @@ def run_patient_review(
     from .patient_exams_enrich import exams_block_notes_for_report
     from .patient_lab_crosscheck import crosscheck_labs_with_kz
     from .patient_protocol_crosscheck import crosscheck_protocol_requirements
+    from .patient_protocol_retrieval import (
+        patient_protocol_citations_from_retrieved,
+        retrieve_patient_protocol_context,
+    )
+
+    rag_ctx = retrieve_patient_protocol_context(
+        kz_text=raw,
+        demographics_meta=demographics_meta,
+        specialty_slug=specialty_slug,
+    )
+    rag_paths = list(rag_ctx.get("paths") or [])
 
     l1 = run_l1_structured_review(
         text=raw,
@@ -59,6 +70,7 @@ def run_patient_review(
         demographics_meta=demographics_meta,
         specialty_slug=specialty_slug,
         skip_alignment=False,
+        rag_paths=rag_paths,
     )
 
     from .patient_context import extract_patient_context
@@ -112,6 +124,16 @@ def run_patient_review(
             question_tone=question_tone,
         )
 
+    if isinstance(patient_report, dict) and rag_ctx.get("retrieved"):
+        cites = patient_protocol_citations_from_retrieved(rag_ctx.get("retrieved") or [])
+        if cites and not patient_report.get("protocol_citations"):
+            patient_report["protocol_citations"] = cites
+        patient_report["protocol_rag_meta"] = {
+            "rag_used": bool(rag_ctx.get("rag_used")),
+            "vector_used": bool(rag_ctx.get("vector_used")),
+            "paths_count": len(rag_paths),
+        }
+
     from .patient_flags import patient_onco_questions_enabled
 
     if patient_onco_questions_enabled() and isinstance(patient_report, dict):
@@ -144,7 +166,7 @@ def run_patient_review(
         "confidence_score": l1.get("confidence_score"),
         "matched_protocols_count": l1.get("matched_protocols_count"),
         "llm_used": False,
-        "rag_used": bool(l1.get("matched_protocols_count")),
+        "rag_used": bool(l1.get("rag_used")) or bool(rag_ctx.get("rag_used")),
         "criteria_source": l1.get("criteria_source") or "deterministic_alignment",
     }
     return sanitize_patient_api_payload(payload)

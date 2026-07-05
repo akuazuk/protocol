@@ -47,6 +47,7 @@
 
   var kzFilesList = [];
   var labFilesList = [];
+  var kzMaxFiles = 1;
   var kzCameraInput = document.getElementById("kz-files-camera");
   var kzPickInput = document.getElementById("kz-files-pick");
   var labCameraInput = document.getElementById("lab-files-camera");
@@ -222,7 +223,10 @@
     return [f.name, f.size, f.lastModified].join("|");
   }
 
-  function mergeFilesIntoList(list, incoming) {
+  function mergeFilesIntoList(list, incoming, maxFiles) {
+    if (maxFiles === 1 && incoming && incoming.length) {
+      return [incoming[0]];
+    }
     var map = {};
     var order = [];
     function add(f) {
@@ -296,7 +300,7 @@
 
     function handlePick(input) {
       if (!input || !input.files || !input.files.length) return;
-      var merged = mergeFilesIntoList(getList(), Array.prototype.slice.call(input.files));
+      var merged = mergeFilesIntoList(getList(), Array.prototype.slice.call(input.files), opts.maxFiles || 99);
       setList(merged);
       renderFileChips(getList(), chipsId, dropId, removeAt);
       clearFileInputs([cameraInput, pickInput]);
@@ -322,6 +326,18 @@
     }
   }
 
+  function updateKzUploadStatus() {
+    var el = document.getElementById("kz-upload-status");
+    if (!el) return;
+    if (!kzFilesList.length) {
+      el.classList.add("hidden");
+      el.textContent = "";
+      return;
+    }
+    el.classList.remove("hidden");
+    el.textContent = "Файл выбран: " + kzFilesList[0].name + " - готово к проверке.";
+  }
+
   function updateBtn() {
     var ready = consentEl && consentEl.checked && kzFilesList.length > 0;
     if (btn) {
@@ -339,7 +355,11 @@
     btnFileId: "kz-btn-file",
     chipsId: "kz-chips",
     dropId: "kz-drop",
-    onChange: updateBtn,
+    onChange: function () {
+      updateKzUploadStatus();
+      updateBtn();
+    },
+    maxFiles: 1,
   });
   wireUploadZone({
     getList: function () { return labFilesList; },
@@ -350,6 +370,7 @@
     btnFileId: "lab-btn-file",
     chipsId: "lab-chips",
     dropId: "lab-drop",
+    maxFiles: 3,
   });
   if (consentEl) consentEl.addEventListener("change", updateBtn);
 
@@ -439,9 +460,12 @@
 
   function renderTrafficPill(light, label) {
     var el = document.getElementById("traffic-pill");
+    var wrap = document.getElementById("result-hero-wrap");
     if (!el) return;
     el.className = "traffic-pill traffic-pill--" + (light === "green" ? "green" : light === "red" ? "red" : "yellow");
     el.innerHTML = '<span aria-hidden="true">' + trafficIcon(light) + "</span> " + escapeHtml(label || "");
+    el.classList.remove("hidden");
+    if (wrap) wrap.classList.remove("hidden");
   }
 
   function renderQualityBanner(dq, light) {
@@ -551,6 +575,9 @@
           var kh = document.getElementById("kz-formats-hint");
           if (kh) kh.textContent = fm.hint_ru;
         }
+        if (fm.max_files != null) {
+          kzMaxFiles = Math.max(1, parseInt(fm.max_files, 10) || 1);
+        }
       })
       .catch(function () {});
   }
@@ -612,6 +639,9 @@
       var why = item.why_ru
         ? '<span class="question-card__why">' + escapeHtml(item.why_ru) + "</span>"
         : "";
+      var ctx = item.plain_context
+        ? '<span class="question-card__context">В заключении: ' + escapeHtml(item.plain_context) + "</span>"
+        : "";
       li.innerHTML =
         '<label class="question-card__label" for="ck-' +
         escapeHtml(item.id) +
@@ -626,6 +656,7 @@
         escapeHtml(item.text || item.title || "") +
         "</span>" +
         why +
+        ctx +
         "</span>" +
         '<input type="checkbox" class="question-card__check" id="ck-' +
         escapeHtml(item.id) +
@@ -911,16 +942,37 @@
   }
 
   function renderMessageToDoctor(report) {
+    var listEl = document.getElementById("message-doctor-list");
     var el = document.getElementById("message-doctor-text");
     var wrap = document.getElementById("message-doctor-wrap");
     var msg = report.message_to_doctor || {};
-    if (!el || !wrap) return;
-    if (!msg.text_ru) {
+    var items = report.action_checklist || report.questions_structured || [];
+    var lines = [];
+    if (items.length) {
+      items.forEach(function (it) {
+        var t = (it && (it.text || it.title)) || "";
+        if (t) lines.push(t);
+      });
+    } else if (msg.text_ru) {
+      lines = String(msg.text_ru).split(/\?\s+/).filter(Boolean).map(function (s) {
+        return s.trim().endsWith("?") ? s.trim() : s.trim() + "?";
+      });
+    }
+    if (!listEl || !wrap) return;
+    if (!lines.length) {
       wrap.classList.add("hidden");
+      if (listEl) listEl.innerHTML = "";
+      if (el) el.textContent = "";
       return;
     }
     wrap.classList.remove("hidden");
-    el.textContent = msg.text_ru;
+    listEl.innerHTML = "";
+    lines.slice(0, 5).forEach(function (line) {
+      var li = document.createElement("li");
+      li.textContent = line;
+      listEl.appendChild(li);
+    });
+    if (el) el.textContent = lines.join("\n");
   }
 
   function renderVisitSheet(report) {
@@ -1747,6 +1799,22 @@
   renderTonePicker();
   syncUploadFormatsFromApi();
   syncQuestionTonesFromApi();
+  var btnJumpQ = document.getElementById("btn-jump-questions");
+  if (btnJumpQ) {
+    btnJumpQ.addEventListener("click", function () {
+      var t = document.getElementById("questions-section");
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+      track("result_jump", { target: "questions" });
+    });
+  }
+  var btnJumpV = document.getElementById("btn-jump-visit");
+  if (btnJumpV) {
+    btnJumpV.addEventListener("click", function () {
+      var t = document.getElementById("visit-sheet-wrap");
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+      track("result_jump", { target: "visit_sheet" });
+    });
+  }
   if (!restoreReport()) updateBtn();
 
   function refreshPatientShell() {
