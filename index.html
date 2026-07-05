@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/protocol-chrome-tabs.css" />
+  <link rel="stylesheet" href="/search-flow.css" />
   <style>
     :root {
       /* Палитра в духе kravira.by: глубокий изумруд + мята */
@@ -12380,9 +12381,30 @@
       Сервер обновляется или индекс загружается - повтор через несколько секунд…
     </div>
 
+      <div class="search-flow-restore-banner" id="search-flow-restore-banner" hidden role="status">
+        <span>Есть незавершённый подбор протокола.</span>
+        <button type="button" id="search-flow-restore-resume">Продолжить</button>
+        <button type="button" id="search-flow-restore-dismiss">Начать заново</button>
+      </div>
+
       <section class="hero" aria-labelledby="search-title">
       <div class="hero-intro">
         <h2 id="search-title">Жалоба, диагноз или код МКБ-10</h2>
+      </div>
+
+      <div class="search-inline-population" id="search-inline-population" role="group" aria-label="Аудитория пациента">
+        <button type="button" class="search-inline-population__btn" data-inline-pop="adult">Взрослые</button>
+        <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric">Дети</button>
+        <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant">Беременные</button>
+        <button type="button" class="search-inline-population__btn" data-inline-pop="emergency">Неотложно</button>
+      </div>
+      <button type="button" class="search-settings-trigger" id="btn-search-settings">Настройки поиска</button>
+      <div class="search-settings-drawer" id="search-settings-drawer" hidden>
+        <div class="search-settings-drawer__head">
+          <h3 class="search-settings-drawer__title">Настройки поиска</h3>
+          <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close">Закрыть</button>
+        </div>
+        <div id="search-settings-drawer-body"></div>
       </div>
 
       <div class="search-onboarding" id="search-onboarding" hidden role="region" aria-label="Подсказки по поиску">
@@ -12659,6 +12681,11 @@
           <button type="button" class="btn-link-nav" id="btn-back-to-query">
             Изменить запрос
           </button>
+        </div>
+        <div id="search-flow-shell" class="search-flow-shell" hidden>
+          <ol id="search-macro-stepper" class="search-macro-stepper" aria-label="Этапы подбора"></ol>
+          <div id="search-context-rail" class="search-context-rail" hidden></div>
+          <ol id="search-sub-stepper" class="search-sub-stepper" hidden aria-label="Раздел протокола"></ol>
         </div>
         <div id="search-wizard-bar" class="search-wizard-bar" hidden role="navigation" aria-label="Шаги подбора протокола">
           <div class="search-wizard-bar__row">
@@ -14039,6 +14066,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+  <script src="/search-flow.js"></script>
   <script>
 (function () {
   function norm(s) {
@@ -15136,6 +15164,8 @@
     window.__icdAppendLine = "";
     window.__funnelContext = {};
     window.__searchWizard = { step: "query" };
+    if (window.ProtocolSearchFlow) ProtocolSearchFlow.clearSession();
+    updateSearchWizardBar(null);
   }
 
   function stripToClinicalOnly(fullQuery) {
@@ -17091,14 +17121,16 @@
   ];
 
   var SEARCH_WIZARD_UI_PHASES = [
-    { id: "funnel", label: "Запрос", stepIds: ["population", "icd", "rubric"] },
-    { id: "protocols", label: "Протоколы", stepIds: ["protocols"] },
-    { id: "sections", label: "На приёме", stepIds: ["brief", "condition", "section", "excerpt"] },
+    { id: "query", label: "Запрос", stepIds: ["query"] },
+    { id: "refine", label: "Уточнение", stepIds: ["population", "icd", "rubric"] },
+    { id: "protocols", label: "Протокол", stepIds: ["protocols"] },
+    { id: "clinical", label: "На приёме", stepIds: ["brief", "condition", "section", "excerpt"] },
   ];
 
   function wizardUiPhaseForStep(stepId) {
-    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") return "sections";
-    if (stepId === "detail") return "sections";
+    if (!stepId || stepId === "query") return "query";
+    if (stepId === "condition" || stepId === "section" || stepId === "excerpt") return "clinical";
+    if (stepId === "detail") return "clinical";
     var pi;
     for (pi = 0; pi < SEARCH_WIZARD_STEPS.length; pi++) {
       if (SEARCH_WIZARD_STEPS[pi].id === stepId) {
@@ -17153,7 +17185,7 @@
     var pi;
     for (pi = 0; pi < SEARCH_WIZARD_UI_PHASES.length; pi++) {
       var ph = SEARCH_WIZARD_UI_PHASES[pi];
-      if (!showProto && ph.id === "sections") break;
+      if (!showProto && ph.id === "clinical") break;
       if (pi > 0) html += '<span class="search-wizard-trail__sep" aria-hidden="true">→</span>';
       var cls = "search-wizard-trail__chip";
       if (pi < activePhaseIdx) cls += " is-done";
@@ -17161,11 +17193,13 @@
       else cls += " is-future";
       var tag = pi < activePhaseIdx ? "button" : "span";
       var jumpStep = ph.stepIds[0];
-      if (ph.id === "funnel") {
+      if (ph.id === "refine") {
         jumpStep =
           activeStep === "rubric" ? "rubric" : activeStep === "icd" ? "icd" : "population";
-      } else if (ph.id === "sections") {
+      } else if (ph.id === "clinical") {
         jumpStep = "brief";
+      } else if (ph.id === "query") {
+        jumpStep = "query";
       }
       var attrs = ' class="' + cls + '" role="listitem"';
       if (tag === "button") {
@@ -17253,6 +17287,18 @@
   }
 
   function searchWizardJumpTo(stepId) {
+    if (stepId === "query") {
+      window.__searchWizard = { step: "query" };
+      updateSearchWizardBar(null);
+      showResultsSection(false);
+      var qFocus = document.getElementById("q");
+      if (qFocus) {
+        try {
+          qFocus.focus();
+        } catch (e) {}
+      }
+      return;
+    }
     var wiz = window.__searchWizard || {};
     var ctx = window.__funnelContext || {};
     var currentIdx = searchWizardStepIndex(wiz.step);
@@ -24822,32 +24868,35 @@
           ) +
           "</p>";
       }
-      html += '<div class="search-wizard-chips" role="list">';
+      html += '<div class="search-choice-list search-wizard-chips" role="list">';
       var ci;
       for (ci = 0; ci < sorted.length; ci++) {
         var ch = sorted[ci];
         var isTop = ch.score != null && ch.score === topScore;
         var fitCls = ch.fitTier ? " search-wizard-chip--fit-" + ch.fitTier : "";
         html +=
-          '<button type="button" class="search-wizard-chip search-wizard-chip--pick' +
+          '<button type="button" class="search-wizard-chip search-choice-card search-wizard-chip--pick' +
           (isTop && !ch.fitTier ? " search-wizard-chip--top" : "") +
           fitCls +
           '" data-choice-id="' +
           escapeHtmlAttr(String(ch.id)) +
           '" role="listitem" aria-pressed="false">';
+        html += '<span class="search-choice-card__main">';
         if (ch.code) {
-          html += "<code>" + escapeHtml(ch.code) + "</code>";
+          html += '<code class="search-choice-card__code">' + escapeHtml(ch.code) + "</code>";
         }
         html +=
-          '<span class="search-wizard-chip__label">' +
+          '<span class="search-choice-card__label search-wizard-chip__label">' +
           escapeHtml(ch.label || String(ch.id)) +
           "</span>";
         if (ch.subtitle) {
           html +=
-            '<span class="search-wizard-chip__sub">' +
+            '<span class="search-choice-card__sub search-wizard-chip__sub">' +
             escapeHtml(ch.subtitle) +
             "</span>";
         }
+        html += "</span>";
+        html += '<span class="search-choice-card__meta">';
         if (ch.fitTier) {
           html += formatWizardFitBadge(ch.fitTier);
         } else if (ch.score != null) {
@@ -24855,12 +24904,15 @@
         } else if (isTop) {
           html += '<span class="search-wizard-chip__rating search-wizard-chip__rating--top">топ</span>';
         }
+        html += "</span>";
         html += "</button>";
       }
       html += "</div>";
-      html += '<div class="search-wizard-step-actions">';
+      html += '<div class="search-wizard-step-actions search-step-footer">';
       html +=
-        '<button type="button" class="btn-assist btn-wizard-continue"' +
+        '<button type="button" class="btn-search-flow-back btn-search-wizard-back-inline">← Назад</button>';
+      html +=
+        '<button type="button" class="btn-assist btn-wizard-continue btn-search-flow-continue"' +
         (options.multi === false ? "" : " disabled") +
         ">" +
         escapeHtml(options.continueLabel || "Продолжить") +
@@ -24921,6 +24973,7 @@
         var id = btn.getAttribute("data-choice-id") || "";
         var on = !!selectedIds[id];
         btn.classList.toggle("search-wizard-chip--selected", on);
+        btn.classList.toggle("search-choice-card--selected", on);
         btn.setAttribute("aria-pressed", on ? "true" : "false");
       });
       var n = Object.keys(selectedIds).length;
@@ -24980,6 +25033,19 @@
         setWizardStepBusy(cardEl, true, hint);
         options.onSkip();
       });
+    }
+    var inlineBack = cardEl.querySelector(".btn-search-wizard-back-inline");
+    if (inlineBack && !inlineBack.getAttribute("data-wired")) {
+      inlineBack.setAttribute("data-wired", "1");
+      inlineBack.addEventListener("click", function () {
+        if (window.ProtocolSearchFlow) {
+          ProtocolSearchFlow.trackEvent("search_step_back", { source: "inline" });
+        }
+        searchWizardBack();
+      });
+    }
+    if (window.ProtocolSearchFlow && options.stepId) {
+      ProtocolSearchFlow.enhanceWizardCard(cardEl, options.stepId);
     }
     syncUi();
   }
@@ -25115,6 +25181,7 @@
       choices: choices,
       multi: false,
       preselectTop: true,
+      stepId: "population",
       onContinue: function (sel) {
         var pop = (sel[0] && sel[0].id) || "";
         window.__funnelContext = window.__funnelContext || {};
@@ -25165,6 +25232,7 @@
       choices: choices,
       multi: true,
       preselectTop: true,
+      stepId: "rubric",
       onContinue: function (sel) {
         window.__funnelContext = window.__funnelContext || {};
         var slugs = [];
@@ -25285,8 +25353,11 @@
         ctxEl.textContent = "";
       }
     }
-    if (backBtn) backBtn.hidden = step === "population";
+    if (backBtn) backBtn.hidden = step === "population" || step === "query";
     updateSearchMobileActions(step);
+    if (window.ProtocolSearchFlow) {
+      ProtocolSearchFlow.afterWizardBarUpdate(step);
+    }
   }
 
   function searchWizardBack() {
@@ -25385,6 +25456,7 @@
       choices: choices,
       multi: true,
       preselectTop: true,
+      stepId: "icd",
       onContinue: function (sel) {
         window.__funnelContext = window.__funnelContext || {};
         window.__funnelContext.icd_codes = sel.map(function (c) {
@@ -32342,6 +32414,23 @@
   initSearchSteppedToggle();
   loadBuildVersionBadge();
   initConsultDemoTextButton();
+
+  if (window.ProtocolSearchFlow) {
+    ProtocolSearchFlow.integrate({
+      getFunnelContext: function () {
+        return window.__funnelContext || {};
+      },
+      getSearchWizard: function () {
+        return window.__searchWizard || {};
+      },
+      onJump: searchWizardJumpTo,
+      onBack: searchWizardBack,
+      escapeHtml: escapeHtml,
+      escapeHtmlAttr: escapeHtmlAttr,
+      formatProtocolDisplayTitle: formatProtocolDisplayTitle,
+      stripPopulationContextFromQuery: stripPopulationContextFromQuery,
+    });
+  }
 
   if (isPresentationMode()) {
     var tabList = document.getElementById("app-main-tabs");
