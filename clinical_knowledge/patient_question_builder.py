@@ -62,7 +62,7 @@ def _question_row(
         "intent": intent or block_id,
         "priority": priority,
         "source_gap": "",
-        "source_comment": (source_comment or why_ru or plain_context).strip()[:220],
+        "source_comment": (source_comment or "").strip()[:220],
     }
 
 
@@ -79,6 +79,14 @@ def _med_anchor(m: dict[str, Any]) -> str:
     if dose:
         parts.append(dose)
     return ", ".join(p for p in parts if p)[:120]
+
+
+def _diagnosis_is_uncertain(kz_text: str) -> bool:
+    m = re.search(r"диагноз[^:\n]*[:\-]?\s*(.+?)(?:\n\s*\n|рекомендац|лечени|обследован|$)", kz_text or "", re.I | re.S)
+    if not m:
+        return False
+    frag = (m.group(1) or "").strip().lower()
+    return "?" in frag or "предварит" in frag or "сомнен" in frag or "вероятн" in frag
 
 
 def build_useful_patient_questions(
@@ -210,12 +218,14 @@ def build_useful_patient_questions(
                     priority=28,
                 )
             )
-        if len(meds) >= 2:
+        if len(meds) >= 2 and not any("duration_missing" in (m.get("clarity_issues") or []) for m in meds):
+            names = ", ".join(_med_anchor(m) for m in meds[:3] if m.get("name"))
             add(
                 _question_row(
                     qid="q-meds-order",
-                    text="В какой последовательности принимать назначенные препараты - можно ли вместе или в разное время?",
+                    text=f"В какой последовательности принимать {names or 'назначенные препараты'} - можно ли вместе?",
                     why_ru="Несколько препаратов - важно не перепутать схему.",
+                    plain_context=names[:120],
                     category_ru="Лечение",
                     block_id="treatment",
                     severity="medium",
@@ -264,8 +274,8 @@ def build_useful_patient_questions(
             )
         )
 
-    # 6. Диагноз с «?»
-    if "?" in (kz_text or "") and re.search(r"диагноз", kz_text or "", re.I):
+    # 6. Диагноз с сомнением - только в строке диагноза, не «?» где попало
+    if _diagnosis_is_uncertain(kz_text):
         add(
             _question_row(
                 qid="q-dx",

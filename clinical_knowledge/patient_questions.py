@@ -8,6 +8,7 @@ from .patient_exam_extraction import imaging_exams
 from .patient_question_tone import (
     apply_tone_to_questions,
     detect_question_intent,
+    is_playful_meta_template,
     normalize_question_tone,
     render_doctor_question,
 )
@@ -110,6 +111,8 @@ def build_calm_questions(
         gap = str(row.get("source_gap") or "").strip()
         comment = str(row.get("source_comment") or "").strip()
         raw = comment or gap
+        preset = str(row.get("text") or "").strip()
+        plain_ctx = str(row.get("plain_context") or "").strip()
         block_id = str(row.get("block_id") or "")
         block_name = str(row.get("category_ru") or "")
         intent = row.get("intent") or detect_question_intent(raw, block_id, kind="comment" if comment else "gap")
@@ -129,6 +132,8 @@ def build_calm_questions(
                     intent=intent,
                     playful_slot=i,
                     playful_used=playful_used,
+                    fallback_text=preset,
+                    plain_context=plain_ctx,
                 )
         else:
             text, intent = render_doctor_question(
@@ -141,7 +146,11 @@ def build_calm_questions(
                 intent=intent,
                 playful_slot=i,
                 playful_used=playful_used,
+                fallback_text=preset,
+                plain_context=plain_ctx,
             )
+            if is_playful_meta_template(text) and preset:
+                text = preset
 
         text = sanitize_question_text(text)
         if not text or is_forbidden_question(text):

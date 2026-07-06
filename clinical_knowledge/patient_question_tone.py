@@ -249,14 +249,34 @@ _PLAYFUL_VARIANTS: dict[str, list[str]] = {
         "Качество снимка слабое, буквы пляшут - какие страницы сфотографировать заново?",
         "Загрузилось криво - подскажете, что переснять или лучше принести PDF из клиники?",
     ],
+    "exams_timing": [
+        "Когда удобнее пройти {anchor} и куда записаться, чтобы не бегать лишний раз по кабинетам?",
+        "В выписке есть {anchor}, а даты нет - это срочно или можно вписать в свой график?",
+        "{anchor} назначены - когда записываться и нужен ли направляющий талон?",
+    ],
+    "diagnosis_uncertain": [
+        "Диагноз в выписке с вопросом - какие обследования его подтвердят или опровергнут?",
+        "Формулировка диагноза пока предварительная - что сдавать или проходить для точности?",
+        "Строка диагноза выглядит не окончательной - какой план, чтобы понять картину?",
+    ],
+    "treatment_order": [
+        "Назначено несколько препаратов ({anchor}) - в каком порядке принимать и можно ли вместе?",
+        "{anchor} в одном рецепте - утром всё сразу или по очереди, без путаницы дома?",
+        "Боюсь перепутать таблетки из {anchor} - распишете схему приёма простыми словами?",
+    ],
+    "clarify": [
+        "По {anchor} в выписке не всё ясно - поясните на приёме простыми словами?",
+        "В заключении {anchor} - можно разложить по шагам, что это значит для меня?",
+        "Про {anchor} остался вопрос - уточните, пожалуйста, без медицинских терминов?",
+    ],
 }
 
-_PLAYFUL_GENERIC: list[str] = [
-    "По «{name}» в выписке намёк: {gap}. Можно по-простому на приёме, без медицинских загадок?",
-    "Не для претензии - хочу ясности по «{name}»: {gap}. Как это для меня значит?",
-    "В КЗ про «{name}» написано так, что сам(а) не до конца понял(а): {gap}. Поясните, пожалуйста?",
-    "Раздел «{name}» прочитан, но {gap} без расшифровки - допишете смысл для обычного пациента?",
-]
+_PLAYFUL_META_MARKERS = (
+    "намёк",
+    "намек",
+    "не для претензии - хочу ясности",
+    "медицинских загадок",
+)
 
 
 def normalize_question_tone(value: str | None) -> QuestionTone:
@@ -295,11 +315,26 @@ def category_emoji(category_ru: str) -> str:
     return CATEGORY_EMOJI.get((category_ru or "").strip(), "chat")
 
 
+def _format_playful_variant(template: str, anchor: str) -> str:
+    a = (anchor or "").strip().rstrip(".")
+    if "{anchor}" in template:
+        return template.format(anchor=a or "назначение")
+    if a and a.lower() not in template.lower():
+        return f"{template.rstrip('?')} ({a})?"
+    return template
+
+
+def is_playful_meta_template(text: str) -> bool:
+    low = (text or "").lower()
+    return any(m in low for m in _PLAYFUL_META_MARKERS)
+
+
 def _pick_playful_text(
     intent: str | None,
     *,
     slot: int = 0,
     used: set[str] | None = None,
+    plain_context: str = "",
 ) -> str:
     """Выбрать уникальную шуточную формулировку по intent и слоту."""
     used = used or set()
@@ -307,24 +342,24 @@ def _pick_playful_text(
     variants = _PLAYFUL_VARIANTS.get(key) or []
     if variants:
         for i in range(len(variants)):
-            candidate = variants[(slot + i) % len(variants)]
+            candidate = _format_playful_variant(variants[(slot + i) % len(variants)], plain_context)
             norm = candidate.lower().strip()
             if norm not in used:
                 return candidate
-        return variants[slot % len(variants)]
+        return _format_playful_variant(variants[slot % len(variants)], plain_context)
     bank = _QUESTION_BANK.get(key) or {}
     return bank.get("playful") or ""
 
 
-def _pick_playful_generic(gap: str, block_name: str, slot: int, used: set[str]) -> str:
+def _playful_soft_fallback(gap: str, block_name: str, *, fallback_text: str = "") -> str:
+    preset = (fallback_text or "").strip()
+    if preset:
+        return preset
     g = (gap or "").strip().rstrip(".")
     name = block_name or "разделу"
-    for i in range(len(_PLAYFUL_GENERIC)):
-        tpl = _PLAYFUL_GENERIC[(slot + i) % len(_PLAYFUL_GENERIC)]
-        candidate = tpl.format(name=name, gap=g)
-        if candidate.lower().strip() not in used:
-            return candidate
-    return _PLAYFUL_GENERIC[slot % len(_PLAYFUL_GENERIC)].format(name=name, gap=g)
+    if g:
+        return _ensure_question(f"На приёме можно уточнить по «{name}»: {g}")
+    return _ensure_question(f"Про «{name}» в выписке остался вопрос - поясните простыми словами?")
 
 
 def _ensure_question(text: str) -> str:
@@ -411,6 +446,7 @@ def _generic_by_tone(
     *,
     playful_slot: int = 0,
     playful_used: set[str] | None = None,
+    fallback_text: str = "",
 ) -> str:
     g = (gap or "").strip().rstrip(".")
     name = block_name or "разделу"
@@ -422,8 +458,7 @@ def _generic_by_tone(
         return _ensure_question(f"По разделу «{name}»: прошу уточнить - {g}.")
     if tone == "official":
         return _ensure_question(f"Прошу уточнить по разделу «{name}»: {g}.")
-    used = playful_used or set()
-    return _ensure_question(_pick_playful_generic(g, name, playful_slot, used))
+    return _playful_soft_fallback(g, name, fallback_text=fallback_text)
 
 
 def render_doctor_question(
@@ -437,9 +472,12 @@ def render_doctor_question(
     intent: str | None = None,
     playful_slot: int = 0,
     playful_used: set[str] | None = None,
+    fallback_text: str = "",
+    plain_context: str = "",
 ) -> tuple[str, str | None]:
     """Сформировать вопрос в выбранном тоне. Возвращает (text, intent)."""
     tid = normalize_question_tone(tone)
+    preset = (fallback_text or "").strip()
     raw = (comment or gap or "").strip()
     kind = "comment" if (comment or "").strip() else "gap"
     key = intent or detect_question_intent(raw, block_id, kind=kind)
@@ -447,12 +485,26 @@ def render_doctor_question(
     if key == "document_quality" or (block_id == "limitations" and "качество" in raw.lower()):
         key = "document_quality"
 
-    if key and key in _QUESTION_BANK:
+    has_template = key and (key in _QUESTION_BANK or key in _PLAYFUL_VARIANTS)
+    if has_template:
         if tid == "playful":
-            text = _pick_playful_text(key, slot=playful_slot, used=playful_used)
+            text = _pick_playful_text(
+                key,
+                slot=playful_slot,
+                used=playful_used,
+                plain_context=plain_context,
+            )
+            if not text and preset:
+                text = preset
         else:
-            text = _QUESTION_BANK[key].get(tid) or _QUESTION_BANK[key]["serious"]
-        return _ensure_question(text), key
+            text = (_QUESTION_BANK.get(key) or {}).get(tid) or (_QUESTION_BANK.get(key) or {}).get("serious", "")
+        if text:
+            if tid == "playful" and is_playful_meta_template(text) and preset:
+                text = preset
+            return _ensure_question(text), key
+
+    if preset:
+        return _ensure_question(preset), key
 
     if not raw:
         return "", key
@@ -469,6 +521,7 @@ def render_doctor_question(
         raw, block_name, block_id, tid,
         playful_slot=playful_slot,
         playful_used=playful_used,
+        fallback_text=preset,
     )
     return text, key
 
@@ -496,6 +549,8 @@ def apply_tone_to_questions(
         slot = intent_slots.get(pre_intent or "", 0)
         if pre_intent:
             intent_slots[pre_intent] = slot + 1
+        preset = str(row.get("text") or "").strip()
+        plain_ctx = str(row.get("plain_context") or "").strip()
         styled, intent = render_doctor_question(
             gap=str(row.get("source_gap") or ""),
             comment=str(row.get("source_comment") or ""),
@@ -506,16 +561,21 @@ def apply_tone_to_questions(
             intent=row.get("intent"),
             playful_slot=slot,
             playful_used=playful_used,
+            fallback_text=preset,
+            plain_context=plain_ctx,
         )
-        if not styled and row.get("text"):
+        if not styled and preset:
             styled, intent = render_doctor_question(
-                gap=str(row.get("text") or ""),
+                gap=preset,
                 block_id=bid,
                 block_name=name,
                 category_ru=cat,
                 tone=tid,
+                intent=row.get("intent"),
                 playful_slot=slot,
                 playful_used=playful_used,
+                fallback_text=preset,
+                plain_context=plain_ctx,
             )
         if styled and tid == "playful":
             playful_used.add(styled.lower().strip())

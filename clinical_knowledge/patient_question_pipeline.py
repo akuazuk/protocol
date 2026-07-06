@@ -17,39 +17,56 @@ from .patient_question_tone import (
 from .patient_questions import apply_safe_questions, sanitize_question_text
 
 
+_PLAYFUL_WHY_HINTS: dict[str, str] = {
+    "diagnosis_uncertain": "Не для претензии - хочу понять формулировку диагноза.",
+    "exams_timing": "Не для претензии - хочу понять сроки обследований.",
+    "labs_plan": "Не для претензии - хочу понять порядок и сроки анализов.",
+    "labs_missing_in_kz": "Не для претензии - хочу понять, учтены ли цифры из бланка.",
+    "treatment_duration": "Чтобы не перепутать схему дома - прошу пояснить простыми словами.",
+    "treatment_order": "Чтобы не перепутать схему дома - прошу пояснить простыми словами.",
+    "treatment_dose": "Чтобы не перепутать схему дома - прошу пояснить простыми словами.",
+}
+
+
 def _why_ru_for_tone(base: str, tone: str, *, intent: str = "") -> str:
     tid = normalize_question_tone(tone)
     b = (base or "").strip().rstrip(".")
     if not b:
         b = "Это стоит уточнить на приёме."
     if tid == "playful":
-        if intent == "labs_missing_in_kz":
-            return "Не для претензии - хочу понять, учтены ли цифры из бланка."
-        if intent in ("treatment_duration", "treatment_dose", "treatment_order"):
-            return "Чтобы не перепутать схему дома - прошу пояснить простыми словами."
-        return f"Не для претензии - хочу понять: {b.lower()}."
+        hint = _PLAYFUL_WHY_HINTS.get(intent)
+        if hint:
+            return hint
+        return "Не для претензии - хочу уточнить на приёме."
     if tid == "official":
         return f"Прошу разъяснить: {b.lower()}."
     return b + "."
 
 
 def _prepare_candidates_for_tone(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Добавить source_comment/intent для apply_tone, сохранив plain_context."""
+    """Сохранить builder-текст и plain_context; не подставлять why_ru в source_comment."""
     out: list[dict[str, Any]] = []
     for row in rows:
         if not isinstance(row, dict):
             continue
         item = dict(row)
-        if not item.get("source_gap") and not item.get("source_comment"):
-            hint = (item.get("why_ru") or item.get("plain_context") or "").strip()
-            if hint:
-                item["source_comment"] = hint
-            elif item.get("text"):
-                item["source_comment"] = str(item["text"]).rstrip("?").strip()
-        if not item.get("intent") and item.get("block_id"):
-            item["intent"] = str(item.get("block_id") or "")
         out.append(item)
     return out
+
+
+def _collapse_block_questions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Не более одного вопроса по лечению - приоритет у более важного."""
+    treatment: list[dict[str, Any]] = []
+    rest: list[dict[str, Any]] = []
+    for row in rows:
+        if str(row.get("block_id") or "") == "treatment":
+            treatment.append(row)
+        else:
+            rest.append(row)
+    if len(treatment) > 1:
+        treatment = [min(treatment, key=lambda r: int(r.get("priority") or 99))]
+    merged = rest + treatment
+    return sorted(merged, key=lambda r: int(r.get("priority") or 99))
 
 
 def _dedupe_questions(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -154,6 +171,7 @@ def build_patient_doctor_questions(
     )
     merged = list(raw) + list(extra_candidates or [])
     merged = _dedupe_questions(merged)
+    merged = _collapse_block_questions(merged)
     prepared = _prepare_candidates_for_tone(merged)
     styled = apply_safe_questions(
         prepared,
@@ -164,7 +182,7 @@ def build_patient_doctor_questions(
     )
     for row in styled:
         intent = str(row.get("intent") or "")
-        base_why = str(row.get("why_ru") or row.get("source_comment") or row.get("source_gap") or "")
+        base_why = str(row.get("why_ru") or "")
         row["why_ru"] = _why_ru_for_tone(base_why, tone, intent=intent)
         text = sanitize_question_text(str(row.get("text") or ""))
         if text:
@@ -225,7 +243,7 @@ def sync_report_questions_from_checklist(
     )
     for row in styled:
         intent = str(row.get("intent") or "")
-        base_why = str(row.get("why_ru") or row.get("source_comment") or "")
+        base_why = str(row.get("why_ru") or "")
         row["why_ru"] = _why_ru_for_tone(base_why, tone, intent=intent)
         row["tone"] = tone
     styled = _mark_discuss_first(_dedupe_questions(styled)[:5])
