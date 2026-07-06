@@ -204,6 +204,13 @@ def run_patient_review(
             kz_text=raw,
             limit=3,
         )
+        from .patient_question_pipeline import sync_report_questions_from_checklist
+
+        patient_report = sync_report_questions_from_checklist(
+            patient_report,
+            kz_text=raw,
+            question_tone=question_tone,
+        )
 
     if isinstance(patient_report, dict):
         if rag_ctx.get("retrieved"):

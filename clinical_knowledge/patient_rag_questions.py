@@ -87,7 +87,7 @@ def _question_from_chunk(
         "intent": "rag_chunk",
         "priority": 55,
         "source_gap": "",
-        "source_comment": "",
+        "source_comment": plain,
         "tone": "serious",
         "emoji": "💬",
     }

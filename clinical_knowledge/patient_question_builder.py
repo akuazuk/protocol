@@ -6,7 +6,7 @@ from typing import Any
 
 from .patient_exam_extraction import imaging_exams, lab_exams
 from .patient_medication_extraction import extract_medications_from_text
-from .patient_narrative import extract_follow_up_phrase, follow_up_has_deadline
+from .patient_narrative import extract_complaint_phrase, extract_follow_up_phrase, follow_up_has_deadline
 from .patient_questions import sanitize_question_text
 
 # Пробелы L1 для методиста - не превращаем в вопросы пациенту
@@ -45,6 +45,7 @@ def _question_row(
     intent: str = "",
     priority: int = 50,
     plain_context: str = "",
+    source_comment: str = "",
 ) -> dict[str, Any]:
     text = sanitize_question_text(_norm_q(text))
     if not text:
@@ -61,8 +62,23 @@ def _question_row(
         "intent": intent or block_id,
         "priority": priority,
         "source_gap": "",
-        "source_comment": "",
+        "source_comment": (source_comment or why_ru or plain_context).strip()[:220],
     }
+
+
+def _has_complaint_context(kz_text: str) -> bool:
+    low = (kz_text or "").lower()
+    if extract_complaint_phrase(kz_text) and extract_complaint_phrase(kz_text) != "обращения":
+        return True
+    return bool(re.search(r"жалоб|бол[ьи]|каш|температ|насморк|слабост|голов|высып|тошн", low))
+
+
+def _med_anchor(m: dict[str, Any]) -> str:
+    parts = [str(m.get("name") or "").strip()]
+    dose = str(m.get("dose") or "").strip()
+    if dose:
+        parts.append(dose)
+    return ", ".join(p for p in parts if p)[:120]
 
 
 def build_useful_patient_questions(
@@ -74,6 +90,7 @@ def build_useful_patient_questions(
     lab_crosscheck: dict[str, Any] | None = None,
     structured_gaps: list[dict[str, Any]] | None = None,
     limit: int = 5,
+    age_group: str | None = None,
 ) -> list[dict[str, Any]]:
     """Собрать 3-5 вопросов, которые пациент реально задаст на приёме."""
     exams = exams or []
@@ -90,17 +107,20 @@ def build_useful_patient_questions(
         seen.add(key)
         candidates.append(row)
 
+    child_prefix = "Для ребёнка: " if age_group == "child" else ""
+
     # 1. Анализы vs заключение (высокий приоритет)
     if lab_crosscheck:
         miss = lab_crosscheck.get("missing_in_kz_lines") or []
         panels = lab_crosscheck.get("panels_ru") or []
+        abnormal = lab_crosscheck.get("abnormal_lines") or lab_crosscheck.get("abnormal_in_kz") or []
         if miss:
             sample = ", ".join(str(x) for x in miss[:3])
             panel = panels[0] if panels else "анализах"
             add(
                 _question_row(
                     qid="q-labs",
-                    text=f"В {panel.lower()} есть показатели ({sample}) - учли ли вы их при назначении лечения?",
+                    text=f"{child_prefix}В {panel.lower()} есть показатели ({sample}) - учли ли вы их при назначении лечения?",
                     why_ru="Результаты анализов не отражены в тексте заключения.",
                     plain_context=sample,
                     category_ru="Анализы",
@@ -108,6 +128,21 @@ def build_useful_patient_questions(
                     severity="high",
                     intent="labs_missing_in_kz",
                     priority=10,
+                )
+            )
+        elif abnormal:
+            sample = ", ".join(str(x) for x in abnormal[:3])
+            add(
+                _question_row(
+                    qid="q-labs-abn",
+                    text=f"{child_prefix}В анализах отмечены отклонения ({sample}) - как это учитывается в лечении?",
+                    why_ru="В бланке есть отклонения от нормы - стоит обсудить на приёме.",
+                    plain_context=sample,
+                    category_ru="Анализы",
+                    block_id="labs",
+                    severity="high",
+                    intent="labs_plan",
+                    priority=12,
                 )
             )
 
@@ -119,8 +154,9 @@ def build_useful_patient_questions(
         add(
             _question_row(
                 qid="q-imaging",
-                text=f"Когда нужно пройти {labels.lower()} и куда записаться?",
+                text=f"{child_prefix}Когда нужно пройти {labels.lower()} и куда записаться?",
                 why_ru="В заключении назначено обследование, но срок не указан.",
+                plain_context=labels[:120],
                 category_ru="Обследования",
                 block_id="exams",
                 severity="medium",
@@ -133,8 +169,9 @@ def build_useful_patient_questions(
         add(
             _question_row(
                 qid="q-labs-timing",
-                text=f"Когда сдать {labels.lower()} и нужна ли подготовка?",
+                text=f"{child_prefix}Когда сдать {labels.lower()} и нужна ли подготовка?",
                 why_ru="Назначены анализы без сроков или правил подготовки.",
+                plain_context=labels[:120],
                 category_ru="Анализы",
                 block_id="exams",
                 severity="medium",
@@ -159,12 +196,13 @@ def build_useful_patient_questions(
                 )
             )
         if any("duration_missing" in (m.get("clarity_issues") or []) for m in meds):
-            names = ", ".join(str(m.get("name") or "") for m in meds[:2] if m.get("name"))
+            names = ", ".join(_med_anchor(m) for m in meds[:2] if m.get("name"))
             add(
                 _question_row(
                     qid="q-duration",
                     text=f"На сколько дней назначены {names or 'препараты'} и что делать после окончания курса?",
                     why_ru="Не указана длительность приёма лекарств.",
+                    plain_context=names[:120],
                     category_ru="Лечение",
                     block_id="treatment",
                     severity="medium",
@@ -241,26 +279,30 @@ def build_useful_patient_questions(
             )
         )
 
-    # 7. Самочувствие (один универсальный)
-    low = (kz_text or "").lower()
-    if "головн" in low:
-        worse = "если головная боль не уменьшится или усилится"
-    elif "высыпан" in low or "кож" in low:
-        worse = "если высыпания распространятся или появится температура"
-    else:
-        worse = "если самочувствие не улучится"
-    add(
-        _question_row(
-            qid="q-worse",
-            text=f"Что делать, {worse}, и когда обращаться срочно?",
-            why_ru="Важно заранее знать план действий при ухудшении.",
-            category_ru="Самочувствие",
-            block_id="follow_up",
-            severity="low",
-            intent="symptoms_worse",
-            priority=90,
+    # 7. Самочувствие - только если в КЗ есть жалобы/симптомы
+    if _has_complaint_context(kz_text):
+        low = (kz_text or "").lower()
+        complaint = extract_complaint_phrase(kz_text)
+        ctx = (complaint if complaint and complaint != "обращения" else "")[:80]
+        if "головн" in low:
+            worse = "если головная боль не уменьшится или усилится"
+        elif "высыпан" in low or "кож" in low:
+            worse = "если высыпания распространятся или появится температура"
+        else:
+            worse = "если самочувствие не улучится"
+        add(
+            _question_row(
+                qid="q-worse",
+                text=f"Что делать, {worse}, и когда обращаться срочно?",
+                why_ru="Важно заранее знать план действий при ухудшении.",
+                plain_context=ctx,
+                category_ru="Самочувствие",
+                block_id="follow_up",
+                severity="low",
+                intent="symptoms_worse",
+                priority=90,
+            )
         )
-    )
 
     # Низкоприоритетные L1 gaps - только если мало вопросов и gap actionable
     if len(candidates) < 3 and structured_gaps:

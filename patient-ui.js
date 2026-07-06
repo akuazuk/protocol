@@ -691,6 +691,9 @@
       var cat = item.category_ru
         ? '<span class="question-card__cat">' + escapeHtml(item.category_ru) + "</span>"
         : "";
+      var first = item.discuss_first
+        ? '<span class="question-card__first">Сначала на приёме</span>'
+        : "";
       var why = item.why_ru
         ? '<span class="question-card__why">' + escapeHtml(item.why_ru) + "</span>"
         : "";
@@ -707,6 +710,7 @@
         "</span>" +
         '<span class="question-card__body">' +
         cat +
+        first +
         '<span class="question-card__text">' +
         escapeHtml(item.text || item.title || "") +
         "</span>" +

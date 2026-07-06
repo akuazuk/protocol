@@ -60,6 +60,11 @@ def patient_rag_questions_enabled() -> bool:
     return _flag("PATIENT_RAG_QUESTIONS_ENABLED", "1")
 
 
+def patient_question_llm_rephrase_enabled() -> bool:
+    """P2: опциональный LLM-rephrase вопросов (выключен по умолчанию)."""
+    return _flag("PATIENT_QUESTION_LLM_REPHRASE", "0")
+
+
 def patient_upload_semantic_rescue_enabled() -> bool:
     """B2C: semantic probe вместо отказа классификатора (empty/unknown)."""
     return _flag("PATIENT_UPLOAD_SEMANTIC_RESCUE", "0")

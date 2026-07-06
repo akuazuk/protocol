@@ -23,7 +23,7 @@ from .patient_narrative import (
 )
 from .patient_plain_language import explain_terms_for_patient
 from .patient_protocol_filter import compute_protocol_match_confidence
-from .patient_question_builder import build_useful_patient_questions
+from .patient_question_pipeline import attach_questions_to_report, build_patient_doctor_questions
 from .patient_questions import DEFAULT_CALM_TONE
 from .patient_question_tone import questions_etiquette_ru, questions_panel_intro_ru
 from .patient_quote_quality import filter_protocol_citations, sanitize_patient_text, scrub_forbidden_from_patient_report
@@ -287,37 +287,21 @@ def enrich_patient_report_v2(
     proto_pct = _clamp_pct(proto_conf * 100)
     clarify = build_clarification_points(meds=meds, exams=exams, kz_text=kz_text)
 
-    structured = build_useful_patient_questions(
+    tone = question_tone or DEFAULT_CALM_TONE
+    age_group = str(ctx.get("age_group") or "") or None
+    structured = build_patient_doctor_questions(
         kz_text=kz_text,
         clarification_points=clarify,
         exams=exams,
         meds=meds,
         lab_crosscheck=report.get("lab_crosscheck") if isinstance(report.get("lab_crosscheck"), dict) else None,
         structured_gaps=list(report.get("questions_structured") or []),
+        question_tone=tone,
         limit=5,
+        age_group=age_group,
     )
-    tone = question_tone or DEFAULT_CALM_TONE
-    for q in structured:
-        q["tone"] = tone
-        q["emoji"] = "💬"
-    report["questions_structured"] = structured
-    report["questions_for_doctor"] = [q["text"] for q in structured if q.get("text")]
-    report["action_checklist"] = [
-        {
-            "id": q.get("id", f"q{i+1}"),
-            "text": q.get("text", ""),
-            "title": q.get("title", ""),
-            "severity": q.get("severity", "medium"),
-            "category_ru": q.get("category_ru", ""),
-            "block_id": q.get("block_id", ""),
-            "tone": q.get("tone") or DEFAULT_CALM_TONE,
-            "emoji": q.get("emoji") or "💬",
-            "why_ru": q.get("why_ru") or "",
-            "plain_context": q.get("plain_context") or "",
-            "checked": False,
-        }
-        for i, q in enumerate(structured)
-    ]
+    report = attach_questions_to_report(report, structured, question_tone=tone)
+    structured = list(report.get("questions_structured") or [])
 
     top = _build_top_summary(
         specialty=specialty,
@@ -386,8 +370,8 @@ def enrich_patient_report_v2(
     report["exams_summary_ru"] = exams_patient_summary(exams)
     report["medications_summary_ru"] = medications_patient_summary(meds)
 
-    report["questions_intro_ru"] = questions_panel_intro_ru(tone)
-    report["questions_etiquette_ru"] = questions_etiquette_ru(tone)
+    report["questions_intro_ru"] = report.get("questions_intro_ru") or questions_panel_intro_ru(tone)
+    report["questions_etiquette_ru"] = report.get("questions_etiquette_ru") or questions_etiquette_ru(tone)
 
     if patient_safe_quotes_enabled():
         report["protocol_citations"] = filter_protocol_citations(list(report.get("protocol_citations") or []))
