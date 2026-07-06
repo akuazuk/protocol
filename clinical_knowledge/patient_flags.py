@@ -48,3 +48,18 @@ def patient_onco_questions_enabled() -> bool:
 def patient_rag_retrieval_enabled() -> bool:
     """B2C: RAG + vector index для подбора протоколов (corpus_chunks_parts + embeddings)."""
     return _flag("PATIENT_RAG_RETRIEVAL_ENABLED", "1")
+
+
+def patient_rag_semantic_fallback_enabled() -> bool:
+    """B2C: повторный RAG без path_allowlist при слабом L1 (0 протоколов или низкий confidence)."""
+    return _flag("PATIENT_RAG_SEMANTIC_FALLBACK", "1")
+
+
+def patient_rag_questions_enabled() -> bool:
+    """B2C: дополнительные вопросы врачу из RAG-чанков при weak L1 или <3 вопросов."""
+    return _flag("PATIENT_RAG_QUESTIONS_ENABLED", "1")
+
+
+def patient_upload_semantic_rescue_enabled() -> bool:
+    """B2C: semantic probe вместо отказа классификатора (empty/unknown)."""
+    return _flag("PATIENT_UPLOAD_SEMANTIC_RESCUE", "0")

@@ -7,6 +7,16 @@ from .consult_tiering import run_l1_structured_review
 from .patient_report import build_patient_report, sanitize_patient_api_payload
 
 
+def _l1_needs_rag_fallback(l1: dict[str, Any]) -> bool:
+    n = int(l1.get("matched_protocols_count") or 0)
+    if n == 0:
+        return True
+    conf = l1.get("confidence_score")
+    if isinstance(conf, (int, float)) and float(conf) < 45:
+        return True
+    return False
+
+
 def run_patient_review(
     *,
     text: str,
@@ -25,14 +35,38 @@ def run_patient_review(
     if not raw:
         raise ValueError("Пустой текст заключения")
 
+    from .patient_flags import (
+        patient_rag_questions_enabled,
+        patient_rag_semantic_fallback_enabled,
+        patient_upload_semantic_rescue_enabled,
+    )
     from .patient_upload_classifier import build_upload_joke_report, check_patient_uploads
 
+    semantic_rescue_used = False
     mismatch = check_patient_uploads(
         kz_text=raw,
         lab_text=lab_text,
         kz_filename=kz_filename,
         lab_filename=lab_filename,
     )
+    if mismatch and patient_upload_semantic_rescue_enabled():
+        if mismatch.kind in ("empty", "unknown"):
+            from .patient_protocol_retrieval import (
+                rag_probe_looks_like_kz,
+                retrieve_patient_protocol_context,
+            )
+
+            probe = retrieve_patient_protocol_context(
+                kz_text=raw,
+                demographics_meta=demographics_meta,
+                specialty_slug=specialty_slug,
+                semantic_primary=True,
+                max_chunks=4,
+            )
+            if rag_probe_looks_like_kz(probe, raw):
+                mismatch = None
+                semantic_rescue_used = True
+
     if mismatch:
         joke_report = build_upload_joke_report(mismatch)
         return {
@@ -53,6 +87,7 @@ def run_patient_review(
     from .patient_lab_crosscheck import crosscheck_labs_with_kz
     from .patient_protocol_crosscheck import crosscheck_protocol_requirements
     from .patient_protocol_retrieval import (
+        merge_patient_rag_context,
         patient_protocol_citations_from_retrieved,
         retrieve_patient_protocol_context,
     )
@@ -63,6 +98,7 @@ def run_patient_review(
         specialty_slug=specialty_slug,
     )
     rag_paths = list(rag_ctx.get("paths") or [])
+    rag_fallback_used = False
 
     l1 = run_l1_structured_review(
         text=raw,
@@ -72,6 +108,31 @@ def run_patient_review(
         skip_alignment=False,
         rag_paths=rag_paths,
     )
+
+    if patient_rag_semantic_fallback_enabled() and _l1_needs_rag_fallback(l1):
+        rag_wide = retrieve_patient_protocol_context(
+            kz_text=raw,
+            demographics_meta=demographics_meta,
+            specialty_slug=specialty_slug,
+            semantic_primary=True,
+        )
+        merged = merge_patient_rag_context(rag_ctx, rag_wide)
+        new_paths = list(merged.get("paths") or [])
+        new_retrieved = list(merged.get("retrieved") or [])
+        if len(new_paths) > len(rag_paths) or (
+            new_retrieved and not list(rag_ctx.get("retrieved") or [])
+        ):
+            rag_ctx = merged
+            rag_paths = new_paths
+            rag_fallback_used = True
+            l1 = run_l1_structured_review(
+                text=raw,
+                consultation_id=consultation_id,
+                demographics_meta=demographics_meta,
+                specialty_slug=specialty_slug,
+                skip_alignment=False,
+                rag_paths=rag_paths,
+            )
 
     from .patient_context import extract_patient_context
     from .patient_flags import patient_protocol_age_filter_enabled, patient_report_v2_enabled
@@ -124,15 +185,49 @@ def run_patient_review(
             question_tone=question_tone,
         )
 
-    if isinstance(patient_report, dict) and rag_ctx.get("retrieved"):
-        cites = patient_protocol_citations_from_retrieved(rag_ctx.get("retrieved") or [])
-        if cites and not patient_report.get("protocol_citations"):
-            patient_report["protocol_citations"] = cites
+    q_count = len(
+        (patient_report.get("questions_structured") or patient_report.get("questions_for_doctor") or [])
+        if isinstance(patient_report, dict)
+        else []
+    )
+    if (
+        patient_rag_questions_enabled()
+        and isinstance(patient_report, dict)
+        and rag_ctx.get("retrieved")
+        and (rag_fallback_used or _l1_needs_rag_fallback(l1) or q_count < 3)
+    ):
+        from .patient_rag_questions import augment_questions_from_retrieved
+
+        patient_report = augment_questions_from_retrieved(
+            patient_report,
+            retrieved=list(rag_ctx.get("retrieved") or []),
+            kz_text=raw,
+            limit=3,
+        )
+
+    if isinstance(patient_report, dict):
+        if rag_ctx.get("retrieved"):
+            cites = patient_protocol_citations_from_retrieved(rag_ctx.get("retrieved") or [])
+            if cites and not patient_report.get("protocol_citations"):
+                patient_report["protocol_citations"] = cites
         patient_report["protocol_rag_meta"] = {
             "rag_used": bool(rag_ctx.get("rag_used")),
             "vector_used": bool(rag_ctx.get("vector_used")),
             "paths_count": len(rag_paths),
+            "fallback_used": rag_fallback_used,
+            "semantic_rescue": semantic_rescue_used,
         }
+        if semantic_rescue_used:
+            patient_report["document_quality_tag"] = "short_or_ocr"
+            top = patient_report.get("top_summary")
+            if isinstance(top, dict):
+                hint = (
+                    "Документ короткий или плохо читается - сверка с протоколами ориентировочная."
+                )
+                top = dict(top)
+                top["headline_ru"] = hint
+                patient_report["top_summary"] = top
+                patient_report["headline_ru"] = hint
 
     from .patient_flags import patient_onco_questions_enabled
 
