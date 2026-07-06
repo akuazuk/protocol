@@ -192,6 +192,61 @@
     if (bar) bar.classList.toggle("top-bar--result", !!visible);
   }
 
+  function resetToUploadForm(opts) {
+    opts = opts || {};
+    stopReading();
+    setAgainButtonVisible(false);
+    resultCard.classList.add("hidden");
+    formCard.classList.remove("hidden");
+    sessionStorage.removeItem(REPORT_KEY);
+    kzFilesList = [];
+    labFilesList = [];
+    clearFileInputs([kzCameraInput, kzPickInput, labCameraInput, labPickInput]);
+    renderFileChips(kzFilesList, "kz-chips", "kz-drop");
+    renderFileChips(labFilesList, "lab-chips", "lab-drop");
+    updateBtn();
+    var jokeCard = document.getElementById("upload-joke-card");
+    if (jokeCard) {
+      jokeCard.classList.add("hidden");
+      jokeCard.innerHTML = "";
+    }
+    if (statusEl) {
+      statusEl.textContent = opts.statusMessage || "";
+    }
+    var focusSlot = opts.focusSlot || "kz";
+    var dropId = focusSlot === "lab" ? "lab-drop" : "kz-drop";
+    var btnId = focusSlot === "lab" ? "lab-btn-file" : "kz-btn-file";
+    if (formCard) {
+      formCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.setTimeout(function () {
+      var drop = document.getElementById(dropId);
+      if (drop) drop.scrollIntoView({ behavior: "smooth", block: "center" });
+      var focusBtn = document.getElementById(btnId);
+      if (focusBtn) focusBtn.focus();
+    }, 280);
+  }
+
+  function uploadJokeRetryLabel(pr) {
+    var kind = (pr && pr.guessed_kind) || "";
+    var slot = (pr && pr.mismatch_slot) || "kz";
+    if (kind === "lab_in_kz") return "Загрузить заключение";
+    if (kind === "kz_in_lab") return "Загрузить заключение в верхний блок";
+    if (slot === "lab") return "Загрузить бланк анализов";
+    return "Загрузить другой документ";
+  }
+
+  function uploadJokeRetryHint(pr) {
+    var kind = (pr && pr.guessed_kind) || "";
+    if (kind === "lab_in_kz") {
+      return "Выберите консультативное заключение. Бланк анализов можно добавить в блок «Анализы» ниже.";
+    }
+    if (kind === "kz_in_lab") {
+      return "Консультативное заключение - в первый блок, анализы - во второй.";
+    }
+    return "";
+  }
+
   function renderProtocolLinksList(links, limit) {
     if (!links || !links.length) return "";
     var n = limit || links.length;
@@ -1130,6 +1185,7 @@
     var text = joke.body_ru || pr.plain_summary_ru || "";
     var guess = joke.guessed_what_ru ? '<span class="upload-joke__guess">Похоже на: ' + escapeHtml(joke.guessed_what_ru) + "</span>" : "";
     var hint = joke.hint_ru || "";
+    var btnLabel = uploadJokeRetryLabel(pr);
     el.classList.remove("hidden");
     el.innerHTML =
       '<div class="upload-joke__inner">' +
@@ -1138,9 +1194,73 @@
       guess +
       '<p class="upload-joke__body">' + escapeHtml(text) + "</p>" +
       (hint ? '<p class="upload-joke__hint">' + escapeHtml(hint) + "</p>" : "") +
+      '<div class="upload-joke__actions">' +
+      '<button type="button" class="upload-joke__btn" id="upload-joke-retry">' + escapeHtml(btnLabel) + "</button>" +
+      "</div>" +
       "</div>";
+    var retryBtn = document.getElementById("upload-joke-retry");
+    if (retryBtn) {
+      retryBtn.addEventListener("click", function () {
+        track("upload_mismatch_retry", {
+          kind: pr.guessed_kind || pr.mismatch_slot,
+          slot: pr.mismatch_slot || "kz",
+        });
+        resetToUploadForm({
+          focusSlot: pr.mismatch_slot === "lab" ? "lab" : "kz",
+          statusMessage: uploadJokeRetryHint(pr),
+        });
+      });
+    }
     if (body) body.classList.add("hidden");
-    setAgainButtonVisible(true, "Загрузить правильный документ");
+    setAgainButtonVisible(true, btnLabel);
+    renderUploadJokeQuestions(pr);
+  }
+
+  function renderUploadJokeQuestions(pr) {
+    var card = document.getElementById("upload-joke-card");
+    var items = pr.action_checklist || pr.questions_structured || [];
+    if (!card || !items.length) return;
+    var old = card.querySelector(".upload-joke__questions");
+    if (old) old.remove();
+    var box = document.createElement("div");
+    box.className = "upload-joke__questions";
+    var title = document.createElement("h3");
+    title.className = "upload-joke__questions-title";
+    title.textContent = "Шуточные вопросы «на приём»";
+    box.appendChild(title);
+    var lead = document.createElement("p");
+    lead.className = "upload-joke__questions-lead";
+    lead.textContent =
+      pr.questions_intro_ru ||
+      "Шуточные вопросы - чтобы улыбнуться. Настоящие появятся, когда загрузите заключение.";
+    box.appendChild(lead);
+    var ul = document.createElement("ul");
+    ul.className = "upload-joke__question-list";
+    items.slice(0, 5).forEach(function (item) {
+      var li = document.createElement("li");
+      li.className = "upload-joke__question-item";
+      var cat = item.category_ru
+        ? '<span class="upload-joke__question-cat">' + escapeHtml(item.category_ru) + "</span>"
+        : "";
+      var why = item.why_ru
+        ? '<span class="upload-joke__question-why">' + escapeHtml(item.why_ru) + "</span>"
+        : "";
+      li.innerHTML =
+        cat +
+        '<span class="upload-joke__question-text">' +
+        escapeHtml(item.text || item.title || "") +
+        "</span>" +
+        why;
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+    if (pr.questions_etiquette_ru) {
+      var note = document.createElement("p");
+      note.className = "upload-joke__questions-note";
+      note.textContent = pr.questions_etiquette_ru;
+      box.appendChild(note);
+    }
+    card.appendChild(box);
   }
 
   function resetResultViewForMismatch() {
@@ -1607,17 +1727,7 @@
 
   var btnAgain = document.getElementById("btn-again");
   if (btnAgain) btnAgain.addEventListener("click", function () {
-    stopReading();
-    setAgainButtonVisible(false);
-    resultCard.classList.add("hidden");
-    formCard.classList.remove("hidden");
-    sessionStorage.removeItem(REPORT_KEY);
-    kzFilesList = [];
-    labFilesList = [];
-    clearFileInputs([kzCameraInput, kzPickInput, labCameraInput, labPickInput]);
-    renderFileChips(kzFilesList, "kz-chips", "kz-drop");
-    renderFileChips(labFilesList, "lab-chips", "lab-drop");
-    updateBtn();
+    resetToUploadForm({ focusSlot: "kz" });
   });
 
   var btnClear = document.getElementById("btn-clear-data");

@@ -70,6 +70,23 @@ def test_joke_report_shape() -> None:
     assert rep["upload_joke"]["emoji"]
     assert rep["upload_joke"]["title_ru"]
     assert rep["headline_ru"]
+    assert len(rep.get("questions_structured") or []) >= 3
+    assert len(rep.get("action_checklist") or []) >= 3
+    assert all("?" in q.get("text", "") for q in rep["questions_structured"])
+
+
+def test_joke_questions_diverse_by_kind() -> None:
+    from clinical_knowledge.patient_upload_classifier import _pick_joke_doctor_questions
+
+    recipe_guess = classify_kz_upload(RECIPE)
+    lab_guess = classify_kz_upload(LAB)
+    rq = _pick_joke_doctor_questions(recipe_guess, limit=4)
+    lq = _pick_joke_doctor_questions(lab_guess, limit=4)
+    assert len(rq) == 4
+    assert len(lq) == 4
+    assert {q["text"] for q in rq} != {q["text"] for q in lq}
+    again = _pick_joke_doctor_questions(recipe_guess, limit=4)
+    assert [q["text"] for q in rq] == [q["text"] for q in again]
 
 
 PROTOCOL_PDF = """

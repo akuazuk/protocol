@@ -37,6 +37,9 @@ def test_patient_ui_has_normalize_and_render() -> None:
         "renderMessageToDoctor",
         "renderVisitSheet",
         "renderUploadJokeCard",
+        "renderUploadJokeQuestions",
+        "resetToUploadForm",
+        "upload-joke-retry",
         "wireUploadZone",
     ):
         assert fn in js, f"missing {fn}"
