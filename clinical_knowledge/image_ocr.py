@@ -3,6 +3,9 @@ from __future__ import annotations
 
 import io
 import os
+import shutil
+import subprocess
+import tempfile
 
 IMAGE_EXTENSIONS = frozenset(
     {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".tif", ".tiff"}
@@ -52,6 +55,54 @@ def _gemini_ocr_enabled() -> bool:
     )
 
 
+def _ocr_tesseract_pil(img: object, *, lang: str) -> tuple[str, list[str]]:
+    try:
+        import pytesseract
+    except ImportError:
+        return "", []
+    try:
+        txt = pytesseract.image_to_string(img, lang=lang)
+        if not (txt or "").strip():
+            return "", ["Tesseract не распознал текст на фото"]
+        return (txt or "").strip(), ["Текст извлечён из фото через Tesseract OCR"]
+    except Exception as e:
+        msg = str(e).lower()
+        if "tesseract" in msg or "not installed" in msg or "no such file" in msg:
+            return "", []
+        return "", [f"Tesseract OCR: {e!s}"]
+
+
+def _ocr_tesseract_cli_png(png: bytes, *, lang: str) -> tuple[str, list[str]]:
+    if not shutil.which("tesseract"):
+        return "", []
+    tmp_path = ""
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
+            tmp.write(png)
+            tmp_path = tmp.name
+        proc = subprocess.run(
+            ["tesseract", tmp_path, "stdout", "-l", lang],
+            capture_output=True,
+            text=True,
+            timeout=int(os.environ.get("PATIENT_OCR_CLI_TIMEOUT_SEC", "90")),
+            check=False,
+        )
+        txt = (proc.stdout or "").strip()
+        if txt:
+            return txt, ["Текст извлечён из фото через Tesseract OCR (CLI)"]
+        if proc.stderr:
+            return "", [f"Tesseract CLI: {proc.stderr.strip()[:200]}"]
+        return "", ["Tesseract не распознал текст на фото"]
+    except Exception as e:
+        return "", [f"Tesseract CLI: {e!s}"]
+    finally:
+        if tmp_path:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+
+
 def _ocr_tesseract(data: bytes) -> tuple[str, list[str]]:
     warns: list[str] = []
     try:
@@ -59,18 +110,21 @@ def _ocr_tesseract(data: bytes) -> tuple[str, list[str]]:
     except ImportError:
         return "", []
     try:
-        import pytesseract
-    except ImportError:
-        return "", []
-    try:
         img = Image.open(io.BytesIO(data))
         if img.mode not in ("RGB", "L"):
             img = img.convert("RGB")
         lang = os.environ.get("PATIENT_OCR_LANG", "rus+eng")
-        txt = pytesseract.image_to_string(img, lang=lang)
-        if not (txt or "").strip():
-            return "", ["Tesseract не распознал текст на фото"]
-        return (txt or "").strip(), ["Текст извлечён из фото через Tesseract OCR"]
+        txt, tw = _ocr_tesseract_pil(img, lang=lang)
+        if txt.strip():
+            return txt, tw
+        warns.extend(tw)
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        txt2, tw2 = _ocr_tesseract_cli_png(buf.getvalue(), lang=lang)
+        if txt2.strip():
+            return txt2, tw2
+        warns.extend(tw2)
+        return "", warns
     except Exception as e:
         msg = str(e).lower()
         if "tesseract" in msg or "not installed" in msg or "no such file" in msg:

@@ -218,8 +218,8 @@ def extract_text_from_bytes(data: bytes, *, suffix: str = "") -> str:
             return txt
         if is_zip_payload(data):
             return extract_docx_text(data)
-        if err:
-            return ""
+        # Не декодировать сырой PDF как UTF-8 (ломает batch и классификацию КЗ).
+        return ""
     if ext == ".docx" or is_zip_payload(data):
         return extract_docx_text(data)
     return data.decode("utf-8", errors="replace")

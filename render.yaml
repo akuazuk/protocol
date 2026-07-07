@@ -14,7 +14,7 @@ services:
     name: protocol-rag
     runtime: python
     plan: standard
-    buildCommand: pip install -r requirements.txt
+    buildCommand: apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-rus tesseract-ocr-eng && pip install -r requirements.txt
     startCommand: bash -c 'echo "Starting uvicorn on port ${PORT}" && exec uvicorn rag_server:app --host 0.0.0.0 --port "$PORT" --log-level info'
     healthCheckPath: /health/live
     # Persistent Disk: создайте диск в Dashboard, залейте corpus_chunks_parts → /var/data

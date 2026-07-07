@@ -283,3 +283,35 @@ def test_consult_review_accepts_txt(client, monkeypatch) -> None:
     )
     assert r.status_code == 200, r.text
     assert called["n"] == 1
+
+
+def test_pdf_empty_extraction_does_not_decode_raw_bytes(monkeypatch: pytest.MonkeyPatch) -> None:
+    from clinical_knowledge import text_extract as te
+
+    def fake_pdf(_data: bytes, *, max_pages: int = 200):
+        return "", ["no text layer"], None
+
+    monkeypatch.setattr(te, "extract_pdf_text_bytes", fake_pdf)
+    raw = b"%PDF-1.4\n1 0 obj\n<<>>\nendobj\n"
+    assert te.extract_text_from_bytes(raw, suffix=".pdf") == ""
+
+
+def test_tesseract_cli_fallback_without_pytesseract(monkeypatch: pytest.MonkeyPatch) -> None:
+    from clinical_knowledge import image_ocr as io_mod
+
+    txt, warns = io_mod._ocr_tesseract_cli_png(
+        b"\x89PNG\r\n\x1a\n" + b"\x00" * 64,
+        lang="rus+eng",
+    )
+    # Без установленного tesseract или на битом PNG - пусто, но функция не падает.
+    assert isinstance(txt, str)
+    assert isinstance(warns, list)
+
+    monkeypatch.setattr(
+        io_mod,
+        "_ocr_tesseract_cli_png",
+        lambda png, lang: ("Консультативное заключение\nДиагноз M54.1", ["CLI ok"]),
+    )
+    txt2, warns2 = io_mod._ocr_tesseract_cli_png(b"png", lang="rus")
+    assert "M54.1" in txt2
+    assert warns2 == ["CLI ok"]
