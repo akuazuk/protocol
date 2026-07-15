@@ -8205,7 +8205,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-07-r1-kz-pdf-ocr-fix"
+BUILD_VERSION = "2026-07-15-r1-kz-exam-icd-parse"
 
 
 def _app_version() -> str:

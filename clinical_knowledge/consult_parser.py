@@ -35,6 +35,7 @@ RE_FOLLOW_UP_INLINE = re.compile(
 )
 
 # Заголовок секции -> поле ConsultationSections. Порядок важен (более специфичные выше).
+# Формат документа (КЗ / медосмотр / консультация) не важен - важны заголовки секций в тексте.
 _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"аллерг(?:оанамнез|ия\s+на\s+лс|ологическ\w*\s+анамнез)", "allergy_history"),
     (r"цель\s+консультац\w*|повод\s+обращен\w*", "consultation_purpose"),
@@ -42,25 +43,38 @@ _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"маршрутизац\w*|направлен\w*\s+на\s+консультац\w*", "routing"),
     (r"информированн\w*\s+соглас\w*|отказ\s+от\s+лечен\w*", "consent_text"),
     (r"немедикаментозн\w*\s+рекоменд\w*", "non_drug_recommendations"),
-    (r"подпис\w*\s+врач\w*|врач\s*[:\-]|зав\.?\s*отделен\w*", "doctor_signature"),
+    (r"подпис\w*\s+врач\w*|зав\.?\s*отделен\w*", "doctor_signature"),
     (r"лекарственн\w*\s+анамнез", "medication_history"),
     (r"хирургическ\w*\s+анамнез|оперативн\w*\s+анамнез", "surgical_history"),
     (r"объективн\w*\s+статус|объективно|status\s+praesens", "objective_status"),
     (r"локальн\w*\s+статус|locus\s+morbi|st\.?\s*localis", "local_status"),
+    (
+        r"данн\w*\s+результат\w*\s+медицинск\w*\s+осмотр\w*"
+        r"|результат\w*\s+медицинск\w*\s+осмотр\w*"
+        r"|данн\w*\s+медицинск\w*\s+осмотр\w*",
+        "objective_status",
+    ),
     (r"данн\w*\s+обследован\w*|результат\w*\s+обследован\w*|данн\w*\s+лаборатор\w*", "exam_results"),
     (r"рекомендац\w*\s+по\s+обследован\w*|план\s+обследован\w*", "recommendations_exams"),
     (r"рекомендац\w*\s+по\s+лечен\w*|назначен\w*\s+лечен\w*|лечение\s+рекомендован\w*", "recommendations_treatment"),
     (r"общие\s+рекомендац\w*", "general_recommendations"),
     (r"дата\s+повторн\w*\s+явк\w*|повторн\w*\s+явк\w*|повторн\w*\s+консультац\w*|контрольн\w*\s+явк\w*", "follow_up_text"),
-    (r"жалоб\w*", "complaints"),
+    (r"жалоб\w*(?:\s+пациент\w*)?", "complaints"),
     (r"анамнез\s+жизни", "life_history"),
     (r"анамнез\s+заболеван\w*", "anamnesis"),
     (r"анамнез", "anamnesis"),
     (r"диагноз(?:\s+клиническ\w*|\s+заключительн\w*|\s+основн\w*)?", "diagnosis_text"),
     (r"рекомендац\w*", "general_recommendations"),
 ]
+_HEADER_ALT = "|".join(f"(?:{h})" for h, _ in _SECTION_HEADERS)
+# КЗ и медосмотр: заголовок с начала строки или после точки/точки с запятой.
 _HEADER_RE = re.compile(
-    r"(?im)^\s*(" + "|".join(h for h, _ in _SECTION_HEADERS) + r")\s*[:\- - ]",
+    rf"(?im)(?:^|(?<=[\n.;]))\s*({_HEADER_ALT})\s*[:\- - ]",
+)
+# Склейка PDF «ухеАнамнез» / «.Диагноз» - только с заглавной буквы заголовка,
+# чтобы не резать Аллергоанамнез / Онкоанамнез посередине слова.
+_STICKY_HEADER_RE = re.compile(
+    rf"(?u)(?<=[а-яёa-z0-9.])(?=(?=[А-ЯЁA-Z])(?i:{_HEADER_ALT})\s*[:\- - ])",
 )
 
 RE_SPECIALTY = re.compile(
@@ -80,13 +94,14 @@ RE_CLINIC = re.compile(
     re.I,
 )
 RE_CONSULT_DATE = re.compile(
-    r"(?:дата\s+(?:консультац\w*|приёма|приема|осмотра)|консультац\w*\s+от)\s*[:\-]?\s*"
+    r"(?:дата(?:\s+и\s+время)?(?:\s+проведения)?(?:\s+медицинского)?\s+"
+    r"(?:консультац\w*|при[её]ма|осмотра)|консультац\w*\s+от)\s*[:\-]?\s*"
     r"(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
     re.I,
 )
-# Простой вариант «Дата: 14.07.2024 …» в шапке КЗ (не «Дата рождения» и не «повторной явки»).
+# Простой вариант «Дата: 14.07.2024 …» в шапке КЗ/осмотра (не «Дата рождения» и не «повторной явки»).
 RE_CONSULT_DATE_SIMPLE = re.compile(
-    r"(?im)^[ \t]*дата\s*[:\-]?\s*(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
+    r"(?im)^[ \t]*дата(?:\s+и\s+время)?\s*[:\-]?\s*(\d{1,2}[.\-/]\d{1,2}[.\-/]\d{2,4})",
 )
 # Дата рождения на строке ФИО: «Ф.И.О: Иванов Иван Иванович, 12.07.1976».
 RE_FIO_DOB = re.compile(
@@ -155,10 +170,18 @@ def _refine_complaints_anamnesis_sections(sections: ConsultationSections) -> Non
                 sections.life_history = _join_section_text(sections.life_history, rest)
 
 
+def _unstick_section_headers(text: str) -> str:
+    """PDF часто склеивает секции без перевода строки - восстановить границы."""
+    if not text:
+        return text
+    return _STICKY_HEADER_RE.sub("\n", text)
+
+
 def _split_sections(text: str) -> dict[str, str]:
     """Разбивает текст на секции по распознанным заголовкам."""
+    text = _unstick_section_headers(text or "")
     sections: dict[str, str] = {}
-    matches = list(_HEADER_RE.finditer(text or ""))
+    matches = list(_HEADER_RE.finditer(text))
     if not matches:
         return sections
     header_lookup = [(re.compile(h, re.I), field) for h, field in _SECTION_HEADERS]
@@ -244,7 +267,7 @@ def parse_consultation(
     demographics_meta: dict[str, Any] | None = None,
 ) -> ConsultationDocument:
     """Главная функция: сырой текст КЗ → ConsultationDocument."""
-    text = raw_text or ""
+    text = _unstick_section_headers(raw_text or "")
     warnings: list[str] = []
     errors: list[str] = []
 
@@ -333,11 +356,11 @@ def parse_consultation(
             if lex:
                 d.icd10_code = lex[0]
     if not diagnoses:
-        # fallback: словарь нозологий по всему тексту, затем ICD из текста.
-        # Приоритет - коды болезней, симптом-коды (R..) уходят в конец.
+        # fallback: сначала явные коды МКБ в тексте, затем словарь нозологий.
+        # Явные коды важнее лексикона по всему документу (меньше ложных B24 и т.п.).
         from .diagnosis_icd import prioritize_codes
 
-        codes = prioritize_codes(lookup_disease_icd(text[:120_000]) + extract_icd10(text[:120_000]))
+        codes = prioritize_codes(extract_icd10(text[:120_000]) + lookup_disease_icd(text[:120_000]))
         if codes:
             from .consult_schema import ConsultationDiagnosis
 

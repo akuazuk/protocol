@@ -52,3 +52,51 @@ def test_parser_assigns_disease_code_when_missing():
     doc = parse_consultation(text)
     assert doc.diagnoses
     assert doc.diagnoses[0].icd10_code == "L93.0"
+
+
+def test_vich_not_matched_inside_patronymic_or_pervichnyj():
+    assert lookup_disease_icd("первичный ЛОР-осмотр") == []
+    assert lookup_disease_icd("Некраш Станислав Юрьевич") == []
+    assert lookup_disease_icd("ВИЧ-инфекция")[0] == "B24"
+    assert lookup_disease_icd("подтверждён ВИЧ")[0] == "B24"
+
+
+def test_sticky_medical_exam_parses_h60_not_b24():
+    """Медосмотр = расширенное КЗ: слипшиеся заголовки PDF не должны ломать МКБ."""
+    text = (
+        "МЕДИЦИНСКИЙ ОСМОТР ЛОР-ВРАЧпервичныйЛОР-врач\n"
+        "Дата и время проведения медицинского осмотра: 01.06.2026 10:30"
+        "Ф.И.О: Некраш Станислав Юрьевич, 02.12.1992."
+        "Жалобы пациента: На боль в левом ухе"
+        "Анамнез заболевания: Болеет около 4х суток"
+        "Данные результатов медицинского осмотра:Осмотрен на чесотку, ped at scab abs."
+        "Вес 123 кг. Температура тела 37.2 °С."
+        "AD=AS - m/t - п/серая.Голосовая щель широкая."
+        "Диагноз: H60. Наружный отит;Острый левосторонний наружный отит."
+        "Рекомендации: Неладекс по 4 капли * 3р/день в правое ухо 7 дней"
+        "Дата повторной явки: 05.06.2026"
+        "Врач: Яровой Иван Юрьевич, врач высшей категории"
+    )
+    doc = parse_consultation(text, consultation_id="med_exam")
+    assert doc.sections.diagnosis_text and "H60" in doc.sections.diagnosis_text
+    assert doc.sections.complaints and "ухе" in doc.sections.complaints.lower()
+    assert doc.sections.anamnesis
+    assert doc.consultation_date == __import__("datetime").date(2026, 6, 1)
+    assert doc.diagnoses
+    assert doc.diagnoses[0].icd10_code == "H60"
+    assert not any(d.icd10_code == "B24" for d in doc.diagnoses)
+
+
+def test_short_kz_same_h60():
+    text = (
+        "КОНСУЛЬТАТИВНОЕ ЗАКЛЮЧЕНИЕ ЛОР-врач\n"
+        "Дата: 01.06.2026 10:30\n"
+        "Ф.И.О: Некраш Станислав Юрьевич, 02.12.1992.\n"
+        "Жалобы: На боль в левом ухе\n"
+        "Анамнез: Болеет около 4х суток\n"
+        "Диагноз: H60. Наружный отит; Острый левосторонний наружный отит.\n"
+        "Рекомендации: Неладекс по 4 капли\n"
+        "Дата повторной явки: 05.06.2026\n"
+    )
+    doc = parse_consultation(text, consultation_id="kz_short")
+    assert doc.diagnoses[0].icd10_code == "H60"

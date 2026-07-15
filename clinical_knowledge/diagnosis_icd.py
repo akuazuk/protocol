@@ -43,6 +43,8 @@ _DIAGNOSIS_ICD_SEED: list[tuple[str, str]] = [
     ("красный плоский лишай", "L43.9"),
     ("опоясывающий лишай", "B02.9"),
     ("чесотка", "B86"),
+    ("наружный отит", "H60"),
+    ("отит наружного", "H60"),
     ("микоз", "B36.9"),
     ("ревматоидный артрит", "M06.9"),
     ("остеоартроз", "M19.9"),
@@ -183,18 +185,6 @@ def is_symptom_code(code: str) -> bool:
     return bool(c) and c[0] in _SYMPTOM_CHAPTER_PREFIXES
 
 
-def lookup_disease_icd(text: str) -> list[str]:
-    """Возвращает коды болезней по курируемому словарю нозологий (в порядке специфичности)."""
-    low = (text or "").lower()
-    if not low.strip():
-        return []
-    out: list[str] = []
-    for stem, code in _DIAGNOSIS_ICD_SEED:
-        if stem in low and code not in out:
-            out.append(code)
-    return out
-
-
 def prioritize_codes(codes: list[str] | None) -> list[str]:
     """Сначала коды болезней, в конце - симптоматические/неспецифичные (R, Z)."""
     disease: list[str] = []
@@ -213,7 +203,29 @@ def has_disease_code(codes: list[str] | None) -> bool:
     return any(not is_symptom_code(c) for c in (codes or []))
 
 
-_RE_WORD = re.compile(r"[а-яёa-z0-9]+", re.I)
+def _stem_in_text(low: str, stem: str) -> bool:
+    """Стем как токен/фраза, не подстрока чужого слова (первичный, Юрьевич)."""
+    stem = (stem or "").strip().lower()
+    if not stem or not low:
+        return False
+    pat = (
+        r"(?<![а-яёa-z0-9])"
+        + re.escape(stem)
+        + r"(?![а-яёa-z0-9])"
+    )
+    return bool(re.search(pat, low, re.IGNORECASE))
+
+
+def lookup_disease_icd(text: str) -> list[str]:
+    """Возвращает коды болезней по курируемому словарю нозологий (в порядке специфичности)."""
+    low = (text or "").lower()
+    if not low.strip():
+        return []
+    out: list[str] = []
+    for stem, code in _DIAGNOSIS_ICD_SEED:
+        if _stem_in_text(low, stem) and code not in out:
+            out.append(code)
+    return out
 
 
 def enrich_diagnosis_codes(
