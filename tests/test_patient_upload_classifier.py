@@ -149,3 +149,37 @@ def test_check_consult_by_filename() -> None:
     guess = check_consult_document(KZ, consultation_id="a_99")
     assert guess is not None
     assert guess.kind == "lab_in_kz"
+
+
+MED_EXAM = """
+МЕДИЦИНСКИЙ ОСМОТР ЛОР-врач первичный
+Дата и время проведения медицинского осмотра: 01.06.2026 10:30
+Ф.И.О: Иванов Иван Иванович, 02.12.1992.
+Жалобы пациента: На боль в левом ухе
+Анамнез заболевания: Болеет около 4 суток
+Данные результатов медицинского осмотра: слизистая розовая.
+Диагноз: H60. Наружный отит.
+Рекомендации: капли в ухо 7 дней.
+"""
+
+
+def test_medical_exam_accepted_as_clinical_visit() -> None:
+    g = classify_kz_upload(MED_EXAM, filename="osmotr.pdf")
+    assert g.is_expected is True
+    assert g.kind == "kz"
+    assert "осмотр" in g.label_ru.lower() or "заключен" in g.label_ru.lower()
+    assert check_consult_document(MED_EXAM, filename="osmotr.pdf") is None
+
+
+def test_consult_title_without_kz_word_accepted() -> None:
+    text = (
+        "Консультация терапевта\n"
+        "Дата: 10.01.2025\n"
+        "Жалобы: кашель 3 дня.\n"
+        "Анамнез: ОРВИ в анамнезе.\n"
+        "Диагноз: J06.9.\n"
+        "Рекомендации: покой, обильное питьё.\n"
+    )
+    g = classify_kz_upload(text)
+    assert g.is_expected is True
+    assert check_consult_document(text) is None

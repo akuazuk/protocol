@@ -12310,7 +12310,7 @@
       </div>
       <div class="app-chrome__journal">
         <div class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
-      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Проверка консультативного заключения">
+      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Проверка КЗ, медосмотра или консультации">
         <span class="app-main-tab-title">Проверка</span>
       </button>
       <button type="button" role="tab" id="tab-main-search" aria-selected="false" aria-controls="panel-main-search" title="Поиск клинических протоколов">
@@ -12892,15 +12892,16 @@
               </svg>
             </div>
             <div>
-              <h2>Проверка консультативного заключения</h2>
+              <h2>Проверка документа после приёма</h2>
               <p class="consult-hint-small" style="margin: 0.35rem 0 0; color: var(--green-800); font-weight: 600">
-                PDF, TXT, DOCX, RTF, ODT, HTML → сверка с фрагментами клинических протоколов Минздрава РБ
+                КЗ, медицинский осмотр или консультация (PDF, TXT, DOCX…) → сверка с фрагментами протоколов Минздрава РБ
               </p>
             </div>
           </div>
           <p class="consult-hint-small">
-            Выберите <strong>один</strong> файл заключения (PDF, TXT, DOCX, RTF, ODT, HTML и др.).
-            Для PDF нужен текстовый слой, не только скан. Сервис отберёт фрагменты протоколов и даст
+            Выберите <strong>один</strong> файл после приёма: консультативное заключение, медицинский осмотр или консультацию
+            (PDF, TXT, DOCX, RTF, ODT, HTML и др.). Тип бланка не важен - важны жалобы, диагноз и рекомендации.
+            Для PDF нужен текстовый слой или читаемый скан (OCR). Сервис отберёт фрагменты протоколов и даст
             <strong>ориентировочную</strong> оценку (не МЭЭ и не юридическая экспертиза).
           </p>
           <p class="consult-hint-small" style="margin-top: 0.55rem">
@@ -12920,7 +12921,7 @@
             <em>насколько верна эта оценка</em>, и предложит правки для движка анализа - не список правок для врача.
           </p>
           <div class="consult-file-row">
-            <span class="consult-label" id="consult-pdf-label">Файл заключения</span>
+            <span class="consult-label" id="consult-pdf-label">Файл после приёма</span>
             <div class="consult-file-controls">
               <input
                 type="file"
