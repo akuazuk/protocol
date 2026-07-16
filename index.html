@@ -14377,7 +14377,21 @@
   }
 
   function rubricSlugsForIcdCode(code) {
-    var letter = (code || "").charAt(0).toUpperCase();
+    var cu = String(code || "").toUpperCase();
+    // Узкие префиксы важнее буквы главы (M91 ≠ «любая ревматология»).
+    if (/^M91|^M92|^M93|^M94|^M21|^M23|^M24|^M25\.5|^M70|^M76|^M84|^S7|^S8|^S9/.test(cu)) {
+      return ["travmatologiya-ortopediya", "revmatologiya"];
+    }
+    if (/^M08|^M05|^M06|^M32|^M33|^M34|^M35/.test(cu)) {
+      return ["revmatologiya", "allergologiya-immunologiya", "travmatologiya-ortopediya"];
+    }
+    if (/^M00|^M01|^M02|^M13/.test(cu)) {
+      return ["revmatologiya", "travmatologiya-ortopediya", "infektsionnye-zabolevaniya"];
+    }
+    if (/^R26/.test(cu)) {
+      return ["travmatologiya-ortopediya", "nevrologiya-neyrokhirurgiya"];
+    }
+    var letter = cu.charAt(0);
     var i;
     for (i = 0; i < ICD_LETTER_RUBRICS.length; i++) {
       if (ICD_LETTER_RUBRICS[i].letters.indexOf(letter) >= 0) {
@@ -14412,62 +14426,90 @@
     saveSpecialtySelection();
   }
 
+  function queryHasNegatedFever(ql) {
+    return /без\s+(лихорад|температ)|нет\s+(лихорад|температ)|(лихорадк|температур)\w*\s+нет/.test(
+      ql || ""
+    );
+  }
+
+  function queryHasPositiveFever(ql) {
+    if (queryHasNegatedFever(ql)) return false;
+    return /температ|лихорад|жар\b|озноб|субфебрил/.test(ql || "");
+  }
+
+  function queryHasHipLimpComplaint(ql) {
+    return /бедр|хромот|прихрам|тазобедрен|\bтбс\b|походк|коксит|пертес|вертлюж/.test(
+      ql || ""
+    );
+  }
+
+  function funnelIcdCodesForRubrics(qRaw) {
+    var ctx = window.__funnelContext || {};
+    var fromCtx = normalizeFunnelIcdCodes(ctx.icd_codes || []);
+    if (fromCtx.length) return fromCtx;
+    return extractIcdCodesFromQuery(qRaw || "");
+  }
+
   function inferRubricChoicesFromQuery(qRaw) {
     var slugs = [];
     var seen = {};
-    var codes = extractIcdCodesFromQuery(qRaw);
+    var ql = String(qRaw || "").toLowerCase().replace(/ё/g, "е");
+
+    function pushSlug(slug, scoreBoost) {
+      if (!slug || seen[slug]) return;
+      // В каталоге МЗ нет отдельной рубрики «pediatriya» - детские КП лежат в профильных разделах.
+      if (slug === "pediatriya") return;
+      seen[slug] = true;
+      slugs.push({ slug: slug, boost: scoreBoost || 0 });
+    }
+
+    // Клинический профиль важнее общей буквы МКБ / ложных совпадений («без лихорадки»).
+    if (queryHasHipLimpComplaint(ql)) {
+      pushSlug("travmatologiya-ortopediya", 20);
+      pushSlug("revmatologiya", 12);
+    }
+
+    var codes = funnelIcdCodesForRubrics(qRaw);
     var ci;
     for (ci = 0; ci < codes.length; ci++) {
       var sug = rubricSlugsForIcdCode(codes[ci]);
       var sj;
       for (sj = 0; sj < sug.length; sj++) {
-        if (!seen[sug[sj]]) {
-          seen[sug[sj]] = true;
-          slugs.push(sug[sj]);
-        }
+        pushSlug(sug[sj], Math.max(0, 10 - sj * 2));
       }
     }
-    var ql = String(qRaw || "").toLowerCase();
-    var symptomMaps = [
-      {
-        re: /кашел|кашл|мокрот|одыш|бронх|легк/,
-        slugs: ["pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya", "pediatriya"],
-      },
-      {
-        re: /температ|лихорад|жар\b/,
-        slugs: ["infektsionnye-zabolevaniya", "pulmonologiya-ftiziatriya", "pediatriya"],
-      },
-      {
-        re: /живот|тошн|рвот|стул|понос|диаре|изжог|гастр/,
-        slugs: ["gastroenterologiya"],
-      },
-      {
-        re: /сердц|гипертен|давлен|аритм/,
-        slugs: ["bolezni-sistemy-krovoobrashcheniya"],
-      },
-    ];
-    var si;
-    for (si = 0; si < symptomMaps.length; si++) {
-      if (symptomMaps[si].re.test(ql)) {
-        var sk;
-        for (sk = 0; sk < symptomMaps[si].slugs.length; sk++) {
-          var slug = symptomMaps[si].slugs[sk];
-          if (!seen[slug]) {
-            seen[slug] = true;
-            slugs.push(slug);
-          }
-        }
+
+    // Не подмешивать ОРВИ/инфекции при уже найденном MSK-профиле.
+    if (!queryHasHipLimpComplaint(ql)) {
+      if (/кашел|кашл|мокрот|одыш|бронх/.test(ql) && !/без\s+кашл/.test(ql)) {
+        pushSlug("pulmonologiya-ftiziatriya", 8);
+        pushSlug("infektsionnye-zabolevaniya", 4);
+      }
+      if (queryHasPositiveFever(ql)) {
+        pushSlug("infektsionnye-zabolevaniya", 8);
+        pushSlug("pulmonologiya-ftiziatriya", 4);
+      }
+      if (/живот|тошн|рвот|стул|понос|диаре|изжог|гастр/.test(ql)) {
+        pushSlug("gastroenterologiya", 8);
+      }
+      if (/сердц|гипертен|давлен|аритм/.test(ql) && !/без\s+давлен/.test(ql)) {
+        pushSlug("bolezni-sistemy-krovoobrashcheniya", 8);
       }
     }
+
     var out = [];
-    for (i = 0; i < slugs.length && out.length < 6; i++) {
+    var i;
+    for (i = 0; i < slugs.length && out.length < 5; i++) {
       out.push({
-        id: slugs[i],
-        slug: slugs[i],
-        label: rubricLabelFromSlug(slugs[i]),
-        score: Math.max(48, 92 - out.length * 8),
+        id: slugs[i].slug,
+        slug: slugs[i].slug,
+        label: rubricLabelFromSlug(slugs[i].slug),
+        score: Math.max(52, 94 - out.length * 7 + (slugs[i].boost || 0)),
       });
     }
+    out.sort(function (a, b) {
+      return (b.score || 0) - (a.score || 0);
+    });
     return out;
   }
 
@@ -14478,7 +14520,16 @@
     if (getSelectedCategorySlugs().length) return false;
     var ctx = window.__funnelContext || {};
     if (ctx.rubric || ctx.rubricSkipped) return false;
-    return inferRubricChoicesFromQuery(qRaw).length > 1;
+    var choices = inferRubricChoicesFromQuery(qRaw);
+    // Один явный раздел - применяем без лишнего шага (кнопка «Все» не нужна).
+    if (choices.length === 1) {
+      setSelectedCategorySlugs([choices[0].slug]);
+      window.__funnelContext = window.__funnelContext || {};
+      window.__funnelContext.rubric_slugs = [choices[0].slug];
+      window.__funnelContext.rubric = choices[0].slug;
+      return false;
+    }
+    return choices.length > 1;
   }
 
   function updateSearchIcdDetect() {
@@ -25545,12 +25596,13 @@
     var choices = inferred.slice();
     choices.push({ id: "__all__", slug: "", label: "Все рубрики", score: 55 });
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "Уточните раздел каталога - можно отметить несколько рубрик или искать по всем.",
+      lead: "Какой раздел каталога ближе к жалобе? Отметьте 1-2 или ищите по всем.",
+      selectHint: "Подсказки построены по жалобе и МКБ - можно снять лишнее.",
       choices: choices,
       multi: true,
       preselectTop: true,
-      continueLabel: "Продолжить с выбранными рубриками",
-      skipLabel: "Пропустить - без фильтра рубрик",
+      continueLabel: "Далее - найти протоколы",
+      skipLabel: "Искать по всем разделам",
     });
     wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
       choices: choices,
@@ -25575,7 +25627,13 @@
           delete window.__funnelContext.rubricSkipped;
           setSelectedCategorySlugs(slugs);
         }
-        runAssist(undefined, { skipRubricGate: true, skipPopulationGate: true }).catch(function (err) {
+        runAssist(undefined, {
+          skipRubricGate: true,
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+          skipIcdGate: true,
+          retrieveOnly: true,
+        }).catch(function (err) {
           console.error(err);
         });
       },
@@ -25584,7 +25642,13 @@
         window.__funnelContext.rubricSkipped = true;
         window.__funnelContext.rubric_slugs = [];
         delete window.__funnelContext.rubric;
-        runAssist(undefined, { skipRubricGate: true, skipPopulationGate: true }).catch(function (err) {
+        runAssist(undefined, {
+          skipRubricGate: true,
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+          skipIcdGate: true,
+          retrieveOnly: true,
+        }).catch(function (err) {
           console.error(err);
         });
       },

@@ -103,33 +103,58 @@ def _icd_payload_from_codes(codes: list[str]) -> tuple[dict[str, Any], list[dict
 def _infer_rubric_choices(q: str, icd_codes: list[str]) -> list[dict[str, str]]:
     slugs: list[str] = []
     seen: set[str] = set()
+    ql = (q or "").lower().replace("ё", "е")
+
+    def _push(slug: str) -> None:
+        if not slug or slug in seen or slug == "pediatriya":
+            return
+        seen.add(slug)
+        slugs.append(slug)
+
+    hip_limp = bool(re.search(r"бедр|хромот|прихрам|тазобедрен|\bтбс\b|походк|коксит|пертес", ql))
+    if hip_limp:
+        for slug in ("travmatologiya-ortopediya", "revmatologiya"):
+            _push(slug)
+
     for code in icd_codes:
-        letter = code[:1].upper()
+        cu = str(code or "").upper()
+        if re.match(r"^(M91|M92|M93|M94|M25\.5|R26)", cu):
+            for slug in ("travmatologiya-ortopediya", "revmatologiya"):
+                _push(slug)
+            continue
+        if re.match(r"^(M08|M05|M06|M32)", cu):
+            for slug in ("revmatologiya", "allergologiya-immunologiya", "travmatologiya-ortopediya"):
+                _push(slug)
+            continue
+        letter = cu[:1]
         for slug in _ICD_LETTER_RUBRICS.get(letter, []):
-            if slug not in seen:
-                seen.add(slug)
-                slugs.append(slug)
-    ql = (q or "").lower()
-    if re.search(r"кашел|температ|лихорад|одыш", ql):
-        for slug in ("pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya", "pediatriya"):
-            if slug not in seen:
-                seen.add(slug)
-                slugs.append(slug)
-    if re.search(r"живот|гастр|изжог|тошн|запор|вздут|метеор|кишеч|стул", ql):
-        for slug in ("gastroenterologiya",):
-            if slug not in seen:
-                seen.add(slug)
-                slugs.append(slug)
-    if re.search(r"бедр|хромот|тазобедрен|походк|коксит|пертес", ql):
-        for slug in (
-            "travmatologiya-ortopediya",
-            "revmatologiya",
-            "pediatriya",
-        ):
-            if slug not in seen:
-                seen.add(slug)
-                slugs.append(slug)
-    return [{"id": s, "label": s.replace("-", " ")} for s in slugs[:6]]
+            _push(slug)
+
+    negated_fever = bool(
+        re.search(
+            r"без\s+(лихорад|температ)|нет\s+(лихорад|температ)|(лихорадк|температур)\w*\s+нет",
+            ql,
+        )
+    )
+    if not hip_limp:
+        if re.search(r"кашел|температ|лихорад|одыш", ql) and not negated_fever:
+            for slug in ("pulmonologiya-ftiziatriya", "infektsionnye-zabolevaniya"):
+                _push(slug)
+        if re.search(r"живот|гастр|изжог|тошн|запор|вздут|метеор|кишеч|стул", ql):
+            _push("gastroenterologiya")
+
+    labels = {
+        "travmatologiya-ortopediya": "Травматология и ортопедия",
+        "revmatologiya": "Ревматология",
+        "allergologiya-immunologiya": "Аллергология и иммунология",
+        "pulmonologiya-ftiziatriya": "Пульмонология и фтизиатрия",
+        "infektsionnye-zabolevaniya": "Инфекционные заболевания",
+        "gastroenterologiya": "Гастроэнтерология",
+    }
+    return [
+        {"id": s, "label": labels.get(s, s.replace("-", " "))}
+        for s in slugs[:6]
+    ]
 
 
 def resolve_protocol_nav(

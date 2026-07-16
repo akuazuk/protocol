@@ -233,7 +233,6 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "slugs": (
             "travmatologiya-ortopediya",
             "revmatologiya",
-            "pediatriya",
         ),
         "title_strong": (
             "ортопед",
