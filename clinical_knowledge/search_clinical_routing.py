@@ -219,6 +219,48 @@ _CLINICAL_ROUTES: list[dict[str, Any]] = [
         "title_wrong": ("буллез", "дерматит", "экзем", "придатков кожи", "крапивниц", "оторinоларингologическ"),
     },
     {
+        "id": "pediatric_hip_limp",
+        "query_markers": (
+            "хромот",
+            "прихрам",
+            "боль в бедр",
+            "тазобедрен",
+            "пертес",
+            "коксит",
+            "тбс",
+        ),
+        "icd_prefixes": ("M91", "M08", "M00", "M13", "M25", "R26"),
+        "slugs": (
+            "travmatologiya-ortopediya",
+            "revmatologiya",
+            "pediatriya",
+        ),
+        "title_strong": (
+            "ортопед",
+            "травмат",
+            "тазобедрен",
+            "детс",
+            "педиатр",
+            "ревмат",
+            "ювенильн",
+            "пертес",
+            "коксит",
+            "хромот",
+        ),
+        "title_weak": ("сустав", "походк", "конечност"),
+        "title_wrong": (
+            "флебит",
+            "тромбофлебит",
+            "грыж",
+            "нервн",
+            "нейропат",
+            "эндопротез",
+            "взр_нас",
+            "взрослое",
+            "паллиат",
+        ),
+    },
+    {
         "id": "lupus",
         "query_markers": ("волчан", "sle", "ревмат"),
         "icd_prefixes": ("M32", "M05", "M06", "L93"),
@@ -601,6 +643,20 @@ def detect_clinical_route_ids(query: str, icd_codes: list[str] | None = None) ->
             psych_markers = ("депресс", "тревог", "паническ", "биполяр", "шизофрен", "психоз")
             if not any(m in ql for m in psych_markers):
                 out = [r for r in out if r != "psychiatry"]
+    if "pediatric_hip_limp" in out:
+        ped = bool(
+            re.search(
+                r"(\bдет|\bдети|\bребен|\bребён|\bноворожд|\bподрост|"
+                r"\b([1-9]|1[0-7])\s*лет|контекст подбора:\s*дет)",
+                ql,
+            )
+        )
+        if not ped:
+            out = [r for r in out if r != "pediatric_hip_limp"]
+        else:
+            # Детская хромота важнее общего «ревмат» без явной СКВ.
+            if "lupus" in out and not any(m in ql for m in ("волчан", "sle", "скв")):
+                out = [r for r in out if r != "lupus"]
     return out
 
 

@@ -24,7 +24,7 @@ _ICD_LETTER_RUBRICS: dict[str, list[str]] = {
     "F": ["psikhiatriya-narkologiya"],
     "L": ["dermatovenerologiya"],
     "H": ["oftalmologiya"],
-    "M": ["ortopediya-travmatologiya"],
+    "M": ["travmatologiya-ortopediya", "revmatologiya"],
     "D": ["dermatovenerologiya"],
 }
 
@@ -117,6 +117,15 @@ def _infer_rubric_choices(q: str, icd_codes: list[str]) -> list[dict[str, str]]:
                 slugs.append(slug)
     if re.search(r"живот|гастр|изжог|тошн|запор|вздут|метеор|кишеч|стул", ql):
         for slug in ("gastroenterologiya",):
+            if slug not in seen:
+                seen.add(slug)
+                slugs.append(slug)
+    if re.search(r"бедр|хромот|тазобедрен|походк|коксит|пертес", ql):
+        for slug in (
+            "travmatologiya-ortopediya",
+            "revmatologiya",
+            "pediatriya",
+        ):
             if slug not in seen:
                 seen.add(slug)
                 slugs.append(slug)

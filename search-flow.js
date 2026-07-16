@@ -58,7 +58,7 @@
 
   function phaseForStep(step) {
     if (!step || step === "query") return "query";
-    if (step === "population" || step === "icd" || step === "rubric") return "refine";
+    if (step === "population" || step === "clarify" || step === "icd" || step === "rubric") return "refine";
     if (step === "protocols") return "protocols";
     return "clinical";
   }

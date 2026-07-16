@@ -5109,6 +5109,27 @@
       font-weight: 600;
     }
 
+    .query-voice-details {
+      margin: 0.55rem 0 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .query-voice-details > summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--green-800);
+      list-style: none;
+    }
+
+    .query-voice-details > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .query-voice-details[open] {
+      margin-bottom: 0.35rem;
+    }
+
     .btn-icd-preflight {
       font-size: 0.88rem;
       padding: 0.62rem 1rem;
@@ -11057,22 +11078,105 @@
     }
 
     .search-wizard-step-actions {
-      margin: 0.55rem 0 0;
+      margin: 1rem 0 0;
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 0.55rem 0.75rem;
+      align-items: stretch;
+      gap: 0.65rem;
+    }
+
+    .search-wizard-step-actions .btn-search-flow-back,
+    .search-wizard-step-actions .btn-wizard-continue {
+      min-height: 3rem;
+      min-width: 8.5rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+    }
+
+    .search-wizard-step-actions .btn-search-flow-back {
+      background: #fff;
+      border: 2px solid rgba(15, 118, 110, 0.35);
+      color: #0f766e;
+      cursor: pointer;
+    }
+
+    .search-wizard-step-actions .btn-search-flow-back:hover {
+      border-color: #0f766e;
+      background: rgba(240, 253, 250, 0.9);
+    }
+
+    .search-wizard-step-actions .btn-wizard-continue {
+      flex: 1 1 14rem;
+    }
+
+    .search-wizard-chip--pick,
+    .search-choice-card.search-wizard-chip--pick {
+      min-height: 3.1rem;
+      font-size: 1rem;
+      padding: 0.85rem 1rem;
+      border-width: 2px;
     }
 
     .search-wizard-select-hint {
-      margin: 0 0 0.45rem;
-      font-size: 0.78rem;
+      margin: 0 0 0.55rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
     .search-wizard-skip {
-      margin: 0;
-      font-size: 0.8rem;
+      margin: 0.65rem 0 0;
+      font-size: 0.9rem;
+    }
+
+    .search-wizard-skip .btn-wizard-skip {
+      font-size: 0.95rem;
+      padding: 0.45rem 0.25rem;
+    }
+
+    .search-form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.75rem;
+      align-items: stretch;
+    }
+
+    .search-form-actions .btn-submit-row {
+      flex: 1 1 16rem;
+      min-height: 3.25rem;
+      font-size: 1.12rem;
+      font-weight: 700;
+      padding: 0.85rem 1.35rem;
+      border-radius: 12px;
+    }
+
+    .search-wizard-bar #btn-search-wizard-back {
+      min-height: 2.6rem;
+      min-width: 6.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.55rem 0.95rem;
+      border-radius: 10px;
+      border: 2px solid rgba(15, 118, 110, 0.35);
+      background: #fff;
+      color: #0f766e;
+      cursor: pointer;
+    }
+
+    .search-mobile-actions .btn {
+      flex: 1;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      min-height: 3rem;
+      padding: 0.75rem 0.5rem;
+      border-radius: 12px;
+    }
+
+    .proto-nav-guide-text--compact {
+      display: none;
     }
 
     .proto-nav-hub {
@@ -12441,9 +12545,10 @@
                 aria-label="Текст запроса: диагноз, МКБ-10 или жалобы"
               ></textarea>
               <p class="query-form-hint" id="query-form-hint">
-                Поиск ведётся по диагнозу и МКБ-10 в текстах протоколов. Если указаны только симптомы, нажмите
-                <strong>«Найти протоколы»</strong> - на следующем шаге отметьте подходящие коды МКБ (цветом: зелёный - лучшее совпадение).
+                Введите жалобу или код МКБ-10 и нажмите <strong>«Найти протоколы»</strong>.
               </p>
+              <details class="query-voice-details">
+                <summary>Голосовой ввод</summary>
               <div
                 class="query-toolbar query-toolbar--voice-only"
                 role="group"
@@ -12451,7 +12556,6 @@
               >
                 <div class="query-toolbar__main">
                   <div class="query-toolbar__col query-toolbar__col--full">
-                    <p class="query-toolbar__label" id="query-toolbar-voice-label">Голосовой ввод</p>
                     <button
                       type="button"
                       class="btn-voice"
@@ -12463,7 +12567,7 @@
                       <span class="btn-voice__label">Надиктовать</span>
                     </button>
                     <p class="query-toolbar__hint" id="voice-hint">
-                      Текст попадёт в поле запроса выше. Распознавание в браузере; аудио на сервер не отправляется.
+                      Текст попадёт в поле выше. Аудио на сервер не отправляется.
                     </p>
                   </div>
                 </div>
@@ -12480,6 +12584,7 @@
                   </div>
                 </div>
               </div>
+              </details>
             </div>
             <div class="search-form-actions consult-hide-print">
               <button type="submit" class="btn btn-submit-row" id="btn-search-submit">
@@ -12489,10 +12594,9 @@
                 type="button"
                 class="btn-assist btn-toolbar-clear btn-toolbar-clear--inline"
                 id="btn-new-search-full"
-                title="Очистить поле запроса, контекст пациента, рубрики и результаты подбора"
+                title="Очистить запрос и результаты"
               >
-                <span class="btn-toolbar-clear__main">Очистить всё</span>
-                <span class="btn-toolbar-clear__sub">запрос, рубрики, контекст и результаты</span>
+                Очистить
               </button>
             </div>
           </form>
@@ -17137,16 +17241,17 @@
   }
 
   var SEARCH_WIZARD_STEPS = [
-    { id: "population", label: "Аудитория", hint: "Уточните, для кого подбираем протокол", uiPhase: "funnel" },
-    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза - по нему ищем протокол в каталоге МЗ", uiPhase: "funnel" },
-    { id: "rubric", label: "Рубрики", hint: "Отметьте раздел каталога или ищите по всем", uiPhase: "funnel" },
-    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол из списка", uiPhase: "protocols" },
-    { id: "brief", label: "На приёме", hint: "Диагноз, обследования, лечение и настороженность по протоколу", uiPhase: "sections" },
+    { id: "population", label: "Аудитория", hint: "Для кого подбираем протокол", uiPhase: "funnel" },
+    { id: "clarify", label: "Уточнение", hint: "Отметьте, что важно для жалобы - температура, травма, сустав", uiPhase: "funnel" },
+    { id: "icd", label: "МКБ-10", hint: "Выберите код диагноза - по нему ищем протокол", uiPhase: "funnel" },
+    { id: "rubric", label: "Рубрики", hint: "Раздел каталога или поиск по всем", uiPhase: "funnel" },
+    { id: "protocols", label: "Протоколы", hint: "Выберите клинический протокол", uiPhase: "protocols" },
+    { id: "brief", label: "На приёме", hint: "Диагноз, обследования, лечение по протоколу", uiPhase: "sections" },
   ];
 
   var SEARCH_WIZARD_UI_PHASES = [
     { id: "query", label: "Запрос", stepIds: ["query"] },
-    { id: "refine", label: "Уточнение", stepIds: ["population", "icd", "rubric"] },
+    { id: "refine", label: "Уточнение", stepIds: ["population", "clarify", "icd", "rubric"] },
     { id: "protocols", label: "Протокол", stepIds: ["protocols"] },
     { id: "clinical", label: "На приёме", stepIds: ["brief", "condition", "section", "excerpt"] },
   ];
@@ -17219,7 +17324,13 @@
       var jumpStep = ph.stepIds[0];
       if (ph.id === "refine") {
         jumpStep =
-          activeStep === "rubric" ? "rubric" : activeStep === "icd" ? "icd" : "population";
+          activeStep === "rubric"
+            ? "rubric"
+            : activeStep === "icd"
+              ? "icd"
+              : activeStep === "clarify"
+                ? "clarify"
+                : "population";
       } else if (ph.id === "clinical") {
         jumpStep = "brief";
       } else if (ph.id === "query") {
@@ -17333,6 +17444,17 @@
       renderSearchWizardPopulationStep((qInput && qInput.value) || lastAssistClinical || "");
       return;
     }
+    if (stepId === "clarify") {
+      var qClarify =
+        (document.getElementById("q") && document.getElementById("q").value) ||
+        lastAssistClinical ||
+        "";
+      delete ctx.clarify_confirmed;
+      delete ctx.clarify_skipped;
+      window.__funnelContext = ctx;
+      renderSearchWizardClarifyStep(qClarify);
+      return;
+    }
     if (stepId === "icd") {
       var data = window.__lastAssistData || {};
       if ((data.icd || {}).detected || (data.icd || {}).suggested || (data.icd || {}).codes_for_retrieval) {
@@ -17415,7 +17537,8 @@
   }
 
   var WIZARD_NEXT_STEP = {
-    population: "icd",
+    population: "clarify",
+    clarify: "icd",
     icd: "protocols",
     rubric: "protocols",
     protocols: "brief",
@@ -17429,6 +17552,7 @@
     if (stepId === "condition" || stepId === "section" || stepId === "excerpt") stepId = "brief";
     var hints = {
       population: "Уточняем аудиторию пациента…",
+      clarify: "Уточняем клинический контекст…",
       icd: "Сопоставляем жалобы с кодами МКБ-10…",
       rubric: "Сужаем раздел каталога протоколов…",
       protocols: "Ранжируем протоколы по запросу…",
@@ -24536,6 +24660,9 @@
       delete window.__funnelContext.rubric_slugs;
       delete window.__funnelContext.icd_codes;
       delete window.__funnelContext.icd_confirmed;
+      delete window.__funnelContext.clarify_confirmed;
+      delete window.__funnelContext.clarify_skipped;
+      delete window.__funnelContext.clarify_ids;
     }
   }
 
@@ -24567,6 +24694,82 @@
       if (localStorage.getItem("search_skip_population_gate") === "1") return false;
     } catch (eSkip) {}
     return true;
+  }
+
+  function queryNeedsMskClarify(raw) {
+    var q = String(raw || "").toLowerCase().replace(/ё/g, "е");
+    if (!q.trim()) return false;
+    var hip = /бедр|тазобедрен|тбс|хромот|прихрам|кокс|вертлюж/.test(q);
+    if (!hip) return false;
+    var fever = /температ|лихорад|жар|озноб|субфебрил/.test(q);
+    var trauma = /травм|ушиб|удар|паден|перелом|вывих/.test(q);
+    var night = /ночн|ночью|в покое/.test(q);
+    var joint = /тазобедрен|сустав|тбс/.test(q);
+    if (fever && trauma && (night || joint)) return false;
+    return true;
+  }
+
+  function needsClarifyStep(qRaw, opts) {
+    opts = opts || {};
+    if (opts.skipClarifyGate) return false;
+    if (!isSearchSteppedMode()) return false;
+    if (queryHasIcdInText(qRaw)) return false;
+    var ctx = window.__funnelContext || {};
+    if (ctx.clarify_confirmed || ctx.clarify_skipped) return false;
+    return queryNeedsMskClarify(qRaw);
+  }
+
+  function buildMskClarifyChoices(qRaw) {
+    var q = String(qRaw || "").toLowerCase().replace(/ё/g, "е");
+    var ped = /(\bдет|\bдети|\bребен|\bребён|\bноворожд|\bподрост|\b([1-9]|1[0-7])\s*лет)/.test(q);
+    var choices = [];
+    if (ped) {
+      choices.push({
+        id: "limp_gait",
+        label: "Хромота / нарушение походки",
+        score: 94,
+        append: "хромота нарушение походки",
+      });
+    }
+    choices = choices.concat([
+      { id: "no_fever", label: "Без температуры", score: 90, append: "без лихорадки" },
+      { id: "fever", label: "Есть температура", score: 88, append: "лихорадка температура" },
+      { id: "no_trauma", label: "Без травмы", score: 87, append: "без травмы" },
+      { id: "trauma", label: "Была травма / падение", score: 86, append: "травма падение" },
+      { id: "night_pain", label: "Боль ночью или в покое", score: 84, append: "боль ночью в покое" },
+      {
+        id: "hip_joint",
+        label: "Тазобедренный сустав (ТБС)",
+        score: ped ? 92 : 85,
+        append: "тазобедренный сустав ТБС",
+      },
+      {
+        id: "soft_tissue",
+        label: "Мягкие ткани бедра",
+        score: 80,
+        append: "мягкие ткани бедра мышцы",
+      },
+    ]);
+    return choices;
+  }
+
+  function appendClarifyAnswersToQuery(qRaw, selected) {
+    var q = stripPopulationContextFromQuery(String(qRaw || "")).trim();
+    if (!selected || !selected.length) return q;
+    var parts = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < selected.length; i++) {
+      var ap = String((selected[i] && selected[i].append) || "").trim();
+      if (!ap || seen[ap]) continue;
+      seen[ap] = true;
+      parts.push(ap);
+    }
+    if (!parts.length) return q;
+    var anchors = parts.join(" ");
+    var block = " - Ответы на уточняющие вопросы: " + parts.join("; ");
+    if (q.toLowerCase().indexOf(anchors.toLowerCase()) >= 0) return q + "\n" + block;
+    return q + "\n" + anchors + "\n" + block;
   }
 
   function setSearchQueryStatus(msg, isError) {
@@ -25217,18 +25420,19 @@
       { id: "emergency", label: "Неотложная помощь", score: popScores.emergency },
     ];
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "Уточните, для кого подбираем протокол - это сужает список (детские и взрослые КП различаются).",
+      lead: "Для кого подбираем протокол?",
       choices: choices,
       multi: false,
       preselectTop: true,
-      continueLabel: "Продолжить с выбранной аудиторией",
-      skipLabel: "Пропустить - без уточнения аудитории",
+      continueLabel: "Далее",
+      skipLabel: "Пропустить",
     });
     wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
       choices: choices,
       multi: false,
       preselectTop: true,
       stepId: "population",
+      nextStep: queryNeedsMskClarify(clinicalQ) ? "clarify" : "icd",
       onContinue: function (sel) {
         var pop = (sel[0] && sel[0].id) || "";
         window.__funnelContext = window.__funnelContext || {};
@@ -25251,6 +25455,78 @@
         window.__funnelContext.population = "skipped";
         window.__funnelContext.populationConfirmed = true;
         runAssist(undefined, { skipPopulationGate: true }).catch(function (err) {
+          console.error(err);
+        });
+      },
+    });
+    scrollToSearchWizard();
+    hideSearchWizardBarProgress();
+  }
+
+  function renderSearchWizardClarifyStep(qRaw) {
+    var out = document.getElementById("llm-out");
+    if (!out) return;
+    showResultsSection(true);
+    window.__searchWizard = { step: "clarify" };
+    updateSearchWizardBar("clarify");
+    var clinicalQ = stripPopulationContextFromQuery(qRaw);
+    var choices = buildMskClarifyChoices(clinicalQ);
+    var pre = [];
+    if (choices.some(function (c) { return c.id === "limp_gait"; })) pre.push("limp_gait");
+    if (choices.some(function (c) { return c.id === "hip_joint"; })) pre.push("hip_joint");
+    if (choices.some(function (c) { return c.id === "no_fever"; })) pre.push("no_fever");
+    if (choices.some(function (c) { return c.id === "no_trauma"; })) pre.push("no_trauma");
+    out.innerHTML = buildWizardMultiSelectHtml({
+      lead: "Что важно уточнить по жалобе? Отметьте подходящее - это сузит поиск протокола.",
+      selectHint: "Можно отметить несколько пунктов, затем нажмите «Далее».",
+      choices: choices,
+      multi: true,
+      preselectTop: false,
+      continueLabel: "Далее к кодам МКБ",
+      skipLabel: "Пропустить уточнение",
+    });
+    wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
+      choices: choices,
+      multi: true,
+      preselectTop: false,
+      preselectIds: pre,
+      stepId: "clarify",
+      nextStep: "icd",
+      onContinue: function (sel) {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.clarify_confirmed = true;
+        window.__funnelContext.clarify_ids = sel.map(function (c) {
+          return c.id;
+        });
+        var qInput = document.getElementById("q");
+        var baseQ = (qInput && qInput.value) || clinicalQ;
+        var withClarify = appendClarifyAnswersToQuery(baseQ, sel);
+        var pop = window.__funnelContext.population;
+        if (pop && pop !== "skipped") {
+          withClarify = appendPopulationContextToQuery(
+            stripPopulationContextFromQuery(withClarify),
+            pop
+          );
+        }
+        if (qInput) {
+          qInput.value = withClarify;
+          focusQueryInputAtEnd(qInput);
+        }
+        runAssist(undefined, {
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+        }).catch(function (err) {
+          console.error(err);
+        });
+      },
+      onSkip: function () {
+        window.__funnelContext = window.__funnelContext || {};
+        window.__funnelContext.clarify_skipped = true;
+        window.__funnelContext.clarify_confirmed = true;
+        runAssist(undefined, {
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+        }).catch(function (err) {
           console.error(err);
         });
       },
@@ -25401,7 +25677,7 @@
         ctxEl.textContent = "";
       }
     }
-    if (backBtn) backBtn.hidden = step === "population" || step === "query";
+    if (backBtn) backBtn.hidden = step === "query";
     updateSearchMobileActions(step);
     if (window.ProtocolSearchFlow) {
       ProtocolSearchFlow.afterWizardBarUpdate(step);
@@ -25413,6 +25689,11 @@
     var ctx = window.__funnelContext || {};
     var nav = ctx.summary_nav;
     var path = ctx.protocol_path || wiz.selectedProto;
+    var qInput = document.getElementById("q");
+    var qRaw =
+      (qInput && qInput.value) ||
+      lastAssistClinical ||
+      "";
     if (wiz.step === "excerpt") {
       if (nav && nav.available && path) {
         renderProtocolBriefStep(nav, path, window.__lastAssistData || {});
@@ -25467,16 +25748,96 @@
       }
       return;
     }
-    if (wiz.step === "protocols" || wiz.step === "icd" || wiz.step === "population" || wiz.step === "rubric") {
+    if (wiz.step === "protocols") {
+      delete ctx.icd_confirmed;
+      window.__funnelContext = ctx;
+      if (window.__lastAssistData && window.__lastAssistData.icd) {
+        renderSearchWizardIcdStep({ icd: window.__lastAssistData.icd });
+      } else {
+        runIcdPreflightForWizard().catch(function (err) {
+          console.error(err);
+        });
+      }
+      return;
+    }
+    if (wiz.step === "rubric") {
+      delete ctx.rubric;
+      delete ctx.rubricSkipped;
+      delete ctx.rubric_slugs;
+      window.__funnelContext = ctx;
+      if (needsClarifyStep(qRaw, { skipClarifyGate: false }) || ctx.clarify_confirmed) {
+        delete ctx.clarify_confirmed;
+        delete ctx.clarify_skipped;
+        window.__funnelContext = ctx;
+        renderSearchWizardClarifyStep(qRaw);
+      } else if (window.__lastAssistData && window.__lastAssistData.icd) {
+        renderSearchWizardIcdStep({ icd: window.__lastAssistData.icd });
+      } else {
+        runIcdPreflightForWizard().catch(function (err) {
+          console.error(err);
+        });
+      }
+      return;
+    }
+    if (wiz.step === "icd") {
+      delete ctx.icd_codes;
+      delete ctx.icd_confirmed;
+      window.__funnelContext = ctx;
+      if (queryNeedsMskClarify(qRaw)) {
+        delete ctx.clarify_confirmed;
+        delete ctx.clarify_skipped;
+        window.__funnelContext = ctx;
+        renderSearchWizardClarifyStep(qRaw);
+      } else if (!queryHasPopulationHint(qRaw) && !(ctx.population && ctx.populationConfirmed)) {
+        delete ctx.populationConfirmed;
+        delete ctx.population;
+        window.__funnelContext = ctx;
+        renderSearchWizardPopulationStep(qRaw);
+      } else {
+        wiz.step = "query";
+        window.__searchWizard = wiz;
+        updateSearchWizardBar(null);
+        showResultsSection(false);
+        if (qInput) {
+          try {
+            qInput.focus();
+          } catch (e) {}
+        }
+      }
+      return;
+    }
+    if (wiz.step === "clarify") {
+      delete ctx.clarify_confirmed;
+      delete ctx.clarify_skipped;
+      delete ctx.clarify_ids;
+      window.__funnelContext = ctx;
+      if (!queryHasPopulationHint(qRaw) && !/^Контекст подбора:/im.test(qRaw)) {
+        delete ctx.populationConfirmed;
+        delete ctx.population;
+        window.__funnelContext = ctx;
+        renderSearchWizardPopulationStep(qRaw);
+      } else {
+        wiz.step = "query";
+        window.__searchWizard = wiz;
+        updateSearchWizardBar(null);
+        showResultsSection(false);
+        if (qInput) {
+          try {
+            qInput.focus();
+          } catch (e) {}
+        }
+      }
+      return;
+    }
+    if (wiz.step === "population" || wiz.step === "query") {
       wiz.step = "query";
       window.__searchWizard = wiz;
       window.__funnelContext = {};
       updateSearchWizardBar(null);
       showResultsSection(false);
-      var qEl = document.getElementById("q");
-      if (qEl) {
+      if (qInput) {
         try {
-          qEl.focus();
+          qInput.focus();
         } catch (e) {}
       }
     }
@@ -25491,13 +25852,13 @@
     var icd = normalizeFunnelIcdPreflightResponse(data || {}).icd || (data && data.icd) || {};
     var choices = buildIcdWizardChoices(icd).slice(0, 12);
     out.innerHTML = buildWizardMultiSelectHtml({
-      lead: "Какой диагноз ближе к жалобе? Выберите 1-2 кода - по ним ищем протокол в каталоге МЗ.",
+      lead: "Какой диагноз ближе к жалобе? Выберите 1-2 кода.",
       hint: data && data.hint ? data.hint : "",
       choices: choices,
       multi: true,
       preselectTop: true,
-      continueLabel: "Продолжить с выбранными кодами",
-      skipLabel: "Пропустить - искать по жалобам без кода",
+      continueLabel: "Далее - найти протоколы",
+      skipLabel: "Без кода - искать по жалобам",
       emptyText: "Коды не подобраны. Уточните текст запроса или введите МКБ-10 вручную.",
     });
     wireWizardMultiSelectStep(out.querySelector(".search-wizard-step-card"), {
@@ -25511,12 +25872,22 @@
           return c.code;
         });
         window.__funnelContext.icd_confirmed = true;
-        runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
+        runAssist(undefined, {
+          skipIcdGate: true,
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+          retrieveOnly: true,
+        }).catch(function (err) {
           console.error(err);
         });
       },
       onSkip: function () {
-        runAssist(undefined, { skipIcdGate: true, skipPopulationGate: true, retrieveOnly: true }).catch(function (err) {
+        runAssist(undefined, {
+          skipIcdGate: true,
+          skipPopulationGate: true,
+          skipClarifyGate: true,
+          retrieveOnly: true,
+        }).catch(function (err) {
           console.error(err);
         });
       },
@@ -32113,8 +32484,14 @@
         }
       }
       if (needsPopulationStep(qRaw, opts)) {
-        setSearchQueryStatus("Шаг 1: уточните аудиторию пациента ниже");
+        setSearchQueryStatus("Шаг: уточните аудиторию пациента");
         renderSearchWizardPopulationStep(qRaw);
+        resolve();
+        return;
+      }
+      if (needsClarifyStep(qRaw, opts)) {
+        setSearchQueryStatus("Шаг: уточните жалобу (температура, травма, сустав)");
+        renderSearchWizardClarifyStep(qRaw);
         resolve();
         return;
       }

@@ -290,6 +290,22 @@ _CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
         ("T18.0", 21.0),
         ("W79", 20.0),
     ],
+    # Боль в бедре / хромота у ребёнка: не G57/I80/K41/R95 от «бедр*»/«ребенка».
+    "pediatric_hip_limp": [
+        ("M91.1", 22.0),
+        ("M91.0", 21.8),
+        ("M08.0", 21.5),
+        ("M25.55", 21.2),
+        ("R26.8", 21.0),
+        ("M00.9", 20.5),
+        ("M13.9", 20.0),
+    ],
+    "hip_pain": [
+        ("M25.55", 20.5),
+        ("M16.9", 19.5),
+        ("R26.8", 19.0),
+        ("M70.6", 18.5),
+    ],
 }
 
 # Коды-«последствия» и отдалённые исходы - шум при острых жалобах.
@@ -898,6 +914,61 @@ def _has_depression_complaint(qlow: str) -> bool:
     return "депресс" in qlow or ("апат" in qlow and "сонлив" in qlow)
 
 
+def _has_pediatric_context(qlow: str) -> bool:
+    if re.search(r"\b([1-9]|1[0-7])\s*лет", qlow):
+        return True
+    return bool(
+        re.search(
+            r"(\bдет|\bдети|\bребен|\bребён|\bноворожд|\bподрост|\bшкольник|"
+            r"контекст подбора:\s*дет)",
+            qlow,
+        )
+    )
+
+
+def _has_hip_or_limp_complaint(qlow: str) -> bool:
+    return any(
+        m in qlow
+        for m in (
+            "бедр",
+            "тазобедрен",
+            "тбс",
+            "хромот",
+            "прихрам",
+            "кокс",
+            "вертлюж",
+        )
+    )
+
+
+def _has_pediatric_hip_limp_complaint(qlow: str) -> bool:
+    return _has_pediatric_context(qlow) and _has_hip_or_limp_complaint(qlow)
+
+
+def _has_hip_pain_complaint(qlow: str) -> bool:
+    if _has_pediatric_hip_limp_complaint(qlow):
+        return False
+    return _has_hip_or_limp_complaint(qlow)
+
+
+def _has_femoral_vessel_nerve_intent(qlow: str) -> bool:
+    """Явный контекст нерва/вены/грыжи - тогда «бедренн*» в МКБ уместен."""
+    return any(
+        m in qlow
+        for m in (
+            "нерв",
+            "флебит",
+            "тромбофлебит",
+            "тромб",
+            "вен",
+            "грыж",
+            "нейропат",
+            "парестез",
+            "онемен",
+        )
+    )
+
+
 def _has_pediatric_uri_complaint(qlow: str) -> bool:
     if not any(x in qlow for x in ("ребен", "ребён", "дет", "грудн", "младен")):
         return False
@@ -1046,6 +1117,38 @@ def _penalize_infant_death_for_uri(qlow: str, code: str, score: float) -> float:
         return score
     if any(x in qlow for x in ("орви", "насмор", "кашел", "кашель", "ринит")):
         return score * 0.02
+    # «ребенка» в жалобе ≠ синдром внезапной смерти грудного ребёнка.
+    if "внезапн" not in qlow and "сидс" not in qlow and "sids" not in qlow:
+        if _has_pediatric_context(qlow) or "ребен" in qlow or "ребён" in qlow:
+            return score * 0.02
+    return score
+
+
+def _penalize_femoral_noise_for_hip(qlow: str, code: str, title: str, score: float) -> float:
+    """«боль в бедре» не должна тянуть бедренный нерв/вену/грыжу без сосудисто-нервного контекста."""
+    if not _has_hip_or_limp_complaint(qlow):
+        return score
+    if _has_femoral_vessel_nerve_intent(qlow):
+        return score
+    cu = code.upper()
+    tlow = title.lower().replace("ё", "е")
+    noisy = (
+        cu.startswith(("G57", "I80", "K41", "Q72"))
+        or "бедренного нерва" in tlow
+        or "бедренной вены" in tlow
+        or "бедренная грыжа" in tlow
+        or "укорочение бедренной" in tlow
+    )
+    if noisy:
+        return score * 0.04
+    # Коксартроз взрослых неуместен при детской хромоте.
+    if _has_pediatric_hip_limp_complaint(qlow) and cu.startswith("M16"):
+        return score * 0.08
+    # Открытые раны/ушибы S70 без травмы в жалобе - шум.
+    if cu.startswith(("S70", "S71", "S72", "S73", "S74", "S75", "S76", "S77", "S78", "S79")) and not any(
+        m in qlow for m in ("травм", "ушиб", "ранен", "паден", "удар", "перелом")
+    ):
+        return score * 0.08
     return score
 
 
@@ -1087,6 +1190,8 @@ def _clinical_hint_profile(qlow: str) -> str | None:
         return "co_poisoning"
     if _has_thermal_burn_complaint(qlow):
         return "thermal_burn"
+    if _has_pediatric_hip_limp_complaint(qlow):
+        return "pediatric_hip_limp"
     if _has_adenoids_complaint(qlow):
         return "adenoids"
     if _has_pediatric_uri_complaint(qlow):
@@ -1143,6 +1248,8 @@ def _clinical_hint_profile(qlow: str) -> str | None:
         return "rectal"
     if _has_stool_blood_complaint(qlow):
         return "stool_blood"
+    if _has_hip_pain_complaint(qlow):
+        return "hip_pain"
     return None
 
 
@@ -1195,6 +1302,22 @@ def filter_icd_pool_for_complaint(scored: list[dict], text: str) -> list[dict]:
             continue
         if not _has_drug_adverse_context(qlow) and is_drug_external_cause_code(code):
             continue
+        if _has_hip_or_limp_complaint(qlow) and not _has_femoral_vessel_nerve_intent(qlow):
+            cu = code.upper()
+            tlow = title.lower().replace("ё", "е")
+            if (
+                cu.startswith(("G57", "I80", "K41", "Q72", "R95"))
+                or "бедренного нерва" in tlow
+                or "бедренной вены" in tlow
+                or "бедренная грыжа" in tlow
+            ):
+                continue
+            if _has_pediatric_hip_limp_complaint(qlow) and cu.startswith("M16"):
+                continue
+            if _has_pediatric_hip_limp_complaint(qlow) and cu.startswith("S7") and not any(
+                m in qlow for m in ("травм", "ушиб", "ранен", "паден", "удар", "перелом")
+            ):
+                continue
         out.append(row)
     return out if out else list(scored)
 
@@ -1303,6 +1426,12 @@ def _icd_extra_roots(text: str) -> list[str]:
         extra.extend(["анафилакт", "аллергическ"])
     if "ожог" in s and "солнеч" not in s:
         extra.extend(["термическ", "ожог"])
+    if any(m in s for m in ("хромот", "прихрам")):
+        extra.extend(["хромот", "походк", "тазобедрен"])
+    if "бедр" in s and "нерв" not in s and "грыж" not in s and "вен" not in s:
+        extra.extend(["тазобедрен", "сустав"])
+    if "пертес" in s or "легг" in s:
+        extra.extend(["остеохондропат", "пертес", "тазобедрен"])
     return extra
 
 
@@ -1357,6 +1486,7 @@ def _lexicon_score_one_row(
     score = _penalize_sunburn_for_thermal(qlow, code, score)
     score = _penalize_z_for_acute_complaint(qlow, code, title, score)
     score = _penalize_infant_death_for_uri(qlow, code, score)
+    score = _penalize_femoral_noise_for_hip(qlow, code, title, score)
     score = _penalize_sti_pharynx_without_context(qlow, code, title, score)
     score = _penalize_poisoning_without_intent(qlow, code, title, score)
     score = _penalize_drug_complication_y(qlow, code, score)

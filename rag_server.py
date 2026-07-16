@@ -2355,6 +2355,19 @@ def clinical_query_for_rag(full_query: str) -> str:
     return part if part else full_query.strip()
 
 
+def expand_query_for_retrieve(q_rag: str) -> tuple[str, dict | None]:
+    """Детерминированное клиническое расширение текста перед retrieve (без LLM)."""
+    try:
+        from clinical_knowledge.search_query_expand import expand_clinical_query_terms
+
+        expanded, meta = expand_clinical_query_terms(q_rag or "")
+        if meta.get("applied"):
+            return expanded, meta
+        return q_rag, None
+    except Exception:
+        return q_rag, None
+
+
 def gather_protocol_text(path: str, max_chars: int) -> str:
     """Склеивает чанки одного PDF по порядку (до max_chars), приоритет клинических типов."""
     parts_raw = _chunks_by_path.get(path) or []
@@ -8207,7 +8220,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-15-r2-clinical-visit-upload"
+BUILD_VERSION = "2026-07-15-r3-search-msk-clarify-ui"
 
 
 def _app_version() -> str:
@@ -8598,6 +8611,17 @@ def _infer_icd_pipeline_from_full_query(
     from icd_mkb import finalize_icd_analysis_codes
 
     finalize_icd_analysis_codes(icd_analysis, lq_lex)
+    # Детерминированный expander после МКБ: улучшает retrieve, не ломая lexicon/hints.
+    q_rag, expand_meta = expand_query_for_retrieve(q_rag)
+    if expand_meta and query_clinical_refinement is None:
+        query_clinical_refinement = {
+            "applied": True,
+            "source": "deterministic_expand",
+            "profiles": expand_meta.get("profiles") or [],
+            "extra_terms": expand_meta.get("extra_terms") or [],
+        }
+    elif expand_meta and isinstance(query_clinical_refinement, dict):
+        query_clinical_refinement["deterministic_expand"] = expand_meta
     # S2 shadow: локальный роутер query->специальность/ICD-глава логируется рядом с
     # фактическим путём (Gemini/эвристика), не влияя на ответ. Флаг RAG_QUERY_ROUTER_SHADOW.
     try:
