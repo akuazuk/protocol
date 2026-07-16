@@ -1246,6 +1246,12 @@ def load_data_manifest() -> None:
     mp = manifest_path()
     _path_manifest = CorpusPathManifest.load(mp) if mp.is_file() else CorpusPathManifest()
     _lazy_chunk_store = _ensure_lazy_chunk_store()
+    try:
+        from clinical_knowledge.vector_index import load_index_from_env
+
+        load_index_from_env(None)
+    except Exception:
+        pass
     gc.collect()
 
 
@@ -8220,7 +8226,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-15-r3-search-msk-clarify-ui"
+BUILD_VERSION = "2026-07-16-r1-manifest-vector-load"
 
 
 def _app_version() -> str:
@@ -8248,7 +8254,7 @@ def health() -> dict:
         chunk_cache_stats = store.cache_stats()
     from clinical_knowledge.lazy_rag_config import startup_mode
 
-    return {
+    payload = {
         "ok": True,
         "version": _app_version(),
         "startup_mode": startup_mode(),
@@ -8303,6 +8309,13 @@ def health() -> dict:
         "render_plan": (os.environ.get("RENDER_PLAN") or "").strip() or None,
         "render_extended_ram": _render_extended_ram(),
     }
+    try:
+        from clinical_knowledge.vector_index import index_stats
+
+        payload["vector_index"] = index_stats()
+    except Exception:
+        payload["vector_index"] = {"loaded": False}
+    return payload
 
 
 @app.get("/api/version")
