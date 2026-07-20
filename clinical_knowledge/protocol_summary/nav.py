@@ -496,6 +496,7 @@ def build_protocol_card_from_summary(
     icd_codes: list[str] | None = None,
     max_extracts: int = 4,
     max_text_chars: int = 260,
+    page_lookup: Any = None,
 ) -> dict[str, Any]:
     """Компактная карточка-выдержка протокола из Summary Card.
 
@@ -503,6 +504,10 @@ def build_protocol_card_from_summary(
     до `max_extracts` структурных выдержек (критерии/обследование/лечение/красные
     флаги/наблюдение) - целые утверждения с цитатой и страницей, а не обрывки.
     Без LLM.
+
+    `page_lookup(catalog_path, quote) -> int | None` (необязателен) дополняет
+    страницу выдержки, когда в карточке `page_start` пуст: цитату сопоставляют
+    с чанками протокола.
     """
     summary = find_summary_by_catalog_path(catalog_path)
     if summary is None:
@@ -543,13 +548,26 @@ def build_protocol_card_from_summary(
             text = str(it.get("text") or it.get("quote") or "").strip()
             if not text:
                 continue
+            quote = str(it.get("quote") or "")[:600] or None
+            page = it.get("page_start")
+            page_source = "summary" if page else None
+            if not page and page_lookup is not None:
+                probe = quote or text
+                try:
+                    found = page_lookup(catalog_path, probe)
+                except Exception:
+                    found = None
+                if found:
+                    page = found
+                    page_source = "matched"
             extracts.append(
                 {
                     "section_id": sid,
                     "label": label,
                     "text": text[:max_text_chars],
-                    "quote": (str(it.get("quote") or "")[:600] or None),
-                    "page_start": it.get("page_start"),
+                    "quote": quote,
+                    "page_start": page,
+                    "page_source": page_source,
                     "section_title": it.get("section_title"),
                 }
             )

@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r11-navigator-card-ui"
+BUILD_VERSION = "2026-07-20-r12-card-page-enrichment"
 
 
 def _app_version() -> str:
@@ -9603,7 +9603,17 @@ def _api_assist_impl(body: AssistIn) -> dict:
             )
         attach_structured_excerpts(out, retrieved, limit=4)
         if os.environ.get("RAG_PROTOCOL_CARD", "1") == "1":
+            from clinical_knowledge.page_locator import locate_page_for_quote
             from clinical_knowledge.protocol_card import attach_protocol_cards
+
+            def _card_page_lookup(path: str, quote: str) -> int | None:
+                chunks = _chunks_by_path.get(path)
+                if not chunks:
+                    nk = normalize_protocol_path(path)
+                    chunks = _chunks_by_path.get(nk)
+                if not chunks:
+                    return None
+                return locate_page_for_quote(quote, chunks)
 
             attach_protocol_cards(
                 out,
@@ -9611,6 +9621,7 @@ def _api_assist_impl(body: AssistIn) -> dict:
                 query=q,
                 icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
                 limit=int(os.environ.get("RAG_PROTOCOL_CARD_LIMIT", "12")),
+                page_lookup=_card_page_lookup if _chunks_by_path else None,
             )
     except Exception:
         pass

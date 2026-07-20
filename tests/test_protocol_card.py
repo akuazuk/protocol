@@ -98,6 +98,55 @@ def test_card_extracts_carry_pages(monkeypatch) -> None:
     assert any(p for p in pages)
 
 
+def _summary_without_pages() -> ProtocolSummary:
+    cond = ConditionSummary(
+        condition_id="j18",
+        name="Внебольничная пневмония",
+        icd10_codes=["J18.9"],
+        diagnostic_criteria=CriteriaBlock(
+            required=[
+                CriterionItem(
+                    text="Лихорадка и кашель с гнойной мокротой.",
+                    source_ref=SummarySourceRef(quote="Лихорадка и кашель с гнойной мокротой."),
+                )
+            ]
+        ),
+    )
+    return ProtocolSummary(
+        protocol_id="pneumonia_nopage",
+        source=ProtocolSource(title="Пневмония", local_path="p.pdf"),
+        conditions=[cond],
+    )
+
+
+def test_page_lookup_enriches_missing_page(monkeypatch) -> None:
+    monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: _summary_without_pages())
+
+    def _lookup(path, quote):
+        assert "Лихорадка" in quote
+        return 9
+
+    card = build_protocol_card_from_summary("p.pdf", icd_codes=["J18.9"], page_lookup=_lookup)
+    e = card["extracts"][0]
+    assert e["page_start"] == 9
+    assert e["page_source"] == "matched"
+
+
+def test_page_source_summary_when_present(monkeypatch) -> None:
+    monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: _sample_summary())
+    called = {"n": 0}
+
+    def _lookup(path, quote):
+        called["n"] += 1
+        return 99
+
+    card = build_protocol_card_from_summary("x", icd_codes=["J18.9"], page_lookup=_lookup)
+    # У образца все source_ref уже содержат страницу -> lookup не вызывается, source=summary.
+    assert called["n"] == 0
+    for e in card["extracts"]:
+        assert e["page_source"] == "summary"
+
+
 def test_card_unavailable_when_no_summary(monkeypatch) -> None:
     monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: None)
     card = build_protocol_card_from_summary("missing.pdf")

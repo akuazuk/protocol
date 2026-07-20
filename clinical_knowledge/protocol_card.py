@@ -59,6 +59,7 @@ def build_protocol_card(
     care_setting_label: str | None = None,
     max_extracts: int = 4,
     max_text_chars: int = 260,
+    page_lookup: Any = None,
 ) -> dict[str, Any]:
     """Собрать карточку-выдержку для одного протокола по fallback-цепочке."""
     from clinical_knowledge.protocol_summary.nav import build_protocol_card_from_summary
@@ -69,6 +70,7 @@ def build_protocol_card(
         icd_codes=icd_codes,
         max_extracts=max_extracts,
         max_text_chars=max_text_chars,
+        page_lookup=page_lookup,
     )
     if card.get("available"):
         if not card.get("title") and title_hint:
@@ -129,6 +131,7 @@ def attach_protocol_cards(
     query: str = "",
     icd_codes: list[str] | None = None,
     limit: int = 12,
+    page_lookup: Any = None,
 ) -> dict[str, Any]:
     """Вложить protocol_card для протоколов из выдачи (все перечисленные, до limit)."""
     protos: list[dict[str, Any]] = []
@@ -163,6 +166,7 @@ def attach_protocol_cards(
             raw_excerpt=raw_map.get(path),
             title_hint=pr.get("title"),
             care_setting_label=care_label,
+            page_lookup=page_lookup,
         )
         if card.get("available"):
             cards[path] = card
