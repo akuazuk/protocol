@@ -7,449 +7,195 @@
   <link rel="icon" href="/protocol-logo.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/protocol-chrome-tabs.css?v=__BUILD_VERSION__" />
   <style>
     :root {
+      --green-900: #06402e;
       --green-800: #0d5c4a;
       --green-700: #1a8a72;
       --green-600: #2db896;
       --bg: #eef8f4;
       --card: #fff;
       --line: rgba(160, 210, 195, 0.55);
-      --text: #1a2e2a;
+      --text: #14231f;
       --muted: #5f7a72;
       --mint: #d8f5ea;
       --mint-soft: #ecfbf4;
       --sky: #dbeefe;
-      --lavender: #ebe6fa;
-      --peach: #fdebd3;
       --shadow: 0 10px 32px rgba(13, 92, 74, 0.1);
+      --shadow-sm: 0 3px 12px rgba(13, 92, 74, 0.07);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
       background:
-        radial-gradient(ellipse 120% 80% at 0% 0%, rgba(219, 238, 254, 0.55), transparent 50%),
-        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(216, 245, 234, 0.65), transparent 45%),
+        radial-gradient(ellipse 120% 80% at 0% 0%, rgba(219, 238, 254, 0.5), transparent 50%),
+        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(216, 245, 234, 0.6), transparent 45%),
         var(--bg);
       color: var(--text);
-      line-height: 1.45;
+      line-height: 1.5;
       min-height: 100vh;
     }
+
+    /* Header */
     .pv-header {
-      display: block;
-      padding: 0.65rem 0.85rem 0.55rem;
-      background: rgba(255, 255, 255, 0.72);
+      padding: 0.85rem 1rem 0.75rem;
+      background: rgba(255, 255, 255, 0.78);
       border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(6px);
+    }
+    .pv-header__wrap { max-width: 1160px; margin: 0 auto; }
+    .pv-eyebrow {
+      margin: 0 0 0.15rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--green-700);
     }
     .pv-title {
-      margin: 0;
-      font-family: Outfit, "DM Sans", sans-serif;
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--green-800);
-      line-height: 1.3;
-      overflow-wrap: anywhere;
+      margin: 0; font-family: Outfit, "DM Sans", sans-serif;
+      font-size: 1.12rem; font-weight: 800; color: var(--green-900);
+      line-height: 1.28; overflow-wrap: anywhere;
     }
-    .pv-sub {
-      margin: 0.18rem 0 0;
-      font-size: 0.7rem;
-      color: var(--muted);
-      overflow-wrap: anywhere;
+    .pv-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0; }
+    .pv-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.7rem; font-weight: 650; padding: 0.2rem 0.6rem;
+      border-radius: 999px; border: 1px solid var(--line); background: #fff; color: #334155;
     }
-    .pv-sub:empty { display: none; }
-    .pv-main {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0.75rem 0.85rem 1.5rem;
-    }
-    .protocol-src-viewer {
-      display: grid;
-      grid-template-columns: minmax(9.5rem, 11.5rem) minmax(0, 1fr);
-      gap: 0.65rem;
-      align-items: start;
-    }
-    @media (max-width: 760px) {
-      .protocol-src-viewer { grid-template-columns: 1fr; }
-    }
-    .protocol-src-toolbar {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      align-items: center;
-      padding: 0.55rem 0.65rem;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: linear-gradient(165deg, rgba(255,255,255,0.98), var(--mint-soft));
-      box-shadow: var(--shadow);
-    }
-    .protocol-src-search-wrap {
-      flex: 1 1 14rem;
-      min-width: 0;
-      display: flex;
-      align-items: stretch;
-      gap: 0.35rem;
-    }
-    .protocol-src-search {
-      flex: 1 1 auto;
-      min-width: 0;
-      font: inherit;
-      font-size: 0.82rem;
-      padding: 0.45rem 0.62rem;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-    }
-    .protocol-src-search:focus {
-      outline: 2px solid rgba(26, 138, 114, 0.28);
-      border-color: var(--green-700);
-    }
-    .protocol-src-search-actions {
-      display: flex;
-      gap: 0.3rem;
-      flex-shrink: 0;
-    }
-    .protocol-src-icon-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.05rem;
-      height: 2.05rem;
-      padding: 0;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--green-800);
-      cursor: pointer;
-    }
-    .protocol-src-icon-btn svg { width: 1rem; height: 1rem; }
-    .protocol-src-icon-btn--go {
-      background: linear-gradient(180deg, #fff, var(--mint));
-      border-color: rgba(26, 138, 114, 0.38);
-    }
-    .protocol-src-icon-btn--reset { color: #64748b; }
-    .protocol-src-icon-btn:hover { filter: brightness(0.98); transform: translateY(-1px); }
-    .pv-pdf-btn {
-      font: inherit;
-      font-size: 0.72rem;
-      font-weight: 650;
-      padding: 0.38rem 0.62rem;
-      border-radius: 10px;
-      border: 1px solid rgba(26,138,114,0.32);
-      background: #fff;
-      color: var(--green-800);
-      cursor: pointer;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .protocol-src-hint, .protocol-src-stats {
-      font-size: 0.68rem;
-      color: var(--muted);
-      width: 100%;
-    }
-    .protocol-src-intent-chips {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-    }
-    .protocol-src-intent-chip {
-      font: inherit;
-      font-size: 0.7rem;
-      font-weight: 650;
-      padding: 0.24rem 0.62rem;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #334155;
-      cursor: pointer;
-    }
-    .protocol-src-intent-chip[data-src-intent="treatment"] { background: var(--mint-soft); }
-    .protocol-src-intent-chip[data-src-intent="diagnostics"] { background: var(--sky); }
-    .protocol-src-intent-chip[data-src-intent="diagnosis"] { background: var(--lavender); }
-    .protocol-src-intent-chip[data-src-intent="followup"] { background: var(--peach); }
-    .protocol-src-intent-chip.is-active {
-      border-color: rgba(26,138,114,0.55);
-      background: var(--mint);
-      color: #034a3c;
-      box-shadow: 0 2px 8px rgba(26, 138, 114, 0.12);
-    }
-    .protocol-src-overview {
-      grid-column: 1 / -1;
-      border-radius: 14px;
-      border: 1px solid rgba(26, 138, 114, 0.22);
-      background: linear-gradient(165deg, var(--mint-soft), #fff);
-      padding: 0.65rem 0.75rem;
-      overflow-wrap: anywhere;
-    }
-    .protocol-src-overview.is-empty { display: none; }
-    .protocol-src-overview.is-loading { opacity: 0.82; }
-    .protocol-src-overview__title {
-      margin: 0 0 0.3rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--green-800);
-    }
-    .protocol-src-overview__summary {
-      margin: 0;
-      font-size: 0.78rem;
-      line-height: 1.45;
-    }
-    .protocol-src-overview__points {
-      margin: 0.42rem 0 0;
-      padding-left: 1.05rem;
-      font-size: 0.76rem;
-    }
-    .protocol-src-overview__point { margin: 0.22rem 0; }
-    .protocol-src-overview__cite {
-      display: inline-block;
-      margin-left: 0.25rem;
-      font-size: 0.67rem;
-      color: var(--muted);
-    }
-    .protocol-src-toc, .protocol-src-body {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      overflow: auto;
-      padding: 0.45rem;
-      min-height: 14rem;
-      max-height: calc(100vh - 12rem);
-      box-shadow: var(--shadow);
-    }
-    .protocol-src-toc__title {
-      margin: 0 0 0.35rem 0.12rem;
-      font-size: 0.66rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-    }
-    .protocol-src-toc__btn {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.35rem;
-      width: 100%;
-      margin: 0.18rem 0;
-      padding: 0.42rem 0.48rem;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
-      font: inherit;
-      font-size: 0.74rem;
-      text-align: left;
-      cursor: pointer;
-      color: var(--text);
-    }
-    .protocol-src-toc__btn span:first-child {
-      flex: 1;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .protocol-src-toc__btn.is-active,
-    .protocol-src-toc__btn:hover {
-      border-color: rgba(26,138,114,0.38);
-      background: var(--mint-soft);
-      color: var(--green-800);
-    }
-    .protocol-src-toc__count {
-      flex-shrink: 0;
-      min-width: 1.15rem;
-      text-align: center;
-      font-size: 0.66rem;
-      font-weight: 700;
-      padding: 0.08rem 0.28rem;
-      border-radius: 999px;
-      background: rgba(226,232,240,0.85);
-    }
-    .protocol-src-section {
-      margin-bottom: 0.45rem;
-      border: 1px solid rgba(210, 230, 220, 0.9);
-      border-radius: 12px;
-      overflow: hidden;
-      scroll-margin-top: 0.75rem;
-    }
-    .protocol-src-section.is-active { border-color: rgba(26,138,114,0.35); }
-    .protocol-src-section > summary {
-      list-style: none;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      gap: 0.45rem;
-      padding: 0.48rem 0.58rem;
-      background: var(--mint-soft);
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--green-800);
-    }
-    .protocol-src-section > summary span:first-child {
-      flex: 1;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .protocol-src-section > summary::-webkit-details-marker { display: none; }
-    .protocol-src-section__items { padding: 0.25rem 0.35rem 0.4rem; }
-    .protocol-src-item {
-      margin: 0.28rem 0;
-      border-radius: 10px;
-      border: 1px solid rgba(241,245,249,0.95);
-    }
-    .protocol-src-item > summary {
-      list-style: none;
-      cursor: pointer;
-      display: flex;
-      gap: 0.42rem;
-      align-items: flex-start;
-      padding: 0.42rem 0.48rem;
-      font-size: 0.76rem;
-    }
-    .protocol-src-item > summary::-webkit-details-marker { display: none; }
-    .protocol-src-item__page {
-      flex-shrink: 0;
-      font-size: 0.64rem;
-      font-weight: 700;
-      padding: 0.14rem 0.38rem;
-      border-radius: 999px;
-      background: var(--sky);
-      color: #0369a1;
-    }
-    .protocol-src-item__lead {
-      flex: 1;
-      min-width: 0;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-    .protocol-src-item__body {
-      margin: 0;
-      padding: 0 0.48rem 0.42rem 2.35rem;
-      font-size: 0.74rem;
-      color: #475569;
-      overflow-wrap: anywhere;
-    }
-    .protocol-src-item__meta {
-      padding: 0 0.48rem 0.42rem 2.35rem;
-      font-size: 0.68rem;
-    }
-    .protocol-src-item__meta a { color: var(--green-700); font-weight: 650; text-decoration: none; }
-    .protocol-src-item__chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      padding: 0.1rem 0.48rem 0.4rem 2.35rem;
-    }
-    .protocol-src-chip {
-      display: inline-block;
-      padding: 0.14rem 0.5rem;
-      border-radius: 999px;
-      background: var(--mint-soft);
-      border: 1px solid rgba(52, 168, 130, 0.28);
-      font-size: 0.66rem;
-      overflow-wrap: anywhere;
-    }
-    .protocol-src-chip__label { font-weight: 700; color: var(--green-700); }
-    .proto-src-mark { background: rgba(250,204,21,0.55); border-radius: 3px; }
-    .proto-src-mark.is-current { background: rgba(251,146,60,0.75); }
-    .protocol-src-viewer.is-search-active .protocol-src-item > summary { font-size: 0.9rem; line-height: 1.48; }
-    .protocol-src-viewer.is-search-active .protocol-src-item__body,
-    .protocol-src-viewer.is-search-active .protocol-src-item__bullets { font-size: 0.86rem; line-height: 1.5; }
-    .protocol-src-viewer.is-search-active--drugs .protocol-src-overview { border-width: 2px; border-color: rgba(26,138,114,0.45); }
-    .protocol-src-item__bullets { margin: 0; padding: 0.15rem 0.48rem 0.42rem 2.35rem; list-style: disc; color: #475569; }
-    .protocol-src-item__bullets li { margin: 0.28rem 0; overflow-wrap: anywhere; }
-    .protocol-src-chip--drugs { background: var(--mint); border-color: rgba(26,138,114,0.35); }
-    .protocol-src-show-more {
-      display: block; width: calc(100% - 0.7rem); margin: 0.35rem auto 0.15rem;
-      font: inherit; font-size: 0.74rem; font-weight: 650; padding: 0.35rem 0.55rem;
-      border-radius: 8px; border: 1px dashed rgba(26,138,114,0.35);
-      background: var(--mint-soft); color: var(--green-800); cursor: pointer;
-    }
-    .protocol-src-empty, .protocol-src-loading { color: var(--muted); font-size: 0.82rem; padding: 0.75rem 0.2rem; }
+    .pv-chip--icd { background: var(--sky); border-color: rgba(3, 105, 161, 0.28); color: #075985; }
+    .pv-chip--care { background: var(--mint-soft); border-color: rgba(26, 138, 114, 0.3); color: var(--green-800); }
+    .pv-chip--src { background: rgba(148, 163, 184, 0.16); color: #475569; cursor: help; }
 
-    .pv-key {
-      margin: 0 0 0.9rem;
-      padding: 0.85rem 0.95rem;
-      border: 1px solid rgba(52, 168, 130, 0.32);
-      border-radius: 14px;
-      background: linear-gradient(165deg, rgba(240, 249, 245, 0.9), #fff);
+    .pv-main { max-width: 1160px; margin: 0 auto; padding: 0.9rem 1rem 2.5rem; }
+
+    /* Toolbar: search + PDF */
+    .pv-toolbar {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 0.9rem;
     }
-    .pv-key__title {
-      margin: 0 0 0.5rem;
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: #0f172a;
+    .pv-search-wrap { flex: 1 1 16rem; min-width: 0; display: flex; gap: 0.35rem; }
+    .pv-search {
+      flex: 1 1 auto; min-width: 0; font: inherit; font-size: 0.86rem;
+      padding: 0.55rem 0.75rem; border-radius: 12px; border: 1px solid var(--line);
+      background: #fff; box-shadow: var(--shadow-sm);
     }
-    .pv-key__head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.45rem;
-      margin: 0 0 0.6rem;
+    .pv-search:focus { outline: 2px solid rgba(26, 138, 114, 0.28); border-color: var(--green-700); }
+    .pv-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 12px;
+      border: 1px solid var(--line); background: #fff; color: var(--green-800); cursor: pointer;
     }
-    .pv-key__src {
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      padding: 0.14rem 0.5rem;
-      border-radius: 999px;
-      white-space: nowrap;
+    .pv-icon-btn svg { width: 1.05rem; height: 1.05rem; }
+    .pv-icon-btn--go { background: linear-gradient(180deg, #fff, var(--mint)); border-color: rgba(26, 138, 114, 0.38); }
+    .pv-icon-btn:hover { filter: brightness(0.98); }
+    .pv-pdf-btn {
+      font: inherit; font-size: 0.78rem; font-weight: 700; padding: 0.55rem 0.85rem;
+      border-radius: 12px; border: 1px solid rgba(26, 138, 114, 0.32);
+      background: #fff; color: var(--green-800); cursor: pointer; text-decoration: none; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.35rem;
     }
-    .pv-key__src--ok { color: #0f766e; background: rgba(125, 211, 192, 0.3); }
-    .pv-key__src--rag { color: #475569; background: rgba(148, 163, 184, 0.24); }
-    .pv-key__src--raw { color: #64748b; background: rgba(203, 213, 225, 0.32); }
-    .pv-key__cond { font-size: 0.8rem; font-weight: 650; color: #0f172a; }
-    .pv-key__tabs {
-      display: flex;
-      gap: 0.35rem;
-      margin: 0 0 0.65rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding-bottom: 2px;
+    .pv-pdf-btn:hover { background: var(--mint-soft); }
+
+    /* AI overview */
+    .pv-overview {
+      margin: 0 0 0.9rem; border-radius: 16px; border: 1px solid rgba(26, 138, 114, 0.24);
+      background: linear-gradient(165deg, var(--mint-soft), #fff); padding: 0.8rem 0.95rem; overflow-wrap: anywhere;
     }
-    .pv-key__tabs::-webkit-scrollbar { display: none; }
-    .pv-key__tab {
-      flex: 0 0 auto;
-      font: inherit;
-      font-size: 0.76rem;
-      font-weight: 650;
-      color: #475569;
-      background: rgba(148, 163, 184, 0.16);
-      border: 1px solid transparent;
-      border-radius: 999px;
-      padding: 0.26rem 0.7rem;
-      cursor: pointer;
-      white-space: nowrap;
+    .pv-overview[hidden] { display: none; }
+    .pv-overview__title { margin: 0 0 0.35rem; font-size: 0.74rem; font-weight: 800; color: var(--green-800); text-transform: uppercase; letter-spacing: 0.04em; }
+    .pv-overview__summary { margin: 0; font-size: 0.88rem; line-height: 1.55; }
+    .pv-overview__points { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.84rem; }
+    .pv-overview__point { margin: 0.28rem 0; }
+    .pv-overview__cite { margin-left: 0.3rem; font-size: 0.72rem; color: var(--green-700); font-weight: 650; text-decoration: none; }
+
+    /* Master-detail layout */
+    .pv-layout { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.1rem; align-items: start; }
+    .pv-rail { position: sticky; top: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .pv-rail__title { margin: 0 0 0.35rem 0.35rem; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    .pv-rail__item {
+      display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;
+      width: 100%; text-align: left; font: inherit; font-size: 0.82rem; font-weight: 600;
+      padding: 0.5rem 0.6rem; border-radius: 11px; border: 1px solid transparent;
+      background: transparent; color: var(--text); cursor: pointer;
     }
-    .pv-key__tab:hover { background: rgba(125, 211, 192, 0.24); }
-    .pv-key__tab.is-active { color: #0f766e; background: rgba(125, 211, 192, 0.36); border-color: rgba(15, 118, 110, 0.35); }
-    .pv-key__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .pv-key__item {
-      padding-left: 0.7rem;
-      border-left: 3px solid rgba(52, 168, 130, 0.5);
+    .pv-rail__item:hover { background: var(--mint-soft); }
+    .pv-rail__item.is-active { background: #fff; border-color: rgba(26, 138, 114, 0.4); color: var(--green-800); box-shadow: var(--shadow-sm); }
+    .pv-rail__count { flex-shrink: 0; min-width: 1.3rem; text-align: center; font-size: 0.68rem; font-weight: 700; padding: 0.08rem 0.34rem; border-radius: 999px; background: rgba(226, 232, 240, 0.85); color: #475569; }
+    .pv-rail__item.is-active .pv-rail__count { background: var(--mint); color: var(--green-800); }
+
+    .pv-detail { display: flex; flex-direction: column; gap: 1.1rem; }
+    .pv-section { scroll-margin-top: 0.75rem; }
+    .pv-section__head { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.6rem; }
+    .pv-section__title { margin: 0; font-family: Outfit, "DM Sans", sans-serif; font-size: 1rem; font-weight: 700; color: var(--green-900); }
+    .pv-section__rule { flex: 1; height: 1px; background: var(--line); }
+
+    .pv-ent { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.7rem; }
+    .pv-ent__chip { font-size: 0.72rem; font-weight: 600; padding: 0.22rem 0.6rem; border-radius: 999px; background: var(--mint-soft); border: 1px solid rgba(52, 168, 130, 0.28); color: var(--green-800); }
+    .pv-ent__chip--exam { background: var(--sky); border-color: rgba(3, 105, 161, 0.22); color: #075985; }
+
+    .pv-points { display: flex; flex-direction: column; gap: 0.6rem; }
+    .pv-point {
+      position: relative; padding: 0.7rem 0.85rem 0.7rem 1rem; border-radius: 14px;
+      background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); overflow-wrap: anywhere;
     }
-    .pv-key__label {
-      display: block;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: #0f766e;
-      margin: 0 0 0.2rem;
+    .pv-point::before { content: ""; position: absolute; left: 0; top: 0.7rem; bottom: 0.7rem; width: 4px; border-radius: 4px; background: var(--green-600); }
+    .pv-point[hidden] { display: none; }
+    .pv-point__text { margin: 0; font-size: 0.9rem; line-height: 1.58; color: #1f2d29; }
+    .pv-point__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.45rem; }
+    .pv-point__page { font-size: 0.73rem; font-weight: 700; color: var(--green-700); white-space: nowrap; text-decoration: none; border-bottom: 1px dotted rgba(26, 138, 114, 0.55); }
+    .pv-point__page:hover { color: var(--green-800); }
+    .pv-point__cite-btn { font: inherit; font-size: 0.72rem; font-weight: 650; color: #64748b; background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; }
+    .pv-point__cite-btn::before { content: "\201C"; font-weight: 800; color: var(--green-600); }
+    .pv-point__quote { margin: 0.5rem 0 0; padding: 0.5rem 0.7rem; border-left: 3px solid rgba(52, 168, 130, 0.45); background: var(--mint-soft); font-size: 0.82rem; color: #3f5750; border-radius: 0 8px 8px 0; }
+    .pv-point__quote[hidden] { display: none; }
+    .pv-mark { background: rgba(250, 204, 21, 0.5); border-radius: 3px; }
+
+    .pv-empty, .pv-loading { color: var(--muted); font-size: 0.9rem; padding: 1.5rem 0.5rem; text-align: center; }
+
+    /* Full text (behind toggle) */
+    .pv-fulltext { margin-top: 1.5rem; border-top: 1px dashed var(--line); padding-top: 1rem; }
+    .pv-fulltext__toggle {
+      font: inherit; font-size: 0.82rem; font-weight: 650; padding: 0.55rem 0.9rem; border-radius: 12px;
+      border: 1px solid var(--line); background: #fff; color: var(--green-800); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.4rem;
     }
-    .pv-key__text { margin: 0; font-size: 0.9rem; line-height: 1.55; color: #1f2937; }
-    .pv-key__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 0.3rem; }
-    .pv-key__page {
-      font-size: 0.72rem; font-weight: 700; color: #0f766e; white-space: nowrap;
-      text-decoration: none; border-bottom: 1px dotted rgba(15, 118, 110, 0.6);
+    .pv-fulltext__toggle:hover { background: var(--mint-soft); }
+    .pv-fulltext__body { margin-top: 0.9rem; }
+
+    /* Full-text renderer (reused legacy source-view) */
+    .protocol-src-section { margin-bottom: 0.5rem; border: 1px solid rgba(210, 230, 220, 0.9); border-radius: 12px; overflow: hidden; }
+    .protocol-src-section > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 0.45rem; padding: 0.5rem 0.6rem; background: var(--mint-soft); font-size: 0.82rem; font-weight: 700; color: var(--green-800); }
+    .protocol-src-section > summary::-webkit-details-marker { display: none; }
+    .protocol-src-section__items { padding: 0.3rem 0.4rem 0.45rem; }
+    .protocol-src-item { margin: 0.3rem 0; border-radius: 10px; border: 1px solid rgba(241, 245, 249, 0.95); }
+    .protocol-src-item > summary { list-style: none; cursor: pointer; display: flex; gap: 0.42rem; align-items: flex-start; padding: 0.45rem 0.5rem; font-size: 0.82rem; }
+    .protocol-src-item > summary::-webkit-details-marker { display: none; }
+    .protocol-src-item__page { flex-shrink: 0; font-size: 0.66rem; font-weight: 700; padding: 0.14rem 0.4rem; border-radius: 999px; background: var(--sky); color: #0369a1; }
+    .protocol-src-item__lead { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .protocol-src-item__body { margin: 0; padding: 0 0.5rem 0.45rem 2.4rem; font-size: 0.8rem; color: #475569; overflow-wrap: anywhere; }
+    .protocol-src-item__meta { padding: 0 0.5rem 0.45rem 2.4rem; font-size: 0.72rem; }
+    .protocol-src-item__meta a { color: var(--green-700); font-weight: 650; text-decoration: none; }
+    .protocol-src-item__bullets { margin: 0; padding: 0.15rem 0.5rem 0.45rem 2.4rem; list-style: disc; color: #475569; font-size: 0.8rem; }
+    .protocol-src-item__bullets li { margin: 0.28rem 0; overflow-wrap: anywhere; }
+    .protocol-src-show-more { display: block; width: calc(100% - 0.7rem); margin: 0.35rem auto 0.15rem; font: inherit; font-size: 0.78rem; font-weight: 650; padding: 0.4rem 0.55rem; border-radius: 8px; border: 1px dashed rgba(26, 138, 114, 0.35); background: var(--mint-soft); color: var(--green-800); cursor: pointer; }
+    .protocol-src-empty { color: var(--muted); font-size: 0.85rem; padding: 0.75rem 0.2rem; }
+
+    /* Mobile */
+    @media (max-width: 860px) {
+      .pv-layout { grid-template-columns: 1fr; gap: 0.75rem; }
+      .pv-rail {
+        position: sticky; top: 0; z-index: 5; flex-direction: row; overflow-x: auto;
+        gap: 0.4rem; padding: 0.5rem 0.1rem; margin: 0 -0.15rem;
+        background: rgba(238, 248, 244, 0.94); backdrop-filter: blur(4px); -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      }
+      .pv-rail::-webkit-scrollbar { display: none; }
+      .pv-rail__title { display: none; }
+      .pv-rail__item { flex: 0 0 auto; width: auto; border: 1px solid var(--line); background: #fff; }
+      .pv-title { font-size: 1.02rem; }
+      .pv-point__text { font-size: 0.95rem; }
     }
-    .pv-key__page:hover { color: #115e59; }
-    .pv-key__verified { font-size: 0.7rem; font-weight: 650; color: #0f766e; white-space: nowrap; cursor: help; }
-    @media (max-width: 640px) {
-      .pv-key__text { font-size: 0.95rem; }
-      .pv-key__tab { padding: 0.32rem 0.75rem; font-size: 0.82rem; }
+    @media (max-width: 560px) {
+      .pv-icon-btn { width: 2.7rem; height: 2.7rem; }
+      .pv-pdf-btn { padding: 0.6rem 0.9rem; }
     }
   </style>
 </head>
@@ -475,434 +221,313 @@
     </div>
   </div>
   <header class="pv-header">
-    <div class="pv-header__main">
+    <div class="pv-header__wrap">
+      <p class="pv-eyebrow">Клинический протокол</p>
       <h1 class="pv-title" id="pv-title">Навигация по протоколу</h1>
-      <p class="pv-sub" id="pv-sub">Загрузка…</p>
+      <div class="pv-meta" id="pv-meta"></div>
     </div>
   </header>
-  <main class="pv-main" id="pv-root"></main>
+  <main class="pv-main" id="pv-root">
+    <p class="pv-loading" id="pv-status">Загрузка выводов протокола…</p>
+  </main>
   <script>
   (function () {
-    var ORDER = ["diagnosis", "diagnostics", "treatment", "followup"];
     var SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>';
     var RESET_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-    var MAX_VISIBLE = 5;
-    var INTENTS = {
-      treatment: { sections: ["treatment"], tags: ["treatment", "drugs"], label: "Лечение", terms: ["лекарств", "препарат", "назнач", "терапи", "дозиров", "флп", "таблет", "капсул", "сироп", "суспенз", "инъекц", "укол", "мг", "внутрь", "пероральн", "муколитик", "антибиотик", "ингаляц", "небулайз", "лечени", "фармакотерап", "монотерап", "схем"], phrases: ["какие лекарства", "что назначить", "чем лечить", "схема лечения", "какие препараты"] },
-      diagnostics: { sections: ["diagnostics"], tags: ["diagnostics", "exams"], label: "Обследования", terms: ["обследован", "анализ", "уздс", "узи", "диагност", "лаборатор", "мрт", "кт", "экг", "оак"], phrases: ["какие обследования", "что сдать", "какие анализы", "какие исследования"] },
-      diagnosis: { sections: ["diagnosis"], tags: ["diagnosis", "criteria"], label: "Диагноз", terms: ["диагноз", "классификац", "критери", "мкб", "стади"], phrases: ["критерии диагноза", "классификация"] },
-      followup: { sections: ["followup"], tags: ["followup", "prevention", "routing"], label: "Наблюдение", terms: ["наблюден", "диспансер", "контроль", "профилактик", "маршрут", "направлен", "госпитализац"], phrases: ["как наблюдать", "куда направлять"] },
-      contraindications: { sections: ["treatment", "diagnosis", "diagnostics"], tags: ["treatment", "criteria"], label: "Противопоказания", terms: ["противопоказан", "нельзя", "не применя", "абсолютн"], phrases: ["противопоказания", "когда нельзя"] }
-    };
+    var PDF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
+
     function qp(name) { return new URLSearchParams(location.search).get(name) || ""; }
     function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
     function escAttr(s) { return esc(s); }
     function escRx(s) { return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
     function norm(s) { return String(s || "").toLowerCase().replace(/ё/g, "е"); }
+    function pdfHref(path, page) { var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || ""); return page ? u + "#page=" + page : u; }
     function hl(text, terms) {
       var e = esc(text);
-      var list = Array.isArray(terms) ? terms : [terms];
-      list = list.map(function (t) { return String(t || "").trim(); }).filter(function (t) { return t.length >= 2; });
+      var list = (Array.isArray(terms) ? terms : [terms]).map(function (t) { return String(t || "").trim(); }).filter(function (t) { return t.length >= 3; });
       if (!list.length) return e;
       list.sort(function (a, b) { return b.length - a.length; });
-      try { return e.replace(new RegExp("(" + list.map(escRx).join("|") + ")", "gi"), '<mark class="proto-src-mark">$1</mark>'); }
-      catch (err) { return e; }
+      try { return e.replace(new RegExp("(" + list.map(escRx).join("|") + ")", "gi"), '<mark class="pv-mark">$1</mark>'); } catch (err) { return e; }
     }
-    function detectIntents(q) {
-      q = norm(q); var found = [];
-      Object.keys(INTENTS).forEach(function (key) {
-        var intent = INTENTS[key];
-        var hit = intent.phrases.some(function (p) { return q.indexOf(p) >= 0; });
-        if (!hit) hit = intent.terms.some(function (t) { return q.indexOf(t) >= 0; });
-        if (hit) found.push(key);
+    function queryTerms(q) {
+      return norm(q).split(/[^a-zа-я0-9]+/i).filter(function (t) { return t.length >= 3; });
+    }
+
+    /* ---------- BRIEF (primary view) ---------- */
+    function fetchBrief(path, query, icd) {
+      var u = "/api/protocol-brief?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || "");
+      if (icd) u += "&icd=" + encodeURIComponent(icd);
+      return fetch(u, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }
+    function renderMeta(brief) {
+      var el = document.getElementById("pv-meta"), out = "";
+      var cond = brief.condition;
+      if (cond && cond.display_label) out += '<span class="pv-chip pv-chip--icd">' + esc(cond.display_label) + "</span>";
+      (brief.care_setting_labels || []).forEach(function (c) { out += '<span class="pv-chip pv-chip--care">' + esc(c) + "</span>"; });
+      var srcTitle = brief.source === "summary" ? "Структурная карточка протокола с дословными цитатами"
+        : brief.source === "mixed" ? "Карточка протокола + ключевые фразы из текста"
+        : "Ключевые фразы из текста протокола";
+      var srcLabel = brief.source === "rich_chunks" ? "из текста" : "из карточки";
+      out += '<span class="pv-chip pv-chip--src" title="' + escAttr(srcTitle) + '">' + esc(srcLabel) + "</span>";
+      el.innerHTML = out;
+    }
+    function entChips(brief, sectionId) {
+      var kind = sectionId === "treatment" ? "drugs" : (sectionId === "exams" ? "exams" : null);
+      if (!kind) return "";
+      var list = ((brief.entities || {})[kind] || []).slice(0, 12);
+      if (!list.length) return "";
+      var cls = kind === "exams" ? "pv-ent__chip pv-ent__chip--exam" : "pv-ent__chip";
+      var out = '<div class="pv-ent">';
+      list.forEach(function (t) { out += '<span class="' + cls + '">' + esc(t) + "</span>"; });
+      return out + "</div>";
+    }
+    function pointHtml(path, pt, idx, sectionId, terms) {
+      var html = '<article class="pv-point" data-pv-point data-sec="' + escAttr(sectionId) + '">';
+      html += '<p class="pv-point__text">' + hl(pt.text || "", terms) + "</p>";
+      var meta = "";
+      if (pt.page_start) meta += '<a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page_start) + "</a>";
+      var qid = "q_" + sectionId + "_" + idx;
+      if (pt.quote && pt.verified) meta += '<button type="button" class="pv-point__cite-btn" data-cite-toggle="' + qid + '">цитата</button>';
+      if (meta) html += '<div class="pv-point__meta">' + meta + "</div>";
+      if (pt.quote && pt.verified) html += '<blockquote class="pv-point__quote" id="' + qid + '" hidden>' + esc(pt.quote) + "</blockquote>";
+      return html + "</article>";
+    }
+    function sectionHtml(path, brief, sec, terms) {
+      var pts = sec.points || [];
+      var html = '<section class="pv-section" id="pv-sec-' + escAttr(sec.id) + '" data-sec="' + escAttr(sec.id) + '">';
+      html += '<div class="pv-section__head"><h2 class="pv-section__title">' + esc(sec.label) + '</h2><span class="pv-section__rule"></span></div>';
+      html += entChips(brief, sec.id);
+      html += '<div class="pv-points">';
+      pts.forEach(function (pt, i) { html += pointHtml(path, pt, i, sec.id, terms); });
+      return html + "</div></section>";
+    }
+    function renderBrief(brief, path) {
+      var root = document.getElementById("pv-root");
+      var terms = queryTerms(qp("q"));
+      var shell =
+        '<div class="pv-toolbar">' +
+        '<div class="pv-search-wrap">' +
+        '<input class="pv-search" id="pv-search" type="search" placeholder="Найти в протоколе: лекарство, обследование, диагноз…" value="' + escAttr(qp("q")) + '" autocomplete="off" />' +
+        '<button type="button" class="pv-icon-btn" id="pv-reset" title="Сбросить" aria-label="Сбросить">' + RESET_SVG + '</button>' +
+        '<button type="button" class="pv-icon-btn pv-icon-btn--go" id="pv-go" title="Найти" aria-label="Найти">' + SEARCH_SVG + '</button>' +
+        "</div>" +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">' + PDF_SVG + " PDF</a>" +
+        "</div>" +
+        '<div class="pv-overview" id="pv-overview" hidden></div>' +
+        '<div class="pv-layout">' +
+        '<nav class="pv-rail" id="pv-rail"><p class="pv-rail__title">Разделы</p></nav>' +
+        '<div class="pv-detail" id="pv-detail"></div>' +
+        "</div>" +
+        '<div class="pv-fulltext"><button type="button" class="pv-fulltext__toggle" id="pv-ft-toggle">' + PDF_SVG + ' Показать полный текст протокола</button><div class="pv-fulltext__body" id="pv-ft-body"></div></div>';
+      root.innerHTML = shell;
+
+      var rail = document.getElementById("pv-rail");
+      var detail = document.getElementById("pv-detail");
+      (brief.sections || []).forEach(function (sec) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "pv-rail__item"; b.setAttribute("data-rail", sec.id);
+        b.innerHTML = '<span>' + esc(sec.label) + '</span><span class="pv-rail__count">' + (sec.count || (sec.points || []).length) + "</span>";
+        b.addEventListener("click", function () { jumpTo(sec.id); });
+        rail.appendChild(b);
       });
-      return found;
-    }
-    function isDrugFocus(q, intents) {
-      if ((intents || []).indexOf("treatment") < 0) return false;
-      q = norm(q);
-      return ["таблет", "капсул", "препарат", "лекарств", "мг", "внутрь", "сироп", "антибиотик", "муколитик"].some(function (t) { return q.indexOf(t) >= 0; });
-    }
-    function highlightTerms(q, intents, items) {
-      var terms = expandTerms(q, intents).filter(function (t) { return t.length >= 3 && t.length <= 32; });
-      if (norm(q).length >= 2) terms.unshift(norm(q));
-      var seen = {};
-      terms.forEach(function (t) { seen[t] = true; });
-      (items || []).forEach(function (item) {
-        (item.entity_terms || []).forEach(function (ent) {
-          ent = norm(ent);
-          if (ent.length >= 3 && !seen[ent]) { seen[ent] = true; terms.push(ent); }
+      detail.innerHTML = (brief.sections || []).map(function (sec) { return sectionHtml(path, brief, sec, terms); }).join("");
+
+      // цитаты
+      detail.querySelectorAll("[data-cite-toggle]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var q = document.getElementById(btn.getAttribute("data-cite-toggle"));
+          if (!q) return;
+          q.hidden = !q.hidden;
+          btn.textContent = q.hidden ? "цитата" : "скрыть цитату";
         });
-        (item.entities || []).forEach(function (chip) {
-          (chip.items || []).forEach(function (drug) {
-            drug = norm(drug);
-            if (drug.length >= 3 && !seen[drug]) { seen[drug] = true; terms.push(drug); }
-          });
-        });
       });
-      return terms.slice(0, 16);
-    }
-    function collectItems(view) {
-      var out = [], sections = (view && view.sections) || {};
-      Object.keys(sections).forEach(function (k) { out = out.concat(sections[k] || []); });
-      return out;
-    }
-    function expandTerms(q, intents) {
-      var terms = [], seen = {};
-      function add(t) { t = norm(t); if (t.length < 2 || seen[t]) return; seen[t] = true; terms.push(t); }
-      norm(q).split(/[^a-zа-я0-9.]+/i).forEach(function (tok) { if (tok.length >= 3) add(tok); });
-      if (norm(q).length >= 2) add(q);
-      (intents || []).forEach(function (key) { (INTENTS[key].terms || []).slice(0, 12).forEach(add); });
-      return terms;
-    }
-    function scoreItem(item, sectionId, q, intents, terms) {
-      var blob = norm(item.search_blob || "");
-      var text = norm((item.lead || "") + " " + (item.body || ""));
-      var score = 0; q = norm(q);
-      if (q.length >= 2 && (text.indexOf(q) >= 0 || blob.indexOf(q) >= 0)) score += 12;
-      (intents || []).forEach(function (key) {
-        var intent = INTENTS[key];
-        if (!intent) return;
-        if (intent.sections.indexOf(sectionId) >= 0) score += 10;
-        (intent.tags || []).forEach(function (tag) { if ((item.intent_tags || []).indexOf(tag) >= 0) score += 6; });
-      });
-      (terms || []).forEach(function (term) {
-        if (term.length < 3) return;
-        if (blob.indexOf(term) >= 0 || text.indexOf(term) >= 0) score += term.length >= 5 ? 3 : 2;
-      });
-      (item.entity_terms || []).forEach(function (ent) {
-        ent = norm(ent);
-        if (q && ent.indexOf(q) >= 0) score += 8;
-        (terms || []).forEach(function (term) { if (ent.indexOf(term) >= 0) score += 4; });
-      });
-      return score;
-    }
-    function filterView(view, q) {
-      q = String(q || "").trim();
-      if (!q || q.length < 2) return { view: view, terms: [], matchCount: 0, intents: [] };
-      var intents = detectIntents(q), terms = expandTerms(q, intents);
-      var sections = {}, toc = [], matchCount = 0, labels = view.section_labels || {};
-      ORDER.forEach(function (sec) {
-        var scored = [];
-        ((view.sections || {})[sec] || []).forEach(function (item) {
-          var sc = scoreItem(item, sec, q, intents, terms);
-          if (sc > 0) scored.push({ item: item, score: sc });
-        });
-        scored.sort(function (a, b) { return b.score - a.score; });
-        if (!scored.length) return;
-        if (intents.length) {
-          var ok = intents.some(function (key) { return INTENTS[key] && INTENTS[key].sections.indexOf(sec) >= 0; });
-          if (!ok && scored[0].score < 8) return;
-        }
-        sections[sec] = scored.map(function (row) { return row.item; });
-        matchCount += sections[sec].length;
-        toc.push({ id: sec, label: labels[sec] || sec, count: sections[sec].length });
-      });
-      var hlTerms = terms.filter(function (t) { return t.length >= 3 && t.length <= 24; });
-      if (q.length >= 2 && q.length <= 40) hlTerms.unshift(q);
-      return { view: { toc: toc, sections: sections, section_labels: labels, stats: view.stats || {} }, terms: hlTerms.slice(0, 10), matchCount: matchCount, intents: intents };
-    }
-    function pdfHref(path, page) {
-      var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
-      return page ? u + "#page=" + page : u;
-    }
-    var KEY_SECTION_SHORT = { criteria: "Критерии", exams: "Обследования", treatment: "Лечение", red_flags: "Красные флаги", follow_up: "Наблюдение" };
-    function cardSrcMeta(src) {
-      if (src === "summary") return { label: "Из карточки протокола", cls: "pv-key__src--ok", title: "Структурная выдержка с дословной цитатой и привязкой к странице" };
-      if (src === "rag") return { label: "Из текста протокола", cls: "pv-key__src--rag", title: "Ключевые фрагменты по разделам из текста протокола" };
-      return { label: "Фрагмент из PDF", cls: "pv-key__src--raw", title: "Фрагмент из текста протокола" };
-    }
-    function fetchCard(path, query) {
-      return fetch("/api/protocol-card?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || ""), { cache: "no-store" })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .catch(function () { return null; });
-    }
-    function renderKeyPanel(card, path, el) {
-      var meta = cardSrcMeta(card.source), extr = card.extracts || [];
-      var secs = [], seen = {};
-      extr.forEach(function (e) { var s = e.section_id || "body"; if (!seen[s]) { seen[s] = 1; secs.push(s); } });
-      var html = '<p class="pv-key__title">Ключевые выдержки</p>';
-      html += '<div class="pv-key__head">';
-      html += '<span class="pv-key__src ' + meta.cls + '" title="' + escAttr(meta.title) + '">' + esc(meta.label) + "</span>";
-      if (card.condition && card.condition.display_label) html += '<span class="pv-key__cond">' + esc(card.condition.display_label) + "</span>";
-      html += "</div>";
-      if (secs.length >= 2) {
-        html += '<div class="pv-key__tabs"><button type="button" class="pv-key__tab is-active" data-key-section="all">Всё</button>';
-        secs.forEach(function (s) { html += '<button type="button" class="pv-key__tab" data-key-section="' + escAttr(s) + '">' + esc(KEY_SECTION_SHORT[s] || s) + "</button>"; });
-        html += "</div>";
+
+      function jumpTo(id) {
+        var el = document.getElementById("pv-sec-" + id);
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setActiveRail(id);
       }
-      html += '<ul class="pv-key__list">';
-      extr.forEach(function (e) {
-        html += '<li class="pv-key__item" data-key-section="' + escAttr(e.section_id || "body") + '">';
-        if (e.label) html += '<span class="pv-key__label">' + esc(e.label) + "</span>";
-        html += '<p class="pv-key__text">' + esc(e.text || "") + "</p>";
-        var m = "";
-        if (e.page_start) m += '<a class="pv-key__page" href="' + escAttr(pdfHref(path, e.page_start)) + '" target="_blank" rel="noopener">стр. ' + esc(e.page_start) + "</a>";
-        if (e.quote && card.source === "summary") m += '<span class="pv-key__verified" title="' + escAttr("Дословно в протоколе: " + e.quote) + '">\u2713 цитата</span>';
-        if (m) html += '<span class="pv-key__meta">' + m + "</span>";
-        html += "</li>";
-      });
-      html += "</ul>";
-      el.innerHTML = html;
-      el.querySelectorAll(".pv-key__tab").forEach(function (tab) {
-        tab.addEventListener("click", function () {
-          var sec = tab.getAttribute("data-key-section") || "all";
-          el.querySelectorAll(".pv-key__tab").forEach(function (t) { t.classList.toggle("is-active", t === tab); });
-          el.querySelectorAll(".pv-key__item").forEach(function (li) {
-            var s = li.getAttribute("data-key-section") || "body";
-            li.style.display = sec === "all" || s === sec ? "" : "none";
-          });
+      function setActiveRail(id) {
+        rail.querySelectorAll("[data-rail]").forEach(function (b) { b.classList.toggle("is-active", b.getAttribute("data-rail") === id); });
+      }
+      // scrollspy
+      if ("IntersectionObserver" in window) {
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) setActiveRail(e.target.getAttribute("data-sec")); });
+        }, { rootMargin: "-15% 0px -70% 0px", threshold: 0 });
+        detail.querySelectorAll(".pv-section").forEach(function (s) { obs.observe(s); });
+      }
+      var first = (brief.sections || [])[0];
+      if (first) setActiveRail(first.id);
+
+      wireSearch(path, brief);
+      wireFullText(path);
+      var q0 = qp("q");
+      if (q0 && q0.trim().length >= 2) applySearch(path, brief, q0);
+    }
+
+    /* ---------- Search over brief points + AI overview ---------- */
+    var overviewReq = 0;
+    function applySearch(path, brief, q) {
+      var qs = String(q || "").trim();
+      var detail = document.getElementById("pv-detail");
+      var overview = document.getElementById("pv-overview");
+      var terms = queryTerms(qs);
+      var totalMatch = 0;
+
+      detail.querySelectorAll(".pv-section").forEach(function (sec) {
+        var visible = 0;
+        sec.querySelectorAll("[data-pv-point]").forEach(function (pt) {
+          var txt = norm(pt.textContent || "");
+          var ok = !qs || qs.length < 2 || terms.every(function (t) { return txt.indexOf(t) >= 0; }) || (terms.length === 0);
+          if (qs.length >= 2 && terms.length) ok = terms.some(function (t) { return txt.indexOf(t) >= 0; });
+          pt.hidden = !ok;
+          if (ok) visible++;
         });
+        sec.style.display = (qs.length >= 2 && visible === 0) ? "none" : "";
+        totalMatch += visible;
+      });
+
+      // подсветка терминов
+      rehighlight(detail, qs.length >= 2 ? terms : []);
+
+      if (qs.length < 2) {
+        if (overview) { overview.hidden = true; overview.innerHTML = ""; }
+        return;
+      }
+      // AI overview
+      if (overview) {
+        overview.hidden = false;
+        overview.innerHTML = '<p class="pv-overview__title">ИИ-сводка по запросу</p><p class="pv-overview__summary">Загрузка…</p>';
+      }
+      var reqId = ++overviewReq;
+      fetchOverview(path, qs, brief.title || "").then(function (ov) {
+        if (reqId !== overviewReq || !overview) return;
+        var html = overviewHtml(ov, path);
+        if (html) { overview.innerHTML = html; overview.hidden = false; }
+        else { overview.hidden = true; overview.innerHTML = ""; }
       });
     }
-    function loadKeyPanel(path, query) {
-      var el = document.getElementById("pv-key");
-      if (!el) return;
-      fetchCard(path, query).then(function (card) {
-        if (card && card.available && card.extracts && card.extracts.length) {
-          renderKeyPanel(card, path, el);
-          el.hidden = false;
-        }
+    function rehighlight(detail, terms) {
+      detail.querySelectorAll(".pv-point__text").forEach(function (p) {
+        var raw = p.getAttribute("data-raw");
+        if (raw == null) { raw = p.textContent; p.setAttribute("data-raw", raw); }
+        p.innerHTML = hl(raw, terms);
       });
     }
+    function fetchOverview(path, query, title) {
+      return fetch("/api/protocol-overview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: path, q: query, title: title || "" }) })
+        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }
+    function overviewHtml(ov, path) {
+      if (!ov || !ov.ok) return "";
+      var html = '<p class="pv-overview__title">ИИ-сводка по запросу</p>';
+      if (ov.summary) html += '<p class="pv-overview__summary">' + esc(ov.summary) + "</p>";
+      var pts = ov.points || [];
+      if (pts.length) {
+        html += '<ul class="pv-overview__points">';
+        pts.forEach(function (pt) {
+          var cite = pt.page ? '<a class="pv-overview__cite" href="' + escAttr(pdfHref(path, pt.page)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page) + "</a>" : "";
+          html += '<li class="pv-overview__point">' + esc(pt.text || "") + cite + "</li>";
+        });
+        html += "</ul>";
+      }
+      return (ov.summary || pts.length) ? html : "";
+    }
+    function wireSearch(path, brief) {
+      var search = document.getElementById("pv-search");
+      var go = document.getElementById("pv-go");
+      var reset = document.getElementById("pv-reset");
+      function run() { applySearch(path, brief, search.value); }
+      if (go) go.addEventListener("click", run);
+      if (reset) reset.addEventListener("click", function () { search.value = ""; applySearch(path, brief, ""); search.focus(); });
+      search.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); run(); } });
+      var t; search.addEventListener("input", function () { clearTimeout(t); t = setTimeout(run, 350); });
+    }
+
+    /* ---------- Full text (legacy source-view, lazy) ---------- */
+    var ORDER = ["diagnosis", "diagnostics", "treatment", "followup"];
+    var MAX_VISIBLE = 6;
     function chipsHtml(entities) {
       if (!entities || !entities.length) return "";
       var out = '<div class="protocol-src-item__chips">';
       entities.forEach(function (chip) {
-        var items = (chip && chip.items) || [];
-        if (!items.length) return;
-        var cls = chip.label === "Препараты" ? "protocol-src-chip protocol-src-chip--drugs" : "protocol-src-chip";
-        out += '<span class="' + cls + '"><span class="protocol-src-chip__label">' + esc(chip.label || "") + "</span> " + esc(items.join(", ")) + "</span>";
+        var items = (chip && chip.items) || []; if (!items.length) return;
+        out += '<span class="pv-ent__chip"><b>' + esc(chip.label || "") + "</b> " + esc(items.join(", ")) + "</span>";
       });
       return out + "</div>";
     }
-    function itemHtml(path, item, terms, open) {
-      var page = item.page, bullets = item.body_bullets || [];
-      var bodyPart = "";
-      if (bullets.length) {
-        bodyPart = '<ul class="protocol-src-item__bullets">';
-        bullets.forEach(function (b) { bodyPart += "<li>" + hl(b, terms) + "</li>"; });
-        bodyPart += "</ul>";
-      } else if (item.body && item.body !== item.lead) {
-        bodyPart = '<p class="protocol-src-item__body">' + hl(item.body, terms) + "</p>";
-      }
+    function ftItemHtml(path, item, open) {
+      var page = item.page, bullets = item.body_bullets || [], bodyPart = "";
+      if (bullets.length) { bodyPart = '<ul class="protocol-src-item__bullets">'; bullets.forEach(function (b) { bodyPart += "<li>" + esc(b) + "</li>"; }); bodyPart += "</ul>"; }
+      else if (item.body && item.body !== item.lead) bodyPart = '<p class="protocol-src-item__body">' + esc(item.body) + "</p>";
       return '<details class="protocol-src-item"' + (open ? " open" : "") + "><summary>" +
         (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
-        '<span class="protocol-src-item__lead">' + hl(item.lead, terms) + "</span></summary>" +
-        bodyPart + chipsHtml(item.entities) +
+        '<span class="protocol-src-item__lead">' + esc(item.lead) + "</span></summary>" + bodyPart +
         (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) + '" target="_blank" rel="noopener">PDF · стр. ' + esc(page) + "</a></p>" : "") +
         "</details>";
     }
-    function bodyHtml(path, baseView, q, active, renderOpts) {
-      renderOpts = renderOpts || {};
-      var filtered = renderOpts.semanticView ? filterView(renderOpts.semanticView, q) : filterView(baseView, q);
-      if (renderOpts.semanticView && filtered.matchCount === 0) {
-        filtered = { view: renderOpts.semanticView, terms: highlightTerms(q, renderOpts.intents || [], collectItems(renderOpts.semanticView)), matchCount: renderOpts.matchCount || 0, intents: renderOpts.intents || [] };
-      }
-      var view = filtered.view, terms = filtered.terms.length ? filtered.terms : highlightTerms(q, filtered.intents, collectItems(view));
-      var labels = view.section_labels || {}, drugFocus = isDrugFocus(q, filtered.intents), html = "";
-      ORDER.forEach(function (sec) {
-        var items = (view.sections || {})[sec] || [];
-        if (!items.length || (drugFocus && sec !== "treatment")) return;
-        var open = !!(q && String(q).trim().length >= 2) || !active || active === sec;
-        html += '<details class="protocol-src-section' + (active === sec ? " is-active" : "") + '" id="proto-src-sec-' + escAttr(sec) + '" data-src-section="' + escAttr(sec) + '"' + (open ? " open" : "") + "><summary><span>" + esc(labels[sec] || sec) + '</span><span class="protocol-src-toc__count">' + items.length + "</span></summary><div class=\"protocol-src-section__items\">";
-        items.slice(0, MAX_VISIBLE).forEach(function (it, i) { html += itemHtml(path, it, terms, i === 0 && open); });
+    function ftBodyHtml(path, view) {
+      var labels = (view && view.section_labels) || {}, sections = (view && view.sections) || {}, html = "";
+      var order = (view && view.toc ? view.toc.map(function (t) { return t.id; }) : ORDER);
+      order.forEach(function (sec) {
+        var items = sections[sec] || []; if (!items.length) return;
+        html += '<details class="protocol-src-section" id="pv-ft-sec-' + escAttr(sec) + '"><summary><span>' + esc(labels[sec] || sec) + '</span><span class="pv-rail__count">' + items.length + "</span></summary><div class=\"protocol-src-section__items\">";
+        items.slice(0, MAX_VISIBLE).forEach(function (it, i) { html += ftItemHtml(path, it, i === 0); });
         if (items.length > MAX_VISIBLE) {
-          html += '<button type="button" class="protocol-src-show-more" data-src-show-more="' + escAttr(sec) + '">Показать ещё ' + (items.length - MAX_VISIBLE) + "</button>";
-          items.slice(MAX_VISIBLE).forEach(function (it) {
-            html += '<div class="protocol-src-item--extra" hidden data-src-extra="' + escAttr(sec) + '">' + itemHtml(path, it, terms, false) + "</div>";
-          });
+          html += '<button type="button" class="protocol-src-show-more" data-ft-more="' + escAttr(sec) + '">Показать ещё ' + (items.length - MAX_VISIBLE) + "</button>";
+          items.slice(MAX_VISIBLE).forEach(function (it) { html += '<div hidden data-ft-extra="' + escAttr(sec) + '">' + ftItemHtml(path, it, false) + "</div>"; });
         }
         html += "</div></details>";
       });
-      if (!html && q && String(q).trim().length >= 2) return '<p class="protocol-src-empty">Ничего не найдено по запросу.</p>';
       return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
     }
-    function fetchSemantic(path, query) {
-      return fetch("/api/protocol-semantic-search?path=" + encodeURIComponent(path) + "&q=" + encodeURIComponent(query), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; });
-    }
-    function fetchOverview(path, query, title) {
-      return fetch("/api/protocol-overview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: path, q: query, title: title || "" }) }).then(function (r) { return r.ok ? r.json() : null; });
-    }
-    function overviewHtml(overview, path) {
-      if (!overview || !overview.ok) return "";
-      var html = '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p>';
-      if (overview.summary) html += '<p class="protocol-src-overview__summary">' + esc(overview.summary) + "</p>";
-      var points = overview.points || [];
-      if (points.length) {
-        html += '<ul class="protocol-src-overview__points">';
-        points.forEach(function (pt) {
-          var cite = pt.page ? '<a class="protocol-src-overview__cite" href="' + escAttr(pdfHref(path, pt.page)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page) + "</a>" : "";
-          html += '<li class="protocol-src-overview__point">' + esc(pt.text || "") + cite + "</li>";
-        });
-        html += "</ul>";
-      }
-      return html;
-    }
-    function wire(path, doc, q, active) {
-      var baseView = doc.view, root = document.getElementById("pv-root");
-      var shell =
-        '<div class="protocol-src-viewer">' +
-        '<div class="pv-key" id="pv-key" hidden></div>' +
-        '<div class="protocol-src-toolbar">' +
-        '<div class="protocol-src-search-wrap">' +
-        '<input class="protocol-src-search" type="search" placeholder="Лекарства, обследования, диагноз…" value="' + escAttr(q) + '" autocomplete="off" />' +
-        '<div class="protocol-src-search-actions">' +
-        '<button type="button" class="protocol-src-icon-btn protocol-src-icon-btn--reset" title="Сбросить" aria-label="Сбросить поиск">' + RESET_SVG + '</button>' +
-        '<button type="button" class="protocol-src-icon-btn protocol-src-icon-btn--go" title="Найти" aria-label="Найти в протоколе">' + SEARCH_SVG + '</button>' +
-        '</div></div>' +
-        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">PDF</a>' +
-        '<span class="protocol-src-hint">После поиска Enter - следующее совпадение</span>' +
-        '<span class="protocol-src-stats" hidden></span></div>' +
-        '<div class="protocol-src-overview is-empty" aria-live="polite"></div>' +
-        '<div class="protocol-src-intent-chips">' +
-        '<button type="button" class="protocol-src-intent-chip" data-src-intent="treatment">Лечение</button>' +
-        '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnostics">Обследования</button>' +
-        '<button type="button" class="protocol-src-intent-chip" data-src-intent="diagnosis">Диагноз</button>' +
-        '<button type="button" class="protocol-src-intent-chip" data-src-intent="followup">Наблюдение</button>' +
-        '<button type="button" class="protocol-src-intent-chip" data-src-intent="contraindications">Противопоказания</button>' +
-        "</div>" +
-        '<nav class="protocol-src-toc" id="pv-toc"></nav>' +
-        '<div class="protocol-src-body" id="pv-body"></div></div>';
-      root.innerHTML = shell;
-      var toc = document.getElementById("pv-toc"), body = document.getElementById("pv-body");
-      var search = root.querySelector(".protocol-src-search");
-      var btnGo = root.querySelector(".protocol-src-icon-btn--go");
-      var btnReset = root.querySelector(".protocol-src-icon-btn--reset");
-      var stats = root.querySelector(".protocol-src-stats"), overview = root.querySelector(".protocol-src-overview");
-      var semanticReqId = 0, activeQuery = "";
-      function wireShowMore() {
-        body.querySelectorAll("[data-src-show-more]").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            var sec = btn.getAttribute("data-src-show-more") || "";
-            body.querySelectorAll('[data-src-extra="' + sec + '"]').forEach(function (el) { el.hidden = false; });
-            btn.remove();
-          });
-        });
-      }
-      function renderToc(query, tocView, tocOpts) {
-        tocOpts = tocOpts || {};
-        var viewForToc = tocView || baseView;
-        var filtered = filterView(viewForToc, query);
-        if (tocOpts.matchCount != null && filtered.matchCount === 0) {
-          filtered = { view: viewForToc, matchCount: tocOpts.matchCount || 0, intents: tocOpts.intents || detectIntents(query), terms: highlightTerms(query, tocOpts.intents || [], collectItems(viewForToc)) };
-        }
-        if (isDrugFocus(query, filtered.intents)) {
-          var tr = (filtered.view.sections || {}).treatment || [];
-          filtered.view = { toc: tr.length ? [{ id: "treatment", label: (filtered.view.section_labels || {}).treatment || "Лечение", count: tr.length }] : [], sections: { treatment: tr }, section_labels: filtered.view.section_labels || {}, stats: filtered.view.stats || {} };
-          filtered.matchCount = tr.length;
-        }
-        var tocHtml = '<p class="protocol-src-toc__title">Разделы</p>';
-        (filtered.view.toc || baseView.toc || []).forEach(function (t) {
-          tocHtml += '<button type="button" class="protocol-src-toc__btn' + (active === t.id ? " is-active" : "") + '" data-src-toc="' + escAttr(t.id) + '"><span>' + esc(t.label) + '</span><span class="protocol-src-toc__count">' + t.count + "</span></button>";
-        });
-        toc.innerHTML = tocHtml;
-        toc.querySelectorAll("[data-src-toc]").forEach(function (b) { b.addEventListener("click", function () { jump(b.getAttribute("data-src-toc") || ""); }); });
-        if (stats) {
-          if (query && query.trim().length >= 2) {
-            stats.hidden = false;
-            var cnt = filtered.matchCount;
-            var suffix = (tocOpts.semantic ? " · семантика" : "") + (isDrugFocus(query, filtered.intents) ? " · препараты" : "");
-            stats.textContent = cnt > 0 ? "Найдено: " + cnt + suffix : "Ничего не найдено";
-          } else { stats.hidden = true; stats.textContent = ""; }
-        }
-        root.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
-          chip.classList.toggle("is-active", (tocOpts.intents || filtered.intents).indexOf(chip.getAttribute("data-src-intent") || "") >= 0);
-        });
-      }
-      function jump(sec) {
-        var el = body.querySelector("#proto-src-sec-" + sec);
-        if (!el) return;
-        el.open = true;
-        toc.querySelectorAll("[data-src-toc]").forEach(function (b) { b.classList.toggle("is-active", b.getAttribute("data-src-toc") === sec); });
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      var mi = 0;
-      function focusMark(n) {
-        var marks = body.querySelectorAll(".proto-src-mark");
-        if (!marks.length) return;
-        mi = ((n % marks.length) + marks.length) % marks.length;
-        marks.forEach(function (m, i) { m.classList.toggle("is-current", i === mi); });
-        marks[mi].scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      function apply(query) {
-        var qstr = String(query || "").trim();
-        activeQuery = qstr;
-        root.classList.toggle("is-search-active", qstr.length >= 2);
-        if (qstr.length < 2) {
-          root.classList.remove("is-search-active--drugs");
-          if (overview) { overview.innerHTML = ""; overview.classList.add("is-empty"); overview.classList.remove("is-loading"); }
-          renderToc(qstr); body.innerHTML = bodyHtml(path, baseView, qstr, active); wireShowMore(); mi = 0; return;
-        }
-        if (overview) {
-          overview.classList.remove("is-empty"); overview.classList.add("is-loading");
-          overview.innerHTML = '<p class="protocol-src-overview__title">ИИ-сводка по протоколу</p><p class="protocol-src-overview__summary">Загрузка…</p>';
-        }
-        var reqId = ++semanticReqId;
-        fetchSemantic(path, qstr).then(function (sem) {
-          if (reqId !== semanticReqId) return;
-          var intents = (sem && sem.intents) || detectIntents(qstr);
-          root.classList.toggle("is-search-active--drugs", isDrugFocus(qstr, intents) || (sem && sem.focus === "drugs"));
-          if (sem && sem.ok && sem.view) {
-            renderToc(qstr, sem.view, { semantic: true, matchCount: sem.match_count || 0, intents: intents });
-            body.innerHTML = bodyHtml(path, baseView, qstr, active, { semanticView: sem.view, matchCount: sem.match_count || 0, intents: intents });
-          } else {
-            root.classList.remove("is-search-active--drugs");
-            renderToc(qstr); body.innerHTML = bodyHtml(path, baseView, qstr, active);
-          }
-          wireShowMore();
-          mi = 0; setTimeout(function () { focusMark(0); }, 30);
-        });
-        fetchOverview(path, qstr, doc.title || "").then(function (ov) {
-          if (reqId !== semanticReqId || !overview) return;
-          overview.classList.remove("is-loading");
-          var html = overviewHtml(ov, path);
-          overview.innerHTML = html;
-          if (!html) overview.classList.add("is-empty");
-        });
-      }
-      function runSearch() { apply(search.value); }
-      function runReset() { search.value = ""; apply(""); search.focus(); }
-      renderToc("", baseView);
-      body.innerHTML = bodyHtml(path, baseView, "", active);
-      loadKeyPanel(path, q);
-      if (q && q.trim().length >= 2) { search.value = q; apply(q); }
-      if (btnGo) btnGo.addEventListener("click", runSearch);
-      if (btnReset) btnReset.addEventListener("click", runReset);
-      search.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter") {
-          ev.preventDefault();
-          if (activeQuery && norm(search.value) === norm(activeQuery)) focusMark(mi + 1);
-          else runSearch();
-        }
+    function wireFullText(path) {
+      var toggle = document.getElementById("pv-ft-toggle");
+      var body = document.getElementById("pv-ft-body");
+      if (!toggle || !body) return;
+      var loaded = false, openState = false;
+      toggle.addEventListener("click", function () {
+        openState = !openState;
+        if (!openState) { body.innerHTML = ""; toggle.innerHTML = PDF_SVG + " Показать полный текст протокола"; return; }
+        toggle.innerHTML = PDF_SVG + " Скрыть полный текст";
+        if (loaded) { body.innerHTML = body.getAttribute("data-html") || ""; wireFtMore(body); return; }
+        body.innerHTML = '<p class="pv-loading">Загрузка полного текста…</p>';
+        fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (doc) {
+            var html = (doc && doc.view) ? ftBodyHtml(path, doc.view) : '<p class="protocol-src-empty">Полный текст недоступен.</p>';
+            body.setAttribute("data-html", html); body.innerHTML = html; loaded = true; wireFtMore(body);
+          })
+          .catch(function () { body.innerHTML = '<p class="protocol-src-empty">Ошибка загрузки текста.</p>'; });
       });
-      root.querySelectorAll(".protocol-src-intent-chip").forEach(function (chip) {
-        chip.addEventListener("click", function () {
-          var key = chip.getAttribute("data-src-intent") || "", intent = INTENTS[key];
-          if (!intent) return;
-          var next = intent.phrases[0] || intent.label;
-          if (search.value === next && activeQuery === next) { runReset(); return; }
-          search.value = next;
-          runSearch();
+    }
+    function wireFtMore(body) {
+      body.querySelectorAll("[data-ft-more]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var sec = btn.getAttribute("data-ft-more") || "";
+          body.querySelectorAll('[data-ft-extra="' + sec + '"]').forEach(function (el) { el.hidden = false; });
+          btn.remove();
         });
       });
-      if (active) jump(active);
     }
-    var path = qp("path"), section = qp("section"), q = qp("q");
-    if (!path) { document.getElementById("pv-sub").textContent = "Не указан протокол."; return; }
-    fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (doc) {
-        if (!doc || !doc.view || !doc.view.toc || !doc.view.toc.length) {
-          document.getElementById("pv-sub").textContent = "Нет данных по этому протоколу.";
-          return;
-        }
-        document.getElementById("pv-title").textContent = doc.title || "Протокол Минздрава";
-        document.getElementById("pv-sub").textContent = "";
-        document.title = (doc.title || "Протокол") + " - навигация";
-        wire(path, doc, q, section);
-      })
-      .catch(function () { document.getElementById("pv-sub").textContent = "Ошибка загрузки."; });
+
+    /* ---------- Init ---------- */
+    var path = qp("path"), q = qp("q"), icd = qp("icd");
+    if (!path) { document.getElementById("pv-status").textContent = "Не указан протокол."; return; }
+    fetchBrief(path, q, icd).then(function (brief) {
+      if (!brief || !brief.available || !(brief.sections || []).length) {
+        document.getElementById("pv-status").textContent = "Структурные выводы по этому протоколу недоступны. Откройте PDF.";
+        var root = document.getElementById("pv-root");
+        root.innerHTML += '<p style="text-align:center;margin-top:1rem;"><a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">' + PDF_SVG + " Открыть PDF</a></p>";
+        return;
+      }
+      document.getElementById("pv-title").textContent = brief.title || "Протокол Минздрава";
+      document.title = (brief.title || "Протокол") + " - навигация";
+      renderMeta(brief);
+      renderBrief(brief, path);
+    }).catch(function () { document.getElementById("pv-status").textContent = "Ошибка загрузки."; });
   })();
   </script>
 </body>
