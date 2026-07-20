@@ -11505,22 +11505,83 @@
       font-weight: 600;
       color: #0f172a;
     }
+    .proto-card__tabs {
+      display: flex;
+      gap: 0.3rem;
+      margin: 0 0 0.5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .proto-card__tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .proto-card__tab {
+      flex: 0 0 auto;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #475569;
+      background: rgba(148, 163, 184, 0.14);
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .proto-card__tab:hover {
+      background: rgba(125, 211, 192, 0.22);
+    }
+    .proto-card__tab.is-active {
+      color: #0f766e;
+      background: rgba(125, 211, 192, 0.32);
+      border-color: rgba(15, 118, 110, 0.35);
+    }
     .proto-card__list {
       margin: 0;
       padding: 0;
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.5rem;
     }
     .proto-card__item {
-      font-size: 0.82rem;
-      line-height: 1.45;
+      font-size: 0.85rem;
+      line-height: 1.5;
       color: #334155;
+      padding-left: 0.6rem;
+      border-left: 2px solid rgba(125, 211, 192, 0.55);
+    }
+    .proto-card--rag .proto-card__item {
+      border-left-color: rgba(148, 163, 184, 0.5);
+    }
+    .proto-card--raw .proto-card__item {
+      border-left-color: rgba(203, 213, 225, 0.7);
     }
     .proto-card__label {
+      display: block;
+      font-size: 0.7rem;
       font-weight: 700;
-      color: #0f172a;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #0f766e;
+      margin: 0 0 0.15rem;
+    }
+    .proto-card--rag .proto-card__label,
+    .proto-card--raw .proto-card__label {
+      color: #475569;
+    }
+    .proto-card__text {
+      margin: 0;
+      color: #1f2937;
+    }
+    .proto-card__meta {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.25rem;
     }
     .proto-card__page {
       font-size: 0.72rem;
@@ -11539,6 +11600,32 @@
       color: #0f766e;
       white-space: nowrap;
       cursor: help;
+    }
+    @media (max-width: 640px) {
+      .proto-card {
+        padding: 0.6rem 0.65rem;
+      }
+      .proto-card__item {
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+      .proto-card__tab {
+        padding: 0.34rem 0.75rem;
+        font-size: 0.82rem;
+      }
+      .proto-nav-card__actions {
+        gap: 0.45rem;
+      }
+      .proto-nav-card__actions .btn-proto-action {
+        flex: 1 1 auto;
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 0.55rem 0.8rem;
+        min-height: 2.6rem;
+      }
+      .proto-nav-card__actions .btn-proto-action--link {
+        flex-basis: 100%;
+      }
     }
     .assist-catalog-badge--warn {
       background: #fef3c7 !important;
@@ -18000,12 +18087,24 @@
     };
   }
 
-  /** Фаза 2+3: рендер структурных выдержек с меткой раздела, страницей и значком опоры. */
+  var CARD_SECTION_SHORT = {
+    criteria: "Критерии",
+    exams: "Обследования",
+    treatment: "Лечение",
+    red_flags: "Красные флаги",
+    follow_up: "Наблюдение",
+  };
+
+  /**
+   * Новый навигатор: структурные выдержки блоками (метка раздела -> целая фраза ->
+   * страница + цитата) + вкладки по разделам. Только осмысленный текст, без обрывков.
+   */
   function renderProtocolCardHtml(card, pr, opts) {
     opts = opts || {};
     if (!card || !card.available || !card.extracts || !card.extracts.length) return "";
     var maxItems = opts.maxItems || card.extracts.length;
     var maxLen = opts.maxLen || 220;
+    var withTabs = !!opts.withTabs;
     var path = (pr && pr.path) || card.path || "";
     var meta = protocolCardSourceMeta(card.source);
     var html = '<div class="proto-card proto-card--' + escapeHtmlAttr(card.source || "raw") + '">';
@@ -18025,38 +18124,99 @@
         "</span>";
     }
     html += "</div>";
-    html += '<ul class="proto-card__list">';
-    var shown = 0;
+
+    var picked = [];
     var i;
-    for (i = 0; i < card.extracts.length && shown < maxItems; i++) {
-      var e = card.extracts[i];
-      var txt = truncateExcerpt(String(e.text || ""), maxLen);
-      if (!txt) continue;
-      shown++;
-      html += '<li class="proto-card__item">';
-      if (e.label) {
-        html += '<span class="proto-card__label">' + escapeHtml(e.label) + "</span> ";
+    for (i = 0; i < card.extracts.length && picked.length < maxItems; i++) {
+      var ex = card.extracts[i];
+      var t = truncateExcerpt(String(ex.text || ""), maxLen);
+      if (!t) continue;
+      picked.push({ e: ex, text: t });
+    }
+    if (!picked.length) return "";
+
+    var sections = [];
+    var seenSec = {};
+    for (i = 0; i < picked.length; i++) {
+      var sid = picked[i].e.section_id || "body";
+      if (!seenSec[sid]) {
+        seenSec[sid] = 1;
+        sections.push(sid);
       }
-      html += '<span class="proto-card__text">' + escapeHtml(txt) + "</span>";
-      if (e.page_start) {
+    }
+    var showTabs = withTabs && sections.length >= 2;
+    if (showTabs) {
+      html += '<div class="proto-card__tabs" role="tablist">';
+      html +=
+        '<button type="button" class="proto-card__tab is-active" data-card-section="all">Всё</button>';
+      for (i = 0; i < sections.length; i++) {
+        var lbl = CARD_SECTION_SHORT[sections[i]] || sections[i];
         html +=
-          ' <a class="proto-card__page" href="' +
+          '<button type="button" class="proto-card__tab" data-card-section="' +
+          escapeHtmlAttr(sections[i]) +
+          '">' +
+          escapeHtml(lbl) +
+          "</button>";
+      }
+      html += "</div>";
+    }
+
+    html += '<ul class="proto-card__list">';
+    for (i = 0; i < picked.length; i++) {
+      var e = picked[i].e;
+      var txt = picked[i].text;
+      html +=
+        '<li class="proto-card__item" data-card-section="' +
+        escapeHtmlAttr(e.section_id || "body") +
+        '">';
+      if (e.label) {
+        html += '<span class="proto-card__label">' + escapeHtml(e.label) + "</span>";
+      }
+      html += '<p class="proto-card__text">' + escapeHtml(txt) + "</p>";
+      var metaBits = "";
+      if (e.page_start) {
+        metaBits +=
+          '<a class="proto-card__page" href="' +
           pdfPageHref(path, e.page_start) +
           '" target="_blank" rel="noopener noreferrer" title="Открыть PDF на этой странице">стр. ' +
           escapeHtml(String(e.page_start)) +
           "</a>";
       }
       if (e.quote && card.source === "summary") {
-        html +=
-          ' <span class="proto-card__verified" title="' +
+        metaBits +=
+          '<span class="proto-card__verified" title="' +
           escapeHtmlAttr("Дословно в протоколе: " + String(e.quote)) +
           '">' +
           "\u2713 цитата</span>";
       }
+      if (metaBits) {
+        html += '<span class="proto-card__meta">' + metaBits + "</span>";
+      }
       html += "</li>";
     }
     html += "</ul></div>";
-    return shown ? html : "";
+    return html;
+  }
+
+  /** Делегированный обработчик вкладок карточки протокола (устанавливается один раз). */
+  function ensureProtocolCardTabs() {
+    if (window.__protoCardTabsWired) return;
+    window.__protoCardTabsWired = 1;
+    document.addEventListener("click", function (ev) {
+      var tab = ev.target && ev.target.closest && ev.target.closest(".proto-card__tab");
+      if (!tab) return;
+      var cardEl = tab.closest(".proto-card");
+      if (!cardEl) return;
+      ev.preventDefault();
+      var sec = tab.getAttribute("data-card-section") || "all";
+      cardEl.querySelectorAll(".proto-card__tab").forEach(function (t) {
+        t.classList.toggle("is-active", t === tab);
+      });
+      cardEl.querySelectorAll(".proto-card__item").forEach(function (li) {
+        var s = li.getAttribute("data-card-section") || "body";
+        li.style.display = sec === "all" || s === sec ? "" : "none";
+      });
+    });
   }
 
   /** P0: компактная выжимка top-1 «Ключевое из протокола» из structured excerpts (без LLM). */
@@ -18269,8 +18429,9 @@
     var card = protocolCardForData(data, pr.path);
     if (card) {
       html += renderProtocolCardHtml(card, pr, {
-        maxItems: isTop ? 4 : 2,
-        maxLen: isTop ? 220 : 150,
+        maxItems: isTop ? 5 : 2,
+        maxLen: isTop ? 240 : 150,
+        withTabs: isTop,
       });
     } else {
       var snapshot = renderProtocolKeySnapshot(data, pr, {
@@ -18437,6 +18598,7 @@
   }
 
   function bindProtocolNavHub(data) {
+    ensureProtocolCardTabs();
     bindProtoPickButtons(data);
     ingestProtocolNavFromAssist(data);
     if (window.__methodistMode) {
@@ -18627,9 +18789,11 @@
       (opts.steppedList || opts.doctorLite);
     var cit = useLiCard ? "" : excerptForProtocol(pr, excerptByPath);
     if (useLiCard) {
+      ensureProtocolCardTabs();
       html += renderProtocolCardHtml(liCard, pr, {
-        maxItems: opts.isTopProtocol ? 4 : 3,
+        maxItems: opts.isTopProtocol ? 5 : 3,
         maxLen: 200,
+        withTabs: !!opts.isTopProtocol,
       });
     } else if (cit) {
       var previewLen = opts.excerptPreviewLen || 0;
