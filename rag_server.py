@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r9-icd-disease-anchors"
+BUILD_VERSION = "2026-07-20-r10-protocol-card-projector"
 
 
 def _app_version() -> str:
@@ -9602,6 +9602,16 @@ def _api_assist_impl(body: AssistIn) -> dict:
                 limit=nav_limit,
             )
         attach_structured_excerpts(out, retrieved, limit=4)
+        if os.environ.get("RAG_PROTOCOL_CARD", "1") == "1":
+            from clinical_knowledge.protocol_card import attach_protocol_cards
+
+            attach_protocol_cards(
+                out,
+                retrieved,
+                query=q,
+                icd_codes=list(icd_analysis.get("codes_for_retrieval") or []),
+                limit=int(os.environ.get("RAG_PROTOCOL_CARD_LIMIT", "12")),
+            )
     except Exception:
         pass
     return out

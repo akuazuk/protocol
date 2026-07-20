@@ -465,6 +465,119 @@ def build_section_excerpt(
     }
 
 
+_CARE_SETTING_RU: dict[str, str] = {
+    "outpatient": "Амбулаторно",
+    "inpatient": "Стационар",
+    "emergency": "Скорая/неотложная",
+    "intensive_care": "Реанимация/ИТ",
+    "rehabilitation": "Реабилитация",
+    "palliative": "Паллиативная помощь",
+}
+
+
+def _condition_obj_by_id(
+    summary: ProtocolSummary,
+    condition_id: str | None,
+    aliases: list[str] | None = None,
+) -> ConditionSummary | None:
+    ids = {i for i in ([condition_id] + list(aliases or [])) if i}
+    if not ids:
+        return None
+    for c in summary.conditions:
+        if c.condition_id in ids:
+            return c
+    return None
+
+
+def build_protocol_card_from_summary(
+    catalog_path: str,
+    *,
+    query: str = "",
+    icd_codes: list[str] | None = None,
+    max_extracts: int = 4,
+    max_text_chars: int = 260,
+) -> dict[str, Any]:
+    """Компактная карточка-выдержка протокола из Summary Card.
+
+    Возвращает точное название, наиболее релевантную нозологию (по МКБ/имени) и
+    до `max_extracts` структурных выдержек (критерии/обследование/лечение/красные
+    флаги/наблюдение) - целые утверждения с цитатой и страницей, а не обрывки.
+    Без LLM.
+    """
+    summary = find_summary_by_catalog_path(catalog_path)
+    if summary is None:
+        return {"available": False, "path": catalog_path, "source": "summary"}
+
+    nav_conditions = [_condition_nav(c, query=query, icd_codes=icd_codes) for c in summary.conditions]
+    nav_conditions = [c for c in nav_conditions if c.get("sections")]
+    nav_conditions = dedupe_nav_conditions(
+        nav_conditions,
+        query=query,
+        icd_codes=icd_codes,
+        protocol_title=summary.source.title or "",
+    )
+    title = summary.source.title or ""
+    care_codes = [cs for cs in (summary.applicability.care_setting or []) if cs and cs != "unknown"]
+    care_labels = [_CARE_SETTING_RU[cs] for cs in care_codes if cs in _CARE_SETTING_RU]
+
+    if not nav_conditions:
+        return {
+            "available": False,
+            "path": catalog_path,
+            "source": "summary",
+            "protocol_id": summary.protocol_id,
+            "title": title,
+        }
+
+    top = nav_conditions[0]
+    cond = _condition_obj_by_id(summary, top.get("condition_id"), top.get("alias_condition_ids"))
+    extracts: list[dict[str, Any]] = []
+    if cond is not None:
+        for sid, label, _focus in _SECTION_SPECS:
+            if len(extracts) >= max_extracts:
+                break
+            items = _collect_section_excerpt_items(cond, sid, limit=1)
+            if not items:
+                continue
+            it = items[0]
+            text = str(it.get("text") or it.get("quote") or "").strip()
+            if not text:
+                continue
+            extracts.append(
+                {
+                    "section_id": sid,
+                    "label": label,
+                    "text": text[:max_text_chars],
+                    "quote": (str(it.get("quote") or "")[:600] or None),
+                    "page_start": it.get("page_start"),
+                    "section_title": it.get("section_title"),
+                }
+            )
+
+    return {
+        "available": bool(extracts),
+        "path": catalog_path,
+        "source": "summary",
+        "protocol_id": summary.protocol_id,
+        "title": title,
+        "review_status": summary.review_status,
+        "extraction_status": summary.extraction_status,
+        "care_setting": care_codes,
+        "care_setting_labels": care_labels,
+        "condition": {
+            "condition_id": top.get("condition_id"),
+            "name": top.get("name"),
+            "display_label": top.get("display_label"),
+            "icd10_codes": top.get("icd10_codes") or [],
+            "icd_match": bool(top.get("icd_match")),
+            "name_match": bool(top.get("name_match")),
+            "match_reason": top.get("match_reason"),
+        },
+        "conditions_total": len(nav_conditions),
+        "extracts": extracts,
+    }
+
+
 def build_protocol_summary_nav(
     catalog_path: str,
     *,
