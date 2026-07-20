@@ -28,7 +28,7 @@ def test_apply_low_memory_defaults_sets_env(monkeypatch):
     assert os.environ.get("RAG_MEMORY_SAVER") == "1"
     assert os.environ.get("RAG_LEX_BM25_ALPHA") == "1.0"
     assert os.environ.get("RAG_LEXICAL_MAX_CHARS") == "4096"
-    assert os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE") == "0"
+    assert os.environ.get("PROTOCOL_SUMMARY_RAG_MERGE") == "1"
     assert os.environ.get("RAG_LEX_MAX_CANDIDATES") == "4000"
     assert os.environ.get("RAG_RETRIEVE_CONCURRENCY") == "1"
     assert os.environ.get("CONSULT_ALIGNMENT_ENABLED") == "0"

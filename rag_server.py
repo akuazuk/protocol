@@ -201,7 +201,7 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_REVIEW_MAX_PROTOCOL_PATHS", "4"),
             ("CONSULT_REVIEW_CACHE", "1"),
             ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
-            ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+            ("PROTOCOL_SUMMARY_RAG_MERGE", "1"),
             ("CONSULT_L2_FAST", "1"),
             ("CONSULT_L2_EVIDENCE_MAX_PATHS", "3"),
             ("CONSULT_L2_EVIDENCE_MAX_CHARS", "8000"),
@@ -233,7 +233,7 @@ def _apply_low_memory_defaults() -> None:
             ("CONSULT_TYPED_RETRIEVE", "0"),
             ("CONSULT_REVIEW_CACHE", "0"),
             ("CONSULT_RESPONSE_INCLUDE_HTML", "0"),
-            ("PROTOCOL_SUMMARY_RAG_MERGE", "0"),
+            ("PROTOCOL_SUMMARY_RAG_MERGE", "1"),
             ("RAG_LEX_MAX_CANDIDATES", "4000"),
             ("RAG_LEX_MAX_UNION", "12000"),
             ("RAG_RETRIEVE_CONCURRENCY", "1"),
@@ -2409,7 +2409,13 @@ def gather_protocol_text(path: str, max_chars: int) -> str:
         if n + len(t) > max_chars:
             rest = max_chars - n
             if rest > 80:
-                out.append(t[:rest])
+                try:
+                    from clinical_knowledge.meaningful_excerpt import meaningful_excerpt
+
+                    tail = meaningful_excerpt(t, limit=rest)
+                except Exception:
+                    tail = ""
+                out.append(tail or t[:rest])
             break
         out.append(t)
         n += len(t)
@@ -3188,7 +3194,7 @@ def extract_clinical_detail(
                         )
             missing2 = _detailed_block_missing_keys(ext)
             np_on = os.environ.get(
-                "RAG_EXTRACT_NON_PROTOCOL_FALLBACK", "1"
+                "RAG_EXTRACT_NON_PROTOCOL_FALLBACK", "0"
             ).strip().lower() in (
                 "1",
                 "true",
@@ -7033,7 +7039,11 @@ def _truncate_excerpt_for_ui(text: str, max_chars: int) -> str:
 
 
 def format_excerpt_for_display(raw: str, max_chars: int) -> str:
-    """Пайплайн для фрагмента КП в ответе API и промпте."""
+    """Пайплайн для фрагмента КП в ответе API и промпте.
+
+    Обрезка по границе предложения (без обрывков на полуфразе); при невозможности -
+    fallback на обрезку по границе слова.
+    """
     from clinical_knowledge.protocol_audience import is_synthetic_summary_excerpt
 
     if is_synthetic_summary_excerpt(raw or ""):
@@ -7041,6 +7051,18 @@ def format_excerpt_for_display(raw: str, max_chars: int) -> str:
     t = _normalize_pdf_hyphenation(raw or "")
     t = _collapse_whitespace_for_excerpt(t)
     t = _strip_leading_word_fragment(t)
+    if len(t) <= max_chars:
+        return t
+    try:
+        from clinical_knowledge.meaningful_excerpt import meaningful_excerpt
+
+        sent = meaningful_excerpt(t, limit=max_chars)
+        if sent:
+            if len(sent) < len(t) and sent[-1] not in ".!?…:;»)]":
+                sent += "…"
+            return sent
+    except Exception:
+        pass
     return _truncate_excerpt_for_ui(t, max_chars)
 
 
@@ -8226,7 +8248,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r1-search-uplift-plan"
+BUILD_VERSION = "2026-07-20-r2-search-quality-track1"
 
 
 def _app_version() -> str:
