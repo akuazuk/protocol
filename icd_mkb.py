@@ -120,6 +120,53 @@ _CLINICAL_ICD_HINTS: dict[str, list[tuple[str, float]]] = {
         ("R50.9", 17.0),
         ("J06.9", 16.5),
     ],
+    "pneumonia": [
+        ("J18.9", 22.0),
+        ("J18.1", 21.5),
+        ("J15.9", 21.0),
+        ("J13", 20.5),
+        ("J14", 20.0),
+        ("J18.0", 19.5),
+    ],
+    "copd": [
+        ("J44.9", 22.0),
+        ("J44.0", 21.5),
+        ("J44.1", 21.0),
+        ("J43.9", 20.5),
+    ],
+    "tonsillitis": [
+        ("J03.9", 22.0),
+        ("J03.0", 21.5),
+        ("J02.9", 21.0),
+        ("J35.0", 20.5),
+        ("J35.9", 20.0),
+    ],
+    "pyelonephritis": [
+        ("N10", 22.0),
+        ("N11.9", 21.5),
+        ("N11.0", 21.0),
+        ("N12", 20.5),
+        ("N11.1", 20.0),
+    ],
+    "migraine": [
+        ("G43.9", 22.0),
+        ("G43.0", 21.5),
+        ("G43.1", 21.0),
+        ("G44.2", 20.0),
+    ],
+    "peptic_ulcer": [
+        ("K25.9", 22.0),
+        ("K26.9", 21.5),
+        ("K27.9", 21.0),
+        ("K25.3", 20.5),
+        ("K26.3", 20.0),
+    ],
+    "atopic_dermatitis": [
+        ("L20.9", 22.0),
+        ("L20.8", 21.5),
+        ("L23.9", 21.0),
+        ("L30.9", 20.5),
+    ],
     "rectal_bleeding": [
         ("K64.9", 22.0),
         ("K62.5", 21.5),
@@ -1180,10 +1227,63 @@ def _penalize_drug_complication_y(qlow: str, code: str, score: float) -> float:
     return score * 0.25
 
 
+def _has_pneumonia_complaint(qlow: str) -> bool:
+    return "пневмони" in qlow or "воспаление легк" in qlow
+
+
+def _has_copd_complaint(qlow: str) -> bool:
+    if "хобл" in qlow or "эмфизем" in qlow:
+        return True
+    return "обструктивн" in qlow and "легк" in qlow
+
+
+def _has_tonsillitis_complaint(qlow: str) -> bool:
+    if "тонзиллит" in qlow or "ангин" in qlow:
+        return True
+    return "миндалин" in qlow and any(x in qlow for x in ("налет", "гнойн", "воспал", "увелич"))
+
+
+def _has_pyelonephritis_complaint(qlow: str) -> bool:
+    return "пиелонефрит" in qlow
+
+
+def _has_migraine_complaint(qlow: str) -> bool:
+    return "мигрен" in qlow
+
+
+def _has_peptic_ulcer_complaint(qlow: str) -> bool:
+    if "язвенная болезн" in qlow:
+        return True
+    return "язв" in qlow and any(
+        x in qlow for x in ("желудк", "желудочн", "двенадцатиперстн", "дпк")
+    )
+
+
+def _has_atopic_dermatitis_complaint(qlow: str) -> bool:
+    if "нейродермит" in qlow:
+        return True
+    return "атопическ" in qlow and "дерматит" in qlow
+
+
 def _clinical_hint_profile(qlow: str) -> str | None:
     """Определяет профиль клинической подсказки (приоритет - более специфичные)."""
     if _has_anaphylaxis_complaint(qlow):
         return "anaphylaxis"
+    # Специфические нозологии по названию болезни - выше симптом-профилей (кашель/температура/боль).
+    if _has_pneumonia_complaint(qlow):
+        return "pneumonia"
+    if _has_copd_complaint(qlow):
+        return "copd"
+    if _has_pyelonephritis_complaint(qlow):
+        return "pyelonephritis"
+    if _has_tonsillitis_complaint(qlow):
+        return "tonsillitis"
+    if _has_peptic_ulcer_complaint(qlow):
+        return "peptic_ulcer"
+    if _has_migraine_complaint(qlow):
+        return "migraine"
+    if _has_atopic_dermatitis_complaint(qlow):
+        return "atopic_dermatitis"
     if _has_foreign_body_airway_complaint(qlow):
         return "foreign_body_airway"
     if _has_co_poisoning_complaint(qlow):
