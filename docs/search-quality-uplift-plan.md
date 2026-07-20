@@ -155,6 +155,22 @@ care_setting становится первоклассным полем и фи�
 Критерии приёмки (по сделанному):
 - Калиброванная уверенность монотонна по сигналам, ограничена [0..1], полосы устойчивы (юнит-тесты).
 
+Eval-harness (сделано):
+- `clinical_knowledge/calibration_metrics.py` - Brier score, ECE, reliability-таблица (юнит-тесты).
+- `eval/golden_icd_calibration.jsonl` - gold-набор из 18 разнопрофильных запросов с ожидаемыми префиксами МКБ.
+- `scripts/eval_search_calibration.py` - прогон МКБ-маршрутизации + калибровки, отчёт в `data/ml/reports/search_calibration_latest.{json,md}`.
+- Baseline (2026-07-20): top-1 МКБ 61.1%, top-3 83.3%, Brier 0.27, ECE 0.22 (модель переуверена).
+- Вскрытые промахи для следующего шага: симптом-коды (R50/R07/R51) и коды ОРВИ (J06) вытесняют специфический диагноз при пневмонии, пиелонефрите, тонзиллите, мигрени; язва желудка уводится в онкокоды (C16/D00). Это карта для доводки ICD-лексикона до near-ideal.
+
+Профиль Render 4 GiB+ (сделано, шаг 1):
+- `_render_high_ram()` + профиль: `RAG_STARTUP_MODE=full`, `RAG_GEMINI_EMBED_RERANK=1`, `RAG_LEX_BM25_ALPHA=0.55`, `RAG_EMBED_POOL_MERGE=1`, `RAG_VECTOR_INDEX=1`, `RAG_EXTRACT_GROUNDING_DROP=1`. Активируется `RENDER_RAM_MB>=3500` или планами pro*.
+
+Summary Cards в поиск (сделано, шаг 2):
+- Полный экспорт всех 477 карточек: `summary_chunks.jsonl` вырос с 355 строк / 73 протоколов до 4171 строк / 477 протоколов.
+- Grounding усилен медицинскими аббревиатурами (ОАК, УЗИ, КТ, ЭКГ, ...), чтобы `GROUNDING_DROP` не терял легитимные пункты.
+
+Отложено (cross-encoder): офлайн-скоринг top-N остаётся пунктом инфраструктуры (модель + precompute), harness выше даёт измеримую базу для его внедрения.
+
 ### Трек 5 (фон). Полнота структурированного слоя
 - Довести Summary Cards и `summary_chunks.jsonl` с 355 до всех 478 (`summary_to_rag.py`).
 - Пройти ревью (`reviewed/` сейчас пуст).

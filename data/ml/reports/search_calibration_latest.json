@@ -1,0 +1,402 @@
+{
+  "n": 18,
+  "top1_accuracy": 0.6111,
+  "top3_accuracy": 0.8333,
+  "calibration": {
+    "n": 18,
+    "accuracy": 0.6111,
+    "avg_confidence": 0.6157,
+    "brier_score": 0.2698,
+    "ece": 0.2202,
+    "reliability": [
+      {
+        "lo": 0.0,
+        "hi": 0.2,
+        "count": 0,
+        "avg_conf": 0.0,
+        "accuracy": 0.0,
+        "gap": 0.0
+      },
+      {
+        "lo": 0.2,
+        "hi": 0.4,
+        "count": 4,
+        "avg_conf": 0.3031,
+        "accuracy": 0.5,
+        "gap": 0.1969
+      },
+      {
+        "lo": 0.4,
+        "hi": 0.6,
+        "count": 2,
+        "avg_conf": 0.4238,
+        "accuracy": 1.0,
+        "gap": 0.5762
+      },
+      {
+        "lo": 0.6,
+        "hi": 0.8,
+        "count": 12,
+        "avg_conf": 0.7519,
+        "accuracy": 0.5833,
+        "gap": 0.1686
+      },
+      {
+        "lo": 0.8,
+        "hi": 1.0,
+        "count": 0,
+        "avg_conf": 0.0,
+        "accuracy": 0.0,
+        "gap": 0.0
+      }
+    ]
+  },
+  "cases": [
+    {
+      "query": "боль в бедре больше месяца у ребенка 9 лет и хромота",
+      "expected_icd_prefixes": [
+        "M91",
+        "M08",
+        "M25",
+        "R26",
+        "M00",
+        "M13"
+      ],
+      "predicted_codes": [
+        "M91.1",
+        "M08.0",
+        "R26.8",
+        "M00.9",
+        "M13.9"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "сухой кашель и температура 38 у взрослого",
+      "expected_icd_prefixes": [
+        "J06",
+        "J20",
+        "J00",
+        "J22",
+        "R05"
+      ],
+      "predicted_codes": [
+        "J06.9",
+        "J20.9",
+        "R50.9",
+        "R05",
+        "J00"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "эссенциальная гипертензия высокое давление",
+      "expected_icd_prefixes": [
+        "I10",
+        "I11",
+        "I12",
+        "I13"
+      ],
+      "predicted_codes": [
+        "I10",
+        "I11.9",
+        "R03.0",
+        "I15.9",
+        "O16.9"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "сахарный диабет 2 типа жажда и сухость во рту",
+      "expected_icd_prefixes": [
+        "E11",
+        "E10",
+        "E13"
+      ],
+      "predicted_codes": [
+        "E10",
+        "E11",
+        "E14",
+        "E23.2",
+        "N25.1"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.4363,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "острый гастрит боль в эпигастрии тошнота",
+      "expected_icd_prefixes": [
+        "K29",
+        "K21",
+        "K30"
+      ],
+      "predicted_codes": [
+        "K29.7",
+        "K21.9",
+        "R11",
+        "G44.2",
+        "G50.1"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "железодефицитная анемия слабость бледность",
+      "expected_icd_prefixes": [
+        "D50",
+        "D64",
+        "D51",
+        "D52"
+      ],
+      "predicted_codes": [
+        "D50.9",
+        "D46.1",
+        "D51",
+        "D52",
+        "D53.0"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.4113,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "бронхиальная астма приступы одышки свистящее дыхание",
+      "expected_icd_prefixes": [
+        "J45",
+        "J46"
+      ],
+      "predicted_codes": [
+        "J45.9",
+        "J46",
+        "R06.2",
+        "J69.1",
+        "R19.6"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "внебольничная пневмония кашель с мокротой лихорадка",
+      "expected_icd_prefixes": [
+        "J18",
+        "J15",
+        "J13",
+        "J14"
+      ],
+      "predicted_codes": [
+        "J06.9",
+        "J20.9",
+        "R50.9",
+        "R05",
+        "J00"
+      ],
+      "top1_ok": false,
+      "top3_ok": false,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "инфекция мочевыводящих путей рези при мочеиспускании",
+      "expected_icd_prefixes": [
+        "N39",
+        "N30",
+        "N34"
+      ],
+      "predicted_codes": [
+        "N39.0",
+        "N30.0",
+        "N21",
+        "N99.5",
+        "J06.9"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "атопический дерматит зуд и сыпь у ребенка",
+      "expected_icd_prefixes": [
+        "L20",
+        "L23",
+        "L30"
+      ],
+      "predicted_codes": [
+        "L50.9",
+        "T78.3",
+        "L20.9",
+        "B00.1",
+        "B65.3"
+      ],
+      "top1_ok": false,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "острый тонзиллит боль в горле налеты на миндалинах",
+      "expected_icd_prefixes": [
+        "J03",
+        "J02",
+        "J35"
+      ],
+      "predicted_codes": [
+        "R07.0",
+        "J02.9",
+        "J03.9",
+        "J06.9",
+        "J35.0"
+      ],
+      "top1_ok": false,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "мигрень сильная головная боль светобоязнь",
+      "expected_icd_prefixes": [
+        "G43",
+        "G44"
+      ],
+      "predicted_codes": [
+        "R51.9",
+        "G44.2",
+        "G43",
+        "G50.1",
+        "H57.1"
+      ],
+      "top1_ok": false,
+      "top3_ok": true,
+      "confidence": 0.3807,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "гипотиреоз слабость сонливость набор веса",
+      "expected_icd_prefixes": [
+        "E03",
+        "E02",
+        "E01"
+      ],
+      "predicted_codes": [
+        "E03",
+        "O62.0",
+        "F51.1",
+        "E02",
+        "N31.2"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.2286,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "язвенная болезнь желудка боль натощак",
+      "expected_icd_prefixes": [
+        "K25",
+        "K26",
+        "K27"
+      ],
+      "predicted_codes": [
+        "C16",
+        "D00",
+        "D13.1",
+        "I86.4",
+        "K25"
+      ],
+      "top1_ok": false,
+      "top3_ok": false,
+      "confidence": 0.2286,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "депрессия подавленность потеря интереса нарушение сна",
+      "expected_icd_prefixes": [
+        "F32",
+        "F33"
+      ],
+      "predicted_codes": [
+        "F32",
+        "F33",
+        "R45.2",
+        "G47.9",
+        "D68.9"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.7714,
+      "confidence_band": "высокая"
+    },
+    {
+      "query": "остеоартроз коленного сустава боль при ходьбе",
+      "expected_icd_prefixes": [
+        "M17",
+        "M15",
+        "M19"
+      ],
+      "predicted_codes": [
+        "M17",
+        "M70.5",
+        "Q74.1",
+        "S80.0",
+        "S81.0"
+      ],
+      "top1_ok": true,
+      "top3_ok": true,
+      "confidence": 0.3747,
+      "confidence_band": "низкая"
+    },
+    {
+      "query": "острый пиелонефрит боль в пояснице температура",
+      "expected_icd_prefixes": [
+        "N10",
+        "N11",
+        "N12"
+      ],
+      "predicted_codes": [
+        "R50.9",
+        "J06.9",
+        "N11.1",
+        "G44.2",
+        "G50.1"
+      ],
+      "top1_ok": false,
+      "top3_ok": true,
+      "confidence": 0.6401,
+      "confidence_band": "средняя"
+    },
+    {
+      "query": "хроническая обструктивная болезнь легких одышка кашель курильщик",
+      "expected_icd_prefixes": [
+        "J44",
+        "J43"
+      ],
+      "predicted_codes": [
+        "R05",
+        "J06.9",
+        "J20.9",
+        "J44",
+        "D86.0"
+      ],
+      "top1_ok": false,
+      "top3_ok": false,
+      "confidence": 0.6691,
+      "confidence_band": "средняя"
+    }
+  ]
+}

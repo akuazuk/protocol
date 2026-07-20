@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r7-summary-cards-full-export"
+BUILD_VERSION = "2026-07-20-r8-search-eval-calibration"
 
 
 def _app_version() -> str:
