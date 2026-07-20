@@ -50,7 +50,45 @@ _BOILERPLATE = (
     "шифр по мкб",
     "международной статистической классификации болезн",
     "используются следующие сокращения",
+    # Правовая обвязка постановлений/приказов Минздрава РБ (шапки, подписи, футеры).
+    "национальный правовой интернет-портал",
+    "признать утратившим силу",
+    "признать утратившими силу",
+    "областной исполнительный комитет",
+    "городской исполнительный комитет",
+    "минский городской исполнительный",
+    "совет министров республики беларусь",
+    "постановление министерства здравоохранения",
+    "постановления министерства здравоохранения",
+    "об утверждении клинического протокола",
+    "об утверждении некоторых клинических протоколов",
+    "утвердить клинический протокол",
+    "утвердить прилагаем",
+    "утвердить следующие",
+    "настоящее постановление вступает в силу",
+    "вступает в силу после его официального опубликования",
+    "официального опубликования",
+    "зарегистрировано в национальном реестре",
 )
+
+# Подпись министра «Министр Д.Л.Пиневич» и одиночный маркер главы «ГЛАВА 2».
+_MINISTER_SIG_RE = re.compile(r"министр\s+[а-яё]\.\s?[а-яё]\.\s?[а-яё]", re.I)
+_CHAPTER_ONLY_RE = re.compile(r"^\s*глава\s+\d+\s*$", re.I)
+
+
+def is_legal_admin_text(text: str | None) -> bool:
+    """True для юридической/административной обвязки (не клинический смысл)."""
+    t = normalize_text(text)
+    if not t:
+        return False
+    low = t.lower()
+    if any(bp in low for bp in _BOILERPLATE):
+        return True
+    if _MINISTER_SIG_RE.search(low):
+        return True
+    if _CHAPTER_ONLY_RE.match(t):
+        return True
+    return False
 
 
 def clean_clinical_text(text: str | None) -> str:
@@ -110,8 +148,7 @@ def is_meaningful_clinical_text(text: str | None, *, require_sentence_start: boo
     letters = len(_LETTER.findall(t))
     if letters / max(1, len(t)) < _MIN_LETTER_RATIO:
         return False
-    low = t.lower()
-    if any(bp in low for bp in _BOILERPLATE):
+    if is_legal_admin_text(t):
         return False
     if _GLOSSARY_LINE.match(t) and len(words) < 8:
         return False

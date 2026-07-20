@@ -8376,7 +8376,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r19-proto-viewer-brief-ui"
+BUILD_VERSION = "2026-07-20-r20-protocol-nav-legal-noise-filter"
 
 
 def _app_version() -> str:

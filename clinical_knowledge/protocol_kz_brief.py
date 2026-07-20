@@ -81,9 +81,18 @@ def _item(
     icd_related: bool = False,
     source_ref: Any = None,
 ) -> dict[str, Any]:
+    from clinical_knowledge.extract_quality import is_legal_admin_text
+
     body = (text or "").strip()
     if not body:
         return {}
+    # Правовая обвязка (шапка постановления, подпись министра, футер портала),
+    # попавшая в auto_extracted Summary, не должна показываться как клинический пункт.
+    if is_legal_admin_text(body):
+        return {}
+    src_quote = (getattr(source_ref, "quote", None) or "").strip()
+    if src_quote and is_legal_admin_text(src_quote):
+        source_ref = None
     out: dict[str, Any] = {
         "text": body[:600],
         "obligation": obligation if obligation in ("required", "recommended", "conditional", "not_applicable") else "recommended",

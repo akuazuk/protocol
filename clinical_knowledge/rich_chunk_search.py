@@ -417,10 +417,14 @@ def build_rich_protocol_nav(
     if not chunks_for_path:
         return {"available": False, "source": "rich_chunks", "path": path}
 
+    from clinical_knowledge.extract_quality import is_legal_admin_text
+
     by_section: dict[str, dict[str, Any]] = {}
     for ch in chunks_for_path:
         ctype = (ch.get("kind") or ch.get("chunk_type") or "body").strip().lower()
         if ctype in _LOW_SIGNAL_TYPES:
+            continue
+        if is_legal_admin_text(ch.get("text") or ""):
             continue
         sec = (ch.get("section_title") or "").strip()
         if not sec or len(sec) > 120:

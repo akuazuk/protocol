@@ -5,6 +5,7 @@ from clinical_knowledge.extract_quality import (
     best_meaningful_excerpt,
     clean_clinical_text,
     dedupe_meaningful,
+    is_legal_admin_text,
     is_meaningful_clinical_text,
     meaningful_clinical_excerpt,
 )
@@ -105,6 +106,31 @@ def test_glossary_abbr_definition_rejected() -> None:
         "БА - гетерогенное заболевание, характеризующееся хроническим воспалением дыхательных путей "
         "с наличием респираторных симптомов и вариабельной бронхиальной обструкцией."
     ) is True
+
+
+def test_legal_admin_boilerplate_detected() -> None:
+    noise = [
+        "Признать утратившим силу приказ Министерства здравоохранения Республики Беларусь от 14 февраля 2011 г. № 150.",
+        "Настоящее постановление вступает в силу после его официального опубликования.",
+        "Министр Д.Л.Пиневич СОГЛАСОВАНО Брестский областной исполнительный комитет.",
+        "Национальный правовой Интернет-портал Республики Беларусь, 16.04.2022, 8/37875 3",
+        "ГЛАВА 2",
+        "Утвердить клинический протокол «Диагностика и лечение пациентов с тромбозом глубоких вен».",
+    ]
+    for t in noise:
+        assert is_legal_admin_text(t) is True, t
+        assert is_meaningful_clinical_text(t) is False, t
+
+
+def test_clinical_text_not_flagged_as_admin() -> None:
+    clinical = [
+        "УЗДС является основным методом визуализации при подозрении на ТГВ.",
+        "Госпитализация с установленным диагнозом ТГВ осуществляется в хирургическое отделение.",
+        "Длина флотирующей части тромба более 5 см является критерием эмболоопасности.",
+        "МКБ-10: I80, I82",
+    ]
+    for t in clinical:
+        assert is_legal_admin_text(t) is False, t
 
 
 def test_excerpt_ends_on_sentence_boundary() -> None:

@@ -19,6 +19,7 @@ from typing import Any, Callable
 
 from clinical_knowledge.extract_quality import (
     best_meaningful_excerpt,
+    is_legal_admin_text,
     meaningful_clinical_excerpt,
     new_deduper,
     normalize_text,
@@ -205,10 +206,18 @@ def _points_from_chunks(
     for ch in rich_chunks or []:
         if len(out) >= max_points:
             break
+        tags = ch.get("tags") or {}
+        if tags.get("is_preamble") or tags.get("signal") == "low":
+            continue
         if _guess_brief_section(ch) != brief_id:
             continue
+        chunk_text = str(ch.get("text") or "")
         page = ch.get("page_from") or ch.get("page")
-        for sent in _sentences(str(ch.get("text") or "")):
+        # Пофразовый фильтр: юридическую обвязку режем на уровне предложения,
+        # чтобы не потерять клиническую фразу в том же чанке (напр. рядом с «шифр по МКБ»).
+        for sent in _sentences(chunk_text):
+            if is_legal_admin_text(sent):
+                continue
             if len(out) >= max_points:
                 break
             text = meaningful_clinical_excerpt(sent, limit=limit, require_sentence_start=True)
@@ -312,11 +321,14 @@ def build_protocol_brief(
                 catalog_path=catalog_path,
             )
         if len(points) < min_points_per_section and rich:
+            # Добиваем раздел только до минимума чистыми клиническими предложениями,
+            # а не до max_points сырыми чанками (иначе в разделы лезет правовая шапка).
+            need = min_points_per_section - len(points)
             points += _points_from_chunks(
                 rich,
                 brief_id,
                 limit=max_text_chars,
-                max_points=max_points - len(points),
+                max_points=need,
                 title_norm=title_norm,
                 deduper=deduper,
             )

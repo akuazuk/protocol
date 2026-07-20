@@ -144,6 +144,36 @@ def test_brief_filters_glossary_and_icd_shifr(monkeypatch) -> None:
     assert "спирометрией" in texts
 
 
+def test_brief_excludes_legal_boilerplate_from_chunks(monkeypatch) -> None:
+    monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: None)
+    rich = [
+        {
+            "chunk_type": "treatment",
+            "section_title": "Лечение",
+            "page_from": 1,
+            "text": (
+                "Признать утратившим силу приказ Министерства здравоохранения Республики Беларусь. "
+                "Национальный правовой Интернет-портал Республики Беларусь, 16.04.2022, 8/37875. "
+                "Министр Д.Л.Пиневич СОГЛАСОВАНО Брестский областной исполнительный комитет."
+            ),
+        },
+        {
+            "chunk_type": "treatment",
+            "section_title": "Лечение",
+            "page_from": 8,
+            "text": "Базисная терапия проводится ингаляционными глюкокортикостероидами длительным курсом.",
+        },
+    ]
+    brief = build_protocol_brief("x.pdf", rich_chunks=rich, title_hint="Протокол")
+    treat = next(s for s in brief["sections"] if s["id"] == "treatment")
+    texts = " ".join(p["text"] for p in treat["points"])
+    assert "утратившим силу" not in texts
+    assert "Интернет-портал" not in texts
+    assert "Пиневич" not in texts
+    assert "исполнительный комитет" not in texts
+    assert "Базисная терапия" in texts
+
+
 def test_brief_unavailable_without_data(monkeypatch) -> None:
     monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: None)
     brief = build_protocol_brief("x.pdf")
