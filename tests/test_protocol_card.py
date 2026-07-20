@@ -49,7 +49,10 @@ def _sample_summary() -> ProtocolSummary:
             drugs=[
                 DrugTreatmentItem(
                     drug_name="Амоксициллин",
-                    source_ref=_sr("Амоксициллин 500 мг внутрь.", 20),
+                    source_ref=_sr(
+                        "Амоксициллин назначают внутрь по 500 мг три раза в сутки в течение семи дней.",
+                        20,
+                    ),
                 )
             ]
         ),
@@ -158,8 +161,18 @@ def test_build_card_fallback_to_rag(monkeypatch) -> None:
     monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: None)
     structured = {
         "sections": [
-            {"kind": "criteria", "label": "Диагностика", "text": "Критерии диагноза.", "page_start": 3},
-            {"kind": "treatment", "label": "Лечение", "text": "Схема лечения.", "page_start": 8},
+            {
+                "kind": "criteria",
+                "label": "Диагностика",
+                "text": "Диагноз устанавливают на основании клинической картины и данных инструментального обследования.",
+                "page_start": 3,
+            },
+            {
+                "kind": "treatment",
+                "label": "Лечение",
+                "text": "Основой терапии является назначение антибактериальных препаратов широкого спектра действия.",
+                "page_start": 8,
+            },
         ]
     }
     card = build_protocol_card(
@@ -178,12 +191,12 @@ def test_build_card_fallback_to_raw(monkeypatch) -> None:
     monkeypatch.setattr(nav_mod, "find_summary_by_catalog_path", lambda _p: None)
     card = build_protocol_card(
         "p.pdf",
-        raw_excerpt="Некоторый фрагмент текста протокола.",
+        raw_excerpt="Пациентам с подозрением на заболевание показано полное клиническое обследование.",
         title_hint="Протокол Y",
     )
     assert card["available"] is True
     assert card["source"] == "raw"
-    assert card["extracts"][0]["label"] == "Фрагмент"
+    assert card["extracts"][0]["label"] == "Из текста протокола"
 
 
 def test_build_card_unavailable(monkeypatch) -> None:

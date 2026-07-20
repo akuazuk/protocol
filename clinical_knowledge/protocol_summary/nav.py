@@ -496,6 +496,7 @@ def build_protocol_card_from_summary(
     icd_codes: list[str] | None = None,
     max_extracts: int = 4,
     max_text_chars: int = 260,
+    min_extracts: int = 2,
     page_lookup: Any = None,
 ) -> dict[str, Any]:
     """Компактная карточка-выдержка протокола из Summary Card.
@@ -534,6 +535,8 @@ def build_protocol_card_from_summary(
             "title": title,
         }
 
+    from clinical_knowledge.extract_quality import best_meaningful_excerpt
+
     top = nav_conditions[0]
     cond = _condition_obj_by_id(summary, top.get("condition_id"), top.get("alias_condition_ids"))
     extracts: list[dict[str, Any]] = []
@@ -541,18 +544,23 @@ def build_protocol_card_from_summary(
         for sid, label, _focus in _SECTION_SPECS:
             if len(extracts) >= max_extracts:
                 break
-            items = _collect_section_excerpt_items(cond, sid, limit=1)
-            if not items:
+            items = _collect_section_excerpt_items(cond, sid, limit=8)
+            chosen_it: dict[str, Any] | None = None
+            disp = ""
+            for it in items:
+                disp = best_meaningful_excerpt(
+                    [it.get("text"), it.get("quote")], limit=max_text_chars
+                )
+                if disp:
+                    chosen_it = it
+                    break
+            if chosen_it is None or not disp:
                 continue
-            it = items[0]
-            text = str(it.get("text") or it.get("quote") or "").strip()
-            if not text:
-                continue
-            quote = str(it.get("quote") or "")[:600] or None
-            page = it.get("page_start")
+            quote = str(chosen_it.get("quote") or "")[:600] or None
+            page = chosen_it.get("page_start")
             page_source = "summary" if page else None
             if not page and page_lookup is not None:
-                probe = quote or text
+                probe = quote or disp
                 try:
                     found = page_lookup(catalog_path, probe)
                 except Exception:
@@ -564,16 +572,16 @@ def build_protocol_card_from_summary(
                 {
                     "section_id": sid,
                     "label": label,
-                    "text": text[:max_text_chars],
+                    "text": disp,
                     "quote": quote,
                     "page_start": page,
                     "page_source": page_source,
-                    "section_title": it.get("section_title"),
+                    "section_title": chosen_it.get("section_title"),
                 }
             )
 
     return {
-        "available": bool(extracts),
+        "available": len(extracts) >= max(1, min_extracts),
         "path": catalog_path,
         "source": "summary",
         "protocol_id": summary.protocol_id,

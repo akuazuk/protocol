@@ -81,21 +81,24 @@ def build_protocol_card(
 
     title = card.get("title") or title_hint or ""
 
+    from clinical_knowledge.extract_quality import meaningful_clinical_excerpt
+
     if isinstance(structured_excerpt, dict) and structured_excerpt.get("sections"):
         extracts: list[dict[str, Any]] = []
         for s in structured_excerpt["sections"]:
             if len(extracts) >= max_extracts:
                 break
-            text = str(s.get("text") or "").strip()
+            text = meaningful_clinical_excerpt(s.get("text"), limit=max_text_chars)
             if not text:
                 continue
             extracts.append(
                 {
                     "section_id": s.get("kind") or "body",
                     "label": s.get("label") or "Из протокола",
-                    "text": text[:max_text_chars],
+                    "text": text,
                     "quote": None,
                     "page_start": s.get("page_start"),
+                    "page_source": "summary" if s.get("page_start") else None,
                     "section_title": s.get("section_title"),
                 }
             )
@@ -105,17 +108,18 @@ def build_protocol_card(
             shell["extracts"] = extracts
             return shell
 
-    raw = (raw_excerpt or "").strip()
-    if raw:
+    raw_clean = meaningful_clinical_excerpt(raw_excerpt, limit=360)
+    if raw_clean:
         shell = _card_shell(path, "raw", title=title, care_setting_label=care_setting_label)
         shell["available"] = True
         shell["extracts"] = [
             {
                 "section_id": "body",
-                "label": "Фрагмент",
-                "text": raw[:400],
+                "label": "Из текста протокола",
+                "text": raw_clean,
                 "quote": None,
                 "page_start": None,
+                "page_source": None,
                 "section_title": None,
             }
         ]
