@@ -2557,6 +2557,21 @@ def apply_protocol_confidence_calibration(
     w = float(os.environ.get("RAG_LLM_CONF_BLEND_W", "0.62"))
     cap_low = float(os.environ.get("RAG_MIN_RAG_SUPPORT_CAP", "0.74"))
     min_rag_high = float(os.environ.get("RAG_MIN_RAG_SUPPORT_FOR_HIGH_CONF", "0.2"))
+    _cal_on = os.environ.get("RAG_CONFIDENCE_CALIBRATION", "1").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    _calibrate_conf = None
+    _conf_band = None
+    if _cal_on:
+        try:
+            from clinical_knowledge.confidence_calibration import (
+                calibrate_confidence as _calibrate_conf,
+                confidence_band as _conf_band,
+            )
+        except Exception:
+            _cal_on = False
     protos = parsed.get("protocols")
     if not isinstance(protos, list):
         return rag_map
@@ -2575,6 +2590,18 @@ def apply_protocol_confidence_calibration(
             blended = min(blended, cap_low)
             pr["low_retrieval_support"] = True
         pr["confidence_score"] = round(max(0.0, min(1.0, blended)), 4)
+        if _cal_on:
+            try:
+                icd_rel = pr.get("icd_relevance_pct")
+                cal = _calibrate_conf(
+                    rag_support=rag_sup,
+                    icd_relevance=icd_rel,
+                    llm_confidence=llm_c,
+                )
+                pr["confidence_calibrated"] = cal
+                pr["confidence_band"] = _conf_band(cal)
+            except Exception:
+                pass
     return rag_map
 
 
@@ -8288,7 +8315,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-20-r4-care-setting-badge"
+BUILD_VERSION = "2026-07-20-r5-confidence-calibration"
 
 
 def _app_version() -> str:

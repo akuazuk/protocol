@@ -18376,10 +18376,16 @@
     if (opts.steppedList || (opts.doctorLite && !window.__methodistMode)) {
       html += renderMatchTierBadgeHtml(pr, { methodist: !!window.__methodistMode });
     } else {
+      var confTip = "Соответствие запросу (модель, согласовано с отбором фрагментов)";
+      if (pr.confidence_band) {
+        confTip += ". Калиброванная уверенность: " + String(pr.confidence_band);
+      }
       html +=
         '<span class="llm-pct-badge ' +
         confidenceBadgeClass(mScore) +
-        '" title="Соответствие запросу (модель, согласовано с отбором фрагментов)">' +
+        '" title="' +
+        escapeHtmlAttr(confTip) +
+        '">' +
         '<span class="llm-pct-dot" aria-hidden="true"></span>' +
         pct01(mScore) +
         "%</span>";
